@@ -1,0 +1,282 @@
+---
+number: 4
+title: "Threads and Multicore Programming"
+summary: Why modern programs use many threads. Covers single- vs multithreaded processes and their benefits, multicore programming challenges, concurrency vs parallelism, data vs task parallelism, Amdahl's law, user vs kernel threads, the many-to-one, one-to-one, many-to-many and two-level models, and creating threads with Pthreads and Java.
+topics: [Threads, Benefits, Multicore challenges, Concurrency vs parallelism, Data and task parallelism, Amdahl's law, User and kernel threads, Multithreading models, Pthreads, Java threads]
+duration: 50 min study
+sources:
+  - file: Lectures/ch4/Chapter 04 Threads.pdf
+    label: OS Chapter 4 – Threads (Dr. Mostafa Elgendy)
+    pages: "1-32"
+bookRefs:
+  - book: osc10
+    chapter: Ch 4 · Threads & Concurrency
+---
+
+<Objectives>
+
+- Explain what a **thread** is, what it shares with its process and what it owns.
+- List the **benefits** of multithreading and the **challenges** of multicore programming.
+- Distinguish **concurrency** from **parallelism**, and **data** from **task** parallelism.
+- Compute speed-ups with **Amdahl's law**.
+- Compare **user** and **kernel** threads and the **multithreading models**, and create threads with **Pthreads** and **Java**.
+
+</Objectives>
+
+## Why threads?
+
+Most modern applications are **multithreaded**. A word processor updates the display, checks spelling and auto-saves at once; a web server handles many requests at once. Creating a **process** is heavy-weight, while creating a **thread** is light-weight. Kernels themselves are multithreaded.
+
+<Definition term="Thread">
+  A basic unit of CPU utilization: a <strong>thread ID</strong>, a <strong>program counter</strong>, a <strong>register set</strong> and a <strong>stack</strong>. Threads of the same process <strong>share</strong> its code, data, open files and other resources.
+</Definition>
+
+<SlideFigure page={7} caption="A single-threaded vs a multithreaded process: shared code, data and files; separate registers, stack and PC per thread." />
+
+<SlideFigure page={8} caption="A multithreaded server: for each request it creates a thread to service it and goes back to listening." />
+
+### Benefits
+
+<Grid cols={2}>
+  <Card title="Responsiveness">A program can keep running even if part of it is blocked, which matters most for user interfaces.</Card>
+  <Card title="Resource sharing">Threads share the process's memory automatically, which is easier than shared memory or message passing between processes.</Card>
+  <Card title="Economy">Creating and switching threads is much cheaper than creating processes and context-switching between them.</Card>
+  <Card title="Scalability">Threads can run in parallel on multiple cores.</Card>
+</Grid>
+
+## Multicore programming
+
+Multicore systems put pressure on programmers. The challenges:
+
+| Challenge | Question to answer |
+|---|---|
+| **Dividing activities** | Which parts of the task are independent and can run concurrently? |
+| **Balance** | Does each part do an equal share of useful work? |
+| **Data splitting** | How is the data divided between cores? |
+| **Data dependency** | Which tasks depend on others' data, and how are they synchronized? |
+| **Testing and debugging** | Many execution orders are possible, so bugs are hard to reproduce |
+
+### Concurrency vs. parallelism
+
+<Grid cols={2}>
+  <Card title="Concurrency" tag="progress">
+    More than one task is <strong>making progress</strong>. On a single core, the scheduler interleaves T1, T2, T3, T4 in time.
+  </Card>
+  <Card title="Parallelism" tag="simultaneous">
+    More than one task runs at <strong>the same instant</strong>, which requires several cores.
+  </Card>
+</Grid>
+
+<SlideFigure page={11} caption="Concurrent execution on one core vs parallel execution on two cores." />
+
+Concurrency is possible **without** parallelism, but parallelism needs multiple cores.
+
+### Data vs. task parallelism
+
+- **Data parallelism**: split the **same data** across cores, with the **same operation** on each part. For example, four cores each sum a quarter of an array.
+- **Task parallelism**: give each core a **different operation**, possibly on the same data. For example, one thread computes the mean while another computes the standard deviation.
+
+<SlideFigure page={13} caption="Data parallelism vs task parallelism across four cores." />
+
+## Amdahl's law
+
+If a fraction $S$ of an application is **serial** and the rest can run in parallel on $N$ cores:
+
+$$
+\text{speedup} \;\le\; \frac{1}{S + \dfrac{1 - S}{N}}
+$$
+
+$$
+\lim_{N \to \infty} \text{speedup} = \frac{1}{S}
+$$
+
+**Example from the slides:** 75% parallel and 25% serial ($S = 0.25$). Going from 1 to 2 cores gives $\frac{1}{0.25 + 0.75/2} = \frac{1}{0.625} = 1.6\times$. However many cores you add, the speed-up can never exceed $1/0.25 = 4\times$.
+
+<SlideFigure page={15} caption="Speed-up vs number of cores for different serial fractions." />
+
+<Callout type="tip" title="The lesson">
+  The **serial portion** has a disproportionate effect. Halving the serial part often helps more than doubling the cores.
+</Callout>
+
+## User threads and kernel threads
+
+| | User threads | Kernel threads |
+|---|---|---|
+| Managed by | A **user-level thread library** | The **OS kernel** |
+| Examples | POSIX **Pthreads**, Windows threads, Java threads (APIs) | Virtually all modern OSes: Windows, Linux, macOS, iOS, Android |
+| Switching | Fast, with no kernel involvement | Needs the kernel |
+| Blocking | A blocking call may block the whole process (depending on the model) | Others keep running |
+
+<SlideFigure page={17} caption="User threads live in user space and kernel threads in kernel space; a model maps one onto the other." />
+
+### Multithreading models
+
+| Model | Mapping | Pros / cons | Used by |
+|---|---|---|---|
+| **Many-to-one** | Many user threads → **one** kernel thread | Efficient, but one blocking call blocks all of them, and they **can't run in parallel** because only one can be in the kernel at a time | Few systems today (Solaris Green Threads) |
+| **One-to-one** | Each user thread → **its own** kernel thread | More concurrency, and threads run in parallel on multicore. Each user thread costs a kernel thread, so the number may be limited | **Windows**, **Linux** |
+| **Many-to-many** | Many user threads → an equal or **smaller** number of kernel threads | The OS creates enough kernel threads, giving flexibility, but it is complex to implement | Windows with ThreadFiber; otherwise uncommon |
+| **Two-level** | Many-to-many, **plus** a user thread can be **bound** to one kernel thread | The flexibility of M:M and the guarantees of 1:1 for chosen threads | |
+
+<SlideFigure page={20} caption="Many-to-one: all user threads share one kernel thread." />
+
+## Thread libraries
+
+A thread library gives programmers an API to create and manage threads. It is implemented either **entirely in user space** or as a **kernel-level** library supported by the OS.
+
+### Pthreads
+
+**Pthreads** is the POSIX standard (IEEE 1003.1c) API for thread creation and synchronization. It is a **specification**, not an implementation, and is common on UNIX, Linux and macOS.
+
+```c title="sum_pthreads.c"
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+int sum;                              /* shared by the thread(s) */
+void *runner(void *param);            /* the thread starts here */
+
+int main(int argc, char *argv[]) {
+    pthread_t tid;                    /* thread identifier */
+    pthread_attr_t attr;              /* thread attributes */
+
+    pthread_attr_init(&attr);         /* default attributes */
+    pthread_create(&tid, &attr, runner, argv[1]);   /* create the thread */
+    pthread_join(tid, NULL);          /* wait for it to finish */
+
+    printf("sum = %d\n", sum);
+    return 0;
+}
+
+void *runner(void *param) {
+    int upper = atoi(param);
+    sum = 0;
+    for (int i = 1; i <= upper; i++)
+        sum += i;
+    pthread_exit(0);
+}
+```
+
+```bash title="Terminal"
+gcc sum_pthreads.c -o sum -lpthread
+./sum 10        # sum = 55
+```
+
+To wait for many threads, store their IDs in an array and call `pthread_join` on each one in a loop.
+
+### Java threads
+
+Java threads are managed by the **JVM**, which usually maps them onto the OS's own thread model. You create one by **extending `Thread`** or, as is standard practice, by **implementing `Runnable`**:
+
+```java title="Task.java"
+class Task implements Runnable {
+    public void run() {
+        System.out.println("I am a thread.");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) throws InterruptedException {
+        Thread worker = new Thread(new Task());
+        worker.start();          // creates the thread and calls run()
+        worker.join();           // wait for it to finish
+    }
+}
+```
+
+Calling `run()` directly would just execute the method in the **current** thread; `start()` is what creates the new thread.
+
+<Takeaways>
+
+- A thread has its own **ID, PC, registers and stack**, and **shares** code, data and files with its process.
+- Benefits: **responsiveness, resource sharing, economy, scalability**.
+- **Concurrency** means progress; **parallelism** means simultaneous execution. **Data** parallelism splits the data; **task** parallelism splits the work.
+- **Amdahl's law**: speedup ≤ 1 / (S + (1−S)/N), capped at 1/S.
+- Models: **many-to-one** (no parallelism), **one-to-one** (Windows and Linux), **many-to-many**, **two-level**. APIs: **Pthreads**, Windows threads, **Java threads**.
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="Apply Amdahl's law" level="medium">
+
+An application is 90% parallel. What is the maximum speed-up on 8 cores, and with unlimited cores?
+
+<Solution>
+
+$S = 0.1$. On 8 cores: $\frac{1}{0.1 + 0.9/8} = \frac{1}{0.2125} \approx 4.71\times$. With unlimited cores: $1/0.1 = 10\times$.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Which model?" level="easy">
+
+A program creates 50 user-level threads; one of them calls a blocking `read()`. Under which model does the whole program freeze, and why?
+
+<Solution>
+
+**Many-to-one.** All 50 user threads share a single kernel thread. When it blocks in the kernel, none of the others can run. Under **one-to-one** only the calling thread blocks.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="What is shared?" level="easy">
+
+For two threads in the same process, say whether each is **shared** or **private**: global variables, heap memory, stack, register values, open files.
+
+<Solution>
+
+Shared: **global variables**, **heap memory**, **open files**. Private: **stack** and **register values**, including the PC.
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "What does each thread have of its own?",
+      options: ["Code section", "Open files", "Stack and registers", "Global data"],
+      answer: 2,
+      explain: "Code, data and files are shared by all threads of the process."
+    },
+    {
+      q: "On a single-core system, multiple threads can achieve…",
+      options: ["Parallelism", "Concurrency", "Both", "Neither"],
+      answer: 1,
+      explain: "They interleave and make progress, but never run at the same instant."
+    },
+    {
+      q: "Summing four quarters of an array on four cores is…",
+      options: ["Task parallelism", "Data parallelism", "Concurrency only", "Many-to-one threading"],
+      answer: 1,
+      explain: "The same operation on different subsets of the data."
+    },
+    {
+      q: "With 25% serial code, what is the maximum possible speed-up?",
+      options: ["1.6×", "2×", "4×", "Unlimited"],
+      answer: 2,
+      explain: "Amdahl's law: 1/S = 1/0.25 = 4."
+    },
+    {
+      q: "Which multithreading model do Windows and Linux use?",
+      options: ["Many-to-one", "One-to-one", "Many-to-many", "Two-level"],
+      answer: 1,
+      explain: "Each user thread maps to its own kernel thread."
+    },
+    {
+      q: "Which Pthreads call waits for a thread to finish?",
+      options: ["pthread_create", "pthread_exit", "pthread_join", "pthread_attr_init"],
+      answer: 2,
+      explain: "pthread_join blocks until the given thread terminates."
+    },
+    {
+      q: "In Java, which method actually starts a new thread?",
+      options: ["run()", "start()", "join()", "new Thread()"],
+      answer: 1,
+      explain: "start() creates the thread, which then calls run()."
+    }
+  ]}
+/>

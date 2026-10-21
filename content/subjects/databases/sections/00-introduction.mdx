@@ -1,0 +1,226 @@
+---
+number: 0
+title: Introduction to Oracle SQL and the HR Schema
+summary: Sets up the SQL labs. Covers what Oracle Database 11g offers, relational database concepts and terminology, ER-diagram conventions in Oracle's notation, the four families of SQL statements, the tools (SQL Developer and SQL*Plus), and the HR sample schema that every lab queries.
+kind: concept
+topics: [Oracle Database 11g, RDBMS concepts, ERD conventions, Relational terminology, SQL statement types, SQL Developer, HR schema]
+duration: 30 min study
+sources:
+  - file: Sections/sec intro/Intro.pdf
+    label: Oracle SQL Fundamentals I – Introduction (lab slides)
+    pages: "1-36"
+bookRefs:
+  - book: oracle-sql
+    chapter: Lesson I · Introduction
+---
+
+<Objectives>
+
+- Explain what a **relational database** is and how Oracle implements an **RDBMS / ORDBMS**.
+- Read an ER diagram in Oracle's notation (**#**, **\***, **o**).
+- Use the standard **relational terminology**: row, column, primary key, foreign key, field, NULL.
+- Group SQL statements into **DML, DDL, DCL and transaction control**.
+- Find your way around the **HR schema** used in every lab.
+
+</Objectives>
+
+## Oracle Database 11g at a glance
+
+The labs follow Oracle's *SQL Fundamentals I* course. Oracle Database 11g is an **object-relational** DBMS (ORDBMS). It is fully relational, and it adds user-defined types, objects and large multimedia data types. Its focus areas are **manageability**, **high availability**, **performance**, **security** and **information integration**. It sits inside a wider product family: Fusion Middleware, Enterprise Manager Grid Control and BI Publisher.
+
+## Relational concepts
+
+Dr. **E. F. Codd** proposed the relational model in **1970**. It has three parts:
+
+- a collection of objects, or **relations** (tables),
+- a set of **operators** that act on relations,
+- **data integrity** rules for accuracy and consistency.
+
+<Definition term="Relational database">
+  A collection of relations, i.e. <strong>two-dimensional tables</strong>, managed by the Oracle server.
+</Definition>
+
+Designing a database goes from the client's mental model, to an **entity model** (ER diagram), to a **table model**, to **tables on disk**.
+
+### ER diagrams in Oracle's notation
+
+<SlideFigure page={21} caption="'Assign one or more employees to a department… some departments do not yet have employees.'" />
+
+| Convention | Meaning |
+|---|---|
+| Entity in a soft box, **singular, uppercase** name | `EMPLOYEE`, `DEPARTMENT` |
+| Attribute in **singular, lowercase** | `number`, `name`, `job title` |
+| `#` | Part of the **primary unique identifier** (UID); `(#)` is a secondary UID |
+| `*` | **Mandatory** attribute |
+| `o` | **Optional** attribute |
+| Solid line end / dashed line end | The relationship is mandatory / optional on that side |
+| Crow's foot | "One or more" (the *many* side) |
+
+### Relating tables
+
+Each row is uniquely identified by its **primary key**, and a **foreign key** links a row to the primary key of a row in another (or the same) table. `EMPLOYEES.department_id` is a foreign key to `DEPARTMENTS.department_id`.
+
+<SlideFigure page={24} caption="Relational database terminology on the EMPLOYEES table." />
+
+| # | Term | In the figure |
+|---|---|---|
+| 1 | **Row** (tuple) | All the data for one employee |
+| 2 | **Primary key** column | `EMPLOYEE_ID`, unique for every row |
+| 3 | **Non-key** column | e.g. `SALARY` |
+| 4 | **Foreign key** column | `DEPARTMENT_ID`, which refers to DEPARTMENTS |
+| 5 | **Field** | The intersection of one row and one column |
+| 6 | **NULL** field | A field with no value |
+
+## SQL
+
+**SQL** (Structured Query Language) is the **ANSI standard** language for relational databases. It is efficient, easy to learn, and **functionally complete**: one language defines, retrieves and manipulates data.
+
+```sql
+SELECT department_name
+FROM   departments;
+```
+
+| Category | Statements | Purpose |
+|---|---|---|
+| **DML**: data manipulation | `SELECT`, `INSERT`, `UPDATE`, `DELETE`, `MERGE` | Read and change rows |
+| **DDL**: data definition | `CREATE`, `ALTER`, `DROP`, `RENAME`, `TRUNCATE`, `COMMENT` | Create and change structures |
+| **DCL**: data control | `GRANT`, `REVOKE` | Give and remove privileges |
+| **Transaction control** | `COMMIT`, `ROLLBACK`, `SAVEPOINT` | Make DML changes permanent or undo them |
+
+**Tools:** the primary lab tool is **Oracle SQL Developer**, a free graphical IDE. The **SQL\*Plus** command line works too.
+
+<Steps>
+
+1. Install Oracle Database (Express Edition is free) and **SQL Developer**.
+2. In SQL Developer, create a **new connection**: user `hr`, its password, host `localhost`, port `1521`, and the service name of your install.
+3. Expand **Tables** in the connection tree to browse `EMPLOYEES`, `DEPARTMENTS` and the rest.
+4. Open a **SQL Worksheet**, type a statement and press **Ctrl+Enter** to run it.
+
+</Steps>
+
+## The HR schema
+
+<SlideFigure page={30} caption="The Human Resources (HR) schema." />
+
+| Table | Key columns | Holds |
+|---|---|---|
+| `EMPLOYEES` | `employee_id`; FKs `department_id`, `job_id`, `manager_id` (self-reference) | Names, email, phone, `hire_date`, `salary`, `commission_pct` |
+| `DEPARTMENTS` | `department_id`; FKs `manager_id`, `location_id` | `department_name` |
+| `JOBS` | `job_id` | `job_title`, `min_salary`, `max_salary` |
+| `JOB_HISTORY` | (`employee_id`, `start_date`) | Previous jobs: `end_date`, `job_id`, `department_id` |
+| `LOCATIONS` | `location_id`; FK `country_id` | Address, `postal_code`, `city`, `state_province` |
+| `COUNTRIES` | `country_id`; FK `region_id` | `country_name` |
+| `REGIONS` | `region_id` | `region_name` |
+| `JOB_GRADES` | (course table) | `grade_level`, `lowest_sal`, `highest_sal` |
+
+### The sample rows used in these sections
+
+The labs use these 20 employees. Exact hire dates can differ between HR versions; your database may show different years.
+
+| ID | Name | Job | Salary | Comm | Mgr | Dept | Hired |
+|---|---|---|---|---|---|---|---|
+| 100 | Steven King | AD_PRES | 24000 | | | 90 | 17-JUN-03 |
+| 101 | Neena Kochhar | AD_VP | 17000 | | 100 | 90 | 21-SEP-05 |
+| 102 | Lex De Haan | AD_VP | 17000 | | 100 | 90 | 13-JAN-01 |
+| 103 | Alexander Hunold | IT_PROG | 9000 | | 102 | 60 | 03-JAN-06 |
+| 104 | Bruce Ernst | IT_PROG | 6000 | | 103 | 60 | 21-MAY-07 |
+| 107 | Diana Lorentz | IT_PROG | 4200 | | 103 | 60 | 07-FEB-07 |
+| 124 | Kevin Mourgos | ST_MAN | 5800 | | 100 | 50 | 16-NOV-07 |
+| 141 | Trenna Rajs | ST_CLERK | 3500 | | 124 | 50 | 17-OCT-03 |
+| 142 | Curtis Davies | ST_CLERK | 3100 | | 124 | 50 | 29-JAN-05 |
+| 143 | Randall Matos | ST_CLERK | 2600 | | 124 | 50 | 15-MAR-06 |
+| 144 | Peter Vargas | ST_CLERK | 2500 | | 124 | 50 | 09-JUL-06 |
+| 149 | Eleni Zlotkey | SA_MAN | 10500 | .2 | 100 | 80 | 29-JAN-08 |
+| 174 | Ellen Abel | SA_REP | 11000 | .3 | 149 | 80 | 11-MAY-04 |
+| 176 | Jonathon Taylor | SA_REP | 8600 | .2 | 149 | 80 | 24-MAR-06 |
+| 178 | Kimberely Grant | SA_REP | 7000 | .15 | 149 | | 24-MAY-07 |
+| 200 | Jennifer Whalen | AD_ASST | 4400 | | 101 | 10 | 17-SEP-03 |
+| 201 | Michael Hartstein | MK_MAN | 13000 | | 100 | 20 | 17-FEB-04 |
+| 202 | Pat Fay | MK_REP | 6000 | | 201 | 20 | 17-AUG-05 |
+| 205 | Shelley Higgins | AC_MGR | 12000 | | 101 | 110 | 07-JUN-02 |
+| 206 | William Gietz | AC_ACCOUNT | 8300 | | 205 | 110 | 07-JUN-02 |
+
+**DEPARTMENTS:**
+
+| ID | Name | Manager | Location |
+|---|---|---|---|
+| 10 | Administration | 200 | 1700 |
+| 20 | Marketing | 201 | 1800 |
+| 50 | Shipping | 124 | 1500 |
+| 60 | IT | 103 | 1400 |
+| 80 | Sales | 149 | 2500 |
+| 90 | Executive | 100 | 1700 |
+| 110 | Accounting | 205 | 1700 |
+| 190 | Contracting | (null) | 1700 |
+
+Notice two edge cases that the later labs rely on: **Grant has no department**, and **Contracting has no employees**.
+
+<Takeaways>
+
+- A relational database is a set of **tables** linked by **primary and foreign keys**; Oracle 11g is an **ORDBMS**.
+- Oracle ERDs mark UIDs with `#`, mandatory attributes with `*` and optional ones with `o`.
+- SQL statements fall into **DML**, **DDL**, **DCL** and **transaction control**.
+- Every lab queries the **HR** schema, mostly `EMPLOYEES` and `DEPARTMENTS`.
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="Classify the statements" level="easy">
+
+Classify each statement: `TRUNCATE`, `MERGE`, `SAVEPOINT`, `REVOKE`, `COMMENT`, `SELECT`.
+
+<Solution>
+
+`TRUNCATE`: DDL · `MERGE`: DML · `SAVEPOINT`: transaction control · `REVOKE`: DCL · `COMMENT`: DDL · `SELECT`: DML (data retrieval).
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Read the keys" level="easy">
+
+In the HR schema, which column links an employee to their manager, and what kind of relationship is it?
+
+<Solution>
+
+`EMPLOYEES.manager_id` is a **foreign key to `EMPLOYEES.employee_id`** in the same table, so it is a **recursive (self-referencing)** relationship. King's `manager_id` is NULL because he has no manager.
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "Who proposed the relational model, and when?",
+      options: ["Larry Ellison, 1977", "E. F. Codd, 1970", "Peter Chen, 1976", "Edgar Dijkstra, 1968"],
+      answer: 1,
+      explain: "Codd's 1970 paper is the basis of every RDBMS."
+    },
+    {
+      q: "In Oracle ERD notation, '*' next to an attribute means…",
+      options: ["Primary key", "Optional", "Mandatory", "Foreign key"],
+      answer: 2,
+      explain: "# = unique identifier, * = mandatory, o = optional."
+    },
+    {
+      q: "GRANT and REVOKE are…",
+      options: ["DML", "DDL", "DCL", "Transaction control"],
+      answer: 2,
+      explain: "Data control language manages privileges."
+    },
+    {
+      q: "The intersection of a row and a column is a…",
+      options: ["Field", "Key", "Tuple", "Domain"],
+      answer: 0,
+      explain: "A field holds one value, or NULL."
+    },
+    {
+      q: "Which statement makes DML changes permanent?",
+      options: ["SAVEPOINT", "COMMIT", "ROLLBACK", "TRUNCATE"],
+      answer: 1,
+      explain: "COMMIT ends the transaction and saves its changes."
+    }
+  ]}
+/>

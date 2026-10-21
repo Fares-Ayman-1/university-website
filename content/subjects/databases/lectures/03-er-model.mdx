@@ -1,0 +1,253 @@
+---
+number: 3
+title: Entity–Relationship (ER) Modeling
+summary: Conceptual design with the ER model. Covers entities, the kinds of attributes, keys, relationships and their cardinality and participation constraints, weak entities, recursive and higher-degree relationships, and how to read and draw ER diagrams, step by step for the COMPANY database.
+topics: [Database design process, Entities and attributes, Keys, Relationship types, Cardinality and participation, Weak entities, ER notation, UML]
+duration: 60 min study
+sources:
+  - file: Lectures/ch3/Chapter03.ppt [Compatibility Mode] [Repaired].pdf
+    label: Elmasri & Navathe – Chapter 3 Data Modeling Using the ER Model (slides)
+    pages: "1-56"
+bookRefs:
+  - book: elmasri
+    chapter: Ch 3 · Data Modeling Using the Entity–Relationship Model
+---
+
+<Objectives>
+
+- Place **conceptual design** within the overall database design process.
+- Identify **entities**, **attributes** (simple, composite, multivalued, derived) and **key attributes**.
+- Model **relationships** with their **degree**, **cardinality ratio** and **participation** constraints, including the **(min, max)** notation.
+- Recognize **weak entity types**, **recursive** relationships, **relationship attributes** and **n-ary** relationships.
+- Read and draw a complete **ER diagram**, and relate it to a **UML class diagram**.
+
+</Objectives>
+
+## Where ER modeling fits
+
+Database work has two parallel activities: **database design** (the schema) and **application design** (the programs). The ER model is the tool for the **conceptual design** step.
+
+<SlideFigure page={5} caption="The database design process: requirements, then conceptual design (ER), logical design (data-model mapping), then physical design." />
+
+<Steps>
+
+1. **Requirements collection and analysis**: interview users, gather data and functional requirements.
+2. **Conceptual design**: a high-level, DBMS-independent schema, here an **ER diagram**.
+3. **Logical design (data-model mapping)**: turn the ER schema into, say, **relations**.
+4. **Physical design**: choose storage structures and indexes for a specific DBMS.
+
+</Steps>
+
+### Running example: the COMPANY database
+
+- The company has **DEPARTMENTs**, each with a name, a number and a **manager** (an employee, with a start date). A department may have several **locations**.
+- Each department **controls** several **PROJECTs**, each with a unique name, a unique number and a single location.
+- Each **EMPLOYEE** has an SSN, a name, an address, a salary, a sex and a birth date, **works for** one department, and **works on** several projects for a number of **hours** per week. Each employee has a direct **supervisor**.
+- An employee may have **DEPENDENTs**, each with a name, sex, birth date and relationship to the employee.
+
+## Entities and attributes
+
+<Definition term="Entity and attribute">
+  An <strong>entity</strong> is a specific thing in the mini-world (the employee John Smith, the Research department). <strong>Attributes</strong> are the properties that describe it (Name, SSN, Address…), and every entity has a <strong>value</strong> for each attribute.
+</Definition>
+
+| Attribute type | Meaning | Example | ER symbol |
+|---|---|---|---|
+| **Simple** (atomic) | Single indivisible value | `SSN`, `Sex` | Oval |
+| **Composite** | Made of components, possibly nested | `Name(First, Middle, Last)`, `Address(Street(Number, Street, Apt), City, State, Zip)` | Oval with child ovals |
+| **Multivalued** | Several values for one entity | `Color` of a car, `{PreviousDegrees}`, a department's `Locations` | **Double** oval |
+| **Derived** | Computed from other data | `Age` from `BirthDate`, `Number_of_employees` | **Dashed** oval |
+| **Key** | Unique for each entity | `SSN` | **Underlined** name |
+
+Composite and multivalued attributes can nest. For example, `{PreviousDegrees(College, Year, Degree, Field)}` is a **composite multivalued** attribute.
+
+<SlideFigure page={11} caption="A hierarchy of composite attributes: Address is made of Street_address, City, State and Zip." />
+
+### Entity types, entity sets and keys
+
+- An **entity type** groups entities with the same attributes (`EMPLOYEE`, `PROJECT`) and is drawn as a **rectangle**.
+- The **entity set** is the collection of entities of that type currently stored. The same name refers to both.
+- A **key attribute** has a unique value for every entity. A key may be **composite**, and an entity type may have **several** keys.
+
+<SlideFigure page={15} caption="CAR has two keys, Vehicle_id and the composite Registration(Number, State), and a multivalued Color." />
+
+## Relationships
+
+<Definition term="Relationship type">
+  A <strong>relationship</strong> relates two or more entities with a specific meaning ("John Smith <em>works on</em> ProductX"). A <strong>relationship type</strong> such as <code>WORKS_ON</code> groups relationships of the same kind and is drawn as a <strong>diamond</strong>. Its <strong>relationship set</strong> is the current set of instances.
+</Definition>
+
+The **degree** of a relationship type is the number of participating entity types: **binary** (2), **ternary** (3), **n-ary**.
+
+<SlideFigure page={22} caption="Instances of the M:N WORKS_ON relationship: an employee works on several projects, and a project has several employees." />
+
+Refining the COMPANY design turns some "attributes" into relationships (a department's manager becomes `MANAGES`). This gives six binary relationship types:
+
+| Relationship | Between | Cardinality | Notes |
+|---|---|---|---|
+| `WORKS_FOR` | EMPLOYEE – DEPARTMENT | N : 1 | Every employee works for exactly one department |
+| `MANAGES` | EMPLOYEE – DEPARTMENT | 1 : 1 | Has the attribute `Start_date` |
+| `CONTROLS` | DEPARTMENT – PROJECT | 1 : N | |
+| `WORKS_ON` | EMPLOYEE – PROJECT | M : N | Has the attribute `Hours` |
+| `SUPERVISION` | EMPLOYEE – EMPLOYEE | 1 : N | **Recursive**: supervisor and supervisee roles |
+| `DEPENDENTS_OF` | EMPLOYEE – DEPENDENT | 1 : N | **Identifying** relationship of a weak entity |
+
+<SlideFigure page={26} caption="The complete COMPANY ER diagram." />
+
+### Structural constraints
+
+<Grid cols={2}>
+  <Card title="Cardinality ratio" tag="maximum">
+    How many relationship instances an entity can take part in: <strong>1:1</strong>, <strong>1:N / N:1</strong> or <strong>M:N</strong>. It is written as 1, N, M on the edges.
+  </Card>
+  <Card title="Participation" tag="minimum">
+    <strong>Total</strong> (every entity must participate, i.e. existence dependency) is drawn with a <strong>double line</strong>. <strong>Partial</strong> (optional) is drawn with a single line.
+  </Card>
+</Grid>
+
+Every employee must work for a department, so EMPLOYEE has **total** participation in `WORKS_FOR`. Not every employee manages a department, so EMPLOYEE has **partial** participation in `MANAGES`.
+
+### The (min, max) notation
+
+Each participation of entity type $E$ in relationship $R$ gets a pair $(\min, \max)$ with $0 \le \min \le \max$ and $\max \ge 1$: each entity of $E$ takes part in **at least min and at most max** instances of $R$. The default is $(0, n)$, meaning no constraint.
+
+<Callout type="warning" title="Read it the other way round">
+  The (min, max) pair is written next to the entity it describes, and it says how many times <em>that</em> entity participates. That is the <strong>opposite side</strong> from where 1/N cardinality labels go. A department has exactly one manager, so DEPARTMENT is (1,1) in MANAGES. An employee manages at most one department, so EMPLOYEE is (0,1).
+</Callout>
+
+<SlideFigure page={41} caption="The COMPANY schema with (min, max) constraints." />
+
+### Recursive relationships and roles
+
+In `SUPERVISION` the **same** entity type, EMPLOYEE, participates **twice**, in two **roles**: *supervisor* and *supervisee*. Role names on the edges are essential to tell the two participations apart.
+
+### Attributes of relationships
+
+A relationship can have its own attributes. `Hours` in `WORKS_ON` depends on the **pair** (employee, project), not on either one alone. Relationship attributes are typical of **M:N** relationships. In a **1:N** relationship they can be moved to the entity on the N side; `Start_date` of `MANAGES` (1:1) could move to either side.
+
+### Weak entity types
+
+<Definition term="Weak entity type">
+  An entity type with <strong>no key of its own</strong>. It is identified by a <strong>partial key</strong> plus the entity it is related to in its <strong>owner</strong> (identifying) entity type, through an <strong>identifying relationship</strong> in which it has <strong>total</strong> participation.
+</Definition>
+
+A `DEPENDENT` is identified by its `Name` (partial key, drawn with a **dashed underline**) **and** the employee it belongs to. Two employees can each have a dependent called "Alice". Weak entities and identifying relationships are drawn with **double** rectangles and **double** diamonds.
+
+### Higher-degree relationships
+
+A **ternary** relationship such as `SUPPLY(SUPPLIER, PART, PROJECT)` records *which supplier supplies which part to which project*. This is **not** equivalent to three binary relationships (SUPPLIES, CAN_SUPPLY, USES), which carry different information. Keep both if both meanings are needed. A binary relationship that can always be **derived** from a ternary one is redundant.
+
+## ER notation and UML
+
+<SlideFigure page={43} caption="Summary of ER diagram notation." />
+
+| Symbol | Meaning |
+|---|---|
+| Rectangle / **double** rectangle | Entity type / **weak** entity type |
+| Diamond / **double** diamond | Relationship type / **identifying** relationship |
+| Oval, **underlined** | Attribute / **key** attribute |
+| **Double** oval / **dashed** oval | Multivalued / derived attribute |
+| Single / **double** line | Partial / **total** participation |
+| 1, N, M on edges | Cardinality ratio |
+
+**UML class diagrams** show the same concepts the object-oriented way: a **class** box with name, attributes and operations; **associations** with **multiplicities** such as `1..1`, `0..*`; association classes for relationship attributes; and **qualified associations** for weak entities. Tools such as ERwin, ER/Studio and Oracle Designer draw both notations.
+
+<SlideFigure page={45} caption="The COMPANY schema as a UML class diagram." />
+
+<Takeaways>
+
+- ER modeling is the **conceptual design** step. Its three main concepts are **entities**, **attributes** and **relationships**.
+- Attributes can be **simple / composite**, **single / multivalued**, **stored / derived**; **keys** are underlined.
+- Relationships have a **degree**, a **cardinality ratio** (1:1, 1:N, M:N) and **participation** (total = double line, partial = single line), or equivalently **(min, max)** pairs.
+- **Weak** entities depend on an owner through an **identifying** relationship and have only a **partial key**.
+- **Recursive** relationships need **role names**, and **n-ary** relationships are not interchangeable with binary ones.
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="Model a library" level="medium">
+
+A library has BOOKs (ISBN, Title, a set of Authors, Year) and copies of each book (copy number, shelf). MEMBERs (MemberID, Name, Phone) borrow copies; each loan records a borrow date and a due date. Identify entity types, keys, weak entities and relationships with cardinality and participation.
+
+<Solution>
+
+- `BOOK(ISBN, Title, {Authors}, Year)`: key `ISBN`; `Authors` is **multivalued**.
+- `COPY(CopyNo, Shelf)`: a **weak** entity with partial key `CopyNo`, owned by BOOK through the identifying relationship `HAS_COPY` (BOOK 1 : N COPY, COPY total).
+- `MEMBER(MemberID, Name, Phone)`: key `MemberID`.
+- `BORROWS` between MEMBER and COPY, with attributes `BorrowDate` and `DueDate`. If you keep loan history, a copy can be borrowed many times, so it is **M:N**. If you keep only current loans, it is **1:N** (member 1, copy N), and both participations are **partial**.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Read the constraints" level="easy">
+
+In the COMPANY diagram, EMPLOYEE has (1,1) in WORKS_FOR and DEPARTMENT has (4,N). What does each pair say?
+
+<Solution>
+
+Every employee works for **exactly one** department (min 1, max 1). Every department has **at least four** employees and no upper limit.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Why weak?" level="easy">
+
+Why is DEPENDENT a weak entity type and not a regular one with key `Name`?
+
+<Solution>
+
+`Name` is not unique across the company, since different employees may have dependents with the same name. A dependent is only uniquely identified by **(owner's SSN, Name)**. It also can't exist without its employee, so it has **total participation** in `DEPENDENTS_OF`.
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "Which ER symbol represents a multivalued attribute?",
+      options: ["Dashed oval", "Double oval", "Underlined oval", "Double rectangle"],
+      answer: 1,
+      explain: "Double oval = multivalued; dashed = derived; underlined = key."
+    },
+    {
+      q: "Name(First, Middle, Last) is an example of a…",
+      options: ["Multivalued attribute", "Derived attribute", "Composite attribute", "Key attribute"],
+      answer: 2,
+      explain: "It is made of meaningful components."
+    },
+    {
+      q: "WORKS_ON between EMPLOYEE and PROJECT has which cardinality ratio?",
+      options: ["1:1", "1:N", "N:1", "M:N"],
+      answer: 3,
+      explain: "An employee works on many projects and a project has many employees."
+    },
+    {
+      q: "Total participation is drawn as…",
+      options: ["A dashed line", "A double line", "An arrow", "A thick diamond"],
+      answer: 1,
+      explain: "A double line means every entity must participate (existence dependency)."
+    },
+    {
+      q: "A weak entity type is identified by…",
+      options: ["Its primary key alone", "A partial key plus its owner entity", "A foreign key only", "Any attribute"],
+      answer: 1,
+      explain: "It has no key of its own and is identified through the identifying relationship."
+    },
+    {
+      q: "SUPERVISION, where EMPLOYEE participates as both supervisor and supervisee, is a…",
+      options: ["Ternary relationship", "Recursive relationship", "Weak relationship", "Derived relationship"],
+      answer: 1,
+      explain: "The same entity type participates twice in different roles."
+    },
+    {
+      q: "Hours per week in WORKS_ON is best modeled as…",
+      options: ["An attribute of EMPLOYEE", "An attribute of PROJECT", "An attribute of the relationship", "A separate entity"],
+      answer: 2,
+      explain: "Its value depends on the (employee, project) pair."
+    }
+  ]}
+/>

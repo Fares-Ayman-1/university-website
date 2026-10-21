@@ -1,0 +1,222 @@
+---
+number: 2
+title: Getting Help and Finding Files
+summary: How to help yourself on Linux. Covers reading and searching man pages, man sections, finding commands by keyword with man -k and apropos, whatis, info pages, the --help option and /usr/share/doc, then locating files with locate and commands with whereis.
+kind: practical
+topics: [man pages, Navigating man, Man sections, man -k / apropos, whatis, info, --help, /usr/share/doc, locate, whereis]
+duration: 45 min hands-on
+sources:
+  - file: Sections/sec2/NDG Linux ch-2.pdf
+    label: OS Lab 2 – Getting Help (slides)
+    pages: "1-15"
+bookRefs:
+  - book: ndg-linux
+    chapter: Module 6 · Getting Help
+---
+
+<Objectives>
+
+- Read and **navigate** a man page, and **search** inside it.
+- Use **man sections** and pick a specific one.
+- Find commands by **keyword** with `man -k` / `apropos`, and summarize them with `whatis`.
+- Use **info** pages, the `--help` option and `/usr/share/doc`.
+- Find files with `locate` and commands with `whereis`.
+
+</Objectives>
+
+When you're stuck or forget how a command works, Linux has several built-in help systems besides internet searches. Knowing them makes you much faster.
+
+## Man pages
+
+`man` shows the **manual page** for a command:
+
+```bash title="Terminal"
+man ls
+```
+
+| Section of a man page | Contents |
+|---|---|
+| **NAME** | The command and a one-line description |
+| **SYNOPSIS** | How to call it: `ls [OPTION]... [FILE]...`. Square brackets mean optional, and `...` means repeatable |
+| **DESCRIPTION** | What it does, with every option explained |
+| **AUTHOR / REPORTING BUGS / COPYRIGHT** | Who wrote it and where to report problems |
+| **SEE ALSO** | Related commands and pages |
+
+### Moving around
+
+| Key | Action |
+|---|---|
+| **Space** / **b** | Next / previous page |
+| **↓** / **↑** or **Enter** | Down / up one line |
+| **/**`pattern` | Search **forward** (case-insensitive by default) |
+| **?**`pattern` | Search **backward** |
+| **n** / **N** | Next / previous match |
+| **g** / **G** | Go to the start / end |
+| **h** | Help on these keys |
+| **q** | Quit |
+
+### Sections
+
+There are often **several man pages with the same name**, in different **sections**:
+
+| Section | Contents |
+|---|---|
+| 1 | User commands |
+| 2 | System calls |
+| 3 | Library functions |
+| 4 | Special files (devices) |
+| **5** | **File formats** (e.g. `/etc/passwd`) |
+| 6 | Games |
+| 7 | Miscellaneous |
+| **8** | **System administration commands** |
+
+`man passwd` shows the **first** matching section: section 1, the `passwd` command that changes your password. To read about the `/etc/passwd` **file** instead:
+
+```bash title="Terminal"
+man 5 passwd        # the file format of /etc/passwd
+man -f passwd       # list every page named passwd and its section
+whatis passwd       # same as man -f
+# passwd (1)  - change user password
+# passwd (1ssl) - compute password hashes
+# passwd (5)  - the password file
+```
+
+### Searching by keyword
+
+If you don't remember the command's name, search the **descriptions** of all pages:
+
+```bash title="Terminal"
+man -k password     # every page whose name or description mentions "password"
+apropos password    # same as man -k
+apropos -s 1 copy   # only section-1 user commands about copying
+```
+
+<Callout type="tip">
+  <code>man -k</code> often returns a <em>huge</em> list. Pipe it through <code>grep</code> to narrow it down, e.g. <code>apropos user | grep -i add</code>, or filter by section with <code>-s</code>.
+</Callout>
+
+## Info pages
+
+Some programs, especially GNU tools, also have **info pages**. They are often easier for beginners because they read like **lessons** with links between nodes, while man pages are pure reference documentation.
+
+```bash title="Terminal"
+info ls
+```
+
+Type **h** for the movement commands and **l** to go back, then **Space** / **Backspace** to page, **n** / **p** for the next and previous node, **Enter** to follow a link, and **q** to quit.
+
+## The --help option and /usr/share/doc
+
+Most commands print a short usage summary with `--help`. It's ideal for a quick reminder:
+
+```bash title="Terminal"
+ls --help | head -20
+cp --help | grep -- -r       # what does cp -r do?
+```
+
+Some packages ship extra documentation (READMEs, examples, changelogs) in **`/usr/share/doc/<package>/`**. Man and info pages usually cover everything, but administrators sometimes need these deeper documents.
+
+## Finding files and commands
+
+### locate
+
+`locate` searches a **database** of file paths, so it is extremely fast:
+
+```bash title="Terminal"
+locate crontab                 # every path containing "crontab" anywhere
+locate -b '\crontab'           # only files named exactly "crontab" (basename, no wildcard)
+locate -c crontab              # just count the matches
+sudo updatedb                  # refresh the database (it is updated daily)
+```
+
+<Callout type="warning" title="locate can be out of date">
+  It only knows about files that existed when the database was last updated. A file you created a minute ago won't appear until <code>updatedb</code> runs. Use <code>find</code> for a live search of the filesystem.
+</Callout>
+
+### whereis
+
+`whereis` finds a **command's binary, source and man pages**, and nothing else:
+
+```bash title="Terminal"
+whereis passwd
+# passwd: /usr/bin/passwd /etc/passwd /usr/share/man/man1/passwd.1.gz /usr/share/man/man5/passwd.5.gz
+```
+
+Files ending in `.gz` are **compressed man pages**. There are two because `passwd` has pages in sections 1 and 5.
+
+| Tool | Finds | Speed | Current? |
+|---|---|---|---|
+| `which` | The executable that will run (searches **PATH**) | Instant | Yes |
+| `whereis` | Binary, source and man pages of a **command** | Instant | Yes |
+| `locate` | **Any file** by name, from a database | Very fast | Since the last `updatedb` |
+| `find` | Any file by name, size, date, type…, searched live | Slower | Yes |
+
+<Takeaways>
+
+- `man command` is the reference manual. Navigate with Space, b, /, n and q; it shows section 1 unless you ask for another.
+- `man -f` = `whatis` (which sections exist), and `man -k` = `apropos` (search by keyword).
+- `info` pages read like tutorials; `--help` gives a quick summary; `/usr/share/doc` holds extra documents.
+- `locate` finds any file by name from a database (refresh it with `updatedb`); `whereis` finds a command's files.
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="Which section?" level="easy">
+
+You want documentation for the `/etc/shadow` **file format**, not a command. Which command shows it?
+
+<Solution>
+
+`man 5 shadow`. Section 5 covers file formats. `whatis shadow` lists the sections that exist.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Find the right tool" level="medium">
+
+You can't remember the command that **copies files over SSH**. How do you find it without the internet?
+
+<Solution>
+
+Search by keyword: `apropos copy | grep -i ssh` (or `man -k "secure copy"`). It points you to **scp** (and `sftp`). Then read `man scp` or `scp --help`.
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "Inside a man page, how do you search forward for 'recursive'?",
+      options: [":recursive", "/recursive", "?recursive", "find recursive"],
+      answer: 1,
+      explain: "/ searches forward, ? searches backward, n repeats."
+    },
+    {
+      q: "Which command is equivalent to man -k?",
+      options: ["whatis", "apropos", "info", "whereis"],
+      answer: 1,
+      explain: "apropos searches page names and descriptions by keyword."
+    },
+    {
+      q: "Man section 8 contains…",
+      options: ["Games", "Library functions", "System administration commands", "File formats"],
+      answer: 2,
+      explain: "Section 1 is user commands, 5 is file formats, 8 is admin commands."
+    },
+    {
+      q: "Why might locate miss a file you just created?",
+      options: ["It only searches /usr", "Its database hasn't been updated yet", "It is case-sensitive", "It needs root"],
+      answer: 1,
+      explain: "Run updatedb, or use find for a live search."
+    },
+    {
+      q: "What does whereis search for?",
+      options: ["Any file", "Binary, source and man pages of a command", "Running processes", "Text inside files"],
+      answer: 1,
+      explain: "It is limited to command-related files."
+    }
+  ]}
+/>

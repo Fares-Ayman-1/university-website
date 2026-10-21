@@ -1,0 +1,49 @@
+{
+  "title": "Operating Systems",
+  "shortTitle": "OS",
+  "code": "OS",
+  "order": 4,
+  "materialsDir": "Operating system",
+  "level": "Operating System Concepts, 10th ed.",
+  "tagline": "What really happens between your program and the hardware: processes, threads and the kernel.",
+  "description": "An operating system is the program that manages a computer's hardware and gives every other program a clean, safe environment to run in. The lectures follow Operating System Concepts (10th edition): how a computer system is organized, which services an OS provides and how programs request them through system calls, how processes are created, scheduled and communicate, and how threads exploit multicore hardware. The sections are practical Linux labs based on NDG Linux Essentials: the shell, getting help, working with files, and archiving.",
+  "instructors": ["Dr. Mostafa Elgendy", "Eng. Ibrahim Reyad (Linux labs)"],
+  "objectives": [
+    "Describe the organization of a computer system and the role of the operating system within it.",
+    "Explain the services an OS provides and how applications use them through system calls.",
+    "Describe processes, their states and scheduling, and how they are created and communicate.",
+    "Explain threads, multicore programming and the main multithreading models.",
+    "Work confidently on the Linux command line: navigation, help, files and archives."
+  ],
+  "topics": [
+    "Computer-system organization",
+    "Interrupts, storage and I/O",
+    "Multiprocessor systems and dual mode",
+    "OS services and interfaces",
+    "System calls and APIs",
+    "Processes and scheduling",
+    "Interprocess communication",
+    "Threads and multicore programming",
+    "Linux shell and command line",
+    "Files, help and archiving in Linux"
+  ],
+  "grading": [
+    { "label": "Final exam", "weight": 50 },
+    { "label": "Attendance & assignments", "weight": 15 },
+    { "label": "Midterm", "weight": 15 },
+    { "label": "Lab oral", "weight": 10 },
+    { "label": "Lab practical", "weight": 10 }
+  ],
+  "books": [
+    {
+      "id": "osc10",
+      "title": "Operating System Concepts, 10th Edition",
+      "author": "Abraham Silberschatz, Peter Baer Galvin & Greg Gagne, Wiley 2018"
+    },
+    {
+      "id": "ndg-linux",
+      "title": "NDG Linux Essentials",
+      "author": "Network Development Group / Cisco Networking Academy"
+    }
+  ]
+}

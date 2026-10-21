@@ -1,0 +1,42 @@
+{
+  "title": "Databases I",
+  "shortTitle": "Databases",
+  "code": "DB I",
+  "order": 3,
+  "materialsDir": "DataBase",
+  "level": "Fundamentals of Database Systems",
+  "tagline": "How data is modeled, stored, protected and queried, from ER diagrams to SQL and normalization.",
+  "description": "This course covers the fundamentals of database systems. It explains why databases replaced traditional file processing, how a DBMS is organized (data models, schemas and the three-schema architecture), and how the relational model represents data and enforces integrity. You will design databases with ER and EER diagrams, reason about queries with relational algebra, and refine designs with functional dependencies and normalization. The sections are hands-on: they teach SQL on Oracle's HR sample schema, from basic SELECT statements to functions, grouping and joins.",
+  "objectives": [
+    "Understand the basic concepts of database systems, their purpose, and the architecture of a DBMS.",
+    "Learn the main data models, focusing on the relational model, its advantages and its limitations.",
+    "Protect data through security and integrity constraints so that it stays accurate and consistent.",
+    "Use SQL for database construction (DDL) and data manipulation (DML).",
+    "Apply normalization techniques to design efficient, redundancy-free relational schemas."
+  ],
+  "topics": [
+    "Databases and database users",
+    "Concepts and three-schema architecture",
+    "The relational data model",
+    "SQL CREATE TABLE and constraints",
+    "Entity–Relationship modeling",
+    "Relational algebra",
+    "Enhanced ER modeling",
+    "Functional dependencies and normalization",
+    "SQL SELECT, WHERE and ORDER BY",
+    "Single-row and group functions",
+    "Joins"
+  ],
+  "books": [
+    {
+      "id": "elmasri",
+      "title": "Fundamentals of Database Systems",
+      "author": "Ramez Elmasri & Shamkant B. Navathe, Pearson"
+    },
+    {
+      "id": "oracle-sql",
+      "title": "Oracle Database 11g: SQL Fundamentals I",
+      "author": "Oracle University, 2009"
+    }
+  ]
+}

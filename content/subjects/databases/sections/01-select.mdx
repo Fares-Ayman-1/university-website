@@ -1,0 +1,253 @@
+---
+number: 1
+title: Retrieving Data Using the SQL SELECT Statement
+summary: Your first queries. Covers selecting all or specific columns, arithmetic expressions and operator precedence, how NULL behaves, column aliases, concatenation and literal strings, the q-quote operator, removing duplicates with DISTINCT, and DESCRIBE.
+kind: lab
+topics: [SELECT and FROM, Arithmetic expressions, NULL values, Column aliases, Concatenation, q-quote operator, DISTINCT, DESCRIBE]
+duration: 45 min hands-on
+sources:
+  - file: Sections/sec1/Lab01.pdf
+    label: Oracle SQL Fundamentals I – Lesson 1 Retrieving Data (lab slides)
+    pages: "1-30"
+bookRefs:
+  - book: oracle-sql
+    chapter: Lesson 1 · Retrieving Data Using the SQL SELECT Statement
+---
+
+<Objectives>
+
+- Describe the three capabilities of `SELECT`: **projection**, **selection** and **join**.
+- Write a basic `SELECT … FROM …` for all or specific columns, following SQL's writing rules.
+- Use **arithmetic expressions** correctly, including **operator precedence** and **NULL**.
+- Rename output with **column aliases**, and build text with **||**, literals and the **q** quote operator.
+- Remove duplicates with **DISTINCT** and inspect tables with **DESCRIBE**.
+
+</Objectives>
+
+## What SELECT can do
+
+<SlideFigure page={4} caption="Projection chooses columns, selection chooses rows, and a join combines tables." />
+
+These are exactly the relational-algebra operations $\pi$, $\sigma$ and $\bowtie$ from the lectures. This lab covers projection; Section 2 adds selection and Section 6 adds joins.
+
+```sql title="syntax"
+SELECT *|{[DISTINCT] column|expression [alias], ...}
+FROM   table;
+```
+
+`SELECT` says **which columns**; `FROM` says **which table**.
+
+## Selecting columns
+
+```sql
+SELECT * FROM departments;                        -- all columns, in table order
+
+SELECT department_id, location_id                 -- only these columns, in this order
+FROM   departments;
+```
+
+<Callout type="tip" title="Writing SQL statements">
+
+- SQL is **not case-sensitive**, but string data is. By convention, keywords are uppercase.
+- A statement can span **several lines**. Keywords can't be abbreviated or split, and each clause usually goes on its own line.
+- End statements with `;`. It's required in SQL\*Plus and when running several statements in SQL Developer.
+- SQL Developer shows headings **uppercase and left-aligned**. SQL\*Plus right-aligns number headings.
+
+</Callout>
+
+## Arithmetic expressions
+
+`+`, `-`, `*` and `/` work on **NUMBER** and **DATE** values, in any clause except `FROM`.
+
+```sql
+SELECT last_name, salary, salary + 300
+FROM   employees;
+```
+
+**Precedence:** `*` and `/` before `+` and `-`, left to right among equals; parentheses override.
+
+```sql
+SELECT last_name, salary, 12*salary+100, 12*(salary+100)
+FROM   employees;
+```
+
+| LAST_NAME | SALARY | 12\*SALARY+100 | 12\*(SALARY+100) |
+|---|---|---|---|
+| King | 24000 | 288100 | 289200 |
+| Abel | 11000 | 132100 | 133200 |
+| Fay | 6000 | 72100 | 73200 |
+
+## NULL values
+
+<Definition term="NULL">
+  A value that is <strong>unavailable, unassigned, unknown or inapplicable</strong>. It is <strong>not</strong> zero and <strong>not</strong> a blank space.
+</Definition>
+
+Only sales staff have a `commission_pct`; everyone else has NULL. **Any arithmetic involving NULL yields NULL:**
+
+```sql
+SELECT last_name, 12*salary*commission_pct
+FROM   employees;
+```
+
+| LAST_NAME | 12\*SALARY\*COMMISSION_PCT |
+|---|---|
+| King | (null) |
+| Zlotkey | 25200 |
+| Abel | 39600 |
+| Taylor | 20640 |
+| Grant | 12600 |
+
+You'll learn to replace NULL with a value (`NVL`) in Section 3.
+
+## Column aliases
+
+An alias **renames a heading**. It follows the column, optionally after `AS`. Use **double quotes** when it contains spaces or special characters, or must keep its case.
+
+```sql
+SELECT last_name AS name, commission_pct comm
+FROM   employees;                                 -- headings: NAME, COMM
+
+SELECT last_name "Name", salary*12 "Annual Salary"
+FROM   employees;                                 -- headings exactly as written
+```
+
+## Concatenation and literal strings
+
+`||` joins columns and strings into one character column. **Literals** (strings and dates) go in **single quotes** and are repeated on every row.
+
+```sql
+SELECT last_name || ' is a ' || job_id AS "Employee Details"
+FROM   employees;
+-- King is a AD_PRES
+-- Kochhar is a AD_VP …
+```
+
+When the text itself contains an apostrophe, the **q operator** lets you choose your own delimiter, here `[ ]`:
+
+```sql
+SELECT department_name || q'[ Department's Manager Id: ]' || manager_id
+       AS "Department and Manager"
+FROM   departments;
+-- Administration Department's Manager Id: 200
+```
+
+## Removing duplicates: DISTINCT
+
+By default every row is returned, including duplicates. `DISTINCT` removes duplicate rows. It applies to the **whole row** of selected columns, so `DISTINCT department_id, job_id` returns unique *pairs*.
+
+```sql
+SELECT department_id FROM employees;              -- 20 rows, many repeats
+SELECT DISTINCT department_id FROM employees;     -- 8 rows: 10, 20, 50, 60, 80, 90, 110, (null)
+```
+
+## DESCRIBE
+
+```sql
+DESCRIBE employees      -- or DESC employees
+```
+
+It lists each column's **name**, whether it is **NOT NULL**, and its **type**: `NUMBER(p,s)`, `VARCHAR2(n)`, `CHAR(n)`, `DATE`. In SQL Developer you can also click the table and open its **Columns** tab.
+
+<SlideFigure page={27} caption="DESCRIBE employees: column names, NOT NULL constraints and data types." />
+
+<Takeaways>
+
+- `SELECT` chooses columns (projection); `FROM` names the table.
+- Arithmetic follows `*` `/` before `+` `-`; use parentheses to be explicit.
+- **NULL is not zero**: any arithmetic with NULL gives NULL.
+- Aliases rename headings (double quotes keep spaces and case); `||` concatenates; `q'[...]'` handles apostrophes.
+- `DISTINCT` removes duplicate rows; `DESCRIBE` shows a table's structure.
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="Which statements run?" level="easy">
+
+Which of these run successfully?
+
+```sql
+1. SELECT first_name, last_name, job_id, salary*12 AS Yearly Sal FROM employees;
+2. SELECT first_name, last_name, job_id, salary*12 yearly sal FROM employees;
+3. SELECT first_name, last_name, job_id, salary AS "yearly sal" FROM employees;
+4. SELECT first_name+last_name AS name, job_id, salary*12 FROM employees;
+```
+
+<Solution>
+
+Only **3** runs. Statements 1 and 2 use an alias with a space and no double quotes. Statement 4 uses `+` on character columns, which fails with "invalid number"; use `||` instead.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Write the query" level="medium">
+
+Show each employee's ID, the full name as one column called `Employee`, and the annual compensation `12*(salary + 100)` called `Annual Pay`.
+
+<Solution>
+
+```sql
+SELECT employee_id,
+       first_name || ' ' || last_name AS "Employee",
+       12*(salary + 100)              AS "Annual Pay"
+FROM   employees;
+```
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Unique jobs" level="easy">
+
+List every job ID that appears in `EMPLOYEES`, with no repeats. How many rows do you get from the sample?
+
+<Solution>
+
+`SELECT DISTINCT job_id FROM employees;` returns **12** rows: AD_PRES, AD_VP, IT_PROG, ST_MAN, ST_CLERK, SA_MAN, SA_REP, AD_ASST, MK_MAN, MK_REP, AC_MGR, AC_ACCOUNT.
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "What does 12*salary+100 compute for a salary of 1000?",
+      options: ["13200", "12100", "1112", "12000"],
+      answer: 1,
+      explain: "Multiplication first: 12*1000 = 12000, then +100."
+    },
+    {
+      q: "What is the result of 12*salary*commission_pct when commission_pct is NULL?",
+      options: ["0", "12*salary", "NULL", "An error"],
+      answer: 2,
+      explain: "Any arithmetic expression containing NULL evaluates to NULL."
+    },
+    {
+      q: "Which alias keeps its space and lowercase letters?",
+      options: ["AS annual salary", "annual_salary", "\"Annual Salary\"", "'Annual Salary'"],
+      answer: 2,
+      explain: "Aliases with spaces or case-sensitive text need double quotes."
+    },
+    {
+      q: "Which operator concatenates strings in Oracle SQL?",
+      options: ["+", "&", "||", "CONCAT only"],
+      answer: 2,
+      explain: "|| joins columns and literals; CONCAT() also exists but takes only two arguments."
+    },
+    {
+      q: "SELECT DISTINCT department_id, job_id FROM employees removes duplicate…",
+      options: ["Department IDs", "Job IDs", "(department_id, job_id) pairs", "Rows with NULLs"],
+      answer: 2,
+      explain: "DISTINCT applies to the whole selected row."
+    },
+    {
+      q: "Which command shows a table's columns and types?",
+      options: ["SHOW TABLE", "DESCRIBE", "SELECT TYPES", "INFO"],
+      answer: 1,
+      explain: "DESC[RIBE] tablename."
+    }
+  ]}
+/>

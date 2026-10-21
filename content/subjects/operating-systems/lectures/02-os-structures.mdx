@@ -1,0 +1,278 @@
+---
+number: 2
+title: "Operating-System Structures: Services and System Calls"
+summary: What an OS offers programs and users, and how programs ask for it. Covers OS services, command-line, GUI and touch interfaces, system calls and APIs (POSIX, Win32), how a system call is dispatched and how parameters are passed, the six types of system calls, system services and daemons, linkers and loaders, and why applications are OS-specific.
+topics: [OS services, CLI / GUI / touch, System calls, APIs and libc, System-call dispatch, Parameter passing, Types of system calls, System programs, Linkers and loaders]
+duration: 50 min study
+sources:
+  - file: Lectures/ch2/ch2a.pdf
+    label: OS Chapter 2a – Operating-System Services (slides)
+    pages: "1-35"
+  - file: Lectures/ch2/Chapter 02.pdf
+    label: OS Chapter 2 – Operating-System Services (Dr. Mostafa Elgendy)
+    pages: "1-33"
+bookRefs:
+  - book: osc10
+    chapter: Ch 2 · Operating-System Structures
+---
+
+<Objectives>
+
+- Identify the **services** an OS provides to users and to the system itself.
+- Compare **CLI**, **GUI** and **touch** interfaces.
+- Explain **system calls**, the **API** layer above them, and how a call reaches the kernel.
+- Describe three ways to **pass parameters** to a system call, and the six **types** of system calls.
+- Explain **system programs**, **linkers and loaders**, and why applications are **OS-specific**.
+
+</Objectives>
+
+## Operating-system services
+
+<SlideFigure page={4} caption="User interfaces on top, the system-call layer, then the services, all above the hardware." />
+
+<Grid cols={2}>
+  <Card title="Helpful to the user" tag="convenience">
+    <ul>
+      <li><strong>User interface</strong>: CLI, GUI, touch, batch</li>
+      <li><strong>Program execution</strong>: load, run and end programs, normally or with an error</li>
+      <li><strong>I/O operations</strong>: programs can't drive devices directly</li>
+      <li><strong>File-system manipulation</strong>: create, delete, search, list, permissions</li>
+      <li><strong>Communications</strong>: shared memory or message passing, locally or over a network</li>
+      <li><strong>Error detection</strong>: in the CPU, memory, devices and programs, with debugging facilities</li>
+    </ul>
+  </Card>
+  <Card title="Efficient operation of the system" tag="sharing">
+    <ul>
+      <li><strong>Resource allocation</strong>: CPU cycles, memory, storage and devices among concurrent jobs</li>
+      <li><strong>Logging / accounting</strong>: who uses how much of what</li>
+      <li><strong>Protection and security</strong>: control all access to resources, authenticate users, defend against outsiders</li>
+    </ul>
+  </Card>
+</Grid>
+
+## User interfaces
+
+| Interface | How it works | Examples |
+|---|---|---|
+| **Command-line interpreter (CLI)** | Fetches a command and runs it. Commands are either **built in** or just **names of programs**, so new features don't require changing the shell. Several flavours exist, called **shells** | bash, Bourne shell, C shell, PowerShell |
+| **GUI** | Desktop metaphor with mouse, keyboard, icons and folders; invented at **Xerox PARC** | Windows, macOS Aqua, GNOME, KDE |
+| **Touchscreen** | Gestures, a virtual keyboard, voice commands | iOS, Android |
+
+Most systems offer **both** a CLI and a GUI. Power users and administrators prefer the CLI because it is fast and **scriptable**.
+
+## System calls
+
+<Definition term="System call">
+  The <strong>programming interface to the services provided by the OS</strong>. System calls are usually written in C or C++, and assembly for the lowest-level parts. Programs normally use them through a higher-level <strong>API</strong>, not directly.
+</Definition>
+
+Even copying one file to another needs **many** system calls: acquire the file names, open the input, create the output, then loop reading and writing, handle errors, close both files and terminate.
+
+<SlideFigure page={14} caption="The system-call sequence to copy one file to another." />
+
+```c title="copy.c — the same idea in POSIX C"
+#include <fcntl.h>
+#include <unistd.h>
+
+int main(int argc, char *argv[]) {
+    char buf[4096];
+    ssize_t n;
+    int in  = open(argv[1], O_RDONLY);                       /* system call */
+    int out = open(argv[2], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    if (in < 0 || out < 0) return 1;                         /* error: abort */
+    while ((n = read(in, buf, sizeof buf)) > 0)             /* system call */
+        write(out, buf, n);                                  /* system call */
+    close(in);
+    close(out);
+    return 0;                                                /* exit status 0 = ok */
+}
+```
+
+### APIs
+
+The three most common APIs are **Win32** (Windows), **POSIX** (UNIX, Linux, macOS) and the **Java API** (JVM). For example, `ssize_t read(int fd, void *buf, size_t count)` returns the number of bytes read, or $-1$ on error.
+
+Why use an API rather than raw system calls?
+
+- **Portability**: a program written against POSIX compiles on any POSIX system.
+- **Simplicity**: the actual system calls are often more detailed and harder to use.
+
+The **C standard library** is part of the API. `printf()` formats the text in user mode, then calls the `write()` system call.
+
+### How a system call is dispatched
+
+<SlideFigure page={18} caption="The application calls open() in user mode; the system-call interface traps into the kernel, looks up the call number and runs the implementation." />
+
+<Steps>
+
+1. Each system call has a **number**.
+2. The **system-call interface** keeps a **table** indexed by these numbers.
+3. The library puts the number (and parameters) in place and executes a **trap**, switching to kernel mode.
+4. The kernel runs the handler and returns the **status** and any return values.
+
+</Steps>
+
+The caller needs to know **nothing** about the implementation, only the API and what the OS will do. The run-time library hides the details.
+
+### Passing parameters
+
+| Method | How |
+|---|---|
+| **Registers** | Simplest, but there may be more parameters than registers |
+| **Block / table in memory** | Store the parameters in memory and pass the block's **address** in a register. Used by Linux and Solaris |
+| **Stack** | The program **pushes** the parameters and the OS **pops** them |
+
+The block and stack methods don't limit the number or length of parameters.
+
+<SlideFigure page={20} caption="Parameter passing via a table: the address X is passed in a register for system call 13." />
+
+## Types of system calls
+
+| Type | Examples |
+|---|---|
+| **Process control** | create/terminate process, end, abort, load, execute, get/set attributes, wait for time or event, signal event, allocate/free memory, dump memory on error, **locks** for shared data |
+| **File management** | create, delete, open, close, read, write, reposition, get/set attributes |
+| **Device management** | request, release, read, write, reposition, get/set attributes, attach/detach devices |
+| **Information maintenance** | get/set time or date, get/set system data, get/set process, file or device attributes |
+| **Communications** | create/delete connections, send/receive messages (message passing), create and map **shared memory** |
+| **Protection** | get/set permissions, allow/deny user access |
+
+| Category | Windows | UNIX |
+|---|---|---|
+| Process control | `CreateProcess()` `ExitProcess()` `WaitForSingleObject()` | `fork()` `exit()` `wait()` |
+| File management | `CreateFile()` `ReadFile()` `WriteFile()` `CloseHandle()` | `open()` `read()` `write()` `close()` |
+| Device management | `SetConsoleMode()` `ReadConsole()` `WriteConsole()` | `ioctl()` `read()` `write()` |
+| Information | `GetCurrentProcessID()` `SetTimer()` `Sleep()` | `getpid()` `alarm()` `sleep()` |
+| Communications | `CreatePipe()` `CreateFileMapping()` `MapViewOfFile()` | `pipe()` `shm_open()` `mmap()` |
+| Protection | `SetFileSecurity()` `InitializeSecurityDescriptor()` `SetSecurityDescriptorGroup()` | `chmod()` `umask()` `chown()` |
+
+### Two extremes: Arduino and FreeBSD
+
+<Grid cols={2}>
+  <Card title="Arduino" tag="single-tasking">
+    No operating system. A <strong>boot loader</strong> loads one program (a "sketch") from flash, and it runs alone in a single memory space.
+  </Card>
+  <Card title="FreeBSD" tag="multitasking UNIX">
+    After login the user's <strong>shell</strong> runs. For each command it calls <code>fork()</code> to create a process and <code>exec()</code> to load the program, then <strong>waits</strong> (or continues, for background jobs). Exit code 0 means success; above 0 is an error.
+  </Card>
+</Grid>
+
+## System programs (system services)
+
+Most users see the OS through **system programs**, not raw system calls. Some are thin interfaces to system calls; others are complex.
+
+| Category | Examples |
+|---|---|
+| **File management** | create, delete, copy, rename, print, list files and directories |
+| **Status information** | date, time, free memory and disk, number of users; logging and performance; the **registry** |
+| **File modification** | text editors, search and transform tools |
+| **Programming-language support** | compilers, assemblers, debuggers, interpreters |
+| **Program loading and execution** | loaders, linkage editors, debuggers |
+| **Communications** | virtual connections between processes, users and systems: chat, web, email, remote login, file transfer |
+| **Background services** | launched at boot, often running until shutdown: disk checking, scheduling, logging, printing. Called **services**, **subsystems** or **daemons**, and they run in **user** context |
+
+**Application programs** (browsers, office suites, games) are not part of the OS.
+
+## Linkers and loaders
+
+<SlideFigure page={33} caption="main.c → compiler → main.o (relocatable) → linker (+ libraries) → main (executable) → loader → program in memory." />
+
+- The **compiler** turns source into **relocatable object files** that can be loaded at any address.
+- The **linker** combines object files and **libraries** into one **executable**.
+- The **loader** brings the executable into memory; **relocation** assigns final addresses.
+- **Dynamically linked libraries** (Windows DLLs, Linux `.so` files) are loaded only when needed and shared between programs.
+- Executables use standard formats: **ELF** on UNIX and Linux, **PE** on Windows, **Mach-O** on macOS.
+
+```bash title="Terminal"
+gcc -c main.c          # compile  → main.o
+gcc -o main main.o -lm # link     → main   (with the math library)
+./main                 # load and run
+strace ./main          # Linux: list every system call the program makes
+```
+
+### Why applications are OS-specific
+
+Each OS has its own **system calls**, binary **formats** and instruction sets. A program compiled for one OS usually won't run on another unless it is:
+
+- written in an **interpreted** language (Python, Ruby) with an interpreter on each OS,
+- run on a **virtual machine** (Java's JVM),
+- written in a standard language or API (POSIX) and **recompiled** for each OS.
+
+At the lowest level, the **ABI** (application binary interface) fixes how binaries interact with a given OS and CPU architecture.
+
+<Takeaways>
+
+- OS services serve **users** (UI, execution, I/O, files, communication, errors) and the **system** (allocation, accounting, protection).
+- Programs request services through **system calls**, usually via an **API** such as POSIX, Win32 or Java.
+- A system call is a **numbered** entry in a kernel table, reached by a **trap**; parameters go in registers, a memory block or the stack.
+- The six types are process control, files, devices, information, communications and protection.
+- The **linker** builds executables, the **loader** runs them, and binaries are tied to an OS's system calls and ABI.
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="Count the system calls" level="easy">
+
+In `copy.c` above, copying a 10 KB file with a 4 KB buffer: how many `read()` and `write()` calls happen?
+
+<Solution>
+
+`read()` returns 4096, 4096, 2048 and then **0** (end of file): **4 reads**. Each non-empty read is followed by a write: **3 writes**. Add 2 `open()` and 2 `close()` calls, plus the exit.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Library call or system call?" level="medium">
+
+Which of these always involve a trap into the kernel? `printf()`, `strlen()`, `malloc()`, `write()`, `fork()`.
+
+<Solution>
+
+`write()` and `fork()` **are** system calls. `strlen()` is pure user-space code. `printf()` formats in user space and **eventually** calls `write()`; it is buffered, so not every call traps. `malloc()` usually serves requests from memory it already has, and only sometimes calls `brk()` or `mmap()` to get more from the kernel.
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "Which is the most common API on UNIX, Linux and macOS?",
+      options: ["Win32", "POSIX", "Java API", ".NET"],
+      answer: 1,
+      explain: "POSIX is the API for virtually all UNIX-like systems."
+    },
+    {
+      q: "How does the system-call interface find the right kernel routine?",
+      options: ["By the function's name", "Through a table indexed by system-call number", "By scanning the kernel", "Through the GUI"],
+      answer: 1,
+      explain: "Each system call is numbered; the number indexes a table of handlers."
+    },
+    {
+      q: "Linux and Solaris pass system-call parameters mainly by…",
+      options: ["Registers only", "A block in memory whose address is passed in a register", "Environment variables", "Files"],
+      answer: 1,
+      explain: "The block method has no limit on parameter count."
+    },
+    {
+      q: "fork(), exit() and wait() belong to which type of system call?",
+      options: ["File management", "Process control", "Device management", "Protection"],
+      answer: 1,
+      explain: "They create, end and synchronize processes."
+    },
+    {
+      q: "Background services that run from boot to shutdown are called…",
+      options: ["Daemons", "Kernels", "Traps", "Loaders"],
+      answer: 0,
+      explain: "Daemons (services/subsystems) run in user context."
+    },
+    {
+      q: "Which program combines object files and libraries into an executable?",
+      options: ["Compiler", "Linker", "Loader", "Shell"],
+      answer: 1,
+      explain: "The loader later brings the executable into memory."
+    }
+  ]}
+/>

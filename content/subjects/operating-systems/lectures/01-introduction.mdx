@@ -1,0 +1,269 @@
+---
+number: 1
+title: "Introduction: What Operating Systems Do"
+summary: The OS as resource allocator and control program. Covers how a computer system is organized (bus, device controllers, interrupts, DMA), the storage hierarchy and caching, single- and multi-processor architectures, multiprogramming and multitasking, dual-mode protection and the timer, what the OS manages, and the computing environments it runs in.
+topics: [Role of the OS, Kernel, Interrupts, I/O and DMA, Storage hierarchy and caching, Multiprocessors and multicore, Multiprogramming and multitasking, Dual mode, Resource management, Computing environments]
+duration: 60 min study
+sources:
+  - file: Lectures/ch1/ch1.pdf
+    label: OS Chapter 1 – Introduction (full slides)
+    pages: "1-68"
+  - file: Lectures/ch1/Chapter 1 -part1.pdf
+    label: OS Chapter 1 – Part 1 (Dr. Mostafa Elgendy)
+  - file: Lectures/ch1/Chapter 1 - part2.pdf
+    label: OS Chapter 1 – Part 2 (Dr. Mostafa Elgendy)
+bookRefs:
+  - book: osc10
+    chapter: Ch 1 · Introduction
+---
+
+<Objectives>
+
+- Explain what an **operating system** is from the user's and the system's point of view, and what the **kernel** is.
+- Describe **computer-system organization**: bus, device controllers, drivers, **interrupts** and **DMA**.
+- Explain the **storage hierarchy** and **caching**.
+- Compare single-processor, **multiprocessor** (SMP, multicore) and **clustered** systems.
+- Explain **multiprogramming**, **multitasking**, **dual-mode** operation and the **timer**, and list the OS's **management** responsibilities.
+
+</Objectives>
+
+## What is an operating system?
+
+<Definition term="Operating system">
+  A program that acts as an <strong>intermediary between the user and the computer hardware</strong>. Its goals: execute user programs and make solving problems easier, make the computer <strong>convenient</strong> to use, and use the hardware <strong>efficiently</strong>.
+</Definition>
+
+<SlideFigure page={5} caption="User → application programs → operating system → hardware." />
+
+A computer system has four components:
+
+| Component | Role |
+|---|---|
+| **Hardware** | CPU, memory and I/O devices: the basic computing resources |
+| **Operating system** | Controls and **coordinates** the hardware among applications and users |
+| **Application programs** | Use the resources to solve users' problems: word processors, compilers, browsers, games |
+| **Users** | People, machines, other computers |
+
+What the OS should optimize depends on the point of view. A **user** at a PC wants convenience and performance and doesn't care about utilization. A shared **mainframe** must keep all users happy, so there the OS is a **resource allocator** and a **control program**. Mobile devices optimize for usability and **battery life**, and embedded systems may have almost no user interface at all.
+
+<Callout type="note" title="So what exactly is 'the' operating system?">
+  There's no universal definition. "Everything the vendor ships" is a rough approximation. The precise part is the <strong>kernel</strong>, the one program running at all times. Everything else is either a <strong>system program</strong> (ships with the OS but isn't the kernel) or an <strong>application program</strong>. Mobile OSes also include <strong>middleware</strong>: frameworks for databases, graphics and so on.
+</Callout>
+
+## Computer-system organization
+
+One or more **CPUs** and **device controllers** connect through a common **bus** to shared **memory**, and they run concurrently, competing for memory cycles.
+
+<SlideFigure page={11} caption="CPU, disk, USB and graphics controllers sharing the system bus and memory." />
+
+- Each **device controller** is in charge of one device type and has a **local buffer**.
+- The OS has a **device driver** for each controller, giving the kernel a uniform interface.
+- The CPU moves data between main memory and controller buffers; the device moves data between itself and its buffer.
+- When it finishes, the controller **interrupts** the CPU.
+
+### Interrupts
+
+<Definition term="Interrupt">
+  A signal that transfers control to an <strong>interrupt service routine</strong>, found through the <strong>interrupt vector</strong> (a table of handler addresses). A <strong>trap / exception</strong> is a software-generated interrupt, caused by an error (divide by zero) or a user request (a system call). The OS is <strong>interrupt-driven</strong>.
+</Definition>
+
+<Steps>
+
+1. The device driver tells the controller to start I/O; the CPU goes on with other work.
+2. The controller finishes and raises an **interrupt**.
+3. The CPU **saves the state** (registers, program counter) of what it was doing.
+4. It looks up the interrupt vector and runs the matching **handler**.
+5. It **restores** the state and resumes the interrupted program.
+
+</Steps>
+
+<SlideFigure page={14} caption="The interrupt-driven I/O cycle." />
+
+There are two styles of I/O. In **synchronous** I/O, control returns to the program only when the I/O completes; the CPU waits and only one request is outstanding. In **asynchronous** I/O, control returns immediately; the program can continue, and the OS tracks requests in a **device-status table**. A program asks for I/O through a **system call**.
+
+### Direct memory access (DMA)
+
+For fast devices, one interrupt per byte would swamp the CPU. With **DMA**, the controller transfers a **whole block** between its buffer and memory **without the CPU**, and raises **one interrupt per block**.
+
+<SlideFigure page={26} caption="A von Neumann computer: the CPU's instruction cycle, data movement, and DMA between device and memory." />
+
+## Storage structure
+
+Storage is measured in **bits** and **bytes** (8 bits), with kilo = $2^{10}$, mega = $2^{20}$, giga = $2^{30}$ bytes, and so on.
+
+- **Main memory (RAM, usually DRAM)** is the only large storage the CPU accesses **directly**. It is random-access and **volatile**.
+- **Secondary storage** is large and **nonvolatile**: **HDDs** (platters divided into tracks and sectors) and faster **NVM / SSD** devices.
+- **Tertiary storage** includes optical disks and magnetic tape, used for backup and archives.
+
+<SlideFigure page={22} caption="The storage-device hierarchy: higher levels are smaller, faster and costlier per byte; volatile above the line." />
+
+### Caching
+
+<Definition term="Caching">
+  Copying information that is in use from slower storage into <strong>faster</strong> storage. Check the cache first: on a hit, use it; on a miss, copy the data in and use it there. Caches are smaller than what they cache, so <strong>cache management</strong> (size and replacement policy) is key.
+</Definition>
+
+Main memory is itself a cache for secondary storage. Caching creates a **coherence** problem, because the same datum may exist at several levels. In multitasking systems, every process must see the **most recent** value. Multiprocessors need hardware **cache coherency**, and distributed systems are harder still.
+
+## Computer-system architecture
+
+Most systems have one **general-purpose** processor plus special-purpose ones (disk and keyboard controllers, GPUs). **Multiprocessor** systems (parallel or tightly coupled) offer:
+
+<Grid cols={3}>
+  <Card title="Increased throughput">More work done in less time, though N processors give less than N× speed-up because of overhead.</Card>
+  <Card title="Economy of scale">CPUs share peripherals, storage and power.</Card>
+  <Card title="Increased reliability">Graceful degradation or fault tolerance when one processor fails.</Card>
+</Grid>
+
+| Type | Description |
+|---|---|
+| **Asymmetric** multiprocessing | Each processor has a specific task; a boss processor schedules the workers |
+| **Symmetric (SMP)** | Every processor performs all tasks, each with its own registers and cache, sharing main memory |
+| **Multicore** | Several cores on **one chip**. On-chip communication is faster and uses less power |
+| **NUMA** | Each CPU has local memory on a fast local bus; scales to many CPUs, but remote memory is slower |
+| **Clustered** | Several **systems** working together, often sharing storage over a **SAN**. Asymmetric clusters keep one hot-standby machine; symmetric clusters run applications on all nodes. Also used for **HPC** |
+
+<SlideFigure page={29} caption="Symmetric multiprocessing: each CPU has its own registers and cache over a shared memory." />
+
+## Operating-system operations
+
+### Multiprogramming and multitasking
+
+- **Multiprogramming (batch)**: one job can't keep the CPU and I/O devices busy, so several jobs are kept in memory. When the running job waits (for example for I/O), the OS **switches to another**, and the CPU always has something to do.
+- **Multitasking (time-sharing)**: the CPU switches so frequently that users can **interact** with each running program, with response times under a second. This needs **CPU scheduling**, and **swapping** or **virtual memory** when processes don't fit in memory.
+
+### Dual-mode operation
+
+To protect itself and the system, the hardware provides a **mode bit**: **user mode** (1) and **kernel mode** (0). **Privileged instructions** can run only in kernel mode. A **system call** switches to kernel mode, and the return switches back.
+
+<SlideFigure page={37} caption="A user process makes a system call: trap (mode bit = 0), the kernel executes it, return (mode bit = 1)." />
+
+### Timer
+
+A **timer** stops a process from hogging the CPU or looping forever. The OS loads a counter (a privileged instruction), the clock decrements it, and at zero it raises an **interrupt**, giving control back to the OS.
+
+## Resource management
+
+| Area | OS responsibilities |
+|---|---|
+| **Process management** | Create and delete processes, suspend and resume them, and provide synchronization, communication and deadlock handling. A **process** is a program in execution: active, while a program is passive |
+| **Memory management** | Track which parts of memory are used and by whom, decide which processes and data to move in and out, allocate and deallocate space |
+| **File-system management** | Abstract storage as **files** in **directories**; create, delete and map files; access control |
+| **Mass-storage management** | Mount and unmount, manage free space, allocate storage, schedule the disk, partition, protect |
+| **Cache management** | Keep the hierarchy coherent |
+| **I/O subsystem** | **Buffering**, **caching**, **spooling**, a general device-driver interface, and drivers for each device |
+
+**Protection** controls which processes and users can access which resources. **Security** defends against internal and external attacks such as viruses, worms, denial of service and identity theft. Both rely on **user IDs** and **group IDs**, and on **privilege escalation** (e.g. setuid) when needed.
+
+## Kernel data structures and computing environments
+
+Kernels use classic data structures: **linked lists**, **binary search trees** (balanced ones give $O(\log n)$ search), **hash maps** and **bitmaps** (n bits for the status of n items). Linux defines them in `<linux/list.h>`, `<linux/kfifo.h>` and `<linux/rbtree.h>`.
+
+| Environment | Characteristics |
+|---|---|
+| **Traditional** | Stand-alone PCs, increasingly networked, with firewalls even at home |
+| **Mobile** | Smartphones and tablets with GPS and gyroscopes; iOS and Android |
+| **Client–server** | Servers answer client requests (compute server, file server) |
+| **Peer-to-peer** | No distinction between clients and servers; every node can be both |
+| **Virtualization** | A **VMM** runs guest OSes on the host; **emulation** is used when the CPU types differ |
+| **Cloud** | Computing as a service: public, private or hybrid cloud; **SaaS**, **PaaS**, **IaaS** |
+| **Real-time embedded** | The most common computers. Fixed time constraints: work is correct only if done **on time** |
+
+<SlideFigure page={60} caption="Without virtualization (a) and with a virtual machine manager running three guest kernels (b)." />
+
+**Free and open-source** OSes (GNU/Linux, BSD UNIX) ship their **source code**, unlike closed-source ones. The Free Software Foundation's **GPL** "copyleft" licence requires that modified versions stay free. Reading real kernel source is one of the best ways to learn this subject.
+
+<Takeaways>
+
+- The OS is an **intermediary**, a **resource allocator** and a **control program**; the **kernel** always runs.
+- Devices work concurrently with the CPU and signal completion with **interrupts**; **DMA** moves whole blocks with one interrupt each.
+- Storage is a **hierarchy** of speed, cost and volatility, held together by **caching**.
+- **SMP** and **multicore** share memory; **clusters** share storage over a network.
+- **Multiprogramming** keeps the CPU busy, **multitasking** keeps users responsive, and **dual mode** plus the **timer** protect the system.
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="Why DMA?" level="medium">
+
+A device transfers data at 1 MB/s in 4 KB blocks. Compare the number of interrupts per second with interrupt-per-byte I/O and with DMA.
+
+<Solution>
+
+Per byte: about $10^6$ interrupts per second, which is a huge CPU overhead. With DMA: $10^6 / 4096 \approx 244$ interrupts per second, one per block. The CPU is free for other work while the controller moves each block.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Privileged or not?" level="easy">
+
+Which of these should be **privileged** (kernel mode only)? (a) set the timer (b) read the clock (c) clear memory (d) turn off interrupts (e) issue a trap (f) access an I/O device.
+
+<Solution>
+
+Privileged: **(a)**, **(c)**, **(d)** and **(f)**. **(b)** reading the clock is harmless, and **(e)** issuing a trap *must* be allowed in user mode, because that is exactly how a program asks the kernel for a service (a system call).
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Multiprogramming vs. multitasking" level="easy">
+
+What extra problem does time-sharing have to solve that batch multiprogramming doesn't?
+
+<Solution>
+
+**Response time.** Batch multiprogramming only switches when a job must wait, so it maximizes CPU utilization. Time-sharing must switch **often**, using a **timer** and **CPU scheduling**, so every interactive user gets a response in under a second. It also needs swapping or virtual memory to keep many processes resident.
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "The one program running at all times on the computer is the…",
+      options: ["Shell", "Kernel", "Compiler", "Device driver"],
+      answer: 1,
+      explain: "Everything else is a system or application program."
+    },
+    {
+      q: "A trap (exception) is…",
+      options: ["A hardware failure", "A software-generated interrupt", "A type of cache", "A disk sector"],
+      answer: 1,
+      explain: "It is caused by an error or a user request such as a system call."
+    },
+    {
+      q: "DMA reduces CPU overhead by…",
+      options: ["Removing the need for device drivers", "Generating one interrupt per block instead of per byte", "Caching the whole disk", "Running in user mode"],
+      answer: 1,
+      explain: "The controller transfers whole blocks directly to memory."
+    },
+    {
+      q: "Which storage can the CPU access directly?",
+      options: ["Hard disk", "SSD", "Main memory (and registers/cache)", "Magnetic tape"],
+      answer: 2,
+      explain: "Programs and data must be in main memory to be executed or accessed."
+    },
+    {
+      q: "In SMP, each processor…",
+      options: ["Has a specific assigned task", "Performs all tasks and has its own registers and cache", "Has its own separate memory and OS", "Is a separate computer"],
+      answer: 1,
+      explain: "Symmetric multiprocessing: peers sharing main memory."
+    },
+    {
+      q: "When the kernel is executing, the mode bit is…",
+      options: ["1 (user)", "0 (kernel)", "Undefined", "2"],
+      answer: 1,
+      explain: "Kernel mode = 0, user mode = 1."
+    },
+    {
+      q: "What prevents a user program from running in an infinite loop forever?",
+      options: ["The cache", "The timer interrupt", "DMA", "The interrupt vector"],
+      answer: 1,
+      explain: "When the timer expires, an interrupt returns control to the OS."
+    }
+  ]}
+/>

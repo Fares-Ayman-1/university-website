@@ -1,0 +1,220 @@
+---
+number: 5
+title: Enhanced Entity–Relationship (EER) Modeling
+summary: The EER model adds object-oriented ideas to ER. Covers superclasses and subclasses, inheritance, specialization and generalization, the disjointness and completeness constraints, hierarchies and lattices with shared subclasses, and categories (union types).
+topics: [Subclasses and superclasses, Inheritance, Specialization, Generalization, Disjoint vs overlapping, Total vs partial, Lattices, Categories]
+duration: 45 min study
+sources:
+  - file: Lectures/ch4/Chapter04.ppt [Compatibility Mode] [Repaired].pdf
+    label: Elmasri & Navathe – Chapter 4 Enhanced ER (EER) Modeling (slides)
+    pages: "1-44"
+bookRefs:
+  - book: elmasri
+    chapter: Ch 4 · The Enhanced Entity–Relationship (EER) Model
+---
+
+<Objectives>
+
+- Explain **superclass/subclass** (IS-A) relationships and **attribute and relationship inheritance**.
+- Distinguish **specialization** (top-down) from **generalization** (bottom-up).
+- Apply the **disjointness** (d / o) and **completeness** (total / partial) constraints, and recognize **predicate-**, **attribute-** and **user-defined** subclasses.
+- Read **hierarchies** and **lattices**, including **shared subclasses** (multiple inheritance).
+- Model **categories (union types)** and tell them apart from shared subclasses.
+
+</Objectives>
+
+## Why extend the ER model?
+
+Basic ER can't express that some employees are **secretaries** with a typing speed, some are **engineers** with an engineering type, and some are **salaried** while others are **hourly**. The **Enhanced (Extended) ER** model keeps every ER concept and adds:
+
+- **subclasses / superclasses**
+- **specialization / generalization**
+- **categories** (union types)
+- **attribute and relationship inheritance**, an object-oriented idea
+
+## Subclasses and superclasses
+
+<Definition term="Subclass">
+  A meaningful <strong>subgrouping</strong> of an entity type's entities. Every member of a subclass is <strong>the same real-world entity</strong> as some member of the <strong>superclass</strong>, playing a more specific role. The link between them is an <strong>IS-A</strong> relationship: a SECRETARY <em>is an</em> EMPLOYEE.
+</Definition>
+
+<SlideFigure page={5} caption="Three specializations of EMPLOYEE: by job type, managers, and by method of pay." />
+
+- An entity **can't** exist only in a subclass; it must also be in the superclass.
+- An entity **may** belong to several subclasses. A salaried engineering manager is in MANAGER, ENGINEER and SALARIED_EMPLOYEE.
+- A superclass entity **need not** belong to any subclass.
+
+### Inheritance
+
+A subclass member **inherits** all **attributes** and all **relationships** of its superclass. A SECRETARY has Name, SSN, Address… from EMPLOYEE, plus its own **specific (local) attributes** such as `Typing_speed`. A subclass can also take part in its **own relationships**: only HOURLY_EMPLOYEEs `BELONGS_TO` a TRADE_UNION.
+
+## Specialization and generalization
+
+<Grid cols={2}>
+  <Card title="Specialization" tag="top-down">
+    Start from one entity type and define a set of <strong>subclasses</strong> based on a distinguishing characteristic: \{SECRETARY, TECHNICIAN, ENGINEER\} by job type, or \{SALARIED, HOURLY\} by method of pay. One superclass can have <strong>several</strong> specializations.
+  </Card>
+  <Card title="Generalization" tag="bottom-up">
+    Start from several entity types with common features and build a <strong>superclass</strong> from them. CAR and TRUCK share Vehicle_id, Price and License_plate_no, so they generalize into VEHICLE.
+  </Card>
+</Grid>
+
+<SlideFigure page={15} caption="Generalization: (a) CAR and TRUCK separately; (b) their common attributes moved up to VEHICLE." />
+
+The two are views of the same structure, so the notation does **not** draw arrows to say which process was used. In practice designers combine top-down **refinement** and bottom-up **synthesis**.
+
+### Who belongs to which subclass?
+
+| Kind | Membership decided by | Example |
+|---|---|---|
+| **Predicate-defined** subclass | A condition on superclass attributes, written beside the link | `ENGINEER = EMPLOYEE[Job_type = 'Engineer']` |
+| **Attribute-defined** specialization | All subclasses use a condition on the **same defining attribute** | `Job_type` decides SECRETARY / TECHNICIAN / ENGINEER |
+| **User-defined** subclass | No condition; a user assigns each entity | MANAGER |
+
+<SlideFigure page={20} caption="An attribute-defined specialization on Job_type." />
+
+## Constraints on specialization
+
+<Grid cols={2}>
+  <Card title="Disjointness" tag="d / o">
+    <strong>Disjoint (d)</strong>: an entity is in <strong>at most one</strong> subclass. <strong>Overlapping (o)</strong>: an entity may be in <strong>several</strong> subclasses.
+  </Card>
+  <Card title="Completeness" tag="total / partial">
+    <strong>Total</strong> (double line): every superclass entity is in <strong>some</strong> subclass. <strong>Partial</strong> (single line): some entities belong to none.
+  </Card>
+</Grid>
+
+That gives four combinations:
+
+| | Total | Partial |
+|---|---|---|
+| **Disjoint** | Every VEHICLE is exactly one of CAR or TRUCK | An EMPLOYEE is at most one of SECRETARY / TECHNICIAN / ENGINEER, or none of them |
+| **Overlapping** | Every PART is manufactured, purchased or **both** | A person may be any mix of the subclasses, or none |
+
+<SlideFigure page={26} caption="Overlapping total specialization: a PART can be both MANUFACTURED and PURCHASED." />
+
+Formally, for a specialization $Z = \{S_1, \dots, S_n\}$ of superclass $G$:
+
+$$
+\text{total: } S_1 \cup S_2 \cup \dots \cup S_n = G \qquad\qquad \text{disjoint: } S_i \cap S_j = \emptyset \ \ (i \neq j)
+$$
+
+<Callout type="tip" title="Generalizations are usually total">
+  A superclass built <em>from</em> its subclasses only contains entities that were already in one of them.
+</Callout>
+
+## Hierarchies, lattices and shared subclasses
+
+- In a **hierarchy**, every subclass has **one** superclass (**single inheritance**), so it forms a tree.
+- In a **lattice**, a subclass can have **several** superclasses (**multiple inheritance**). Such a subclass is a **shared subclass**.
+- A subclass inherits from **all** its ancestors, not just its direct superclass.
+
+<SlideFigure page={28} caption="ENGINEERING_MANAGER is a shared subclass of ENGINEER, MANAGER and SALARIED_EMPLOYEE." />
+
+<SlideFigure page={31} caption="A UNIVERSITY specialization lattice: a STUDENT_ASSISTANT is both an EMPLOYEE and a STUDENT." />
+
+## Categories (union types)
+
+Sometimes one subclass needs **one relationship with several different superclasses**. In vehicle registration, an **OWNER** may be a PERSON, a BANK (holding a lien) or a COMPANY. The category `OWNER` is a subset of the **union** of the three:
+
+$$
+T \subseteq (D_1 \cup D_2 \cup \dots \cup D_n), \qquad n > 1
+$$
+
+<SlideFigure page={34} caption="Two categories: OWNER (∪ of PERSON, BANK, COMPANY) and REGISTERED_VEHICLE (∪ of CAR, TRUCK)." />
+
+| | Shared subclass | Category (union type) |
+|---|---|---|
+| Members are in… | **All** of the superclasses (**intersection**) | **At least one** of the superclasses (**union**) |
+| Inheritance | Inherits from **all** superclasses | **Selective**: each member inherits from the superclass it belongs to |
+| Example | ENGINEERING_MANAGER is an engineer **and** a manager **and** salaried | An OWNER is a person **or** a bank **or** a company |
+
+## Notation and general concepts
+
+| EER symbol | Meaning |
+|---|---|
+| Circle with **d** / **o** | Disjoint / overlapping specialization |
+| Circle with **∪** | Category (union type) |
+| ⊂ on the line to a subclass | Subset direction (superclass ⊃ subclass) |
+| Single / **double** line from superclass | Partial / **total** specialization |
+| Text next to the line | Defining predicate or attribute value |
+
+**UML** draws specialization as a hollow triangle on the generalization link, with constraints such as `{disjoint, complete}`.
+
+The EER model rests on general data abstractions: **classification and instantiation**, **identification**, **specialization and generalization**, and **aggregation and association**. **Ontologies** use the same conceptual-modeling ideas to standardize the vocabulary of a field (medicine, science, engineering).
+
+<Takeaways>
+
+- EER = ER + **subclasses/superclasses**, **specialization/generalization**, **categories** and **inheritance**.
+- A subclass entity **is** a superclass entity in a specific role, and it **inherits** all attributes and relationships.
+- Constraints: **disjoint (d) / overlapping (o)** and **total (double line) / partial (single line)**.
+- **Lattices** allow **shared subclasses** (members of all superclasses, the intersection). **Categories** are members of **any** of their superclasses (the union).
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="Choose the constraints" level="medium">
+
+For each specialization, give disjoint/overlapping and total/partial: (a) ACCOUNT into SAVINGS and CHECKING, where every account is exactly one type; (b) PERSON into STUDENT and EMPLOYEE at a university; (c) EMPLOYEE into MANAGER.
+
+<Solution>
+
+(a) **Disjoint, total**. (b) **Overlapping** (a student assistant is both) and **partial** (alumni and visitors are neither). (c) A single subclass, so disjointness doesn't apply; it is **partial**, since most employees aren't managers.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Shared subclass or category?" level="medium">
+
+(a) TEACHING_ASSISTANT is both a GRAD_STUDENT and an EMPLOYEE. (b) A PAYER for a hospital bill is a PATIENT, an INSURANCE_COMPANY or an EMPLOYER. Which construct fits each?
+
+<Solution>
+
+(a) A **shared subclass**: every TA belongs to **both** superclasses (intersection) and inherits from both. (b) A **category**: each payer belongs to **one** of several different entity types (union).
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "The relationship between a subclass and its superclass is called…",
+      options: ["HAS-A", "IS-A", "PART-OF", "USES"],
+      answer: 1,
+      explain: "A SECRETARY IS-A EMPLOYEE."
+    },
+    {
+      q: "Defining subclasses from one entity type is…",
+      options: ["Generalization", "Specialization", "Aggregation", "Classification"],
+      answer: 1,
+      explain: "Specialization is top-down; generalization is bottom-up."
+    },
+    {
+      q: "A 'd' in the specialization circle means…",
+      options: ["Derived", "Disjoint: an entity is in at most one subclass", "Dependent", "Default"],
+      answer: 1,
+      explain: "'o' would mean overlapping."
+    },
+    {
+      q: "Total specialization is drawn with…",
+      options: ["A dashed line", "A double line from the superclass", "An arrow", "A ∪ symbol"],
+      answer: 1,
+      explain: "Every superclass entity must belong to some subclass."
+    },
+    {
+      q: "A subclass with more than one superclass in a lattice is a…",
+      options: ["Category", "Shared subclass", "Weak entity", "Predicate-defined subclass"],
+      answer: 1,
+      explain: "Shared subclasses give multiple inheritance."
+    },
+    {
+      q: "A category (union type) member must belong to…",
+      options: ["All of its superclasses", "At least one of its superclasses", "Exactly two superclasses", "No superclass"],
+      answer: 1,
+      explain: "A category is a subset of the union of its superclasses."
+    }
+  ]}
+/>

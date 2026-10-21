@@ -1,0 +1,233 @@
+---
+number: 1
+title: Command-Line Skills
+summary: First steps in Bash. Covers the prompt, basic commands (whoami, uname, pwd, echo, which), shell variables and PATH, globbing with *, ? and [ ], the three kinds of quotes and command substitution, chaining commands with ;, && and ||, and reusing commands from history.
+kind: practical
+topics: [CLI and terminal, The prompt, whoami / uname / pwd, Shell variables and PATH, Globbing, Quoting, Command substitution, ; && ||, History]
+duration: 60 min hands-on
+sources:
+  - file: Sections/sec1/NDG Linux ch-1.pdf
+    label: OS Lab 1 – Command Line Basics (slides)
+    pages: "1-27"
+bookRefs:
+  - book: ndg-linux
+    chapter: Module 5 · Command Line Skills
+---
+
+<Objectives>
+
+- Read the **prompt** and run basic commands with **options** and **arguments**.
+- Use **shell variables** and understand **PATH** and `which`.
+- Match file names with **glob** characters: `*`, `?`, `[ ]` and `[! ]`.
+- Use **double**, **single** and **back** quotes, the backslash and `$( )` correctly.
+- Chain commands with `;`, `&&` and `||`, and reuse commands from **history**.
+
+</Objectives>
+
+## The terminal and the prompt
+
+In a **CLI** everything is done by typing commands. The **terminal** passes what you type to the **shell**, which interprets it for the OS.
+
+```text
+sysadmin@localhost:~$
+```
+
+The prompt shows the **user** (`sysadmin`), the **host name** (`localhost`), the **current directory** (`~` is shorthand for your **home** directory) and `$` for a regular user (`#` for root).
+
+A command has the form `command [options] [arguments]`. Options start with `-` (short, `-l`) or `--` (long, `--all`), and short options can be combined: `ls -l -a` is the same as `ls -la`.
+
+```bash title="Terminal"
+whoami          # sysadmin            — the current user
+uname           # Linux               — the kernel name
+uname -n        # localhost           — the host (node) name
+uname --all     # everything: kernel, host, release, version, architecture…
+pwd             # /home/sysadmin      — print working directory
+```
+
+## Shell variables
+
+Shell variables store data used by the shell, by programs and by you. Read a variable with `$`:
+
+```bash title="Terminal"
+echo Hello World          # Hello World
+echo $HOME                # /home/sysadmin
+echo $PATH                # /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+which date                # /usr/bin/date — the file that runs when you type "date"
+
+course="Operating Systems"     # no spaces around =
+echo "I study $course"         # I study Operating Systems
+export course                  # make it an environment variable for child programs
+```
+
+<Definition term="PATH">
+  A colon-separated list of directories. When you type a command, the shell searches them <strong>in order</strong> and runs the first executable with that name. If none matches, you get "command not found".
+</Definition>
+
+## Globbing (wildcards)
+
+**Glob characters** match file names by pattern. Globbing is a **shell** feature: the shell **expands** the pattern into the matching names *before* the command runs, so it works with **any** command. `echo` is a handy way to see the expansion.
+
+Assume a directory containing: `Desktop Documents Downloads Music notes.txt Pictures Public report1.txt report2.txt reportA.txt Templates todo.md Videos`.
+
+| Pattern | Matches | Result |
+|---|---|---|
+| `*` | Zero or more characters | everything |
+| `D*` | Starts with D | `Desktop Documents Downloads` |
+| `*s` | Ends with s | `Documents Downloads Pictures Templates Videos` |
+| `??????` | Exactly 6 characters | `Public Videos` |
+| `D????????` | D + exactly 8 more characters | `Documents Downloads` |
+| `report?.txt` | One character in the `?` slot | `report1.txt report2.txt reportA.txt` |
+| `[DP]*` | First character is D **or** P | `Desktop Documents Downloads Pictures Public` |
+| `[!DP]*` | First character is **not** D or P | `Music notes.txt report1.txt report2.txt reportA.txt Templates todo.md Videos` |
+| `report[0-9].txt` | A **range** of characters | `report1.txt report2.txt` |
+| `?????*s` | At least 6 characters and ending in s | `Documents Downloads Pictures Templates Videos` |
+
+```bash title="Terminal"
+echo /etc/*.conf        # every .conf file in /etc
+ls -d /etc/[a-c]*       # -d: list the names, not the contents of matching directories
+```
+
+If nothing matches, Bash passes the pattern through **unchanged** (`echo Z*` prints `Z*`).
+
+## Quoting
+
+| Quotes | Effect |
+|---|---|
+| **Double** `" "` | Stop **globbing** and word splitting, but **allow** `$variables` and command substitution |
+| **Single** `' '` | Stop **everything**: the text is literal |
+| **Back** `` ` ` `` | **Command substitution**: run the command and insert its output |
+| `$( )` | Modern, nestable command substitution, the same as back quotes |
+| Backslash `\` | Escape the **next single** character |
+
+```bash title="Terminal"
+echo "The glob * stays literal, but my home is $HOME"
+# The glob * stays literal, but my home is /home/sysadmin
+
+echo 'Nothing expands here: $HOME `date` *'
+# Nothing expands here: $HOME `date` *
+
+echo Today is `date`
+echo Today is $(date)          # same result, preferred syntax
+# Today is Tue Oct 21 14:30:00 UTC 2026
+
+echo The service costs \$5 and uses \`backquotes\`
+# The service costs $5 and uses `backquotes`
+```
+
+## Control statements: running several commands
+
+| Separator | Behaviour |
+|---|---|
+| `cmd1 ; cmd2` | Run both, **one after another**, **independently** of success or failure |
+| `cmd1 && cmd2` | Run cmd2 **only if** cmd1 **succeeds** (exit status 0) |
+| `cmd1 \|\| cmd2` | Run cmd2 **only if** cmd1 **fails** (non-zero exit status) |
+
+```bash title="Terminal"
+echo Hello ; false ; echo Goodbye        # Hello, (failure ignored), Goodbye
+
+ls /etc/hosts && echo success            # /etc/hosts  then  success
+ls /etc/nope  && echo success            # error only — echo is skipped
+
+ls /etc/nope  || echo failed             # error, then  failed
+ls /etc/hosts || echo failed             # /etc/hosts only
+
+mkdir backup && cp notes.txt backup/ || echo "could not back up"
+```
+
+<Callout type="tip" title="Exit status">
+  Every command returns an <strong>exit status</strong>: 0 means success and anything else means failure. See the last one with <code>echo $?</code>. <code>true</code> always succeeds and <code>false</code> always fails, which is handy for testing.
+</Callout>
+
+## Command history
+
+Bash remembers what you type, so you don't have to retype it:
+
+| Action | How |
+|---|---|
+| Previous / next command | **↑** / **↓** arrow keys; edit with ←, →, Home, End |
+| Show recent commands | `history` (all) or `history 5` (last five) |
+| Re-run command number n | `!n`, e.g. `!42` |
+| Re-run the last command | `!!` |
+| Re-run the last command starting with "ls" | `!ls` |
+| Search the history | **Ctrl + R**, then type part of the command |
+
+<Takeaways>
+
+- Commands are `command [options] [arguments]`; read the prompt for user, host and directory.
+- `$VAR` reads a variable; **PATH** decides where commands are found (`which` shows the match).
+- Globs (`*`, `?`, `[ ]`, `[! ]`) are expanded **by the shell** before the command runs.
+- `"..."` allows `$` expansion, `'...'` is fully literal, and `` `...` `` or `$(...)` substitutes output.
+- `;` always continues, `&&` continues on success, `||` continues on failure. Use **↑**, `history` and `!n` to reuse commands.
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="Predict the expansion" level="easy">
+
+In the example directory, what does each print? (a) `echo *.txt` (b) `echo [!r]*.txt` (c) `echo "*.txt"` (d) `echo ?????`
+
+<Solution>
+
+(a) `notes.txt report1.txt report2.txt reportA.txt`. (b) `notes.txt`, the only .txt file whose first letter isn't r. (c) `*.txt`, because double quotes disable globbing. (d) `Music`, the only five-character name.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Make it conditional" level="medium">
+
+Write one line that creates a directory `lab1`, enters it, and prints `ready` only if both steps worked. Otherwise it should print `setup failed`.
+
+<Solution>
+
+```bash
+mkdir lab1 && cd lab1 && echo ready || echo "setup failed"
+```
+
+If either `mkdir` or `cd` fails, the `&&` chain stops and `||` runs the failure message.
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "Which command prints the current working directory?",
+      options: ["cwd", "pwd", "dir", "whereami"],
+      answer: 1,
+      explain: "pwd = print working directory."
+    },
+    {
+      q: "Who expands the pattern in ls *.txt?",
+      options: ["The ls command", "The shell", "The kernel", "The terminal"],
+      answer: 1,
+      explain: "Globbing is a shell feature; ls receives the already-expanded names."
+    },
+    {
+      q: "Which pattern matches names that are exactly three characters long?",
+      options: ["*3", "???", "[3]", "*?*"],
+      answer: 1,
+      explain: "Each ? matches exactly one character."
+    },
+    {
+      q: "What does echo '$HOME' print?",
+      options: ["/home/sysadmin", "$HOME", "HOME", "An empty line"],
+      answer: 1,
+      explain: "Single quotes prevent all expansion."
+    },
+    {
+      q: "In cmd1 || cmd2, when does cmd2 run?",
+      options: ["Always", "Only if cmd1 succeeds", "Only if cmd1 fails", "Never"],
+      answer: 2,
+      explain: "|| runs the right side when the left side fails."
+    },
+    {
+      q: "Which re-runs history entry number 12?",
+      options: ["history 12", "!12", "!!12", "run 12"],
+      answer: 1,
+      explain: "!n runs history entry n; history 12 shows the last 12 entries."
+    }
+  ]}
+/>

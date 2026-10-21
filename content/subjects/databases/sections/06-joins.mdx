@@ -1,0 +1,295 @@
+---
+number: 6
+title: Displaying Data from Multiple Tables Using Joins
+summary: Combine tables with SQL:1999 join syntax. Covers NATURAL JOIN, JOIN … USING and JOIN … ON, table aliases, three-way joins and extra conditions, self-joins, nonequijoins, INNER vs LEFT/RIGHT/FULL OUTER joins, and how Cartesian products and CROSS JOIN arise. Every result is counted on the HR sample.
+kind: lab
+topics: [NATURAL JOIN, USING, ON, Table aliases, Three-way joins, Self-join, Nonequijoin, Outer joins, Cartesian product, CROSS JOIN]
+duration: 60 min hands-on
+sources:
+  - file: Sections/sec6/Lab06.pptx.pdf
+    label: Oracle SQL Fundamentals I – Lesson 6 Displaying Data from Multiple Tables (lab slides)
+    pages: "1-34"
+bookRefs:
+  - book: oracle-sql
+    chapter: Lesson 6 · Displaying Data from Multiple Tables Using Joins
+---
+
+<Objectives>
+
+- Write equijoins with **NATURAL JOIN**, **USING** and **ON**, and qualify columns with **table aliases**.
+- Join **three tables** and add extra conditions to a join.
+- Join a table **to itself** (self-join) and join on a **range** (nonequijoin).
+- Return unmatched rows with **LEFT, RIGHT and FULL OUTER** joins.
+- Recognize and avoid accidental **Cartesian products**, and use **CROSS JOIN** on purpose.
+
+</Objectives>
+
+## Why join?
+
+Normalized data is spread over several tables. An employee's department **name** lives in `DEPARTMENTS`, and its **city** lives in `LOCATIONS`. A **join** combines rows from several tables, usually by matching a **foreign key** to a **primary key**.
+
+```sql title="SQL:1999 join syntax"
+SELECT table1.column, table2.column
+FROM   table1
+[NATURAL JOIN table2]
+| [JOIN table2 USING (column_name)]
+| [JOIN table2 ON (table1.column_name = table2.column_name)]
+| [LEFT|RIGHT|FULL OUTER JOIN table2 ON (table1.column_name = table2.column_name)]
+| [CROSS JOIN table2];
+```
+
+### Table aliases and qualified columns
+
+When a column name exists in both tables, **qualify** it with the table name or a **table alias**: `e.department_id`. Aliases keep code short, avoid ambiguity and help performance. A column used in `USING` must **not** be qualified anywhere in the statement.
+
+## Equijoins
+
+### NATURAL JOIN
+
+Joins on **all columns with the same name** in both tables, keeping rows whose values are equal. If the same-named columns have different data types, it's an error.
+
+```sql
+SELECT department_id, department_name, location_id, city
+FROM   departments NATURAL JOIN locations;      -- common column: location_id
+```
+
+| DEPARTMENT_ID | DEPARTMENT_NAME | LOCATION_ID | CITY |
+|---|---|---|---|
+| 10 | Administration | 1700 | Seattle |
+| 20 | Marketing | 1800 | Toronto |
+| 50 | Shipping | 1500 | South San Francisco |
+| 60 | IT | 1400 | Southlake |
+| 80 | Sales | 2500 | Oxford |
+| 90 | Executive | 1700 | Seattle |
+| 110 | Accounting | 1700 | Seattle |
+| 190 | Contracting | 1700 | Seattle |
+
+<Callout type="warning" title="NATURAL JOIN between EMPLOYEES and DEPARTMENTS is a trap">
+  Those two tables share <strong>two</strong> column names, <code>department_id</code> <em>and</em> <code>manager_id</code>. A natural join matches both, so it only returns employees whose manager also manages their department (12 of the 20 on the sample). Name the join column explicitly instead.
+</Callout>
+
+### JOIN … USING
+
+Names **exactly which** same-named column to join on:
+
+```sql
+SELECT employee_id, last_name, location_id, department_id
+FROM   employees JOIN departments
+USING  (department_id);            -- 19 rows: Grant has no department
+
+SELECT l.city, d.department_name
+FROM   locations l JOIN departments d
+USING  (location_id)
+WHERE  location_id = 1400;         -- Southlake IT  (location_id not qualified!)
+```
+
+### JOIN … ON
+
+The most flexible form: any condition, and the column names don't have to match. It also keeps the join condition separate from the other search conditions.
+
+```sql
+SELECT e.employee_id, e.last_name, e.department_id,
+       d.department_id, d.location_id
+FROM   employees e JOIN departments d
+ON     (e.department_id = d.department_id);
+```
+
+**Three-way join**, where each `JOIN … ON` adds one table:
+
+```sql
+SELECT employee_id, city, department_name
+FROM   employees e
+JOIN   departments d ON d.department_id = e.department_id
+JOIN   locations   l ON d.location_id   = l.location_id;
+-- 100 Seattle Executive · 103 Southlake IT · 124 South San Francisco Shipping · …
+```
+
+**Extra conditions** go in the `ON` clause with `AND`, or in a `WHERE` clause. For inner joins the result is the same:
+
+```sql
+SELECT e.employee_id, e.last_name, e.department_id, d.location_id
+FROM   employees e JOIN departments d
+ON     (e.department_id = d.department_id)
+AND    e.manager_id = 149;              -- or: WHERE e.manager_id = 149
+-- 174 Abel 80 2500 · 176 Taylor 80 2500
+```
+
+## Self-join
+
+To show each employee with their manager's name, join `EMPLOYEES` to **itself** using two aliases: `worker.manager_id = manager.employee_id`.
+
+```sql
+SELECT worker.last_name emp, manager.last_name mgr
+FROM   employees worker JOIN employees manager
+ON     (worker.manager_id = manager.employee_id);
+```
+
+| EMP | MGR |
+|---|---|
+| Kochhar | King |
+| Hunold | De Haan |
+| Ernst | Hunold |
+| Mourgos | King |
+| Zlotkey | King |
+| Taylor | Zlotkey |
+| Gietz | Higgins |
+| … (19 rows) | |
+
+King has no manager, so he isn't in the result. An outer join would include him.
+
+## Nonequijoins
+
+When there is no equal-value column, join on a **range**, such as salary grades:
+
+```sql
+SELECT e.last_name, e.salary, j.grade_level
+FROM   employees e JOIN job_grades j
+ON     e.salary BETWEEN j.lowest_sal AND j.highest_sal;
+-- King 24000 E · Hunold 9000 C · Lorentz 4200 B · Vargas 2500 A · Zlotkey 10500 D …
+```
+
+The slides do the same with the `JOBS` table's `min_salary` and `max_salary`.
+
+## Outer joins
+
+An **inner** join returns only **matched** rows. In the sample, that silently drops **Grant** (no department) and **Contracting** (no employees). An **outer** join also returns the unmatched rows from one or both sides, padding the missing columns with NULL.
+
+```sql
+SELECT e.last_name, e.department_id, d.department_name
+FROM   employees e LEFT OUTER JOIN departments d
+ON     (e.department_id = d.department_id);     -- 20 rows: includes Grant (null, null)
+
+SELECT e.last_name, d.department_id, d.department_name
+FROM   employees e RIGHT OUTER JOIN departments d
+ON     (e.department_id = d.department_id);     -- 20 rows: includes (null) 190 Contracting
+
+SELECT e.last_name, d.department_id, d.department_name
+FROM   employees e FULL OUTER JOIN departments d
+ON     (e.department_id = d.department_id);     -- 21 rows: both Grant and Contracting
+```
+
+| Join | Rows on the sample | Keeps unmatched rows from |
+|---|---|---|
+| INNER | 19 | Neither table |
+| LEFT OUTER (employees left) | 20 | `EMPLOYEES`, so Grant is kept |
+| RIGHT OUTER (departments right) | 20 | `DEPARTMENTS`, so Contracting is kept |
+| FULL OUTER | 21 | Both |
+
+## Cartesian products and CROSS JOIN
+
+A **Cartesian product** pairs **every** row of one table with **every** row of the other. It happens when a join condition is **omitted** or **invalid**: 20 employees × 8 departments = **160** rows of mostly meaningless pairs. Always include a valid join condition, and remember that joining $n$ tables needs at least $n - 1$ conditions.
+
+Ask for it explicitly with `CROSS JOIN`, which is useful for generating combinations:
+
+```sql
+SELECT last_name, department_name
+FROM   employees CROSS JOIN departments;     -- 160 rows
+```
+
+<Takeaways>
+
+- **NATURAL JOIN** matches every same-named column, **USING** picks one, and **ON** allows any condition. Prefer `ON` (or `USING`) for clarity.
+- Qualify shared columns with **table aliases**, but never qualify a `USING` column.
+- A **self-join** uses two aliases of one table; a **nonequijoin** matches on ranges (`BETWEEN`).
+- **Outer joins** keep unmatched rows: LEFT keeps the left table's, RIGHT the right table's, FULL both.
+- Missing join conditions create **Cartesian products** (rows × rows); `CROSS JOIN` makes one on purpose.
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="Employees and their cities" level="easy">
+
+List the last name, department name and city of every employee who works in **Seattle**.
+
+<Solution>
+
+```sql
+SELECT e.last_name, d.department_name, l.city
+FROM   employees e
+JOIN   departments d ON e.department_id = d.department_id
+JOIN   locations   l ON d.location_id   = l.location_id
+WHERE  l.city = 'Seattle';
+-- King, Kochhar, De Haan (Executive) · Whalen (Administration) · Higgins, Gietz (Accounting)
+```
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Include the boss" level="medium">
+
+Modify the self-join so it lists **all** employees, including King, with `No manager` instead of a missing name.
+
+<Solution>
+
+```sql
+SELECT worker.last_name emp, NVL(manager.last_name, 'No manager') mgr
+FROM   employees worker LEFT OUTER JOIN employees manager
+ON     worker.manager_id = manager.employee_id;      -- 20 rows
+```
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Departments without employees" level="medium">
+
+Write a query that returns only the departments that have **no** employees.
+
+<Solution>
+
+```sql
+SELECT d.department_id, d.department_name
+FROM   departments d LEFT OUTER JOIN employees e
+ON     d.department_id = e.department_id
+WHERE  e.employee_id IS NULL;
+-- 190 Contracting
+```
+
+The outer join keeps every department; the `IS NULL` test keeps only those with no matching employee.
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "NATURAL JOIN joins on…",
+      options: ["The primary key only", "All columns with the same name in both tables", "Columns listed in USING", "Any condition in ON"],
+      answer: 1,
+      explain: "It equates every same-named column, which can surprise you."
+    },
+    {
+      q: "In JOIN … USING (department_id), how should department_id be referenced?",
+      options: ["e.department_id", "d.department_id", "department_id, unqualified", "Either alias"],
+      answer: 2,
+      explain: "Columns in a USING clause must not be qualified."
+    },
+    {
+      q: "Listing each employee with their manager's name needs a…",
+      options: ["Nonequijoin", "Self-join", "Cross join", "Natural join"],
+      answer: 1,
+      explain: "EMPLOYEES is joined to itself through manager_id = employee_id."
+    },
+    {
+      q: "Matching salaries to grade ranges with BETWEEN is a…",
+      options: ["Equijoin", "Nonequijoin", "Outer join", "Natural join"],
+      answer: 1,
+      explain: "The condition isn't an equality."
+    },
+    {
+      q: "Which join also returns employees without a department (employees on the left)?",
+      options: ["INNER JOIN", "LEFT OUTER JOIN", "RIGHT OUTER JOIN", "CROSS JOIN"],
+      answer: 1,
+      explain: "LEFT keeps unmatched rows from the left table."
+    },
+    {
+      q: "Joining 20 employees and 8 departments with no join condition returns…",
+      options: ["20 rows", "28 rows", "160 rows", "An error"],
+      answer: 2,
+      explain: "A Cartesian product: 20 × 8."
+    }
+  ]}
+/>

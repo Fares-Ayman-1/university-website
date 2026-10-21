@@ -1,0 +1,363 @@
+---
+number: 3
+title: Processes
+summary: The process is the unit of work in an OS. Covers its memory layout, the five states, the PCB and context switching, scheduling queues, creating processes with fork/exec/wait, termination (zombies and orphans), and interprocess communication by shared memory (bounded buffer, race conditions) and message passing (direct and indirect, blocking and buffering), plus pipes, sockets and RPC.
+topics: [Process concept, Memory layout, Process states, PCB, Context switch, Scheduling queues, fork / exec / wait, Termination, Shared memory, Race conditions, Message passing, Pipes and sockets]
+duration: 70 min study
+sources:
+  - file: Lectures/ch3/ch3.pdf
+    label: OS Chapter 3 – Processes (full slides)
+    pages: "1-74"
+  - file: Lectures/ch3/Chapter 03 Processes- Part 1.pdf
+    label: OS Chapter 3 – Processes, Part 1 (Dr. Mostafa Elgendy)
+  - file: Lectures/ch3/Chapter 03 Processes- Part 2.pdf
+    label: OS Chapter 3 – Processes, Part 2 (Dr. Mostafa Elgendy)
+bookRefs:
+  - book: osc10
+    chapter: Ch 3 · Processes
+---
+
+<Objectives>
+
+- Describe the parts of a **process** and its **memory layout**.
+- Trace the **five process states** and explain the **PCB** and **context switch**.
+- Explain **scheduling queues** and how the scheduler moves processes between them.
+- Create and terminate processes with **fork()**, **exec()**, **wait()** and **exit()**, and explain **zombies** and **orphans**.
+- Compare **shared-memory** and **message-passing** IPC, recognize a **race condition**, and describe **pipes**, **sockets** and **RPC**.
+
+</Objectives>
+
+## The process concept
+
+<Definition term="Process">
+  A <strong>program in execution</strong>. A program is a <strong>passive</strong> file on disk; it becomes an <strong>active</strong> process when it is loaded into memory. One program can run as several processes, e.g. several users running the same editor.
+</Definition>
+
+<SlideFigure page={6} caption="A process in memory: text, data, heap (grows up) and stack (grows down)." />
+
+| Section | Contents |
+|---|---|
+| **Text** | The executable code |
+| **Data** | Global (and static) variables: initialized and uninitialized |
+| **Heap** | Memory allocated dynamically at run time (`malloc`), growing upward |
+| **Stack** | Temporary data for each function call: parameters, return address, local variables, growing downward |
+
+A process also has its **current activity**: the **program counter** and **registers**.
+
+## Process states
+
+| State | Meaning |
+|---|---|
+| **New** | Being created |
+| **Ready** | Waiting to be assigned to a CPU |
+| **Running** | Instructions are executing |
+| **Waiting** | Waiting for an event, such as I/O completion or a signal |
+| **Terminated** | Finished execution |
+
+<SlideFigure page={9} caption="new → (admitted) → ready ⇄ running (scheduler dispatch / interrupt) → waiting (I/O or event wait) → ready (completion); running → terminated (exit)." />
+
+Only **one process per core** can be *running* at a time; many can be *ready* or *waiting*.
+
+## Process control block (PCB)
+
+<SlideFigure page={10} caption="The PCB, also called the task control block." />
+
+The **PCB** holds everything the OS needs to know about a process:
+
+- **process state**, **process number (pid)**, **program counter** and **CPU registers**,
+- **CPU-scheduling information**: priority and queue pointers,
+- **memory-management information**,
+- **accounting information**: CPU time used, time limits,
+- **I/O status**: allocated devices and open files.
+
+In Linux the PCB is the C structure `task_struct`, with fields such as `pid`, `state`, `time_slice`, `parent`, `children`, `files` and `mm`.
+
+### Context switch
+
+When the CPU switches from one process to another, the kernel **saves** the old process's state in its PCB and **loads** the new one's. This is a **context switch**. It is **pure overhead**: no useful work happens while switching, and it takes longer the more complex the OS and PCB are. Some CPUs provide several register sets to speed it up.
+
+<SlideFigure page={14} caption="Context switch: save state into PCB₀, reload state from PCB₁, and back again." />
+
+## Process scheduling
+
+The **process scheduler** picks which ready process runs next on a core, aiming to maximize CPU use and switch processes quickly. The **degree of multiprogramming** is the number of processes in memory.
+
+- The **ready queue** holds processes in memory that are ready to run.
+- **Wait queues** hold processes waiting for an event, such as I/O.
+- Processes **migrate** between queues during their lifetime.
+
+<SlideFigure page={17} caption="Queueing diagram: from the ready queue to the CPU, then back via I/O wait, time-slice expiry, child creation or interrupt waits." />
+
+Processes are often described as **I/O-bound** (many short CPU bursts) or **CPU-bound** (few long bursts). Early iOS ran only **one foreground** process; Android allows background **services**.
+
+## Operations on processes
+
+### Process creation
+
+A **parent** creates **children**, which create others, forming a **process tree**. Each process has a **pid**. In Linux, `systemd` (pid 1) is the root.
+
+<SlideFigure page={22} caption="A tree of processes in Linux, rooted at systemd (pid 1)." />
+
+| Option | Choices |
+|---|---|
+| **Resource sharing** | Parent and children share all resources, a subset, or nothing |
+| **Execution** | Parent and children run concurrently, or the parent **waits** for the children |
+| **Address space** | The child is a **duplicate** of the parent, or has a **new program** loaded into it |
+
+In UNIX:
+
+- `fork()` creates a new process that is a **copy** of the parent. It returns **0 in the child** and the **child's pid in the parent**, or a negative value on error.
+- `exec()` **replaces** the process's memory with a new program.
+- `wait()` makes the parent wait for a child to finish.
+
+```c title="fork_exec.c"
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
+
+int main(void) {
+    pid_t pid = fork();                 /* create a child process */
+
+    if (pid < 0) {                      /* error occurred */
+        fprintf(stderr, "Fork Failed");
+        return 1;
+    } else if (pid == 0) {              /* child process */
+        execlp("/bin/ls", "ls", NULL);  /* replace the child with ls */
+    } else {                            /* parent process */
+        wait(NULL);                     /* wait for the child to complete */
+        printf("Child Complete\n");
+    }
+    return 0;
+}
+```
+
+Windows does the same with **`CreateProcess()`**, which creates the process **and** loads a program in one call, followed by `WaitForSingleObject()`.
+
+### Process termination
+
+- A process ends with `exit()`, which returns a **status** to the parent through `wait()`. The OS reclaims its resources.
+- A parent can terminate a child with `abort()` (or `kill`), because the child exceeded its resources, its task is no longer needed, or the parent is exiting.
+- In **cascading termination**, some OSes kill all descendants when a parent ends.
+
+| Situation | Name |
+|---|---|
+| The child has terminated but the parent hasn't called `wait()` yet, so its PCB entry lingers | **Zombie** |
+| The parent terminated without calling `wait()`. In Linux, `init`/`systemd` adopts the child and reaps it | **Orphan** |
+
+Mobile OSes kill processes to reclaim memory. **Android**'s importance hierarchy, from most to least important, is foreground, visible, service, background, empty. **Chrome** runs each site in its own **renderer process** (plus a browser process and plugin processes), so one bad page can't crash the whole browser.
+
+## Interprocess communication (IPC)
+
+**Independent** processes can't affect each other; **cooperating** processes can. The reasons to cooperate are information **sharing**, computation **speed-up**, **modularity** and **convenience**.
+
+<SlideFigure page={30} caption="The two IPC models: (a) shared memory, (b) message passing through the kernel." />
+
+### Shared memory and the producer–consumer problem
+
+Processes share a memory region, and the **processes themselves**, not the OS, control the communication, so they must **synchronize**. The classic example is a **producer** filling a buffer that a **consumer** empties:
+
+- **Unbounded buffer**: the producer never waits; the consumer waits when the buffer is empty.
+- **Bounded buffer**: the producer waits when the buffer is full, and the consumer waits when it is empty.
+
+```c title="bounded_buffer.c"
+#define BUFFER_SIZE 10
+item buffer[BUFFER_SIZE];
+int in = 0, out = 0;                 /* shared */
+
+/* Producer */
+while (true) {
+    /* produce an item in next_produced */
+    while (((in + 1) % BUFFER_SIZE) == out)
+        ;                            /* buffer full: do nothing */
+    buffer[in] = next_produced;
+    in = (in + 1) % BUFFER_SIZE;
+}
+
+/* Consumer */
+while (true) {
+    while (in == out)
+        ;                            /* buffer empty: do nothing */
+    next_consumed = buffer[out];
+    out = (out + 1) % BUFFER_SIZE;
+    /* consume next_consumed */
+}
+```
+
+This solution is correct but holds at most **BUFFER_SIZE − 1** items, because a full buffer and an empty buffer would otherwise look the same.
+
+### Race conditions
+
+To use all the slots, add a shared `counter` that the producer increments and the consumer decrements. But `counter++` and `counter--` are each **three machine instructions**:
+
+```text title="counter = 5 initially"
+T0: producer  register1 = counter          {register1 = 5}
+T1: producer  register1 = register1 + 1    {register1 = 6}
+T2: consumer  register2 = counter          {register2 = 5}
+T3: consumer  register2 = register2 - 1    {register2 = 4}
+T4: producer  counter = register1          {counter = 6}
+T5: consumer  counter = register2          {counter = 4}   ← should be 5!
+```
+
+<Definition term="Race condition">
+  The outcome depends on the <strong>order</strong> in which concurrent processes access shared data. Preventing it requires <strong>synchronization</strong>, covered in Chapter 6.
+</Definition>
+
+### Message passing
+
+Processes communicate **without shared variables** using `send(message)` and `receive(message)`, with fixed- or variable-size messages, over a **communication link**.
+
+<Grid cols={2}>
+  <Card title="Direct communication" tag="name the process">
+    <code>send(P, msg)</code> and <code>receive(Q, msg)</code>. The link is set up automatically, belongs to exactly one pair, and there is exactly one link per pair.
+  </Card>
+  <Card title="Indirect communication" tag="mailboxes / ports">
+    <code>send(A, msg)</code> and <code>receive(A, msg)</code> through mailbox A. A link can be shared by many processes, and a pair can share several mailboxes. If P1 sends and P2 and P3 both receive, the system must decide who gets the message.
+  </Card>
+</Grid>
+
+| Synchronization | Behaviour |
+|---|---|
+| **Blocking send** (synchronous) | The sender waits until the message is received |
+| **Blocking receive** | The receiver waits until a message is available |
+| **Non-blocking send** (asynchronous) | Send and continue |
+| **Non-blocking receive** | Get a valid message or NULL |
+
+When both sides block, it is a **rendezvous**. A link's queue has **zero capacity** (the sender waits; a rendezvous), **bounded capacity** (the sender waits if it is full) or **unbounded capacity** (the sender never waits).
+
+### Pipes, sockets and RPC
+
+- **Ordinary pipes** are **unidirectional**, connect a **parent and child**, and are called *anonymous pipes* on Windows. **Named pipes** (FIFOs) are bidirectional and need no parent–child relationship.
+- A **socket** is an endpoint, **IP address + port**, e.g. `161.25.19.8:1625`. Ports below 1024 are well-known (HTTP is 80). Sockets come as TCP, UDP or multicast.
+- **RPC** (remote procedure call) makes a network call look local. A client **stub** **marshals** the parameters, and a server stub unpacks them. A machine-independent representation such as **XDR** handles big- vs little-endian differences.
+
+<SlideFigure page={61} caption="An ordinary pipe: the parent writes to fd[1] and the child reads from fd[0]." />
+
+```c title="pipe.c"
+int fd[2];
+pipe(fd);                       /* fd[0] = read end, fd[1] = write end */
+if (fork() == 0) {              /* child: reader */
+    close(fd[1]);
+    char buf[32];
+    read(fd[0], buf, sizeof buf);
+} else {                        /* parent: writer */
+    close(fd[0]);
+    write(fd[1], "Greetings", 10);
+}
+```
+
+<Takeaways>
+
+- A process is a **program in execution**: text, data, heap, stack, plus PC and registers.
+- States: **new → ready ⇄ running → waiting → ready … → terminated**. The **PCB** stores everything needed to resume a process.
+- A **context switch** saves one PCB and loads another, and is pure overhead.
+- `fork()` copies (returning 0 to the child), `exec()` replaces, `wait()` synchronizes. A **zombie** is waiting to be reaped; an **orphan** is adopted by init.
+- IPC uses **shared memory** (fast, but needs synchronization to avoid **race conditions**) or **message passing** (direct or indirect, blocking or not, with buffering).
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="How many processes?" level="medium">
+
+How many processes exist after this code runs, including the original?
+
+```c
+int main(void) {
+    fork();
+    fork();
+    fork();
+    return 0;
+}
+```
+
+<Solution>
+
+Each `fork()` doubles the number of processes: $2^3 = 8$ processes in total, of which **7** are new.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="What does it print?" level="medium">
+
+```c
+int value = 5;
+int main(void) {
+    pid_t pid = fork();
+    if (pid == 0) {          /* child */
+        value += 15;
+        return 0;
+    } else if (pid > 0) {    /* parent */
+        wait(NULL);
+        printf("PARENT: value = %d\n", value);
+    }
+}
+```
+
+<Solution>
+
+`PARENT: value = 5`. The child has its **own copy** of the address space, so changing `value` in the child doesn't affect the parent's copy.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Name the state" level="easy">
+
+Which transition happens when (a) a running process requests disk I/O, (b) the timer interrupt fires, (c) the disk I/O completes?
+
+<Solution>
+
+(a) running → **waiting**. (b) running → **ready** (preempted). (c) waiting → **ready**.
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "Which part of a process's memory grows downward and holds function-call frames?",
+      options: ["Text", "Data", "Heap", "Stack"],
+      answer: 3,
+      explain: "The stack holds parameters, return addresses and local variables."
+    },
+    {
+      q: "A process waiting for the CPU is in which state?",
+      options: ["Waiting", "Ready", "New", "Running"],
+      answer: 1,
+      explain: "Waiting means waiting for an event such as I/O; ready means waiting for the CPU."
+    },
+    {
+      q: "What does fork() return in the child process?",
+      options: ["The parent's pid", "The child's pid", "0", "-1"],
+      answer: 2,
+      explain: "The parent receives the child's pid; the child receives 0."
+    },
+    {
+      q: "A context switch is…",
+      options: ["Useful work done by the process", "Pure overhead while the kernel swaps PCBs", "A type of interrupt vector", "A system call"],
+      answer: 1,
+      explain: "No user work happens during the switch."
+    },
+    {
+      q: "A terminated process whose parent hasn't called wait() yet is a…",
+      options: ["Orphan", "Zombie", "Daemon", "Thread"],
+      answer: 1,
+      explain: "Its exit status is kept until the parent collects it."
+    },
+    {
+      q: "Why do counter++ and counter-- cause a race condition?",
+      options: ["They are system calls", "Each is several machine instructions that can interleave", "counter is in the heap", "The buffer is too small"],
+      answer: 1,
+      explain: "Interleaved load/modify/store sequences lose updates."
+    },
+    {
+      q: "Ordinary (anonymous) pipes are…",
+      options: ["Bidirectional and network-capable", "Unidirectional and require a parent–child relationship", "The same as sockets", "Only available on Windows"],
+      answer: 1,
+      explain: "Named pipes remove both restrictions."
+    }
+  ]}
+/>

@@ -1,0 +1,296 @@
+---
+number: 3
+title: Using Single-Row Functions to Customize Output
+summary: Functions that run once per row. Covers case-conversion and character-manipulation functions, ROUND, TRUNC and MOD for numbers, how Oracle stores dates and the RR format, date arithmetic with SYSDATE, and the date functions MONTHS_BETWEEN, ADD_MONTHS, NEXT_DAY, LAST_DAY, ROUND and TRUNC.
+kind: lab
+topics: [Single-row vs multiple-row functions, Case conversion, Character manipulation, ROUND / TRUNC / MOD, DUAL, RR date format, SYSDATE and date arithmetic, Date functions]
+duration: 55 min hands-on
+sources:
+  - file: Sections/sec3/DOC-20241019-WA0194..pdf
+    label: Oracle SQL Fundamentals I – Lesson 3 Single-Row Functions (lab slides)
+    pages: "1-29"
+bookRefs:
+  - book: oracle-sql
+    chapter: Lesson 3 · Using Single-Row Functions to Customize Output
+---
+
+<Objectives>
+
+- Distinguish **single-row** from **multiple-row** (group) functions.
+- Use **character** functions: `LOWER`, `UPPER`, `INITCAP`, `CONCAT`, `SUBSTR`, `LENGTH`, `INSTR`, `LPAD`/`RPAD`, `TRIM`, `REPLACE`.
+- Use **number** functions `ROUND`, `TRUNC` and `MOD`, and the `DUAL` table.
+- Explain Oracle's **date storage** and the **RR** format, and do **date arithmetic** with `SYSDATE`.
+- Use the **date functions** `MONTHS_BETWEEN`, `ADD_MONTHS`, `NEXT_DAY`, `LAST_DAY`, `ROUND` and `TRUNC`.
+
+</Objectives>
+
+## Two kinds of SQL functions
+
+<Grid cols={2}>
+  <Card title="Single-row functions" tag="this lab">
+    Return <strong>one result per row</strong>. They manipulate data items, take one or more arguments (columns or expressions), can change the data type, and can be <strong>nested</strong>. They can be used in SELECT, WHERE and ORDER BY.
+  </Card>
+  <Card title="Multiple-row (group) functions" tag="Section 5">
+    Return <strong>one result per set of rows</strong>, for example <code>AVG</code>, <code>COUNT</code>, <code>MAX</code>.
+  </Card>
+</Grid>
+
+```sql title="syntax"
+function_name [(arg1, arg2, ...)]
+```
+
+Single-row functions come in several families: **character**, **number**, **date**, plus conversion and general functions.
+
+## Character functions
+
+### Case conversion
+
+| Function | Result |
+|---|---|
+| `LOWER('SQL Course')` | `sql course` |
+| `UPPER('SQL Course')` | `SQL COURSE` |
+| `INITCAP('SQL Course')` | `Sql Course` |
+
+Because string comparisons are case-sensitive, convert the column before comparing:
+
+```sql
+SELECT employee_id, last_name, department_id
+FROM   employees
+WHERE  last_name = 'higgins';            -- no rows!
+
+SELECT employee_id, last_name, department_id
+FROM   employees
+WHERE  LOWER(last_name) = 'higgins';     -- 205 Higgins 110
+```
+
+### Character manipulation
+
+| Function | Result | What it does |
+|---|---|---|
+| `CONCAT('Hello', 'World')` | `HelloWorld` | Joins exactly **two** strings |
+| `SUBSTR('HelloWorld', 1, 5)` | `Hello` | Substring from position 1, length 5 |
+| `LENGTH('HelloWorld')` | `10` | Number of characters |
+| `INSTR('HelloWorld', 'W')` | `6` | Position of the first match (0 if none) |
+| `LPAD(salary, 10, '*')` | `*****24000` | Left-pad to width 10 |
+| `RPAD(salary, 10, '*')` | `24000*****` | Right-pad to width 10 |
+| `REPLACE('JACK and JUE', 'J', 'BL')` | `BLACK and BLUE` | Replace every occurrence |
+| `TRIM('H' FROM 'HelloWorld')` | `elloWorld` | Remove leading and trailing characters |
+
+```sql
+SELECT employee_id, CONCAT(first_name, last_name) NAME, job_id,
+       LENGTH(last_name), INSTR(last_name, 'a') "Contains 'a'?"
+FROM   employees
+WHERE  SUBSTR(job_id, 4) = 'REP';        -- from the 4th character: SA_REP, MK_REP
+```
+
+| EMPLOYEE_ID | NAME | JOB_ID | LENGTH(LAST_NAME) | Contains 'a'? |
+|---|---|---|---|---|
+| 174 | EllenAbel | SA_REP | 4 | 0 |
+| 176 | JonathonTaylor | SA_REP | 6 | 2 |
+| 178 | KimberelyGrant | SA_REP | 5 | 3 |
+| 202 | PatFay | MK_REP | 3 | 2 |
+
+`INSTR('Abel', 'a')` is **0** because the search is case-sensitive.
+
+## Number functions
+
+| Function | Result | Meaning |
+|---|---|---|
+| `ROUND(45.926, 2)` | `45.93` | Round to 2 decimal places |
+| `TRUNC(45.926, 2)` | `45.92` | Cut off after 2 decimal places |
+| `MOD(1600, 300)` | `100` | Remainder of 1600 / 300 |
+
+The second argument can be **0** (the default for TRUNC) or **negative**, which rounds to the left of the decimal point:
+
+```sql
+SELECT ROUND(45.923, 2), ROUND(45.923, 0), ROUND(45.923, -1)
+FROM   DUAL;                        -- 45.92   46   50
+
+SELECT TRUNC(45.923, 2), TRUNC(45.923), TRUNC(45.923, -1)
+FROM   DUAL;                        -- 45.92   45   40
+```
+
+<Definition term="DUAL">
+  A one-row, one-column dummy table owned by SYS. Use it to evaluate functions and expressions that don't need a real table.
+</Definition>
+
+```sql
+SELECT last_name, salary, MOD(salary, 5000)
+FROM   employees
+WHERE  job_id = 'SA_REP';
+-- Abel 11000 1000 · Taylor 8600 3600 · Grant 7000 2000
+```
+
+## Working with dates
+
+Oracle stores dates in an internal **numeric** format holding century, year, month, day, hours, minutes and seconds. The default **display** format is `DD-MON-RR`, e.g. `17-JUN-03`.
+
+### The RR date format
+
+With a two-digit year, **RR** chooses the century according to the current year. Unlike **YY**, it doesn't simply use the current century.
+
+| Current year | Two-digit year given | RR result | YY result |
+|---|---|---|---|
+| 1995 | 27-OCT-**95** | 1995 | 1995 |
+| 1995 | 27-OCT-**17** | **2017** | 1917 |
+| 2001 | 27-OCT-**17** | 2017 | 2017 |
+| 2001 | 27-OCT-**95** | **1995** | 2095 |
+
+**The rule:** if the given year is 0–49 and the current year's last two digits are 0–49, use the **current** century. A given 50–99 in a current 0–49 year means the **previous** century. A given 0–49 in a current 50–99 year means the **next** century.
+
+### SYSDATE and date arithmetic
+
+`SYSDATE` returns the current database date and time: `SELECT SYSDATE FROM dual;`
+
+| Operation | Result |
+|---|---|
+| date + number | Date (adds days) |
+| date − number | Date (subtracts days) |
+| date − date | **Number of days** between them |
+| date + number/24 | Adds hours |
+
+```sql
+SELECT last_name, (SYSDATE - hire_date)/7 AS weeks
+FROM   employees
+WHERE  department_id = 90;            -- weeks each executive has been employed
+```
+
+### Date functions
+
+| Function | Result |
+|---|---|
+| `MONTHS_BETWEEN('01-SEP-95', '11-JAN-94')` | `19.6774194` |
+| `ADD_MONTHS('31-JAN-96', 1)` | `'29-FEB-96'` (1996 is a leap year) |
+| `NEXT_DAY('01-SEP-95', 'FRIDAY')` | `'08-SEP-95'` (the next Friday *after* the date) |
+| `LAST_DAY('01-FEB-95')` | `'28-FEB-95'` |
+
+`ROUND` and `TRUNC` work on dates too. Assuming `SYSDATE = '25-JUL-03'`:
+
+| Function | Result |
+|---|---|
+| `ROUND(SYSDATE, 'MONTH')` | `01-AUG-03` (the 25th is past mid-month) |
+| `ROUND(SYSDATE, 'YEAR')` | `01-JAN-04` (July is past mid-year) |
+| `TRUNC(SYSDATE, 'MONTH')` | `01-JUL-03` |
+| `TRUNC(SYSDATE, 'YEAR')` | `01-JAN-03` |
+
+```sql
+SELECT employee_id, hire_date,
+       MONTHS_BETWEEN(SYSDATE, hire_date) tenure,
+       ADD_MONTHS(hire_date, 6)          review,
+       NEXT_DAY(hire_date, 'FRIDAY'),
+       LAST_DAY(hire_date)
+FROM   employees
+WHERE  MONTHS_BETWEEN(SYSDATE, hire_date) < 150;
+```
+
+<Callout type="tip" title="Bonus from Lesson 4: NVL">
+  <code>NVL(expr, replacement)</code> returns <code>replacement</code> when <code>expr</code> is NULL. For example, <code>12*salary*NVL(commission_pct, 0)</code> gives 0 instead of NULL for employees without a commission. You'll need it with group functions in Section 5.
+</Callout>
+
+<Takeaways>
+
+- Single-row functions return **one value per row**, can be **nested**, and work in SELECT, WHERE and ORDER BY.
+- Use `LOWER`/`UPPER` for **case-insensitive** comparisons; `SUBSTR`, `INSTR`, `LENGTH`, `LPAD`, `REPLACE` and `TRIM` reshape text.
+- `ROUND` rounds, `TRUNC` cuts and `MOD` gives remainders; negative precision works left of the decimal point. Test them on `DUAL`.
+- Dates are numbers inside: date ± n gives a date, and date − date gives days. **RR** picks the sensible century.
+- `MONTHS_BETWEEN`, `ADD_MONTHS`, `NEXT_DAY`, `LAST_DAY`, `ROUND` and `TRUNC` handle calendar logic.
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="Format names" level="easy">
+
+Show each employee's last name with only the first letter capitalized, and the length of the name, for employees whose last name starts with **J, A or M**. Sort by last name.
+
+<Solution>
+
+```sql
+SELECT   INITCAP(last_name) "Name", LENGTH(last_name) "Length"
+FROM     employees
+WHERE    SUBSTR(last_name, 1, 1) IN ('J', 'A', 'M')
+ORDER BY last_name;
+-- Abel 4 · Matos 5 · Mourgos 7
+```
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Salary bars" level="medium">
+
+Show each last name with a "bar" of asterisks, one `*` per thousand of salary, highest salary first.
+
+<Solution>
+
+```sql
+SELECT   last_name,
+         RPAD(' ', TRUNC(salary/1000) + 1, '*') AS salary_bar
+FROM     employees
+ORDER BY salary DESC;
+```
+
+`TRUNC(salary/1000)` gives the number of thousands. `RPAD` pads a single space with `*` up to that width plus one, so King (24000) gets 24 stars and Vargas (2500) gets 2.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Predict the dates" level="easy">
+
+Evaluate: (a) `ADD_MONTHS('31-JAN-95', 1)` (b) `ROUND(TO_DATE('15-JUL-03'), 'MONTH')` (c) `TRUNC(81.769, 1)`
+
+<Solution>
+
+(a) `28-FEB-95`: 1995 isn't a leap year, so the last day of the month is used. (b) `01-JUL-03`: `ROUND(…, 'MONTH')` rounds **up only from the 16th**, so the 15th rounds down. (c) `81.7`.
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "Which statement about single-row functions is FALSE?",
+      options: ["They can be nested", "They act on each row returned", "They return one result per set of rows", "They accept columns or expressions as arguments"],
+      answer: 2,
+      explain: "One result per set of rows describes group (multiple-row) functions."
+    },
+    {
+      q: "What does INSTR('HelloWorld', 'W') return?",
+      options: ["5", "6", "W", "0"],
+      answer: 1,
+      explain: "W is the 6th character."
+    },
+    {
+      q: "What does ROUND(45.923, -1) return?",
+      options: ["45.9", "46", "50", "40"],
+      answer: 2,
+      explain: "Negative precision rounds to the tens: 45.923 becomes 50."
+    },
+    {
+      q: "What does TRUNC(45.923) return?",
+      options: ["45", "46", "45.9", "40"],
+      answer: 0,
+      explain: "With no second argument, TRUNC cuts all decimals."
+    },
+    {
+      q: "Subtracting two dates gives…",
+      options: ["A date", "The number of days between them", "Months between them", "An error"],
+      answer: 1,
+      explain: "date − date = days (possibly fractional)."
+    },
+    {
+      q: "In the year 2001, how is '27-OCT-95' interpreted with the RR format?",
+      options: ["2095", "1995", "1895", "Error"],
+      answer: 1,
+      explain: "A 50–99 year given in a 0–49 current year goes to the previous century."
+    },
+    {
+      q: "What is LAST_DAY('01-FEB-96')?",
+      options: ["28-FEB-96", "29-FEB-96", "01-MAR-96", "31-JAN-96"],
+      answer: 1,
+      explain: "1996 is a leap year, so February has 29 days."
+    }
+  ]}
+/>

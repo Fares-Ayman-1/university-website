@@ -1,0 +1,329 @@
+---
+number: 4
+title: Relational Algebra
+summary: The formal query language behind SQL. Covers the unary operations SELECT (σ), PROJECT (π) and RENAME (ρ), composing them with intermediate results, the set operations (union, intersection, difference, Cartesian product), and an overview of joins and division, all worked on the COMPANY database.
+topics: [SELECT σ, PROJECT π, RENAME ρ, Sequences of operations, UNION, Set operations, Cartesian product and joins]
+duration: 50 min study
+sources:
+  - file: Lectures/ch3/lecture _rational algebra.pdf
+    label: Databases I – Relational Algebra (lecture slides)
+    pages: "1-10"
+bookRefs:
+  - book: elmasri
+    chapter: Ch 8 · The Relational Algebra and Relational Calculus
+---
+
+<Objectives>
+
+- Name the groups of relational algebra operations and their symbols.
+- Write and evaluate **SELECT** ($\sigma$), **PROJECT** ($\pi$) and **RENAME** ($\rho$) expressions.
+- Combine operations **in sequence** or as **nested expressions**, and translate them to SQL.
+- Apply **UNION**, **INTERSECTION**, **DIFFERENCE** and **CARTESIAN PRODUCT**, including **union compatibility**.
+- Explain how **JOIN** and **DIVISION** build on the basic operations.
+
+</Objectives>
+
+## What relational algebra is
+
+Relational algebra is a set of **operations on relations** that produce **new relations**. Because every result is itself a relation, operations can be **composed** freely; this property is called **closure**. It is the formal foundation that SQL queries are translated into and optimized with.
+
+| Group | Operations |
+|---|---|
+| **Unary** | SELECT $\sigma$, PROJECT $\pi$, RENAME $\rho$ |
+| **From set theory** | UNION $\cup$, INTERSECTION $\cap$, DIFFERENCE $-$, CARTESIAN PRODUCT $\times$ |
+| **Binary relational** | JOIN $\bowtie$ (several variants), DIVISION $\div$ |
+| **Additional** | Outer joins, outer union, **aggregate functions** (SUM, COUNT, AVG, MIN, MAX) |
+
+<SlideFigure page={2} caption="The COMPANY relational schema used in every example." />
+
+All examples use this `EMPLOYEE` state from the COMPANY database:
+
+| FNAME | LNAME | SSN | SEX | SALARY | SUPERSSN | DNO |
+|---|---|---|---|---|---|---|
+| John | Smith | 123456789 | M | 30000 | 333445555 | 5 |
+| Franklin | Wong | 333445555 | M | 40000 | 888665555 | 5 |
+| Alicia | Zelaya | 999887777 | F | 25000 | 987654321 | 4 |
+| Jennifer | Wallace | 987654321 | F | 43000 | 888665555 | 4 |
+| Ramesh | Narayan | 666884444 | M | 38000 | 333445555 | 5 |
+| Joyce | English | 453453453 | F | 25000 | 333445555 | 5 |
+| Ahmad | Jabbar | 987987987 | M | 25000 | 987654321 | 4 |
+| James | Borg | 888665555 | M | 55000 | NULL | 1 |
+
+## SELECT: choosing rows (σ)
+
+$$
+\sigma_{\langle \text{selection condition} \rangle}(R)
+$$
+
+SELECT keeps the **tuples** (rows) of $R$ for which the Boolean **selection condition** is **true** and discards the rest. The condition compares attributes with constants or with each other ($=, \neq, <, \le, >, \ge$) and combines comparisons with **AND**, **OR** and **NOT**.
+
+$$
+\sigma_{DNO = 4}(\text{EMPLOYEE}) \qquad \sigma_{SALARY > 30000}(\text{EMPLOYEE})
+$$
+
+| $\sigma_{DNO=4}$ returns | $\sigma_{SALARY>30000}$ returns |
+|---|---|
+| Alicia, Jennifer, Ahmad | Franklin (40000), Jennifer (43000), Ramesh (38000), James (55000) |
+
+Properties of SELECT:
+
+- The result has the **same attributes** (degree) as $R$, and at most as many tuples.
+- It is **commutative**: $\sigma_{c_1}(\sigma_{c_2}(R)) = \sigma_{c_2}(\sigma_{c_1}(R))$.
+- A **cascade** of selects is one select with AND: $\sigma_{c_1}(\sigma_{c_2}(R)) = \sigma_{c_1 \text{ AND } c_2}(R)$.
+- The fraction of tuples it keeps is its **selectivity**.
+
+```sql title="select.sql"
+SELECT * FROM employee WHERE dno = 4;              -- σ DNO=4 (EMPLOYEE)
+SELECT * FROM employee WHERE salary > 30000;
+```
+
+## PROJECT: choosing columns (π)
+
+$$
+\pi_{\langle \text{attribute list} \rangle}(R)
+$$
+
+PROJECT keeps only the listed **attributes** (columns), in the order given. The result is a **set**, so **duplicate tuples are removed**.
+
+$$
+\pi_{LNAME,\ FNAME,\ SALARY}(\text{EMPLOYEE})
+$$
+
+<Callout type="warning" title="Duplicates disappear">
+  $\pi_{SEX,\ SALARY}(\text{EMPLOYEE})$ returns <strong>7</strong> tuples, not 8, because Alicia and Joyce both give (F, 25000). In SQL, <code>SELECT sex, salary FROM employee</code> keeps duplicates (a multiset); you need <code>SELECT DISTINCT</code> to match the algebra.
+</Callout>
+
+PROJECT is **not** commutative, and $\pi_{list_1}(\pi_{list_2}(R)) = \pi_{list_1}(R)$ as long as $list_1 \subseteq list_2$.
+
+## Combining operations
+
+Operations can be **nested** into one expression:
+
+$$
+\pi_{FNAME,\ LNAME,\ SALARY}\big(\sigma_{DNO=5}(\text{EMPLOYEE})\big)
+$$
+
+Or written as a **sequence**, naming each **intermediate result** with $\leftarrow$:
+
+$$
+\begin{aligned}
+\text{DEP5\_EMPS} &\leftarrow \sigma_{DNO=5}(\text{EMPLOYEE}) \\
+\text{RESULT} &\leftarrow \pi_{FNAME,\ LNAME,\ SALARY}(\text{DEP5\_EMPS})
+\end{aligned}
+$$
+
+| FNAME | LNAME | SALARY |
+|---|---|---|
+| John | Smith | 30000 |
+| Franklin | Wong | 40000 |
+| Ramesh | Narayan | 38000 |
+| Joyce | English | 25000 |
+
+```sql title="select_project.sql"
+SELECT fname, lname, salary FROM employee WHERE dno = 5;
+-- "Department 4 and salary at least 25000"
+SELECT * FROM employee WHERE dno = 4 AND salary >= 25000;   -- σ DNO=4 AND SALARY>=25000
+```
+
+## RENAME (ρ)
+
+RENAME changes the name of a relation, of its attributes, or both:
+
+| Form | Effect |
+|---|---|
+| $\rho_{S(B_1, B_2, \dots, B_n)}(R)$ | Renames the relation to $S$ **and** the attributes to $B_1 \dots B_n$ |
+| $\rho_{S}(R)$ | Renames the **relation** only |
+| $\rho_{(B_1, B_2, \dots, B_n)}(R)$ | Renames the **attributes** only |
+
+The sequence notation renames implicitly too: $\text{RESULT}(First, Last, Pay) \leftarrow \pi_{FNAME, LNAME, SALARY}(\dots)$. In SQL this is what **aliases** do: `SELECT fname AS first …` and `FROM employee e`.
+
+## Set operations
+
+### UNION, INTERSECTION and DIFFERENCE
+
+<Definition term="Union compatibility">
+  Two relations are <strong>type (union) compatible</strong> if they have the <strong>same number of attributes</strong> and each pair of corresponding attributes has the <strong>same or a compatible domain</strong>. $\cup$, $\cap$ and $-$ require it.
+</Definition>
+
+| Operation | Result | Properties |
+|---|---|---|
+| $R \cup S$ | Tuples in $R$, in $S$, or in both; duplicates removed | Commutative and associative |
+| $R \cap S$ | Tuples in **both** $R$ and $S$ | Commutative and associative |
+| $R - S$ | Tuples in $R$ but **not** in $S$ | **Not** commutative: $R - S \neq S - R$ |
+
+**Example from the slides:** the SSNs of employees who **work in department 5 or directly supervise** someone who works in department 5:
+
+$$
+\begin{aligned}
+\text{DEP5\_EMPS} &\leftarrow \sigma_{DNO=5}(\text{EMPLOYEE}) \\
+\text{RESULT1} &\leftarrow \pi_{SSN}(\text{DEP5\_EMPS}) \\
+\text{RESULT2}(SSN) &\leftarrow \pi_{SUPERSSN}(\text{DEP5\_EMPS}) \\
+\text{RESULT} &\leftarrow \text{RESULT1} \cup \text{RESULT2}
+\end{aligned}
+$$
+
+| RESULT1 (work in 5) | RESULT2 (supervise someone in 5) | RESULT |
+|---|---|---|
+| 123456789, 333445555, 666884444, 453453453 | 333445555, 888665555 | 123456789, 333445555, 666884444, 453453453, 888665555 |
+
+`333445555` (Franklin Wong) appears in both but only **once** in the union.
+
+```sql title="union.sql"
+SELECT ssn       FROM employee WHERE dno = 5
+UNION                                  -- UNION removes duplicates; UNION ALL keeps them
+SELECT super_ssn FROM employee WHERE dno = 5;
+-- INTERSECT and MINUS (Oracle) / EXCEPT (standard SQL) work the same way
+```
+
+### CARTESIAN PRODUCT and JOIN
+
+$R \times S$ combines **every** tuple of $R$ with **every** tuple of $S$: $n_R \cdot n_S$ tuples, and degree $\deg(R) + \deg(S)$. It does **not** need union compatibility. On its own it is rarely meaningful; it becomes useful when followed by a SELECT that matches related tuples. That combination is a **JOIN**:
+
+$$
+R \bowtie_{\langle \text{join condition} \rangle} S \;=\; \sigma_{\langle \text{join condition} \rangle}(R \times S)
+$$
+
+$$
+\text{DEPT\_MGR} \leftarrow \text{DEPARTMENT} \bowtie_{MGRSSN = SSN} \text{EMPLOYEE}
+$$
+
+| Join | Condition |
+|---|---|
+| **Theta join** | Any comparison $\theta$ ($=, <, \ge, \dots$) |
+| **Equijoin** | Only equality comparisons |
+| **Natural join** $*$ | Equijoin on all attributes **with the same name**, keeping one copy of each |
+| **Outer joins** | Also keep tuples **without** a match, padding them with NULLs (left, right, full) |
+
+**DIVISION** $R \div S$ answers "for all" questions, such as *employees who work on **all** the projects that John Smith works on*. You will meet joins again in SQL in Section 6.
+
+```python title="algebra.py"
+EMPLOYEE = [
+    {"FNAME": "John", "SSN": "123456789", "SALARY": 30000, "SUPERSSN": "333445555", "DNO": 5},
+    {"FNAME": "Franklin", "SSN": "333445555", "SALARY": 40000, "SUPERSSN": "888665555", "DNO": 5},
+    # ... the other six employees
+]
+
+def select(rel, cond):                 # σ
+    return [t for t in rel if cond(t)]
+
+def project(rel, attrs):               # π (a set: duplicates removed, order kept)
+    seen, out = set(), []
+    for t in rel:
+        row = tuple(t[a] for a in attrs)
+        if row not in seen:
+            seen.add(row)
+            out.append(dict(zip(attrs, row)))
+    return out
+
+def rename(rel, mapping):              # ρ (attributes only)
+    return [{mapping.get(a, a): v for a, v in t.items()} for t in rel]
+
+def union(r, s):                       # ∪ (assumes union-compatible inputs)
+    return project(r + s, list((r or s)[0].keys()))
+
+dep5 = select(EMPLOYEE, lambda t: t["DNO"] == 5)
+result1 = project(dep5, ["SSN"])
+result2 = rename(project(dep5, ["SUPERSSN"]), {"SUPERSSN": "SSN"})
+print(union(result1, result2))
+```
+
+<Takeaways>
+
+- Relational algebra is **closed**: every operation returns a relation, so operations compose.
+- $\sigma$ filters **rows** (and is commutative), $\pi$ keeps **columns** and **removes duplicates**, and $\rho$ **renames**.
+- Long queries can be written as a **sequence** of named intermediate results or as one **nested** expression.
+- $\cup$, $\cap$ and $-$ need **union-compatible** operands; $-$ is not commutative; $\times$ pairs every tuple with every tuple.
+- A **join** is a Cartesian product followed by a selection, and it is the most common way to combine related tables.
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="Write the expression" level="easy">
+
+Retrieve the first name and salary of employees in department 4 who earn more than 25,000. Give the algebra expression, the SQL and the result.
+
+<Solution>
+
+$\pi_{FNAME,\ SALARY}\big(\sigma_{DNO=4\ \text{AND}\ SALARY>25000}(\text{EMPLOYEE})\big)$
+
+`SELECT fname, salary FROM employee WHERE dno = 4 AND salary > 25000;`
+
+Result: **Jennifer, 43000**. Alicia and Ahmad earn exactly 25,000, which is not more than 25,000.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Count the tuples" level="medium">
+
+How many tuples does each return? (a) $\pi_{DNO}(\text{EMPLOYEE})$ (b) $\pi_{SALARY}(\sigma_{SEX='F'}(\text{EMPLOYEE}))$ (c) $\pi_{SSN}(\text{EMPLOYEE}) - \pi_{SUPERSSN}(\text{EMPLOYEE})$
+
+<Solution>
+
+(a) **3**: departments 5, 4 and 1.
+(b) **2**: Alicia 25000, Jennifer 43000 and Joyce 25000 give the distinct salaries \{25000, 43000\}.
+(c) The SSNs of employees who supervise nobody. The supervisors are 333445555, 888665555 and 987654321 (NULL matches no SSN), so 8 − 3 = **5** tuples: Smith, Zelaya, Narayan, English and Jabbar.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Is it union compatible?" level="easy">
+
+Can you compute $\pi_{FNAME,\ SALARY}(\text{EMPLOYEE}) \cup \pi_{DNAME,\ DNUMBER}(\text{DEPARTMENT})$?
+
+<Solution>
+
+**Technically yes**: both have two attributes, FNAME and DNAME are both strings, and SALARY and DNUMBER are both numbers. But the result mixes people's salaries with department numbers, so it is **meaningless**. Union compatibility is a type check, not a guarantee that the result makes sense.
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "Which operation chooses a subset of rows?",
+      options: ["PROJECT π", "SELECT σ", "RENAME ρ", "UNION ∪"],
+      answer: 1,
+      explain: "SELECT filters tuples by a condition; PROJECT chooses columns."
+    },
+    {
+      q: "Why can π_{SEX, SALARY}(EMPLOYEE) return fewer tuples than EMPLOYEE has?",
+      options: ["PROJECT drops NULLs", "PROJECT removes duplicate tuples", "PROJECT sorts the result", "It can't"],
+      answer: 1,
+      explain: "The result of an algebra operation is a set, so duplicates are eliminated."
+    },
+    {
+      q: "σ_{c1}(σ_{c2}(R)) is equivalent to…",
+      options: ["σ_{c1 OR c2}(R)", "σ_{c1 AND c2}(R)", "π_{c1,c2}(R)", "R − σ_{c2}(R)"],
+      answer: 1,
+      explain: "A cascade of selections equals one selection with the conditions ANDed."
+    },
+    {
+      q: "Which operation is NOT commutative?",
+      options: ["UNION", "INTERSECTION", "DIFFERENCE", "SELECT"],
+      answer: 2,
+      explain: "R − S keeps tuples of R not in S, which differs from S − R."
+    },
+    {
+      q: "Union compatibility requires…",
+      options: ["The same relation name", "The same number of attributes with compatible domains", "A common key", "Equal cardinality"],
+      answer: 1,
+      explain: "Degree and domains must match pairwise."
+    },
+    {
+      q: "If R has 4 tuples and S has 5, how many tuples does R × S have?",
+      options: ["9", "20", "4", "5"],
+      answer: 1,
+      explain: "The Cartesian product pairs every tuple of R with every tuple of S: 4 × 5."
+    },
+    {
+      q: "A join can be expressed as…",
+      options: ["A union of two projections", "A selection over a Cartesian product", "A rename of a difference", "A projection of a union"],
+      answer: 1,
+      explain: "R ⋈_c S = σ_c(R × S)."
+    }
+  ]}
+/>

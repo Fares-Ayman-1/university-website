@@ -1,0 +1,224 @@
+---
+number: 3
+title: Working with Files and Directories
+summary: Navigate and manage the Linux filesystem. Covers paths (absolute and relative), pwd and cd, listing with ls and its options, using globs safely with ls -d, copying with cp (-v, -p, -R), moving and renaming with mv, and deleting with rm, rm -r and rmdir.
+kind: practical
+topics: [Directory tree, Absolute and relative paths, pwd and cd, ls options, Hidden files, cp, mv, rm and rmdir, mkdir]
+duration: 50 min hands-on
+sources:
+  - file: Sections/sec3/NDG Linux ch- 3.pdf
+    label: OS Lab 3 – Working with Files and Directories (slides)
+    pages: "1-15"
+bookRefs:
+  - book: ndg-linux
+    chapter: Modules 7–8 · Navigating the Filesystem, Managing Files and Directories
+---
+
+<Objectives>
+
+- Explain the Linux **directory tree**, the **home** directory, and **absolute vs. relative** paths.
+- Move around with `pwd` and `cd` (including `~`, `..` and `-`).
+- **List** files with `ls` and its key options: `-a`, `-l`, `-R`, `-d`, `-h`, `-t`.
+- **Copy** (`cp`), **move/rename** (`mv`), **create** (`mkdir`, `touch`) and **delete** (`rm`, `rmdir`) files and directories safely.
+
+</Objectives>
+
+## Files, directories and paths
+
+On Linux, data is stored in **files**, and files are organized in **directories** (folders). A directory is itself a special file that stores the **names** of its entries and their **inode numbers**, the unique IDs that point to each file's data on disk.
+
+- **Names are case-sensitive**: `Notes.txt` and `notes.txt` are different files.
+- Everything hangs from a single **root directory** `/`, with no drive letters.
+- Your **home directory** is `/home/<user>`, shortened to **`~`**. New terminals start there.
+
+| Path type | Starts from | Example |
+|---|---|---|
+| **Absolute** | The root `/`; works from anywhere | `/home/sysadmin/Documents` |
+| **Relative** | The **current** directory | `Documents`, `../Public`, `./script.sh` |
+
+| Symbol | Means |
+|---|---|
+| `.` | The current directory |
+| `..` | The parent directory |
+| `~` | Your home directory |
+| `-` (with cd) | The previous directory |
+
+```bash title="Terminal"
+pwd                    # /home/sysadmin
+cd /etc/sound          # absolute path
+pwd                    # /etc/sound
+cd ..                  # up one level  → /etc
+cd ../home/sysadmin    # relative path → /home/sysadmin
+cd Documents           # relative      → /home/sysadmin/Documents
+cd -                   # back to the previous directory
+cd                     # no argument   → home (same as cd ~)
+```
+
+## Listing with ls
+
+```bash title="Terminal"
+ls                     # names in the current directory (colors show the type)
+ls -a                  # all, including hidden files (names starting with ".")
+ls -l                  # long format: permissions, links, owner, group, size, date, name
+ls -lh                 # sizes in K/M/G
+ls -lt                 # newest first
+ls -R /etc/udev        # recursive: also list every subdirectory (careful with big trees!)
+```
+
+Hidden files such as **`.bashrc`**, the Bash configuration, begin with a dot.
+
+```text title="ls -l output"
+-rw-r--r-- 1 sysadmin sysadmin  647 Oct 21 14:02 notes.txt
+drwxr-xr-x 2 sysadmin sysadmin 4096 Oct 21 13:55 Documents
+│└───┬───┘ │ └──┬───┘ └──┬───┘  │   └────┬─────┘ └─ name
+│   perms links owner   group  size   modified
+└─ type: - file, d directory, l symbolic link
+```
+
+### Globs with ls: use -d
+
+When a glob matches a **directory**, plain `ls` lists that directory's **contents**. Add **`-d`** to list the matching names themselves:
+
+```bash title="Terminal"
+ls /etc/s*             # shows the contents of matching directories too, which is confusing
+ls -d /etc/s*          # just the matching names
+```
+
+## Copying with cp
+
+```text
+cp [OPTION] SOURCE DESTINATION
+```
+
+```bash title="Terminal"
+cp /etc/hosts ~                    # copy into your home directory
+cp -v /etc/hosts .                 # . = here; -v (verbose) reports what it did
+# '/etc/hosts' -> './hosts'
+cp -p /etc/hosts ~                 # preserve timestamps, mode and ownership
+cp /etc/hosts ~/hosts.bak          # copy under a different name
+cp -R /etc/udev ~/udev-copy        # -R / -r: copy a directory and everything in it
+cp -i notes.txt Documents/         # -i: ask before overwriting
+```
+
+<Callout type="warning" title="cp overwrites silently">
+  If the destination file exists, `cp` replaces it without asking. Use `-i` (interactive) or `-n` (never overwrite) when that matters.
+</Callout>
+
+## Moving and renaming with mv
+
+Moving is like **cut and paste**: the file is removed from the source and appears at the destination. Within one filesystem it is instant, because only the directory entry changes. **Renaming** is just a move within the same directory.
+
+```bash title="Terminal"
+mv hosts Documents/             # move into a directory
+mv Documents/hosts myhosts      # move back and rename in one step
+mv notes.txt todo.md Public/    # several files into one directory
+mv old_dir new_dir              # rename a directory (no -r needed)
+```
+
+## Creating and deleting
+
+```bash title="Terminal"
+mkdir projects                  # make a directory
+mkdir -p projects/os/lab3       # -p: create missing parents, no error if it exists
+touch projects/os/lab3/a.txt    # create an empty file (or update its timestamp)
+
+rm a.txt                        # delete a file (there is NO recycle bin)
+rm -i *.txt                     # ask before each deletion
+rmdir empty_dir                 # delete a directory only if it is EMPTY
+rm -r projects                  # delete a directory and everything inside it, recursively
+```
+
+<Callout type="warning" title="rm is permanent">
+  Deleted files don't go to a trash bin. Check globs first with <code>echo</code> or <code>ls</code> (for example <code>ls *.log</code> before <code>rm *.log</code>), and never run <code>rm -rf</code> on a path you haven't double-checked.
+</Callout>
+
+<Takeaways>
+
+- One tree from `/`. Absolute paths start at `/`; relative paths start at the current directory (`.`, `..`, `~`).
+- `pwd` shows where you are; `cd`, `cd ..`, `cd ~` and `cd -` move you around.
+- `ls -a` shows hidden files, `-l` details, `-R` recursion, `-d` the names that globs match.
+- `cp` copies (`-v` verbose, `-p` preserve, `-R` directories), `mv` moves and renames, `mkdir -p` builds trees.
+- `rm` deletes permanently, `rmdir` removes only empty directories, and `rm -r` removes whole trees.
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="Paths" level="easy">
+
+You are in `/home/sysadmin/Documents`. Give a relative and an absolute command to change to `/home/sysadmin/Public`.
+
+<Solution>
+
+Relative: `cd ../Public`. Absolute: `cd /home/sysadmin/Public`, or `cd ~/Public`.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Back up and tidy" level="medium">
+
+In one command line: create `~/backup/configs` (with parents), copy `/etc/hosts` and `/etc/hostname` into it with verbose output, then list the directory in long format.
+
+<Solution>
+
+```bash
+mkdir -p ~/backup/configs && cp -v /etc/hosts /etc/hostname ~/backup/configs && ls -l ~/backup/configs
+```
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Why did rmdir fail?" level="easy">
+
+`rmdir projects` prints "Directory not empty". What are your options?
+
+<Solution>
+
+`rmdir` only removes **empty** directories. Either delete the contents first (`rm projects/*`, then `rmdir projects`), or remove everything recursively with `rm -r projects`, after checking with `ls -R projects` that you really want to.
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "Which path is absolute?",
+      options: ["Documents/notes.txt", "../Public", "/etc/hosts", "./run.sh"],
+      answer: 2,
+      explain: "Absolute paths start at the root /."
+    },
+    {
+      q: "Which option shows hidden files?",
+      options: ["ls -h", "ls -a", "ls -R", "ls -d"],
+      answer: 1,
+      explain: "-a = all, including names that start with a dot."
+    },
+    {
+      q: "Which option copies a directory and all its contents?",
+      options: ["cp -v", "cp -p", "cp -R", "cp -d"],
+      answer: 2,
+      explain: "-R (or -r) copies recursively."
+    },
+    {
+      q: "How do you rename notes.txt to todo.txt?",
+      options: ["rename notes.txt todo.txt", "cp notes.txt todo.txt", "mv notes.txt todo.txt", "rn notes.txt todo.txt"],
+      answer: 2,
+      explain: "A rename is a move within the same directory."
+    },
+    {
+      q: "rmdir works only when the directory is…",
+      options: ["Owned by root", "Empty", "Hidden", "In /tmp"],
+      answer: 1,
+      explain: "Use rm -r for non-empty directories."
+    },
+    {
+      q: "What does cd - do?",
+      options: ["Goes to the root", "Goes to the previous directory", "Goes to home", "Deletes the directory"],
+      answer: 1,
+      explain: "It swaps back to the directory you were just in."
+    }
+  ]}
+/>

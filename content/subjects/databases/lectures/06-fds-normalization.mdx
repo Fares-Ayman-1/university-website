@@ -1,0 +1,329 @@
+---
+number: 6
+title: Functional Dependencies and Normalization
+summary: How to tell a good relational design from a bad one. Covers the four informal design guidelines and update anomalies, functional dependencies and their inference rules, attribute closure and candidate keys, then step-by-step normalization into 1NF, 2NF and 3NF (with a look at BCNF).
+topics: [Design guidelines, Update anomalies, Spurious tuples, Functional dependencies, Inference rules, Attribute closure, Candidate keys, 1NF, 2NF, 3NF]
+duration: 75 min study
+sources:
+  - file: Lectures/ch4/Lecture _FD_normlization.pdf
+    label: Databases I – Functional Dependencies and Normalization (lecture slides)
+    pages: "1-60"
+  - file: Lectures/ch4/Lecture _FD.pdf
+    label: Databases I – Functional Dependencies (shorter version)
+    pages: "1-39"
+bookRefs:
+  - book: elmasri
+    chapter: Ch 14 · Basics of Functional Dependencies and Normalization
+---
+
+<Objectives>
+
+- Apply the **four informal guidelines** and recognize **insertion, deletion and modification anomalies** and **spurious tuples**.
+- Define a **functional dependency** $X \to Y$ and use **inference rules** (Armstrong's axioms and derived rules).
+- Compute an **attribute closure** $X^+$ and use it to test FDs and find **candidate keys**.
+- Classify attributes as **prime** or **nonprime**, and distinguish **full**, **partial** and **transitive** dependencies.
+- **Normalize** a relation to **1NF, 2NF and 3NF**, and say what **BCNF** adds.
+
+</Objectives>
+
+## What makes a design good?
+
+Relational design is about **grouping attributes into good relation schemas**. The informal measures of quality are four guidelines:
+
+<Steps>
+
+1. **Clear semantics**: each tuple should represent **one** entity or relationship instance. Don't mix attributes of different entities, and refer to other entities only through **foreign keys**.
+2. **No redundancy, no update anomalies**: design schemas that don't suffer from insertion, deletion or modification anomalies.
+3. **Few NULLs**: attributes that are often NULL belong in a separate relation (with the primary key).
+4. **No spurious tuples**: relations should join only on **(primary key, foreign key)** pairs, so natural joins never invent rows.
+
+</Steps>
+
+### Update anomalies
+
+<SlideFigure page={8} caption="EMP_DEPT and EMP_PROJ: two schemas that mix entities and suffer from anomalies." />
+
+`EMP_DEPT(Ename, Ssn, Bdate, Address, Dnumber, Dname, Dmgr_ssn)` repeats the department's name and manager for **every** employee in that department.
+
+| Anomaly | Example |
+|---|---|
+| **Modification** | Changing the manager of department 5 means updating **every** employee tuple of department 5; miss one and the data is inconsistent |
+| **Insertion** | You can't record a new department that has no employees yet without NULLs in the employee attributes, and in `EMP_PROJ` you can't add a project until someone is assigned to it |
+| **Deletion** | Deleting the last employee of a department, or the only employee on a project, also deletes the department or project information |
+
+### Spurious tuples
+
+Splitting `EMP_PROJ` into `EMP_LOCS(Ename, Plocation)` and `EMP_PROJ1(Ssn, Pnumber, Hours, Pname, Plocation)` and then **natural-joining on Plocation** produces **extra, false rows**. Plocation is neither a key nor a foreign key, so many employees match many projects at the same location. Join only on PK–FK pairs.
+
+## Functional dependencies
+
+<Definition term="Functional dependency">
+  $X \to Y$ holds on relation $R$ if any two tuples that agree on $X$ also agree on $Y$: for all $t_1, t_2 \in r$, $t_1[X] = t_2[X] \Rightarrow t_1[Y] = t_2[Y]$. We say "$X$ functionally determines $Y$".
+</Definition>
+
+FDs come from the **meaning** of the data (the real-world rules), not from one particular table state. A state can **disprove** an FD, but it can't prove one.
+
+$$
+SSN \to ENAME \qquad PNUMBER \to \{PNAME,\ PLOCATION\} \qquad \{SSN,\ PNUMBER\} \to HOURS
+$$
+
+| roll_no | name | dept_name | dept_building |
+|---|---|---|---|
+| 42 | abc | CO | A4 |
+| 43 | pqr | IT | A3 |
+| 44 | xyz | CO | A4 |
+| 45 | xyz | IT | A3 |
+| 46 | mno | EC | B2 |
+| 47 | jkl | ME | B2 |
+
+- **Valid:** `roll_no → {name, dept_name, dept_building}`, `dept_name → dept_building`, `{roll_no, name} → {dept_name, dept_building}`.
+- **Invalid:** `name → dept_name` (xyz is in CO and IT), `dept_building → dept_name` (B2 is EC and ME), `dept_building → roll_no`.
+
+A **trivial** FD has its right side contained in its left side, e.g. `{title, year} → title`. It always holds.
+
+### Inference rules
+
+Given a set of FDs $F$, other FDs follow from it:
+
+| Rule | Statement |
+|---|---|
+| **Reflexivity** | If $Y \subseteq X$, then $X \to Y$ (trivial) |
+| **Augmentation** | If $X \to Y$, then $XZ \to YZ$ |
+| **Transitivity** | If $X \to Y$ and $Y \to Z$, then $X \to Z$ |
+| **Decomposition** | If $X \to YZ$, then $X \to Y$ and $X \to Z$ |
+| **Union** | If $X \to Y$ and $X \to Z$, then $X \to YZ$ |
+| **Pseudo-transitivity** | If $X \to Y$ and $WY \to Z$, then $WX \to Z$ |
+
+The first three are **Armstrong's axioms**; the others can be derived from them. Two sets of FDs $F$ and $G$ are **equivalent** if each can be inferred from the other. $\{A \to B, A \to C\}$ is equivalent to $\{A \to BC\}$ by union and decomposition.
+
+## Attribute closure
+
+<Definition term="Closure X⁺">
+  The set of <strong>all attributes functionally determined by X</strong> under F.
+</Definition>
+
+<Steps>
+
+1. Start with $X^+ = X$.
+2. Repeat: for each FD $L \to R$ in $F$, if $L \subseteq X^+$, add $R$ to $X^+$.
+3. Stop when a full pass adds nothing.
+
+</Steps>
+
+**Example.** $R(A,B,C,D,E,F)$ with $F = \{AB \to C,\ BC \to AD,\ D \to E,\ CF \to B\}$. Compute $\{A,B\}^+$:
+
+| Step | FD used | $\{A,B\}^+$ |
+|---|---|---|
+| start | | $\{A, B\}$ |
+| 1 | $AB \to C$ | $\{A, B, C\}$ |
+| 2 | $BC \to AD$ | $\{A, B, C, D\}$ |
+| 3 | $D \to E$ | $\{A, B, C, D, E\}$ |
+| 4 | $CF \to B$ can't fire, since $F$ never enters | **done** |
+
+**Testing an FD:** $X \to Y$ follows from $F$ **iff** $Y \subseteq X^+$. So $AB \to D$ follows, because $D \in \{A,B\}^+$. $D \to A$ does **not**, because $D^+ = \{D, E\}$.
+
+```python title="closure.py"
+from itertools import combinations
+
+def closure(attrs, fds):
+    result, changed = set(attrs), True
+    while changed:
+        changed = False
+        for lhs, rhs in fds:
+            if set(lhs) <= result and not set(rhs) <= result:
+                result |= set(rhs)
+                changed = True
+    return result
+
+def candidate_keys(R, fds):
+    keys = []
+    for size in range(1, len(R) + 1):
+        for combo in combinations(R, size):
+            if closure(combo, fds) == set(R) and not any(set(k) <= set(combo) for k in keys):
+                keys.append("".join(combo))
+    return keys
+
+F = [("AB", "C"), ("BC", "AD"), ("D", "E"), ("CF", "B")]
+print(sorted(closure("AB", F)))                                  # ['A', 'B', 'C', 'D', 'E']
+print(candidate_keys("ABCD", [("A", "B"), ("C", "D"), ("AC", "B")]))  # ['AC']
+```
+
+### Keys, prime and nonprime attributes
+
+A set $K$ is a **key** (candidate key) of $R$ if $K^+ = $ all attributes of $R$ (it is a superkey) **and** no proper subset of $K$ has that property (it is minimal).
+
+- A **prime** attribute belongs to **some** candidate key.
+- A **nonprime** attribute belongs to **none**.
+
+**Example.** $R(A,B,C,D)$, $F = \{A \to B,\ C \to D,\ AC \to B\}$. $AC^+ = \{A,B,C,D\}$, while $A^+ = \{A,B\}$ and $C^+ = \{C,D\}$, so **AC** is the only candidate key. A and C are prime; B and D are nonprime.
+
+## Normalization
+
+<Definition term="Normalization">
+  Decomposing "bad" relations into smaller, well-structured ones, using keys and FDs, to remove redundancy and the insertion, deletion and modification anomalies. A <strong>normal form</strong> is a test that a schema passes or fails.
+</Definition>
+
+1NF, 2NF, 3NF and BCNF are based on keys and FDs; 4NF and 5NF use multivalued and join dependencies. In practice designs are normalized to **3NF or BCNF**.
+
+### First normal form (1NF)
+
+Every attribute value is **atomic**: no multivalued attributes, no composite attributes, no nested relations. This is part of the definition of a relation.
+
+<SlideFigure page={45} caption="DEPARTMENT with a multivalued Dlocations is not in 1NF. The fix: a separate DEPT_LOCATIONS(Dnumber, Dlocation)." />
+
+The best fix is a **new relation** for the multivalued attribute, keyed by (original key, value). Repeating the whole row for each location also reaches 1NF, but it creates redundancy.
+
+### Second normal form (2NF)
+
+<Definition term="Full vs. partial dependency">
+  $Y \to Z$ is a <strong>full</strong> FD if removing <em>any</em> attribute from $Y$ breaks it. Otherwise it is <strong>partial</strong>. $\{SSN, PNUMBER\} \to HOURS$ is full. $\{SSN, PNUMBER\} \to ENAME$ is partial, because $SSN \to ENAME$ already holds.
+</Definition>
+
+**2NF:** in 1NF, and **every nonprime attribute is fully dependent on the primary key**, so there are no partial dependencies. Only relations with a **composite** key can violate 2NF.
+
+<SlideFigure page={49} caption="EMP_PROJ has partial dependencies, so it is split into EP1(Ssn, Pnumber, Hours), EP2(Ssn, Ename) and EP3(Pnumber, Pname, Plocation)." />
+
+### Third normal form (3NF)
+
+<Definition term="Transitive dependency">
+  $X \to Z$ is <strong>transitive</strong> if it holds because $X \to Y$ and $Y \to Z$, where $Y$ is not a candidate key. $SSN \to DMGR\_SSN$ is transitive through $DNUMBER$.
+</Definition>
+
+**3NF:** in 2NF, and **no nonprime attribute is transitively dependent on the primary key**. A transitive chain through another **candidate key** is fine: in `EMP(SSN, Emp#, Salary)`, Emp# is itself a key.
+
+<SlideFigure page={52} caption="EMP_DEPT has Ssn → Dnumber → Dmgr_ssn, so it is split into ED1(Ename, Ssn, Bdate, Address, Dnumber) and ED2(Dnumber, Dname, Dmgr_ssn)." />
+
+<Callout type="tip" title="The informal summary">
+  <strong>2NF</strong>: every attribute depends on the <strong>whole</strong> key. <strong>3NF</strong>: every attribute depends on <strong>nothing but</strong> the key.
+</Callout>
+
+| Normal form | Test | Remedy |
+|---|---|---|
+| **1NF** | No multivalued, composite or nested attributes | Move each multivalued attribute to its own relation |
+| **2NF** | No nonprime attribute depends on **part** of a composite key | Split: each partial key gets its own relation with its dependents |
+| **3NF** | No nonprime attribute depends on another **nonkey** attribute | Split: the determining nonkey attribute becomes the key of a new relation |
+
+**Beyond 3NF:** in **BCNF** (Boyce–Codd NF), the left side of **every** nontrivial FD must be a superkey. That also rules out a prime attribute that depends on a nonkey. Every BCNF relation is in 3NF, but not the other way round.
+
+### A worked example
+
+| EMPLOYEE_ID | NAME | JOB_CODE | JOB | STATE_CODE | HOME_STATE |
+|---|---|---|---|---|---|
+| E001 | Alice | J01 | Chef | 26 | Michigan |
+| E001 | Alice | J02 | Waiter | 26 | Michigan |
+| E002 | Bob | J02 | Waiter | 56 | Wyoming |
+| E002 | Bob | J03 | Bartender | 56 | Wyoming |
+| E003 | Alice | J01 | Chef | 56 | Wyoming |
+
+The key is **(EMPLOYEE_ID, JOB_CODE)**, with these FDs:
+
+- `EMPLOYEE_ID → NAME, STATE_CODE`
+- `JOB_CODE → JOB`
+- `STATE_CODE → HOME_STATE`
+
+<Steps>
+
+1. **Not 2NF**: NAME, STATE_CODE and HOME_STATE depend only on EMPLOYEE_ID, and JOB depends only on JOB_CODE (partial dependencies). Split into `EMP_JOB(EMPLOYEE_ID, JOB_CODE)`, `EMPLOYEE(EMPLOYEE_ID, NAME, STATE_CODE, HOME_STATE)` and `JOB(JOB_CODE, JOB)`.
+2. **Not 3NF**: in EMPLOYEE, `EMPLOYEE_ID → STATE_CODE → HOME_STATE` is transitive. Split into `EMPLOYEE(EMPLOYEE_ID, NAME, STATE_CODE)` and `STATE(STATE_CODE, HOME_STATE)`.
+3. Result: **4 relations in 3NF**. Each fact (Alice's name, Wyoming's code, what J01 means) is stored **once**.
+
+</Steps>
+
+<Takeaways>
+
+- Good designs have **clear semantics**, **no redundancy or anomalies**, **few NULLs** and **no spurious tuples**.
+- $X \to Y$: equal $X$ values force equal $Y$ values. Reason with **Armstrong's axioms** and derived rules.
+- **Closure** $X^+$ tests FDs ($X \to Y$ iff $Y \subseteq X^+$) and finds **candidate keys** (minimal $X$ with $X^+ = R$).
+- **1NF**: atomic values. **2NF**: no partial dependencies. **3NF**: no transitive dependencies of nonprime attributes. **BCNF**: every determinant is a superkey.
+- Normalization **decomposes** a relation, and each step removes one kind of redundancy.
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="Closure and keys" level="medium">
+
+$R(A,B,C,D,E)$ with $F = \{A \to B,\ B \to C,\ CD \to E\}$. (a) Compute $A^+$ and $AD^+$. (b) Find the candidate key(s). (c) Which normal form is $R$ in?
+
+<Solution>
+
+(a) $A^+ = \{A, B, C\}$ and $AD^+ = \{A, B, C, D, E\}$.
+
+(b) Neither A nor D appears on any right side, so every key must contain both. $AD^+$ is everything, so **AD** is the only candidate key.
+
+(c) $A \to B$ is a **partial** dependency (B depends on part of the key AD), so R is **not in 2NF**, only **1NF**. A 3NF decomposition that keeps every FD makes one relation per FD plus one for the key: $R_1(\underline{A}, B)$, $R_2(\underline{B}, C)$, $R_3(\underline{C, D}, E)$, $R_4(\underline{A, D})$.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Spot the dependency type" level="easy">
+
+In `EMP_PROJ(Ssn, Pnumber, Hours, Ename, Pname, Plocation)` with key (Ssn, Pnumber), classify $\{Ssn, Pnumber\} \to Hours$, $Ssn \to Ename$ and $Pnumber \to Plocation$.
+
+<Solution>
+
+$\{Ssn, Pnumber\} \to Hours$ is a **full** dependency. $Ssn \to Ename$ and $Pnumber \to Plocation$ are **partial** dependencies on the key, so EMP_PROJ violates **2NF**.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Prove an FD" level="medium">
+
+Given $F = \{A \to BC,\ CD \to F,\ BE \to D\}$ on $R(A,B,C,D,E,F)$, does $AE \to CDF$ hold?
+
+<Solution>
+
+$AE^+$: start $\{A, E\}$; $A \to BC$ adds $B, C$; $BE \to D$ adds $D$; $CD \to F$ adds $F$. So $AE^+ = \{A,B,C,D,E,F\} \supseteq \{C, D, F\}$, and **yes**, $AE \to CDF$ holds.
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "Changing a department's manager requires updating many employee rows. This is a…",
+      options: ["Insertion anomaly", "Deletion anomaly", "Modification anomaly", "Spurious tuple"],
+      answer: 2,
+      explain: "Redundant copies must all be updated, or the data becomes inconsistent."
+    },
+    {
+      q: "X → Y holds if…",
+      options: ["Y values are unique", "Any two tuples equal on X are equal on Y", "X is a primary key", "Y ⊆ X"],
+      answer: 1,
+      explain: "Equal X values force equal Y values."
+    },
+    {
+      q: "If X → Y and Y → Z, then X → Z. Which rule is this?",
+      options: ["Augmentation", "Union", "Transitivity", "Decomposition"],
+      answer: 2,
+      explain: "Transitivity is one of Armstrong's axioms."
+    },
+    {
+      q: "With F = {A → B, B → D, AB → C}, what is A⁺?",
+      options: ["{A, B}", "{A, B, D}", "{A, B, C, D}", "{A}"],
+      answer: 2,
+      explain: "A gives B, B gives D, and AB gives C."
+    },
+    {
+      q: "A relation is in 2NF if it is in 1NF and…",
+      options: ["It has no transitive dependencies", "Every nonprime attribute is fully dependent on the primary key", "It has a single-attribute key", "Every determinant is a superkey"],
+      answer: 1,
+      explain: "2NF forbids partial dependencies on a composite key."
+    },
+    {
+      q: "SSN → DNUMBER → DMGR_SSN in EMP_DEPT violates…",
+      options: ["1NF", "2NF", "3NF", "Nothing"],
+      answer: 2,
+      explain: "A nonprime attribute depends transitively on the key through a nonkey attribute."
+    },
+    {
+      q: "'Every attribute depends on nothing but the key' informally describes…",
+      options: ["1NF", "2NF", "3NF", "4NF"],
+      answer: 2,
+      explain: "2NF is the whole key; 3NF is nothing but the key."
+    }
+  ]}
+/>

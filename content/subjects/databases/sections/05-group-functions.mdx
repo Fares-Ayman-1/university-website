@@ -1,0 +1,285 @@
+---
+number: 5
+title: Reporting Aggregated Data Using the Group Functions
+summary: Summarize many rows into one. Covers AVG, SUM, MIN, MAX and COUNT, DISTINCT inside group functions, how NULLs are ignored (and NVL to include them), GROUP BY on one or more columns, filtering groups with HAVING, the rules that make grouped queries legal, and nesting group functions.
+kind: lab
+topics: [Group functions, COUNT(*) vs COUNT(expr), DISTINCT, NULLs and NVL, GROUP BY, Multi-column grouping, HAVING, Nesting group functions]
+duration: 50 min hands-on
+sources:
+  - file: Sections/sec5/Lab05.pptx.pdf
+    label: Oracle SQL Fundamentals I – Lesson 5 Group Functions (lab slides)
+    pages: "1-28"
+bookRefs:
+  - book: oracle-sql
+    chapter: Lesson 5 · Reporting Aggregated Data Using the Group Functions
+---
+
+<Objectives>
+
+- Use the group functions `AVG`, `SUM`, `MIN`, `MAX`, `COUNT` (and `STDDEV`, `VARIANCE`).
+- Explain `COUNT(*)` vs `COUNT(expr)` vs `COUNT(DISTINCT expr)`, and how group functions treat **NULL**.
+- Divide rows into groups with **GROUP BY**, on one or several columns.
+- Restrict groups with **HAVING**, and know why `WHERE` can't do it.
+- Nest group functions, e.g. `MAX(AVG(salary))`.
+
+</Objectives>
+
+## What group functions do
+
+Group functions operate on **sets of rows** and return **one result per group**. Without `GROUP BY`, the whole table (after `WHERE`) is a single group.
+
+| Function | Returns | Data types |
+|---|---|---|
+| `AVG([DISTINCT] n)` | Average | Numeric |
+| `SUM([DISTINCT] n)` | Total | Numeric |
+| `MIN(expr)` / `MAX(expr)` | Smallest / largest value | Numeric, **character**, **date** |
+| `COUNT(*)` | Number of rows | Any |
+| `COUNT([DISTINCT] expr)` | Number of **non-null** values | Any |
+| `STDDEV(n)` / `VARIANCE(n)` | Standard deviation / variance | Numeric |
+
+```sql
+SELECT AVG(salary), MAX(salary), MIN(salary), SUM(salary)
+FROM   employees
+WHERE  job_id LIKE '%REP%';
+-- 8150   11000   6000   32600      (Abel, Taylor, Grant, Fay)
+
+SELECT MIN(hire_date), MAX(hire_date)
+FROM   employees;                   -- earliest and latest hire dates
+```
+
+### COUNT, DISTINCT and NULL
+
+```sql
+SELECT COUNT(*)              FROM employees WHERE department_id = 50;   -- 5 rows
+SELECT COUNT(commission_pct) FROM employees WHERE department_id = 80;   -- 3 non-null values
+SELECT COUNT(DISTINCT department_id) FROM employees;                   -- 7 departments
+```
+
+The last query returns 7, not 8, because Grant's NULL department isn't a value. **Group functions ignore NULLs** (except `COUNT(*)`):
+
+```sql
+SELECT AVG(commission_pct)          FROM employees;   -- .2125   (= .85 / 4 commission earners)
+SELECT AVG(NVL(commission_pct, 0))  FROM employees;   -- .0425   (= .85 / 20 employees)
+```
+
+<Callout type="warning" title="Which average do you want?">
+  <code>AVG(commission_pct)</code> is the average <em>among people who have a commission</em>. To average over <em>all</em> employees, turn NULLs into 0 with <code>NVL</code> first.
+</Callout>
+
+## GROUP BY
+
+`GROUP BY` divides the rows into groups that share the same values, and the group functions are then computed **per group**.
+
+```sql title="syntax"
+SELECT   column, group_function(column)
+FROM     table
+[WHERE   condition]
+[GROUP BY group_by_expression]
+[HAVING  group_condition]
+[ORDER BY column];
+```
+
+```sql
+SELECT   department_id, AVG(salary)
+FROM     employees
+GROUP BY department_id;
+```
+
+| DEPARTMENT_ID | AVG(SALARY) |
+|---|---|
+| 10 | 4400 |
+| 20 | 9500 |
+| 50 | 3500 |
+| 60 | 6400 |
+| 80 | 10033.33 |
+| 90 | 19333.33 |
+| 110 | 10150 |
+| (null) | 7000 |
+
+NULL forms its **own group** (Grant). The `GROUP BY` column **doesn't have to appear** in the SELECT list (`SELECT AVG(salary) … GROUP BY department_id` is legal), though the output is harder to read.
+
+### Grouping by several columns
+
+```sql
+SELECT   department_id, job_id, SUM(salary)
+FROM     employees
+WHERE    department_id > 40
+GROUP BY department_id, job_id
+ORDER BY department_id;
+```
+
+| DEPT | JOB_ID | SUM(SALARY) |
+|---|---|---|
+| 50 | ST_CLERK | 11700 |
+| 50 | ST_MAN | 5800 |
+| 60 | IT_PROG | 19200 |
+| 80 | SA_MAN | 10500 |
+| 80 | SA_REP | 19600 |
+| 90 | AD_PRES | 24000 |
+| 90 | AD_VP | 34000 |
+| 110 | AC_ACCOUNT | 8300 |
+| 110 | AC_MGR | 12000 |
+
+### Illegal grouped queries
+
+<Callout type="warning" title="The golden rule">
+  Every column or expression in the SELECT list that is <strong>not</strong> inside a group function <strong>must</strong> appear in GROUP BY.
+</Callout>
+
+```sql
+SELECT department_id, COUNT(last_name) FROM employees;
+-- ORA-00937: not a single-group group function      → add GROUP BY department_id
+
+SELECT department_id, job_id, COUNT(last_name)
+FROM   employees GROUP BY department_id;
+-- ORA-00979: not a GROUP BY expression               → add job_id to GROUP BY (or remove it)
+```
+
+## HAVING: restricting groups
+
+`WHERE` filters **rows before** grouping, and it **can't** contain group functions:
+
+```sql
+SELECT department_id, AVG(salary) FROM employees
+WHERE  AVG(salary) > 8000                       -- ORA-00934: group function is not allowed here
+GROUP BY department_id;
+```
+
+`HAVING` filters **groups after** grouping. Oracle (1) groups the rows, (2) applies the group functions, (3) keeps the groups that satisfy `HAVING`.
+
+```sql
+SELECT   department_id, MAX(salary)
+FROM     employees
+GROUP BY department_id
+HAVING   MAX(salary) > 10000;
+-- 20 13000 · 80 11000 · 90 24000 · 110 12000
+
+SELECT   job_id, SUM(salary) PAYROLL
+FROM     employees
+WHERE    job_id NOT LIKE '%REP%'        -- row filter first
+GROUP BY job_id
+HAVING   SUM(salary) > 13000            -- then group filter
+ORDER BY SUM(salary);
+-- IT_PROG 19200 · AD_PRES 24000 · AD_VP 34000
+```
+
+| Clause | Runs | Filters |
+|---|---|---|
+| `WHERE` | Before grouping | Individual **rows**; no group functions |
+| `GROUP BY` | | Forms the groups |
+| `HAVING` | After grouping | Whole **groups**; group functions allowed |
+| `ORDER BY` | Last | Sorts the final result |
+
+## Nesting group functions
+
+Group functions can be nested **two levels** deep, and then a `GROUP BY` is required:
+
+```sql
+SELECT   MAX(AVG(salary))
+FROM     employees
+GROUP BY department_id;       -- 19333.33  (department 90)
+```
+
+<Takeaways>
+
+- Group functions return **one value per group**. `MIN`/`MAX` also work on text and dates.
+- `COUNT(*)` counts rows, `COUNT(expr)` counts **non-null** values, and `DISTINCT` counts unique values.
+- Group functions **ignore NULLs**; use `NVL` to include them.
+- Non-aggregated SELECT columns **must** be in `GROUP BY`; NULL forms its own group.
+- `WHERE` filters rows **before** grouping; `HAVING` filters groups **after** it.
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="Department statistics" level="easy">
+
+For each department, show the number of employees and the average salary rounded to the nearest whole number, for departments with **more than two** employees. Sort by average salary, highest first.
+
+<Solution>
+
+```sql
+SELECT   department_id, COUNT(*) "Employees", ROUND(AVG(salary)) "Avg Salary"
+FROM     employees
+GROUP BY department_id
+HAVING   COUNT(*) > 2
+ORDER BY 3 DESC;
+-- 90 3 19333 · 80 3 10033 · 60 3 6400 · 50 5 3500
+```
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Spot the mistake" level="medium">
+
+Fix this query: `SELECT job_id, AVG(salary) FROM employees WHERE AVG(salary) > 10000;`
+
+<Solution>
+
+There are two problems. A group function can't appear in WHERE, and `job_id` isn't grouped.
+
+```sql
+SELECT   job_id, AVG(salary)
+FROM     employees
+GROUP BY job_id
+HAVING   AVG(salary) > 10000;
+-- AD_PRES 24000 · AD_VP 17000 · SA_MAN 10500 · MK_MAN 13000 · AC_MGR 12000
+```
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Guidelines quiz from the slides" level="easy">
+
+True or false: (1) you can't use a column alias in GROUP BY; (2) the GROUP BY column must be in SELECT; (3) WHERE can exclude rows before grouping; (4) GROUP BY guarantees the order of the result.
+
+<Solution>
+
+(1) **True** in Oracle 11g, because GROUP BY is evaluated before the SELECT list. (2) **False**. (3) **True**. (4) **False**: use ORDER BY whenever you need a specific order.
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "COUNT(commission_pct) counts…",
+      options: ["All rows", "Rows where commission_pct is not NULL", "Distinct commissions", "NULL commissions"],
+      answer: 1,
+      explain: "COUNT(expr) ignores NULLs; COUNT(*) counts every row."
+    },
+    {
+      q: "AVG(commission_pct) on the sample (4 earners, total .85) returns…",
+      options: [".0425", ".2125", ".85", "NULL"],
+      answer: 1,
+      explain: "NULLs are ignored, so it's .85 / 4."
+    },
+    {
+      q: "Which clause filters groups?",
+      options: ["WHERE", "HAVING", "ORDER BY", "DISTINCT"],
+      answer: 1,
+      explain: "HAVING is evaluated after grouping and allows group functions."
+    },
+    {
+      q: "SELECT department_id, COUNT(*) FROM employees; fails because…",
+      options: ["COUNT(*) is invalid", "department_id isn't in a GROUP BY", "There is no WHERE clause", "DISTINCT is missing"],
+      answer: 1,
+      explain: "Non-aggregated SELECT columns must appear in GROUP BY."
+    },
+    {
+      q: "Which group functions work on DATE columns?",
+      options: ["AVG and SUM", "MIN and MAX", "STDDEV", "None"],
+      answer: 1,
+      explain: "MIN/MAX (and COUNT) work on any type; AVG/SUM need numbers."
+    },
+    {
+      q: "How deep can group functions be nested?",
+      options: ["One level", "Two levels", "Unlimited", "They can't be nested"],
+      answer: 1,
+      explain: "e.g. MAX(AVG(salary)) with GROUP BY."
+    }
+  ]}
+/>

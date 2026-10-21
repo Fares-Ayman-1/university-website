@@ -1,0 +1,348 @@
+---
+number: 2
+title: Database Concepts, Architecture and the Relational Model
+summary: Data models, schemas and states, the three-schema architecture and data independence, DBMS languages and client–server architectures, then the relational model itself (relations, keys and integrity constraints) and the SQL DDL and DML that build and change tables.
+topics: [Data models, Schema vs state, Three-schema architecture, Data independence, Client–server, Relations and keys, Integrity constraints, SQL DDL and DML]
+duration: 70 min study
+sources:
+  - file: Lectures/ch2/Chapter02.ppt  1.pdf
+    label: Elmasri & Navathe – Chapter 2 Database System Concepts and Architecture (slides)
+    pages: "1-33"
+  - file: Lectures/ch2/chapter2.pdf
+    label: Databases I – Chapter 2 Relational Data Model (lecture slides)
+    pages: "1-59"
+bookRefs:
+  - book: elmasri
+    chapter: Ch 2 · Database System Concepts and Architecture
+  - book: elmasri
+    chapter: Ch 5–6 · The Relational Data Model, Basic SQL
+---
+
+<Objectives>
+
+- Define a **data model**, name its three categories, and distinguish a **schema** from a **state**.
+- Explain the **three-schema architecture** and the two kinds of **data independence**.
+- Describe DBMS **languages**, **interfaces** and **centralized / 2-tier / 3-tier** architectures.
+- Use the vocabulary of the **relational model**: relation, tuple, attribute, domain, degree, cardinality, **keys**.
+- Write SQL **DDL** (`CREATE`, `ALTER`, `DROP`) with **integrity constraints**, and **DML** (`INSERT`, `UPDATE`, `DELETE`).
+
+</Objectives>
+
+## Part A · Concepts and architecture
+
+### Data models
+
+<Definition term="Data model">
+  A set of concepts for describing the <strong>structure</strong> of a database, the <strong>operations</strong> that manipulate it, and the <strong>constraints</strong> it must obey.
+</Definition>
+
+Operations can be basic (generic insert, delete, update) or user-defined (`compute_student_gpa`, `update_inventory`).
+
+| Category | Level | Examples |
+|---|---|---|
+| **Conceptual** (high-level, semantic) | Close to how users see the data: entities, attributes, relationships | ER, EER models |
+| **Representational** (implementation) | Understood by users but implemented directly by DBMSs | **Relational**, network, hierarchical |
+| **Physical** (low-level, internal) | How data is stored: record formats, orderings, access paths such as **indexes** | Storage definitions |
+
+### Schema versus state
+
+<Grid cols={2}>
+  <Card title="Database schema" tag="intension">
+    The <strong>description</strong> of the database: structure, data types and constraints. It is drawn as a <strong>schema diagram</strong> and changes <strong>very rarely</strong>.
+  </Card>
+  <Card title="Database state" tag="extension">
+    The actual <strong>data</strong> at a moment in time, also called an <strong>instance</strong> or snapshot. It changes with <strong>every</strong> update.
+  </Card>
+</Grid>
+
+<SlideFigure page={10} caption="A schema diagram: the structure of STUDENT, COURSE, PREREQUISITE, SECTION and GRADE_REPORT." />
+
+<SlideFigure page={11} caption="A database state: the same schema filled with data at one moment." />
+
+### The three-schema architecture
+
+The three-schema architecture separates user applications from the physical database. It supports **program–data independence** and **multiple views**.
+
+<SlideFigure page={14} caption="External views on top, one conceptual schema in the middle, one internal schema above the stored database." />
+
+| Level | Describes | Example (university) |
+|---|---|---|
+| **External** (user views) | What each user group sees; there can be **many** external schemas | A student sees only their own grades; a lecturer sees all grades in their course |
+| **Conceptual** (community view) | Structure and constraints of the **whole** database, with no storage details | Students, Courses, Instructors, Enrollments and their relationships |
+| **Internal** (physical) | Storage structures and **access paths**: files, indexes, B-trees, hashing | `STUDENT` stored as a heap file with a B-tree index on `sid` |
+
+A database has exactly **one** conceptual and **one** internal schema, but may have **many** external schemas. The DBMS **maps** requests between levels.
+
+<Definition term="Data independence">
+  The capacity to change the schema at one level <strong>without</strong> changing the schema at the next higher level.
+</Definition>
+
+<Grid cols={2}>
+  <Card title="Logical data independence" tag="conceptual → external">
+    Change the <strong>conceptual</strong> schema (add a table or a column) without changing <strong>external</strong> schemas or the programs that use them. It is harder to achieve.
+  </Card>
+  <Card title="Physical data independence" tag="internal → conceptual">
+    Change the <strong>internal</strong> schema (add an index, move files) without changing the <strong>conceptual</strong> schema. It is easier and very common.
+  </Card>
+</Grid>
+
+### Languages, interfaces and tools
+
+| Language | Purpose |
+|---|---|
+| **DDL**: Data Definition Language | Define the conceptual schema, and in many DBMSs also views and storage |
+| **SDL / VDL** | Storage and view definition languages, where the DBMS separates them |
+| **DML**: Data Manipulation Language | Retrieve and update data, either stand-alone (interactive SQL) or embedded in a host language |
+
+**Interfaces** include interactive SQL (e.g. SQL\*Plus in Oracle), programmer APIs, menu-, form- and graphics-based UIs, web browsers, speech, parametric interfaces for bank tellers, and DBA interfaces for accounts, privileges and schema changes. **Utilities** handle loading, backup, reorganization, reports and performance monitoring. The **data dictionary** stores schema descriptions and design decisions; an *active* dictionary is used by the DBMS itself, a *passive* one only by people.
+
+### Centralized and client–server architectures
+
+| Architecture | Where the work happens |
+|---|---|
+| **Centralized** | DBMS, applications and UI all run on one machine; users connect through terminals |
+| **2-tier client–server** | **Clients** run the UI and application and talk to a **DBMS server** through an API (**ODBC**, **JDBC**) |
+| **3-tier** | A middle **application/web server** holds the business logic between the client (browser) and the database server; typical of web apps |
+
+<SlideFigure page={31} caption="Three-tier architecture: presentation layer, business-logic layer and database services layer." />
+
+DBMSs are also classified by **data model** (relational, object, object-relational…), by number of users (**single-** or **multi-user**) and by **distribution** (centralized or distributed).
+
+## Part B · The relational data model
+
+The relational model has two parts: **data structure** (data organized into **tables**) and **data manipulation** (powerful operations, usually written in **SQL**).
+
+<Definition term="Relation">
+  A named, two-dimensional <strong>table</strong> of data. It has a <strong>relation schema</strong> (name, plus the name and domain of each attribute) and a <strong>relation instance</strong> (its current set of rows, called <strong>tuples</strong>).
+</Definition>
+
+$$
+\text{Students}(\underline{sid}: \text{string},\ name: \text{string},\ login: \text{string},\ age: \text{integer},\ gpa: \text{real})
+$$
+
+| Formal term | Informal term |
+|---|---|
+| Relation | Table |
+| Tuple | Row / record |
+| Attribute | Column / field |
+| Domain | Set of allowed values (a data type) |
+| **Degree** | Number of attributes (columns) |
+| **Cardinality** | Number of tuples (rows) in an instance |
+
+### Properties of relations
+
+- Every relation has a **unique name**, and attribute names are unique within a relation.
+- Every value is **atomic**: not multivalued, not composite.
+- Every row is **unique**: no two tuples are identical.
+- The **order of rows and of columns does not matter**.
+
+### Keys
+
+| Key | Definition | Example in `STUDENT(StudentID, Email, Name)` |
+|---|---|---|
+| **Superkey** | Any set of attributes that uniquely identifies a row | \{StudentID, Email\}, \{StudentID, Name\}, … |
+| **Candidate key** | A **minimal** superkey: remove any attribute and it stops being unique | \{StudentID\}, \{Email\} |
+| **Primary key** | The candidate key **chosen** to identify rows. It can't be `NULL` and should rarely change | \{StudentID\} |
+| **Foreign key** | Attribute(s) in one relation that **refer to the primary key** of another; on the "many" side of a relationship | `ENROLLMENT.StudentID → STUDENT.StudentID` |
+
+Keys can be **simple** (one attribute) or **composite** (several attributes), and they are usually indexed to speed up queries.
+
+<SlideFigure page={32} source={1} caption="The COMPANY relational schema. Underlined attributes are primary keys; arrows are foreign keys." />
+
+### Integrity constraints
+
+Integrity constraints are conditions on the schema that every **legal instance** must satisfy. The DBMS checks them whenever data changes.
+
+<Grid cols={2}>
+  <Card title="Domain constraint">Every value in a column must come from that column's domain (type, range, format).</Card>
+  <Card title="Key / entity integrity">Primary-key values must be <strong>unique</strong> and <strong>not NULL</strong>.</Card>
+  <Card title="Referential integrity">A foreign-key value must <strong>match</strong> an existing primary-key value in the referenced table, or be NULL.</Card>
+  <Card title="General constraints">Business rules expressed with <code>CHECK</code> or assertions, e.g. salary must be positive.</Card>
+</Grid>
+
+What happens when a referenced (parent) row is **deleted or updated**?
+
+| Rule | Effect |
+|---|---|
+| **RESTRICT / NO ACTION** | Reject the change while child rows still refer to it |
+| **CASCADE** | Apply the same delete or update to the child rows |
+| **SET NULL** | Set the child's foreign key to NULL (not allowed when the FK is part of the child's primary key, as in weak entities) |
+| **SET DEFAULT** | Set the child's foreign key to its default value |
+
+### External and physical schemas in an RDBMS
+
+The **conceptual** schema is the set of relation schemas. The **physical** schema says how they're stored (file organization, **indexes**), and choosing it is **physical database design**. The **external** schemas are made of **views**: virtual relations defined by a query that store no data. A **materialized view** is a precomputed copy that *is* stored.
+
+## SQL: defining and changing data
+
+| Category | Commands |
+|---|---|
+| **DDL**: definition | `CREATE`, `ALTER`, `DROP`, `TRUNCATE`, `RENAME`, `COMMENT` |
+| **DML**: manipulation | `INSERT`, `UPDATE`, `DELETE` (and `SELECT`, sometimes called **DQL**) |
+| **DCL**: control | `GRANT`, `REVOKE` |
+| **TCL**: transactions | `COMMIT`, `ROLLBACK`, `SAVEPOINT` |
+
+### CREATE TABLE with constraints
+
+```sql title="company_ddl.sql"
+CREATE TABLE department (
+  dname        VARCHAR(15) NOT NULL,
+  dnumber      INTEGER     NOT NULL CHECK (dnumber > 0 AND dnumber < 21),
+  mgr_ssn      CHAR(9),
+  mgr_start    DATE,
+  PRIMARY KEY (dnumber),
+  UNIQUE (dname)                              -- a secondary (candidate) key
+);
+
+CREATE TABLE employee (
+  fname     VARCHAR(15) NOT NULL,
+  lname     VARCHAR(15) NOT NULL,
+  ssn       CHAR(9),
+  bdate     DATE,
+  salary    DECIMAL(10,2) DEFAULT 30000,
+  super_ssn CHAR(9),
+  dno       INTEGER DEFAULT 1,
+  PRIMARY KEY (ssn),
+  FOREIGN KEY (super_ssn) REFERENCES employee(ssn) ON DELETE SET NULL,
+  FOREIGN KEY (dno)       REFERENCES department(dnumber)
+);
+
+-- department.mgr_ssn refers to employee, which now exists:
+ALTER TABLE department
+  ADD CONSTRAINT fk_dept_mgr FOREIGN KEY (mgr_ssn) REFERENCES employee(ssn);
+```
+
+<Callout type="note" title="Dialects differ">
+  The slides use standard SQL. Oracle (used in the labs) writes strings as <code>VARCHAR2</code>, supports <code>ON DELETE CASCADE</code> and <code>ON DELETE SET NULL</code>, but has no <code>ON UPDATE CASCADE</code> or <code>SET DEFAULT</code>. MySQL supports more options. Table names must start with a letter, may contain <code>_</code>, <code>#</code> and digits, can't be reserved words, and in Oracle 11g are limited to 30 characters.
+</Callout>
+
+### ALTER and DROP
+
+```sql title="alter_drop.sql"
+ALTER TABLE employee ADD job VARCHAR(12);          -- new column, NULL in every existing row
+ALTER TABLE employee DROP COLUMN job;
+ALTER TABLE employee MODIFY lname VARCHAR(25);      -- Oracle/MySQL syntax
+ALTER TABLE employee ADD CONSTRAINT uq_name UNIQUE (fname, lname);
+DROP TABLE dependent;                               -- removes the data AND the definition
+```
+
+A new column can't be declared `NOT NULL` without a default, because every existing row would start as `NULL`.
+
+### INSERT, UPDATE and DELETE
+
+```sql title="dml.sql"
+-- Values in column order…
+INSERT INTO employee VALUES ('Richard', 'Marini', '653298653', DATE '1952-12-30', 37000, '987654321', 4);
+-- …or name the columns and leave the rest NULL / default
+INSERT INTO employee (fname, lname, ssn) VALUES ('Richard', 'Marini', '653298653');
+
+UPDATE project SET plocation = 'Bellaire', dnum = 5 WHERE pnumber = 10;
+UPDATE employees SET salary = 8000 WHERE employee_id = 105 AND salary < 5000;
+
+DELETE FROM employee WHERE lname = 'Brown';
+DELETE FROM employee WHERE dno IN (SELECT dnumber FROM department WHERE dname = 'Research');
+DELETE FROM employee;     -- no WHERE: deletes every row (the table stays, empty)
+```
+
+<Callout type="warning" title="Constraints are checked on every change">
+  Inserting a duplicate or NULL primary key, a foreign key with no matching parent, or a value outside a <code>CHECK</code> range is <strong>rejected</strong>. Deleting a parent row follows its referential action (RESTRICT, CASCADE, SET NULL…).
+</Callout>
+
+<Takeaways>
+
+- Data models are **conceptual**, **representational** or **physical**. The **schema** (intension) rarely changes, while the **state** (extension) changes constantly.
+- The **three-schema architecture** (external, conceptual, internal) gives **logical** and **physical data independence**.
+- Architectures go from **centralized** to **2-tier** (client + DB server) to **3-tier** (client + application server + DB server).
+- A relation is a table with **atomic** values and **unique** rows. Keys go from superkey to candidate key to **primary** key, and **foreign keys** link tables.
+- **Domain**, **entity** and **referential integrity** constraints are declared in `CREATE TABLE` and enforced on every `INSERT`, `UPDATE` and `DELETE`.
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="Design a relational schema" level="medium">
+
+Each student has a unique Student_ID, a Name and a Major. Each course has a unique Course_ID, a Course_Name and Credits. A student can enroll in many courses, and each enrollment stores a Grade. Give the relations with their primary and foreign keys.
+
+<Solution>
+
+- `STUDENT(Student_ID, Name, Major)`: PK `Student_ID`.
+- `COURSE(Course_ID, Course_Name, Credits)`: PK `Course_ID`.
+- `ENROLLMENT(Student_ID, Course_ID, Grade)`: PK `(Student_ID, Course_ID)`; FKs `Student_ID → STUDENT`, `Course_ID → COURSE`.
+
+The many-to-many relationship becomes its own relation, with a **composite** primary key made of two foreign keys.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Which data independence?" level="easy">
+
+(a) The DBA adds a B-tree index on `employee.lname`. (b) A new column `email` is added to `STUDENT`, and the student-portal view doesn't change. Which kind of data independence lets programs keep working in each case?
+
+<Solution>
+
+(a) **Physical** data independence: the internal schema changed and the conceptual schema did not. (b) **Logical** data independence: the conceptual schema changed and the external schema (the view) did not.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Will these statements run?" level="medium">
+
+Given `employee` above, with `ssn` as the primary key: (1) `INSERT INTO employee (fname, lname, ssn) VALUES ('Jann', 'Jams', NULL);` (2) `UPDATE employee SET ssn = '123456789' WHERE ssn = '333445555';` when another employee already has `ssn = '123456789'`.
+
+<Solution>
+
+Both are **rejected**. (1) violates **entity integrity**, since a primary key can't be NULL. (2) would create a **duplicate** primary key. It could also break employees whose `super_ssn` points to `333445555`, depending on the referential action.
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "The database schema is also called the…",
+      options: ["Extension", "Intension", "Instance", "Snapshot"],
+      answer: 1,
+      explain: "Schema = intension (the description); state = extension (the data)."
+    },
+    {
+      q: "Adding an index without changing the conceptual schema is an example of…",
+      options: ["Logical data independence", "Physical data independence", "Referential integrity", "A materialized view"],
+      answer: 1,
+      explain: "Changes to the internal (physical) level don't affect the conceptual level."
+    },
+    {
+      q: "In a 3-tier architecture, the business logic runs on the…",
+      options: ["Client", "Application/web server", "Database server", "Data dictionary"],
+      answer: 1,
+      explain: "The middle tier sits between the presentation layer and the database server."
+    },
+    {
+      q: "A minimal superkey is called a…",
+      options: ["Foreign key", "Candidate key", "Composite key", "Super key"],
+      answer: 1,
+      explain: "Remove any attribute from a candidate key and it no longer identifies rows uniquely."
+    },
+    {
+      q: "The degree of a relation is…",
+      options: ["Its number of rows", "Its number of attributes", "Its number of keys", "Its number of foreign keys"],
+      answer: 1,
+      explain: "Degree = columns; cardinality = rows."
+    },
+    {
+      q: "Which constraint says a foreign key must match an existing primary key (or be NULL)?",
+      options: ["Domain", "Entity integrity", "Referential integrity", "CHECK"],
+      answer: 2,
+      explain: "Referential integrity keeps references between tables valid."
+    },
+    {
+      q: "DELETE FROM employee; (with no WHERE clause)…",
+      options: ["Drops the table", "Deletes every row but keeps the table", "Fails with a syntax error", "Deletes only NULL rows"],
+      answer: 1,
+      explain: "DELETE removes rows; DROP TABLE removes the table and its definition."
+    }
+  ]}
+/>

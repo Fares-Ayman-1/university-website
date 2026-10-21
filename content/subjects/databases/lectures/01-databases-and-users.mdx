@@ -1,0 +1,347 @@
+---
+number: 1
+title: Databases and Database Users
+summary: Why databases replaced traditional file processing, what a DBMS does, the characteristics and advantages of the database approach, who uses databases, how data models evolved, and what happens inside a DBMS when a query or a transaction runs.
+topics: [Data vs information, File processing problems, DBMS, Database approach, Database users, Evolution of data models, Transactions and ACID]
+duration: 50 min study
+sources:
+  - file: Lectures/ch1/chapter1.pdf
+    label: Databases I – Chapter 1 Introduction (lecture slides)
+    pages: "1-61"
+  - file: Lectures/ch1/DOC-20241008-WA0081..pdf
+    label: Elmasri & Navathe – Chapter 1 Databases and Database Users (slides)
+    pages: "1-30"
+bookRefs:
+  - book: elmasri
+    chapter: Ch 1 · Databases and Database Users
+---
+
+<Objectives>
+
+- Distinguish **data**, **information** and **metadata**, and define a **database**, a **DBMS** and a **database system**.
+- Explain the problems of **traditional file processing** and how the **database approach** solves them.
+- Describe the **main characteristics** of the database approach and the **people** who work with databases.
+- Trace the **evolution of data models**, from flat files to relational, object and semi-structured data.
+- Explain how a DBMS processes **queries** and **transactions**, including **ACID**, locking and deadlocks.
+
+</Objectives>
+
+## Basic concepts
+
+<Definition term="Data vs. information">
+  <strong>Data</strong> are facts about objects and events that can be recorded and stored: text, numbers, images, sound, video. <strong>Information</strong> is data that has been <strong>processed</strong> (put in context or summarized) so that it is useful for decision making.
+</Definition>
+
+<SlideFigure page={6} caption="The same student facts become information when shown in context (a class roster) or summarized (charts)." />
+
+<Definition term="Metadata">
+  <strong>Data that describes data</strong>: data types, field sizes, allowed values and documentation. A DBMS keeps it in its <strong>catalog</strong> (data dictionary).
+</Definition>
+
+| Term | Meaning |
+|---|---|
+| **Mini-world** | The part of the real world the database describes, e.g. student grades and transcripts at a university |
+| **Database** | An organized collection of **logically related** data: entities and the relationships between them |
+| **DBMS** | Software that makes it easy to **create and maintain** a computerized database |
+| **Database system** | The database **plus** the DBMS software (and often the applications) |
+
+In a university database, the **entities** are students, professors, courses and classrooms. The **relationships** are which students take which courses, who teaches which course, and where each course meets.
+
+<SlideFigure page={6} source={1} caption="A simplified database system environment: programs and queries go through the DBMS, which uses the stored metadata to access the stored data." />
+
+### What a DBMS does
+
+<Steps>
+
+1. **Define** the database: data types, structures and constraints.
+2. **Construct** (load) the initial contents onto secondary storage.
+3. **Manipulate** it: retrieve (queries, reports) and modify (insert, delete, update).
+4. **Share** it among many concurrent users and programs while keeping it consistent.
+5. **Protect** it (security, backup and recovery) and **maintain** it as requirements change.
+
+</Steps>
+
+## Why not just use files?
+
+Before DBMSs, every department wrote its own programs over its own files.
+
+<SlideFigure page={11} caption="Three file-processing systems at Pine Valley Furniture. The customer master file is duplicated in two departments." />
+
+<Grid cols={2}>
+  <Card title="Program–data dependence" tag="problem">
+    Each program contains the file's metadata and its own read/insert/update/delete routines. Change the file format and every program must change.
+  </Card>
+  <Card title="Duplication of data" tag="problem">
+    The same data is stored in several files. This wastes space and, worse, causes <strong>inconsistencies</strong> when one copy is updated and another is not, which damages <strong>integrity</strong>.
+  </Card>
+  <Card title="Limited data sharing" tag="problem">
+    There is no central control: each application owns its files in non-standard formats.
+  </Card>
+  <Card title="Long development and heavy maintenance" tag="problem">
+    Programmers design their own formats for every new application, and maintenance can eat up to 80% of the IS budget.
+  </Card>
+</Grid>
+
+### Why not let the operating system manage the data?
+
+An OS is a file manager, but it is a poor database manager:
+
+- It loads a **whole file** into memory even when you need one record.
+- Security is just a **password per file**, which is too coarse to give different users different parts of the data.
+- Every new question about the data needs a **new program**.
+
+A DBMS treats a file as a collection of **pages of records** rather than a string of characters, and it replaces "a program per question" with a **query language: SQL**.
+
+## The database approach
+
+**Solution:** a **central repository of shared data**, managed by a controlling agent (the **DBMS**) and stored in a standard form.
+
+### Main characteristics
+
+| Characteristic | Meaning |
+|---|---|
+| **Self-describing** | The DBMS **catalog** stores the structure, types and constraints (metadata), so one DBMS can serve many different databases |
+| **Program–data independence** | Storage structures can change without changing the programs that use them |
+| **Data abstraction** | A **data model** hides storage details and shows a conceptual view |
+| **Multiple views** | Each user can see a different **view** containing only the data they need |
+| **Sharing and multi-user transactions** | Many users read and update at the same time; **concurrency control** and **recovery** keep every transaction correct (OLTP) |
+
+<SlideFigure page={13} source={1} caption="A simplified catalog: the database describes its own relations and columns." />
+
+### Advantages
+
+<Grid cols={2}>
+  <Card title="Less redundancy, more sharing">Data is stored once and shared, and different users get different views.</Card>
+  <Card title="Quality and standards">Constraints and validation rules improve data quality, and all access goes through the same standard interface.</Card>
+  <Card title="Security and recovery">Unauthorized access is restricted, and backup, recovery and concurrency control are built in.</Card>
+  <Card title="Productivity">Indexes speed up queries, SQL removes the need for custom programs, and new applications are developed faster.</Card>
+</Grid>
+
+The approach also brings **flexibility** (the structure can evolve), **current information** for online systems such as airline reservations, and **economies of scale**.
+
+### Challenges a DBMS must meet
+
+Organizational databases can hold **terabytes** of data and serve **many simultaneous users**. The DBMS must be **fast**, must preserve **integrity** after every operation, and must be **secure**, giving each user group exactly the data its permissions allow.
+
+### When not to use a DBMS
+
+<Callout type="warning" title="A DBMS has costs">
+
+- High initial investment, possibly extra hardware.
+- Overhead for generality, security, concurrency control, recovery and integrity.
+
+A DBMS may be **unnecessary** for a simple, well-defined application that won't change, for a single user, or when **hard real-time** requirements can't tolerate its overhead. It may be **insufficient** when the data is too complex to model, or when users need special operations the DBMS doesn't support.
+
+</Callout>
+
+## Database users
+
+<Grid cols={2}>
+  <Card title="Database administrator (DBA)" tag="actor on the scene">
+    Authorizes access, coordinates and monitors use, acquires resources, tunes performance, and ensures availability and recovery.
+  </Card>
+  <Card title="Database designers" tag="actor on the scene">
+    Decide the content, structure, constraints and transactions, and talk to users to understand their needs.
+  </Card>
+  <Card title="Application programmers" tag="actor on the scene">
+    Write and test the programs and "canned transactions" that end users run.
+  </Card>
+  <Card title="DBMS designers and tool developers" tag="worker behind the scene">
+    Build the DBMS software itself, plus tools. Operators and maintenance staff also work behind the scene.
+  </Card>
+</Grid>
+
+**End users** come in four kinds:
+
+| Kind | Description | Example |
+|---|---|---|
+| **Casual** | Access the database occasionally, with different needs each time | A manager running an ad-hoc query |
+| **Naïve / parametric** | The largest group; use predefined **canned transactions** | A bank teller, a reservation clerk |
+| **Sophisticated** | Know the system well and use advanced tools | Analysts, scientists, engineers |
+| **Stand-alone** | Maintain personal databases with packaged software | Someone using a tax program |
+
+## Applications and the evolution of data models
+
+Databases are everywhere: enterprise information (sales, accounting, HR), banking and finance, universities and airlines. Newer applications include multimedia, GIS, data warehouses and real-time databases. This course focuses on **traditional** numeric and textual databases.
+
+<SlideFigure page={22} caption="Evolution of database systems from the 1960s to the 2000s." />
+
+| Era | Model | Idea |
+|---|---|---|
+| 1960s | **Flat files** | One big table per file; lots of duplication |
+| 1960s–70s | **Hierarchical / network** | Records linked by parent–child trees or general graphs; navigation by pointers |
+| 1970s–80s | **Relational** | Data in **tables** (relations); Codd, 1970; SQL. Still dominant |
+| 1990s | **Object-oriented / object-relational** | Objects with attributes and methods; relational DBMSs adopt object features |
+| 2000s | **Semi-structured (XML)**, **RDF** | Items of the same type may have different attributes; RDF publishes linked data for the Semantic Web and knowledge graphs |
+
+A **data model** is a set of concepts for describing data that hides low-level storage details. The **ER model** is a widely used *semantic* (conceptual) model, and the **relational model** is the model most DBMSs implement (Oracle, IBM DB2, MySQL…). Both are covered in the next lectures.
+
+## Inside a DBMS
+
+<SlideFigure page={39} caption="Structure of a DBMS. Single boxes are components, double boxes are in-memory data structures." />
+
+Commands come from **two sources**:
+
+- **DDL commands** come from the DBA. They change the **schema** and need special authority. A DDL processor parses them, and the execution engine updates the **metadata**.
+- **DML commands** come from users and programs. They don't change the schema; they **query** or **modify** the content.
+
+### Query answering
+
+<Steps>
+
+1. **Query compiler**: parses and **optimizes** the query into a **query plan**.
+2. **Execution engine**: runs the plan, asking the **index/file/record manager** for the data it needs.
+3. **Buffer manager**: keeps disk blocks in page-sized memory **buffers**.
+4. **Storage manager / disk controller**: moves blocks between disk and memory.
+
+</Steps>
+
+Along the way the components use five kinds of information: **data**, **metadata**, the **log**, **statistics** and **indexes**.
+
+### Transaction processing
+
+<Definition term="Transaction">
+  A group of one or more database operations that forms a single unit of work. It must execute <strong>atomically</strong> and in apparent <strong>isolation</strong> from other transactions.
+</Definition>
+
+<Grid cols={2}>
+  <Card title="Atomicity" tag="A">Either all operations happen or none do. Debiting A and crediting B succeed together or fail together.</Card>
+  <Card title="Consistency" tag="C">The database stays valid. The sum of balances of A and B is preserved.</Card>
+  <Card title="Isolation" tag="I">Concurrent transactions don't interfere; each behaves as if it ran alone.</Card>
+  <Card title="Durability" tag="D">Once committed, changes survive crashes.</Card>
+</Grid>
+
+The **transaction manager** provides these properties with three mechanisms:
+
+- **Logging**: every change is written to a log on disk, so the **recovery manager** can restore a consistent state after a crash.
+- **Concurrency control**: a scheduler grants **locks** (kept in a main-memory lock table). A transaction that locks an item reserves it, and others wait.
+- **Deadlock resolution**: when transactions wait for each other forever, the DBMS picks a **victim** and **rolls it back**. A good victim is the one with the least progress, the cheapest rollback or the fewest resources.
+
+```sql title="funds_transfer.sql"
+-- One transaction: both updates happen, or neither does (atomicity)
+UPDATE accounts SET balance = balance - 500 WHERE acc_no = 'A';
+UPDATE accounts SET balance = balance + 500 WHERE acc_no = 'B';
+COMMIT;   -- durability: from here on the transfer survives a crash
+-- On any error before COMMIT:  ROLLBACK;
+```
+
+<Callout type="example" title="A deadlock">
+  T1 transfers A → B and locks <strong>A</strong>. At the same time T2 transfers B → A and locks <strong>B</strong>. Now T1 waits for B and T2 waits for A, so neither can continue. The DBMS aborts the transaction that has done less work (say T2), releasing its locks. T1 finishes and commits, and T2 restarts later.
+</Callout>
+
+## Accessing a database from programs
+
+SQL is **declarative**: it says *what* data you want, not *how* to get it. It can't read user input, draw screens or talk to the network, so applications are written in a **host language** that sends SQL to the DBMS.
+
+| Approach | How it works | Examples |
+|---|---|---|
+| **Procedure-call API** | A library of functions sends SQL strings and fetches results | ODBC (C/C++), JDBC (Java), Python DB-API |
+| **Embedded SQL** | SQL is written inside the host program, and a **precompiler** turns it into API calls | `EXEC SQL …` in C, SQLJ in Java |
+| **Database programming language** | A procedural language built around SQL | Oracle **PL/SQL** |
+
+```python title="api_approach.py"
+import sqlite3  # Python's DB-API: the procedure-call approach
+
+conn = sqlite3.connect("school.db")
+for (name,) in conn.execute("SELECT name FROM student WHERE gpa >= ?", (3.5,)):
+    print(name)
+conn.close()
+```
+
+<Takeaways>
+
+- **Information** is processed data; **metadata** describes data and lives in the DBMS **catalog**.
+- File processing suffers from **program–data dependence**, **redundancy**, **inconsistency** and **poor sharing**; the database approach centralizes data under a DBMS.
+- Key characteristics: **self-describing**, **program–data independence**, **abstraction**, **multiple views** and **concurrent transactions**.
+- Users range from the **DBA** and **designers** to **end users** (casual, parametric, sophisticated, stand-alone).
+- A DBMS answers queries through a compiler, an execution engine and a buffer manager, and guarantees **ACID** with logging, locking and deadlock resolution.
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="File processing or database?" level="easy">
+
+A university keeps a student's address in the registrar's file, the library's file and the housing office's file. A student moves and tells only the registrar. Name the problems this causes and how a database avoids them.
+
+<Solution>
+
+- **Redundancy**: the address is stored three times.
+- **Inconsistency**: the library and housing files now hold an old address, so the data loses **integrity**.
+
+With a database the address is stored **once** and each office sees it through its own **view**, so a single update is immediately visible to everyone.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Which user is it?" level="easy">
+
+Classify: (a) a bank teller entering deposits through a fixed screen; (b) a data scientist writing complex analytical queries; (c) the person who sets access permissions and tunes indexes; (d) a programmer at Oracle working on the query optimizer.
+
+<Solution>
+
+(a) **Naïve/parametric** end user. (b) **Sophisticated** end user. (c) **DBA**. (d) **DBMS designer/implementer**, a worker behind the scene.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="ACID in a transfer" level="medium">
+
+During a transfer of 500 from account A to account B, the server crashes after the debit but before the credit. Which ACID property is at risk, and how does the DBMS restore it?
+
+<Solution>
+
+**Atomicity**, and therefore **consistency**, because the total balance would drop by 500. The transaction hadn't committed, so on restart the **recovery manager** reads the **log** and **undoes** the debit, rolling back the whole transaction. Had it committed, **durability** would require redoing it instead.
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "Metadata is…",
+      options: ["Data processed for decision making", "Data that describes data", "Data stored in many files", "Encrypted data"],
+      answer: 1,
+      explain: "Metadata (types, sizes, constraints) describes the data and is stored in the DBMS catalog."
+    },
+    {
+      q: "Which is NOT a disadvantage of traditional file processing?",
+      options: ["Program–data dependence", "Data redundancy", "Program–data independence", "Limited data sharing"],
+      answer: 2,
+      explain: "Program–data independence is an advantage of the database approach."
+    },
+    {
+      q: "The 'self-describing' nature of a database system means…",
+      options: ["Users document their own queries", "The DBMS catalog stores the database's structure and constraints", "Tables have descriptive names", "Data is stored as text"],
+      answer: 1,
+      explain: "Because metadata is stored with the database, one DBMS can work with many different databases."
+    },
+    {
+      q: "A reservation clerk who uses predefined screens all day is a…",
+      options: ["Casual user", "Naïve/parametric user", "Sophisticated user", "Stand-alone user"],
+      answer: 1,
+      explain: "Parametric users run canned transactions repeatedly."
+    },
+    {
+      q: "Which data model organizes data into tables of rows and columns?",
+      options: ["Hierarchical", "Network", "Relational", "RDF"],
+      answer: 2,
+      explain: "The relational model (Codd, 1970) uses relations, i.e. tables."
+    },
+    {
+      q: "Which DBMS component turns a query into a query plan?",
+      options: ["Buffer manager", "Query compiler", "Disk controller", "Log manager"],
+      answer: 1,
+      explain: "The query compiler parses and optimizes the query into a plan for the execution engine."
+    },
+    {
+      q: "How does a DBMS usually break a deadlock?",
+      options: ["It reboots the server", "It rolls back a victim transaction", "It deletes the locked data", "It waits forever"],
+      answer: 1,
+      explain: "Aborting one transaction releases its locks so the others can continue."
+    }
+  ]}
+/>

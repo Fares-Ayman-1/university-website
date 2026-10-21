@@ -1,0 +1,151 @@
+---
+number: 0
+title: Introduction to Linux and the Lab Setup
+summary: What an OS does from the user's side, GUI vs CLI, how the terminal, shell and kernel fit together, Linux distributions, and how to get an Ubuntu environment running for the labs, through WSL or a VirtualBox virtual machine, plus the NDG Linux Essentials course.
+kind: concept
+topics: [What an OS manages, GUI vs CLI, Terminal, Shell, Kernel, Distributions, WSL, VirtualBox, NDG Linux Essentials]
+duration: 25 min + setup
+sources:
+  - file: Sections/sec intro/introduction.pptx.pdf
+    label: OS Lab – Introduction (slides)
+    pages: "1-14"
+bookRefs:
+  - book: ndg-linux
+    chapter: Modules 1–3 · Introduction to Linux
+---
+
+<Objectives>
+
+- Explain which **resources** an OS manages and the two main **user-interface** styles.
+- Describe how the **terminal**, the **shell** and the **kernel** work together.
+- Name common **Linux distributions** and the **default shell**.
+- Set up **Ubuntu** for the labs with **WSL** or a **VirtualBox** virtual machine.
+
+</Objectives>
+
+## What the OS does for you
+
+An operating system **manages the system's resources**: the **disk** (files), **input devices** (keyboard, mouse), **output devices** (screen, printer) and **software processes** (running programs). It sits between you, your programs and the hardware, as covered in Lecture 1.
+
+<SlideFigure page={3} caption="The OS manages the CPU, RAM, disk, input and output devices, and software processes." />
+
+| Interface | You interact by… | Strengths |
+|---|---|---|
+| **GUI**: graphical user interface | Clicking icons, windows and menus | Easy to learn and discover |
+| **CLI**: command-line interface | Typing commands | Fast, precise, **scriptable**, and works over remote connections with few resources |
+
+Desktop OSes include Windows, macOS and Linux distributions. Mobile OSes include Android (built on the Linux kernel) and iOS.
+
+## Terminal, shell and kernel
+
+<Steps>
+
+1. The **terminal** is the window (an application) that accepts what you type and displays output. Open one in Ubuntu with **Ctrl + Alt + T**.
+2. The **shell** **interprets** your command and asks the OS to run it. Ubuntu's default shell is **Bash** (Bourne-Again SHell).
+3. The **kernel** is the core of the OS. It communicates **directly with the hardware** and carries out the request through system calls.
+4. The **hardware** does the actual work.
+
+</Steps>
+
+<SlideFigure page={7} caption="The terminal passes your command to the shell, which runs it through the kernel on the hardware." />
+
+```bash title="Terminal"
+echo $SHELL      # /bin/bash  — which shell you are using
+uname -s         # Linux      — the kernel name
+uname -r         # e.g. 6.8.0-45-generic — the kernel release
+```
+
+## Linux distributions
+
+The **Linux kernel** alone isn't a complete OS. A **distribution** packages the kernel with the GNU tools, a package manager, a desktop and applications.
+
+| Family | Distributions | Package manager |
+|---|---|---|
+| Debian | **Ubuntu**, Debian, Linux Mint, Kali | `apt` (`.deb`) |
+| Red Hat | Fedora, RHEL, CentOS Stream, Rocky | `dnf` / `yum` (`.rpm`) |
+| Others | Arch, openSUSE, Alpine | `pacman`, `zypper`, `apk` |
+
+The labs use **Ubuntu**.
+
+## Getting Ubuntu for the labs
+
+<Grid cols={2}>
+  <Card title="Option A: WSL (Windows)" tag="quickest">
+    The Windows Subsystem for Linux runs a real Ubuntu inside Windows. Open PowerShell <strong>as administrator</strong>, run <code>wsl --install</code>, reboot, then open <strong>Ubuntu</strong> from the Start menu and create a user name and password.
+  </Card>
+  <Card title="Option B: a VirtualBox VM" tag="full desktop">
+    A complete Ubuntu desktop in a window, isolated from your main system. It is closest to the lab machines.
+  </Card>
+</Grid>
+
+The steps for **Option B** from the slides:
+
+<Steps>
+
+1. **Enable virtualization** (Intel VT-x / AMD-V) in your BIOS/UEFI settings.
+2. **Install the prerequisites** VirtualBox asks for. The slides mention the JDK; current VirtualBox versions may also need the Microsoft Visual C++ redistributable.
+3. **Install VirtualBox**.
+4. **Create a virtual machine**: Linux / Ubuntu (64-bit), at least 4 GB RAM, 2 CPUs and a 25 GB disk.
+5. **Install Ubuntu** in the VM from the Ubuntu Desktop ISO.
+
+</Steps>
+
+```powershell title="PowerShell (admin) — Option A"
+wsl --install            # installs WSL and Ubuntu
+wsl -l -v                # list installed distributions and their WSL version
+```
+
+## The NDG Linux Essentials course
+
+The labs follow **NDG Linux Essentials** on Cisco Networking Academy (netacad.com). Sign up for the free course and **start from Module 5 (Lab 5)**. Its virtual machines let you practise right in the browser.
+
+| Our section | NDG module |
+|---|---|
+| Section 1 · Command-line skills | Module 5: Command Line Skills |
+| Section 2 · Getting help | Module 6: Getting Help |
+| Section 3 · Files and directories | Modules 7–8: Navigating the Filesystem, Managing Files and Directories |
+| Section 4 · Archiving and compression | Module 9: Archiving and Compression |
+
+<Takeaways>
+
+- The OS manages **disks, devices and processes**; you reach it through a **GUI** or a **CLI**.
+- **Terminal** (the window) → **shell** (Bash, the interpreter) → **kernel** (talks to the hardware).
+- A **distribution** = Linux kernel + tools + package manager. The labs use **Ubuntu**.
+- Get Ubuntu through **WSL** (`wsl --install`) or a **VirtualBox** VM, and follow NDG Linux Essentials from Module 5.
+
+</Takeaways>
+
+<Quiz
+  questions={[
+    {
+      q: "Which component interprets the commands you type?",
+      options: ["Terminal", "Shell", "Kernel", "BIOS"],
+      answer: 1,
+      explain: "The terminal shows text; the shell interprets it; the kernel executes it on the hardware."
+    },
+    {
+      q: "What is Ubuntu's default shell?",
+      options: ["zsh", "sh", "bash", "PowerShell"],
+      answer: 2,
+      explain: "Bash, the Bourne-Again SHell."
+    },
+    {
+      q: "Which part of the OS communicates directly with the hardware?",
+      options: ["The shell", "The kernel", "The desktop", "The terminal"],
+      answer: 1,
+      explain: "The kernel is the core (heart) of the OS."
+    },
+    {
+      q: "What must you enable in the BIOS/UEFI before running a VM?",
+      options: ["Secure Boot", "Virtualization (VT-x / AMD-V)", "Fast Boot", "TPM"],
+      answer: 1,
+      explain: "Hardware virtualization support lets VirtualBox run guests efficiently."
+    },
+    {
+      q: "Ubuntu belongs to which distribution family?",
+      options: ["Red Hat", "Debian", "Arch", "BSD"],
+      answer: 1,
+      explain: "It uses apt and .deb packages."
+    }
+  ]}
+/>

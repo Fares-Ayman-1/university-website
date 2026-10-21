@@ -1,0 +1,216 @@
+---
+number: 4
+title: Archiving and Compression
+summary: Why and how to bundle and shrink files on Linux. Covers gzip/gunzip, bzip2/bunzip2 and xz, the difference between compressing and archiving, tar's create, list and extract modes with gzip, bzip2 and xz compression, appending to an archive, and zip/unzip for cross-platform archives.
+kind: practical
+topics: [Compression vs archiving, gzip / gunzip, bzip2 / bunzip2, xz, tar create / list / extract, tar with -z -j -J, tar -r, zip / unzip]
+duration: 45 min hands-on
+sources:
+  - file: Sections/sec4/NDG Linux lab-7.pdf
+    label: OS Lab 4 – Archiving and Compression (slides)
+    pages: "1-18"
+bookRefs:
+  - book: ndg-linux
+    chapter: Module 9 · Archiving and Compression
+---
+
+<Objectives>
+
+- Explain **why** files are archived and compressed, and the difference between the two.
+- Compress and decompress single files with **gzip**, **bzip2** and **xz**.
+- Use **tar** in its three modes (**create**, **list**, **extract**), with and without compression, and **append** to an archive.
+- Create, list and extract **zip** archives.
+
+</Objectives>
+
+## Why archive and compress?
+
+- **Transfer**: smaller files move faster.
+- **Convenience**: one bundle is easier to send than hundreds of files.
+- **Space**: archives and compressed files take less room, which matters on USB drives.
+
+| Operation | Does | Tools |
+|---|---|---|
+| **Compression** | Makes **one** file smaller | `gzip`, `bzip2`, `xz` |
+| **Archiving** | Combines **many** files and directories into **one** file | `tar` |
+| **Both** | Bundles and compresses in one go | `tar -z/-j/-J`, `zip` |
+
+Compression is **lossless**: decompressing gives back the exact original. Text compresses very well, while already-compressed media (JPEG, MP4) barely shrinks.
+
+## gzip and bzip2
+
+```bash title="Terminal"
+cp /usr/share/dict/words .      # a large text file to practise on
+ls -l words                     # note the size
+
+gzip words                      # replaces words with words.gz (much smaller)
+ls -l words.gz
+gunzip words.gz                 # restores words and removes words.gz
+
+bzip2 words                     # → words.bz2 (usually smaller than .gz, but slower)
+bunzip2 words.bz2               # → words
+```
+
+| Tool | Extension | Compress | Decompress | Character |
+|---|---|---|---|---|
+| **gzip** | `.gz` | `gzip file` | `gunzip file.gz` | Fast and universal |
+| **bzip2** | `.bz2` | `bzip2 file` | `bunzip2 file.bz2` | Better ratio, slower |
+| **xz** | `.xz` | `xz file` | `unxz file.xz` | Best ratio, slowest to compress |
+
+Useful options: `-k` keeps the original file, `-v` shows the compression ratio, `-l` (gzip) lists sizes, and `-c` writes to standard output.
+
+## tar: tape archive
+
+`tar` bundles files and directories, preserving the directory structure, permissions and timestamps, into one **tarball**. It has **three modes**:
+
+| Mode | Option | Does |
+|---|---|---|
+| **Create** | `-c` | Make a new archive |
+| **List** (table) | `-t` | Show the contents without extracting |
+| **Extract** | `-x` | Pull files out of the archive |
+
+Add these options to a mode:
+
+| Option | Meaning |
+|---|---|
+| `-f FILE` | The archive **file** name (almost always needed; put it last in the group) |
+| `-v` | **Verbose**: list each file as it is processed |
+| `-z` | Compress or decompress with **gzip** (`.tar.gz` / `.tgz`) |
+| `-j` | Compress or decompress with **bzip2** (`.tar.bz2`) |
+| `-J` | Compress or decompress with **xz** (`.tar.xz`) |
+| `-r` | **Append** files to an existing (uncompressed) archive |
+| `-C DIR` | Change to DIR before extracting |
+
+```bash title="Terminal"
+mkdir -p ~/mybackups
+tar -cvf ~/mybackups/udev.tar /etc/udev       # create (verbose) an uncompressed archive
+tar -tvf ~/mybackups/udev.tar                 # list its contents
+tar -zcvf ~/mybackups/udev.tar.gz /etc/udev   # create a gzip-compressed archive
+tar -jcvf ~/mybackups/udev.tar.bz2 /etc/udev  # …bzip2-compressed
+tar -xvf ~/mybackups/udev.tar                 # extract into the current directory
+tar -zxvf udev.tar.gz -C /tmp/restore         # extract a .tar.gz into /tmp/restore
+tar -rvf ~/mybackups/udev.tar /etc/hosts      # append a file (uncompressed archives only)
+tar -tf ~/mybackups/udev.tar | grep hosts     # verify that it was added
+```
+
+<Callout type="note" title="The leading slash">
+  When you archive `/etc/udev`, tar prints <em>"Removing leading '/' from member names"</em> and stores <code>etc/udev/…</code>. Extracting then recreates <code>etc/udev</code> <strong>under the current directory</strong>, so a restore can't accidentally overwrite the real system files.
+</Callout>
+
+<Callout type="tip" title="How to remember tar">
+  <strong>c</strong>reate / e<strong>x</strong>tract / lis<strong>t</strong> + <strong>v</strong>erbose + <strong>f</strong>ile, with <strong>z</strong> for gzip. "<code>tar -czvf</code>: create zipped verbose file." "<code>tar -xzvf</code>: extract zipped verbose file."
+</Callout>
+
+## zip and unzip
+
+`zip` archives **and** compresses at once, and is the standard on Windows, so it is the best choice for sharing with non-Linux users.
+
+```bash title="Terminal"
+zip words.zip words                    # compress a single file
+zip -r udev.zip /etc/udev              # -r: include a directory and its contents
+unzip -l udev.zip                      # list the contents
+rm -r etc                              # (clean up the files from the tar example)
+unzip udev.zip                         # extract into the current directory
+unzip udev.zip -d /tmp/out             # extract into another directory
+```
+
+| | tar.gz / tar.bz2 / tar.xz | zip |
+|---|---|---|
+| Typical platform | Linux and UNIX | Windows and everywhere |
+| Compression | The whole archive as one stream (better ratio) | Each file separately (fast random access) |
+| Permissions and ownership | Fully preserved | Limited |
+
+<Takeaways>
+
+- **Compression** shrinks one file (`gzip`, `bzip2`, `xz`); **archiving** bundles many (`tar`).
+- `gzip`/`gunzip` (`.gz`) are fast; `bzip2`/`bunzip2` (`.bz2`) and `xz` (`.xz`) compress better and more slowly. All of them replace the original unless you use `-k`.
+- `tar` modes are **c**reate, **t** (list) and e**x**tract; `-f` names the file, `-v` is verbose, and `-z`/`-j`/`-J` add compression.
+- `zip -r` and `unzip` (`-l` to list, `-d` to choose the target) are the cross-platform option.
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="Back up your labs" level="easy">
+
+Create a gzip-compressed archive `labs.tar.gz` of the `~/projects` directory, then list its contents without extracting.
+
+<Solution>
+
+```bash
+tar -czvf labs.tar.gz ~/projects
+tar -tzvf labs.tar.gz      # -z is optional when listing with modern GNU tar
+```
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Restore somewhere safe" level="medium">
+
+Extract only the contents of `labs.tar.gz` into `/tmp/check` to inspect them, without touching your real files.
+
+<Solution>
+
+```bash
+mkdir -p /tmp/check
+tar -xzvf labs.tar.gz -C /tmp/check
+ls -R /tmp/check
+```
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Which tool?" level="easy">
+
+You need to email a folder of reports to a colleague on Windows. Which command do you use?
+
+<Solution>
+
+`zip -r reports.zip reports/`. Windows opens `.zip` files natively, while a `.tar.gz` needs extra software.
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "What does gzip file.txt produce?",
+      options: ["file.txt.zip and keeps file.txt", "file.txt.gz and removes file.txt", "file.tar", "file.txt.bz2"],
+      answer: 1,
+      explain: "gzip replaces the original unless you use -k."
+    },
+    {
+      q: "Which tar option lists an archive's contents?",
+      options: ["-c", "-x", "-t", "-r"],
+      answer: 2,
+      explain: "-t shows the table of contents."
+    },
+    {
+      q: "What does tar -zcvf backup.tar.gz dir do?",
+      options: ["Extracts dir", "Creates a gzip-compressed archive of dir", "Lists backup.tar.gz", "Appends dir"],
+      answer: 1,
+      explain: "z = gzip, c = create, v = verbose, f = file name."
+    },
+    {
+      q: "Which option compresses a tar archive with bzip2?",
+      options: ["-z", "-j", "-J", "-b"],
+      answer: 1,
+      explain: "-z gzip, -j bzip2, -J xz."
+    },
+    {
+      q: "What do you need to include a directory in a zip archive?",
+      options: ["zip -d", "zip -r", "zip -l", "zip -x"],
+      answer: 1,
+      explain: "-r recurses into directories."
+    },
+    {
+      q: "How do you list a zip archive without extracting it?",
+      options: ["unzip -l file.zip", "zip -t file.zip", "tar -tf file.zip", "cat file.zip"],
+      answer: 0,
+      explain: "unzip -l lists the contents."
+    }
+  ]}
+/>
