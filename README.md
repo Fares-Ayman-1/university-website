@@ -123,7 +123,7 @@ Colour tokens live in `app/globals.css` under `:root[data-theme="light"]` and `:
 ## Deploy on Vercel
 
 1. Push the repository to GitHub, including `public/materials` and `public/slides`.
-2. Import it in Vercel. If the repository root is `D:\University`, set **Root Directory** to `quantro-learn`. The framework preset is Next.js and the default build command works.
+2. Import it in Vercel. The repository root **is** the app, so leave **Root Directory** empty (`./`). `vercel.json` pins the framework to Next.js, so the deployment works even if the project was created before `package.json` existed.
 3. Every page is pre-rendered at build time.
 
 Note that the lecture and section PDFs in `public/materials` and the slide images are publicly downloadable from a public deployment. If the course material shouldn't be public, enable Vercel **Deployment Protection** or remove `public/materials` before deploying.
