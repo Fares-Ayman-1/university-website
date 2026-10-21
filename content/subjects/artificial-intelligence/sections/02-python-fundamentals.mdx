@@ -1,0 +1,407 @@
+---
+number: 2
+title: Python Fundamentals for AI
+summary: Everything the search labs rely on, from variables, casting and operators through lists, tuples, dicts, sets, comprehensions, control flow and functions to classes, inheritance and polymorphism, with the gotchas that trip students up.
+kind: lab
+topics: [Variables and casting, Lists and slicing, Dicts and sets, Comprehensions, Functions, Classes and OOP]
+duration: 60 min hands-on
+sources:
+  - file: Sections/sec2/Artificial Intelligence - Lab 02.ipynb
+    label: AI Lab 02 – Python Fundamentals (Jupyter notebook)
+  - file: Sections/sec2/Artificial Intelligence - Lab 02.pdf
+    label: AI Lab 02 – Python Fundamentals (PDF export)
+---
+
+<Objectives>
+
+- Declare variables, read input and **cast** between `int`, `float`, `str` and `bool`.
+- Use **lists, tuples, dictionaries and sets**, including slicing and the difference between mutable and immutable types.
+- Write **comprehensions**, conditionals, loops and functions, and know what gets passed **by reference**.
+- Build **classes** with attributes, private members, inheritance and polymorphism. The graph-search labs are written this way.
+
+</Objectives>
+
+<Callout type="tip" title="Run the notebook alongside this page">
+  The original Jupyter notebook is linked under <strong>Source material</strong> at the bottom. Run a cell with <code>Ctrl + Enter</code>, or with <code>Shift + Enter</code> to also move to the next cell.
+</Callout>
+
+## Why Python?
+
+Python is a high-level, **interpreted** language created by Guido van Rossum (1991). It is known for its **simplicity and readability**, and you can express ideas in far fewer lines than in C++ or Java. It is dynamically typed, so the interpreter works out a variable's type from the value you assign. Its huge ecosystem (NumPy, pandas, scikit-learn, PyTorch) is why it is the default language of AI.
+
+## Printing, comments and variables
+
+```python
+print("Hello World")
+print("Hello", "World", "BFCAI")   # several values, separated by spaces
+# Print("Hello")                   # NameError: Python is case-sensitive
+
+# This is a single-line comment
+"""
+A triple-quoted string is not ignored by the interpreter,
+but on its own it does nothing, so it is often used like a multi-line comment.
+"""
+
+x = 5
+y = 9
+x, y = 2, 8.2          # multiple assignment in one line
+print(x + y)           # 10.2
+```
+
+**Naming rules**: names may contain letters, digits and underscores, but cannot start with a digit or contain `-`. So `3var = 23` and `my-name = "..."` are both `SyntaxError`s. Names are case-sensitive and must not be keywords like `class` or `for`.
+
+## Input and casting
+
+`input()` **always returns a string**. Cast it before doing arithmetic:
+
+```python
+z = input("Enter a number: ")      # '42'  (str)
+print(type(z))                     # <class 'str'>
+
+z = int(input("Enter a number: ")) # 42    (int)
+price = float("4.5")               # 4.5
+flag = bool(0)                     # False — 0, '', [] and None are "falsy"
+
+int("yousef")                      # ValueError: not a base-10 number
+```
+
+## Operators and math functions
+
+| Operator | Meaning | Example | Result |
+|---|---|---|---|
+| `+ - *` | add, subtract, multiply | `120 * 32` | `3840` |
+| `/` | true division (always float) | `23 / 11` | `2.0909…` |
+| `//` | integer (floor) division | `23 // 11` | `2` |
+| `%` | remainder (modulus) | `10 % 3` | `1` |
+| `**` | power | `1.01 ** 22` | `1.2447…` |
+
+```python
+from math import ceil, floor, sqrt, cos, log, log10
+
+print(abs(-10), ceil(12.43), floor(92.51))   # 10 13 92
+print(max(10, 22), min(3, 7), round(2.675, 2))
+print(sqrt(16), cos(0), log10(1000))          # 4.0 1.0 3.0
+```
+
+<Callout type="warning">
+  Trigonometric functions use <strong>radians</strong>: <code>cos(30)</code> is the cosine of 30 radians, not 30°. Use <code>cos(radians(30))</code> for degrees.
+</Callout>
+
+## Iterables: lists and tuples
+
+An **iterable** is any object that can hand you its elements one at a time, which is what lets you loop over it. An **iterator** is the stream itself; `reversed()` and `map()` return iterators, so cast them with `list()` to see their contents.
+
+### Lists: ordered, mutable and heterogeneous
+
+```python
+lst = [1, 3.25, "Yousef", [10, 11, 12]]  # mixed types are allowed
+print(lst[2], lst[-1], len(lst))         # Yousef [10, 11, 12] 4
+lst[3] = 2                               # lists are mutable
+
+matrix = [[1, 2, 3, 4, 5], [6, 7, 8, 9, 10]]
+print(matrix[1][3])                      # 9
+
+nums = [6, 2, 1, 9, 10]
+print(list(reversed(nums)))              # [10, 9, 1, 2, 6]
+squared = list(map(lambda v: v ** 2, nums))
+a, b, c = map(int, "3 4 5".split())      # unpacking + casting in one line
+```
+
+### Slicing: `list[start : end : step]`
+
+`start` is included and `end` is excluded. A negative `step` walks backwards.
+
+```python
+lst = [9, 4, 2, 1]
+print(lst[0:3])      # [9, 4, 2]
+print(lst[0:3:2])    # [9, 2]
+print(lst[-1:0])     # []  — end must be after start for a positive step
+print(lst[-1:0:-1])  # [1, 2, 4]
+print(lst[::-1])     # [1, 2, 4, 9] — a reversed copy
+```
+
+### Copies versus references
+
+```python
+a = [1, 2, 3]
+b = a          # same list, two names
+c = a[:]       # shallow copy (same as a.copy())
+a[0] = 99
+print(b, c)    # [99, 2, 3] [1, 2, 3]
+```
+
+### Useful list operations
+
+```python
+lst = [1, 1, 2, 2, 3]
+lst.append(23)       # add to the end
+lst.insert(3, 2102)  # add at index 3
+lst.pop()            # remove the last element
+lst.pop(3)           # remove the element at index 3
+lst.remove(2)        # remove the first occurrence of the VALUE 2
+print(2 in lst)      # membership test → True
+print([0] * 3, lst + [7])  # repetition and concatenation
+```
+
+### Tuples: immutable sequences
+
+```python
+t = (1, 2, 3, 4)
+t[1] = 9                 # TypeError: tuples are immutable
+
+tricky = (1, 6.25, [1, 2, 3])
+tricky[2][0] = 2         # allowed! the tuple holds a reference to a mutable list
+print(tricky)            # (1, 6.25, [2, 2, 3])
+```
+
+## Strings, dictionaries and sets
+
+```python
+course = "Artificial Intelligence"
+print(course[0], course[-3], course[2:6])      # A n tifi
+print(len(course), course.upper(), course.isalpha())
+
+capitals = {"Egypt": "Cairo", "Saudi Arabia": "Riyadh", 10: 1}
+capitals["Jordan"] = "Amman"     # assigning to a new key adds it
+print(list(capitals.items()))
+print(list(capitals.keys())[0])  # dict views are not indexable; cast first
+# capitals["Mars"]               # KeyError — use capitals.get("Mars") instead
+
+unique = {1, 2, 2, 3, 5, 5}
+print(unique)                    # {1, 2, 3, 5} — sets drop duplicates
+```
+
+Dictionaries are hash maps with **fast key lookup**. That is exactly how the search labs store graphs: `{node: [neighbours]}`.
+
+## Comprehensions
+
+A comprehension builds a collection in one readable line:
+
+```python
+squares = [x ** 2 for x in range(1, 9)]
+evens_or_zero = [x if x % 2 == 0 else 0 for x in range(10)]
+square_map = {x: x ** 2 for x in range(1, 9)}
+as_tuple = tuple(x for x in range(1, 9))  # a generator cast to a tuple
+```
+
+<Callout type="note">
+  There is no "tuple comprehension": <code>(x for x in …)</code> is a <strong>generator</strong>. Wrapping it in <code>tuple()</code> consumes it.
+</Callout>
+
+## Control flow
+
+Python uses **indentation** to define blocks, so a missing indent is an `IndentationError`. Use `pass` for an intentionally empty block.
+
+```python
+grade = 76
+if grade >= 90:
+    print("A+")
+elif grade >= 85:
+    print("A")
+elif grade >= 80:
+    print("B+")
+elif grade >= 75:
+    print("B")
+else:
+    print("Keep going")
+
+x = 20
+while x > 5:
+    x -= 1
+else:                      # runs when the loop ends without break
+    print("done")
+
+for i, value in enumerate(["BFS", "DFS", "UCS"]):
+    print(i, value)
+```
+
+## Functions
+
+```python
+def total(x, y, z=0):          # z has a default value
+    return x + y + z
+
+def modify(lst, x):
+    x = 11                     # rebinding x is local only
+    lst[3] = x                 # mutating the list changes the caller's list
+    return lst
+
+nums, n = [10, 5, 3, 21], 25
+modify(nums, n)
+print(nums, n)                 # [10, 5, 3, 11] 25
+```
+
+<Callout type="warning" title="Mutable arguments">
+  Lists, dicts and other mutable objects are passed <strong>by reference</strong>: a function can change them. Immutable values (numbers, strings, tuples) behave as if passed by value. Pass <code>lst.copy()</code> when you want to protect the original.
+</Callout>
+
+Python has **no function overloading**. Defining a second function with the same name simply replaces the first one.
+
+## Classes and object-oriented programming
+
+A **class** is a blueprint; an **object** is an instance of it. **Attributes** store data and **methods** define behaviour. `__init__` is the constructor and `self` refers to the current object.
+
+```python
+class Dog:
+    species = "Mammal"               # class variable, shared by all dogs
+
+    def __init__(self, name, age):
+        self.name = name             # instance variable
+        self.__age = age             # "private" (name-mangled) attribute
+
+buddy, max_ = Dog("Buddy", 2), Dog("Max", 1)
+Dog.species = "Canine"
+buddy.species = "Wolf"               # creates a NEW instance attribute on buddy only
+print(buddy.species, max_.species)   # Wolf Canine
+print(buddy.__dict__)                # {'name': 'Buddy', '_Dog__age': 2, 'species': 'Wolf'}
+print(buddy._Dog__age)               # 2 — "private" is only a naming convention
+```
+
+### Encapsulation, inheritance and polymorphism
+
+```python
+class BankAccount:
+    def __init__(self, balance):
+        self.__balance = balance
+    def get_balance(self):           # controlled access
+        return self.__balance
+
+class Vehicle:
+    def __init__(self, brand, model):
+        self.brand, self.model = brand, model
+    def move(self):
+        raise NotImplementedError
+    def info(self):
+        print(self.brand, self.model)
+
+class Car(Vehicle):
+    def move(self):
+        print("Drive!")
+
+class Boat(Vehicle):
+    def move(self):
+        print("Sail!")
+
+for vehicle in (Car("Ford", "Mustang"), Boat("Ibiza", "Touring 20")):
+    vehicle.info()
+    vehicle.move()                   # polymorphism: each class answers in its own way
+```
+
+With **multiple inheritance**, Python follows the **Method Resolution Order (MRO)**: parents are searched left to right, so `class Child(Parent1, Parent2)` takes `Parent1`'s version first. Check it with `Child.__mro__`.
+
+<Takeaways>
+
+- `input()` returns a string, so **cast** before doing arithmetic.
+- Lists are **mutable**, tuples are **immutable** (but can contain mutable objects), dicts map keys to values and sets remove duplicates.
+- Slicing is `[start : end : step]` with `end` excluded; `[:]` makes a shallow copy.
+- Mutable arguments are shared with the caller, so copy them to avoid side effects.
+- Classes bundle data and behaviour; inheritance plus overriding gives **polymorphism**.
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="Adjacency list from edges" level="easy">
+
+Given `edges = [("A", "B"), ("A", "C"), ("B", "D")]`, build an **undirected** adjacency list as a dictionary using a loop.
+
+<Solution>
+
+```python
+edges = [("A", "B"), ("A", "C"), ("B", "D")]
+graph = {}
+for u, v in edges:
+    graph.setdefault(u, []).append(v)
+    graph.setdefault(v, []).append(u)
+print(graph)  # {'A': ['B', 'C'], 'B': ['A', 'D'], 'C': ['A'], 'D': ['B']}
+```
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Predict the output" level="medium">
+
+What does this print, and why?
+
+```python
+def add_item(item, bag=[]):
+    bag.append(item)
+    return bag
+
+print(add_item("x"))
+print(add_item("y"))
+```
+
+<Solution>
+
+It prints `['x']` and then `['x', 'y']`. The default list is created **once**, when the function is defined, and then reused by every call. The fix is `def add_item(item, bag=None): bag = [] if bag is None else bag`.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="A tiny class" level="medium">
+
+Write a `Stack` class with `push`, `pop`, `peek` and `is_empty`. You will use it for DFS in the next lab.
+
+<Solution>
+
+```python
+class Stack:
+    def __init__(self):
+        self._items = []
+    def push(self, item):
+        self._items.append(item)
+    def pop(self):
+        return self._items.pop()
+    def peek(self):
+        return self._items[-1]
+    def is_empty(self):
+        return not self._items
+```
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "What is type(input('Enter: ')) when the user types 42?",
+      options: ["int", "float", "str", "bool"],
+      answer: 2,
+      explain: "input() always returns a string; cast it with int() first."
+    },
+    {
+      q: "What does [9, 4, 2, 1][-1:0:-1] evaluate to?",
+      options: ["[1, 2, 4, 9]", "[1, 2, 4]", "[]", "[9, 4, 2]"],
+      answer: 1,
+      explain: "It starts at the last element and walks backwards, stopping before index 0."
+    },
+    {
+      q: "t = (1, [2, 3]); t[1][0] = 9 — what happens?",
+      options: ["TypeError", "t becomes (1, [9, 3])", "t becomes (9, [2, 3])", "SyntaxError"],
+      answer: 1,
+      explain: "The tuple is immutable, but the list inside it is mutable and can change."
+    },
+    {
+      q: "Which collection automatically removes duplicates?",
+      options: ["list", "tuple", "set", "dict values"],
+      answer: 2,
+      explain: "A set stores each element once."
+    },
+    {
+      q: "Defining two functions with the same name in Python…",
+      options: ["Overloads them by parameter count", "Raises an error", "Keeps only the last definition", "Keeps only the first definition"],
+      answer: 2,
+      explain: "Python has no overloading; the second def rebinds the name."
+    },
+    {
+      q: "buddy.species = 'Wolf' when species is a class variable…",
+      options: ["Changes species for all Dog objects", "Creates an instance attribute on buddy only", "Raises AttributeError", "Deletes the class variable"],
+      answer: 1,
+      explain: "Assigning through an instance creates a new instance attribute that shadows the class variable."
+    }
+  ]}
+/>

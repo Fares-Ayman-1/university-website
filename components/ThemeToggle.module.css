@@ -1,0 +1,67 @@
+.toggle {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--heading);
+  cursor: pointer;
+  transition:
+    border-color var(--dur-micro) ease,
+    transform var(--dur-micro) ease;
+}
+
+.toggle:hover {
+  border-color: var(--gold);
+}
+
+.toggle:active {
+  transform: scale(0.94);
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  overflow: visible;
+}
+
+/* Sun → moon morph: the mask circle slides in to carve a crescent,
+   the core grows and the rays retract. Driven purely by data-theme. */
+.core {
+  fill: currentColor;
+  transform-origin: center;
+  transition: transform var(--dur-dramatic) var(--ease-out-expo);
+}
+
+.maskCircle {
+  transition: transform var(--dur-dramatic) var(--ease-out-expo);
+}
+
+.rays {
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  transform-origin: center;
+  transition:
+    transform var(--dur-dramatic) var(--ease-out-expo),
+    opacity var(--dur-standard) ease;
+}
+
+:global(:root[data-theme="dark"]) .toggle {
+  color: var(--gold);
+}
+
+:global(:root[data-theme="dark"]) .core {
+  transform: scale(1.65);
+}
+
+:global(:root[data-theme="dark"]) .maskCircle {
+  transform: translate(-6px, -2px);
+}
+
+:global(:root[data-theme="dark"]) .rays {
+  transform: rotate(-60deg) scale(0.4);
+  opacity: 0;
+}

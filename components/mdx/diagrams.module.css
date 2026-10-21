@@ -1,0 +1,218 @@
+.diagram {
+  margin: 1.6em 0;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(var(--grid-line) 1px, transparent 1px) 0 0 / 22px 22px,
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px) 0 0 / 22px 22px,
+    var(--surface);
+}
+
+.diagram figcaption {
+  margin-top: 12px;
+  font-size: var(--text-sm);
+  color: var(--muted);
+  text-align: center;
+}
+
+.scroll {
+  overflow-x: auto;
+}
+
+.scroll svg {
+  width: 100%;
+  height: auto;
+  margin-inline: auto;
+}
+
+.edge {
+  stroke: var(--border-strong);
+  stroke-width: 2;
+  fill: none;
+}
+
+.edgeActive {
+  stroke: var(--gold);
+  stroke-width: 3.2;
+  fill: none;
+}
+
+.edgeGold {
+  stroke: var(--gold);
+  stroke-width: 2;
+}
+
+.node {
+  fill: var(--surface);
+  stroke: var(--border-strong);
+  stroke-width: 2;
+}
+
+.nodeActive {
+  fill: var(--gold-soft);
+  stroke: var(--gold);
+  stroke-width: 2.4;
+}
+
+.nodeGoal {
+  fill: var(--gold);
+  stroke: var(--gold);
+  stroke-width: 2;
+}
+
+.nodeStart {
+  fill: var(--navy);
+  stroke: var(--navy);
+  stroke-width: 2;
+}
+
+:global(:root[data-theme="dark"]) .nodeStart {
+  fill: var(--slate);
+  stroke: var(--slate);
+}
+
+.label,
+.labelGoal {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 650;
+  text-anchor: middle;
+  fill: var(--heading);
+}
+
+.labelGoal {
+  fill: #fff;
+}
+
+.nodeGoal + .labelGoal {
+  fill: var(--navy);
+}
+
+.badge {
+  fill: var(--slate-base);
+  stroke: var(--surface);
+  stroke-width: 2;
+}
+
+.badgeText {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  text-anchor: middle;
+  fill: #fff;
+}
+
+.weightBg {
+  fill: var(--surface);
+  stroke: var(--border);
+}
+
+.weightBgActive {
+  fill: var(--gold-soft);
+  stroke: var(--gold);
+}
+
+.weight {
+  font-family: var(--font-code);
+  font-size: 12.5px;
+  font-weight: 600;
+  text-anchor: middle;
+  fill: var(--text);
+}
+
+.arrowHead {
+  fill: var(--border-strong);
+}
+
+.arrowHeadGold {
+  fill: var(--gold);
+}
+
+/* Agent loop */
+.panelNavy {
+  fill: var(--navy);
+}
+
+:global(:root[data-theme="dark"]) .panelNavy {
+  fill: var(--surface-2);
+  stroke: var(--border);
+}
+
+.panelInner {
+  fill: rgba(245, 241, 234, 0.08);
+  stroke: rgba(245, 241, 234, 0.18);
+}
+
+.panelGold {
+  fill: var(--gold);
+}
+
+.panelOutline {
+  fill: var(--slate-soft);
+  stroke: var(--slate);
+  stroke-width: 1.5;
+  stroke-dasharray: 6 5;
+}
+
+.panelTitle,
+.panelTitleLight {
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 700;
+  text-anchor: middle;
+  fill: var(--heading);
+}
+
+.panelTitleLight {
+  fill: #fff;
+}
+
+.panelSub {
+  font-family: var(--font-body);
+  font-size: 13px;
+  text-anchor: middle;
+  fill: var(--muted);
+}
+
+.panelTextLight,
+.panelTextDark {
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  font-weight: 600;
+  text-anchor: middle;
+  fill: var(--cream);
+}
+
+.panelTextDark {
+  fill: var(--navy);
+  font-size: 12.5px;
+}
+
+.flow {
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 2.5;
+}
+
+.flowLabel {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-anchor: middle;
+  fill: var(--gold-text);
+}
+
+.mapLabel {
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  font-weight: 600;
+  text-anchor: middle;
+  fill: var(--heading);
+  paint-order: stroke;
+  stroke: var(--surface);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}

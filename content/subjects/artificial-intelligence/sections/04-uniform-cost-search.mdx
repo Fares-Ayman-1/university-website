@@ -1,0 +1,259 @@
+---
+number: 4
+title: "Searching Problems (2): Uniform-Cost Search"
+summary: Weighted graphs and cumulative path cost, then uniform-cost search (a FIFO queue with priority on the cheapest path) traced on a tree and on the lab graph, implemented in the Graph class and compared with DFS and BFS.
+kind: lab
+topics: [Weighted graphs, Path cost, Priority queue, Uniform-cost search, DFS vs BFS vs UCS]
+duration: 60 min hands-on
+sources:
+  - file: Sections/sec4/Artificial Intelligence - Lab 04.pdf
+    label: AI Lab 04 – Searching Problems (2) (slides)
+    pages: "1-42"
+  - file: Sections/sec4/Artificial Intelligence - Lab 04 Notebook.pdf
+    label: AI Lab 04 – UCS notebook (PDF)
+bookRefs:
+  - book: ai-book
+    chapter: Ch 3.4 · Search Algorithms (uniform-cost search)
+    pages: "59–73"
+---
+
+<Objectives>
+
+- Represent **weighted** directed and undirected graphs and compute **cumulative path cost**.
+- Explain the **priority queue** behind uniform-cost search and its tie-breaking rule.
+- Trace UCS by hand on a weighted tree and on the lab graph.
+- Implement `ucs()` in the `Graph` class and compare its result with DFS and BFS.
+
+</Objectives>
+
+## Recap: blind search on weighted graphs
+
+**Uninformed (blind) search** explores the problem space without any extra information about how close a state is to the goal. Which strategy fits depends on the graph:
+
+| Graph | Strategies |
+|---|---|
+| Directed or undirected, unweighted | Depth-first, breadth-first (and the variants depth-limited, iterative deepening, bidirectional) |
+| **Weighted** | **Uniform-cost search** |
+
+<Definition term="Path cost">
+  The total cost of a path is the <strong>sum of the edge weights</strong> along it: $g(\text{path}) = \sum_i w(e_i)$.
+</Definition>
+
+### Weighted graph representations
+
+In a weighted adjacency list each neighbour is stored with its weight, as `(neighbour, weight)`. In a matrix the cell holds the weight. **The only difference between directed and undirected graphs is the vice-versa rule**: an undirected edge is stored in both directions.
+
+```python title="weighted_representations.py"
+# Directed, weighted
+directed = {
+    "S": [("A", 2), ("B", 3), ("D", 5)],
+    "A": [("C", 4)],
+    "B": [("D", 4)],
+    "C": [("D", 1), ("G", 2)],
+    "D": [("G", 5)],
+    "G": [],
+}
+
+# Undirected: every edge also appears the other way round
+undirected = {"A": [("B", 7)], "B": [("A", 7)]}
+```
+
+## Uniform-cost search
+
+<Definition term="Uniform-cost search">
+  UCS is <strong>FIFO + a priority function</strong>: before removing a path, sort the list so the path with the <strong>lowest cumulative cost</strong> comes out first.
+</Definition>
+
+Two rules make the hand traces match the code:
+
+1. **Costs are cumulative.** A child's priority is the parent's path cost plus the edge weight, not the edge weight alone.
+2. **Ties are broken alphabetically** (by the last node) so that everyone gets the same answer.
+
+UCS uses the same six-step basic search loop as DFS and BFS. Only the queuing function changes.
+
+### UCS on a weighted tree
+
+<SlideFigure page={10} caption="The lab's weighted tree. The goal is node 6." />
+
+| Step | Remove | List after sorting by cost (cheapest first) |
+|---|---|---|
+| 0 | — | 1 (0) |
+| 1 | 1 (0) | 3 (2), 2 (5) |
+| 2 | 3 (2) | 2 (5), 6 (2 + 6 = **8**), 7 (2 + 8 = **10**) |
+| 3 | 2 (5) | 5 (5 + 1 = **6**), 6 (8), 7 (10), 4 (5 + 9 = **14**) |
+| 4 | 5 (6) | 6 (8), 7 (10), 9 (6 + 7 = **13**), 4 (14), 10 (6 + 11 = **17**) |
+| 5 | **6 (8) = goal** | |
+
+**Solution** `[1, 3, 6]` · **Visited** `[1, 3, 2, 5, 6]` · **Cost** $2 + 6 = 8$.
+
+<Callout type="note" title="Why not stop when 6 is first generated?">
+  Node 6 enters the list at step 2, but UCS only stops when the goal is <strong>removed</strong>. Until then a cheaper path to it might still turn up. That is what makes UCS optimal.
+</Callout>
+
+### UCS on the lab graph
+
+<WeightedGraph
+  directed
+  nodes="S:0,50 A:33,8 B:33,92 D:58,55 C:72,8 G:100,50"
+  edges="S->A:2 S->B:3 S->D:5 A->C:4 C->G:2 C->D:1 B->D:4 D->G:5"
+  path="S,A,C,G"
+  start="S"
+  goal="G"
+  caption="UCS finds S → A → C → G with cost 2 + 4 + 2 = 8, the cheapest route."
+/>
+
+| Current path (cost) | List after sorting |
+|---|---|
+| — | `[S]` (0) |
+| `[S]` (0) | `[S,A]` (2), `[S,B]` (3), `[S,D]` (5) |
+| `[S,A]` (2) | `[S,B]` (3), `[S,D]` (5), `[S,A,C]` (6) |
+| `[S,B]` (3) | `[S,D]` (5), `[S,A,C]` (6), `[S,B,D]` (7) |
+| `[S,D]` (5) | `[S,A,C]` (6), `[S,B,D]` (7), `[S,D,G]` (10) |
+| `[S,A,C]` (6) | `[S,A,C,D]` (7), `[S,B,D]` (7), `[S,A,C,G]` (8), `[S,D,G]` (10) |
+| `[S,A,C,D]` (7) | D already visited, so the path is skipped |
+| `[S,B,D]` (7) | D already visited, so the path is skipped |
+| `[S,A,C,G]` (8) | **goal reached** |
+
+## DFS vs. BFS vs. UCS
+
+| | DFS | BFS | UCS |
+|---|---|---|---|
+| Queuing function | LIFO | FIFO | FIFO + priority (lowest cost) |
+| Solution | S → D → G | S → D → G | **S → A → C → G** |
+| Actual cost | 10 | 10 | **8** |
+| Nodes visited | 3 | 6 | 6 |
+| Optimal on weighted graphs? | No | No (only for equal step costs) | **Yes** (step costs > 0) |
+
+UCS does more work than DFS here, but it is the only one of the three that guarantees the **cheapest** path.
+
+## Implementation
+
+Add one method to the `Graph` class from Lab 03. The fringe stores `(cost, path)` pairs, and the sort key `(cost, last_node)` gives the cheapest-first order with alphabetical tie-breaking.
+
+```python title="graph.py — UCS method" {7}
+    def ucs(self, start, goal):
+        if not self.weighted:
+            raise ValueError("Uniform-cost search needs a weighted graph")
+        fringe, visited = [(0, [start])], []
+        while fringe:
+            # FIFO + priority: cheapest path first, ties broken alphabetically
+            fringe.sort(key=lambda item: (item[0], item[1][-1]))
+            cost, path = fringe.pop(0)
+            node = path[-1]
+            if node in visited:
+                continue
+            visited.append(node)
+            if node == goal:
+                return path, cost, visited
+            for neighbour, weight in self.adj[node]:
+                fringe.append((cost + weight, path + [neighbour]))  # cumulative cost
+        return None, None, visited
+```
+
+```python title="test_ucs.py"
+g = Graph(directed=True, weighted=True)
+for v in "SABCDG":
+    g.add_vertex(v)
+for u, v, w in [("S", "B", 3), ("S", "A", 2), ("S", "D", 5), ("A", "C", 4),
+                ("C", "G", 2), ("C", "D", 1), ("B", "D", 4), ("D", "G", 5)]:
+    g.add_edge(u, v, w)
+
+print(g.ucs("S", "G"))
+# (['S', 'A', 'C', 'G'], 8, ['S', 'A', 'B', 'D', 'C', 'G'])
+```
+
+<Callout type="tip" title="Production version: heapq">
+  Sorting the whole list on every step costs $O(n \log n)$. A binary heap gives the cheapest path in $O(\log n)$:
+  <code>heapq.heappush(fringe, (cost, path[-1], path))</code> and <code>heapq.heappop(fringe)</code>. Including <code>path[-1]</code> in the tuple keeps the alphabetical tie-breaking.
+</Callout>
+
+<Takeaways>
+
+- UCS = **FIFO + priority on the lowest cumulative path cost**.
+- Costs **accumulate** along the path, and ties are broken **alphabetically** in the labs.
+- UCS stops when the goal is **removed** from the list, not when it is generated. That is why it is optimal.
+- On the lab graph, DFS and BFS return a path that costs 10, while UCS finds the optimal cost of 8.
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="Change one weight" level="easy">
+
+In the lab graph, change the weight of **C → G** from 2 to 6. Which path does UCS return now, and at what cost?
+
+<Solution>
+
+The candidate paths are S → A → C → G = 2 + 4 + 6 = 12, S → D → G = 10, S → B → D → G = 12 and S → A → C → D → G = 2 + 4 + 1 + 5 = 12. UCS returns **S → D → G** with cost **10**.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Equal weights" level="medium">
+
+If every edge in a graph has the same weight, how does UCS behave compared with BFS?
+
+<Solution>
+
+The cumulative cost becomes proportional to the path length, so UCS expands paths in order of depth, exactly like BFS. Only the tie-breaking inside one level can differ, so UCS reduces to BFS when all step costs are equal.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Trace UCS yourself" level="hard">
+
+For the undirected graph with edges A–B 1, A–C 4, B–C 2, B–D 5, C–D 1, run UCS from **A** to **D**. Give the visited order and the solution.
+
+<Solution>
+
+| Remove | List after sorting |
+|---|---|
+| `[A]` (0) | `[A,B]` (1), `[A,C]` (4) |
+| `[A,B]` (1) | `[A,B,A]` (2), `[A,B,C]` (3), `[A,C]` (4), `[A,B,D]` (6) |
+| `[A,B,A]` (2) | A already visited, so skipped |
+| `[A,B,C]` (3) | `[A,C]` (4), `[A,B,C,D]` (4), `[A,B,C,B]` (5), `[A,B,D]` (6), `[A,B,C,A]` (7) |
+| `[A,C]` (4) | C already visited, so skipped (it wins the tie because C comes before D) |
+| `[A,B,C,D]` (4) | **goal** |
+
+Visited `[A, B, C, D]`; solution **A → B → C → D** with cost **4**.
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "Uniform-cost search removes the path with…",
+      options: ["The most nodes", "The fewest nodes", "The lowest cumulative cost", "The highest edge weight"],
+      answer: 2,
+      explain: "UCS is FIFO + priority: the cheapest path so far is expanded first."
+    },
+    {
+      q: "In the weighted tree, what priority does node 7 get when node 3 (cost 2) is expanded through an edge of weight 8?",
+      options: ["8", "10", "6", "2"],
+      answer: 1,
+      explain: "Costs are cumulative: 2 + 8 = 10."
+    },
+    {
+      q: "What does UCS return on the lab graph from S to G?",
+      options: ["S → D → G (10)", "S → B → D → G (12)", "S → A → C → G (8)", "S → A → C → D → G (12)"],
+      answer: 2,
+      explain: "2 + 4 + 2 = 8 is the cheapest path."
+    },
+    {
+      q: "When does UCS stop?",
+      options: ["When the goal is first generated", "When the goal is removed from the list", "After a fixed depth", "When the list has one element"],
+      answer: 1,
+      explain: "Stopping on removal guarantees no cheaper path to the goal remains in the list."
+    },
+    {
+      q: "Two paths both cost 7. Which one does the lab's rule expand first?",
+      options: ["The one added first", "The one whose last node comes first alphabetically", "The longer path", "Either one at random"],
+      answer: 1,
+      explain: "Ties are broken alphabetically by the last node so that all students get the same answer."
+    }
+  ]}
+/>

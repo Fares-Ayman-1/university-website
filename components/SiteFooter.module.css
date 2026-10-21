@@ -1,0 +1,23 @@
+.footer {
+  margin-top: var(--space-7);
+  border-top: 1px solid var(--border);
+  padding-block: var(--space-5);
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+
+.inner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+}
+
+.inner strong {
+  color: var(--heading);
+  font-family: var(--font-display);
+}
+
+.note {
+  max-width: 46ch;
+}

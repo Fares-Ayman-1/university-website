@@ -1,0 +1,350 @@
+---
+number: 1
+title: Introduction to AI and Intelligent Agents
+summary: What artificial intelligence means, how an agent perceives and acts, what makes behaviour rational, and the five agent architectures from simple reflex to learning agents.
+topics: [What is AI, Rational agents, PEAS, Environment types, Agent architectures]
+duration: 45 min study
+sources:
+  - file: Lectures/AI Lec 1 Introduction and Intelligent Agent.pdf
+    label: AI Lecture 1 – Introduction and Intelligent Agent (slides)
+    pages: "1-30"
+bookRefs:
+  - book: ai-book
+    chapter: Ch 1 · Artificial Intelligence
+    pages: "7–22"
+  - book: ai-book
+    chapter: Ch 2 · Intelligent Agent
+    pages: "23–53"
+  - book: aima
+    chapter: Ch 1–2 · Introduction, Intelligent Agents
+---
+
+<Objectives>
+
+- Compare the four classic definitions of AI and explain why this course follows the **rational agent** view.
+- Describe an agent with its agent function $f : \mathcal{P}^* \rightarrow \mathcal{A}$ and tell the agent function apart from the agent program.
+- Write a **PEAS** description for a task and classify its environment along six dimensions.
+- Explain how simple reflex, model-based, goal-based, utility-based and learning agents differ.
+
+</Objectives>
+
+## What is AI?
+
+There is no single agreed definition of artificial intelligence. Textbooks usually organise the definitions along two axes. The first asks whether we care about **thinking** or about **behaviour**. The second asks whether success is measured against **human** performance or against an ideal standard of **rationality**.
+
+<Grid cols={2}>
+  <Card title="Thinking humanly" tag="Cognitive modelling">
+    Build systems whose internal reasoning mirrors how people think. This requires theories of the mind from psychology and neuroscience.
+  </Card>
+  <Card title="Thinking rationally" tag="Laws of thought">
+    Build systems that reason with correct logic, deriving valid conclusions from premises. The hard part is that not all knowledge is certain or easy to formalise.
+  </Card>
+  <Card title="Acting humanly" tag="Turing test">
+    Build systems that behave so much like a person that an interrogator cannot tell them apart. This needs language, knowledge, reasoning and learning.
+  </Card>
+  <Card title="Acting rationally" tag="Rational agent">
+    Build systems that do <strong>the right thing</strong>: the action expected to achieve the best outcome given what they know. This is the approach of this course.
+  </Card>
+</Grid>
+
+Acting rationally is the most useful engineering target. It is more general than "laws of thought", because correct inference is only one way to act well; sometimes a reflex is better than deliberation. It is also easier to define precisely than "acting like a human".
+
+<Definition term="Agent">
+  An agent is anything that <strong>perceives</strong> its environment through sensors and <strong>acts</strong> on it through actuators.
+</Definition>
+
+## Agents and environments
+
+Humans, robots, software bots and even thermostats are agents. At every moment the agent receives a **percept**. Everything it has perceived so far is its **percept sequence**, and its behaviour is a mapping from percept sequences to actions:
+
+$$
+f : \mathcal{P}^* \rightarrow \mathcal{A}
+$$
+
+<AgentLoop caption="The agent receives percepts through sensors and changes the environment through actuators." />
+
+It helps to separate two ideas:
+
+- The **agent function** $f$ is an abstract mathematical description: for every possible percept sequence, which action is chosen.
+- The **agent program** is the concrete code that runs on the agent's **architecture** (its hardware) and implements $f$.
+
+$$
+\text{agent} = \text{architecture} + \text{program}
+$$
+
+Perfect rationality is usually out of reach because computation is limited. The practical goal is the best program for the machine resources available.
+
+### Example: the vacuum-cleaner world
+
+<SlideFigure page={8} caption="Two squares, A and B. The robot senses its location and whether that square is dirty." />
+
+- **Percepts**: the current location and its status, for example `[A, Dirty]`.
+- **Actions**: `Left`, `Right`, `Suck`, `NoOp`.
+
+A partial table of the agent function looks like this:
+
+| Percept sequence | Action |
+|---|---|
+| `[A, Clean]` | `Right` |
+| `[A, Dirty]` | `Suck` |
+| `[B, Clean]` | `Left` |
+| `[B, Dirty]` | `Suck` |
+| `[A, Clean], [A, Clean]` | `Right` |
+| `[A, Clean], [A, Dirty]` | `Suck` |
+
+The table keeps growing as the percept sequence gets longer, so we never store it. A short program does the same job:
+
+```python title="reflex_vacuum_agent.py"
+def reflex_vacuum_agent(percept):
+    location, status = percept
+    if status == "Dirty":
+        return "Suck"
+    if location == "A":
+        return "Right"
+    return "Left"
+
+print(reflex_vacuum_agent(("A", "Dirty")))  # Suck
+print(reflex_vacuum_agent(("B", "Clean")))  # Left
+```
+
+## Rationality
+
+Whether behaviour is "right" depends on a **performance measure** that scores the sequence of environment states the agent produces. For the vacuum world we could award:
+
+- one point per square cleaned within a time limit $T$, or
+- one point per clean square per time step, minus one point per move (this rewards saving energy), or
+- a penalty whenever more than $k$ squares are dirty.
+
+Different measures lead to different "best" agents, so the designer must choose the measure carefully: **measure what you actually want, not how you think the agent should behave.**
+
+<Definition term="Rational agent">
+  For each possible percept sequence, a rational agent selects the action that is expected to <strong>maximise its performance measure</strong>, given the evidence from the percept sequence and its built-in knowledge.
+</Definition>
+
+<Callout type="warning" title="Rational is not the same as perfect">
+
+- **Rational ≠ omniscient.** Percepts may not reveal everything relevant.
+- **Rational ≠ clairvoyant.** The outcome of an action may not be what was expected.
+- So **rational ≠ successful.** A rational agent can still fail; what matters is that its choice was the best one given what it knew.
+
+</Callout>
+
+Because of this, rationality pushes an agent towards **information gathering** (exploration), **learning** from experience, and **autonomy**: relying on its own percepts instead of only the designer's prior knowledge.
+
+## Specifying the task: PEAS
+
+Before designing an agent we specify its **task environment** with four components:
+
+<Steps>
+
+1. **P**erformance measure: how success is scored.
+2. **E**nvironment: the world the agent operates in.
+3. **A**ctuators: how the agent acts.
+4. **S**ensors: how the agent perceives.
+
+</Steps>
+
+| | Automated taxi | Internet shopping agent |
+|---|---|---|
+| **Performance** | Safety, reaching the destination, profit, legality, passenger comfort | Price, quality, appropriateness, efficiency |
+| **Environment** | Streets and highways, traffic, pedestrians, weather | Current and future websites, vendors, shippers |
+| **Actuators** | Steering, accelerator, brake, horn, speaker/display | Display to user, follow URL, fill in forms |
+| **Sensors** | Cameras, accelerometers, gauges, engine sensors, GPS, keyboard | HTML pages (text, graphics, scripts) |
+
+## Environment types
+
+The type of environment largely determines the agent design. Each dimension is a question about the task:
+
+| Dimension | Question | Easy case | Hard case |
+|---|---|---|---|
+| **Observable** | Do the sensors give the complete relevant state? | Fully observable | Partially observable |
+| **Deterministic** | Is the next state completely determined by the current state and action? | Deterministic | Stochastic |
+| **Episodic** | Is each decision independent of earlier ones? | Episodic | Sequential |
+| **Static** | Does the world stay still while the agent deliberates? | Static (semi-dynamic if only the score changes) | Dynamic |
+| **Discrete** | Are states, time, percepts and actions countable? | Discrete | Continuous |
+| **Single-agent** | Is the agent acting alone? | Single agent | Multi-agent |
+
+Applying these to four tasks from the lecture:
+
+| | Solitaire | Backgammon | Internet shopping | Taxi |
+|---|---|---|---|---|
+| Observable | Yes | Yes | No | No |
+| Deterministic | Yes | No | Partly | No |
+| Episodic | No | No | No | No |
+| Static | Yes | Semi | Semi | No |
+| Discrete | Yes | Yes | Yes | No |
+| Single-agent | Yes | No | Yes (except auctions) | No |
+
+<Callout type="note" title="The real world is the hardest case">
+  Taxi driving is partially observable, stochastic, sequential, dynamic, continuous and multi-agent at once.
+</Callout>
+
+## Agent architectures
+
+There are four basic agent types, in order of increasing generality. Any of them can be turned into a **learning agent**.
+
+### 1. Simple reflex agents
+
+They choose the action from the **current percept only**, using condition–action rules ("if dirty then suck").
+
+<SlideFigure page={23} caption="A simple reflex agent maps the current percept straight to an action through condition–action rules." />
+
+They are simple and fast, but they only work correctly if the right decision can be made from the current percept alone, which means the environment must be **fully observable**. Without memory they can loop forever in partially observable worlds.
+
+### 2. Model-based reflex agents (reflex agents with state)
+
+They keep an **internal state** that tracks the parts of the world they cannot currently see. Updating that state needs two kinds of knowledge: *how the world evolves* on its own, and *what the agent's actions do*.
+
+<SlideFigure page={25} caption="Internal state lets the agent handle partial observability." />
+
+The lecture's vacuum example remembers how long ago each square was cleaned, and stays put (`NoOp`) instead of shuttling back and forth when the other square was cleaned recently:
+
+```python title="vacuum_agent_with_state.py"
+import math
+
+def make_vacuum_agent_with_state(threshold=3):
+    last_cleaned = {"A": math.inf, "B": math.inf}  # time steps since last clean
+
+    def program(percept):
+        location, status = percept
+        for square in last_cleaned:
+            last_cleaned[square] += 1
+        if status == "Dirty":
+            last_cleaned[location] = 0
+            return "Suck"
+        other = "B" if location == "A" else "A"
+        if last_cleaned[other] > threshold:
+            return "Right" if location == "A" else "Left"
+        return "NoOp"
+
+    return program
+```
+
+### 3. Goal-based agents
+
+Knowing the current state is not always enough to decide; the agent also needs a **goal**. A goal-based agent asks *"what will happen if I do action A?"* and picks actions that lead towards the goal. **Search** and **planning** (the next lectures) are how such agents find action sequences.
+
+<SlideFigure page={27} caption="Goal-based agents predict the result of an action and compare it with their goals." />
+
+### 4. Utility-based agents
+
+Goals are binary: achieved or not. A **utility function** assigns a number to each state (*"how happy will I be?"*), so the agent can compare routes that all reach the goal (faster, safer, cheaper) and trade off conflicting goals or uncertain outcomes.
+
+<SlideFigure page={28} caption="A utility function scores how desirable each predicted state is." />
+
+### 5. Learning agents
+
+A learning agent improves its own performance over time. It has four conceptual components:
+
+<Grid cols={2}>
+  <Card title="Performance element">Selects external actions. This is the "agent" from the previous types.</Card>
+  <Card title="Critic">Compares behaviour with a fixed performance standard and gives feedback.</Card>
+  <Card title="Learning element">Uses the critic's feedback to improve the performance element.</Card>
+  <Card title="Problem generator">Suggests exploratory actions that lead to new, informative experiences.</Card>
+</Grid>
+
+<SlideFigure page={29} caption="The learning agent architecture." />
+
+<Takeaways>
+
+- Agents interact with environments through **sensors** and **actuators**; the agent function maps percept histories to actions.
+- A **rational** agent maximises *expected* performance given its percepts. It is not omniscient, and it is not always successful.
+- **PEAS** specifies the task environment; environments are classified as observable, deterministic, episodic, static, discrete and single-agent (or not).
+- Architectures range from **simple reflex** to **model-based**, **goal-based** and **utility-based** agents; any of them can **learn**.
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="PEAS for a robot lawn mower" level="easy">
+
+Write a PEAS description for an autonomous lawn-mowing robot.
+
+<Solution>
+
+- **Performance**: fraction of lawn cut, evenness of cut, time taken, battery used, no damage to plants, pets or people.
+- **Environment**: the garden: grass, flower beds, trees, slopes, weather, pets and people, the charging dock.
+- **Actuators**: wheels and steering, blade motor (on/off, height), docking connector.
+- **Sensors**: bump sensors, GPS or boundary-wire sensor, wheel encoders, rain sensor, battery level, camera or lidar.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Classify the environment" level="medium">
+
+Classify **chess played with a clock** and a **medical diagnosis system** along the six environment dimensions.
+
+<Solution>
+
+| | Chess with a clock | Medical diagnosis |
+|---|---|---|
+| Observable | Fully | Partially |
+| Deterministic | Deterministic (the opponent is the only uncertainty, which is strategic) | Stochastic |
+| Episodic | Sequential | Sequential |
+| Static | Semi-dynamic (the board waits, but the clock runs) | Dynamic |
+| Discrete | Discrete | Continuous |
+| Agents | Multi-agent (competitive) | Single-agent |
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="When does a reflex agent fail?" level="medium">
+
+Suppose the vacuum agent's location sensor breaks, so it perceives only `Dirty` or `Clean`. Explain why a simple reflex agent can no longer be rational, and what kind of agent fixes the problem.
+
+<Solution>
+
+With only `Clean` as input, the reflex agent must always return the same action for that percept. If it always moves `Right`, it gets stuck pushing against the wall in square B and never checks A again, and the same happens with `Left`. It cannot know which square it is in, so it cannot alternate. A **model-based** agent fixes this: it remembers its last move (an internal state) and can infer its location. A **randomised** reflex agent is another workaround, because it eventually visits both squares.
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "Which of the four approaches to AI does this course adopt?",
+      options: ["Thinking humanly", "Thinking rationally", "Acting humanly", "Acting rationally"],
+      answer: 3,
+      explain: "The course designs rational agents: systems that act to achieve the best expected outcome."
+    },
+    {
+      q: "An agent function maps…",
+      options: ["Actions to percepts", "Percept sequences to actions", "States to utilities", "Goals to plans"],
+      answer: 1,
+      explain: "f : P* → A takes the whole percept history and returns an action."
+    },
+    {
+      q: "A rational agent that loses a game was necessarily irrational.",
+      options: ["True", "False"],
+      answer: 1,
+      explain: "Rational is not the same as successful. The agent maximises expected performance with the information it has; outcomes can still be bad."
+    },
+    {
+      q: "In PEAS, the steering wheel of an automated taxi is part of the…",
+      options: ["Performance measure", "Environment", "Actuators", "Sensors"],
+      answer: 2,
+      explain: "Steering, accelerator, brake and horn are how the taxi acts on the world."
+    },
+    {
+      q: "Backgammon is classified as stochastic because…",
+      options: ["The board is hidden", "Dice rolls make the next state uncertain", "It is played in real time", "It has continuous states"],
+      answer: 1,
+      explain: "The dice introduce randomness, so the next state is not fully determined by the current state and action."
+    },
+    {
+      q: "Which agent keeps an internal model of how the world evolves but has no explicit goal?",
+      options: ["Simple reflex agent", "Model-based reflex agent", "Goal-based agent", "Utility-based agent"],
+      answer: 1,
+      explain: "A reflex agent with state tracks the world internally, but still acts through condition–action rules."
+    },
+    {
+      q: "In a learning agent, which component proposes exploratory actions?",
+      options: ["Critic", "Learning element", "Performance element", "Problem generator"],
+      answer: 3,
+      explain: "The problem generator suggests actions that lead to new and informative experiences."
+    }
+  ]}
+/>

@@ -1,0 +1,284 @@
+---
+number: 3
+title: "Sensors for Robotic Systems I: Switches, Proximity and Light"
+summary: What a sensor is and how its signal is processed, followed by the contact and short-range sensors of industrial robotics (limit switches, inductive and capacitive proximity switches, photoelectric switches, light-dependent resistors and potentiometers) and when to choose each.
+topics: [Sensor basics, Ohm's law, Limit switches, Proximity switches, Photoelectric switches, Light sensors, Potentiometers]
+duration: 50 min study
+sources:
+  - file: lectures/Lecture 3_Sensors I.pdf
+    label: Robotics Lecture 3 – Sensors I (slides)
+    pages: "1-48"
+bookRefs:
+  - book: robotics-book
+    chapter: Ch 5 · Sensors for Robotic Systems I
+    pages: "94–117"
+---
+
+<Objectives>
+
+- Define a **sensor**, list the main physical quantities robots sense, and describe the levels of signal processing.
+- Use **Ohm's law** and the **voltage divider** to read resistive sensors.
+- Explain how **limit switches** and **inductive**, **capacitive** and **magnetic** proximity switches work, and compare them.
+- Distinguish **through-beam**, **retro-reflective** and **diffuse** photoelectric switches, and **light-on** vs. **dark-on** operation.
+- Use **LDRs** and **potentiometers** as simple analog sensors.
+
+</Objectives>
+
+## What is a sensor?
+
+<Definition term="Sensor">
+  An input device that provides a <strong>usable output</strong> in response to a <strong>specified physical input</strong>. A thermocouple, for example, turns a temperature difference into an electrical voltage.
+</Definition>
+
+Every robot faces the same question: *given the sensor readings, what was the world like?* Sensors range from **simple** (a bump switch) to **complex** (a skin of thousands of touch points).
+
+| Quantity | Typical sensors |
+|---|---|
+| Contact | Switches, bumpers |
+| Distance | Ultrasound (sonar), radar, infrared, laser |
+| Light level | Photocells, cameras |
+| Sound level | Microphones |
+| Strain / force | Strain gauges |
+| Rotation | Encoders, potentiometers |
+| Smell | Chemical sensors |
+| Temperature | Thermal sensors, infrared |
+| Inclination | Inclinometers, gyroscopes |
+| Pressure / altitude | Pressure gauges, altimeters |
+
+### Levels of processing
+
+| Sensor | Raw output | Processing needed |
+|---|---|---|
+| Switch | Open = 0 V, closed = 5 V | Almost none: one bit |
+| Digital scale | A number | Calibration |
+| Microphone | A waveform | Filtering, frequency analysis |
+| Camera | Millions of pixel values | Heavy: computer vision to extract meaning |
+
+### Ohm's law and the voltage divider
+
+Most simple sensors change a **resistance**, and the controller measures a **voltage**:
+
+$$
+V = I\,R \qquad\qquad V_{\text{out}} = V_{\text{in}} \cdot \frac{R_2}{R_1 + R_2}
+$$
+
+If $R_2$ is the sensor (an LDR, say) and $R_1$ a fixed resistor, a change in $R_2$ changes $V_{\text{out}}$, which the robot reads with an analog-to-digital converter.
+
+## Mechanical switches and limit switches
+
+A **mechanical switch** produces an **on/off** signal when a mechanical input opens or closes its contacts. For example, it can detect whether a workpiece is on a machining table: open = absent, closed = present. In industry, logic 1 is typically **24 V DC** and logic 0 is **0 V**.
+
+A **limit switch** detects the **presence or passage of a moving part**. It is actuated by a **lever**, a **roller** or a **cam**.
+
+<SlideFigure page={9} caption="Limit switches actuated by (a) a lever, (b) a roller and (c) a cam." />
+
+Limit switches differ mainly in their **actuator head**: push plunger, roller plunger, roller-lever plunger, fork type, adjustable roller arm, adjustable rod or spring rod. The head transmits the external force to the changeover mechanism.
+
+<Callout type="tip" title="Why use them">
+  Limit switches are <strong>cheaper</strong> than proximity or photoelectric switches and come in a <strong>wide range of sizes</strong>. The cost is that they need physical contact and have moving parts that wear out.
+</Callout>
+
+## Proximity switches
+
+Proximity switches detect an object **without touching it**. There are three operating principles:
+
+| Type | Principle | Detects | Typical range |
+|---|---|---|---|
+| **Inductive** | Change in magnetic **inductance** | **Ferrous metal** only | ≈ 2–15 mm |
+| **Capacitive** | Change in **capacitance** | Metal **and non-metal** (plastic, wood, liquids, grain) | ≈ 4–60 mm |
+| **Magnetic** | Change in magnetic flux | Magnets | Depends on the magnet |
+
+In general, proximity switches detect objects at about **0.5–20 mm**. The inductive and capacitive types are the most widely used in industry.
+
+### Inductive proximity switch
+
+A coil is wound around a ferrous core. When a ferrous object comes near one end of the core, the effective amount of metal in the magnetic circuit changes, and so the coil's **inductance** changes. A resonant (LC oscillator) circuit detects the change. A Schmitt trigger and an amplifier then switch a transistor output, giving an **on/off** device.
+
+<SlideFigure page={22} caption="Inside an inductive proximity sensor: LC oscillator, Schmitt trigger and output amplifier." />
+
+### Capacitive proximity switch
+
+The sensor face is **one plate of a capacitor**. For a **metal** target, the object is the other plate: the closer it is, the smaller the gap and the higher the capacitance. For a **non-metal** target, the plates are the sensor and earth, and the object acts as the **dielectric**, changing the capacitance as it enters the field. Either way the change triggers an electronic switch.
+
+$$
+C = \varepsilon \frac{A}{d}
+$$
+
+<SlideFigure page={19} caption="Inside a capacitive proximity sensor: electrodes, RC oscillator, Schmitt trigger and amplifier." />
+
+### Form and wiring
+
+Proximity switches come in **cylindrical**, **rectangular** and **slot** shapes. They can run on **AC or DC** and are wired in **two-wire** (in series with the load) or **three-wire** (separate supply) connections. The load may be a relay coil, a control circuit or a **PLC digital input**.
+
+<Callout type="example" title="Advantages over limit switches">
+
+- Long electrical life, because nothing moves.
+- Durable under vibration, fast motion and toxic environments.
+- Work on DC or AC.
+- Respond well to fast-approaching objects and high switching frequencies.
+
+</Callout>
+
+<SlideFigure page={27} caption="Typical applications: position control, counting pulses from a rotating shaft, counting objects, detecting faulty parts and controlling fill levels." />
+
+## Photoelectric switches
+
+**Photoelectric switches** (photocells) are solid-state sensors that detect objects at **long range**, from under 10 cm up to about **15 m**. An emitter sends a visible or infrared light beam to a receiver, and the object either **interrupts** or **reflects** the beam.
+
+<Grid cols={3}>
+  <Card title="Through-beam" tag="longest range">
+    The emitter and receiver are <strong>separate units facing each other</strong>; the object <strong>breaks the beam</strong>. This gives the longest sensing distance but needs careful alignment and wiring at both ends. Break-beam sensors are found in garage doors and lift doors.
+  </Card>
+  <Card title="Retro-reflective" tag="one housing">
+    The emitter and receiver share <strong>one housing</strong>; a <strong>reflector</strong> (corner-cube prisms or a mirror) sends the beam back. The object breaks the returning beam.
+  </Card>
+  <Card title="Diffuse-reflective" tag="direct reflection">
+    One housing, no reflector: the beam normally <strong>does not return</strong>. When an object enters, its surface <strong>scatters</strong> some light back to the receiver.
+  </Card>
+</Grid>
+
+<SlideFigure page={30} caption="A through-beam photoelectric switch: separate emitter and receiver." />
+
+<SlideFigure page={36} caption="A diffuse-reflective switch: the object itself reflects the light." />
+
+### Light-on vs. dark-on
+
+| Mode | Output is energised when… |
+|---|---|
+| **Light-on** | Light **reaches** the receiver |
+| **Dark-on** | The beam is **interrupted**, so the receiver is "in the dark" |
+
+For a through-beam or retro-reflective switch, "object present" means **dark**. For a diffuse switch, "object present" means **light**, because the object reflects the beam back.
+
+<SlideFigure page={38} caption="Light-on and dark-on operation for each photoelectric type." />
+
+### Reflective opto-sensors
+
+A small **LED emitter** and a **photodiode or phototransistor** detector sit side by side. Uses include object presence and distance detection, **line following** (markers or tape), wall and boundary tracking, and **shaft encoding**. Their readings depend on **surface colour, texture and ambient light**, so they need **calibration**.
+
+## Light sensors (LDR)
+
+A **light-dependent resistor** (photocell) is a variable resistor: **brighter light gives lower resistance; darker gives higher resistance**. Shielding, position and direction of the photocell matter a lot. Put in a voltage divider, it gives an analog voltage the controller can read.
+
+## Potentiometers
+
+A **potentiometer** ("pot") is a resistor with a sliding wiper, like a stereo's volume knob. Fixed across a supply voltage, the wiper voltage is **proportional to the shaft angle** (rotary pot) or slider position (linear pot). This makes it a cheap absolute position sensor, and it is what sits inside a hobby **servo motor**.
+
+$$
+V_{\text{wiper}} = V_{\text{supply}} \cdot \frac{\theta}{\theta_{\max}}
+$$
+
+```cpp title="read_sensors.ino"
+const int LIMIT_SWITCH = 2;   // digital input, closed = HIGH
+const int LDR_PIN = A0;       // LDR in a voltage divider
+const int POT_PIN = A1;       // potentiometer wiper
+
+void setup() {
+  pinMode(LIMIT_SWITCH, INPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  bool partPresent = digitalRead(LIMIT_SWITCH) == HIGH;
+  int light = analogRead(LDR_PIN);                    // 0..1023
+  float angle = analogRead(POT_PIN) * 270.0 / 1023;   // 270° pot
+
+  Serial.print(partPresent ? "part " : "empty ");
+  Serial.print(light);
+  Serial.print(" ");
+  Serial.println(angle);
+  delay(100);
+}
+```
+
+## Application: the GuideCane
+
+The **GuideCane** is a robotic guide for blind and visually impaired people. A wheeled base at the end of a cane carries a ring of ultrasonic sensors. When it detects an obstacle it steers itself around it, and the user feels the change of direction through the handle and follows. It is a good example of sensing, deciding and acting combined in a single assistive device.
+
+<Takeaways>
+
+- A sensor turns a physical input into a usable (usually electrical) output; processing ranges from one bit to computer vision.
+- **Limit switches** are cheap and contact-based; **proximity switches** are contactless and durable. **Inductive** ones detect ferrous metal only (2–15 mm); **capacitive** ones detect anything (4–60 mm).
+- **Photoelectric** switches work at long range in three variants: **through-beam**, **retro-reflective** and **diffuse**. Each can run in **light-on** or **dark-on** mode.
+- **LDRs** and **potentiometers** change resistance; read them through a **voltage divider**.
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="Choose the sensor" level="easy">
+
+Pick a sensor for each task: (a) detect plastic bottles on a conveyor 30 mm away, (b) detect steel bolts 5 mm from the sensor in an oily, vibrating machine, (c) detect boxes crossing a 6 m wide loading door.
+
+<Solution>
+
+(a) **Capacitive** proximity switch, because it detects non-metal objects at up to about 60 mm. (b) **Inductive** proximity switch: steel, short range, and robust to oil and vibration. (c) **Through-beam** photoelectric switch, which has the longest range.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Voltage divider with an LDR" level="medium">
+
+An LDR ($R_2$) is in series with a fixed $R_1 = 10\,\text{k}\Omega$ across 5 V. The LDR is $1\,\text{k}\Omega$ in bright light and $100\,\text{k}\Omega$ in the dark. What output voltage do you read in each case?
+
+<Solution>
+
+Bright: $5 \cdot \frac{1}{10 + 1} \approx 0.45$ V. Dark: $5 \cdot \frac{100}{10 + 100} \approx 4.55$ V. The output rises as it gets darker. Swap $R_1$ and the LDR if you want the opposite behaviour.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Light-on or dark-on?" level="medium">
+
+A retro-reflective switch should turn a conveyor **off** when a box is present. Which mode drives the "stop" output directly?
+
+<Solution>
+
+When a box is present it blocks the beam, so the receiver is dark. The stop output should be energised in **dark-on** mode.
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "Which proximity switch can detect a plastic part?",
+      options: ["Inductive", "Capacitive", "Magnetic", "None of them"],
+      answer: 1,
+      explain: "A non-metal object changes the dielectric between the plates, so a capacitive switch detects it."
+    },
+    {
+      q: "The typical sensing range of an inductive proximity switch is about…",
+      options: ["2–15 mm", "4–60 mm", "10 cm–15 m", "1–5 m"],
+      answer: 0,
+      explain: "Inductive switches are short-range devices for ferrous targets."
+    },
+    {
+      q: "Which photoelectric type has the emitter and receiver in separate housings facing each other?",
+      options: ["Retro-reflective", "Diffuse-reflective", "Through-beam", "Reflective opto-sensor"],
+      answer: 2,
+      explain: "Through-beam units face each other and give the longest sensing distance."
+    },
+    {
+      q: "In dark-on operation the output is energised when…",
+      options: ["Light reaches the receiver", "The beam is interrupted", "The emitter is off", "Ambient light is low"],
+      answer: 1,
+      explain: "Dark-on means the switch acts when the receiver is in the dark, i.e. the beam is broken."
+    },
+    {
+      q: "An LDR's resistance in bright light is…",
+      options: ["High", "Low", "Zero", "Unchanged"],
+      answer: 1,
+      explain: "More light means more charge carriers, so resistance drops."
+    },
+    {
+      q: "Which is NOT an advantage of proximity switches over limit switches?",
+      options: ["No moving parts", "Long electrical life", "Lower purchase price", "Tolerance of vibration"],
+      answer: 2,
+      explain: "Limit switches are the cheaper option; proximity switches win on durability."
+    }
+  ]}
+/>

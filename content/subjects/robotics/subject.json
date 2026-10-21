@@ -1,0 +1,54 @@
+{
+  "title": "Robotics",
+  "shortTitle": "Robotics",
+  "code": "ROB",
+  "order": 2,
+  "materialsDir": "Robotics",
+  "level": "Level 3 · 2026/2027",
+  "tagline": "From the anatomy of an industrial arm to the sensors and software that bring it to life.",
+  "description": "Robotics combines mechanics, electronics, control, computer science and mathematics on a single machine. The lectures build the vocabulary of the robot as a system (definitions, classification, manipulator anatomy, degrees of freedom, joints, reference frames and workspaces), then cover the sensors a robot uses to perceive itself and its surroundings, followed by actuation and kinematics. The sections are practical: they use ROS 2 and Python to build the software side of a robot.",
+  "instructors": ["Dr. Mahmoud Abdelaal"],
+  "objectives": [
+    "Explain what a robot is and place a machine within the standard classification schemes.",
+    "Identify the subsystems of an industrial manipulator and how they exchange information and energy.",
+    "Count degrees of freedom, name joint types and describe the standard robot configurations and their workspaces.",
+    "Select contact, proximity, optical and range sensors for a task, with reasons.",
+    "Build ROS 2 nodes in Python that communicate through topics and custom interfaces."
+  ],
+  "topics": [
+    "Introduction and history of robotics",
+    "Anatomy of the industrial manipulator",
+    "Degrees of freedom, links and joints",
+    "Reference frames, workspace and configurations",
+    "Sensors I: switches, proximity, photoelectric, light, potentiometers",
+    "Sensors II: encoders, sonar, laser, infrared, tachometers, tactile",
+    "Actuators and drive systems",
+    "Kinematics: frames, rotations and transformations",
+    "Forward kinematics and Denavit–Hartenberg",
+    "ROS 2 with Python"
+  ],
+  "books": [
+    {
+      "id": "robotics-book",
+      "title": "Robotics: Foundations, Sensing, Actuation and Kinematics",
+      "author": "Dr. Mahmoud Abdelaal, 2026/2027",
+      "file": "Robotics_Textbook_Level_3.pdf",
+      "chapters": [
+        { "title": "Ch 1 · Introduction to Robotics", "pages": "19–40" },
+        { "title": "Ch 2 · Anatomy of the Industrial Manipulator", "pages": "41–58" },
+        { "title": "Ch 3 · Degrees of Freedom, Links and Joints", "pages": "59–75" },
+        { "title": "Ch 4 · Reference Frames, Workspace and Configurations", "pages": "76–93" },
+        { "title": "Ch 5 · Sensors I", "pages": "94–117" },
+        { "title": "Ch 6 · Sensors II", "pages": "118–141" },
+        { "title": "Ch 7 · Actuators and Drive Systems", "pages": "142–164" },
+        { "title": "Ch 8 · Robot Kinematics I", "pages": "165–183" },
+        { "title": "Ch 9 · Robot Kinematics II", "pages": "184–203" }
+      ]
+    },
+    {
+      "id": "ros2-book",
+      "title": "ROS 2 from Scratch",
+      "author": "Edouard Renard, Packt 2024"
+    }
+  ]
+}

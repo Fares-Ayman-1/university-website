@@ -1,0 +1,264 @@
+---
+number: 2
+title: "Robotics Fundamentals: The Industrial Robotic Arm"
+summary: The anatomy of an industrial manipulator, how its performance is specified (accuracy, repeatability, resolution), degrees of freedom, revolute and prismatic joints, the three reference frames, and the standard configurations with their workspaces.
+topics: [Manipulator components, Accuracy and repeatability, Degrees of freedom, Joints, Reference frames, Robot configurations, Workspace]
+duration: 60 min study
+sources:
+  - file: lectures/Lecture 2 (1).pdf
+    label: Robotics Lecture 2 – Robotics Fundamentals (slides)
+    pages: "1-50"
+bookRefs:
+  - book: robotics-book
+    chapter: Ch 2 · Anatomy of the Industrial Manipulator
+    pages: "41–58"
+  - book: robotics-book
+    chapter: Ch 3 · Degrees of Freedom, Links and Joints
+    pages: "59–75"
+  - book: robotics-book
+    chapter: Ch 4 · Reference Frames, Workspace and Configurations
+    pages: "76–93"
+---
+
+<Objectives>
+
+- Name the parts of an industrial robot and the job of each one.
+- Distinguish **accuracy**, **repeatability** and **resolution**, and compute resolution from encoder bits.
+- Count **degrees of freedom** and identify **revolute** and **prismatic** joints.
+- Explain the **world**, **joint** and **tool** reference frames.
+- Recognise the Cartesian, cylindrical, spherical, articulated, SCARA and parallel configurations and their **workspaces**.
+
+</Objectives>
+
+## The industrial robotic arm
+
+An industrial robot (also called a **manipulator** or **robotic arm**) is the classic robot of the factory floor: it welds, paints, assembles, palletises and moves parts.
+
+<SlideFigure page={6} caption="A robotic system: sensors, power supply, controller, mechanical arm, end-of-arm tooling, input device and program storage." />
+
+Robots can also be **networked**: connected through a wired or wireless network (LAN or the Internet) using protocols such as TCP or UDP. This allows remote monitoring, fleet coordination and cloud-based programming.
+
+## Specifying performance
+
+<Grid cols={3}>
+  <Card title="Accuracy" tag="absolute">
+    How close the manipulator can come to a <strong>given point</strong> in its workspace. It is limited by computational errors, machining accuracy, link flexibility, gear backlash and static and dynamic effects.
+  </Card>
+  <Card title="Repeatability" tag="relative">
+    How close the manipulator can return to a <strong>previously taught point</strong>. It is limited mainly by the controller's resolution, and it is usually much better than accuracy.
+  </Card>
+  <Card title="Resolution" tag="smallest step">
+    The <strong>smallest increment of motion</strong> the controller can sense: the total distance travelled divided by $2^n$, where $n$ is the number of encoder bits.
+  </Card>
+</Grid>
+
+$$
+\text{resolution} = \frac{\text{total distance travelled}}{2^{n}}
+$$
+
+<Callout type="example" title="Worked example">
+  A prismatic axis travels 1,000 mm and uses a 12-bit encoder: resolution $= 1000 / 2^{12} = 1000 / 4096 \approx 0.244$ mm. A 16-bit encoder on the same axis gives $1000 / 65536 \approx 0.015$ mm.
+</Callout>
+
+<Callout type="tip" title="A dartboard analogy">
+  Darts that land tightly together but away from the bullseye show high <strong>repeatability</strong> and low <strong>accuracy</strong>. Teach-and-playback robots rely on repeatability; robots programmed offline from CAD coordinates need accuracy.
+</Callout>
+
+## Robot components
+
+| Part | Analogy | What it does |
+|---|---|---|
+| **Manipulator / arm** | The body | Base plus appendages (shoulder, arm, wrist) that position the tool |
+| **Pedestal** | The waist | Supports the manipulator and acts as a counterbalance |
+| **End effector** | The hand | Attached to the last joint; holds the part, or holds the tool that works on the part |
+| **Actuators** | The muscles | Servo motors, stepper motors, pneumatic or hydraulic cylinders that move the joints |
+| **Sensors** | The senses | Collect information about the robot and its environment |
+| **Controller** | The brain | Receives data from the computer, issues instructions, controls the actuators and interfaces with peripherals and humans |
+| **Processor and software** | The mind | Calculates joint motions; programs for operation, planning and safety |
+| **Power source** | The food | Electric, pneumatic or hydraulic energy |
+
+End effectors include spray-paint guns, welding torches, vacuum heads, hands and mechanical grippers.
+
+<SlideFigure page={17} caption="End effectors: grippers and tooling mounted on the last joint." />
+
+## Degrees of freedom (DOF)
+
+<Definition term="Degrees of freedom">
+  The number of <strong>independent position variables</strong> that must be specified to locate every part of a mechanism, that is, the number of independent motions it can make. For most manipulators this equals the <strong>number of joints</strong>.
+</Definition>
+
+- A block sliding along a rail has **1 DOF**.
+- Sliding plus rotating about the rail gives **2 DOF**.
+- A free rigid body in space has **6 DOF**: three translations (along $x$, $y$, $z$) and three rotations (about $x$, $y$, $z$).
+
+<SlideFigure page={21} caption="A free body in space has six degrees of freedom." />
+
+A robot therefore needs **at least 6 DOF** to place its tool at any position **and** any orientation in its workspace. Typically the first three joints (the arm) set the **position** and the last three (the wrist) set the **orientation**:
+
+| Wrist motion | Description |
+|---|---|
+| **Roll** | Rotation of the wrist about the arm axis |
+| **Pitch** | Up–down rotation of the wrist |
+| **Yaw** | Left–right rotation of the wrist |
+
+<SlideFigure page={23} caption="Roll, pitch and yaw of the wrist." />
+
+## Links and joints
+
+To build a robot you need **links** (rigid bodies), **actuators** that connect and move them, **sensors** to perceive the world, and extras like end effectors and communication.
+
+<Grid cols={2}>
+  <Card title="Revolute joint (R)" tag="rotary">
+    Allows relative <strong>rotation about a single axis</strong>. It is usually driven electrically by a servo or stepper motor.
+  </Card>
+  <Card title="Prismatic joint (P)" tag="linear">
+    Allows relative <strong>translation along a single axis</strong>, with no rotation. It is often driven by a hydraulic or pneumatic cylinder.
+  </Card>
+</Grid>
+
+<SlideFigure page={29} caption="Standard symbols for revolute (R) and prismatic (P) joints in 2D and 3D." />
+
+**Linear versus rotational motion**: prismatic axes typically have **higher resolution** than revolute ones. Revolute axes cause strong kinematic and dynamic **coupling** between links, so errors accumulate and control is harder. A **universal joint** lets a rigid rod bend in any direction (2 DOF).
+
+<Callout type="note" title="Remember">
+
+- A **joint** is the point of articulation between two links; joint $i$ connects links $i-1$ and $i$.
+- There is **no joint at the end effector**.
+- **Each joint–link pair contributes one DOF.**
+- A manipulator is a **chain of rigid links** connected by joints, fixed to a base at one end and free at the other.
+
+</Callout>
+
+## Reference frames
+
+<Grid cols={3}>
+  <Card title="World frame" tag="x, y, z">
+    A universal coordinate frame. The joints move <strong>simultaneously</strong> to produce motion along the major $x$, $y$ and $z$ axes.
+  </Card>
+  <Card title="Joint frame" tag="one at a time">
+    Specifies the movement of <strong>each individual joint</strong>. Joints are accessed individually, so only one joint moves at a time.
+  </Card>
+  <Card title="Tool frame" tag="x′, y′, z′">
+    Motion relative to a frame <strong>attached to the hand</strong>. All joints move together to produce coordinated motion about the tool frame.
+  </Card>
+</Grid>
+
+<SlideFigure page={37} caption="World, joint and tool frames on a manipulator." />
+
+Jogging in the **tool frame** is what you use to approach a part "straight on", for example to push a screwdriver along its own axis whatever the arm's pose.
+
+## Workspace and configurations
+
+<Definition term="Workspace (work envelope)">
+  The collection of points the robot can reach. It depends on the configuration, the link sizes and the wrist joints. It can be found empirically by moving each joint through its range and combining everything reachable.
+</Definition>
+
+Configurations are named by the types of their first three joints:
+
+| Configuration | Joints | Description | Workspace |
+|---|---|---|---|
+| **Cartesian / gantry** | PPP (3P) | Three linear axes along $x$, $y$, $z$; gantries are super-sized Cartesian robots with minimal deflection | Rectangular box |
+| **Cylindrical** | RPP | One rotation about a vertical axis plus vertical and radial slides; reaches into tight spaces | Hollow cylinder |
+| **Spherical / polar** | RRP (2RP) | Two rotations plus one telescoping link (polar coordinates) | Thick spherical shell |
+| **Articulated / anthropomorphic** | RRR (3R) | All revolute, like a human arm: waist, shoulder, elbow | Roughly spherical, very large for the footprint |
+| **SCARA** | RRP (2R1P) | Two **parallel** revolute joints move in a horizontal plane, plus a vertical prismatic joint | Cylindrical; stiff vertically, compliant horizontally, ideal for assembly |
+| **Parallel** | Several legs | A platform connected to a fixed base by multiple legs | Small but very stiff and fast (flight simulators, delta pickers) |
+
+<SlideFigure page={49} caption="The five classic serial configurations: Cartesian, cylindrical, spherical, articulated and SCARA." />
+
+<SlideFigure page={47} caption="A SCARA robot: two parallel revolute joints and one vertical prismatic joint." />
+
+<Takeaways>
+
+- An industrial robot = arm + pedestal + end effector + actuators + sensors + controller + power.
+- **Accuracy** means reaching a commanded point, **repeatability** means returning to a taught point, and **resolution** = distance / $2^n$.
+- DOF = number of independent motions (usually the number of joints); **6 DOF** gives full position and orientation.
+- **Revolute** joints rotate and **prismatic** joints slide; a configuration is named by its first three joints.
+- Motion can be commanded in the **world**, **joint** or **tool** frame.
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="Resolution" level="easy">
+
+A revolute joint rotates through 300° and its encoder has 10 bits. What is the joint resolution in degrees?
+
+<Solution>
+
+$300^\circ / 2^{10} = 300^\circ / 1024 \approx 0.293^\circ$ per count.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Name the configuration" level="medium">
+
+A robot has a rotating base, a vertical slide and a horizontal arm that extends in and out. Name its configuration and the shape of its workspace.
+
+<Solution>
+
+Rotate, slide, slide gives **RPP**, a **cylindrical** robot. Its workspace is a hollow **cylinder**: the radial stroke sets the inner and outer radii and the vertical stroke sets the height.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Counting DOF" level="medium">
+
+A SCARA robot also has a wrist that rotates the gripper about the vertical axis. How many DOF does it have, and can it set any arbitrary orientation of the tool?
+
+<Solution>
+
+2 revolute + 1 prismatic + 1 wrist roll = **4 DOF**. It cannot set an arbitrary orientation, because it can only rotate about the vertical axis (no pitch or yaw). That is enough for pick-and-place work on a flat surface, which is what SCARAs are designed for.
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "How close a robot can return to a previously taught point is its…",
+      options: ["Accuracy", "Repeatability", "Resolution", "Payload"],
+      answer: 1,
+      explain: "Repeatability concerns returning to a taught point; accuracy concerns reaching an arbitrary commanded point."
+    },
+    {
+      q: "How many degrees of freedom does a free rigid body in space have?",
+      options: ["3", "4", "6", "12"],
+      answer: 2,
+      explain: "Three translations plus three rotations."
+    },
+    {
+      q: "Which joint allows only translation along one axis?",
+      options: ["Revolute", "Prismatic", "Universal", "Spherical"],
+      answer: 1,
+      explain: "Prismatic joints slide; revolute joints rotate."
+    },
+    {
+      q: "An all-revolute arm (RRR) that resembles a human arm is called…",
+      options: ["Cartesian", "Cylindrical", "Articulated", "Gantry"],
+      answer: 2,
+      explain: "Articulated (anthropomorphic) robots have waist, shoulder and elbow joints that are all revolute."
+    },
+    {
+      q: "In which reference frame does only one joint move at a time?",
+      options: ["World frame", "Joint frame", "Tool frame", "Base frame"],
+      answer: 1,
+      explain: "In the joint frame each joint is jogged individually."
+    },
+    {
+      q: "SCARA robots are described as…",
+      options: ["PPP", "RPP", "2R1P with parallel revolute axes", "3R"],
+      answer: 2,
+      explain: "Two parallel revolute joints move in a horizontal plane, and a prismatic joint moves vertically."
+    },
+    {
+      q: "A 1,000 mm axis with an 8-bit encoder has a resolution of about…",
+      options: ["0.24 mm", "3.9 mm", "125 mm", "0.015 mm"],
+      answer: 1,
+      explain: "1000 / 2⁸ = 1000 / 256 ≈ 3.9 mm."
+    }
+  ]}
+/>

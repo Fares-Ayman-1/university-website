@@ -1,0 +1,305 @@
+---
+number: 4
+title: "Sensors for Robotic Systems II: Encoders, Range, Velocity and Touch"
+summary: How robots measure their own motion and the distance to the world. Covers incremental and absolute encoders (quadrature, index pulse, Gray code), sonar, laser rangefinders and LiDAR, infrared triangulation, tachometers and tactile skins.
+topics: [Incremental encoders, Absolute encoders, Gray code, Sonar, Laser rangefinder / LiDAR, Infrared, Tachometer, Tactile sensors]
+duration: 55 min study
+sources:
+  - file: lectures/Lecture 4_Sensors II.pdf
+    label: Robotics Lecture 4 – Sensors II (slides)
+    pages: "1-43"
+bookRefs:
+  - book: robotics-book
+    chapter: Ch 6 · Sensors for Robotic Systems II
+    pages: "118–141"
+---
+
+<Objectives>
+
+- Explain how **incremental** encoders measure displacement, how **quadrature** gives direction and ×4 resolution, and why the **index pulse** is used for homing.
+- Explain how **absolute** encoders encode position, compute their resolution, and justify the use of **Gray code**.
+- Compute range from **time-of-flight** for sonar and laser sensors and describe their failure modes.
+- Describe **infrared triangulation**, **tachometers** and the sensing principles behind **tactile** skins.
+
+</Objectives>
+
+## Encoders
+
+<Definition term="Encoder">
+  A device that gives a <strong>digital output</strong> (square pulses or a binary code) in response to <strong>angular or linear displacement</strong>.
+</Definition>
+
+Encoders are mechanically coupled to the motion they measure and feed the motion controller with **position (distance)**, **speed** and **direction**. **Rotary** encoders measure shaft rotation, and **linear** encoders measure straight-line travel. Both come in two kinds:
+
+| | Incremental | Absolute |
+|---|---|---|
+| Output | Pulses for each **change** from a datum | A unique **code** for every position |
+| Reference | None, so it must **home** at start-up | Built in |
+| After a power loss | Position is lost | Position is kept, so motion can resume without rehoming |
+| Cost / complexity | Lower | Higher |
+
+### Incremental encoders
+
+An LED shines through **slots in a rotating disc** onto a photodiode or phototransistor. As the disc turns, the light is alternately passed and blocked, producing a **pulse train**. The number of pulses is proportional to the angle turned.
+
+<SlideFigure page={7} caption="Basic form of an incremental encoder: light source, slotted rotating disc, fixed aperture and detector." />
+
+$$
+\Delta\theta_{\text{per slot}} = \frac{360^\circ}{N_{\text{slots}}}
+$$
+
+With 60 slots, one slot equals $360^\circ/60 = 6^\circ$. Offset slots allow more than a thousand slots per revolution.
+
+#### Channels, direction and counting resolution
+
+- A **single channel** gives position (by counting) but **not direction**.
+- **Two channels, A and B**, are offset by **90°** (quadrature). Whichever channel leads tells you the direction: A leads B for one direction, B leads A for the other.
+- A third **Z channel (index pulse)** gives one pulse per revolution, which is used for **homing** at start-up, since an incremental encoder has no fixed reference.
+
+| Counting mode | Edges counted | Counts per slot |
+|---|---|---|
+| Single (×1) | Rising edges of one channel | 1 |
+| Double (×2) | Rising and falling edges of one channel | 2 |
+| **Quadruple (×4)** | Rising and falling edges of **both** channels | **4** (most precise) |
+
+<SlideFigure page={12} caption="Pulse trains of a two-channel encoder with zero index, and the coding for clockwise and counter-clockwise rotation." />
+
+```python title="quadrature_decoder.py"
+# Transition table for ×4 decoding: (previous AB, current AB) -> step
+STEP = {
+    (0b00, 0b01): +1, (0b01, 0b11): +1, (0b11, 0b10): +1, (0b10, 0b00): +1,
+    (0b00, 0b10): -1, (0b10, 0b11): -1, (0b11, 0b01): -1, (0b01, 0b00): -1,
+}
+
+def decode(samples, slots_per_rev=500):
+    """samples: list of (A, B) readings. Returns the angle in degrees."""
+    count, prev = 0, (samples[0][0] << 1) | samples[0][1]
+    for a, b in samples[1:]:
+        cur = (a << 1) | b
+        count += STEP.get((prev, cur), 0)   # 0 = no change (or an invalid jump)
+        prev = cur
+    return count * 360 / (4 * slots_per_rev)
+
+print(decode([(0, 0), (0, 1), (1, 1), (1, 0), (0, 0)]))  # 0.72° forward
+```
+
+### Absolute encoders
+
+The disc carries several **concentric tracks** read by one detector each. Every angular position produces a **unique binary number**, so the position is known at power-up.
+
+$$
+\text{positions} = 2^{n} \qquad \text{resolution} = \frac{360^\circ}{2^{n}} \qquad (n = \text{number of tracks})
+$$
+
+| Tracks | Positions | Resolution |
+|---|---|---|
+| 3 | 8 | 45° |
+| 4 | 16 | 22.5° |
+| 10 | 1,024 | ≈ 0.35° |
+| 12 | 4,096 | ≈ 0.088° |
+
+<SlideFigure page={16} caption="A 3-bit absolute encoder: each 45° sector has a unique code. ON-OFF-OFF (sector 4) means 180°–225°." />
+
+#### Why Gray code?
+
+With plain binary, moving from 0111 to 1000 flips **four bits at once**. If the detectors do not all switch at exactly the same instant, the encoder can briefly output a wrong position such as 1111. **Gray code** changes **only one bit** between neighbouring positions, so a misread can only be off by one step:
+
+`0000 → 0001 → 0011 → 0010 → 0110 → 0111 → 0101 → 0100 → 1100 → 1101 → 1111 → …`
+
+```python title="gray_code.py"
+def binary_to_gray(n: int) -> int:
+    return n ^ (n >> 1)
+
+def gray_to_binary(g: int) -> int:
+    n = 0
+    while g:
+        n ^= g
+        g >>= 1
+    return n
+
+for i in range(8):
+    print(i, format(binary_to_gray(i), "03b"))
+```
+
+Encoders can be **optical, magnetic or laser** based. They need a dedicated electronic unit (counter or decoder) to connect to a conventional automation circuit. They are used for **robot joint control**, CNC machines, drilling, assembly and cutting machines.
+
+## Sonar (ultrasonic) sensors
+
+A sonar sends a short (about **1 ms**) burst at **50–250 kHz** and measures the **time of flight** until the echo returns. The sound travels to the obstacle **and back**:
+
+$$
+d = \frac{v_{\text{sound}} \cdot t}{2}, \qquad v_{\text{sound}} \approx 343 \text{ m/s at } 20^\circ\text{C}
+$$
+
+If no echo arrives within a time limit, there is no obstacle in range. Measurements repeat about **20 times per second**, which gives sonars their typical clicking sound. Each sensor covers a narrow cone, so a round robot needed a ring of about **24 sensors**, roughly 15° each, to see all around.
+
+<SlideFigure page={24} caption="Sonar principle: emit a burst, time the echo." />
+
+<Callout type="warning" title="Sonar failure modes">
+
+- **Specular reflection**: on smooth surfaces hit at a steep angle, the echo bounces away and the wall is **not detected**, or it returns via another surface so the obstacle seems **further away** than it is.
+- **Interference / crosstalk**: one sensor hears another sensor's echo and reports an obstacle **closer** than it really is. Firing sensors in sequence, or using **coded (pseudo-random) signals**, prevents this.
+- Accuracy depends on the transducer (**piezoelectric** or **electrostatic**), the electronics and the surface material.
+
+</Callout>
+
+<SlideFigure page={27} caption="Smooth surfaces: (a) undetected plane, (b) undetected corner, (c) false detection of a virtual object." />
+
+## Laser rangefinders and LiDAR
+
+A **laser rangefinder** measures distance with a laser beam, most often by **time of flight**:
+
+$$
+d = \frac{c \cdot t}{2}, \qquad c \approx 3 \times 10^{8} \text{ m/s}
+$$
+
+An object 10 m away returns the pulse after only $2 \times 10 / (3 \times 10^8) \approx 67$ ns, so timing must be extremely precise. Alternatives are measuring the **phase shift** of a modulated beam against a reference, and **interferometry**, which is the most accurate way to measure *changes* in distance.
+
+- A single rangefinder measures **one point at a time**, so it is a **1-D sensor**.
+- Spinning it gives a **2-D scanner** that maps a plane, used for mapping, path planning and obstacle avoidance.
+- Adding another rotating degree of freedom gives a **3-D scanner (LiDAR)** that produces a **point cloud**. LiDARs are common on autonomous vehicles.
+
+<SlideFigure page={31} caption="A laser scanner building a map: (a) the environment, (b) scanning, (c) the resulting map." />
+
+## Infrared distance sensors
+
+Light is far too fast to time with a cheap circuit, so IR range sensors use **triangulation** instead. A pulsed IR LED (about 40 kHz) lights the object, and a **detector array** sees the reflected spot. The **angle** at which it returns, and therefore its position on the array, depends on the distance.
+
+$$
+d \approx \frac{f \cdot b}{x}
+$$
+
+Here $b$ is the baseline between emitter and lens, $f$ the focal length and $x$ the spot's position on the array. Resolution gets worse as distance grows. IR light is invisible, but you can see it with IR detector cards or an IR-sensitive (phone) camera.
+
+<SlideFigure page={33} caption="IR distance sensor: pulsed infrared LED and detector array." />
+
+## Tachometers
+
+Joint velocity can be computed by **numerically differentiating** the encoder position, but differentiation amplifies **noise** and degrades control. Robots therefore often measure velocity directly with a **tachometer**.
+
+A **DC tachometer** is a small DC generator with **permanent magnets**. Because the field is constant, its output voltage is **proportional to angular velocity**:
+
+$$
+V_{\text{out}} = K_t\,\omega
+$$
+
+Commutators add a slight **ripple** that cannot be fully filtered. **AC tachometers** avoid this and some other imperfections, but simpler DC types are more common in robotics.
+
+## Tactile sensors
+
+Robots can also sense by **touch**. In **fingers**, tactile arrays measure the **contact force distribution** on a grasped object for better manipulation. As **artificial skin**, they let a robot feel contact anywhere on its body, which is essential for **safe human–robot collaboration**.
+
+| Principle | How force becomes a signal |
+|---|---|
+| **Deformation-based** | Surface strain is measured by strain gauges in a Wheatstone bridge |
+| **Resistive** | Resistance of a material between two electrodes changes with pressure |
+| **Capacitive** | Force changes the plate distance or area, so the capacitance changes |
+| **Optical** | Displacement changes the received light intensity |
+| **Magnetic** | Force changes the flux density or the coupling between circuits |
+| **Mechanical** | Micro-switches with on/off states |
+
+<Takeaways>
+
+- **Incremental** encoders count pulses (360° / slots); **quadrature** A/B channels give direction and ×4 resolution, and the **Z index** is used for homing.
+- **Absolute** encoders give a unique $n$-bit code per position (360° / $2^n$), keep their position through power loss, and use **Gray code** to avoid multi-bit glitches.
+- **Sonar** and **laser** sensors use time of flight, $d = vt/2$; sonar suffers from reflections and crosstalk, and laser scanners build maps (**LiDAR**).
+- **IR** range sensors triangulate, **tachometers** give clean velocity ($V = K_t\omega$), and **tactile** arrays provide touch.
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="Encoder resolution" level="easy">
+
+An incremental encoder has 500 slots and is read in quadrature (×4). What is its angular resolution? How many tracks would an absolute encoder need to match or beat it?
+
+<Solution>
+
+$500 \times 4 = 2000$ counts per revolution, so $360^\circ / 2000 = 0.18^\circ$. An absolute encoder needs $2^n \ge 2000$, so $n = 11$ tracks ($2048$ positions, $\approx 0.176^\circ$).
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Sonar range" level="easy">
+
+A sonar's echo returns after 11.7 ms. How far away is the obstacle (sound at 343 m/s)?
+
+<Solution>
+
+$d = 343 \times 0.0117 / 2 \approx 2.0$ m.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Gray code" level="medium">
+
+Convert decimal 5, 6 and 7 to 3-bit Gray code and check that only one bit changes between neighbours.
+
+<Solution>
+
+$5 = 101_2 \Rightarrow 101 \oplus 010 = 111$; $6 = 110_2 \Rightarrow 110 \oplus 011 = 101$; $7 = 111_2 \Rightarrow 111 \oplus 011 = 100$. The sequence 111 → 101 → 100 changes exactly one bit at each step.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Why not just differentiate?" level="medium">
+
+An encoder reading has ±1 count of noise and is sampled at 1 kHz. Explain why the velocity from numerical differentiation is noisy, and what a tachometer offers instead.
+
+<Solution>
+
+Velocity ≈ (change in counts) / Δt with Δt = 1 ms, so a ±1 count error becomes ±1000 counts/s of velocity noise. Differentiation amplifies high-frequency noise. A tachometer measures velocity **directly** as a voltage proportional to ω, so it avoids that amplification and gives a smoother signal for the velocity control loop.
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "How does a two-channel incremental encoder determine direction?",
+      options: ["From the pulse amplitude", "From the phase relationship of the two 90°-shifted channels", "From the index pulse", "It cannot determine direction"],
+      answer: 1,
+      explain: "Whichever channel leads (A or B) tells you the direction of rotation."
+    },
+    {
+      q: "A 10-track absolute encoder has a resolution of about…",
+      options: ["36°", "3.6°", "0.35°", "0.035°"],
+      answer: 2,
+      explain: "360° / 2¹⁰ = 360 / 1024 ≈ 0.35°."
+    },
+    {
+      q: "Why is Gray code used on absolute encoder discs?",
+      options: ["It uses fewer tracks", "Only one bit changes between adjacent positions", "It is easier to print", "It doubles the resolution"],
+      answer: 1,
+      explain: "Single-bit changes prevent large errors when detectors switch at slightly different instants."
+    },
+    {
+      q: "Which sensor keeps its position after a power failure without homing?",
+      options: ["Incremental encoder", "Absolute encoder", "Tachometer", "Sonar"],
+      answer: 1,
+      explain: "Each position has a unique code, so it is known as soon as power returns."
+    },
+    {
+      q: "Sonar crosstalk typically makes an obstacle appear…",
+      options: ["Further away", "Closer than it is", "Not at all", "Larger"],
+      answer: 1,
+      explain: "A sensor picks up another sensor's earlier echo and computes a shorter distance."
+    },
+    {
+      q: "Infrared distance sensors measure range by…",
+      options: ["Time of flight", "Triangulation of the reflected spot", "Doppler shift", "Phase interferometry"],
+      answer: 1,
+      explain: "The return angle (spot position on the detector array) changes with distance."
+    },
+    {
+      q: "A DC tachometer's output voltage is proportional to…",
+      options: ["Joint angle", "Angular velocity", "Acceleration", "Torque"],
+      answer: 1,
+      explain: "V = K_t ω, because the permanent-magnet field is constant."
+    }
+  ]}
+/>

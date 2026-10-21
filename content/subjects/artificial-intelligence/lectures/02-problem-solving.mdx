@@ -1,0 +1,307 @@
+---
+number: 2
+title: Problem Solving and Search
+summary: How a goal-based agent turns a task into a well-defined search problem (initial state, actions, goal test and path cost), the four problem types, and classic example formulations.
+topics: [Problem-solving agents, Problem types, Problem formulation, State spaces, Example problems]
+duration: 40 min study
+sources:
+  - file: Lectures/AI Lec 2 Problem Solving.pdf
+    label: AI Lecture 2 – Problem Solving (slides)
+    pages: "1-23"
+bookRefs:
+  - book: ai-book
+    chapter: Ch 3 · Solving Problems by Searching (3.1–3.3)
+    pages: "54–58"
+  - book: aima
+    chapter: Ch 3.1–3.2 · Problem-solving agents, Example problems
+---
+
+<Objectives>
+
+- Explain how a **problem-solving agent** works: formulate a goal, formulate a problem, search, then execute.
+- Distinguish **single-state**, **conformant**, **contingency** and **exploration** problems.
+- Formulate a problem with its four components: **initial state, successor function, goal test, path cost**.
+- Abstract a real-world task into a state space and formulate the vacuum world, the 8-puzzle and robotic assembly.
+
+</Objectives>
+
+## Problem-solving agents
+
+A problem-solving agent is a restricted kind of **goal-based agent**. It does not react percept by percept. It thinks ahead: it finds a whole sequence of actions that reaches the goal, then carries that sequence out.
+
+<Steps>
+
+1. **Formulate a goal** from the current situation, e.g. "be in Bucharest".
+2. **Formulate the problem**: decide which states and actions to consider.
+3. **Search** for a sequence of actions that reaches the goal.
+4. **Execute** the solution, one action at a time.
+
+</Steps>
+
+```text title="SIMPLE-PROBLEM-SOLVING-AGENT"
+function SIMPLE-PROBLEM-SOLVING-AGENT(percept) returns an action
+  static: seq      — an action sequence, initially empty
+          state    — description of the current world state
+          goal     — a goal, initially null
+          problem  — a problem formulation
+
+  state ← UPDATE-STATE(state, percept)
+  if seq is empty then
+      goal    ← FORMULATE-GOAL(state)
+      problem ← FORMULATE-PROBLEM(state, goal)
+      seq     ← SEARCH(problem)
+  action ← FIRST(seq)
+  seq    ← REST(seq)
+  return action
+```
+
+Notice that the agent ignores its percepts while it executes `seq`. This is called **open-loop** execution. It is safe only when the environment is fully observable and deterministic, so nothing unexpected can happen.
+
+### Example: holiday in Romania
+
+You are on holiday in **Arad**, and your flight leaves tomorrow from **Bucharest**.
+
+- **Goal**: be in Bucharest.
+- **States**: the cities you could be in.
+- **Actions**: drive between neighbouring cities.
+- **Solution**: a sequence of cities, for example Arad → Sibiu → Fagaras → Bucharest.
+
+<WeightedGraph
+  height={420}
+  nodes="Oradea:17,4 Zerind:11,17 Arad:5,32 Timisoara:6,60 Lugoj:26,70 Mehadia:27,83 Dobreta:25,96 Craiova:48,98 Sibiu:33,44 Rimnicu_Vilcea:38,60 Fagaras:55,45 Pitesti:58,72 Bucharest:78,82 Giurgiu:72,98 Urziceni:88,74 Hirsova:99,74 Eforie:100,96 Vaslui:93,48 Iasi:85,30 Neamt:70,20"
+  edges="Arad-Zerind:75 Arad-Sibiu:140 Arad-Timisoara:118 Zerind-Oradea:71 Oradea-Sibiu:151 Timisoara-Lugoj:111 Lugoj-Mehadia:70 Mehadia-Dobreta:75 Dobreta-Craiova:120 Craiova-Rimnicu_Vilcea:146 Craiova-Pitesti:138 Sibiu-Fagaras:99 Sibiu-Rimnicu_Vilcea:80 Rimnicu_Vilcea-Pitesti:97 Fagaras-Bucharest:211 Pitesti-Bucharest:101 Bucharest-Giurgiu:90 Bucharest-Urziceni:85 Urziceni-Hirsova:98 Hirsova-Eforie:86 Urziceni-Vaslui:142 Vaslui-Iasi:92 Iasi-Neamt:87"
+  path="Arad,Sibiu,Rimnicu_Vilcea,Pitesti,Bucharest"
+  start="Arad"
+  goal="Bucharest"
+  caption="The Romania road map with distances in km. The highlighted route (418 km) is the shortest; via Fagaras it is 450 km."
+/>
+
+## Problem types
+
+How hard a problem is depends on what the agent knows about the world and its actions.
+
+| Environment | Problem type | What a solution looks like |
+|---|---|---|
+| Deterministic, fully observable | **Single-state** | The agent knows exactly which state it is in, so a solution is a fixed **sequence** of actions. |
+| Non-observable (sensorless) | **Conformant** | The agent may not know where it is; it reasons about **sets of states**. The solution (if any) is still a sequence that works from every possible state. |
+| Nondeterministic and/or partially observable | **Contingency** | Percepts bring new information during execution, so the solution is a **contingent plan** (a policy with branches). Search and execution are often interleaved. |
+| Unknown state space | **Exploration** (online) | The agent must act to discover which states and actions even exist. |
+
+### The vacuum world, four ways
+
+The vacuum world with two squares has **8 states**: 2 robot positions × 2 dirt statuses for A × 2 for B.
+
+<SlideFigure page={10} caption="The eight states of the two-square vacuum world. In state 5 the robot is in A, A is clean and B is dirty." />
+
+<Grid cols={2}>
+  <Card title="Single-state" tag="start in #5">
+    The agent knows it is in state 5, so the solution is <code>[Right, Suck]</code>.
+  </Card>
+  <Card title="Conformant" tag="start anywhere">
+    The start is any of the 8 states. <code>Right</code> always leads to one of the states 2, 4, 6 or 8. The solution is <code>[Right, Suck, Left, Suck]</code>, which works from every start.
+  </Card>
+  <Card title="Contingency" tag="Murphy's law">
+    <code>Suck</code> can sometimes dirty a clean carpet, and the agent senses only its own square. The solution needs a branch: <code>[Right, if dirt then Suck]</code>.
+  </Card>
+  <Card title="Exploration" tag="online">
+    The agent does not know the layout or what its actions do, so it must experiment to build its own map.
+  </Card>
+</Grid>
+
+## Formulating a single-state problem
+
+<Definition term="Problem">
+  A problem is defined by four items: an <strong>initial state</strong>, a <strong>successor function</strong>, a <strong>goal test</strong> and a <strong>path cost</strong>.
+</Definition>
+
+| Component | Meaning | Romania example |
+|---|---|---|
+| **Initial state** | Where the agent starts | `In(Arad)` |
+| **Successor function** $S(x)$ | The set of action–state pairs reachable from $x$ | $S(\text{Arad}) = \{\langle \text{Arad} \rightarrow \text{Zerind}, \text{Zerind} \rangle, \dots\}$ |
+| **Goal test** | Explicit (a specific state) or implicit (a property) | $x = $ `In(Bucharest)`; or implicit, like `NoDirt(x)` |
+| **Path cost** | Additive cost of a path; each step cost $c(x, a, y) \ge 0$ | Sum of kilometres driven |
+
+A **solution** is a sequence of actions that leads from the initial state to a goal state. An **optimal solution** has the lowest path cost of all solutions.
+
+$$
+g(\text{path}) = \sum_{i} c(x_i, a_i, x_{i+1}), \qquad c(x, a, y) \ge 0
+$$
+
+Here is the same formulation in Python, and it is the shape the lab code uses:
+
+```python title="romania_problem.py"
+ROADS = {
+    "Arad": {"Zerind": 75, "Sibiu": 140, "Timisoara": 118},
+    "Sibiu": {"Arad": 140, "Oradea": 151, "Fagaras": 99, "Rimnicu Vilcea": 80},
+    "Fagaras": {"Sibiu": 99, "Bucharest": 211},
+    "Rimnicu Vilcea": {"Sibiu": 80, "Pitesti": 97, "Craiova": 146},
+    "Pitesti": {"Rimnicu Vilcea": 97, "Craiova": 138, "Bucharest": 101},
+    # ... remaining cities omitted for brevity
+}
+
+class RouteProblem:
+    def __init__(self, initial, goal, roads):
+        self.initial, self.goal, self.roads = initial, goal, roads
+
+    def successors(self, state):
+        """Return (action, next_state) pairs."""
+        return [(f"{state} -> {city}", city) for city in self.roads.get(state, {})]
+
+    def goal_test(self, state):
+        return state == self.goal
+
+    def step_cost(self, state, action, next_state):
+        return self.roads[state][next_state]
+
+problem = RouteProblem("Arad", "Bucharest", ROADS)
+print(problem.successors("Arad"))
+```
+
+## Selecting a state space
+
+The real world is far too complex to search directly, so the state space must be **abstracted**:
+
+- An **abstract state** stands for a set of real states. "In Arad" ignores the weather, the radio station and your exact position in town.
+- An **abstract action** stands for a complex combination of real actions. "Arad → Zerind" covers all routes, detours and rest stops.
+- An **abstract solution** corresponds to a set of real paths that are solutions in the real world.
+
+<Callout type="tip" title="What makes a good abstraction">
+  It must be <strong>valid</strong>: any real state "in Arad" must be able to reach some real state "in Zerind". It must also be <strong>useful</strong>: each abstract action should be easier to carry out than the original problem.
+</Callout>
+
+## Example problems
+
+### The vacuum world
+
+<SlideFigure page={17} caption="The vacuum-world state space. L = Left, R = Right, S = Suck." />
+
+| | Formulation |
+|---|---|
+| **States** | Robot location and dirt status of each square (ignore dirt amounts): $2 \times 2^2 = 8$ states |
+| **Actions** | `Left`, `Right`, `Suck`, `NoOp` |
+| **Goal test** | No dirt in any square |
+| **Path cost** | 1 per action (0 for `NoOp`) |
+
+### The 8-puzzle
+
+<SlideFigure page={22} caption="Slide tiles into the blank until the board matches the goal state." />
+
+| | Formulation |
+|---|---|
+| **States** | The location of each tile and the blank (ignore intermediate positions) |
+| **Actions** | Move the **blank** left, right, up or down (ignore unjamming etc.) |
+| **Goal test** | The state equals the given goal configuration |
+| **Path cost** | 1 per move |
+
+The 8-puzzle has $9!/2 = 181{,}440$ reachable states. Finding the optimal solution for the general $n$-puzzle family is **NP-hard**, which is why it is a classic test bed for search algorithms.
+
+<Callout type="note" title="Why move the blank?">
+  Describing the actions as moves of the single blank gives just 4 possible actions. Describing them as moves of each tile would give up to 8 tiles × 4 directions, most of them illegal.
+</Callout>
+
+### Robotic assembly
+
+<SlideFigure page={23} caption="A robot arm assembling an object: a continuous problem." />
+
+| | Formulation |
+|---|---|
+| **States** | Real-valued coordinates of the robot's joint angles, plus the parts of the object being assembled |
+| **Actions** | Continuous motions of the robot joints |
+| **Goal test** | Complete assembly (without the robot included in it!) |
+| **Path cost** | Time to execute |
+
+Unlike the previous examples, this state space is **continuous**, so it has to be discretised or handled with specialised planning methods.
+
+<Takeaways>
+
+- A problem-solving agent formulates a **goal**, then a **problem**, **searches** for a solution and **executes** it.
+- Problems are **single-state**, **conformant**, **contingency** or **exploration** problems, depending on observability and determinism.
+- A problem = **initial state + successor function + goal test + path cost**; a solution is an action sequence that reaches a goal.
+- Good formulations **abstract away** irrelevant detail while keeping every abstract action realisable.
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="Formulate the water-jug problem" level="medium">
+
+You have a 4-litre jug and a 3-litre jug, no markings, and a tap. The goal is exactly 2 litres in the 4-litre jug. Give the states, initial state, actions, goal test and path cost.
+
+<Solution>
+
+- **States**: pairs $(x, y)$ with $x \in \{0..4\}$ litres in the big jug and $y \in \{0..3\}$ in the small jug.
+- **Initial state**: $(0, 0)$.
+- **Actions**: fill either jug, empty either jug, pour one jug into the other until the source is empty or the target is full.
+- **Goal test**: $x = 2$ (any $y$).
+- **Path cost**: 1 per action.
+
+One solution: (0,0) → (0,3) → (3,0) → (3,3) → (4,2) → (0,2) → (2,0).
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Count the states" level="easy">
+
+How many states does the vacuum world have if there are **n** squares in a row instead of 2?
+
+<Solution>
+
+The robot can be in any of the $n$ squares, and each square is independently dirty or clean: $n \cdot 2^n$ states. For $n = 2$ that gives $2 \cdot 4 = 8$, matching the lecture.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Which problem type?" level="easy">
+
+A robot vacuum has **no sensors at all** but knows exactly what its actions do. Which problem type is this, and what does a solution look like?
+
+<Solution>
+
+It is a **conformant** (sensorless) problem. The agent reasons about the set of states it might be in, and the solution is one fixed action sequence that reaches a goal from every state in that set, for example `[Right, Suck, Left, Suck]`.
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "Which of these is NOT one of the four components of a problem formulation?",
+      options: ["Initial state", "Successor function", "Heuristic function", "Path cost"],
+      answer: 2,
+      explain: "A problem is the initial state, successor function, goal test and path cost. Heuristics belong to informed search, not to the problem definition."
+    },
+    {
+      q: "The agent cannot observe anything but knows the effects of its actions. This is a…",
+      options: ["Single-state problem", "Conformant problem", "Contingency problem", "Exploration problem"],
+      answer: 1,
+      explain: "Without observations the agent reasons over sets of states and needs one sequence that works for all of them."
+    },
+    {
+      q: "In the vacuum world, starting in state #5 (single-state), the solution is…",
+      options: ["[Suck]", "[Right, Suck]", "[Right, Suck, Left, Suck]", "[Left, Suck]"],
+      answer: 1,
+      explain: "In state 5 the robot is in A, A is clean and B is dirty, so it moves right and sucks."
+    },
+    {
+      q: "In the 8-puzzle formulation, the actions are best described as…",
+      options: ["Moving any tile to any square", "Moving the blank left, right, up or down", "Swapping two adjacent tiles", "Rotating the board"],
+      answer: 1,
+      explain: "Moving the single blank gives at most 4 actions, which keeps the formulation small."
+    },
+    {
+      q: "Step costs in a problem formulation are assumed to be…",
+      options: ["Negative", "Exactly 1", "≥ 0", "Random"],
+      answer: 2,
+      explain: "c(x, a, y) ≥ 0 so that path costs never decrease as a path gets longer."
+    },
+    {
+      q: "Why must the state space be abstracted?",
+      options: ["To make the agent faster at driving", "Because the real world is too complex to search directly", "Because computers cannot store cities", "To make the problem nondeterministic"],
+      answer: 1,
+      explain: "Abstraction removes irrelevant detail so the remaining state space is small enough to explore."
+    }
+  ]}
+/>

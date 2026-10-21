@@ -1,0 +1,412 @@
+---
+number: 3
+title: "Searching Problems (1): State Space, DFS and BFS"
+summary: The vocabulary of a state search space, how graphs are represented in code, and a hands-on walk through depth-first and breadth-first search, traced on paper and then implemented in a Python Graph class.
+kind: lab
+topics: [State search space, Graph representations, Tree traversal, Depth-first search, Breadth-first search, Graph class]
+duration: 75 min hands-on
+sources:
+  - file: Sections/sec3/Artificial Intelligence - Lab 03.pdf
+    label: AI Lab 03 – Searching Problems (1) (slides)
+    pages: "1-76"
+  - file: Sections/sec3/Artificial Intelligence - Lab 03 Notebook.pdf
+    label: AI Lab 03 – Graph class notebook (PDF)
+bookRefs:
+  - book: ai-book
+    chapter: Ch 3.2–3.4 · Search Problems and Search Algorithms
+    pages: "56–73"
+---
+
+<Objectives>
+
+- Name the parts of a **state search space**: states, initial and goal state, operators, search path, strategy, optimal path and path cost.
+- Represent directed, undirected and weighted graphs as an **adjacency list** and an **adjacency matrix**.
+- Trace **DFS** (LIFO) and **BFS** (FIFO) by hand on trees and graphs, using the lab's tie-breaking rules.
+- Implement both strategies in a reusable Python `Graph` class.
+
+</Objectives>
+
+## The state search space
+
+<Definition term="State search space">
+  The collection of <strong>all possible states</strong> a system can be in while searching for a solution to a given problem.
+</Definition>
+
+<Grid cols={3}>
+  <Card title="States">Each unique configuration of the system.</Card>
+  <Card title="Initial state">The starting point of the search.</Card>
+  <Card title="Goal state">The state that meets the problem's success conditions.</Card>
+  <Card title="Operators">Actions (state transitions) that move from one state to another.</Card>
+  <Card title="Search path">The sequence of states from the initial state to the goal.</Card>
+  <Card title="Search strategy">The rule that picks which state to explore next: DFS, BFS, UCS, greedy, A*, bidirectional, IDS…</Card>
+</Grid>
+
+The **space graph** represents all states (nodes) and transitions (edges). The **optimal solution path** is the best path to the goal. "Best" can mean the **fastest**, **shortest** (fewest steps) or **lowest-cost** path, so optimality is judged by (1) reaching the goal at all and (2) how expensive the path is.
+
+<Definition term="Path cost">
+  The total weight of a path: the <strong>sum of the edge weights</strong> along it.
+</Definition>
+
+## Graphs
+
+A **graph** $G = (V, E)$ represents relationships: **vertices** $V$ are objects or states and **edges** $E$ are the connections between them. Graphs can be:
+
+| Property | Variants |
+|---|---|
+| Direction | **Directed** (edges have a direction) or **undirected** |
+| Weights | **Weighted** (edges carry a cost) or **unweighted** |
+| Cycles | **Cyclic** or **acyclic** |
+| Connectivity | **Connected** (a path exists between every pair) or **disconnected** |
+
+### Representing a graph in code
+
+<SlideFigure page={18} caption="The same undirected graph as an adjacency list and as an adjacency matrix." />
+
+| | Adjacency list | Adjacency matrix |
+|---|---|---|
+| Structure | `{vertex: [neighbours]}` | $\lvert V \rvert \times \lvert V \rvert$ table; cell $(i, j)$ = 1 (or the weight) if there is an edge |
+| Memory | $O(\lvert V \rvert + \lvert E \rvert)$, good for sparse graphs | $O(\lvert V \rvert^2)$ |
+| "Is $u$–$v$ an edge?" | Scan $u$'s list | $O(1)$ lookup |
+| Undirected graphs | Store each edge **both ways** | The matrix is **symmetric** |
+
+```python title="representations.py"
+# Undirected graph: A–B, A–C, B–D
+adjacency_list = {
+    "A": ["B", "C"],
+    "B": ["A", "D"],
+    "C": ["A"],
+    "D": ["B"],
+}
+
+vertices = ["A", "B", "C", "D"]
+adjacency_matrix = [
+    #  A  B  C  D
+    [0, 1, 1, 0],  # A
+    [1, 0, 0, 1],  # B
+    [1, 0, 0, 0],  # C
+    [0, 1, 0, 0],  # D
+]
+```
+
+### Trees and traversals
+
+A **tree** is a special graph: connected, acyclic, and every node except the root has exactly one parent. Visiting every node systematically is called **traversal**:
+
+| Traversal | Order |
+|---|---|
+| **Pre-order** | Root → Left → Right ← *our focus* |
+| In-order | Left → Root → Right |
+| Post-order | Left → Right → Root |
+
+Depth-first search on a tree visits nodes in **pre-order**.
+
+## One algorithm, different queues
+
+<Callout type="tip" title="Don't worry!">
+  Every uninformed strategy is the <strong>same basic search loop</strong>. The <strong>only</strong> difference between them is the queuing function that decides which path leaves the list next.
+</Callout>
+
+<Steps>
+
+1. Put a path containing only the **start** node into the list.
+2. If the list is empty, the search **fails**.
+3. **Remove** one path from the list, chosen by the strategy's queuing function.
+4. If its last node was already **visited**, discard the path and go back to step 2; otherwise mark the node as visited.
+5. If the last node is the **goal**, return the path.
+6. Otherwise **extend** the path with every neighbour, add the new paths to the list, and go back to step 2.
+
+</Steps>
+
+| Strategy | Queuing function | Removes… |
+|---|---|---|
+| Depth-first search | **LIFO** (stack) | the newest path |
+| Breadth-first search | **FIFO** (queue) | the oldest path |
+| Uniform-cost search (next lab) | **FIFO + priority** | the cheapest path |
+
+## Depth-first search (DFS)
+
+**LIFO (Last In, First Out)**: the last element added is the first one removed, like a stack of plates.
+
+<Tree
+  tree="1(2(4(8),5(9,10)),3(6,7(11,12)))"
+  order="1,2,4,8,5,9,10,3,6,7,11"
+  path="1,3,7,11"
+  goal="11"
+  caption="DFS for goal 11 visits the tree in pre-order: down the left side first, then backtracks."
+/>
+
+On trees we follow **pre-order**, so children are pushed right-to-left and the **left** child ends up on top of the stack.
+
+| Step | Pop | Stack afterwards (top on the right) |
+|---|---|---|
+| 1 | 1 | 3, 2 |
+| 2 | 2 | 3, 5, 4 |
+| 3 | 4 | 3, 5, 8 |
+| 4 | 8 | 3, 5 |
+| 5 | 5 | 3, 10, 9 |
+| 6 | 9 | 3, 10 |
+| 7 | 10 | 3 |
+| 8 | 3 | 7, 6 |
+| 9 | 6 | 7 |
+| 10 | 7 | 12, 11 |
+| 11 | **11 = goal** | 12 |
+
+**Solution** `[1, 3, 7, 11]` · **Visited** `[1, 2, 4, 8, 5, 9, 10, 3, 6, 7, 11]`.
+
+## Breadth-first search (BFS)
+
+**FIFO (First In, First Out)**: the first element added is the first one removed, like a queue at a bank.
+
+<Tree
+  tree="1(2(4(8),5(9,10)),3(6,7(11,12)))"
+  order="1,2,3,4,5,6"
+  path="1,3,6"
+  goal="6"
+  caption="BFS for goal 6 explores level by level and stops after six nodes."
+/>
+
+| Step | Dequeue | Queue afterwards (front on the left) |
+|---|---|---|
+| 1 | 1 | 2, 3 |
+| 2 | 2 | 3, 4, 5 |
+| 3 | 3 | 4, 5, 6, 7 |
+| 4 | 4 | 5, 6, 7, 8 |
+| 5 | 5 | 6, 7, 8, 9, 10 |
+| 6 | **6 = goal** | 7, 8, 9, 10 |
+
+**Solution** `[1, 3, 6]` · **Visited** `[1, 2, 3, 4, 5, 6]`.
+
+## DFS and BFS on a weighted graph
+
+Now the lab problem: find a path from **S** to **G** in this directed, weighted graph.
+
+<WeightedGraph
+  directed
+  nodes="S:0,50 A:33,8 B:33,92 D:58,55 C:72,8 G:100,50"
+  edges="S->A:2 S->B:3 S->D:5 A->C:4 C->G:2 C->D:1 B->D:4 D->G:5"
+  path="S,D,G"
+  start="S"
+  goal="G"
+  caption="The lab graph. Both DFS and BFS return S → D → G with cost 5 + 5 = 10."
+/>
+
+<Callout type="note" title="Tie-breaking rule for graphs">
+  To get one unified answer for everyone, sort each node's neighbours <strong>alphabetically</strong> and add the new paths in that order. With a LIFO stack this means the alphabetically <strong>last</strong> neighbour comes off first.
+</Callout>
+
+### DFS trace (stack, top on the right)
+
+| Current path | Stack afterwards |
+|---|---|
+| — | `[S]` |
+| `[S]` | `[S,A]`, `[S,B]`, `[S,D]` |
+| `[S,D]` | `[S,A]`, `[S,B]`, `[S,D,G]` |
+| `[S,D,G]` | goal reached |
+
+### BFS trace (queue, front on the left)
+
+| Current path | Queue afterwards |
+|---|---|
+| — | `[S]` |
+| `[S]` | `[S,A]`, `[S,B]`, `[S,D]` |
+| `[S,A]` | `[S,B]`, `[S,D]`, `[S,A,C]` |
+| `[S,B]` | `[S,D]`, `[S,A,C]`, `[S,B,D]` |
+| `[S,D]` | `[S,A,C]`, `[S,B,D]`, `[S,D,G]` |
+| `[S,A,C]` | `[S,B,D]`, `[S,D,G]`, `[S,A,C,D]`, `[S,A,C,G]` |
+| `[S,B,D]` | D already visited, so the path is skipped |
+| `[S,D,G]` | goal reached |
+
+| | DFS | BFS |
+|---|---|---|
+| Solution | S → D → G | S → D → G |
+| Actual cost | 10 | 10 |
+| Nodes visited | 3 (S, D, G) | 6 (S, A, B, D, C, G) |
+
+<Callout type="warning" title="Neither one looks at the weights">
+  Both answers cost 10, but the cheapest route is <strong>S → A → C → G = 8</strong>. DFS and BFS ignore edge costs. Finding the cheapest path is the job of uniform-cost search in the next lab.
+</Callout>
+
+## Implementation: a Graph class
+
+The lab builds one class that handles directed or undirected, weighted or unweighted graphs, stored as an adjacency list.
+
+```python title="graph.py"
+class Graph:
+    """Adjacency-list graph used in Labs 03 and 04."""
+
+    def __init__(self, directed=False, weighted=False):
+        self.directed = directed
+        self.weighted = weighted
+        self.adj = {}
+
+    def add_vertex(self, vertex):
+        self.adj.setdefault(vertex, [])
+
+    def add_edge(self, u, v, weight=None):
+        if u not in self.adj or v not in self.adj:
+            raise KeyError("Both vertices must exist in the graph")
+        if self.weighted and weight is None:
+            raise ValueError("A weighted graph needs a weight for every edge")
+        self.adj[u].append((v, weight) if self.weighted else v)
+        if not self.directed:                       # undirected: store both ways
+            self.adj[v].append((u, weight) if self.weighted else u)
+
+    def get_graph(self):
+        return self.adj
+
+    def neighbours(self, vertex):
+        """Neighbour names, sorted alphabetically for a unified answer."""
+        items = self.adj[vertex]
+        names = [n for n, _ in items] if self.weighted else list(items)
+        return sorted(names)
+```
+
+### The DFS and BFS methods
+
+The two methods are identical except for **one line**: which end of the list the next path comes from.
+
+```python title="graph.py (continued)" {4,18}
+    def dfs(self, start, goal):
+        fringe, visited = [[start]], []
+        while fringe:
+            path = fringe.pop()                  # LIFO: newest path
+            node = path[-1]
+            if node in visited:
+                continue
+            visited.append(node)
+            if node == goal:
+                return path, visited
+            for n in self.neighbours(node):
+                fringe.append(path + [n])
+        return None, visited
+
+    def bfs(self, start, goal):
+        fringe, visited = [[start]], []
+        while fringe:
+            path = fringe.pop(0)                 # FIFO: oldest path
+            node = path[-1]
+            if node in visited:
+                continue
+            visited.append(node)
+            if node == goal:
+                return path, visited
+            for n in self.neighbours(node):
+                fringe.append(path + [n])
+        return None, visited
+```
+
+### Formulate the problem and test
+
+```python title="test_graph.py"
+g = Graph(directed=True, weighted=True)
+for v in "SABCDG":
+    g.add_vertex(v)
+for u, v, w in [("S", "B", 3), ("S", "A", 2), ("S", "D", 5), ("A", "C", 4),
+                ("C", "G", 2), ("C", "D", 1), ("B", "D", 4), ("D", "G", 5)]:
+    g.add_edge(u, v, w)
+
+print(g.dfs("S", "G"))  # (['S', 'D', 'G'], ['S', 'D', 'G'])
+print(g.bfs("S", "G"))  # (['S', 'D', 'G'], ['S', 'A', 'B', 'D', 'C', 'G'])
+```
+
+<Callout type="tip" title="Performance note">
+  <code>list.pop(0)</code> is $O(n)$. For large graphs use <code>collections.deque</code> and <code>popleft()</code>, and store <code>visited</code> as a <strong>set</strong> for $O(1)$ membership checks.
+</Callout>
+
+<Takeaways>
+
+- A search problem = states + initial state + goal state + operators; the **strategy** decides the order of exploration.
+- Graphs are stored as an **adjacency list** (compact) or an **adjacency matrix** (fast edge lookup).
+- DFS uses a **LIFO** stack and BFS a **FIFO** queue; everything else in the code is the same.
+- Neither DFS nor BFS considers edge weights, so on weighted graphs they may miss the cheapest path.
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="Trace DFS on the tree" level="easy">
+
+Using the 12-node tree above and **pre-order** DFS, list the visited nodes when the goal is **10**.
+
+<Solution>
+
+Visited `[1, 2, 4, 8, 5, 9, 10]`; solution path `[1, 2, 5, 10]`.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Undirected version" level="medium">
+
+Rebuild the lab graph as **undirected** (same weights) and run BFS from S to G. Does the visited order change?
+
+<Solution>
+
+With undirected edges, each node also lists the nodes that point to it. BFS still expands S first (neighbours A, B, D), then A (neighbours C, S), B (D, S), D (B, C, G, S) and C. The visited order stays `[S, A, B, D, C, G]` and the solution is still `S → D → G`, because the extra back-edges only lead to nodes that are already visited.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Adjacency matrix method" level="medium">
+
+Add a method `to_matrix()` to the `Graph` class that returns the vertex order and the adjacency matrix (weights for weighted graphs, 1 for unweighted, 0 for no edge).
+
+<Solution>
+
+```python
+def to_matrix(self):
+    order = sorted(self.adj)
+    index = {v: i for i, v in enumerate(order)}
+    m = [[0] * len(order) for _ in order]
+    for u, items in self.adj.items():
+        for item in items:
+            v, w = item if self.weighted else (item, 1)
+            m[index[u]][index[v]] = w
+    return order, m
+```
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "Which data-access principle does DFS use?",
+      options: ["FIFO", "LIFO", "Priority by cost", "Random"],
+      answer: 1,
+      explain: "DFS always removes the most recently added path, like a stack."
+    },
+    {
+      q: "In the lab's 12-node tree, BFS with goal 6 visits…",
+      options: ["[1, 3, 6]", "[1, 2, 3, 4, 5, 6]", "[1, 2, 4, 8, 5, 6]", "[1, 3, 7, 6]"],
+      answer: 1,
+      explain: "BFS goes level by level: 1, then 2 and 3, then 4, 5 and finally 6."
+    },
+    {
+      q: "Which representation needs O(|V|²) memory?",
+      options: ["Adjacency list", "Adjacency matrix", "Edge list", "Both lists"],
+      answer: 1,
+      explain: "The matrix has a cell for every pair of vertices, edge or not."
+    },
+    {
+      q: "On the lab graph, what does BFS return from S to G?",
+      options: ["S → A → C → G", "S → B → D → G", "S → D → G", "S → A → C → D → G"],
+      answer: 2,
+      explain: "S → D → G is found on the second level; BFS counts steps, not costs."
+    },
+    {
+      q: "What is the cheapest path from S to G in the lab graph?",
+      options: ["S → D → G (10)", "S → A → C → G (8)", "S → B → D → G (12)", "S → A → C → D → G (12)"],
+      answer: 1,
+      explain: "2 + 4 + 2 = 8. Neither DFS nor BFS finds it because they ignore weights."
+    },
+    {
+      q: "DFS on a tree visits nodes in which traversal order?",
+      options: ["In-order", "Post-order", "Pre-order", "Level-order"],
+      answer: 2,
+      explain: "Root first, then the left subtree, then the right subtree."
+    }
+  ]}
+/>

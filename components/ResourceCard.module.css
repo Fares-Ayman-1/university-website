@@ -1,0 +1,153 @@
+.card {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: start;
+  padding: 22px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  transition:
+    transform var(--dur-standard) var(--ease-out-expo),
+    border-color var(--dur-standard) ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+}
+
+.number {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: var(--accent-soft);
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
+.badge {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  color: var(--accent-text);
+  line-height: 1;
+  margin-top: 8px;
+}
+
+.digits {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--heading);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.body {
+  min-width: 0;
+}
+
+.title {
+  font-size: 1.25rem;
+}
+
+.link::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.summary {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 0.97rem;
+  line-height: 1.55;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin-top: 12px;
+  font-size: var(--text-sm);
+  color: var(--muted);
+  text-transform: capitalize;
+}
+
+.meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.meta svg {
+  width: 15px;
+  height: 15px;
+  color: var(--accent-text);
+}
+
+.topics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.topics li {
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  font-size: var(--text-xs);
+  color: var(--text);
+  background: var(--bg);
+}
+
+.arrow {
+  width: 20px;
+  height: 20px;
+  margin-top: 4px;
+  color: var(--accent-text);
+  transition: transform var(--dur-standard) var(--ease-out-expo);
+}
+
+.card:hover .arrow {
+  transform: translateX(4px);
+}
+
+@media (max-width: 560px) {
+  .card {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 18px;
+  }
+
+  .number {
+    width: auto;
+    height: auto;
+    display: inline-flex;
+    gap: 8px;
+    align-items: baseline;
+    justify-self: start;
+    padding: 6px 12px;
+    border-radius: 999px;
+  }
+
+  .badge,
+  .digits {
+    margin: 0;
+  }
+
+  .digits {
+    font-size: 1.1rem;
+  }
+
+  .arrow {
+    display: none;
+  }
+}

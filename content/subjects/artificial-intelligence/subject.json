@@ -1,0 +1,60 @@
+{
+  "title": "Artificial Intelligence",
+  "shortTitle": "AI",
+  "code": "AI301",
+  "order": 1,
+  "materialsDir": "Artificial Intelligence",
+  "level": "Level 3 · 2026/2027",
+  "tagline": "How intelligent agents perceive, reason and search their way to a goal.",
+  "description": "This course introduces the traditional and modern foundations of artificial intelligence. It starts from what it means for a machine to act rationally, models problems as states and actions, and builds up the search algorithms that agents use to find solutions, from blind search through informed and adversarial search, before moving on to knowledge representation, optimization, expert systems and machine learning. Lectures cover the theory; sections (labs) implement it in Python.",
+  "instructors": ["Assoc. Prof. Sara Sweidan", "Dr. Esraa Abdalla", "Eng. Yousef Elbaroudy & the AI lab team (sections)"],
+  "objectives": [
+    "Understand different AI problem-solving and search techniques.",
+    "Apply knowledge representation methods to model and solve AI problems.",
+    "Implement basic AI algorithms for reasoning, decision-making and problem solving.",
+    "Analyze intelligent agents and their architectures in different environments.",
+    "Evaluate the performance, limitations and applicability of different AI techniques."
+  ],
+  "topics": [
+    "Introduction to AI",
+    "Intelligent agents and task environments",
+    "Problem-solving agents",
+    "Uninformed search",
+    "Informed search (Greedy, A*)",
+    "Game playing (Minimax, Alpha-Beta)",
+    "Optimization and genetic algorithms",
+    "Knowledge representation",
+    "Propositional and first-order logic",
+    "Expert systems",
+    "Machine learning",
+    "Planning"
+  ],
+  "grading": [
+    { "label": "Assignments, attendance, midterm", "weight": 30 },
+    { "label": "Practical exam", "weight": 10 },
+    { "label": "Oral exam", "weight": 10 },
+    { "label": "Final exam", "weight": 50 }
+  ],
+  "books": [
+    {
+      "id": "ai-book",
+      "title": "Artificial Intelligence (AI301 course book)",
+      "author": "Sara Sweidan & Esraa Abdalla, 2026/2027",
+      "file": "3rd_Artificial_Intelligence_Book.pdf",
+      "chapters": [
+        { "title": "Ch 1 · Artificial Intelligence", "pages": "7–22" },
+        { "title": "Ch 2 · Intelligent Agent", "pages": "23–53" },
+        { "title": "Ch 3 · Solving Problems by Searching", "pages": "54–83" },
+        { "title": "Ch 4 · Adversarial Search", "pages": "84–93" },
+        { "title": "Ch 5 · Knowledge Representation", "pages": "94–129" },
+        { "title": "Ch 6 · Machine Learning", "pages": "130–135" },
+        { "title": "Ch 7 · Expert System", "pages": "136–152" }
+      ]
+    },
+    {
+      "id": "aima",
+      "title": "Artificial Intelligence: A Modern Approach (4th ed.)",
+      "author": "Stuart Russell & Peter Norvig, Pearson 2021"
+    }
+  ]
+}

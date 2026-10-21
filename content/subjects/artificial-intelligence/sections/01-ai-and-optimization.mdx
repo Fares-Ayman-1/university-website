@@ -1,0 +1,242 @@
+---
+number: 1
+title: AI, Environments and Optimization
+summary: The lab introduction. It defines AI, classifies task environments in practical terms, and solves a real optimization problem (the cheapest bridge-and-road route) to show that searching and optimizing are two faces of the same coin.
+kind: lab
+topics: [What is AI, Environment categories, Planning and optimization, Cost functions, Searching as optimization]
+duration: 35 min study
+sources:
+  - file: Sections/sec1/Artificial Intelligence - Lab 01.pdf
+    label: AI Lab 01 – Introduction (slides)
+    pages: "1-45"
+bookRefs:
+  - book: ai-book
+    chapter: Ch 1 · Artificial Intelligence
+    pages: "7–22"
+  - book: ai-book
+    chapter: Ch 2.3 · The Nature of the Environment
+    pages: "30–37"
+---
+
+<Objectives>
+
+- Define AI as the simulation of human cognitive tasks by machines.
+- Classify an environment along eight practical dimensions, including **realism** and **reward structure**.
+- Turn a real-life decision into a **cost function** and find its minimum.
+- Explain why the course treats **searching** and **optimization** as the same activity.
+
+</Objectives>
+
+## What is artificial intelligence?
+
+<Definition term="Artificial intelligence">
+  The simulation of human intelligence in machines that are programmed to perform tasks that normally require human cognition: <strong>learning, reasoning, problem-solving, understanding language, perception and decision-making</strong>.
+</Definition>
+
+AI systems range from simple **rule-based** programs to complex **machine-learning** models that adapt and improve over time. The branch this course studies is the **agent** that acts in an **environment**: it observes, decides and acts to reach a goal.
+
+## Categories of environments
+
+The lecture introduced six classic environment dimensions. The lab adds two practical ones that matter when you build agents, especially with reinforcement learning:
+
+| Dimension | One end | Other end |
+|---|---|---|
+| Observability | Fully observable | Partially observable |
+| Determinism | Deterministic | Stochastic |
+| Dynamics | Static | Dynamic |
+| Episodic nature | Episodic | Sequential |
+| Dimensionality | Discrete | Continuous |
+| Agent interaction | Single-agent | Multi-agent |
+| **Realism** | Simulated | Real-world |
+| **Reward structure** | Sparse reward | Dense reward |
+
+### How each dimension changes the techniques you use
+
+<Grid cols={2}>
+  <Card title="Fully vs. partially observable" tag="Observability">
+    <strong>Fully</strong>: chess, tic-tac-toe, a mapped grid world, solved with search such as minimax or A*. <strong>Partially</strong>: poker, self-driving cars. These need inference, memory or probabilistic models (Bayesian networks, POMDPs).
+  </Card>
+  <Card title="Deterministic vs. stochastic" tag="Determinism">
+    <strong>Deterministic</strong>: the same action in the same state always gives the same result (a robot on a controlled grid). <strong>Stochastic</strong>: dice, weather, the stock market. These are handled with MDPs and reinforcement learning.
+  </Card>
+  <Card title="Static vs. dynamic" tag="Dynamics">
+    <strong>Static</strong>: a crossword puzzle doesn't change while you think. <strong>Dynamic</strong>: traffic, real-time games and portfolios keep changing, so they need real-time, adaptive methods.
+  </Card>
+  <Card title="Episodic vs. sequential" tag="Time">
+    <strong>Episodic</strong>: classifying individual images; no memory needed. <strong>Sequential</strong>: chess, a maze, a supply chain. Every decision affects the future (planning, MDPs, RNNs).
+  </Card>
+  <Card title="Discrete vs. continuous" tag="Dimensionality">
+    <strong>Discrete</strong>: finite states and actions such as grid cells and moves. <strong>Continuous</strong>: steering angles, throttle, robot-arm joints, which need function approximation or control (PID, policy gradients).
+  </Card>
+  <Card title="Single vs. multi-agent" tag="Interaction">
+    <strong>Single</strong>: a robot in a maze. <strong>Multi</strong>: soccer, poker, traffic. Other agents may cooperate or compete, which brings in game theory and multi-agent RL.
+  </Card>
+</Grid>
+
+<Callout type="tip" title="Sparse vs. dense reward">
+  With a <strong>sparse</strong> reward the agent learns how well it did only at the very end (win or lose a game). A <strong>dense</strong> reward gives feedback at every step (distance to the goal). Dense rewards make learning easier, but they must be designed carefully so they don't reward the wrong behaviour.
+</Callout>
+
+## Planning and optimization
+
+Planning and optimization are used everywhere: business, project management, urban development, education and personal life. The aim is always **efficient utilization**: getting *the best* out of something. In scientific terms, finding "the best" is a **searching / optimization** process, a systematic way to pick the best option from many candidates. Even building your semester timetable is a search problem.
+
+## A real-life optimization problem
+
+A company needs to move goods from the **red factory** to the **green factory**. A river runs between them:
+
+- the river is **6 km** wide,
+- the green factory is **8 km** further along the opposite bank,
+- a **bridge** costs **\$40,000 per km**,
+- a **road** costs **\$20,000 per km**.
+
+Where should the bridge land on the opposite bank to make the total cost as small as possible?
+
+<SlideFigure page={36} caption="Choose a landing point x km along the far bank: a diagonal bridge, then (8 − x) km of road." />
+
+### Trying candidate solutions
+
+<Steps>
+
+1. **Bridge straight across, then road.** Bridge 6 km × \$40,000 = \$240,000, road 8 km × \$20,000 = \$160,000. Total **\$400,000**.
+2. **One diagonal bridge to the factory.** By Pythagoras, $c = \sqrt{6^2 + 8^2} = 10$ km, so the cost is 10 × \$40,000 = **\$400,000**. No better.
+3. **Land halfway (x = 4).** Bridge $\sqrt{6^2 + 4^2} = \sqrt{52} \approx 7.21$ km costs \$288,444.10; road 4 km costs \$80,000. Total **\$368,444.10**. Better!
+
+</Steps>
+
+Each attempt is one **point in the search space**. Instead of guessing, write the cost as a function of the landing point $x$:
+
+$$
+f(x) = \underbrace{40{,}000\,\sqrt{36 + x^2}}_{\text{bridge}} \; + \; \underbrace{20{,}000\,(8 - x)}_{\text{road}}, \qquad 0 \le x \le 8
+$$
+
+### Finding the minimum
+
+Set the derivative to zero:
+
+$$
+f'(x) = \frac{40{,}000\,x}{\sqrt{36 + x^2}} - 20{,}000 = 0
+\;\Rightarrow\; 2x = \sqrt{36 + x^2}
+\;\Rightarrow\; 3x^2 = 36
+\;\Rightarrow\; x = 2\sqrt{3} \approx 3.464 \text{ km}
+$$
+
+$$
+f(3.464) \approx 40{,}000 \times 6.928 + 20{,}000 \times 4.536 \approx \$367{,}846.10
+$$
+
+<Callout type="example" title="Optimized">
+  Landing the bridge <strong>3.464 km</strong> along the far bank gives the minimum total cost of <strong>\$367,846.10</strong>, about \$32,000 cheaper than the first idea.
+</Callout>
+
+### The same answer by searching
+
+Calculus works here because $f$ is smooth and has one variable. Many real problems are discrete, have many variables, or have no formula for the derivative. Then we **search**: we evaluate candidate solutions systematically and keep the best one.
+
+```python title="bridge_search.py"
+from math import sqrt
+
+def cost(x):
+    bridge = 40_000 * sqrt(36 + x**2)
+    road = 20_000 * (8 - x)
+    return bridge + road
+
+# Exhaustive search over landing points, every 1 metre
+candidates = [i / 1000 for i in range(0, 8001)]
+best_x = min(candidates, key=cost)
+print(f"best x = {best_x:.3f} km, cost = ${cost(best_x):,.2f}")
+# best x = 3.464 km, cost = $367,846.10
+```
+
+The tiny difference from the exact answer comes from the 1 m step size. A finer step, or a smarter algorithm, gets closer. Designing those smarter algorithms is what this course is about.
+
+## The landscape of searching and optimization
+
+Problems differ in their nature, and each kind needs different algorithms. Along the course we analyse every problem through these lenses:
+
+| Lens | Variants |
+|---|---|
+| Representation | Graphs, mathematical models |
+| Linearity | Linear, non-linear |
+| Solution quality | Exact, approximate, heuristic |
+| Shape | Convex, non-convex |
+| Variables | Continuous, integer, mixed-integer, combinatorial |
+| Objectives | Single-objective, multi-objective |
+| Constraints | Constrained, unconstrained |
+| Smoothness | Differentiable, non-differentiable |
+| Behaviour over time | Static, dynamic, stochastic |
+
+<SlideFigure page={44} caption="The classification of searching algorithms covered in the course: uninformed, informed, adversarial and meta-heuristic search." />
+
+<Takeaways>
+
+- AI simulates human cognitive tasks; this course focuses on **agents** acting in **environments**.
+- Beyond the six classic dimensions, **realism** (simulated vs. real) and **reward structure** (sparse vs. dense) shape agent design.
+- Writing a decision as a **cost function** turns it into an optimization problem; the bridge problem's optimum is $x = 2\sqrt{3}$ km.
+- **Searching and optimization are two faces of the same coin**: both look for the best point in a space of candidates.
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="Change the prices" level="medium">
+
+Suppose the bridge now costs \$30,000 per km and the road \$20,000 per km (river still 6 km wide, factory 8 km along). Find the optimal landing point.
+
+<Solution>
+
+$f(x) = 30{,}000\sqrt{36 + x^2} + 20{,}000(8 - x)$, so $f'(x) = \frac{30{,}000\,x}{\sqrt{36+x^2}} - 20{,}000 = 0 \Rightarrow 3x = 2\sqrt{36 + x^2} \Rightarrow 9x^2 = 4(36 + x^2) \Rightarrow 5x^2 = 144 \Rightarrow x \approx 5.367$ km.
+
+A cheaper bridge means a longer diagonal bridge and less road.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Classify these environments" level="easy">
+
+Classify a **robot vacuum in a real home** and a **chess engine trained in self-play** by realism and reward structure.
+
+<Solution>
+
+- **Robot vacuum**: real-world; the reward can be fairly **dense** (dirt collected per minute).
+- **Chess engine in self-play**: **simulated**; the reward is **sparse**, because win, lose or draw is only known at the end of the game.
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "Which pair of environment categories was added in the lab beyond the classic six?",
+      options: ["Static/dynamic and discrete/continuous", "Simulated/real-world and sparse/dense reward", "Episodic/sequential and single/multi-agent", "Fully/partially observable and deterministic/stochastic"],
+      answer: 1,
+      explain: "Realism and reward structure matter most when training agents, for example with reinforcement learning."
+    },
+    {
+      q: "In the bridge problem, building the bridge straight across and then the road costs…",
+      options: ["$368,444", "$400,000", "$367,846", "$320,000"],
+      answer: 1,
+      explain: "6 km × $40,000 + 8 km × $20,000 = $240,000 + $160,000 = $400,000."
+    },
+    {
+      q: "The optimal landing point x satisfies…",
+      options: ["x = 4", "x = 8", "x = 2√3 ≈ 3.464", "x = 0"],
+      answer: 2,
+      explain: "Setting f'(x) = 0 gives 3x² = 36, so x = √12 = 2√3."
+    },
+    {
+      q: "Poker is a typical example of a…",
+      options: ["Fully observable environment", "Partially observable environment", "Single-agent environment", "Static environment"],
+      answer: 1,
+      explain: "Opponents' cards are hidden, so the agent must reason under uncertainty."
+    },
+    {
+      q: "Why do we often search instead of using calculus to optimize?",
+      options: ["Search is always exact", "Many problems are discrete, multi-variable or have no usable derivative", "Calculus is slower to type", "Search never needs a cost function"],
+      answer: 1,
+      explain: "Search only needs to evaluate candidates, so it works where derivatives don't exist or are impractical."
+    }
+  ]}
+/>

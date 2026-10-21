@@ -1,0 +1,234 @@
+---
+number: 1
+title: Introduction to Robotics
+summary: Where robots came from, how the major associations define them, what a robotic system is made of, and how robots are classified by capability, generation, mobility, power, control and function.
+topics: [History, Asimov's laws, Definitions, Robotic system, Classification]
+duration: 35 min study
+sources:
+  - file: lectures/Robotics_Lecture 1_Introduction.pdf
+    label: Robotics Lecture 1 – Introduction (slides)
+    pages: "1-24"
+bookRefs:
+  - book: robotics-book
+    chapter: Ch 1 · Introduction to Robotics
+    pages: "19–40"
+---
+
+<Objectives>
+
+- Outline the key milestones in the history of robotics and state **Asimov's laws**.
+- Compare the robot definitions of the **RIA** and **JARA**, and describe a robot as a machine that **senses, thinks and acts**.
+- Name the components of a **robotic system** and the disciplines robotics draws on.
+- Classify a robot using the **JIRA**, **RIA** and **AFR** schemes, by **generation**, and by **function**.
+
+</Objectives>
+
+## What is a robot?
+
+<Definition term="Robot (general)">
+  A machine that <strong>senses, thinks and acts</strong>. It must have sensors, processing that emulates some aspects of cognition, and actuators.
+</Definition>
+
+This is exactly the **agent** from the AI course: percepts come in through sensors, a program decides, and actuators change the world. Seen as a black box, a robot takes **human directions as input** and produces **many types of work, done automatically**, as output.
+
+## A short history
+
+| Year | Milestone |
+|---|---|
+| **1922** | Czech writer Karel Čapek's play *Rossum's Universal Robots* introduces the word **robot**, from *robota* (forced labour, work). |
+| **1950** | Isaac Asimov publishes *I, Robot* with his **Three Laws of Robotics**. |
+| **1954** | George Devol develops the **first programmable robot**. |
+| **1955** | Denavit and Hartenberg develop **homogeneous transformation matrices**, still used today for robot kinematics (Ch. 8–9). |
+| **1962** | **Unimation** is formed and the first industrial robots appear. |
+| **1973** | Cincinnati Milacron introduces the **T3**, which becomes very popular in industry. |
+| **1990** | Cincinnati Milacron's robot business is acquired by **ABB**. |
+
+### Asimov's laws of robotics
+
+Asimov proposed three laws and later added a **zeroth law** that outranks them all. Each law yields to the laws above it.
+
+<Steps>
+
+1. **Law 0**: A robot may not injure **humanity** or, through inaction, allow humanity to come to harm.
+2. **Law 1**: A robot may not injure a **human being** or, through inaction, allow a human being to come to harm, unless this would violate a higher-order law.
+3. **Law 2**: A robot must **obey orders** given by human beings, except where such orders conflict with a higher-order law.
+4. **Law 3**: A robot must **protect its own existence**, as long as this does not conflict with a higher-order law.
+
+</Steps>
+
+## Formal definitions
+
+<Grid cols={2}>
+  <Card title="Robotics Industry Association (RIA)" tag="USA">
+    A <strong>re-programmable, multifunctional manipulator</strong> designed to move material, parts, tools or specialised devices through <strong>variable programmed motions</strong> for the performance of a variety of tasks.
+  </Card>
+  <Card title="Japan Robot Association (JARA)" tag="Japan">
+    Devices capable of moving in a <strong>flexible manner analogous to the moving parts of living organisms</strong>, with or without intelligent functions, allowing operations in response to human commands.
+  </Card>
+</Grid>
+
+The RIA definition is narrow and industrial: it is about manipulators that can be reprogrammed. The JARA definition is broader, so many devices that would not count as robots in the USA are called robots in Japan. This is one reason robot statistics differ between countries.
+
+## The robotic system
+
+**Robotics** is the art, knowledge base and know-how of designing, applying and using robots. It is **interdisciplinary**, drawing on mechanical engineering, electrical and electronic engineering, computer science, biology and more.
+
+<SlideFigure page={8} caption="Components of a robotic system." />
+
+| Component | Role |
+|---|---|
+| **Mechanical arm** | The manipulator that moves in space |
+| **End-of-arm tooling** | The gripper or tool that does the work |
+| **Computer controller** | Coordinates all motion; the "brain" |
+| **Sensors** | Report the state of the robot and its surroundings |
+| **Power supply** | Electric, hydraulic or pneumatic energy |
+| **Input device / teach pendant** | How a human gives instructions or teaches positions |
+| **Program storage or network** | Where programs are kept and loaded from |
+
+## Classifying robots
+
+### By capability: JIRA classes
+
+The Japanese Industrial Robot Association classifies robots into six classes of increasing autonomy:
+
+| Class | Name | Description |
+|---|---|---|
+| 1 | **Manual-handling device** | Several degrees of freedom, but every motion is driven by a human operator |
+| 2 | **Fixed-sequence robot** | Repeats a set sequence that is hard to change |
+| 3 | **Variable-sequence robot** | Performs the successive stages of a task by a predetermined method that is **easy to modify** |
+| 4 | **Playback robot** | A human operator performs the task by **leading the robot**, which records and replays it |
+| 5 | **Numerical-control robot** | The operator **supplies a movement program** instead of teaching the task manually |
+| 6 | **Intelligent robot** | **Understands its environment** and completes the task despite changes in it |
+
+<Callout type="note" title="RIA only counts classes 3–6">
+  The Robotics Institute of America considers only the variable-sequence, playback, numerical-control and intelligent robots (JIRA classes 3–6) to be robots. Manual-handling devices and fixed-sequence machines do not qualify.
+</Callout>
+
+### AFR types (French Robotics Association)
+
+| Type | Description |
+|---|---|
+| **A** | Manual handling devices / telerobotics |
+| **B** | Automatic handling devices with predetermined cycles |
+| **C** | Programmable, servo-controlled robots with continuous or point-to-point trajectories |
+| **D** | Like type C, but able to **acquire information** about the environment |
+
+### Other ways to classify
+
+| Criterion | Categories |
+|---|---|
+| Use | Industrial, non-industrial |
+| Mobility | Fixed, mobile |
+| Power source | Electric, hydraulic, pneumatic |
+| Method of control | Non-servo, servo-controlled |
+| Capability | 1st, 2nd, 3rd generation |
+| Kinematic configuration | RRR, RRP, RPP, PPP (R = revolute, P = prismatic; see Lecture 2) |
+
+### Robot generations
+
+<Grid cols={3}>
+  <Card title="1st generation" tag="1960s–70s">Reprogrammable arm-type manipulators that only memorise repetitive movements, using **internal sensors** only.</Card>
+  <Card title="2nd generation" tag="1980s">**External sensors** and feedback let them make limited decisions and respond to the working environment.</Card>
+  <Card title="3rd generation" tag="late 1990s+">Use **artificial intelligence** to recognise, learn and think, and adapt to new situations.</Card>
+</Grid>
+
+### By function
+
+<Grid cols={2}>
+  <Card title="Manipulators" tag="arms and hands">Industrial robotic arms, such as 6-axis articulated robots and 4-axis palletisers.</Card>
+  <Card title="Motion generators" tag="platforms">Flight simulators, SCARA robots and moving platforms.</Card>
+  <Card title="Locomotors" tag="mobile">Legged robots (Aibo, Big Dog, hexapods), humanoids (ASIMO, NAO) and wheeled robots (Mars rovers, indoor and outdoor robots).</Card>
+  <Card title="Swimming and flying" tag="AUV / UAV">Autonomous underwater vehicles, unmanned aerial vehicles and micro-robots. Robots also work in space, for example on the International Space Station.</Card>
+</Grid>
+
+<SlideFigure page={16} caption="Manipulators: industrial robotic arms." />
+
+<SlideFigure page={19} caption="Mobile wheeled robots: indoor, outdoor and planetary." />
+
+<Takeaways>
+
+- A robot **senses, thinks and acts**, just like an AI agent.
+- The **RIA** definition centres on reprogrammable manipulators; **JARA**'s definition is much broader.
+- A robotic system combines an arm, end-of-arm tooling, a controller, sensors, power, input devices and program storage.
+- **JIRA** has six classes (RIA counts 3–6), **AFR** has types A–D, and robots can also be grouped by **generation**, mobility, power, control and **function**.
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="Which JIRA class?" level="easy">
+
+A painter guides a spray-painting robot's arm through a car door once; the robot records the motion and repeats it on every door. Which class is it, and does RIA consider it a robot?
+
+<Solution>
+
+It is a **playback robot** (JIRA class 4), because a human leads it through the task once. RIA counts classes 3–6, so **yes**, it is a robot under the RIA definition.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Classify a robot vacuum" level="medium">
+
+Classify a home robot vacuum by use, mobility, power source, generation and function.
+
+<Solution>
+
+Non-industrial · mobile · electric · 2nd or 3rd generation (it uses external sensors for obstacles and dirt; newer models build maps and learn room layouts) · locomotor (wheeled mobile robot).
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Laws in conflict" level="medium">
+
+A human orders a robot to walk into a fire to rescue a child. Which laws are involved, and what should the robot do?
+
+<Solution>
+
+**Law 1** (prevent harm to a human through inaction) and **Law 2** (obey orders) both push the robot to act. **Law 3** (self-preservation) pushes against it, but Law 3 ranks lowest. The robot should attempt the rescue, as long as doing so does not put other humans at greater risk.
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "The word 'robot' was introduced in…",
+      options: ["Asimov's I, Robot (1950)", "Čapek's Rossum's Universal Robots (1922)", "Unimation's first catalogue (1962)", "Devol's patent (1954)"],
+      answer: 1,
+      explain: "Karel Čapek's 1922 play introduced the word, from 'robota', meaning forced labour or work."
+    },
+    {
+      q: "Which of Asimov's laws has the highest priority?",
+      options: ["Law 1", "Law 2", "Law 3", "Law 0"],
+      answer: 3,
+      explain: "The zeroth law (protect humanity) was added later and outranks the other three."
+    },
+    {
+      q: "A robot that is taught by an operator physically leading it through a task is a…",
+      options: ["Fixed-sequence robot", "Playback robot", "Numerical-control robot", "Intelligent robot"],
+      answer: 1,
+      explain: "Playback robots (class 4) record what the human demonstrates and replay it."
+    },
+    {
+      q: "Which JIRA classes does the RIA consider to be robots?",
+      options: ["1–6", "1–3", "3–6", "5–6"],
+      answer: 2,
+      explain: "Variable-sequence, playback, numerical-control and intelligent robots."
+    },
+    {
+      q: "Second-generation robots differ from first-generation robots mainly because they…",
+      options: ["Use AI to learn", "Use external sensors and feedback", "Are hydraulically powered", "Have more joints"],
+      answer: 1,
+      explain: "External sensing and feedback let them make limited decisions about their environment."
+    },
+    {
+      q: "In 1955 Denavit and Hartenberg contributed…",
+      options: ["The first programmable robot", "Homogeneous transformation matrices", "The T3 industrial robot", "The three laws"],
+      answer: 1,
+      explain: "Their convention is still the standard way to describe manipulator kinematics."
+    }
+  ]}
+/>

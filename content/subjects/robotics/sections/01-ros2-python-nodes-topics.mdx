@@ -1,0 +1,562 @@
+---
+number: 1
+title: "ROS 2 with Python: Nodes and Topics"
+summary: "A hands-on path through ROS 2 in Python: create a workspace and package, write and run a node with a timer, connect nodes through typed topics, inspect, record and replay traffic, define a custom message, and close a feedback loop in Turtlesim."
+kind: practical
+topics: [Workspaces, Packages, Nodes, Timers and callbacks, Topics, Publishers and subscribers, Bags, Custom interfaces, Turtlesim]
+duration: 2 h hands-on
+sources:
+  - file: Sections/1-ROS2_Chapters_4_5_Python.pdf
+    label: Robotics Section 1 – ROS 2 with Python (slides)
+    pages: "1-74"
+bookRefs:
+  - book: ros2-book
+    chapter: Ch 4 · Writing and Building a ROS 2 Node
+    pages: "57–82"
+  - book: ros2-book
+    chapter: Ch 5 · Topics
+    pages: "83–117"
+---
+
+<Objectives>
+
+- Create a ROS 2 **workspace** and a Python **package**, then **build, source and run** a node.
+- Write a node class with a **timer callback** and explain what `rclpy.spin()` does.
+- Connect nodes with a **publisher** and a **subscriber** on a typed **topic**, and inspect them from the terminal.
+- **Record and replay** topic data with bags.
+- Define and use a **custom message**, and build a **feedback controller** for Turtlesim.
+
+</Objectives>
+
+<Callout type="note" title="Before you start">
+  You need ROS 2 installed (the examples use the <strong>Lyrical</strong> distribution in <code>/opt/ros/lyrical</code>; swap in your own distribution name), the <code>colcon</code> build tool, Python classes (see AI Section 2) and basic terminal skills.
+</Callout>
+
+## Part 1 · Workspace, packages and nodes
+
+### The workspace
+
+A **workspace** is the directory where you organise and build your ROS 2 packages. Your code goes in `src/`, and you always run `colcon` from the workspace root.
+
+```bash title="Terminal"
+source /opt/ros/lyrical/setup.bash   # 1. load ROS 2 itself
+mkdir -p ~/ros2_ws/src               # 2. create the workspace and src/
+cd ~/ros2_ws
+colcon build                          # 3. first build prepares the workspace
+```
+
+```text title="~/ros2_ws"
+ros2_ws/
+├── src/       # your packages  ← edit here
+├── build/     # intermediate build files (generated)
+├── install/   # installed executables and setup scripts (generated)
+└── log/       # build logs (generated)
+```
+
+**Sourcing** loads an environment into the *current terminal*. Source ROS 2 first, then your workspace, in **every** terminal where you run nodes. To do it automatically, add both lines to `~/.bashrc`.
+
+```bash title="Terminal"
+source /opt/ros/lyrical/setup.bash
+source ~/ros2_ws/install/setup.bash
+```
+
+### Workspace, package and node
+
+<Grid cols={3}>
+  <Card title="Workspace" tag="build dir">The development and build directory. It can contain several packages.</Card>
+  <Card title="Package" tag="install unit">Groups a related part of the application with its dependencies, e.g. camera, motion planning, hardware control. It can contain several nodes.</Card>
+  <Card title="Node" tag="ROS graph">A participant in the ROS graph with one focused responsibility. Nodes communicate to make the whole application work.</Card>
+</Grid>
+
+### Create a Python package
+
+```bash title="Terminal"
+cd ~/ros2_ws/src
+ros2 pkg create my_py_pkg --build-type ament_python --dependencies rclpy
+```
+
+- `my_py_pkg` is the package name.
+- `ament_python` selects the Python build type.
+- `rclpy` is the ROS 2 Python client library.
+
+```text title="~/ros2_ws/src/my_py_pkg"
+my_py_pkg/
+├── my_py_pkg/          # your node modules go here
+│   └── __init__.py     # marks the directory as a Python package
+├── package.xml         # metadata and ROS dependencies
+├── resource/
+├── setup.cfg           # where scripts are installed
+├── setup.py            # entry points (executables)
+└── test/
+```
+
+### Your first node
+
+```bash title="Terminal"
+cd ~/ros2_ws/src/my_py_pkg/my_py_pkg
+touch my_first_node.py
+chmod +x my_first_node.py
+```
+
+```python title="my_first_node.py"
+#!/usr/bin/env python3
+import rclpy
+from rclpy.node import Node
+
+
+class MyCustomNode(Node):                 # inherit ROS capabilities from Node
+    def __init__(self):
+        super().__init__("my_node_name")  # the node's name in the ROS graph
+        self.get_logger().info("Hello World")
+
+
+def main(args=None):
+    rclpy.init(args=args)    # start ROS communication
+    node = MyCustomNode()    # construct the node
+    rclpy.spin(node)         # keep processing callbacks until Ctrl+C
+    rclpy.shutdown()         # release the ROS context
+
+
+if __name__ == "__main__":
+    main()
+```
+
+### Register, build, source, run
+
+Add an **entry point** in `setup.py`, inside the existing `entry_points` block:
+
+```python title="setup.py"
+entry_points={
+    "console_scripts": [
+        "test_node = my_py_pkg.my_first_node:main",
+    ],
+},
+```
+
+```bash title="Terminal"
+cd ~/ros2_ws
+colcon build --packages-select my_py_pkg
+source install/setup.bash
+ros2 run my_py_pkg test_node
+# [INFO] [my_node_name]: Hello World     (Ctrl+C to stop)
+```
+
+<Callout type="warning" title="Three names, three roles">
+
+| Name | Example | Defined in | Used in |
+|---|---|---|---|
+| File | `my_first_node.py` | `my_py_pkg/my_py_pkg/` | `setup.py` entry (without `.py`) |
+| Executable | `test_node` | `setup.py` `console_scripts` | `ros2 run my_py_pkg test_node` |
+| ROS node | `my_node_name` | `super().__init__()` | `ros2 node list`, `rqt_graph` |
+
+They *can* all share one name, such as `number_publisher`, but they are still three different things.
+
+</Callout>
+
+### Timers and callbacks
+
+```python title="my_first_node.py" {5}
+class MyCustomNode(Node):
+    def __init__(self):
+        super().__init__("my_node_name")
+        self.counter_ = 0
+        self.timer_ = self.create_timer(1.0, self.print_hello)  # period in seconds
+
+    def print_hello(self):
+        self.get_logger().info("Hello " + str(self.counter_))
+        self.counter_ += 1
+```
+
+The constructor **registers** the timer. `spin()` hands control to the **executor**, which runs each callback when it is ready, so you see `Hello 0`, `Hello 1`, `Hello 2` and so on, about once per second.
+
+<Callout type="tip" title="Checkpoint">
+
+- A period of **0.5 s** means a nominal rate of **2 Hz**.
+- Pass `self.print_hello` **without parentheses**: you hand over the function to call later. With `()` you would call it immediately and pass its return value.
+- **Without `spin()`** the callbacks are never processed; the program reaches `shutdown()` and exits.
+
+</Callout>
+
+```bash title="Terminal B (sourced)"
+ros2 node list                 # /my_node_name
+ros2 node info /my_node_name   # publishers (e.g. /rosout for logs), subscribers, services…
+```
+
+## Part 2 · Topics
+
+<Definition term="Topic">
+  A <strong>named channel</strong> that carries a stream of <strong>typed messages</strong>. Publishers send on it and subscribers receive from it. Both must use the same name and message type.
+</Definition>
+
+- A topic can have **many publishers and many subscribers**, and a node can use several topics.
+- Nodes are **decoupled**: they talk to the topic, never directly to each other. A publisher can exist with no subscribers, and vice versa.
+- Topics suit **streams**: sensor readings, robot state, repeated commands.
+
+The **message type is a data contract**:
+
+```bash title="Terminal"
+ros2 interface show example_interfaces/msg/Int64
+# int64 data
+```
+
+### A publisher
+
+Declare the interface dependency in `package.xml`, inside `<package>`:
+
+```xml title="package.xml"
+<depend>example_interfaces</depend>
+```
+
+```python title="number_publisher.py"
+#!/usr/bin/env python3
+import rclpy
+from rclpy.node import Node
+from example_interfaces.msg import Int64
+
+
+class NumberPublisherNode(Node):
+    def __init__(self):
+        super().__init__("number_publisher")
+        self.number_ = 2
+        # message type, topic name, QoS history depth (not a rate!)
+        self.number_publisher_ = self.create_publisher(Int64, "number", 10)
+        self.number_timer_ = self.create_timer(1.0, self.publish_number)
+        self.get_logger().info("Number publisher has been started.")
+
+    def publish_number(self):
+        msg = Int64()
+        msg.data = self.number_
+        self.number_publisher_.publish(msg)   # creating a publisher alone sends nothing
+
+
+def main(args=None):
+    rclpy.init(args=args)
+    node = NumberPublisherNode()
+    rclpy.spin(node)
+    rclpy.shutdown()
+
+
+if __name__ == "__main__":
+    main()
+```
+
+### A subscriber
+
+```python title="number_counter.py"
+#!/usr/bin/env python3
+import rclpy
+from rclpy.node import Node
+from example_interfaces.msg import Int64
+
+
+class NumberCounterNode(Node):
+    def __init__(self):
+        super().__init__("number_counter")
+        self.counter_ = 0
+        self.number_subscriber_ = self.create_subscription(
+            Int64, "number", self.callback_number, 10)   # same type and topic
+        self.get_logger().info("Number Counter has been started.")
+
+    def callback_number(self, msg: Int64):
+        self.counter_ += msg.data                        # sums the values
+        self.get_logger().info("Counter: " + str(self.counter_))
+
+
+def main(args=None):
+    rclpy.init(args=args)
+    node = NumberCounterNode()
+    rclpy.spin(node)
+    rclpy.shutdown()
+
+
+if __name__ == "__main__":
+    main()
+```
+
+Register both in `setup.py`, rebuild and source, then run each in its own terminal:
+
+```python title="setup.py → console_scripts"
+"number_publisher = my_py_pkg.number_publisher:main",
+"number_counter = my_py_pkg.number_counter:main",
+```
+
+```bash title="Terminal A / Terminal B"
+ros2 run my_py_pkg number_publisher
+ros2 run my_py_pkg number_counter     # Counter: 2, 4, 6, …
+```
+
+Stop only the publisher and the counter stops changing. Restart it, and the running subscriber carries on from its previous sum.
+
+<SlideFigure page={42} caption="One message's journey: timer fires → publish Int64(data=2) → /number → executor runs callback_number → counter updated." />
+
+### Introspection from the terminal
+
+```bash title="Terminal"
+rqt_graph                                   # Nodes/Topics (all): see the arrows
+ros2 topic list                             # which topics exist?
+ros2 topic info /number                     # type, 1 publisher, 1 subscription
+ros2 topic echo /number                     # a test subscriber
+ros2 topic pub -r 2.0 /number example_interfaces/msg/Int64 "{data: 7}"   # a test publisher (YAML fields)
+```
+
+<Callout type="tip" title="Test without writing code">
+  <code>ros2 topic echo</code> tests a <strong>publisher</strong> without writing a subscriber. <code>ros2 topic pub</code> tests a <strong>subscriber</strong> without writing a publisher: with <code>number_counter</code> running, each message adds 7.
+</Callout>
+
+## Part 3 · Bags: record and replay
+
+A **bag** records topic messages **with their timing**, so you can repeat an experiment or develop without live hardware.
+
+```bash title="Terminal"
+mkdir -p ~/bags && cd ~/bags
+ros2 bag record /number -o bag1     # start number_publisher first; Ctrl+C to finish
+ros2 bag play ~/bags/bag1           # stop the live publisher; playback republishes
+```
+
+During playback `number_counter` keeps adding numbers as if they were live, and stops when the bag ends. Start a fresh subscriber if you want the sum to begin at zero.
+
+## Part 4 · Interfaces
+
+### Use an existing message first
+
+Describe the data first, then look for an existing type with the right **meaning**: `geometry_msgs/Twist` holds linear and angular velocity, and `sensor_msgs/Image` holds images. The primitive `example_interfaces` types are for learning only.
+
+```bash title="Terminal"
+ros2 interface show geometry_msgs/msg/Twist
+```
+
+```xml title="package.xml"
+<depend>geometry_msgs</depend>
+```
+
+```python
+from geometry_msgs.msg import Twist
+```
+
+### Define a custom message
+
+Keep custom interfaces in a **dedicated package built with `ament_cmake`**, because the interface generators run through CMake. Your Python nodes stay in their `ament_python` package.
+
+```bash title="Terminal"
+cd ~/ros2_ws/src
+ros2 pkg create my_robot_interfaces --build-type ament_cmake
+cd my_robot_interfaces && mkdir -p msg
+```
+
+```text title="msg/HardwareStatus.msg"
+int64 version
+float64 temperature      # degrees Celsius
+bool are_motors_ready
+string debug_message
+```
+
+```xml title="my_robot_interfaces/package.xml"
+<build_depend>rosidl_default_generators</build_depend>
+<exec_depend>rosidl_default_runtime</exec_depend>
+<member_of_group>rosidl_interface_packages</member_of_group>
+```
+
+```cmake title="my_robot_interfaces/CMakeLists.txt"
+find_package(ament_cmake REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
+
+rosidl_generate_interfaces(${PROJECT_NAME}
+  "msg/HardwareStatus.msg"
+)
+
+ament_export_dependencies(rosidl_default_runtime)
+ament_package()
+```
+
+```bash title="Terminal"
+cd ~/ros2_ws
+colcon build --packages-select my_robot_interfaces
+source install/setup.bash
+ros2 interface show my_robot_interfaces/msg/HardwareStatus
+```
+
+### Use it from Python
+
+Add `<depend>my_robot_interfaces</depend>` to `my_py_pkg/package.xml`, then:
+
+```python title="hardware_status_publisher.py (excerpt)"
+from my_robot_interfaces.msg import HardwareStatus
+
+# in the constructor
+self.status_pub_ = self.create_publisher(HardwareStatus, "hardware_status", 10)
+
+# in a timer callback
+msg = HardwareStatus()
+msg.version = 1
+msg.temperature = 34.5
+msg.are_motors_ready = True
+msg.debug_message = "Ready"
+self.status_pub_.publish(msg)
+```
+
+```python title="hardware_status_monitor.py (excerpt)"
+self.status_sub_ = self.create_subscription(
+    HardwareStatus, "hardware_status", self.callback_status, 10)
+
+def callback_status(self, msg: HardwareStatus):
+    self.get_logger().info(f"Temperature: {msg.temperature} C")
+```
+
+## Part 5 · Challenge: a Turtlesim feedback controller
+
+**Goal**: make the turtle drive in circles, faster on the right half of the screen.
+
+<Steps>
+
+1. Subscribe to **`/turtle1/pose`** (`turtlesim/msg/Pose`) to read the turtle's `x`.
+2. Publish **`geometry_msgs/msg/Twist`** on **`/turtle1/cmd_vel`**.
+3. If `x < 5.5`: `linear.x = 1.0` and `angular.z = 1.0`. Otherwise set both to `2.0`.
+
+</Steps>
+
+<Exercise title="Write the controller before reading on" level="medium">
+
+Create a `turtle_controller` package with a `controller` executable that implements the rules above. Then run `ros2 run turtlesim turtlesim_node` in one terminal and your controller in another.
+
+<Solution>
+
+```bash title="Terminal"
+cd ~/ros2_ws/src
+ros2 pkg create turtle_controller --build-type ament_python \
+  --dependencies rclpy geometry_msgs turtlesim
+```
+
+```python title="turtle_controller/controller.py"
+#!/usr/bin/env python3
+import rclpy
+from rclpy.node import Node
+from geometry_msgs.msg import Twist
+from turtlesim.msg import Pose
+
+
+class TurtleControllerNode(Node):
+    def __init__(self):
+        super().__init__("turtle_controller")
+        self.cmd_vel_pub_ = self.create_publisher(Twist, "/turtle1/cmd_vel", 10)
+        self.pose_sub_ = self.create_subscription(
+            Pose, "/turtle1/pose", self.callback_pose, 10)
+
+    def callback_pose(self, pose: Pose):
+        speed = 1.0 if pose.x < 5.5 else 2.0   # feedback: measured x selects the command
+        cmd = Twist()
+        cmd.linear.x = speed                    # forward speed
+        cmd.angular.z = speed                   # turning speed
+        self.cmd_vel_pub_.publish(cmd)
+
+
+def main(args=None):
+    rclpy.init(args=args)
+    node = TurtleControllerNode()
+    rclpy.spin(node)
+    rclpy.shutdown()
+
+
+if __name__ == "__main__":
+    main()
+```
+
+Register `"controller = turtle_controller.controller:main",` in `setup.py`, then build, source and run. No timer is needed, because every pose message triggers a new command. Both speeds scale together, so the circle's radius ($v / \omega$) stays the same and only the speed changes.
+
+</Solution>
+
+</Exercise>
+
+<Takeaways>
+
+- **Workspace → packages → nodes.** Edit in `src/`, then **build** with `colcon`, **source** `install/setup.bash`, and **run** with `ros2 run <pkg> <executable>`.
+- A node is a class that inherits from `Node`; **`spin()`** lets the executor run its timer and subscription callbacks.
+- **Topics** decouple nodes: publishers and subscribers only need to agree on the **name** and **message type**.
+- `ros2 topic echo / pub / info`, `rqt_graph` and **bags** let you inspect, test and replay communication.
+- Custom messages live in an **`ament_cmake` interface package**, and any node can import the generated classes.
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="Publish the running total" level="medium">
+
+Extend `number_counter` so it also **publishes** its running total on a topic `number_count` (type `Int64`) every time it receives a number.
+
+<Solution>
+
+```python
+# in __init__
+self.count_publisher_ = self.create_publisher(Int64, "number_count", 10)
+
+# at the end of callback_number
+out = Int64()
+out.data = self.counter_
+self.count_publisher_.publish(out)
+```
+
+Check it with `ros2 topic echo /number_count`. The node now both subscribes and publishes.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Debug the missing node" level="easy">
+
+You added `number_publisher.py` and ran `ros2 run my_py_pkg number_publisher`, but ROS says *No executable found*. List three likely causes.
+
+<Solution>
+
+1. The entry point was not added to `console_scripts` in `setup.py`, or it has a typo.
+2. The package was not **rebuilt** with `colcon build` after the change.
+3. The terminal was not **sourced** (`source install/setup.bash`) after building.
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "Where do you write the source code of your packages?",
+      options: ["install/", "build/", "src/", "log/"],
+      answer: 2,
+      explain: "build/, install/ and log/ are generated by colcon; you only edit src/."
+    },
+    {
+      q: "In create_publisher(Int64, 'number', 10), what does 10 mean?",
+      options: ["Publish 10 times per second", "QoS history depth (queue size)", "The message ID", "Timeout in seconds"],
+      answer: 1,
+      explain: "It is the history depth. The publishing rate comes from the timer."
+    },
+    {
+      q: "What happens if main() never calls rclpy.spin(node)?",
+      options: ["Callbacks run in the background anyway", "Callbacks are never processed and the program exits", "ROS raises an error at build time", "The node runs at maximum speed"],
+      answer: 1,
+      explain: "spin hands control to the executor, which runs ready callbacks. Without it nothing is processed."
+    },
+    {
+      q: "Which command lets you test a subscriber without writing a publisher?",
+      options: ["ros2 topic echo", "ros2 topic pub", "ros2 node info", "ros2 bag record"],
+      answer: 1,
+      explain: "ros2 topic pub publishes test messages from the terminal."
+    },
+    {
+      q: "Why is a custom interface package built with ament_cmake?",
+      options: ["Python cannot read .msg files", "The rosidl interface generators run through CMake", "ament_python is deprecated", "It makes messages faster"],
+      answer: 1,
+      explain: "rosidl_default_generators are CMake-based, so interface packages use ament_cmake."
+    },
+    {
+      q: "Can one node subscribe to Pose and publish Twist?",
+      options: ["No, a node can have only one endpoint", "Yes, each endpoint has its own type", "Only with two executors", "Only if both use the same topic"],
+      answer: 1,
+      explain: "The Turtlesim controller does exactly that: a feedback loop in a single node."
+    },
+    {
+      q: "Why can a bag replace the live number publisher?",
+      options: ["It edits the subscriber code", "Playback republishes the recorded messages on /number", "It changes the topic type", "It creates a new node called number_publisher"],
+      answer: 1,
+      explain: "The subscriber cannot tell recorded messages from live ones."
+    }
+  ]}
+/>

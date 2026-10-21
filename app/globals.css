@@ -1,0 +1,517 @@
+/* ============================================================
+   Quantro AI design tokens
+   Palette: cream #F5F1EA · gold #D3AE6C · slate #3C507E · navy #112251
+   ============================================================ */
+
+:root {
+  /* Type scale (1.25 ratio) */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.563rem;
+  --text-2xl: 1.953rem;
+  --text-3xl: 2.441rem;
+  --text-hero: clamp(2.4rem, 5.6vw, 4.25rem);
+
+  /* Spacing (4px grid) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 40px;
+  --space-6: 64px;
+  --space-7: 104px;
+
+  /* Motion */
+  --dur-micro: 150ms;
+  --dur-standard: 300ms;
+  --dur-dramatic: 700ms;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-smooth: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* Layout */
+  --max-width: 1200px;
+  --prose-width: 760px;
+  --gutter: 16px;
+  --header-h: 64px;
+  --radius-sm: 8px;
+  --radius: 14px;
+  --radius-lg: 22px;
+
+  /* Fixed brand colors (same in both themes) */
+  --navy: #112251;
+  --navy-deep: #0c1a40;
+  --cream: #f5f1ea;
+  --gold: #d3ae6c;
+  --slate-base: #3c507e;
+  --code-bg: #0c1a40;
+  --code-border: #22346a;
+  --code-text: #f5f1ea;
+  --success: #2bb673;
+  --warning: #e8a020;
+  --danger: #e05d5d;
+
+  /* Self-hosted via @fontsource-variable (imported in app/layout.tsx) */
+  --font-display: "Source Serif 4 Variable", "Century Schoolbook", Georgia, serif;
+  --font-body: "Inter Variable", "Segoe UI", system-ui, sans-serif;
+  --font-code: "JetBrains Mono Variable", "Cascadia Code", Consolas, monospace;
+}
+
+:root,
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f5f1ea;
+  --bg-elevated: rgba(245, 241, 234, 0.82);
+  --surface: #ffffff;
+  --surface-2: #eceaf2;
+  --surface-3: #f6eedd;
+  --border: #e2dccf;
+  --border-strong: #cfc6b3;
+  --text: #1a2547;
+  --heading: #112251;
+  --muted: #6b7488;
+  --gold-text: #b8862e;
+  --gold-soft: #f6eedd;
+  --slate: #3c507e;
+  --slate-soft: #e6eaf4;
+  --success-soft: #e6f5ee;
+  --success-text: #1b7a4e;
+  --warning-soft: #fdf3e3;
+  --warning-text: #9a6410;
+  --danger-soft: #fbeaea;
+  --danger-text: #a33a3a;
+  --shadow: 0 1px 2px rgba(17, 34, 81, 0.06), 0 8px 24px -12px rgba(17, 34, 81, 0.18);
+  --shadow-lg: 0 2px 4px rgba(17, 34, 81, 0.05), 0 24px 48px -20px rgba(17, 34, 81, 0.28);
+  --grid-line: rgba(17, 34, 81, 0.05);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0c1a40;
+  --bg-elevated: rgba(12, 26, 64, 0.8);
+  --surface: #112251;
+  --surface-2: #1a2a57;
+  --surface-3: #22305e;
+  --border: #2c3d6e;
+  --border-strong: #3c507e;
+  --text: #e9e4da;
+  --heading: #ffffff;
+  --muted: #a9b3cc;
+  --gold-text: #d3ae6c;
+  --gold-soft: rgba(211, 174, 108, 0.12);
+  --slate: #8ea2d6;
+  --slate-soft: rgba(142, 162, 214, 0.14);
+  --success-soft: rgba(43, 182, 115, 0.12);
+  --success-text: #6fd9a5;
+  --warning-soft: rgba(232, 160, 32, 0.12);
+  --warning-text: #f2c26b;
+  --danger-soft: rgba(224, 93, 93, 0.14);
+  --danger-text: #f19a9a;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.25), 0 8px 24px -12px rgba(0, 0, 0, 0.55);
+  --shadow-lg: 0 2px 4px rgba(0, 0, 0, 0.25), 0 24px 48px -20px rgba(0, 0, 0, 0.7);
+  --grid-line: rgba(245, 241, 234, 0.035);
+}
+
+/* ============================================================
+   Circular theme transition (View Transitions API)
+   The reveal itself is driven from ThemeToggle.tsx.
+   ============================================================ */
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 2;
+}
+
+/* ============================================================
+   Base
+   ============================================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--header-h) + 24px);
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+main {
+  flex: 1;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  color: var(--heading);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  margin: 0;
+  text-wrap: balance;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+::selection {
+  background: rgba(211, 174, 108, 0.35);
+}
+
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+@media (min-width: 768px) {
+  :root {
+    --gutter: 32px;
+  }
+}
+
+.kicker {
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold-text);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Kind accents: lectures are gold, sections are slate */
+[data-kind="lectures"] {
+  --accent: var(--gold);
+  --accent-text: var(--gold-text);
+  --accent-soft: var(--gold-soft);
+}
+
+[data-kind="sections"] {
+  --accent: var(--slate-base);
+  --accent-text: var(--slate);
+  --accent-soft: var(--slate-soft);
+}
+
+:root[data-theme="dark"] [data-kind="sections"] {
+  --accent: var(--slate);
+}
+
+/* Entrance animation used on cards and headers */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.rise {
+  animation: rise var(--dur-dramatic) var(--ease-out-expo) both;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================================
+   Prose (rendered MDX)
+   ============================================================ */
+
+.prose {
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  color: var(--text);
+  min-width: 0;
+}
+
+.prose > * + * {
+  margin-top: 1.1em;
+}
+
+.prose h2 {
+  font-size: var(--text-2xl);
+  margin-top: 2.4em;
+  padding-top: 0.4em;
+  position: relative;
+}
+
+.prose h2::before {
+  content: "";
+  display: block;
+  width: 36px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--accent, var(--gold));
+  margin-bottom: 14px;
+}
+
+.prose h3 {
+  font-size: var(--text-lg);
+  margin-top: 1.9em;
+}
+
+.prose h4 {
+  font-size: 1.05rem;
+  font-family: var(--font-body);
+  font-weight: 700;
+  margin-top: 1.5em;
+}
+
+.prose h2 + *,
+.prose h3 + *,
+.prose h4 + * {
+  margin-top: 0.7em;
+}
+
+.prose .heading-anchor {
+  color: inherit;
+}
+
+.prose .heading-anchor:hover::after {
+  content: "#";
+  margin-left: 0.35em;
+  color: var(--accent-text, var(--gold-text));
+  font-weight: 400;
+}
+
+.prose a:not(.heading-anchor) {
+  color: var(--accent-text, var(--gold-text));
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.prose strong {
+  color: var(--heading);
+  font-weight: 650;
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.4em;
+}
+
+.prose li + li {
+  margin-top: 0.35em;
+}
+
+.prose li::marker {
+  color: var(--accent-text, var(--gold-text));
+}
+
+.prose blockquote {
+  margin-inline: 0;
+  padding: 0.2em 0 0.2em 1.1em;
+  border-left: 3px solid var(--accent, var(--gold));
+  color: var(--muted);
+  font-style: italic;
+}
+
+.prose hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin-block: 2.5em;
+}
+
+/* Inline code */
+.prose :not(pre) > code {
+  font-family: var(--font-code);
+  font-size: 0.88em;
+  padding: 0.12em 0.4em;
+  border-radius: 6px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--heading);
+  overflow-wrap: anywhere;
+}
+
+/* Tables */
+.prose .table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.prose th,
+.prose td {
+  padding: 10px 14px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--border);
+}
+
+.prose th {
+  background: var(--navy);
+  color: var(--cream);
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+:root[data-theme="dark"] .prose th {
+  background: var(--surface-2);
+  color: var(--gold);
+}
+
+.prose tbody tr:nth-child(even) td {
+  background: color-mix(in srgb, var(--surface-2) 45%, transparent);
+}
+
+.prose tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* KaTeX */
+.prose .katex-display {
+  margin: 1.4em 0;
+  padding: 18px 16px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.prose .katex {
+  font-size: 1.08em;
+}
+
+/* Code blocks (rehype-pretty-code) */
+.prose figure[data-rehype-pretty-code-figure] {
+  margin: 1.4em 0 0;
+}
+
+.prose [data-rehype-pretty-code-title] {
+  display: inline-block;
+  margin-bottom: 8px;
+  padding: 3px 10px;
+  border-radius: 6px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  font-family: var(--font-code);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--heading);
+}
+
+.prose pre {
+  margin: 0;
+  padding: 16px 0;
+  overflow-x: auto;
+  font-family: var(--font-code);
+  font-size: 0.875rem;
+  line-height: 1.7;
+  background: var(--code-bg) !important;
+}
+
+.prose pre > code {
+  display: grid;
+  min-width: 100%;
+  width: max-content;
+}
+
+.prose pre [data-line] {
+  padding-inline: 20px;
+}
+
+.prose pre [data-highlighted-line] {
+  background: rgba(211, 174, 108, 0.12);
+  box-shadow: inset 3px 0 0 var(--gold);
+}
+
+.prose pre code[data-line-numbers] {
+  counter-reset: line;
+}
+
+.prose pre code[data-line-numbers] > [data-line]::before {
+  counter-increment: line;
+  content: counter(line);
+  display: inline-block;
+  width: 1.6rem;
+  margin-right: 1rem;
+  text-align: right;
+  color: #4d618f;
+}
+
+/* Images inside prose */
+.prose img {
+  border-radius: var(--radius-sm);
+}

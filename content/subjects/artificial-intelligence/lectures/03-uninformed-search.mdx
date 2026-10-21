@@ -1,0 +1,429 @@
+---
+number: 3
+title: Uninformed Search Strategies
+summary: Tree search, nodes versus states, and the five blind search strategies (breadth-first, uniform-cost, depth-first, depth-limited and iterative deepening), compared by completeness, optimality, time and space. Ends with repeated states and graph search.
+topics: [Tree search, BFS, Uniform-cost search, DFS, Depth-limited search, Iterative deepening, Graph search]
+duration: 60 min study
+sources:
+  - file: Lectures/AI Lec 3 Uninformed Search.pdf
+    label: AI Lecture 3 – Uninformed Search (slides)
+    pages: "1-51"
+bookRefs:
+  - book: ai-book
+    chapter: Ch 3 · Solving Problems by Searching (3.4–3.6)
+    pages: "59–83"
+  - book: aima
+    chapter: Ch 3.3–3.4 · Searching for solutions, Uninformed search strategies
+---
+
+<Objectives>
+
+- Explain **tree search**: expanding nodes and the role of the **fringe** (frontier).
+- Tell a **state** apart from a **node**.
+- Run BFS, UCS, DFS, DLS and IDS by hand and implement them in Python.
+- Compare strategies on **completeness, optimality, time and space** using $b$, $d$ and $m$.
+- Explain why **graph search** with a closed set can be exponentially faster than tree search.
+
+</Objectives>
+
+## Tree search
+
+Search is an **offline, simulated exploration** of the state space. Starting from the initial state, we **expand** states: we generate their successors, then choose which one to expand next. The choice is the **search strategy**.
+
+```text title="TREE-SEARCH"
+function TREE-SEARCH(problem, strategy) returns a solution, or failure
+  initialize the search tree using the initial state of problem
+  loop do
+    if there are no candidates for expansion then return failure
+    choose a leaf node for expansion according to strategy
+    if the node contains a goal state then return the corresponding solution
+    else expand the node and add the resulting nodes to the search tree
+```
+
+Expanding Arad, then Sibiu, in the Romania problem builds this tree:
+
+<Tree
+  tree="Arad(Sibiu(Arad#2,Fagaras,Oradea,Rimnicu),Timisoara(Arad#3,Lugoj),Zerind(Arad#4,Oradea#2))"
+  path="Arad,Sibiu"
+  caption="Arad and Sibiu have been expanded. Arad appears again as a child: tree search does not notice repeated states."
+/>
+
+### States versus nodes
+
+<Definition term="State vs. node">
+  A <strong>state</strong> is a representation of a physical configuration. A <strong>node</strong> is a data structure in the search tree; it holds a state plus its <strong>parent</strong>, the <strong>action</strong> that produced it, its <strong>depth</strong> and its <strong>path cost</strong> $g(n)$.
+</Definition>
+
+States do not have parents, depths or path costs; nodes do. The same state can appear in many nodes, reached by different paths.
+
+<SlideFigure page={6} caption="A node wraps a state with bookkeeping: parent, action, depth = 6 and path cost g = 6." />
+
+### General tree search with a fringe
+
+The **fringe** (or frontier) is the collection of generated nodes that have not been expanded yet. All the strategies below use the same algorithm and differ only in **where new nodes are inserted** into the fringe.
+
+```text title="TREE-SEARCH with a fringe"
+function TREE-SEARCH(problem, fringe) returns a solution, or failure
+  fringe ← INSERT(MAKE-NODE(INITIAL-STATE[problem]), fringe)
+  loop do
+    if fringe is empty then return failure
+    node ← REMOVE-FRONT(fringe)
+    if GOAL-TEST(problem, STATE(node)) then return node
+    fringe ← INSERT-ALL(EXPAND(node, problem), fringe)
+
+function EXPAND(node, problem) returns a set of nodes
+  successors ← the empty set
+  for each action, result in SUCCESSOR-FN(problem, STATE[node]) do
+    s ← a new NODE
+    PARENT-NODE[s] ← node; ACTION[s] ← action; STATE[s] ← result
+    PATH-COST[s] ← PATH-COST[node] + STEP-COST(node, action, s)
+    DEPTH[s] ← DEPTH[node] + 1
+    add s to successors
+  return successors
+```
+
+## Evaluating search strategies
+
+A strategy is defined by the **order of node expansion**. We judge it on four criteria:
+
+| Criterion | Question |
+|---|---|
+| **Completeness** | Does it always find a solution if one exists? |
+| **Time complexity** | How many nodes are generated or expanded? |
+| **Space complexity** | What is the maximum number of nodes in memory? |
+| **Optimality** | Does it always find a least-cost solution? |
+
+Time and space are measured with three quantities:
+
+- $b$: the maximum **branching factor** of the search tree,
+- $d$: the **depth of the least-cost solution**,
+- $m$: the **maximum depth** of the state space (possibly $\infty$).
+
+**Uninformed** (blind) strategies use only the information in the problem definition. They cannot tell whether one non-goal state is "closer" to the goal than another; that is what informed search adds next.
+
+## Breadth-first search (BFS)
+
+**Expand the shallowest unexpanded node.** The fringe is a **FIFO queue**: new successors go to the back.
+
+<Tree tree="A(B(D,E),C(F,G))" order="A,B,C,D,E,F,G" caption="BFS expands level by level: A, then B and C, then D, E, F, G." />
+
+| Property | BFS |
+|---|---|
+| Complete? | **Yes**, if $b$ is finite |
+| Time | $1 + b + b^2 + \dots + b^d + b(b^d - 1) = O(b^{d+1})$, exponential in $d$ |
+| Space | $O(b^{d+1})$: it keeps every node in memory |
+| Optimal? | **Yes** if every step costs 1; not optimal in general |
+
+The extra $b(b^d - 1)$ term appears because the goal test is applied when a node is **expanded**: every node at depth $d$ except the goal gets expanded first. Testing nodes when they are **generated** reduces the cost to $O(b^d)$.
+
+<Callout type="warning" title="Space is the real problem">
+  At 100 MB of new nodes per second, one day of search fills 8,640 GB. BFS runs out of memory long before it runs out of time.
+</Callout>
+
+## Uniform-cost search (UCS)
+
+**Expand the least-cost unexpanded node.** The fringe is a **priority queue ordered by path cost** $g(n)$, lowest first. When all step costs are equal, UCS behaves exactly like BFS.
+
+Let $C^*$ be the cost of the optimal solution and $\epsilon$ the smallest step cost.
+
+| Property | UCS |
+|---|---|
+| Complete? | **Yes**, if every step cost $\ge \epsilon > 0$ |
+| Time | Number of nodes with $g \le C^*$: $O(b^{\lceil C^*/\epsilon \rceil})$ |
+| Space | Same: $O(b^{\lceil C^*/\epsilon \rceil})$ |
+| Optimal? | **Yes**, because nodes are expanded in increasing order of $g(n)$ |
+
+<Callout type="note">
+  The condition $\epsilon > 0$ matters: with zero-cost steps, UCS could loop forever along a path of zero-cost actions.
+</Callout>
+
+## Depth-first search (DFS)
+
+**Expand the deepest unexpanded node.** The fringe is a **LIFO stack**: successors go to the front.
+
+<Tree
+  tree="A(B(D(H,I),E(J,K)),C(F(L,M),G(N,O)))"
+  order="A,B,D,H,I,E,J,K,C,F,L,M"
+  path="A,C,F,M"
+  goal="M"
+  caption="DFS dives to the left-most leaf first and backtracks. With goal M it expands 12 nodes; subtrees that are fully explored can be removed from memory."
+/>
+
+| Property | DFS |
+|---|---|
+| Complete? | **No**: it fails in infinite-depth spaces and in spaces with loops. Avoiding repeated states along the current path makes it complete in **finite** spaces. |
+| Time | $O(b^m)$: terrible if $m \gg d$, but if solutions are dense it may be much faster than BFS |
+| Space | $O(bm)$: **linear space!** |
+| Optimal? | **No** |
+
+## Depth-limited search (DLS)
+
+DLS is DFS with a **depth limit** $l$: nodes at depth $l$ are treated as having no successors. It solves DFS's infinite-path problem, but it returns two kinds of failure:
+
+- **failure**: there is no solution at all;
+- **cutoff**: there is no solution *within the limit*.
+
+```text title="DEPTH-LIMITED-SEARCH"
+function DEPTH-LIMITED-SEARCH(problem, limit) returns soln / failure / cutoff
+  return RECURSIVE-DLS(MAKE-NODE(INITIAL-STATE[problem]), problem, limit)
+
+function RECURSIVE-DLS(node, problem, limit) returns soln / failure / cutoff
+  cutoff-occurred? ← false
+  if GOAL-TEST(problem, STATE[node]) then return node
+  else if DEPTH[node] = limit then return cutoff
+  else for each successor in EXPAND(node, problem) do
+    result ← RECURSIVE-DLS(successor, problem, limit)
+    if result = cutoff then cutoff-occurred? ← true
+    else if result ≠ failure then return result
+  if cutoff-occurred? then return cutoff else return failure
+```
+
+DLS is complete only if $l \ge d$, and it is not optimal. Choosing $l$ needs knowledge of the problem; for Romania, 20 cities means any solution has length $\le 19$.
+
+## Iterative deepening search (IDS)
+
+IDS runs DLS with limits $0, 1, 2, \dots$ until it finds a solution. It combines the **linear memory of DFS** with the **completeness and optimality of BFS**.
+
+```text title="ITERATIVE-DEEPENING-SEARCH"
+function ITERATIVE-DEEPENING-SEARCH(problem) returns a solution
+  for depth ← 0 to ∞ do
+    result ← DEPTH-LIMITED-SEARCH(problem, depth)
+    if result ≠ cutoff then return result
+```
+
+| Limit | Nodes expanded, in order |
+|---|---|
+| $l = 0$ | A |
+| $l = 1$ | A, B, C |
+| $l = 2$ | A, B, D, E, C, F, G |
+| $l = 3$ | A, B, D, H, I, E, J, K, C, F, L, M … (stops at goal M) |
+
+| Property | IDS |
+|---|---|
+| Complete? | **Yes** |
+| Time | $(d+1)b^0 + d\,b^1 + (d-1)b^2 + \dots + b^d = O(b^d)$ |
+| Space | $O(bd)$ |
+| Optimal? | **Yes**, if every step costs 1 (it can be modified to explore a uniform-cost tree) |
+
+Re-generating the upper levels sounds wasteful, but most nodes live at the bottom level, so the overhead is small. For $b = 10$ and $d = 5$, with the solution at the far right leaf (not counting the root):
+
+$$
+\begin{aligned}
+N(\text{IDS}) &= 50 + 400 + 3{,}000 + 20{,}000 + 100{,}000 = 123{,}450 \\
+N(\text{BFS}) &= 10 + 100 + 1{,}000 + 10{,}000 + 100{,}000 + 999{,}990 = 1{,}111{,}100
+\end{aligned}
+$$
+
+IDS wins here because BFS (testing goals on expansion) also generates the nodes at depth $d + 1$.
+
+## Summary of algorithms
+
+| Criterion | Breadth-first | Uniform-cost | Depth-first | Depth-limited | Iterative deepening |
+|---|---|---|---|---|---|
+| Complete? | Yes* | Yes* | No | Yes, if $l \ge d$ | Yes |
+| Time | $b^{d+1}$ | $b^{\lceil C^*/\epsilon \rceil}$ | $b^m$ | $b^l$ | $b^d$ |
+| Space | $b^{d+1}$ | $b^{\lceil C^*/\epsilon \rceil}$ | $bm$ | $bl$ | $bd$ |
+| Optimal? | Yes* | Yes | No | No | Yes* |
+
+\* BFS is complete if $b$ is finite; UCS if step costs $\ge \epsilon > 0$. BFS and IDS are optimal when all step costs are equal.
+
+## Repeated states and graph search
+
+If the state space has loops or reversible actions, tree search keeps regenerating the same states.
+
+<SlideFigure page={49} caption="A linear chain of states (left) becomes an exponentially large search tree (right) when repeated states are not detected." />
+
+**Graph search** fixes this with a **closed set** of states that have already been expanded:
+
+```text title="GRAPH-SEARCH"
+function GRAPH-SEARCH(problem, fringe) returns a solution, or failure
+  closed ← an empty set
+  fringe ← INSERT(MAKE-NODE(INITIAL-STATE[problem]), fringe)
+  loop do
+    if fringe is empty then return failure
+    node ← REMOVE-FRONT(fringe)
+    if GOAL-TEST(problem, STATE[node]) then return node
+    if STATE[node] is not in closed then
+      add STATE[node] to closed
+      fringe ← INSERT-ALL(EXPAND(node, problem), fringe)
+```
+
+## Implementation in Python
+
+All four strategies share one loop; only the fringe changes.
+
+```python title="uninformed_search.py"
+from collections import deque
+import heapq
+
+GRAPH = {
+    "A": {"B": 1, "C": 1}, "B": {"D": 1, "E": 1}, "C": {"F": 1, "G": 1},
+    "D": {}, "E": {}, "F": {}, "G": {},
+}
+
+def path_to(parents, node):
+    path = [node]
+    while parents[path[-1]] is not None:
+        path.append(parents[path[-1]])
+    return path[::-1]
+
+def bfs(graph, start, goal):
+    fringe, parents = deque([start]), {start: None}
+    while fringe:
+        node = fringe.popleft()                      # FIFO
+        if node == goal:
+            return path_to(parents, node)
+        for child in graph[node]:
+            if child not in parents:                 # graph search: skip seen states
+                parents[child] = node
+                fringe.append(child)
+    return None
+
+def dfs(graph, start, goal):
+    fringe, parents = [start], {start: None}
+    while fringe:
+        node = fringe.pop()                          # LIFO
+        if node == goal:
+            return path_to(parents, node)
+        for child in reversed(list(graph[node])):    # keep left-to-right order
+            if child not in parents:
+                parents[child] = node
+                fringe.append(child)
+    return None
+
+def ucs(graph, start, goal):
+    fringe, best = [(0, start, [start])], {start: 0}
+    while fringe:
+        cost, node, path = heapq.heappop(fringe)     # lowest g(n) first
+        if node == goal:
+            return path, cost
+        for child, step in graph[node].items():
+            new_cost = cost + step
+            if new_cost < best.get(child, float("inf")):
+                best[child] = new_cost
+                heapq.heappush(fringe, (new_cost, child, path + [child]))
+    return None
+
+def dls(graph, node, goal, limit, path=()):
+    path = path + (node,)
+    if node == goal:
+        return list(path)
+    if limit == 0:
+        return "cutoff"
+    cutoff = False
+    for child in graph[node]:
+        result = dls(graph, child, goal, limit - 1, path)
+        if result == "cutoff":
+            cutoff = True
+        elif result is not None:
+            return result
+    return "cutoff" if cutoff else None
+
+def ids(graph, start, goal, max_depth=50):
+    for depth in range(max_depth + 1):
+        result = dls(graph, start, goal, depth)
+        if result != "cutoff":
+            return result
+    return None
+
+print(bfs(GRAPH, "A", "G"))   # ['A', 'C', 'G']
+print(ids(GRAPH, "A", "G"))   # ['A', 'C', 'G']
+```
+
+<Takeaways>
+
+- All tree-search strategies share one loop; they differ only in **which fringe node is expanded next**.
+- **BFS** and **UCS** are complete and optimal (under their conditions) but need exponential **memory**.
+- **DFS** needs only linear memory but is neither complete nor optimal.
+- **IDS** uses linear space and not much more time than BFS, so it is the preferred uninformed method when the solution depth is unknown.
+- **Graph search** (a closed set) can be exponentially more efficient than tree search when states repeat.
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="Trace BFS and DFS" level="easy">
+
+For the tree `A(B(D,E),C(F,G))` with goal **F**, list the nodes in the order they are expanded by BFS and by DFS (children left to right, goal test on expansion).
+
+<Solution>
+
+- **BFS**: A, B, C, D, E, F. It stops at F after 6 expansions.
+- **DFS**: A, B, D, E, C, F. It also needs 6 expansions here, but explores the whole left subtree first.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="IDS overhead" level="medium">
+
+For a complete binary tree ($b = 2$) with the goal at depth $d = 3$, how many nodes does IDS generate in total, counting the root at every iteration? Compare with BFS testing on generation.
+
+<Solution>
+
+IDS generates $(d+1)b^0 + d\,b^1 + (d-1)b^2 + b^3 = 4 \cdot 1 + 3 \cdot 2 + 2 \cdot 4 + 1 \cdot 8 = 26$ nodes in the worst case.
+
+BFS (goal test on generation) generates $1 + 2 + 4 + 8 = 15$ nodes. With $b = 2$ the overhead ratio is large; it shrinks as $b$ grows, which is why IDS is attractive for big branching factors.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Pick a strategy" level="medium">
+
+A puzzle has branching factor 10, solutions at depth 12, many states repeat, and you have very little memory. Which uninformed strategy would you use, and why?
+
+<Solution>
+
+**Iterative deepening search**, ideally with checks for repeated states along the current path. It needs only $O(bd)$ memory. BFS would need about $10^{12}$ nodes in memory. Plain DFS might dive down an infinite or very deep branch and is not optimal. IDS finds the shallowest solution and re-expands only a small fraction of nodes when $b = 10$.
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "Which data structure turns tree search into breadth-first search?",
+      options: ["LIFO stack", "FIFO queue", "Priority queue by g(n)", "Hash set"],
+      answer: 1,
+      explain: "BFS appends new successors to the back of a FIFO queue, so the shallowest node is always expanded first."
+    },
+    {
+      q: "What is the space complexity of depth-first search?",
+      options: ["O(b^d)", "O(b^(d+1))", "O(bm)", "O(m)"],
+      answer: 2,
+      explain: "DFS stores only the current path plus the unexpanded siblings along it: O(bm), linear in the maximum depth."
+    },
+    {
+      q: "Uniform-cost search is optimal because…",
+      options: ["It explores the deepest nodes first", "It expands nodes in increasing order of path cost g(n)", "It uses a heuristic", "It never revisits states"],
+      answer: 1,
+      explain: "The first goal node expanded has the lowest g(n) of any path to a goal."
+    },
+    {
+      q: "Depth-limited search returns 'cutoff' when…",
+      options: ["The problem has no solution", "No solution exists within the depth limit", "The goal is found", "Memory runs out"],
+      answer: 1,
+      explain: "Cutoff means the limit was reached; a deeper solution might still exist. Failure means there is none at all."
+    },
+    {
+      q: "Which strategy is complete, optimal for unit step costs, and uses only O(bd) memory?",
+      options: ["Breadth-first", "Depth-first", "Iterative deepening", "Depth-limited"],
+      answer: 2,
+      explain: "IDS combines DFS's linear memory with BFS's completeness and optimality."
+    },
+    {
+      q: "For b = 10 and d = 5, IDS generates about 123,450 nodes. Roughly how many does BFS generate (goal test on expansion)?",
+      options: ["12,345", "123,450", "1,111,100", "10,000,000"],
+      answer: 2,
+      explain: "BFS also generates almost all of depth d + 1, giving about 1.1 million nodes."
+    },
+    {
+      q: "What does the closed set in graph search contain?",
+      options: ["Nodes waiting to be expanded", "States that have already been expanded", "Goal states", "The solution path"],
+      answer: 1,
+      explain: "Before expanding a node, graph search checks whether its state is already in the closed set and skips it if so."
+    }
+  ]}
+/>
