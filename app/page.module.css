@@ -20,7 +20,33 @@
 
 .heroInner {
   display: grid;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+.heroText {
+  display: grid;
   gap: var(--space-4);
+}
+
+/* Full logo with tagline: only on wide screens, beside the headline */
+.heroLogo {
+  display: none;
+}
+
+.heroLogo img {
+  width: 100%;
+  height: auto;
+}
+
+@media (min-width: 900px) {
+  .heroInner {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.72fr);
+  }
+
+  .heroLogo {
+    display: block;
+  }
 }
 
 .title {

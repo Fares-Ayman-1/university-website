@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, BookOpen, FlaskConical } from "lucide-react";
+import { getFullLogos } from "@/lib/brand";
 import { getLectures, getSections, getSubjects } from "@/lib/content";
 import styles from "./page.module.css";
 
@@ -9,37 +10,53 @@ export default function HomePage() {
     lectures: getLectures(subject.slug),
     sections: getSections(subject.slug),
   }));
+  const fullLogo = getFullLogos();
 
   return (
     <>
       <section className={styles.hero}>
         <div className={`container ${styles.heroInner}`}>
-          <p className="kicker rise">Quantro AI · University</p>
-          <h1 className={`${styles.title} rise`} style={{ "--i": 1 } as React.CSSProperties}>
-            Every subject, in two clear tracks: <em className={styles.lec}>lectures</em> and{" "}
-            <em className={styles.sec}>sections</em>.
-          </h1>
-          <p className={`${styles.lead} rise`} style={{ "--i": 2 } as React.CSSProperties}>
-            Lectures are complete lessons, in the order they were given. Sections are separate
-            labs and practical topics. Each one has its own page with explanations, examples,
-            code, exercises and a quiz.
-          </p>
-          <div className={`${styles.tracks} rise`} style={{ "--i": 3 } as React.CSSProperties}>
-            <div className={styles.track} data-kind="lectures">
-              <BookOpen aria-hidden="true" />
-              <div>
-                <p className={styles.trackTitle}>Lectures</p>
-                <p className={styles.trackText}>Complete lessons by lecture number</p>
+          <div className={styles.heroText}>
+            <p className="kicker rise">Quantro AI · University</p>
+            <h1 className={`${styles.title} rise`} style={{ "--i": 1 } as React.CSSProperties}>
+              Every subject, in two clear tracks: <em className={styles.lec}>lectures</em> and{" "}
+              <em className={styles.sec}>sections</em>.
+            </h1>
+            <p className={`${styles.lead} rise`} style={{ "--i": 2 } as React.CSSProperties}>
+              Lectures are complete lessons, in the order they were given. Sections are separate labs and
+              practical topics. Each one has its own page with explanations, examples, code, exercises and a
+              quiz.
+            </p>
+            <div className={`${styles.tracks} rise`} style={{ "--i": 3 } as React.CSSProperties}>
+              <div className={styles.track} data-kind="lectures">
+                <BookOpen aria-hidden="true" />
+                <div>
+                  <p className={styles.trackTitle}>Lectures</p>
+                  <p className={styles.trackText}>Complete lessons by lecture number</p>
+                </div>
               </div>
-            </div>
-            <div className={styles.track} data-kind="sections">
-              <FlaskConical aria-hidden="true" />
-              <div>
-                <p className={styles.trackTitle}>Sections</p>
-                <p className={styles.trackText}>Independent labs and practical topics</p>
+              <div className={styles.track} data-kind="sections">
+                <FlaskConical aria-hidden="true" />
+                <div>
+                  <p className={styles.trackTitle}>Sections</p>
+                  <p className={styles.trackText}>Independent labs and practical topics</p>
+                </div>
               </div>
             </div>
           </div>
+          {fullLogo ? (
+            <div
+              className={`${styles.heroLogo} rise`}
+              style={{ "--i": 2 } as React.CSSProperties}
+              role="img"
+              aria-label="Quantro AI — Control Your Future Intelligently"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={fullLogo.light} alt="" width={880} height={651} className="only-light" />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={fullLogo.dark} alt="" width={880} height={651} className="only-dark" />
+            </div>
+          ) : null}
         </div>
       </section>
 
@@ -67,13 +84,21 @@ export default function HomePage() {
               <p className={styles.tagline}>{subject.tagline}</p>
 
               <div className={styles.counts}>
-                <Link href={`/subjects/${subject.slug}/lectures/`} className={styles.count} data-kind="lectures">
+                <Link
+                  href={`/subjects/${subject.slug}/lectures/`}
+                  className={styles.count}
+                  data-kind="lectures"
+                >
                   <BookOpen aria-hidden="true" />
                   <span>
                     <strong>{lectures.length}</strong> {lectures.length === 1 ? "Lecture" : "Lectures"}
                   </span>
                 </Link>
-                <Link href={`/subjects/${subject.slug}/sections/`} className={styles.count} data-kind="sections">
+                <Link
+                  href={`/subjects/${subject.slug}/sections/`}
+                  className={styles.count}
+                  data-kind="sections"
+                >
                   <FlaskConical aria-hidden="true" />
                   <span>
                     <strong>{sections.length}</strong> {sections.length === 1 ? "Section" : "Sections"}

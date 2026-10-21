@@ -230,6 +230,12 @@ button {
   color: var(--gold-text);
 }
 
+/* Swap themed artwork (e.g. navy logo on light, cream logo on dark) */
+:root[data-theme="dark"] .only-light,
+:root:not([data-theme="dark"]) .only-dark {
+  display: none !important;
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;

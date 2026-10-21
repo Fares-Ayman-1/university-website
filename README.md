@@ -105,12 +105,16 @@ Both outputs are **committed**, so a Vercel build never needs Python or the `../
 
 ## Logo
 
-Put the logo files in `D:\University\brand\` and run `npm run sync`:
+Logo files live in `D:\University\brand\` and are copied to `public/brand/` by `npm run sync`. Navy files are shown on the **light** theme and cream files on the **dark** theme:
 
-- `logo-navy.svg` (or `.png` / `.webp`): shown on the **light** theme
-- `logo-cream.svg` (or `.png` / `.webp`): shown on the **dark** theme
+| File | Used for |
+|---|---|
+| `logo-navy.webp` / `logo-cream.webp` | Header: the mark without the tagline, next to the "Quantro AI" wordmark |
+| `logo-navy-full.webp` / `logo-cream-full.webp` | Home page: the full logo with "Control Your Future Intelligently", beside the headline (wide screens only) |
 
-If only one file exists it is used for both themes. With no files, the header shows the "Quantro AI" wordmark.
+`.svg`, `.webp` and `.png` all work. If only one colour exists it is used for both themes, and with no files the header falls back to a drawn monogram.
+
+The favicon and touch icon are `app/icon.png` and `app/apple-icon.png`: the cream mark on a navy rounded square.
 
 ## Theme
 
