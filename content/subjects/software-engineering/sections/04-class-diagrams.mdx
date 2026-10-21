@@ -1,0 +1,239 @@
+---
+number: 4
+title: Class Diagrams
+summary: Drawing class diagrams in practice. Covers the three compartments, attribute and operation syntax with visibility and default values, the six relationships (association with multiplicity and role names, aggregation, composition, generalization, dependency and realization), and a full worked example that turns the researcher-database requirements into classes, attributes, operations and multiplicities, then into Java.
+topics: [Class compartments, Attribute syntax, Operation syntax, Visibility, Association, Multiplicity and role names, Aggregation vs composition, Generalization, Dependency, Realization, Derived attributes, From requirements to classes]
+duration: 55 min hands-on
+kind: practical
+sources:
+  - file: "sections/Eng_Abdullah Mohamed/sec3/session #3.pdf"
+    label: Section 3 – Activity and Class Diagrams (Eng. Abdullah Mohamed)
+    pages: "14-29"
+  - file: sections/Eng_Roaa/sec4/Sec 4 - Class Diagram.pdf
+    label: Section 4 – UML Class Diagram (Eng. Roaa)
+bookRefs:
+  - book: swe-book
+    chapter: Ch 5 · System Modeling (5.2.5 Class Diagram)
+    pages: "123–130"
+  - book: uml-classroom
+    chapter: Ch 4 · The Class Diagram
+---
+
+<Objectives>
+
+- Write **attributes** and **operations** with visibility, types and default values.
+- Choose the right **relationship**: association, aggregation, composition, generalization, dependency or realization.
+- Add **multiplicities** and **role names** to associations.
+- Turn a **requirements text** into a class diagram, and the diagram into code.
+
+</Objectives>
+
+## Classes
+
+A **class** describes a set of objects with similar attributes, operations, relationships and behaviour. It is drawn as a rectangle with **three compartments**: the **name**, the **attributes** (data) and the **operations** (methods).
+
+<SlideFigure page={17} caption="The Shape class: +origin is public, #width: int is protected, and -height: int = 10 is private with an initial value." />
+
+```text title="Syntax"
+attribute:  visibility name : type = initialValue        e.g.  -height : int = 10
+operation:  visibility name(param : type = default) : returnType
+                                                        e.g.  -display(c1 : boolean = true) : boolean
+visibility: + public    # protected    - private    (~ package)
+```
+
+<SlideFigure page={18} caption="Operations of Drawing::Shape: +move(), #resize(): boolean, -display(c1: boolean = true): boolean." />
+
+Attribute and operation names start with a **lowercase** letter. Class names start with an **uppercase** letter and are singular nouns.
+
+## Relationships
+
+<SlideFigure page={19} caption="The six kinds of relationship between classes." />
+
+| Relationship | Notation | Read as | Example |
+|---|---|---|---|
+| **Association** | Solid line, with optional name, arrow, multiplicities and role names | "is connected to" | Student — Instructor |
+| **Aggregation** | Hollow diamond at the **whole** | "has", where the parts can live alone | Class ◇— Student |
+| **Composition** | Filled diamond at the **whole** | "is made of", where the parts die with the whole | House ◆— Room |
+| **Generalization** | Hollow triangle at the **parent** | "is a" | Student ▷ Person |
+| **Dependency** | Dashed arrow | "uses" (temporarily) | Accounting System ⇢ Receipt |
+| **Realization** | Dashed line with a hollow triangle | "implements" | ArrayList ⇢▷ List |
+
+### Association, multiplicity and role names
+
+When two classes need to communicate, there must be an **association** between them. An arrow shows the navigation direction; arrows at both ends (or none) mean a **bidirectional** association.
+
+<SlideFigure page={21} caption="Every Instructor has one or more Students; with role names, an Instructor 'teaches' Students and a Student 'learns from' Instructors." />
+
+Read a multiplicity from the **far** end: in `Student 1..* ——— 1..* Instructor`, *one* instructor has **1..\*** students, and *one* student has **1..\*** instructors.
+
+### Aggregation vs. composition
+
+Both are special **associations** where one object "owns" another. The difference is whether the part can **exist independently**:
+
+| | Aggregation | Composition |
+|---|---|---|
+| Part without the whole? | **Yes**. Delete the *Class* and the *Students* still exist | **No**. Delete the *House* and its *Rooms* are gone |
+| Diamond | Hollow ◇ | Filled ◆ |
+
+<SlideFigure page={23} caption="Composition: a Person is composed of a Head, Hands and Legs; a coffee table of a table top and legs." />
+
+<SlideFigure page={24} caption="Aggregation: a Car aggregates an Engine and Wheels (which an engine inspection can also refer to)." />
+
+### Generalization and dependency
+
+**Generalization** (inheritance): a class with no parent is a **root** class, one with no children is a **leaf** class, and a class can have **single** or **multiple** inheritance. A **dependency** means one class **uses** another, e.g. as a parameter or a local variable, without keeping a permanent link.
+
+<SlideFigure page={26} caption="Dependency: the Accounting System uses Receipt (dashed arrow)." />
+
+## Worked example: the researcher database
+
+> Researchers are placed into a database maintained by the state of Georgia. Information of interest includes **researcher name, title, position, date began current position, number of years at current position**; **university name, location, enrollment**; and **research interests**. Researchers are associated with **one institution**, and each researcher can have **up to five** research interests. **More than one researcher** can have the same interest, and the system tracks the **ranking of the best researchers** for each interest. The system should be able to insert new researchers, universities and interests; produce the **number of researchers at each university**, **contact information** for researchers, and **interests with no associated researchers**; and **change researcher rankings**.
+
+<Steps>
+
+1. **Nouns become classes**: *Institution*, *Researcher*, *Research Interest*.
+2. **Facts about each noun become attributes**:
+   - Institution: name, location, enrollment.
+   - Researcher: name, title, position, date of current position, and **/years at current position**. The leading **/** marks a **derived** attribute, computed from the date.
+   - Interest: description, top researcher.
+3. **"The system should produce/change…" becomes operations on the class that owns the data**:
+   - `numberOfResearchers()` on Institution;
+   - `produceContactInfo()` on Researcher;
+   - `findNoAssociatedResearcher()` and `changeResearcherRanking()` on Interest.
+4. **Relationships and multiplicities come from the quantity words**:
+   - "associated with **one** institution": Institution **1** — **1..\*** Researcher;
+   - "**up to five** interests" and "**more than one** researcher can share an interest": Researcher **1..\*** — **1..5** Research Interest.
+
+</Steps>
+
+<SlideFigure page={18} source={1} caption="The solution: Institution 1 —associated— 1..* Researcher 1..* —has— 1..5 Research Interests, with their attributes and operations." />
+
+The diagram maps directly to code:
+
+```java title="Researchers.java"
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.ArrayList;
+import java.util.List;
+
+class Institution {
+    private String name, location;
+    private int enrollment;
+    private final List<Researcher> researchers = new ArrayList<>();   // 1 —— 1..*
+
+    int numberOfResearchers() { return researchers.size(); }
+}
+
+class Researcher {
+    private String name, title, position;
+    private LocalDate dateCurrentPosition;
+    private Institution institution;                                  // exactly 1
+    private final List<ResearchInterest> interests = new ArrayList<>(); // 1..5
+
+    int yearsCurrentPosition() {                                      // derived: /Years Curr.
+        return Period.between(dateCurrentPosition, LocalDate.now()).getYears();
+    }
+
+    void addInterest(ResearchInterest i) {
+        if (interests.size() == 5) throw new IllegalStateException("at most 5 interests");
+        interests.add(i);
+    }
+
+    String produceContactInfo() { return name + ", " + title; }
+}
+
+class ResearchInterest {
+    private String description;
+    private final List<Researcher> ranking = new ArrayList<>();       // best first
+
+    Researcher topResearcher() { return ranking.isEmpty() ? null : ranking.get(0); }
+    boolean hasNoAssociatedResearcher() { return ranking.isEmpty(); }
+    void changeResearcherRanking(Researcher r, int newRank) {
+        ranking.remove(r);
+        ranking.add(newRank, r);
+    }
+}
+```
+
+<Callout type="note" title="Multiplicities become code constraints">
+  <code>1..5</code> isn't only a label: <code>addInterest</code> enforces the upper bound. A lower bound such as <code>1..*</code> means a researcher must have at least one interest, which the application should check when saving.
+</Callout>
+
+<Takeaways>
+
+- A class has **name, attributes and operations**, with visibility `+ # - ~`, types and default values.
+- Use **association** to connect classes, with **multiplicities** read from the far end and optional **role names**.
+- **Aggregation** ◇: the part can live alone. **Composition** ◆: the part dies with the whole. **Generalization** ▷: is-a. **Dependency** ⇢: uses.
+- From requirements: **nouns become classes**, their **facts become attributes**, **"the system should…" becomes operations**, and **quantity words become multiplicities**.
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="Online shop" level="medium">
+
+A customer places orders. Each order has one or more order lines, and each line refers to exactly one product with a quantity. An order line can't exist without its order. Products exist independently and appear in many lines. Customers are either regular or premium (premium customers get a discount). Draw the class diagram as a list of classes, attributes and relationships.
+
+<Solution>
+
+- **Customer** (name, email) 1 —places— 0..\* **Order** (orderId, date; `total()`).
+- **Order** ◆—1..\* **OrderLine** (quantity; `subtotal()`). This is **composition**: lines die with their order.
+- **OrderLine** 0..\* —refers to— 1 **Product** (name, price). This is a plain **association**, because products exist independently.
+- **RegularCustomer** and **PremiumCustomer** (discountRate) **generalize** to **Customer** (hollow triangle at Customer).
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Name the relationship" level="easy">
+
+1. A *Library* and its *Books* (books can be moved to another library).
+2. A *Document* and its *Pages*.
+3. A *ReportGenerator* that receives a *Printer* as a method parameter.
+4. A *Manager* and an *Employee* (every manager is an employee).
+
+<Solution>
+
+1. Aggregation (hollow diamond at Library).
+2. Composition (filled diamond at Document).
+3. Dependency (dashed arrow from ReportGenerator to Printer).
+4. Generalization (Manager ▷ Employee).
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "'-height : int = 10' declares…",
+      options: ["A public attribute", "A private int attribute with initial value 10", "A protected operation", "A static constant"],
+      answer: 1,
+      explain: "- is private, int is the type, and = 10 is the initial value."
+    },
+    {
+      q: "Deleting a House deletes its Rooms. Which relationship is this?",
+      options: ["Association", "Aggregation", "Composition", "Dependency"],
+      answer: 2,
+      explain: "The parts can't exist without the whole: composition (filled diamond)."
+    },
+    {
+      q: "'Each researcher can have up to five interests' gives which multiplicity at the Interest end?",
+      options: ["5", "0..5 or 1..5", "*", "1"],
+      answer: 1,
+      explain: "'Up to five' means an upper bound of 5 (the slide uses 1..5)."
+    },
+    {
+      q: "What does a leading '/' on an attribute mean (e.g. /Years Curr. Inst.)?",
+      options: ["Private", "Static", "Derived: computed from other data", "Optional"],
+      answer: 2,
+      explain: "Derived attributes are calculated, e.g. years from the start date."
+    },
+    {
+      q: "A dashed arrow from AccountingSystem to Receipt means…",
+      options: ["Inheritance", "Composition", "Dependency: AccountingSystem uses Receipt", "Realization"],
+      answer: 2,
+      explain: "A dependency is a temporary 'uses' relationship."
+    }
+  ]}
+/>

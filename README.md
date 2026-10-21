@@ -72,6 +72,8 @@ Regular markdown, $\LaTeX$ math, tables, code blocksâ€¦
 
 The frontmatter is validated when the site builds. A typo, an unknown book id, a missing source PDF, or a field that links a lecture to a section all fail the build with a clear message.
 
+Quote a source path that contains `#` (for example `file: "sections/sec1/session #1.pdf"`): in YAML an unquoted ` #` starts a comment and silently cuts the path short.
+
 ### Add a subject
 
 Create `content/subjects/<slug>/subject.json` (copy an existing one), and set `materialsDir` to the subject's folder name inside `../materials`.
@@ -98,7 +100,8 @@ Leave a blank line before and after block components (`<Solution>`, `<Steps>`, â
 
 ## Asset scripts
 
-- `npm run sync` copies lecture and section PDFs and notebooks from `../materials/<subject>/{Lectures,Sections}` into `public/materials/`, and logo files from `../brand/` into `public/brand/`. It runs automatically before `npm run dev`. **Reference books are never copied**: pages cite them by chapter and page only.
+- `npm run sync` copies lecture and section PDFs and notebooks from `../materials/<subject>/{Lectures,Chapters,Sections}` into `public/materials/`, and logo files from `../brand/` into `public/brand/`. It runs automatically before `npm run dev`. **Reference books are never copied**: pages cite them by chapter and page only.
+- `npm run convert` (Windows, needs Microsoft PowerPoint) converts `.pptx`/`.ppt` slides in those folders into PDFs at the same path under `public/materials/`. In a source, refer to the converted file by its `.pdf` name. Office's Trust Center "File Block" setting may refuse old `.ppt` files; open them in PowerPoint, save as `.pptx`, and run it again.
 - `npm run slides` renders every slide used by `<SlideFigure>` to `public/slides/` (WebP plus `manifest.json`). It needs Python with `PyMuPDF`, `Pillow` and `PyYAML`, and re-renders only new slides (`-- --force` re-renders all).
 
 Both outputs are **committed**, so a Vercel build never needs Python or the `../materials` folder.

@@ -1,0 +1,217 @@
+---
+number: 1
+title: Introduction to Software Engineering and UML
+summary: Why programming alone isn't enough, the common problems in software projects, what software engineering is and its goals, the five stages of software development, the insulin-pump case study, why we model with UML and the main UML diagrams, plus how a lab project is documented (problem definition, SRS, DFD, test table).
+topics: [Software is everywhere, Common project problems, Definition of SE, Goals of SE, Development stages, Insulin pump case study, Why UML, UML diagram types, Lab project structure]
+duration: 40 min
+kind: concept
+sources:
+  - file: "sections/Eng_Abdullah Mohamed/sec1/session #1.pdf"
+    label: Section 1 – Introduction (Eng. Abdullah Mohamed)
+  - file: sections/Eng_Roaa/sec1/section 1 (1).pdf
+    label: Section 1 – Introduction (Eng. Roaa)
+  - file: sections/Eng_Ahmed Mostafa/sec1/Software Engineering_Session1.pdf
+    label: Section 1 – Introduction and UML (Eng. Ahmed Mostafa)
+  - file: sections/Eng_Abdullah Mohamed/SOFTWARE ENGINEERING LAB.pdf
+    label: Software Engineering Lab manual – five worked SRS projects
+bookRefs:
+  - book: swe-book
+    chapter: Ch 1 · Introduction
+    pages: "8–28"
+  - book: uml-classroom
+    chapter: Ch 1 · Introduction; Ch 2 · A Short Tour of UML
+---
+
+<Objectives>
+
+- Explain why **programming is not enough** and list the common problems in software projects.
+- Define **software engineering** and its goals: **on time, reliable, complete**.
+- Name the five **stages** of software development.
+- Explain **why we model** with UML, and recognize the main diagram types.
+- Know the structure of a **lab project report**.
+
+</Objectives>
+
+## Software is everywhere
+
+Software has a huge impact on every part of society: aircraft and buses, search engines, phones and music players, banks and hospitals. The economies of all developed nations depend on it, and more and more systems are **software-controlled**.
+
+Software **costs** often dominate the cost of a computer system: the software on a PC often costs more than the hardware. Software also costs **more to maintain than to develop**. For long-lived systems, maintenance may cost several times the development.
+
+## Why projects go wrong
+
+<SlideFigure page={9} caption="How the customer explained it, how each role understood it, and what the customer really needed." />
+
+Common problems:
+
+- the final software **doesn't fulfil the customer's needs**;
+- it is **hard to extend**: adding a feature later is "mission impossible";
+- **bad documentation**;
+- **bad quality**: frequent errors, hard to use;
+- **more time and cost** than expected.
+
+<Callout type="note" title="Programming is NOT enough">
+  "It is not enough to do your best: you must know what to do, and <strong>then</strong> do your best." (W. Edwards Deming). Software engineering is how you find out <em>what</em> to do.
+</Callout>
+
+## What is software engineering?
+
+<Definition term="Software engineering (IEEE)">
+  The application of a <strong>systematic, disciplined, quantifiable</strong> approach to the development, operation and maintenance of software, and the study of these approaches: the application of engineering to software.
+</Definition>
+
+In short, it is the study and application of methods for developing **quality software that fulfils the customer's needs**. The goal is software that is:
+
+| Goal | Meaning |
+|---|---|
+| **On time** | Delivered on the agreed date |
+| **Reliable** | It doesn't crash |
+| **Complete** | It meets the customer's needs and is well documented |
+
+**Software** includes the programs **and** their documentation: requirements, design models and user manuals. Products are **generic** (sold to many customers, e.g. Excel or Word) or **bespoke/custom** (built for one customer to their specification).
+
+## Stages of software development
+
+<SlideFigure page={15} caption="The five stages: requirements analysis, design, implementation, testing, maintenance." />
+
+<Steps>
+
+1. **Requirements analysis**: find out what the client wants the software to do.
+2. **Design**: plan the software solution.
+3. **Implementation**: write the code.
+4. **Testing**: run the application trying to find bugs.
+5. **Maintenance**: any activity that changes an existing software product.
+
+</Steps>
+
+These map onto the four process activities from Lecture 1: **specification** (requirements), **development** (design and implementation), **validation** (testing) and **evolution** (maintenance).
+
+## Case study: an insulin pump
+
+An **embedded, safety-critical** system used throughout the course:
+
+<SlideFigure page={22} caption="The insulin pump collects blood-sugar data from a sensor, calculates the dose from the rate of change, and signals a micro-pump to deliver it." />
+
+<SlideFigure page={23} caption="The pump's hardware: needle assembly, sensor, pump, controller, clock, alarm, two displays and a power supply." />
+
+Wrong software here can **kill**. A dose that is too high or too low is dangerous, so **dependability** (reliability and safety) is the most important attribute.
+
+## Why UML?
+
+<Definition term="UML (Unified Modeling Language)">
+  A standard <strong>graphical language</strong> for visualizing, specifying, constructing and documenting the artifacts of a software-intensive system. It was designed by "the Three Amigos": James Rumbaugh, Ivar Jacobson and Grady Booch.
+</Definition>
+
+UML is **independent of any programming language** and combines several diagramming methods. We need it to:
+
+- develop **efficient, correct designs**, especially object-oriented ones;
+- **communicate** clearly with stakeholders: developers, customers…;
+- see the **big picture** of the project.
+
+| Diagram | Shows | Section |
+|---|---|---|
+| **Use case** | What actors can do with the system | 2 |
+| **Activity** | The step-by-step flow of a process | 3 |
+| **Class** | The classes, their attributes and operations, and their relationships | 4 |
+| **Sequence** | Messages between objects over time | 5 |
+| **State** | How one object changes state in response to events | 6 |
+| **DFD** (not UML) | How data moves between processes, stores and external entities | 7 |
+
+<SlideFigure page={10} source={2} caption="A use case diagram for a dinner-ordering system: Customer and Restaurant actors around Provide Menu, Order a Meal and Deliver Meal." />
+
+<SlideFigure page={13} source={2} caption="An activity diagram for ordering a meal: choose a menu item, decide, then pay." />
+
+## The lab project
+
+The lab grade is a **project** (15 % lab work and 10 % final oral). The lab manual gives five worked examples: library management, automated banking, airline reservation, employee management and hospital management. Each follows the same structure, which your project report can follow too:
+
+<Steps>
+
+1. **Problem definition**: what the system must do, in a few numbered points.
+2. **SRS** (IEEE 830): purpose, scope, definitions, overall description (product perspective, interfaces, product functions, user characteristics, constraints) and specific requirements (database requirements, front-end and back-end descriptions, data structures).
+3. **Models**: a **data flow diagram** (or an ER diagram), plus the UML diagrams from these sections.
+4. **Testing**: a table of *form · input · expected output · actual output · status*.
+
+</Steps>
+
+<SlideFigure page={9} source={3} caption="The library system's test table: each form with its input, expected and actual output, and pass/fail status." />
+
+<Takeaways>
+
+- Software is everywhere, and costs more to **maintain** than to build. Programming alone doesn't prevent failed projects.
+- Software engineering is a **systematic, disciplined, quantifiable** approach. Its goals are software that is **on time, reliable and complete**.
+- The stages are **requirements → design → implementation → testing → maintenance**.
+- **UML** is a standard visual language for modelling; we use the use case, activity, class, sequence and state diagrams, plus DFDs.
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="Spot the stage" level="easy">
+
+Which development stage is each activity?
+
+1. Interviewing the librarian about how books are lent.
+2. Drawing the class diagram of the library system.
+3. Fixing a bug reported six months after delivery.
+4. Running the system with an expired library card to see what happens.
+
+<Solution>
+
+1. Requirements analysis.
+2. Design.
+3. Maintenance.
+4. Testing.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Start your project" level="medium">
+
+Write a three-point **problem definition** for a *student registration system*, in the style of the lab manual.
+
+<Solution>
+
+1. A student logs in with a student ID and password, and the system validates them.
+2. The student can view the courses offered this semester and register for courses, up to a maximum credit-hour limit; the system checks prerequisites and timetable clashes.
+3. An administrator can add, update and delete courses, and view the students registered in each course.
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "Which is NOT one of the goals of software engineering listed in the section?",
+      options: ["On time", "Reliable", "Complete", "Written in Java"],
+      answer: 3,
+      explain: "SE aims for software that is on time, reliable and complete, in any language."
+    },
+    {
+      q: "'Any activity that changes an existing software product' is…",
+      options: ["Design", "Implementation", "Testing", "Maintenance"],
+      answer: 3,
+      explain: "Maintenance, i.e. evolution."
+    },
+    {
+      q: "Who designed UML?",
+      options: ["Dijkstra, Knuth and Hoare", "Rumbaugh, Jacobson and Booch", "Sommerville and Pressman", "Beck, Fowler and Martin"],
+      answer: 1,
+      explain: "The 'Three Amigos'."
+    },
+    {
+      q: "For long-lived systems, which usually costs more?",
+      options: ["Development", "Maintenance", "Hardware", "Documentation only"],
+      answer: 1,
+      explain: "Maintenance can cost several times the development."
+    },
+    {
+      q: "Which UML diagram shows what actors can do with a system?",
+      options: ["Class diagram", "Use case diagram", "State diagram", "Sequence diagram"],
+      answer: 1,
+      explain: "Use case diagrams capture the system's functions from the user's perspective."
+    }
+  ]}
+/>

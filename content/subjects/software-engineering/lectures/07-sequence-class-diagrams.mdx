@@ -1,0 +1,317 @@
+---
+number: 7
+title: "System Modelling III: Sequence and Class Diagrams"
+summary: Interaction and structural models. Sequence diagrams cover lifelines and activation, synchronous and asynchronous messages, replies, self-messages, alt and loop fragments, and system sequence diagrams. Class diagrams cover classes and objects, attributes and operations with visibility, class (static) members, associations with multiplicity and reading direction, aggregation vs. composition, and generalization, each mapped to code.
+topics: [Interaction models, Sequence diagram, Lifeline, Synchronous and asynchronous messages, Self message, alt and loop fragments, System sequence diagram, Class diagram, Objects, Visibility, Associations, Multiplicity, Aggregation, Composition, Generalization]
+duration: 60 min study
+sources:
+  - file: Chapters/Ch7/Lecture_07_SWE_System_Modelling_P3.pdf
+    label: SWE Lecture 7 – System Modelling Part 3 (Dr. Fatma ElSayed)
+    pages: "1-31"
+bookRefs:
+  - book: swe-book
+    chapter: Ch 5 · System Modeling (5.2.4 Sequence, 5.2.5 Class)
+    pages: "119–130"
+  - book: sommerville
+    chapter: Ch 5 · System modeling (5.2 Interaction models, 5.3 Structural models)
+  - book: uml-classroom
+    chapter: Ch 4 · The Class Diagram; Ch 6 · The Sequence Diagram
+---
+
+<Objectives>
+
+- Explain the three kinds of **interaction** a system has, and how use case and sequence diagrams model them.
+- Draw a **sequence diagram** with lifelines, activations, **synchronous** and **asynchronous** messages, replies and self-messages.
+- Use **alt** and **loop** fragments, and draw a **system sequence diagram (SSD)**.
+- Draw a **class diagram** with attributes, operations and **visibility**, associations with **multiplicity**, **aggregation**, **composition** and **generalization**, and map it to code.
+
+</Objectives>
+
+## Interaction models
+
+Every system involves interaction:
+
+- **User interaction**: inputs and outputs, which help identify user requirements.
+- **System–system interaction**: this highlights communication problems.
+- **Component interaction**: this shows whether a structure can deliver the required performance and dependability.
+
+**Use case diagrams** model interactions between the system and **external actors**. **Sequence diagrams** model interactions **between system components** (and may include actors).
+
+## Sequence diagrams
+
+A sequence diagram shows the **sequence of interactions** during one flow through a use case. Each use case needs **one or more** sequence diagrams. It shows **which objects** are needed, **which messages** they exchange, **who** starts the flow, and **in what order** the messages are sent.
+
+### Lifelines
+
+<SlideFigure page={8} caption="A lifeline: a head rectangle roleName:Class, then a dashed vertical line; the thin rectangle (activation) marks when the object is active." />
+
+- A **lifeline** is a dashed vertical line for an object's lifetime. Its **head** contains `roleName:Class`. Write `role` alone, or `:Class` (keep the colon) when only the class is given.
+- An **activation bar** (a thin rectangle) shows when the object is **active**, i.e. executing.
+- The diagram is two-dimensional: **time runs top to bottom**, and **objects are laid out left to right**.
+
+<SlideFigure page={10} caption="Objects can be created during the interaction (a message to the new object's head) and destroyed (an X ends the lifeline)." />
+
+### Messages
+
+| Message | Arrow | Behaviour |
+|---|---|---|
+| **Synchronous** (call) | Solid line, **filled** arrowhead | The sender **waits** for the response before continuing |
+| **Reply** (return) | **Dashed** line, open arrowhead | The response to a synchronous call |
+| **Asynchronous** | Solid line, **open** arrowhead | The sender **continues** straight away |
+| **Self-message** | Arrow looping back to the same lifeline | An object calls one of its own operations |
+
+<SlideFigure page={12} caption="Registering for a course: asynchronously (register, and later a separate confirm message) vs. synchronously (register, then wait for the reply 'ok')." />
+
+<SlideFigure page={14} caption="Login: Student → E-Learning System login(user, pw); the system checks with the Database, receives 'ok', replies login: 'ok'; then the student calls getCourses()." />
+
+<SlideFigure page={13} caption="The soda machine: accept(cash, selection) passes from Front to Register to Dispenser; the Register also sends itself a message (a self-call)." />
+
+### Combined fragments: alternatives and loops
+
+**Combined fragments** (operators) describe several possible paths in one diagram:
+
+<SlideFigure page={16} caption="alt: if [i > 0] call op1() on b, [else] call op2() on c. loop: repeat op3()." />
+
+| Fragment | Meaning | Code equivalent |
+|---|---|---|
+| **alt** | Alternative paths; each **operand** has a **guard**, and the operands are separated by dashed lines | `if … else` |
+| **opt** | One optional operand, run only if its guard is true | `if` |
+| **loop** | Repeat the contents while the guard holds | `while` / `for` |
+
+```java title="The alt and loop fragments as code"
+if (i > 0) {
+    b.op1();        // alt, operand 1: [i>0]
+} else {
+    c.op2();        // alt, operand 2: [else]
+}
+while (moreWork) {
+    b.op3();        // loop
+}
+```
+
+### System sequence diagrams (SSD)
+
+For one use case scenario, an **SSD** shows the **system as a black box**, the **external actors** that interact with it, and the **system events** they generate. It is the bridge between use cases and the design.
+
+<SlideFigure page={18} caption="SSD for buying from a vending machine: the customer generates the system events insert coins() and enter choice(); the system offers choices and dispatches the item and change." />
+
+## Class diagrams
+
+Class diagrams show the **classes** of an object-oriented system and the **relationships** between them: the **static structure**. They are the most widely used UML diagram. An OO system is built around **objects**, not functions.
+
+- An **object** represents something in the real world: a patient, a course, a doctor. Objects often appear as **nouns** in the problem description.
+- A **class** describes a set of objects with similar attributes, operations, relationships and behaviour. **Objects are instances of classes**.
+
+<SlideFigure page={22} caption="A class has three compartments: name, attributes and operations. An object is shown as underlined name:Class with attribute values." />
+
+### Attributes, operations and visibility
+
+```text title="UML syntax"
+attribute:  visibility name : Type [multiplicity] = initialValue
+operation:  visibility name(direction param : Type, …) : ReturnType
+```
+
+| Symbol | Visibility | Accessible by |
+|---|---|---|
+| `+` | **public** | Everybody |
+| `-` | **private** | Only the object itself |
+| `#` | **protected** | The class itself and its subclasses |
+| `~` | package | Classes in the same package |
+
+**Underlined** members are **class members** (static): they belong to the class, not to each object.
+
+<SlideFigure page={24} caption="The Person class: public names, private dob, protected multi-valued address, an underlined (class) variable pNumber and class operation getPNumber()." />
+
+```java title="Person.java: the class diagram mapped to code"
+import java.util.Date;
+import java.util.List;
+
+public class Person {
+    public String firstName;            // + firstName: String
+    public String lastName;             // + lastName: String
+    private Date dob;                   // - dob: Date
+    protected List<String> address;     // # address: String[*]
+    private static int pNumber;         // underlined: class (static) variable
+
+    public static int getPNumber() {    // underlined: class operation
+        return pNumber;
+    }
+
+    public Date getDob() {              // + getDob(): Date
+        return dob;
+    }
+}
+```
+
+### Relationships
+
+| Relationship | Notation | Meaning |
+|---|---|---|
+| **Association** | Line, with an optional name and reading-direction arrow | Objects of the two classes are connected |
+| **Aggregation** | Line with a **hollow diamond** at the **whole** | A weak "has-a": parts can exist **independently** of the whole |
+| **Composition** | Line with a **filled diamond** at the **whole** | A strong "owns": a part belongs to **one** whole and **lives and dies with it** |
+| **Generalization** | Line with a **hollow triangle** at the parent | Inheritance, an **"is-a"** relationship |
+
+### Associations and multiplicity
+
+**Multiplicity** is the number of objects that may be associated with **exactly one** object on the other side.
+
+| Multiplicity | Meaning |
+|---|---|
+| `1` | Exactly one |
+| `0..1` | Zero or one |
+| `*` (or `0..*`) | Zero or more |
+| `1..*` | One or more |
+| `1..40` | Between one and 40 |
+| `5` | Exactly five |
+
+<SlideFigure page={27} caption="Multiplicity: a Lecturer issues * Assignments; Lecturers (1..*) give Lectures (1..*)." />
+
+### Aggregation vs. composition
+
+<SlideFigure page={28} caption="Aggregation (hollow diamond at the whole): a LabClass has Students, and a StudyProgram has Courses; the parts exist on their own." />
+
+<SlideFigure page={29} caption="Composition (filled diamond): a coffee table is made of a table top and legs; a Building is composed of LectureHalls, while a hall only aggregates its Beamer." />
+
+| | Aggregation | Composition |
+|---|---|---|
+| Belonging | **Weak**: parts exist independently | **Strong**: parts depend on the whole |
+| Parts shared? | A part may belong to several wholes (the multiplicity at the whole may be more than 1) | A part belongs to **only one** whole (the multiplicity at the whole is **0..1 or 1**) |
+| Lifetime | Independent | The whole **creates and destroys** its parts |
+
+```java title="Composition vs. aggregation in code"
+import java.util.ArrayList;
+import java.util.List;
+
+// Composition: the building creates its halls; they are destroyed with it.
+class Building {
+    private final List<LectureHall> halls = new ArrayList<>();
+    LectureHall addHall(String name) {
+        LectureHall hall = new LectureHall(name);   // created by the whole
+        halls.add(hall);
+        return hall;
+    }
+}
+
+// Aggregation: students are created elsewhere and only referenced here.
+class LabClass {
+    private final List<Student> students = new ArrayList<>();
+    void enrol(Student s) {
+        students.add(s);                            // the student lives on without the class
+    }
+}
+
+class LectureHall { LectureHall(String name) { } }
+class Student { }
+```
+
+### Generalization
+
+**Generalization** is **inheritance**, the "is-a" relationship. A class with no parent is a **base (root)** class; one with no children is a **leaf** class; one parent means **single** inheritance, and several mean **multiple** inheritance.
+
+<SlideFigure page={30} caption="Student and Employee are Persons; a Manager is an Employee." />
+
+```java
+class Person { }
+class Student extends Person { }
+class Employee extends Person { }
+class Manager extends Employee { }   // a Manager is-an Employee is-a Person
+```
+
+<Takeaways>
+
+- **Sequence diagrams**: lifelines `role:Class` with time running down; **synchronous** messages (filled head, wait for the dashed reply) vs. **asynchronous** ones (open head, no waiting); **alt**/**loop** fragments; **SSDs** treat the system as a black box.
+- **Class diagrams**: name, attributes and operations, with visibility `+ - # ~`; underlined = static.
+- **Multiplicity** counts the objects linked to **one** object on the other side.
+- **Aggregation** (hollow diamond) is a weak whole–part; **composition** (filled diamond) means the part lives and dies with one whole; **generalization** (hollow triangle) is "is-a".
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="Read the multiplicity" level="easy">
+
+A class diagram shows `Department 1 ——— 1..* Professor`. What does it mean, read in both directions?
+
+<Solution>
+
+Each **Department** has **one or more** Professors (the `1..*` sits at the Professor end). Each **Professor** belongs to **exactly one** Department (the `1` sits at the Department end).
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Aggregation or composition?" level="medium">
+
+Choose the right relationship for each pair, and say where the diamond goes:
+
+1. A *Car* and its *Engine*, where engines are reused in other cars after a crash.
+2. An *Invoice* and its *InvoiceLines*.
+3. A *Team* and its *Players*.
+
+<Solution>
+
+1. **Aggregation**, with a hollow diamond at Car. The engine exists independently and can move to another car.
+2. **Composition**, with a filled diamond at Invoice. Lines belong to one invoice and are deleted with it.
+3. **Aggregation**, with a hollow diamond at Team. Players exist without the team and may join others.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Sequence diagram for withdrawing cash" level="hard">
+
+Describe a sequence diagram for "withdraw cash" with the lifelines `:Customer`, `:ATM`, `:Bank`. Use synchronous calls with replies, and an **alt** fragment for sufficient or insufficient balance.
+
+<Solution>
+
+1. `:Customer → :ATM` **withdraw(amount)**, synchronous.
+2. `:ATM → :Bank` **checkBalance(account, amount)**, synchronous. The Bank replies (dashed) with `ok` or `insufficient`.
+3. **alt**:
+   - `[ok]`: `:ATM → :Bank` **debit(account, amount)**, with the reply `done`. Then `:ATM` sends itself **dispense(amount)** (a self-message), and `:ATM → :Customer` returns the cash.
+   - `[else]`: `:ATM → :Customer` sends **showMessage("insufficient balance")**.
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "In a synchronous message, the sender…",
+      options: ["Continues immediately", "Waits for the response before continuing", "Destroys the receiver", "Sends to itself"],
+      answer: 1,
+      explain: "Synchronous: solid line, filled arrowhead, followed by a dashed reply."
+    },
+    {
+      q: "Which fragment represents if/else in a sequence diagram?",
+      options: ["loop", "alt", "ref", "par"],
+      answer: 1,
+      explain: "alt has several operands, each with a guard."
+    },
+    {
+      q: "What does '#' mean before an attribute?",
+      options: ["Public", "Private", "Protected", "Static"],
+      answer: 2,
+      explain: "+ public, - private, # protected, ~ package."
+    },
+    {
+      q: "A part that lives and dies with exactly one whole is modelled by…",
+      options: ["Association", "Aggregation", "Composition", "Generalization"],
+      answer: 2,
+      explain: "Composition: a filled diamond at the whole."
+    },
+    {
+      q: "The multiplicity '1..*' means…",
+      options: ["Zero or more", "Exactly one", "One or more", "At most one"],
+      answer: 2,
+      explain: "* alone means zero or more."
+    },
+    {
+      q: "An SSD shows the system as…",
+      options: ["A set of classes", "A black box receiving system events from actors", "A state machine", "A database schema"],
+      answer: 1,
+      explain: "System sequence diagrams show actors, the black-box system and the system events."
+    }
+  ]}
+/>

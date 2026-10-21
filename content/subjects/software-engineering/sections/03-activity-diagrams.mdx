@@ -1,0 +1,189 @@
+---
+number: 3
+title: Activity Diagrams
+summary: Drawing activity diagrams in practice. Covers the symbols (start, activity, connector, decision, fork and join bars, end), then worked diagrams for a login page, a banking system (withdraw or deposit), word editing with parallel printing, and turning the library's "Issue book" algorithm step by step into an activity diagram, ending with the student-registration task.
+topics: [Activity diagram symbols, Control flow, Decision nodes and guards, Fork and join, Login activity diagram, Banking activity diagram, Word-editing example, Issue book walkthrough, From algorithm to diagram]
+duration: 50 min hands-on
+kind: practical
+sources:
+  - file: "sections/Eng_Abdullah Mohamed/sec3/session #3.pdf"
+    label: Section 3 – Activity and Class Diagrams (Eng. Abdullah Mohamed)
+    pages: "1-13"
+  - file: sections/Eng_Roaa/sec3/Sec 3 - Activity Diagram.pdf
+    label: Section 3 – Activity Diagram (Eng. Roaa)
+bookRefs:
+  - book: swe-book
+    chapter: Ch 5 · System Modeling (5.2.1 Activity Diagram)
+    pages: "104–109"
+  - book: uml-classroom
+    chapter: Ch 7 · The Activity Diagram
+---
+
+<Objectives>
+
+- Use the activity diagram **symbols** correctly.
+- Read and draw diagrams with **decisions**, **loops** and **parallel** paths.
+- Turn a step-by-step **algorithm** or use case into an activity diagram.
+
+</Objectives>
+
+## What an activity diagram is for
+
+An activity diagram is essentially a **flowchart** of the activities a system performs: the **flow of control** from one operation to the next, which can be **sequential**, **branched** or **concurrent**. It is used to:
+
+- show the logic of an **algorithm**;
+- describe the steps of a **use case**;
+- show **business processes** and workflows between users and the system;
+- clarify **complex** use cases.
+
+## Symbols
+
+| Symbol | Name | Meaning |
+|---|---|---|
+| ● filled circle | **Start** | The beginning of the process |
+| ▭ rounded rectangle | **Activity** (action) | A step performed by a user or the software |
+| → arrow | **Connector** (control flow) | The direction of flow: the next step starts when this one completes |
+| ◇ diamond | **Decision** | One input, several outputs, each labelled with a **condition** |
+| ━ thick bar, one in and several out | **Fork** | Splits one flow into **concurrent** flows |
+| ━ thick bar, several in and one out | **Join** (synchronization) | Combines concurrent flows back into one |
+| ◉ ringed circle | **End** | The end of all flows |
+| Folded-corner rectangle | **Note** | A comment, attached by a dashed line |
+
+## Worked examples
+
+### Login page
+
+<SlideFigure page={8} caption="Login: the client enters a name and password; if they're wrong, 'Invalid login/password' loops back to try again; if they're correct, the client logs in and their settings are displayed. Notes give the precondition ('Client is registered') and the result." />
+
+Notice the **loop**: the *No* branch flows back to the input activity. A loop in an activity diagram is simply a decision whose branch returns to an earlier activity.
+
+### Banking: withdraw or deposit
+
+<SlideFigure page={11} caption="Banking: check the account, then branch to Withdraw or Deposit. A withdrawal checks the balance (not enough → not allowed; enough → withdraw); both paths end by updating the account balance." />
+
+Showing withdrawals and deposits **on one chart** makes the shared steps (check account, update balance) obvious.
+
+### Word editing with parallel printing
+
+<SlideFigure page={13} caption="Word editing: create, save and type a document, optionally open graphics or spreadsheet packages (guards [graphics needed], [table needed]), save, then print a hard copy while the printer receives the file in parallel, and exit." />
+
+## From algorithm to diagram: "Issue book"
+
+Write the steps first, then map **each step to an activity** and **each "if" to a decision**:
+
+```text title="Issue book: the algorithm"
+1. Start
+2. Enter Member ID and Book ID
+3. Check that both fields are filled
+     if not  -> display "Enter all fields"         -> End
+4. Validate Member ID and Book ID
+     if invalid -> display "Invalid Member or Book ID" -> End
+5. Check book availability
+     if not available -> display "Book Not Available" -> End
+6. Check the number of books issued to the member
+     if 3 or more -> display "Limit Exceeded"       -> End
+7. Issue book: record the transaction, assign the book to the member
+8. Update the database (book status, member record)
+9. Display a success message
+10. End
+```
+
+<SlideFigure page={18} source={1} caption="The resulting activity diagram: four decisions, each with a failure branch that shows a message and ends; the success path issues the book, updates the database and confirms." />
+
+The same logic as code shows the one-to-one mapping. Every decision diamond is an `if`, and every failure branch ends early:
+
+```python title="issue_book.py"
+def issue_book(member_id, book_id, db):
+    if not member_id or not book_id:                    # decision 1
+        return "Enter all fields"
+    if not db.valid_member(member_id) or not db.valid_book(book_id):  # decision 2
+        return "Invalid Member or Book ID"
+    if not db.is_available(book_id):                    # decision 3
+        return "Book Not Available"
+    if db.books_issued(member_id) >= 3:                 # decision 4
+        return "Limit Exceeded"
+    db.record_loan(member_id, book_id)                  # Issue book
+    db.update_status(book_id, member_id)                # Update database
+    return "Book issued successfully"                   # Success message
+```
+
+<Callout type="tip" title="Checklist before you hand in a diagram">
+  One start node. Every activity reachable and labelled with a <strong>verb phrase</strong>. Every decision's outgoing flows labelled with <strong>complementary</strong> guards (yes/no, [valid]/[invalid]). Every fork matched by a join. Every path reaching an end node.
+</Callout>
+
+<Takeaways>
+
+- An activity diagram is a **flowchart of control flow**: start, activities, connectors, decisions, fork/join, end.
+- Loops are decisions whose branch **returns** to an earlier activity.
+- Use **fork/join** for steps that happen **at the same time**, e.g. printing while the printer receives the file.
+- To draw one, first write the **numbered steps**: each step becomes an activity and each "if" becomes a decision with labelled guards.
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="Register Course activity diagram" level="medium">
+
+Using the student registration system from Section 2, describe the activity diagram for **Register Course**: the student logs in; if the login fails they retry; then they select a course; the system checks the prerequisites and seat availability; if a check fails it shows a message and the student may choose another course; otherwise it registers the student and **at the same time** emails a confirmation and updates the class list.
+
+<Solution>
+
+1. Start → *Enter ID and password* → decision *[valid?]*:
+   - `[no]` → *Show error* → back to *Enter ID and password* (a loop);
+   - `[yes]` → *Select course*.
+2. *Check prerequisites and seats* → decision:
+   - `[fail]` → *Show reason* → decision *[choose another?]*:
+     - `[yes]` → back to *Select course*;
+     - `[no]` → End.
+   - `[pass]` → *Register student* → **fork**.
+3. After the fork:
+   - *Send confirmation email* ∥ *Update class list* → **join** → End.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="ATM withdrawal with swimlanes" level="hard">
+
+Add swimlanes for **Customer**, **ATM** and **Bank** to an activity diagram for withdrawing cash. Which activities go in which lane?
+
+<Solution>
+
+- **Customer**: insert card, enter PIN, enter amount, take cash and card.
+- **ATM**: read card, request PIN, show menu, dispense cash, print receipt (fork: dispense ∥ print, then join), eject card.
+- **Bank**: validate PIN (decision: valid/invalid, with three tries), check balance and daily limit (decision: sufficient/insufficient), debit account.
+
+Transitions cross lanes, e.g. *enter PIN* (Customer) → *validate PIN* (Bank) → *show menu* (ATM).
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "Which symbol splits one flow into concurrent flows?",
+      options: ["Decision diamond", "Fork bar", "End node", "Note"],
+      answer: 1,
+      explain: "A fork splits; a join recombines the concurrent flows."
+    },
+    {
+      q: "In the login diagram, how is 'try again' modelled?",
+      options: ["A fork", "A decision whose 'No' branch flows back to the input activity", "A second start node", "A note"],
+      answer: 1,
+      explain: "Loops are decisions with a branch back to an earlier activity."
+    },
+    {
+      q: "Each 'if' in an algorithm usually becomes…",
+      options: ["An activity", "A decision node with guards", "A swimlane", "An end node"],
+      answer: 1,
+      explain: "Conditions become decisions; steps become activities."
+    },
+    {
+      q: "A thick bar with several incoming flows and one outgoing flow is…",
+      options: ["A fork", "A join (synchronization bar)", "A merge diamond", "A start node"],
+      answer: 1,
+      explain: "It waits for all concurrent flows to finish."
+    }
+  ]}
+/>

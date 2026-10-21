@@ -1,4 +1,5 @@
-// Copies course materials (lecture/section PDFs and notebooks) from ../materials into
+// Copies course materials (lecture/section PDFs and notebooks, from the Lectures, Chapters and
+// Sections folders) from ../materials into
 // public/materials/<subject-slug>/, and logo files from ../brand into public/brand/.
 //
 // Reference books in a subject's root folder are deliberately NOT copied: they are cited
@@ -15,7 +16,7 @@ const materialsRoot = path.resolve(root, "..", "materials");
 const brandRoot = path.resolve(root, "..", "brand");
 const subjectsDir = path.join(root, "content", "subjects");
 const COPY_EXTENSIONS = new Set([".pdf", ".ipynb"]);
-const COURSE_FOLDERS = /^(lectures|sections)$/i;
+const COURSE_FOLDERS = /^(lectures|sections|chapters)$/i;
 
 function walk(dir) {
   return fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {

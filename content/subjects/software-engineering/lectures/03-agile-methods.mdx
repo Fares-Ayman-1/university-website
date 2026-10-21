@@ -1,0 +1,272 @@
+---
+number: 3
+title: Agile Software Development
+summary: Why agile methods exist, the Agile Manifesto's four values and the key agile principles, then the two main methods. Extreme Programming covers its release cycle, user stories, practices, refactoring, test-first development and pair programming. Scrum covers its three phases, the sprint cycle, the product backlog, daily scrums and the Scrum master.
+topics: [Problems with plan-driven development, Agile Manifesto, Agile principles, Extreme Programming, User stories, Refactoring, Test-first development, Pair programming, Scrum, Sprint cycle, Product backlog, Scrum master]
+duration: 50 min study
+sources:
+  - file: Chapters/Ch3/Lecture_03_Agile Methods.pdf
+    label: SWE Lecture 3 – Agile Software Development (Dr. Fatma ElSayed)
+    pages: "1-32"
+bookRefs:
+  - book: swe-book
+    chapter: Ch 3 · Agile Software Development
+    pages: "53–76"
+  - book: sommerville
+    chapter: Ch 3 · Agile software development
+---
+
+<Objectives>
+
+- Explain **why** agile methods were created and state the **four values** of the Agile Manifesto.
+- Describe the five **key agile principles**.
+- Explain the XP **release cycle**, **user stories**, **refactoring**, **test-first development** and **pair programming**.
+- Describe Scrum's **three phases**, the **sprint cycle**, the **product backlog** and the role of the **Scrum master**.
+
+</Objectives>
+
+## Why agile?
+
+<SlideFigure page={2} caption="The classic tree-swing cartoon: what the customer explained, what each role understood or built, and what the customer really needed." />
+
+- Customers often **don't know exactly what they want**, and not every requirement can be found at the start.
+- Requirements and business priorities **change** throughout the project.
+- In plan-driven methods, change means **costly rework**, feedback comes **late**, and long cycles delay business value.
+- **Rapid development and delivery** is now a basic requirement.
+
+Agile methods weren't created because plan-driven methods are "bad". They were created because software development is **unpredictable**, and they adapt to continuous change.
+
+## The Agile Manifesto
+
+<SlideFigure page={5} caption="The Agile Manifesto's four value pairs." />
+
+| We value… | …over |
+|---|---|
+| **Individuals and interactions** | Processes and tools |
+| **Working software** | Comprehensive documentation |
+| **Customer collaboration** | Contract negotiation |
+| **Responding to change** | Following a plan |
+
+The items on the right still have value, but the items on the left are valued **more**.
+
+## Key agile principles
+
+| Principle | Meaning |
+|---|---|
+| **Customer involvement** | Customers are closely involved throughout development |
+| **Incremental delivery** | The software is developed in increments, following the customer's priorities |
+| **People, not process** | The team uses its own skills and chooses how to work |
+| **Embrace change** | Expect requirements to change, and design the system to accommodate it |
+| **Maintain simplicity** | Keep both the software and the process simple |
+
+The best-known agile methods are **Extreme Programming (XP)**, **Scrum** and **Kanban**.
+
+## Extreme Programming (XP)
+
+XP, from the late 1990s, takes an **extreme** approach to iterative development:
+
+- new versions may be **built several times a day**,
+- increments are **delivered to customers every 2 weeks**,
+- **all tests run on every build**, and a build is accepted only if they all pass.
+
+<SlideFigure page={11} caption="The XP release cycle: select user stories → break them into tasks → plan the release → develop, integrate and test → release → evaluate." />
+
+### User stories
+
+A **user story** is a feature the customer wants, small enough to deliver. Stories are written on **cards** in this format:
+
+```text title="Story card"
+As a  <type of user>
+I want <something the user can do once the feature is live>
+So that <the benefit it brings>
+
+Example (Mentcare):
+As a doctor
+I want to prescribe medication from a list of approved drugs
+So that prescriptions are checked against safe dose ranges
+```
+
+In XP the **customer is part of the team** and decides the requirements. The team breaks each story into **tasks**, which are the basis of the effort and cost estimates. The customer then **chooses the stories** for the next release by priority. The main weakness of user stories is **completeness**: it is hard to know whether enough stories cover all the essential requirements.
+
+### XP practices
+
+<SlideFigure page={14} caption="XP practices: whole team, planning, small releases, customer tests, metaphor, simple design, test-driven development, refactoring, pair programming, collective ownership, continuous integration, coding standard and a sustainable pace." />
+
+XP supports each agile principle:
+
+| Principle | XP practice |
+|---|---|
+| Incremental delivery | Small, frequent releases based on customer stories |
+| Customer involvement | A customer representative in the team defines the acceptance tests |
+| People, not process | Pair programming, **collective ownership** of the code, a **sustainable pace** without excessive overtime |
+| Embrace change | Regular releases, test-first development, refactoring, **continuous integration** |
+| Maintain simplicity | Constant refactoring and **simple designs** that don't anticipate future changes |
+
+### Refactoring
+
+Incremental development tends to **degrade the structure**: developers patch problems as they arise, which leads to duplicated code, inappropriate reuse, and harder and harder changes. XP's answer is to refactor **constantly**.
+
+<Definition term="Refactoring">
+  Improving the <strong>internal structure</strong> of existing code <strong>without changing its external behaviour</strong>.
+</Definition>
+
+Examples include reorganizing a class hierarchy to remove duplicate code, tidying up and renaming attributes and methods, and replacing similar code with calls to library methods. Refactored code is easier to understand, so it needs less documentation.
+
+### Test-first development
+
+In XP, tests are written **before** the code, and they are **automated**. Development can't move on until all tests pass. Writing the test first defines the **interface** and the expected **behaviour**, forces ambiguities in the specification to be resolved early, and avoids **test lag**, where testing falls behind implementation. The customer helps write the **acceptance tests**.
+
+```python title="test_dose.py: a test written before the code (Mentcare dose check)"
+from mentcare.prescribing import check_dose  # doesn't exist yet: the test comes first
+
+SAFE_DAILY_MG = (10, 400)   # known safe range for this drug
+
+def test_dose_within_range_is_ok():
+    assert check_dose(single_mg=50, per_day=4, safe=SAFE_DAILY_MG) == "OK"
+
+def test_single_dose_too_high_is_rejected():
+    assert check_dose(single_mg=500, per_day=1, safe=SAFE_DAILY_MG) == "ERROR: outside safe range"
+
+def test_frequency_pushes_daily_total_too_high():
+    # 150 mg is fine once, but 150 × 3 = 450 mg/day exceeds the limit
+    assert check_dose(single_mg=150, per_day=3, safe=SAFE_DAILY_MG) == "ERROR: outside safe range"
+```
+
+### Pair programming
+
+**Two people work together at one computer**. Pairs change dynamically, so everyone works with everyone.
+
+<Grid cols={2}>
+  <Card title="Review" tag="quality">
+    An informal, continuous code review: every line is seen by at least two people. It is much cheaper than formal inspections.
+  </Card>
+  <Card title="Idea sharing" tag="knowledge">
+    Knowledge spreads across the team, and there are fewer false starts.
+  </Card>
+  <Card title="Responsibility" tag="ownership">
+    Collective ownership: the team as a whole, not an individual, is responsible for the code.
+  </Card>
+  <Card title="Dynamicity" tag="refactoring">
+    Changing pairs encourage refactoring, because everyone benefits from the improved code at once.
+  </Card>
+</Grid>
+
+Studies suggest a pair is about as productive as two people working separately, and the code is of higher quality.
+
+## Scrum
+
+Scrum is a general agile method that focuses on **managing iterative development**, not on technical practices. It doesn't prescribe pair programming or test-first development, so it is often combined with XP, which supplies the engineering practices while Scrum supplies the management framework.
+
+<SlideFigure page={25} caption="The Scrum process: outline planning and architectural design, then repeated sprint cycles (assess → select → develop → review), then project closure." />
+
+**Three phases:**
+
+1. **Outline planning**: set the general objectives and design the software architecture.
+2. **Sprint cycles**: each sprint develops an increment of the system.
+3. **Project closure**: wrap up, complete the documentation (help frames, user manuals), and assess the lessons learned.
+
+### The sprint cycle
+
+<Steps>
+
+1. **Length**: sprints are **fixed length, normally 2–4 weeks**, matching one release iteration.
+2. **Assess**: planning starts from the **product backlog**, the list of work to be done. Priorities and risks are reviewed, and the customer can add new requirements.
+3. **Select**: the whole team works with the customer to choose the features for this sprint.
+4. **Develop**: the team organizes itself. Short **daily scrums** review progress and re-prioritize. The team is shielded from the outside, with all communication going through the **Scrum master**.
+5. **Review**: the work is reviewed and shown to stakeholders, then the next sprint begins.
+
+</Steps>
+
+### The Scrum master
+
+The whole team is empowered to make decisions, so Scrum deliberately avoids the term "project manager". The **Scrum master** is a **facilitator** who:
+
+- arranges the daily meetings,
+- tracks the backlog of work to be done,
+- records decisions,
+- measures progress against the backlog, and
+- communicates with customers and management outside the team, **protecting the team from distractions**.
+
+A **Scrum board**, a whiteboard of sprint-backlog notes, lets everyone see at a glance what others are doing.
+
+| | XP | Scrum |
+|---|---|---|
+| **Focus** | Engineering practices (how to write the code) | Project management (how to organize iterations) |
+| **Iteration** | Releases about every 2 weeks; builds several times a day | Sprints of 2–4 weeks |
+| **Requirements** | Story cards | Product backlog |
+
+<Takeaways>
+
+- Agile values **individuals, working software, collaboration and responding to change**.
+- Its principles are **customer involvement, incremental delivery, people not process, embrace change and maintain simplicity**.
+- **XP**: user stories → tasks; frequent releases; **refactoring**, **test-first development** and **pair programming**.
+- **Scrum**: planning → **sprints** of 2–4 weeks from the **product backlog** → closure, facilitated by the **Scrum master**.
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="Write a user story" level="easy">
+
+Write a user story for an online bookstore feature that lets customers track their orders.
+
+<Solution>
+
+*As a* customer *I want* to see the status of my order (paid, shipped, delivered) *so that* I know when my books will arrive. The team would then break it into tasks, such as "add a status field to orders", "build an order-status page" and "send an email when the status changes".
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Why refactor?" level="medium">
+
+Why does incremental development degrade code over time, and how does XP address it?
+
+<Solution>
+
+Each increment is added by solving problems as they arise, with workarounds, duplicated code and inappropriate reuse, so the structure deteriorates and every change gets harder. XP addresses this with **constant refactoring**: improving the internal structure without changing behaviour whenever code can be improved. Pair programming and collective ownership make the team support it, and automated tests make it safe.
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "What is the primary focus of Scrum?",
+      options: ["Specific programming techniques", "Managing and coordinating iterative development", "Detailed architecture design", "Testing after development"],
+      answer: 1,
+      explain: "Scrum is a management framework; XP provides the engineering practices."
+    },
+    {
+      q: "Which XP practice improves internal structure while keeping external behaviour unchanged?",
+      options: ["Continuous integration", "Refactoring", "Pair programming", "Incremental planning"],
+      answer: 1,
+      explain: "That is the definition of refactoring."
+    },
+    {
+      q: "How are user requirements represented in XP?",
+      options: ["Story cards", "Gantt charts", "Class diagrams", "Architecture documents"],
+      answer: 0,
+      explain: "User stories are written on cards and broken down into tasks."
+    },
+    {
+      q: "Which Scrum artifact is the prioritized list of work for the product?",
+      options: ["Sprint review", "Product backlog", "Scrum board", "Release plan"],
+      answer: 1,
+      explain: "The product backlog is the starting point for planning each sprint."
+    },
+    {
+      q: "What is the typical length of a Scrum sprint?",
+      options: ["One day", "Two to four weeks", "Two to four months", "Six months"],
+      answer: 1,
+      explain: "Sprints are fixed length, normally 2–4 weeks."
+    },
+    {
+      q: "Which is NOT a value of the Agile Manifesto?",
+      options: ["Working software over comprehensive documentation", "Customer collaboration over contract negotiation", "Following a plan over responding to change", "Individuals and interactions over processes and tools"],
+      answer: 2,
+      explain: "It is the reverse: responding to change over following a plan."
+    }
+  ]}
+/>

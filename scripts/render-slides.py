@@ -66,7 +66,10 @@ def main() -> None:
                     target = OUT / key
 
                     if FORCE or not target.exists():
-                        pdf_path = materials_dir / sources[source_index]["file"]
+                        # Prefer the published copy: PDFs converted from PowerPoint/Word
+                        # (npm run convert) exist only there, not in ../materials.
+                        published = ROOT / "public" / "materials" / subject_dir.name / sources[source_index]["file"]
+                        pdf_path = published if published.exists() else materials_dir / sources[source_index]["file"]
                         if not pdf_path.exists():
                             if target.exists():
                                 continue

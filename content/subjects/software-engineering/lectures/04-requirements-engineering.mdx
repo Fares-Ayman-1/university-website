@@ -1,0 +1,281 @@
+---
+number: 4
+title: Requirements Engineering
+summary: What requirements and requirements engineering are, completeness and consistency, stakeholders, user vs. system requirements and their readers, functional vs. non-functional requirements (product, organizational and external) with measurable metrics, and the RE process. That process covers the feasibility study, elicitation and analysis (interviews, scenarios, ethnography), specification in the SRS, and validation (reviews and prototyping).
+topics: [Requirement definition, Completeness and consistency, Stakeholders, User vs system requirements, Functional requirements, Non-functional requirements, NFR metrics, Feasibility study, Elicitation and analysis, Interviews, Scenarios, Ethnography, SRS document, Requirements validation]
+duration: 55 min study
+sources:
+  - file: Chapters/Ch4/Lecture_04_SWE_Requirements.pdf
+    label: SWE Lecture 4 – Requirements Engineering (Dr. Fatma ElSayed)
+    pages: "1-39"
+bookRefs:
+  - book: swe-book
+    chapter: Ch 4 · Requirements Engineering
+    pages: "77–101"
+  - book: sommerville
+    chapter: Ch 4 · Requirements engineering
+---
+
+<Objectives>
+
+- Define a **requirement** and **requirements engineering**, and explain **completeness** and **consistency**.
+- Identify the **stakeholders** of a system.
+- Distinguish **user** from **system** requirements and **functional** from **non-functional** ones.
+- Classify non-functional requirements and write them **measurably**.
+- Describe the **RE process**: feasibility, elicitation and analysis, specification and validation.
+
+</Objectives>
+
+## Requirements and requirements engineering
+
+<Definition term="Requirement">
+  A <strong>function, constraint or other property</strong> that the system must provide to meet the needs of its intended users.
+</Definition>
+
+<Definition term="Requirements engineering (RE)">
+  Establishing, systematically, the <strong>services</strong> a customer requires from a system and the <strong>constraints</strong> under which it operates and is developed. Requirements are defined, managed and tested with well-defined techniques.
+</Definition>
+
+A functional specification should be:
+
+- **complete**: every service the user requires is defined;
+- **consistent**: no requirements contradict each other.
+
+For large, complex systems this is practically **impossible** to achieve fully: mistakes and omissions are easy to make, and there are many **stakeholders** with different needs.
+
+### Stakeholders
+
+A **stakeholder** is any person or organization affected by the system: **system owners** (who pay), **end users**, **system managers**, the **project groups** that develop it (engineers, testers, trainers), and **external** stakeholders (marketing, government…).
+
+<Callout type="example" title="Stakeholders of the Mentcare (MHC-PMS) system">
+  Patients whose information is recorded; doctors who assess and treat them; nurses who coordinate consultations; medical receptionists who manage appointments; IT staff who install and maintain the system; and a medical ethics manager who ensures it meets ethical guidelines.
+</Callout>
+
+## User and system requirements
+
+| | User requirements | System requirements |
+|---|---|---|
+| **Form** | Natural language plus diagrams | A structured, detailed document |
+| **Content** | The **services** the system provides and its operating constraints | Detailed descriptions of functions, services and constraints: what must be implemented |
+| **Focus** | **What** the system should do | **How** the system will do it |
+| **Document** | Business Requirements Specification (BRS) | System Requirements Specification (SRS) |
+
+<SlideFigure page={10} caption="One user requirement (monthly drug-cost reports) refined into five detailed system requirements." />
+
+<SlideFigure page={11} caption="Readers of each type: user requirements are read by client managers, end users, client engineers, contractor managers and system architects; system requirements by end users, client engineers, system architects and software developers." />
+
+## Functional and non-functional requirements
+
+| Functional | Non-functional |
+|---|---|
+| Something the system must **do** | **How** the system does it: its qualities and constraints |
+| Usually **noun + verb**: "The system prints an invoice." | Usually has an **adverb**: "The system prints invoices **quickly**." |
+
+### Functional requirements
+
+Also called **behavioural** or operational requirements: they state the **services** the system provides, its **outputs** for given **inputs**, and how it behaves in particular situations. They may also say what the system should **not** do.
+
+```text title="Mentcare functional requirements"
+1. A user shall be able to search the appointment lists for all clinics.
+2. The system shall generate each day, for each clinic, a list of patients
+   who are expected to attend appointments that day.
+3. Each staff member using the system shall be uniquely identified by his or
+   her eight-digit employee number.
+```
+
+<Callout type="warning" title="Imprecision causes trouble">
+  What does "search" mean in requirement 1? The <strong>user</strong> means "search for a patient name across all appointments in all clinics". The <strong>developer</strong> may implement "choose a clinic, then search in it". Ambiguous requirements are read differently by users and developers.
+</Callout>
+
+### Non-functional requirements
+
+Non-functional requirements (NFRs) define system **properties** (reliability, safety, response time…) and **constraints** (on the development process, devices, standards). They often apply to the **whole system** rather than one feature, and they can be **more critical** than functional ones: a system that misses them may be **useless**.
+
+<SlideFigure page={18} caption="Types of non-functional requirement: product (usability, efficiency, dependability, security), organizational (environmental, operational, development) and external (regulatory, ethical, legislative)." />
+
+| Class | Source | Mentcare example |
+|---|---|---|
+| **Product** | How the delivered product must behave (speed, reliability…) | "Available to all clinics during working hours (Mon–Fri, 08:30–17:30); downtime shall not exceed five seconds in any one day." |
+| **Organizational** | Policies and procedures of the customer's and developer's organizations | "Users shall authenticate themselves using their health authority identity card." |
+| **External** | Factors outside the system: interoperability, laws, ethics | "The system shall implement patient privacy provisions as set out in HStan-03-2006-priv." |
+
+### Measurable NFRs
+
+Write NFRs **quantitatively**, so they can be objectively **tested**:
+
+| Property | Measure |
+|---|---|
+| **Speed** | Transactions processed per second; user/event response time; screen refresh time |
+| **Size** | Megabytes; number of ROM chips |
+| **Ease of use** | Training time; number of help frames |
+| **Reliability** | Mean time to failure; probability of unavailability; rate of failure occurrence; availability |
+| **Robustness** | Time to restart after failure; percentage of events causing failure; probability of data corruption on failure |
+| **Portability** | Percentage of target-dependent statements; number of target systems |
+
+"The system should be easy to use" can't be tested. "Medical staff shall be able to use all system functions after two hours of training" can.
+
+## The requirements engineering process
+
+RE is **iterative**: its activities are interleaved.
+
+<SlideFigure page={24} caption="The RE process: feasibility study → elicitation and analysis → specification → validation, producing a feasibility report, system models, user and system requirements, and the requirements document." />
+
+<Steps>
+
+1. **Feasibility study**: is the system **worthwhile**, buildable with current technology, within budget, and able to integrate with existing systems? It should be quick and cheap, and it informs whether to continue.
+2. **Elicitation and analysis**: draw out the requirements from stakeholders.
+3. **Specification**: document the requirements.
+4. **Validation**: check the specification for errors, ambiguities, omissions and conflicts.
+
+</Steps>
+
+### 1 · Elicitation and analysis
+
+Technical staff work with stakeholders to learn about the application domain, the services needed, the required performance and the hardware constraints. Related requirements are discovered, grouped into clusters, **prioritized**, and **negotiated** (conflicts, cost and timeline).
+
+**Requirements discovery techniques:**
+
+<Grid cols={3}>
+  <Card title="Interviews" tag="talk">
+    <strong>Closed</strong> (a fixed list of questions) or <strong>open</strong> (explore issues), usually mixed. Be open-minded, and prompt discussion with questions, a proposal or a prototype.
+  </Card>
+  <Card title="Scenarios" tag="examples">
+    Real-life examples of how the system is used for one task: the starting situation, the normal flow, what can go wrong, concurrent activities, and the end state.
+  </Card>
+  <Card title="Ethnography" tag="observe">
+    The analyst <strong>observes</strong> people at work to find <strong>implicit</strong> social and organizational requirements. Good for existing processes, but it can't identify new features.
+  </Card>
+</Grid>
+
+<SlideFigure page={30} caption="Scenario for collecting a patient's medical history in Mentcare: the initial assumption and the normal flow." />
+
+### 2 · Specification: the SRS
+
+**Specification** means writing the user and system requirements in a **requirements document**. Ideally the requirements are clear, unambiguous, easy to understand, complete and consistent. The **software requirements specification (SRS)** is the **official statement of what the developers must build**. It contains the user requirements and the system requirements (detailed ones may go in a separate document), and it may form part of the **contract**.
+
+<SlideFigure page={35} caption="Users of the requirements document: customers, managers, system engineers, test engineers and maintenance engineers." />
+
+### 3 · Validation
+
+Customers and developers read the document in detail and check its:
+
+| Check | Question |
+|---|---|
+| **Validity** | Does the system provide the functions that best support the customer's needs? |
+| **Consistency** | Are there conflicting requirements? |
+| **Completeness** | Are all the functions the customer requires included? |
+| **Realism** | Can they be implemented with the available budget and technology? |
+
+Techniques include **requirements reviews** (systematic manual analysis) and **prototyping** (checking the requirements with an executable model).
+
+<Takeaways>
+
+- A requirement is a **service or constraint**; RE defines, manages and tests requirements systematically.
+- **User** requirements say **what** (natural language, for customers); **system** requirements say **how** (detailed, for developers).
+- **Functional** requirements are what the system does; **non-functional** ones are its qualities and constraints (**product, organizational, external**). Make NFRs **measurable**.
+- The RE process is **feasibility → elicitation and analysis (interviews, scenarios, ethnography) → specification (SRS) → validation (validity, consistency, completeness, realism)**.
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="Functional or non-functional?" level="easy">
+
+Classify each requirement:
+
+1. The application must respond to any user request within 2 seconds under normal network conditions.
+2. The system shall let a librarian register a new book with its ISBN.
+3. The web application must be available 99.9 % of the time during a calendar year.
+4. The mobile app should work on both Android and iOS.
+5. The system shall support up to 500 concurrent users without performance degradation.
+
+<Solution>
+
+1. Non-functional (product: performance).
+2. Functional.
+3. Non-functional (product: dependability/availability).
+4. Non-functional (product: portability).
+5. Non-functional (product: performance/scalability).
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Make it testable" level="medium">
+
+Rewrite these vague requirements as measurable non-functional requirements:
+
+1. "The system should be fast."
+2. "The system should be reliable."
+3. "The system should be easy to learn."
+
+<Solution>
+
+1. "The system shall display search results within **1 second** for 95 % of queries."
+2. "The **mean time to failure** shall be at least **500 hours**, and availability shall be at least **99.5 %** during working hours."
+3. "New staff shall be able to use all core functions after **at most 2 hours of training**."
+
+(Any measure from the metrics table is fine, as long as it is a number that a test can check.)
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Classify the NFR" level="medium">
+
+Classify each as a product, organizational or external requirement:
+
+1. The system shall comply with the country's data-protection law.
+2. The system shall be developed in Java, following the company's coding standards.
+3. The system shall not use more than 512 MB of memory.
+
+<Solution>
+
+1. External (legislative).
+2. Organizational (development).
+3. Product (efficiency: space).
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "Requirements written in natural language so customers can easily understand them are…",
+      options: ["System requirements", "User requirements", "Design specifications", "Test cases"],
+      answer: 1,
+      explain: "User requirements are for customers; system requirements are detailed, for developers."
+    },
+    {
+      q: "If a requirement describes how well the system performs rather than what it does, it is…",
+      options: ["Functional", "Non-functional", "A user story", "A domain model"],
+      answer: 1,
+      explain: "Non-functional requirements describe qualities and constraints."
+    },
+    {
+      q: "Which is NOT an activity of the RE process?",
+      options: ["Elicitation and analysis", "Specification", "Validation", "Code optimization"],
+      answer: 3,
+      explain: "RE covers feasibility, elicitation and analysis, specification and validation."
+    },
+    {
+      q: "Which discovery technique observes people in their real working environment?",
+      options: ["Closed interviews", "Ethnography", "Prototyping", "Requirements reviews"],
+      answer: 1,
+      explain: "Ethnography reveals implicit, social and organizational requirements."
+    },
+    {
+      q: "Which validation check asks whether the requirements can be built with the available budget and technology?",
+      options: ["Validity", "Consistency", "Completeness", "Realism"],
+      answer: 3,
+      explain: "Realism checks whether implementation is feasible."
+    },
+    {
+      q: "'Users shall authenticate with their health authority identity card' is which kind of NFR?",
+      options: ["Product", "Organizational", "External", "Functional"],
+      answer: 1,
+      explain: "It comes from the organization's policies and procedures."
+    }
+  ]}
+/>

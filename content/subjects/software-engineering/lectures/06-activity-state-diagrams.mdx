@@ -1,0 +1,242 @@
+---
+number: 6
+title: "System Modelling II: Activity and State Diagrams"
+summary: Two behavioural UML models. Activity diagrams cover activities and transitions, start and end nodes, decisions, guards and merges, fork and join bars, swimlanes, multiple initial and final nodes, and flow-final nodes, with the hot-drink, library-lending and exam examples. State machine diagrams cover event-driven modelling, states with entry/do/exit activities, and transitions with event [guard] / activity, with the lecture-hall, fax, PC and elevator examples.
+topics: [Activity diagram, Start and end nodes, Decision and merge, Guards, Fork and join, Swimlanes, Multiple initial nodes, Flow final node, Event-driven models, State diagram, Entry / do / exit, Transitions, Event and guard]
+duration: 55 min study
+sources:
+  - file: Chapters/Ch6/Lecture_06_SWE_System_Modelling_P2.pdf
+    label: SWE Lecture 6 – System Modelling Part 2 (Dr. Fatma ElSayed)
+    pages: "1-35"
+bookRefs:
+  - book: swe-book
+    chapter: Ch 5 · System Modeling (5.2.1 Activity, 5.2.3 State)
+    pages: "104–119"
+  - book: sommerville
+    chapter: Ch 5 · System modeling (5.4 Behavioral models)
+  - book: uml-classroom
+    chapter: Ch 5 · The State Machine Diagram; Ch 7 · The Activity Diagram
+---
+
+<Objectives>
+
+- Draw an **activity diagram** with activities, transitions, decisions and guards, merges, and fork and join bars.
+- Use **swimlanes** to show which role is responsible for each activity.
+- Use **multiple initial nodes**, **multiple final nodes** and the **flow final** node correctly.
+- Explain **event-driven modelling**, and draw a **state diagram** with entry/do/exit activities and transitions labelled *event [guard] / activity*.
+
+</Objectives>
+
+## Activity diagrams
+
+An activity diagram gives a simplified, **step-by-step view of what happens during a process** (the process perspective). It is much like a **flowchart**: it shows the activities, their **order**, the **decision points**, and which activities can run **in parallel**. It can also show **who** is responsible for each activity. An activity can be done by a person or a computer.
+
+<SlideFigure page={6} caption="Activity diagram symbols: activity, start node, end node, transition, synchronization bar, decision, merge, guard and swimlane." />
+
+| Element | Notation | Meaning |
+|---|---|---|
+| **Activity** | Rounded rectangle | A task or business process step |
+| **Start node** | Filled circle | Where the process begins |
+| **End node** | Bull's-eye (filled circle in a ring) | Where the process ends; there may be more than one |
+| **Transition** | Arrow | Completing one activity triggers the next |
+| **Decision** | Diamond with one incoming and several outgoing flows | Chooses one path; each outgoing flow has a **guard** in `[brackets]` |
+| **Merge** | Diamond with several incoming flows and one outgoing | Joins alternative, mutually exclusive paths |
+| **Fork** | Thick bar with one incoming and several outgoing flows | Splits into **concurrent** paths |
+| **Join** | Thick bar with several incoming flows and one outgoing | Waits for **all** concurrent paths to finish |
+| **Swimlane** | Vertical partition labelled with a role | Groups the activities done by one role |
+| **Note** | Folded-corner rectangle, dashed line | A comment on an element |
+
+<Callout type="warning" title="Guards must cover every case">
+  Exactly <strong>one</strong> guard on the flows leaving a decision must be true whenever the decision is reached. Use complementary guards such as <code>[clean]</code> and <code>[dirty]</code>, or <code>[else]</code>.
+</Callout>
+
+### Example: making a hot drink
+
+To make instant coffee you **fill the kettle** and **boil the water**. **At the same time** you get a cup and add coffee. When both strands are done, you pour the water and add milk.
+
+<SlideFigure page={10} caption="Making coffee: a fork lets 'fill kettle → boil water' and 'get cup → add coffee' run in parallel; a join waits for both before 'pour water'." />
+
+Now add a check: if the cup is dirty, wash it first.
+
+<SlideFigure page={12} caption="A decision with guards [dirty] / [clean] and a merge that brings the two alternative flows back together." />
+
+### Swimlanes: borrowing a library book
+
+When a workflow involves several **roles**, divide the diagram into **swimlanes**, one per role. Transitions may cross lanes, and the diagram shows where each role interacts with the process.
+
+<SlideFigure page={15} caption="Borrowing a book: the member's lane (find book, wait in queue, take books) and the library system's lane (record loan, issue the copy, prepare for the next member)." />
+
+<SlideFigure page={20} caption="Assessing students by exam, with swimlanes for Professor, Assistant and Student, and a «datastore» for registrations." />
+
+### Initial, final and flow-final nodes
+
+| Situation | What it means |
+|---|---|
+| **Multiple initial nodes** | Several paths **start concurrently** when the activity starts, e.g. the lecturer's path and the students' path in *Conduct lecture*, which merge at *Write exam* |
+| **Multiple activity final nodes** | The **first** one reached **ends the whole activity**, e.g. course participation ends if the assignment fails **or** the exam is written |
+| **Flow final node** (circle with an X) | Ends **only that path**; other concurrent paths keep running |
+
+<SlideFigure page={22} caption="Two activity final nodes: failing the assignment ends the whole activity immediately." />
+
+<SlideFigure page={23} caption="A flow final node ends only the failed-assignment path; attending lectures continues." />
+
+## State diagrams
+
+### Event-driven models
+
+**Event-driven modelling** shows how a system **responds to external and internal events**. The system has a **finite number of states**, and events (stimuli) cause **transitions** between them. UML models this with **state machine diagrams** (statecharts).
+
+<Callout type="note" title="State vs. activity diagrams">
+  A state diagram shows how a <strong>single object</strong> changes state over time in response to events. It does <strong>not</strong> show the flow of data, or the sequence of activities across many objects.
+</Callout>
+
+<SlideFigure page={27} caption="A lecture hall: free → (lecture start) → occupied → (release) → free." />
+
+<SlideFigure page={28} caption="State diagram elements: state, transition, initial state, final state, terminate node, decision, parallelization and synchronization nodes." />
+
+### States and their internal activities
+
+A **state** is a rounded rectangle with the state's name. It can have a second compartment with internal activities:
+
+| Label | When it runs |
+|---|---|
+| `entry / …` | On **entering** the state |
+| `do / …` | **While** in the state |
+| `exit / …` | On **leaving** the state |
+
+<SlideFigure page={31} caption="Fax machine: Faxing (entry/key in remote fax number, do/add datestamp, do/dial phone number, exit/complete transmission…) and Idle (entry/fax complete, do/show Date and Time)." />
+
+### Transitions
+
+A transition is labelled **`event [guard] / activity`**:
+
+- the **event** (trigger) fires the transition;
+- the **guard** (condition) must be true for it to happen;
+- the **activity** runs as the transition happens.
+
+<SlideFigure page={33} caption="A PC: Turn PC on → Initializing (do/Bootup) → Working → Shut down → Shutting Down; Working ⇄ Screensaving on [Timeout] and on a keystroke or mouse movement." />
+
+<SlideFigure page={34} caption="An elevator car: from Idle, a floor selection goes to Moving Up or Moving Down depending on the guard; on reaching the selected floor it goes to Stopping." />
+
+A state machine maps directly to code: a state variable plus the allowed transitions.
+
+```python title="pc_state.py: the PC state diagram as code"
+from enum import Enum, auto
+
+class State(Enum):
+    INITIALIZING = auto()
+    WORKING = auto()
+    SCREENSAVING = auto()
+    SHUTTING_DOWN = auto()
+
+# (current state, event) -> next state
+TRANSITIONS = {
+    (State.INITIALIZING, "boot complete"): State.WORKING,
+    (State.WORKING, "timeout"): State.SCREENSAVING,
+    (State.SCREENSAVING, "keystroke"): State.WORKING,
+    (State.SCREENSAVING, "mouse movement"): State.WORKING,
+    (State.WORKING, "shut down"): State.SHUTTING_DOWN,
+}
+
+def fire(state: State, event: str) -> State:
+    # Events with no transition from this state are ignored.
+    return TRANSITIONS.get((state, event), state)
+
+s = State.INITIALIZING
+for e in ["boot complete", "timeout", "mouse movement", "shut down"]:
+    s = fire(s, e)
+    print(f"{e:15} -> {s.name}")
+# boot complete   -> WORKING
+# timeout         -> SCREENSAVING
+# mouse movement  -> WORKING
+# shut down       -> SHUTTING_DOWN
+```
+
+<Takeaways>
+
+- **Activity diagrams** are flowcharts of a process: activities, transitions, **decisions with guards**, **merges**, **fork/join** for concurrency, and **swimlanes** for roles.
+- Several **activity final** nodes: the first one reached ends everything. A **flow final** node ends only its own path.
+- **State diagrams** model how **one object** reacts to **events**: states with `entry/do/exit` activities, and transitions labelled `event [guard] / activity`.
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="ATM withdrawal activity diagram" level="medium">
+
+Describe an activity diagram for withdrawing cash: insert card, enter PIN, and if the PIN is wrong show an error and end. Otherwise enter the amount. If the balance is insufficient, show a message; otherwise dispense the cash **and at the same time** print a receipt, then eject the card.
+
+<Solution>
+
+1. Start → *Insert card* → *Enter PIN* → **decision**:
+   - `[PIN wrong]` → *Show error* → end;
+   - `[PIN correct]` → *Enter amount* → **decision**.
+2. At the second decision:
+   - `[insufficient balance]` → *Show message*;
+   - `[sufficient]` → **fork** → *Dispense cash* ∥ *Print receipt* → **join**.
+3. The *Show message* path and the join's outgoing flow meet at a **merge** → *Eject card* → end.
+
+With swimlanes, use **Customer** (insert, enter PIN and amount, take cash) and **ATM** (validate, dispense, print, eject).
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Order state diagram" level="medium">
+
+An online order is *Pending* until paid. Then it is *Paid*. When the warehouse ships it, it is *Shipped*, and on delivery it is *Delivered* (final). A pending or paid order can be cancelled, moving to *Cancelled* (final), but a paid order can only be cancelled if it hasn't been packed. List the transitions as `event [guard] / activity`.
+
+<Solution>
+
+- initial → **Pending**
+- Pending → **Paid**: `pay / send receipt`
+- Paid → **Shipped**: `ship / notify customer`
+- Shipped → **Delivered**: `deliver`
+- Pending → **Cancelled**: `cancel`
+- Paid → **Cancelled**: `cancel [not packed] / refund`
+- Delivered and Cancelled → final state.
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "Which element lets two activities run in parallel?",
+      options: ["Decision diamond", "Merge diamond", "Fork (synchronization bar)", "Guard"],
+      answer: 2,
+      explain: "A fork splits into concurrent flows; a join waits for all of them."
+    },
+    {
+      q: "What do swimlanes show?",
+      options: ["The order of states", "Which role is responsible for each activity", "Class attributes", "Message types"],
+      answer: 1,
+      explain: "Each lane groups the activities of one role."
+    },
+    {
+      q: "A diagram has two activity final nodes. What happens when one is reached?",
+      options: ["Only that path ends", "The entire activity ends", "The other final node is reached too", "Nothing; final nodes are notes"],
+      answer: 1,
+      explain: "The first activity final node reached ends everything. Use a flow final to end a single path."
+    },
+    {
+      q: "In 'e1 [g1] / A1' on a transition, g1 is the…",
+      options: ["Event", "Guard condition", "Activity", "Target state"],
+      answer: 1,
+      explain: "event [guard] / activity."
+    },
+    {
+      q: "A state diagram represents…",
+      options: ["The flow of data in a system", "How a single object changes state in response to events", "The classes of a system", "Interactions between many objects over time"],
+      answer: 1,
+      explain: "It doesn't show data flow; it is event-driven behaviour of one object."
+    },
+    {
+      q: "'do / show Date and Time' inside a state runs…",
+      options: ["On entering the state", "While the object is in the state", "On leaving the state", "Only once at start-up"],
+      answer: 1,
+      explain: "entry = on entering, do = while in the state, exit = on leaving."
+    }
+  ]}
+/>

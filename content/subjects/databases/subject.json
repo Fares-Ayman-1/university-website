@@ -29,6 +29,20 @@
   ],
   "books": [
     {
+      "id": "db-book",
+      "title": "Databases I: Fundamentals of Database Systems (course book)",
+      "author": "Prof. Karam Gouda, 2025/2026 (revised 2026)",
+      "file": "Database I-Book_Karam Gouda.pdf",
+      "chapters": [
+        { "title": "Ch 1 · Introduction", "pages": "10–37" },
+        { "title": "Ch 2 · Introduction to Relational Databases", "pages": "38–64" },
+        { "title": "Ch 3 · Querying Relational Data: Relational Algebra and SQL", "pages": "65–90" },
+        { "title": "Ch 4 · Schema Refinement and Normal Forms", "pages": "91–117" },
+        { "title": "Ch 5 · Dictionary", "pages": "118–124" },
+        { "title": "Appendix · Entity–Relationship Models", "pages": "125–155" }
+      ]
+    },
+    {
       "id": "elmasri",
       "title": "Fundamentals of Database Systems",
       "author": "Ramez Elmasri & Shamkant B. Navathe, Pearson"

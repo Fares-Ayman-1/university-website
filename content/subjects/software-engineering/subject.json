@@ -1,0 +1,73 @@
+{
+  "title": "Software Engineering 1",
+  "shortTitle": "SWE",
+  "code": "CS391",
+  "order": 5,
+  "materialsDir": "Software Engineering",
+  "level": "Level 3 · 2026/2027",
+  "tagline": "How professional software is built: processes, requirements, UML models and testing.",
+  "description": "Software engineering is the discipline of producing reliable, maintainable software systematically, as a team, within cost and schedule. The lectures follow Sommerville's Software Engineering and the course book: what software engineering is and its ethics, plan-driven and incremental process models, agile methods (XP and Scrum), requirements engineering, system modelling with UML (context, interaction, structural and behavioural models), and software testing from unit tests to release and user testing. The sections are hands-on UML practice: use case, activity, class, sequence and state diagrams, and data-flow diagrams.",
+  "instructors": [
+    "Dr. Fatma ElSayed",
+    "Dr. Ahmed Yousry",
+    "Eng. Abdullah Mohamed (sections)",
+    "Eng. Ahmed Mostafa (sections)",
+    "Eng. Roaa (sections)"
+  ],
+  "objectives": [
+    "Identify the fundamental concepts, principles and life-cycle models used to develop software systems.",
+    "Choose between plan-driven and agile processes, and explain XP and Scrum practices.",
+    "Elicit, classify, specify and validate functional and non-functional requirements.",
+    "Analyze and design software with UML use case, activity, class, sequence and state diagrams.",
+    "Explain software testing principles and design development, release and user tests.",
+    "Recognize the professional, ethical and legal responsibilities of software engineers."
+  ],
+  "topics": [
+    "Software products and attributes",
+    "Software engineering ethics",
+    "Waterfall, incremental and reuse-oriented processes",
+    "Prototyping and incremental delivery",
+    "Agile methods: XP and Scrum",
+    "Functional and non-functional requirements",
+    "Requirements elicitation and validation",
+    "UML: use case, activity, sequence, class and state diagrams",
+    "Model-driven engineering",
+    "Unit, component and system testing",
+    "Test-driven development, release and user testing",
+    "Data-flow diagrams"
+  ],
+  "grading": [
+    { "label": "Final written exam", "weight": 50 },
+    { "label": "Midterm", "weight": 15 },
+    { "label": "Lab work (project)", "weight": 15 },
+    { "label": "Quizzes", "weight": 10 },
+    { "label": "Final oral exam (project)", "weight": 10 }
+  ],
+  "books": [
+    {
+      "id": "swe-book",
+      "title": "Software Engineering 1 (CS391 course book)",
+      "author": "Dr. Fatma ElSayed Ibrahim, 2026/2027",
+      "file": "Software Engineering هندسه برمجيات Book_2026_2027 - Fatma El-Sayed(1).pdf",
+      "chapters": [
+        { "title": "Ch 1 · Introduction", "pages": "8–28" },
+        { "title": "Ch 2 · Software Processes", "pages": "29–52" },
+        { "title": "Ch 3 · Agile Software Development", "pages": "53–76" },
+        { "title": "Ch 4 · Requirements Engineering", "pages": "77–101" },
+        { "title": "Ch 5 · System Modeling", "pages": "102–130" },
+        { "title": "Ch 6 · Architectural Design", "pages": "131–143" },
+        { "title": "Ch 7 · Software Testing", "pages": "144–163" }
+      ]
+    },
+    {
+      "id": "sommerville",
+      "title": "Software Engineering (10th ed.)",
+      "author": "Ian Sommerville, Pearson 2015"
+    },
+    {
+      "id": "uml-classroom",
+      "title": "UML @ Classroom: An Introduction to Object-Oriented Modeling",
+      "author": "Martina Seidl, Marion Scholz, Christian Huemer & Gerti Kappel, Springer 2015"
+    }
+  ]
+}

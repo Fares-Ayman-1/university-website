@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "sync": "node scripts/sync-materials.mjs",
+    "convert": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/convert-office.ps1",
     "slides": "python scripts/render-slides.py",
     "predev": "npm run sync",
     "dev": "next dev",

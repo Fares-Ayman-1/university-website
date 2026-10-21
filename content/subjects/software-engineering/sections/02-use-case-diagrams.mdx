@@ -1,0 +1,227 @@
+---
+number: 2
+title: Use Case Diagrams
+summary: Hands-on use case modelling. Covers the questions that find actors and use cases, the full ATM case study (from the problem statement to a model with «include»), the soda machine (scenarios, then «include» and «extend»), the library, restaurant and clinic examples, and writing a complete use case description with the template (normal flow, alternative flows, exceptions).
+topics: [Identifying actors, Identifying use cases, ATM case study, Soda machine case study, Scenarios and alternative paths, include and extend in practice, Use case template, Alternative flows and exceptions]
+duration: 60 min hands-on
+kind: practical
+sources:
+  - file: "sections/Eng_Abdullah Mohamed/sec2/session #2.pdf"
+    label: Section 2 – UML and Use Case Diagrams (Eng. Abdullah Mohamed)
+  - file: sections/Eng_Roaa/sec2/Sec2.pdf
+    label: Section 2 – UML and Use Case Diagrams (Eng. Roaa)
+  - file: sections/Eng_Ahmed Mostafa/sec2/Use Case.pdf
+    label: Section 2 – Use Case (Eng. Ahmed Mostafa)
+  - file: sections/Eng_Ahmed Mostafa/sec2/USE CASE Soda Example-.pdf
+    label: The Soda Machine – use case and state diagram case study (Eng. Ahmed Mostafa)
+bookRefs:
+  - book: swe-book
+    chapter: Ch 5 · System Modeling (5.2.2 Use Case Diagram)
+    pages: "110–115"
+  - book: uml-classroom
+    chapter: Ch 3 · The Use Case Diagram
+---
+
+<Objectives>
+
+- Find the **actors** and **use cases** of a system from a problem description, using guiding questions.
+- Model a complete system (an **ATM**) with primary and secondary actors and «include».
+- Write the **scenarios** of a use case, including alternative paths.
+- Apply «include» and «extend» to remove duplication and add optional behaviour.
+- Fill in a full **use case description**: normal flow, alternative flows and exceptions.
+
+</Objectives>
+
+## Use cases and actors
+
+A **use case** is a sequence of actions that gives something of **measurable value** to an actor; it is a set of scenarios describing an interaction between a user and the system. An **actor** is a person, organization or external system that plays a role in interactions with the system. **Use cases = user requirements**.
+
+### Finding them
+
+<Grid cols={2}>
+  <Card title="Questions that find actors" tag="who?">
+    Who uses the main functionality? (<strong>primary</strong>) Who maintains and administers the system? (<strong>secondary</strong>) Which hardware devices does it handle? Which other systems does it interact with? Who is interested in its results?
+  </Card>
+  <Card title="Questions that find use cases" tag="what?">
+    Which functions does each actor need? Does the actor need to <strong>read, create, destroy, modify or store</strong> information? Does the actor need to be <strong>notified</strong> of events in the system?
+  </Card>
+</Grid>
+
+<Callout type="tip" title="Start from steps">
+  List the steps a user takes to complete a task. For example, to place an order: browse the catalogue and select items → call a sales representative → give shipping information → give payment information → receive a confirmation number. Then group the steps into use cases.
+</Callout>
+
+## Case study: the ATM
+
+> A bank has several ATMs connected over a wide area network to a central server. Each ATM has a **card reader**, a **cash dispenser**, a **keyboard/display** and a **receipt printer**. A customer can **withdraw** cash from a checking or savings account, **query** an account's balance, and **transfer** funds between accounts. A transaction starts when the customer inserts a card. The system **validates** the card (expiry date, **PIN**, not lost or stolen); after **three wrong PINs** the card is confiscated. Before a withdrawal, the system checks the funds, the **daily limit** and the cash in the dispenser. A receipt is printed and the card ejected. The customer can **cancel** at any time. An **ATM operator** starts up and shuts down the ATM to **replenish cash** and do maintenance.
+
+Applying the questions:
+
+| | Found |
+|---|---|
+| **Primary actor** | ATM Customer: withdraw funds, query account, transfer funds |
+| **Secondary actor** | Operator: add cash, startup, shutdown |
+| **Common behaviour** | Every customer transaction must **validate the PIN** |
+
+<SlideFigure page={15} caption="The ATM use case model: Withdraw Funds, Query Account and Transfer Funds each «include» Validate PIN; the Operator adds cash, starts up and shuts down." />
+
+<SlideFigure page={14} source={1} caption="The ATM transaction flow step by step: start, card validation, choose a transaction, withdrawal and transfer checks, approval, cancellation, record keeping, operator role." />
+
+## Case study: the soda machine
+
+### Scenarios of "Buy soda"
+
+Each use case is a **collection of scenarios**. For each scenario, record the **initiating actor**, the **preconditions**, the **steps** and the **postconditions**.
+
+| Scenario | Steps | Postcondition |
+|---|---|---|
+| **1 · Buy soda** (main) | The customer inserts money and makes a selection; the machine has the soda in stock and delivers a cold can | The customer has a soda |
+| **2 · Out of soda** | The machine is out of the selected brand, shows a message and offers the money back; the customer picks another brand or takes the refund | A soda, or the money returned |
+| **3 · Incorrect amount** | If the machine has change, it returns the difference and delivers the soda; otherwise it returns the money and asks for the correct change | A soda and change, or the money returned |
+
+The precondition for all three is a **thirsty customer**.
+
+### More actors: supplier and collector
+
+- **Restock** (Supplier's representative): unsecure the machine, open the front, fill each compartment, refill the change reserve, close and secure the front.
+- **Collect** (Collector): unsecure and open the front, remove the money, close and secure.
+
+Both share steps, so factor them out with **«include»**: *Expose the inside* (unsecure and open) and *Unexpose the inside* (close and secure).
+
+<SlideFigure page={18} source={3} caption="Restock and Collect both «include» Expose the inside and Unexpose the inside." />
+
+Now add optional behaviour with **«extend»**. *Restock according to sales* extends *Restock* at the **extension point** "before filling the compartments": stock more of the brands that sell best.
+
+<SlideFigure page={20} source={3} caption="«extend» with an extension point: Restock according to sales adds steps to Restock before the compartments are filled." />
+
+## More examples
+
+<SlideFigure page={16} caption="Library management system: Administrator, Librarian, Faculty Member and Student actors around Login, Search Book, Issue Book, Reserve Book, Update Member Record and other use cases." />
+
+<SlideFigure page={21} caption="A clinic: the Patient makes, cancels and requests appointments and medication and pays bills; Request Medication «include»s Check patient record, and Pay by instalment «extend»s Pay bill." />
+
+## Describing a use case: the template
+
+The diagram is only an overview; each use case needs a **description**. A complete template has these fields:
+
+| Field | What to write |
+|---|---|
+| **Use Case ID** | A unique identifier, e.g. `UC-1.2.1` |
+| **Use Case Name** | An active verb phrase, e.g. *Withdraw Cash* |
+| **Actors** | The **primary** actor that initiates it, and any **secondary** actors |
+| **Preconditions** | What must be true **before** it starts (numbered) |
+| **Postconditions** | The state **after** it: **minimal guarantees** (even on failure) and **success guarantees** |
+| **Normal flow** | The numbered user actions and system responses under normal conditions |
+| **Alternative flows** | Legitimate **branches** from a numbered step, e.g. *4a*, *4b*, and where the flow resumes |
+| **Exceptions** | **Error conditions** and how the system responds, e.g. *2a. invalid PIN* |
+
+```text title="UC-1.2.1 · Withdraw Cash"
+Actors          Customer (primary), Bank system (secondary)
+Preconditions   1. The customer has an active account with ATM privileges.
+                2. The customer has an activated ATM card.
+Postconditions  Success: the customer receives the cash, and the balance is reduced
+                by the amount plus any fees.
+                Minimal: the card is returned (unless confiscated), and no money moves
+                without a record.
+Normal flow     1. Customer inserts the ATM card.
+                2. Customer enters the PIN.
+                3. System asks for the language (English or Arabic).
+                4. System validates that the customer is in the bank network.
+                5. System asks for the transaction type.
+                6. Customer selects Withdrawal from Checking.
+                7. System asks for the amount; the customer enters it.
+                8. System dispenses the cash and prints a receipt.
+                9. System ejects the ATM card.
+Alternative     4a. Customer not in the network: the system asks the customer to accept
+flows               a network fee; the customer accepts and the flow resumes at step 5.
+                4b. Customer declines the fee: the transaction ends; resume at step 9.
+Exceptions      2a. Invalid PIN: the transaction is refused and the customer re-enters
+                    the PIN (the card is kept after three failures); resume at step 3.
+```
+
+<SlideFigure page={22} source={1} caption="A filled-in description for the library system's Search use case: actors, precondition, main scenario and alternate scenarios." />
+
+<Takeaways>
+
+- **Use cases = user requirements.** Find actors (who uses, maintains, connects?) and use cases (what do they read, create, change, or get notified about?).
+- A use case is a set of **scenarios**: the main success scenario plus **alternative paths** (out of stock, wrong amount…).
+- Factor common steps into an **«include»**d use case; add optional steps with **«extend»** at an **extension point**.
+- Describe each use case with **ID, name, actors, pre/postconditions, normal flow, alternative flows and exceptions**.
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="Student registration system" level="medium">
+
+Students register for courses each semester using a university system. An administrator manages the student records. Students must log in before registering or viewing grades. Draw the use case diagram (as a list) and write the description of *Register Course*.
+
+<Solution>
+
+**Actors**: Student (primary) and Admin (primary for managing students).
+
+**Use cases**:
+- Student: *Register Course*, *View Grades*.
+- Admin: *Manage Students*.
+- Both *Register Course* and *View Grades* «include» *Login* (as does *Manage Students*).
+
+**UC-2 · Register Course**
+
+| Field | Content |
+|---|---|
+| **Actor** | Student |
+| **Precondition** | The student is logged in, and registration is open |
+| **Normal flow** | 1. The student opens course registration. 2. The system lists the courses available this semester. 3. The student selects courses. 4. The system checks prerequisites, credit limits and timetable clashes. 5. The system saves the registration and shows a confirmation |
+| **Alternative flow** | 4a. A prerequisite is missing: the system rejects that course and the student selects another; resume at step 3 |
+| **Postcondition** | The student is enrolled in the selected courses |
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Restaurant" level="medium">
+
+In a restaurant, a **waiter** takes orders and serves food, the **chef** cooks, a **client** orders, eats and pays, and a **cashier** accepts payment. Drinks are ordered only if the client wants water. Which relationships would you use?
+
+<Solution>
+
+Associations: Waiter with *Receive order* and *Serve food*; Chef with *Cook food*; Client with *Order food*, *Eat food* and *Pay for food*; Cashier with *Accept payment*. The water-related use cases (*Order water*, *Serve water*, *Drink water*, *Pay for water*) **«extend»** the matching food use cases, with the condition *[if water was ordered]*. They are optional, so «extend», not «include».
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "In the ATM case study, who is the secondary actor?",
+      options: ["ATM Customer", "Operator", "Bank card", "Receipt printer"],
+      answer: 1,
+      explain: "The Operator maintains the ATM (add cash, startup, shutdown); the customer starts transactions."
+    },
+    {
+      q: "Restock and Collect both start by unsecuring and opening the machine. How do you model this?",
+      options: ["Generalization", "«extend»", "«include» a shared 'Expose the inside' use case", "A second system boundary"],
+      answer: 2,
+      explain: "Common steps go into an included use case."
+    },
+    {
+      q: "'Restock according to sales' is added before filling compartments. Which relationship?",
+      options: ["«include»", "«extend» at an extension point", "Association", "Composition"],
+      answer: 1,
+      explain: "It adds optional steps to Restock at a defined extension point."
+    },
+    {
+      q: "In a use case template, '2a. invalid PIN' belongs to…",
+      options: ["Preconditions", "Normal flow", "Exceptions", "Postconditions"],
+      answer: 2,
+      explain: "Exceptions describe error conditions and the system's response."
+    },
+    {
+      q: "Which question helps identify a SECONDARY actor?",
+      options: ["Who uses the main functionality?", "Who maintains and administers the system?", "What does the actor need to read?", "Which events must the actor be notified of?"],
+      answer: 1,
+      explain: "Maintainers and administrators are typically secondary actors."
+    }
+  ]}
+/>

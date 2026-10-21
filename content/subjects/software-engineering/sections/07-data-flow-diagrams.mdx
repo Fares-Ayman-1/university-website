@@ -1,0 +1,226 @@
+---
+number: 7
+title: Data Flow Diagrams (DFD)
+summary: Modelling how data moves through a system. Covers the four DFD symbols (process, data store, data flow, external entity), the rules every DFD must follow, context diagrams vs. the level-0 decomposition, and two full worked examples (a mail-ordering system and course registration) built from their problem descriptions, plus the DFDs from the lab manual's projects and a small script that checks the rules.
+topics: [What a DFD shows, Process, Data store, Data flow, External entity, DFD rules, Context diagram, Level 0 decomposition, Mail ordering example, Course registration example, Lab project DFDs]
+duration: 50 min hands-on
+kind: practical
+sources:
+  - file: "sections/Eng_Abdullah Mohamed/sec7/session #5.pdf"
+    label: Section 7 – Data Flow Diagram (Eng. Abdullah Mohamed)
+  - file: sections/Eng_Roaa/sec7/Data Flow Diagram.pdf
+    label: Section 7 – Data Flow Diagram (Eng. Roaa)
+  - file: sections/Eng_Abdullah Mohamed/SOFTWARE ENGINEERING LAB.pdf
+    label: Software Engineering Lab manual – project DFDs
+---
+
+<Objectives>
+
+- Explain what a **DFD** shows, and how it differs from UML diagrams.
+- Use the four symbols: **process, data store, data flow, external entity**.
+- Apply the **rules** of a valid DFD.
+- Draw a **context diagram** and its **level-0** decomposition from a problem description.
+
+</Objectives>
+
+## What a DFD shows
+
+<Definition term="Data flow diagram (DFD)">
+  A picture of the <strong>movement of data</strong> between <strong>external entities</strong> and the <strong>processes</strong> and <strong>data stores</strong> within a system.
+</Definition>
+
+A DFD is **not** a UML diagram, and it is **not** a flowchart. It shows **what data goes where**, not the order of steps or the decisions. It has no loops, no conditions and no timing.
+
+## Symbols
+
+<SlideFigure page={3} caption="Process (a rounded box with a number on top) and data store (an open-ended rectangle)." />
+
+| Symbol | Name | Meaning | Label |
+|---|---|---|---|
+| Rounded rectangle, numbered | **Process** | Work done on data **inside** the system: it **transforms** incoming flows into outgoing flows | A **verb phrase** and a **number**: *1.0 Verify Member* |
+| Open-ended rectangle | **Data store** | A repository of data (a file or database table) | A **noun**: *Member File* |
+| Arrow | **Data flow** | A pipeline that carries a packet of data | A **noun** for the data moving: *Order Form* |
+| Square / rectangle | **External entity** | A **source or destination** outside the system | A **noun**: *Customer* |
+
+## Rules
+
+<SlideFigure page={6} caption="Rule 1: a process can have more than one incoming and more than one outgoing data flow." />
+
+<Steps>
+
+1. Every **process** has **at least one input and one output**. A process with only inputs is a "black hole"; one with only outputs is a "miracle".
+2. A process **transforms** data. Its outputs differ from its inputs, e.g. *Order* → *1.0 Verify Order* → *Accepted Order*.
+3. Data can't move **directly between two data stores**, **between two external entities**, or **between an entity and a store**. It must pass **through a process**.
+4. Every data flow has a **name** (a noun), and every process a **number** and a **verb phrase**.
+
+</Steps>
+
+<SlideFigure page={7} caption="Rule 2: a process transforms its input: Order → 1.0 Verify Order → Accepted Order → 2.0 Assemble Order → Inventory Change." />
+
+## Context diagram and level 0
+
+| Diagram | Shows |
+|---|---|
+| **Context diagram** | The **whole system as one process** (numbered 0), the **external entities** around it, and the flows between them. **No data stores** |
+| **Level-0 diagram** (diagram 0) | The context's process **exploded** into the major processes (1.0, 2.0, 3.0…), now **with data stores** |
+
+<Callout type="note" title="Naming varies">
+  Some books call the context diagram itself "level 0" and its first decomposition "level 1". The slides use both names. What matters is that every level is <strong>balanced</strong>: the flows into and out of a process must match the flows on its decomposition.
+</Callout>
+
+## Worked example: a mail-ordering system
+
+> A mail-order company sells CDs and tapes at discount prices to its club **members**. When an order-processing clerk receives an **order form**, she **verifies that the sender is a member** by checking the **MEMBER FILE**. If not, she returns the order with a **membership application form**. If the customer is a member, she **verifies the order item data** by checking the **ITEM FILE**. Then she enters the order and saves it to the **DAILY ORDERS FILE**. At the same time she **prints an invoice and shipping list**, which go to the **ORDER FULFILLMENT DEPARTMENT**.
+
+| In the text | DFD element |
+|---|---|
+| Customer, Order Fulfillment Department | **External entities** |
+| verifies member, verifies order items, prints invoice | **Processes** 1.0, 2.0, 3.0 |
+| MEMBER FILE, ITEM FILE, DAILY ORDERS FILE | **Data stores** |
+| order form, application form, order data, invoice and shipping list | **Data flows** |
+
+<SlideFigure page={12} caption="The context diagram: Customer → Order Form → 0 Mail Ordering System → Invoice and Shipping List → Order Processing Department; Application Form goes back to the Customer." />
+
+<SlideFigure page={11} caption="The level-0 diagram: 1.0 Verify Member (reads the Member File) → 2.0 Verify Order Item Data (reads the Item File, writes Daily Orders) → 3.0 Print Invoice and Shipping List → Order Processing Department." />
+
+Check the **balance**: the context has *Order Form* in, and *Application Form* and *Invoice and Shipping List* out. The level-0 diagram has exactly the same external flows.
+
+## Worked example: course registration
+
+<SlideFigure page={13} caption="Course registration: Student → 1.0 Capture Reg Information → 2.0 Verify Availability (Course File) → 3.0 Check Prerequisites → 4.0 Enroll Student (Course File, Student Master File) → 5.0 Confirm Registration → Student." />
+
+## DFDs in the lab projects
+
+The lab manual's projects each include a DFD. They are useful models for your own project:
+
+<SlideFigure page={8} source={2} caption="Library management system: the User and Administrator interact with processes for registration, issue, renewal, return and fine computation, around a database of users and items." />
+
+<SlideFigure page={17} source={2} caption="Automated banking: the User enters an account number and PIN; processes query details, commit transactions, check availability and generate reports against the Database; the Administrator manages it." />
+
+## Checking the rules automatically
+
+The rules are mechanical enough to check with a script. Here is the mail-ordering level-0 diagram as data:
+
+```python title="dfd_check.py"
+kind = {
+    "Customer": "entity", "Order Dept": "entity",
+    "1.0 Verify Member": "process", "2.0 Verify Items": "process",
+    "3.0 Print Invoice": "process",
+    "Member File": "store", "Item File": "store", "Daily Orders": "store",
+}
+flows = [  # (from, to, data)
+    ("Customer", "1.0 Verify Member", "Order Form"),
+    ("Member File", "1.0 Verify Member", "Member Info"),
+    ("1.0 Verify Member", "Customer", "Application Form"),
+    ("1.0 Verify Member", "2.0 Verify Items", "New Order"),
+    ("Item File", "2.0 Verify Items", "Item Info"),
+    ("2.0 Verify Items", "Daily Orders", "Validated Order"),
+    ("2.0 Verify Items", "3.0 Print Invoice", "Validated Order"),
+    ("3.0 Print Invoice", "Order Dept", "Invoice and Shipping List"),
+]
+
+def problems(kind, flows):
+    found = []
+    for a, b, data in flows:
+        if "process" not in (kind[a], kind[b]):
+            found.append(f"{a} -> {b}: data must pass through a process")
+    for p in (n for n, k in kind.items() if k == "process"):
+        if not any(b == p for _, b, _ in flows):
+            found.append(f"{p}: no input (a miracle)")
+        if not any(a == p for a, _, _ in flows):
+            found.append(f"{p}: no output (a black hole)")
+    return found
+
+print(problems(kind, flows) or "valid DFD")
+# valid DFD
+print(problems(kind, flows + [("Customer", "Order Dept", "Complaint")]))
+# ['Customer -> Order Dept: data must pass through a process']
+```
+
+<Takeaways>
+
+- A DFD shows **data movement**, not control flow: no decisions, loops or timing.
+- Four symbols: **process** (numbered verb phrase), **data store** (noun), **data flow** (named noun), **external entity** (source or sink).
+- Every process needs **input and output**, and all data moves **through processes**, never store-to-store or entity-to-entity.
+- Start with a **context diagram** (one process, no stores), then **explode** it into level 0, keeping the levels **balanced**.
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="Find the errors" level="easy">
+
+What is wrong with each of these DFD fragments?
+
+1. *Customer* → *Supplier*, labelled "Order".
+2. *Item File* → *Daily Orders*, labelled "Items".
+3. Process *4.0 Archive Records* has only incoming flows.
+4. A data flow with no label.
+
+<Solution>
+
+1. Entity-to-entity: the data must pass through a process, e.g. *Place Order*.
+2. Store-to-store: a process must move the data.
+3. A black hole: a process must also produce output.
+4. Every data flow must be named with the data it carries.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Restaurant ordering DFD" level="medium">
+
+A **customer** gives an order to the **waiter**. The system **records the order** in the ORDERS file and sends it to the **kitchen**. When the food is ready, the system **produces a bill** using the MENU file (prices). The customer pays, and the system **records the payment** in the PAYMENTS file. Draw the context diagram and the level-0 diagram as lists.
+
+<Solution>
+
+**Context diagram**: Customer → *Order* → **0 Restaurant System**; 0 → *Kitchen Order* → Kitchen; Kitchen → *Food Ready* → 0; 0 → *Bill* → Customer; Customer → *Payment* → 0; 0 → *Receipt* → Customer.
+
+**Level 0**:
+
+| Process | Inputs | Outputs |
+|---|---|---|
+| **1.0 Record Order** | Customer: *Order* | → ORDERS: *Order Details*; → Kitchen: *Kitchen Order* |
+| **2.0 Produce Bill** | Kitchen: *Food Ready*; ORDERS: *Order Details*; MENU: *Prices* | → Customer: *Bill* |
+| **3.0 Record Payment** | Customer: *Payment* | → PAYMENTS: *Payment Details*; → Customer: *Receipt* |
+
+The external flows (*Order*, *Kitchen Order*, *Food Ready*, *Bill*, *Payment* and *Receipt*) match the context diagram, so the levels are **balanced**.
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "What does a DFD show?",
+      options: ["The order of steps and the decisions", "How data moves between entities, processes and stores", "The states of one object", "Class relationships"],
+      answer: 1,
+      explain: "DFDs model data movement, not control flow."
+    },
+    {
+      q: "How should a process be labelled?",
+      options: ["With a noun", "With a number and a verb phrase", "With a condition", "It needs no label"],
+      answer: 1,
+      explain: "For example, '1.0 Verify Member'."
+    },
+    {
+      q: "Which flow is NOT allowed?",
+      options: ["Entity → process", "Process → store", "Store → store", "Process → process"],
+      answer: 2,
+      explain: "Data must pass through a process; store-to-store and entity-to-entity flows are invalid."
+    },
+    {
+      q: "A context diagram contains…",
+      options: ["Many processes and all the data stores", "One process for the whole system, the external entities and their flows", "Only data stores", "Use cases"],
+      answer: 1,
+      explain: "Data stores appear only after decomposition."
+    },
+    {
+      q: "A process with inputs but no outputs is called…",
+      options: ["A miracle", "A black hole", "A data store", "Balanced"],
+      answer: 1,
+      explain: "A miracle has outputs but no inputs."
+    }
+  ]}
+/>

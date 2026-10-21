@@ -36,6 +36,18 @@
   ],
   "books": [
     {
+      "id": "os-book",
+      "title": "Operating Systems (course book)",
+      "author": "Dr. Shadia Sarhan, 2026/2027",
+      "file": "Operating_Systems نظم التشغيل book_2_260928_233351 - shadia_sarhan112.pdf",
+      "chapters": [
+        { "title": "Ch 1 · Introduction to Operating Systems", "pages": "7–43" },
+        { "title": "Ch 2 · Operating System Services", "pages": "44–56" },
+        { "title": "Ch 3 · Processes and CPU Scheduling", "pages": "57–116" },
+        { "title": "Ch 4 · Threads, Concurrency and Synchronization", "pages": "117–157" }
+      ]
+    },
+    {
       "id": "osc10",
       "title": "Operating System Concepts, 10th Edition",
       "author": "Abraham Silberschatz, Peter Baer Galvin & Greg Gagne, Wiley 2018"

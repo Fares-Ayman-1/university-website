@@ -1,0 +1,245 @@
+---
+number: 2
+title: Software Processes
+summary: The software process and its four activities, plan-driven vs. agile processes, and the three generic process models (waterfall, incremental development, and reuse-oriented engineering) with their advantages, problems and when to use each. Then coping with change through change avoidance and tolerance, prototyping, and incremental delivery.
+topics: [Process activities, Process descriptions, Plan-driven vs agile, Waterfall model, Incremental development, Reuse-oriented SE, COTS, Coping with change, Prototyping, Incremental delivery]
+duration: 50 min study
+sources:
+  - file: Chapters/Ch2/Lecture_02_Software_Processes.pdf
+    label: SWE Lecture 2 – Software Processes (Dr. Fatma ElSayed)
+    pages: "1-36"
+bookRefs:
+  - book: swe-book
+    chapter: Ch 2 · Software Processes
+    pages: "29–52"
+  - book: sommerville
+    chapter: Ch 2 · Software processes
+---
+
+<Objectives>
+
+- Describe the four **fundamental process activities** and what a process description contains.
+- Distinguish **plan-driven** from **agile** processes.
+- Explain the **waterfall**, **incremental** and **reuse-oriented** models, with their pros, cons and when to use each.
+- Explain **change avoidance** and **change tolerance**, and how **prototyping** and **incremental delivery** support them.
+
+</Objectives>
+
+## The software process
+
+<Definition term="Software process">
+  A structured set of related activities that leads to the production of a software product.
+</Definition>
+
+Every process includes four activities:
+
+<Steps>
+
+1. **Software specification**: define the functionality of the software and the constraints on its operation.
+2. **Software design and implementation**: produce software that meets the specification.
+3. **Software validation (testing)**: check that the software does what the customer wants.
+4. **Software evolution (maintenance)**: change the software to meet changing customer needs.
+
+</Steps>
+
+A **process description** also states the **order** of the activities, the **products** (outcomes) of each activity, the **roles** of the people involved (project manager, configuration manager, programmer…), and the **pre- and post-conditions** that hold before and after each activity.
+
+### Plan-driven vs. agile
+
+| Plan-driven | Agile |
+|---|---|
+| All activities are **planned in advance**; progress is measured against the plan | Planning is **incremental**; it is easy to change the process as requirements change |
+
+There is no right or wrong process. In practice you balance the two, and most large systems combine elements of all three models below.
+
+## The waterfall model
+
+<SlideFigure page={10} caption="The waterfall model: requirements definition → system and software design → implementation and unit testing → integration and system testing → operation and maintenance." />
+
+A **plan-driven** model with **separate, distinct phases**: each phase must finish (and be signed off) before the next starts.
+
+<Grid cols={2}>
+  <Card title="Advantages" tag="+">
+    Simple to understand and use. Easy to manage: each phase produces documents, so progress is <strong>visible</strong> against the plan. Phases are clearly defined and done one at a time.
+  </Card>
+  <Card title="Disadvantages" tag="−">
+    Producing and approving documents is costly. <strong>No working software until late</strong> in the project, so the final product takes a long time. Requirements can't change once in the contract. <strong>High risk</strong>.
+  </Card>
+</Grid>
+
+**Use it only when** the requirements are **well understood** from the start, are **unlikely to change**, and delivery time isn't critical. It also suits **large systems-engineering projects** developed at several sites, where the plan coordinates the work.
+
+## Incremental development
+
+<SlideFigure page={13} caption="Incremental development: specification, development and validation run concurrently, producing an initial version, intermediate versions and the final version." />
+
+The system is developed as a **series of versions (increments)**, each adding functionality to the previous one. You build an initial implementation, show it to users, and evolve it through several versions. Specification, development and validation are **interleaved**. It may be plan-driven or agile.
+
+| Benefits (vs. waterfall) | Problems |
+|---|---|
+| **Cheaper to change**: much less analysis and documentation to redo | **The process isn't visible**: managers lack regular deliverables, and documenting every version isn't cost-effective |
+| **Faster delivery** of useful software, even before all functions exist | **The structure degrades** as increments are added, unless time and money go into **refactoring** |
+| **Easier customer feedback**: only the current increment must change if something is wrong | |
+
+<SlideFigure page={18} caption="Waterfall delivers value only at the end, with risk growing until release. Agile, incremental delivery releases value repeatedly and keeps risk low." />
+
+## Reuse-oriented software engineering
+
+This approach assumes many **reusable components** exist. Development focuses on **integrating** them rather than building from scratch.
+
+<SlideFigure page={20} caption="Reuse-oriented process: requirements specification → component analysis → requirements modification → system design with reuse → development and integration → system validation." />
+
+Three kinds of reusable component:
+
+1. **Stand-alone application systems** (**COTS**: commercial off-the-shelf), configured for a particular environment.
+2. **Collections of objects** developed as a package for a component framework such as .NET or J2EE.
+3. **Web services** built to service standards and available for remote invocation.
+
+| Advantages | Disadvantages |
+|---|---|
+| Less software to develop, so **lower cost and risk** | **Loss of control** over how the reused parts evolve |
+| **Faster delivery** | **Requirements compromises** are inevitable, so the system may not fully meet users' needs |
+
+## Coping with change
+
+Change is **inevitable** in large projects: the business changes, new technologies appear, and platforms change. Change causes **rework** (for example, re-analyzing requirements) on top of implementing new functions. Two approaches reduce rework costs:
+
+| Approach | Idea | Supported by |
+|---|---|---|
+| **Change avoidance** | Predict changes **before** significant rework is needed | Prototyping |
+| **Change tolerance** | Design the process so changes are **cheap** to absorb | Incremental delivery (it supports both) |
+
+### Prototyping
+
+A **prototype** is an initial version of the system, built quickly to demonstrate concepts, try design options, and learn more about the problem. It helps in:
+
+- **requirements engineering**, to elicit and validate requirements, since users get new ideas;
+- **design**, to explore options and develop the user interface, for example checking that a database design supports the most common queries efficiently.
+
+<SlideFigure page={28} caption="Prototype development: establish objectives → define functionality → develop → evaluate, producing a plan, an outline definition, an executable prototype and an evaluation report." />
+
+A prototype focuses on areas that are **not well understood** and on **functional** requirements. It may leave out error checking and non-functional qualities such as reliability and security.
+
+<Callout type="warning" title="Throw prototypes away">
+  Don't turn a prototype into the production system. It may be impossible to tune it to meet non-functional requirements; it is usually <strong>undocumented</strong>; its structure has <strong>degraded</strong> through rapid change; and it won't meet the organization's quality standards.
+</Callout>
+
+### Incremental delivery
+
+Instead of one delivery, the system is **delivered and deployed** in increments. Requirements are **prioritized**, and the highest-priority ones come first. Each new increment is **integrated** with the existing ones.
+
+<SlideFigure page={33} caption="Incremental delivery: define outline requirements, assign them to increments, design the architecture, then develop, validate, integrate, validate and deploy each increment until the system is complete." />
+
+| Incremental **development** | Incremental **delivery** |
+|---|---|
+| Each increment is evaluated by customers **without** deploying it | Each increment is **deployed** for real use by end users |
+| The normal approach in agile methods | Gives a more realistic evaluation of practical use |
+| | Hard for **replacement systems**, because early increments do less than the old system |
+
+**Advantages of incremental delivery**: customers get value from the first increment, which meets their most critical needs; early increments act as prototypes but are part of the real system; the most important services are delivered first and so are **tested the most**; and the overall risk of failure is lower.
+
+**Problems**: it is hard to identify the **common facilities** that all increments need when requirements aren't detailed until each increment is built. And there is no complete specification until the last increment, which conflicts with contracts that require one up front (as in many government agencies).
+
+<Takeaways>
+
+- Every process has **specification, design and implementation, validation and evolution**.
+- **Waterfall**: plan-driven, visible and easy to manage, but inflexible and risky. Use it for stable, well-understood requirements.
+- **Incremental**: cheaper change, earlier value and feedback, but poor visibility and degrading structure.
+- **Reuse-oriented**: integrate COTS, framework components and web services. It is faster and cheaper, but you lose control and must compromise.
+- Reduce rework through **change avoidance** (prototyping) and **change tolerance** (incremental delivery). Throw prototypes away.
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="Pick the process model" level="medium">
+
+Choose a suitable process model for each project and justify it:
+
+1. An aircraft flight-control program with stable, fully specified requirements that must pass strict certification.
+2. A startup's web app whose features change every few weeks based on user feedback.
+3. A company HR system that can be assembled mostly from an existing payroll package and web services.
+
+<Solution>
+
+1. **Waterfall** (plan-driven): the requirements are well understood and stable, and certification needs complete documentation of each phase.
+2. **Incremental development**, delivered with an agile approach: requirements change constantly, and frequent feedback is essential.
+3. **Reuse-oriented**: the system is mostly integration of COTS components and web services, which is faster and cheaper. Expect some requirements compromises.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Plan-driven or agile?" level="easy">
+
+Classify each statement:
+
+a) Every requirement must be approved and documented before coding starts.
+b) A small team releases a mobile app update every two weeks based on feedback.
+c) A government project requires fixed deadlines and complete documentation for all stages.
+
+<Solution>
+
+a) Plan-driven. b) Agile. c) Plan-driven.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Why not ship the prototype?" level="easy">
+
+A manager wants to ship the throw-away prototype "since it already works". Give three reasons against it.
+
+<Solution>
+
+Any three of the following:
+
+- It is probably impossible to tune it to meet non-functional requirements such as performance, security and reliability.
+- It is usually undocumented.
+- Its structure has degraded through rapid change, so maintaining it would be costly.
+- It doesn't meet the organization's quality standards.
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "A major disadvantage of the waterfall model is that…",
+      options: ["It allows customer changes at any time", "It delivers working software early", "No working software is produced until late stages", "It is only used in agile projects"],
+      answer: 2,
+      explain: "Phases run in sequence, so software appears only near the end."
+    },
+    {
+      q: "A common problem with incremental development is…",
+      options: ["Lack of visibility of progress", "Low customer involvement", "Too much documentation", "No feedback from users"],
+      answer: 0,
+      explain: "Managers lack regular deliverables, and documenting every version isn't cost-effective."
+    },
+    {
+      q: "Reuse-oriented software engineering focuses on…",
+      options: ["Creating every component from scratch", "Integrating existing components", "Avoiding testing", "Throwing away old systems"],
+      answer: 1,
+      explain: "It integrates COTS systems, framework components and web services."
+    },
+    {
+      q: "Change avoidance means…",
+      options: ["Ignoring customer change requests", "Predicting possible changes early to reduce rework", "Refusing to update software", "Changing requirements constantly"],
+      answer: 1,
+      explain: "A prototype, for example, reveals needed changes before costly rework."
+    },
+    {
+      q: "Which supports BOTH change avoidance and change tolerance?",
+      options: ["System prototyping", "Incremental delivery", "The waterfall model", "Throw-away prototypes"],
+      answer: 1,
+      explain: "Increments get early feedback (avoidance), and later increments absorb changes cheaply (tolerance)."
+    },
+    {
+      q: "When is the waterfall model appropriate?",
+      options: ["Requirements are unclear and changing", "Requirements are well understood and stable", "Delivery must be as fast as possible", "The customer wants to change features weekly"],
+      answer: 1,
+      explain: "It is plan-driven, so it needs stable, well-understood requirements."
+    }
+  ]}
+/>

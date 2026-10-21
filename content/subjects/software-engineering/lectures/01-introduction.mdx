@@ -1,0 +1,262 @@
+---
+number: 1
+title: Introduction to Software Engineering
+summary: What software and software engineering are, the four attributes of good software, generic vs. customized products, the four fundamental process activities, the key challenges and costs, the main types of application, and the professional and ethical responsibilities of software engineers, with the Mentcare case study.
+topics: [What is software, Attributes of good software, Software engineer vs developer, SE vs CS and systems engineering, Generic vs customized products, Process activities, Key challenges, Application types, Professional responsibility, ACM/IEEE code of ethics]
+duration: 45 min study
+sources:
+  - file: Chapters/Ch1/Lecture_01_SWE_Introduction.pdf
+    label: SWE Lecture 1 – Introduction (Dr. Fatma ElSayed)
+    pages: "1-30"
+bookRefs:
+  - book: swe-book
+    chapter: Ch 1 · Introduction
+    pages: "8–28"
+  - book: sommerville
+    chapter: Ch 1 · Introduction
+---
+
+<Objectives>
+
+- Define **software** and **software engineering**, and explain why professional software is a team effort.
+- Name the four **attributes of good software**.
+- Compare **generic** and **customized** software products.
+- List the four fundamental **process activities** and the three **key challenges**.
+- Classify systems into the main **types of application**.
+- Explain the **professional responsibilities** of a software engineer and the purpose of the ACM/IEEE code of ethics.
+
+</Objectives>
+
+## What is software?
+
+<Definition term="Software">
+  Computer <strong>programs and their associated documentation</strong>: everything needed to install and run the programs correctly, explain how to use the system, and keep users up to date (for example, a website for downloading new versions).
+</Definition>
+
+Software engineering supports **professional** software development rather than individual programming. Professional software is used by people other than its developers, is built by **teams**, and is **maintained and changed** throughout its life.
+
+## Attributes of good software
+
+Good software must deliver the required **functionality and performance**. Beyond that, professional software must have four attributes:
+
+<SlideFigure page={6} caption="The four essential attributes of professional software." />
+
+| Attribute | Meaning |
+|---|---|
+| **Maintainability** | It can evolve to meet changing needs; upgrades are easy, quick and cheap |
+| **Dependability** | It is trustworthy (reliable, secure, safe) and doesn't cause physical or economic damage when it fails |
+| **Efficiency** | It doesn't waste system resources such as memory and processor time |
+| **Acceptability** | Its intended users accept it: it is understandable, usable and compatible with their other systems |
+
+## Software engineering
+
+<Definition term="Software engineering">
+  An <strong>engineering discipline</strong> concerned with <strong>all aspects of software production</strong>, using systematic, well-defined techniques. Its result is an effective and reliable software product, built with tools and methods chosen to fit the problem, the constraints and the resources.
+</Definition>
+
+| Software developer | Software engineer |
+|---|---|
+| Builds software that runs on various computers | Applies engineering principles to design, develop, maintain and test software |
+| Mostly a **solitary** activity | A **team** activity |
+| Writes complete programs with ready-made tools | Also works with the hardware side, and creates the tools others use |
+| Works on a limited scale | Solves problems on a much larger scale |
+
+### Where it fits
+
+- **Computer science** studies **theory and fundamentals** (languages, algorithms, AI…). Software engineering deals with the **practicalities** of developing and delivering useful software. CS is to SE what physics is to electrical engineering.
+- **System engineering** covers **all aspects** of computer-based systems: hardware, software, people and procedures. Software engineering is the **part** concerned with the software.
+
+## Software products
+
+<Grid cols={2}>
+  <Card title="Generic products" tag="open market">
+    Stand-alone systems that a company develops and sells to <strong>any customer</strong>. Examples: databases, word processors, drawing packages and project-management tools for PCs.
+  </Card>
+  <Card title="Customized products" tag="one customer">
+    Systems built <strong>for a particular customer</strong> under contract. Examples: a university's admission and registration system, air traffic control, control software for an electronic device.
+  </Card>
+</Grid>
+
+| | Generic | Customized |
+|---|---|---|
+| **Specification** | Produced internally, by the company's marketing department | Agreed in a **contract** between customer and developer |
+| **Users** | Many | Few |
+| **Marketing** | Required | Not required |
+| **Changes** | Driven by market demand and planned updates | Driven by the customer's time, budget and needs |
+| **Quality** | Not always the top priority | The main criterion |
+| **Development cost** | Usually not high (shared by many buyers) | High (paid by one customer) |
+
+## The software process
+
+A **software process** is a sequence of activities that produces a software product. Different systems need different processes, but all of them include four fundamental activities:
+
+<SlideFigure page={14} caption="The four fundamental activities of every software process." />
+
+<Steps>
+
+1. **Specification**: customers and engineers define *what* the software should do and the constraints on its operation.
+2. **Development**: the software is **designed and programmed**.
+3. **Validation**: the software is checked to confirm that it does what the customer wants.
+4. **Evolution**: the software is changed to meet changing customer and market needs.
+
+</Steps>
+
+## Challenges and costs
+
+Every new software project faces three key challenges:
+
+| Challenge | What it means |
+|---|---|
+| **Heterogeneity** | Coping with diverse, fast-changing hardware and software platforms |
+| **Delivery** | Meeting demands for ever shorter delivery times |
+| **Trust** | Producing software that users can trust |
+
+**Costs**: roughly **60 %** of costs are development and **40 %** testing. For custom software, **evolution often costs more than development**. Costs depend on the type of system, on required attributes such as performance and reliability, and on the development model.
+
+<Callout type="note" title="No universal method">
+  There is no single best method for all systems and companies. The key factor in choosing software engineering methods is the <strong>type of application</strong> being developed.
+</Callout>
+
+## Types of application
+
+| Type | Description | Example |
+|---|---|---|
+| **Stand-alone** | Runs on a local computer with no network needed | Office software, photo editors |
+| **Embedded control** | Controls and manages hardware devices | Anti-lock braking in a car, a microwave oven's controller |
+| **Interactive transaction-based** | Users interact with a remote system in real time | Amazon, online banking |
+| **Batch processing** | Processes large batches of inputs, not in real time | Monthly phone billing |
+| **Data collection** | Gathers data from sensors, often in harsh environments, and sends it on | Soil-moisture sensors in agriculture, wearable health monitors |
+| **Entertainment** | For personal use and enjoyment | Games |
+| **Modelling and simulation** | Model physical processes with many interacting objects | Weather simulation |
+| **Systems of systems** | Composed of several other software systems | An enterprise built from many integrated systems |
+
+**The web** is now the main platform: organizations build **web-based** systems, **web services** expose functionality over the web, and **cloud computing** runs applications remotely, so users pay for use instead of buying software.
+
+## Ethics and professional responsibility
+
+Software engineering happens within a social and legal framework. Being a professional means behaving **honestly and ethically**, which is more than just obeying the law.
+
+| Issue | Responsibility |
+|---|---|
+| **Confidentiality** | Respect the confidentiality of employers and clients, whether or not an agreement was signed |
+| **Competence** | Don't misrepresent your level of competence; don't knowingly accept work outside it |
+| **Intellectual property rights** | Know the laws on patents and copyright, and protect your employers' and clients' IP |
+| **Computer misuse** | Don't use your skills to misuse other people's computers, from playing games on an employer's machine to spreading viruses |
+
+The **ACM/IEEE Code of Ethics** sets out **eight principles** for professional software engineers: Public, Client and Employer, Product, Judgment, Management, Profession, Colleagues, and Self.
+
+<SlideFigure page={27} caption="The short form of the ACM/IEEE Software Engineering Code of Ethics and its eight principles." />
+
+<Callout type="example" title="An ethical dilemma">
+  Your company falsifies the safety-validation records of a safety-critical system to meet a deadline. Do you keep confidentiality or warn the customer? There are no absolutes. Weigh the potential damage, how severe it would be and who would be affected. Try to resolve it while respecting your employer's rights, but a very dangerous situation can justify going public.
+</Callout>
+
+### Case study: Mentcare
+
+The **Mentcare** system is a patient information system for mental-health care, used throughout the course. It records patients, consultations, conditions and treatments. It serves two purposes: management information that lets health managers assess performance, and timely information that helps medical staff treat patients. Its users are clinical staff (doctors, nurses, health visitors) and non-medical staff (receptionists, medical-records staff and administrators). Its key features are **individual care management**, **patient monitoring** and **administrative reporting**.
+
+<Takeaways>
+
+- Software = **programs + documentation**. Software engineering is the systematic, team-based engineering of all aspects of software production.
+- Good software is **maintainable, dependable, efficient and acceptable**.
+- **Generic** products are sold to any customer; **customized** products are built under contract for one.
+- Every process has **specification, development, validation and evolution**.
+- The key challenges are **heterogeneity, delivery and trust**. Choose methods by the **type of application**.
+- Professional responsibility covers **confidentiality, competence, IP rights and computer misuse**, guided by the ACM/IEEE code.
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="Classify the application" level="easy">
+
+Classify each system by its type of application:
+
+1. Microsoft Word on a personal computer.
+2. The software that controls a car's anti-lock braking.
+3. An online banking system for checking balances and making transfers.
+4. A phone company system that issues monthly bills.
+5. Software that models weather conditions.
+
+<Solution>
+
+1. Stand-alone application.
+2. Embedded control system.
+3. Interactive transaction-based application.
+4. Batch processing system.
+5. Modelling and simulation system.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Generic or customized?" level="easy">
+
+A company builds an accounting program and sells the same version to many businesses. Another company builds an admission system for one university. Classify both and give one difference in how each is specified.
+
+<Solution>
+
+The accounting program is a **generic** product. Its specification is produced **internally** by the company, based on the market. The admission system is a **customized** product. Its specification is agreed in a **contract** with the university.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="True or false" level="medium">
+
+1. Software engineering focuses only on writing code.
+2. One software engineering method is suitable for all types of system.
+3. Competence means accepting any job, even outside your expertise.
+4. For custom software, evolution costs often exceed development costs.
+
+<Solution>
+
+1. **False**: it covers all aspects of production, including specification, validation and evolution.
+2. **False**: the type of application decides which methods fit.
+3. **False**: competence means being honest about your abilities and not accepting work beyond them.
+4. **True**.
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "Which attribute means users find the software understandable, usable and compatible with their systems?",
+      options: ["Maintainability", "Dependability", "Efficiency", "Acceptability"],
+      answer: 3,
+      explain: "Acceptability: the software is accepted by the users it was designed for."
+    },
+    {
+      q: "Which is NOT one of the four fundamental process activities?",
+      options: ["Specification", "Validation", "Marketing", "Evolution"],
+      answer: 2,
+      explain: "The four are specification, development, validation and evolution."
+    },
+    {
+      q: "Software that controls a microwave oven's cooking process is…",
+      options: ["A batch processing system", "An embedded control system", "A stand-alone application", "A data collection system"],
+      answer: 1,
+      explain: "Embedded control systems manage hardware devices."
+    },
+    {
+      q: "Which ethical issue requires engineers to be honest about their abilities and qualifications?",
+      options: ["Confidentiality", "Competence", "Intellectual property rights", "Computer misuse"],
+      answer: 1,
+      explain: "Competence: don't misrepresent your level of competence."
+    },
+    {
+      q: "Software engineering differs from computer science because it focuses on…",
+      options: ["Theoretical foundations", "Hardware design", "The practicalities of developing and delivering software", "Artificial intelligence"],
+      answer: 2,
+      explain: "CS covers theory and fundamentals; SE covers practical development."
+    },
+    {
+      q: "Which key challenge is about producing software users can rely on?",
+      options: ["Heterogeneity", "Delivery", "Trust", "Evolution"],
+      answer: 2,
+      explain: "Trust: techniques that show the software can be trusted by its users."
+    }
+  ]}
+/>

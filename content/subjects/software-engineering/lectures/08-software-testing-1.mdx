@@ -1,0 +1,256 @@
+---
+number: 8
+title: "Software Testing I: Testing Basics and Cyclomatic Complexity"
+summary: What software testing is and who should do it, verification vs. validation, the three testing stages (development, release, user) and the development levels (unit, integration, system). Then unit-testing considerations (interfaces, computation and comparison errors), white-box vs. black-box testing, and the first half of basis path testing (drawing control flow graphs and computing cyclomatic complexity three ways, including graphs with several exits).
+topics: [Purpose of testing, Verification vs validation, Testing stages, Unit testing, Interface testing, Common computation errors, White-box vs black-box, Basis path testing, Control flow graph, Regions and predicate nodes, Cyclomatic complexity]
+duration: 55 min study
+sources:
+  - file: Chapters/Ch8/Lecture_08_SWE_Software Testing_P1.pdf
+    label: SWE Lecture 8 – Software Testing Part 1 (Dr. Fatma ElSayed)
+    pages: "1-32"
+bookRefs:
+  - book: swe-book
+    chapter: Ch 7 · Software Testing (7.1–7.2.1)
+    pages: "144–156"
+  - book: sommerville
+    chapter: Ch 8 · Software testing
+---
+
+<Objectives>
+
+- State the **goals** of testing and who should test.
+- Distinguish **verification** from **validation**, and **static** from **dynamic** testing.
+- Name the three **testing stages** and the three **levels** of development testing.
+- List what **unit testing** must check, and contrast **white-box** with **black-box** testing.
+- Draw a **control flow graph** and compute **cyclomatic complexity** with all three formulas.
+
+</Objectives>
+
+## What is testing?
+
+<Definition term="Software testing">
+  Executing a program with the <strong>intent of finding errors</strong>, to check the completeness, correctness and quality of the software.
+</Definition>
+
+Testing has two goals:
+
+1. **Show** the developer and the customer that the software **meets its requirements** (validation testing).
+2. **Discover** situations where the software behaves **incorrectly**, undesirably, or against its specification (defect testing).
+
+### Who should test?
+
+Testing is most effective when it is done by an **independent third party**, not the people who wrote the code.
+
+<SlideFigure page={6} caption="Verification ('are we building the product right?') vs. validation ('are we building the right product?')." />
+
+| Verification | Validation |
+|---|---|
+| "Are we building the product **right**?" | "Are we building the **right product**?" |
+| **During** development | **After** development, before release |
+| Checks documents written by people | Executes the program on a computer |
+| Process-oriented | Product-oriented |
+| No code execution: **static testing** | Code execution: **dynamic testing** |
+
+## Testing stages
+
+<SlideFigure page={9} caption="The three stages of testing; development testing has three levels: unit, integration and system." />
+
+| Stage | Who | Purpose |
+|---|---|---|
+| **Development testing** | Designers and programmers | Find bugs and defects **during development**, at three levels: **unit → integration → system** |
+| **Release testing** | A **separate** testing team | Check that a complete version meets the stakeholders' **requirements** before release |
+| **User testing** | Users or potential users, in **their own environment** | Decide whether the system is acceptable (for products, maybe an internal marketing group) |
+
+This lecture covers **unit testing**; the next one covers the other levels and stages.
+
+## Unit testing
+
+**Unit testing** tests **individual program units or object classes**, focusing on the functionality of objects and methods.
+
+### Interface testing comes first
+
+Before any other test, check that data flows **correctly into and out of** the unit:
+
+- **Input validation**: are the inputs received correctly?
+- **Output validation**: does the output have the expected format?
+- **Error handling**: are errors returned properly for invalid inputs?
+
+<Callout type="example" title="A login module">
+  Input: a username and password. Output: a success or error message. Interface tests check that both fields arrive intact, that invalid input returns a proper error, and that the output format matches what callers expect.
+</Callout>
+
+### Errors to look for
+
+| Category | Typical errors |
+|---|---|
+| **Computation** | Wrong arithmetic **precedence**; incorrect **initialization**; wrong symbolic representation of an expression; **boundary conditions** |
+| **Comparison** (control flow often changes after one) | Comparing **different data types**; wrong **logical operators** or precedence; **improper loop termination**, or a loop variable modified inside the loop |
+
+## White-box vs. black-box testing
+
+| White-box (glass-box) | Black-box |
+|---|---|
+| **Full knowledge** of the code | **Zero knowledge** of the code |
+| Testing **as a developer** | Testing **as a user** |
+| Checks that the **implementation details** are correct | Checks that each **customer requirement** is handled correctly |
+| Example: **basis path testing** | Example: requirements-based and scenario tests |
+
+## Basis path testing
+
+**Basis path testing** is a **white-box** technique based on the program's **control structure**. Its test cases exercise every **independent path**, so that **every statement runs at least once** and every condition is tested both **true and false**. It has four steps:
+
+<Steps>
+
+1. Construct the **control flow graph (CFG)**.
+2. Compute the **cyclomatic complexity** $V(G)$ of the graph.
+3. Identify the **independent paths** (the basis set).
+4. Design **test cases** that force each independent path.
+
+</Steps>
+
+### Step 1: the control flow graph
+
+<SlideFigure page={16} caption="Flow-graph notation for sequence, if, while, do-while and case." />
+
+| Term | Meaning |
+|---|---|
+| **Node** (circle) | One or more procedural statements. A run of statements plus a decision can map into one node |
+| **Edge** (arrow) | A flow of control |
+| **Predicate node** | A node containing a **condition**, with **two or more** outgoing edges |
+| **Region** | An area bounded by edges and nodes. **The area outside the graph counts as a region** |
+
+<SlideFigure page={19} caption="A sequence becomes a straight line of nodes; an if/else becomes a predicate node with two branches that rejoin, enclosing one region." />
+
+```c title="A while loop and its flow graph"
+void fun() {
+    x = 0;              // node 1
+    while (x < 10) {    // node 2  (predicate)
+        print(x);       // node 3
+        x += 1;         //   (still node 3)
+    }
+    y = x + 3;          // node 4
+}                       // node 5  (exit)
+// Edges: 1→2, 2→3, 3→2, 2→4, 4→5   →   E = 5, N = 5
+```
+
+<SlideFigure page={21} caption="The flow graph of f1(x, y): while (x != y) { if (x > y) x = x - y; else y = y - x; } return x;" />
+
+### Step 2: cyclomatic complexity
+
+**Cyclomatic complexity** is a software metric that measures a program's **logical complexity**. It gives the **number of independent paths** in the basis set, which is an **upper bound on the number of tests** needed. There are three ways to compute it:
+
+$$
+V(G) = R \qquad V(G) = E - N + 2 \qquad V(G) = P + 1
+$$
+
+where $R$ is the number of **regions**, $E$ the **edges**, $N$ the **nodes** and $P$ the **predicate nodes**.
+
+| Graph | Regions | $E - N + 2$ | $P + 1$ | $V(G)$ |
+|---|---|---|---|---|
+| `fun()` (while loop) | 2 | 5 − 5 + 2 = **2** | 1 + 1 = **2** | **2** |
+| `f1(x, y)` (while + if) | 3 | 7 − 6 + 2 = **3** | 2 + 1 = **3** | **3** |
+
+<SlideFigure page={30} caption="A larger graph: 4 regions; 11 edges − 9 nodes + 2 = 4; 3 predicate nodes + 1 = 4." />
+
+<Callout type="warning" title="Graphs with several exits">
+  The three formulas agree only for well-structured code: a <strong>planar graph with one exit node</strong>. When the code has <strong>several exits</strong> (several <code>return</code>, <code>break</code> or <code>exit()</code> calls), use <strong>only the predicate formula</strong> <code>V(G) = P + 1</code>.
+</Callout>
+
+<SlideFigure page={28} caption="Two exits (nodes 4 and 5): regions and E − N + 2 both give 2, but P + 1 = 2 + 1 = 3 is the correct value." />
+
+Components with a **high** $V(G)$ are **high risk** for errors and should be tested more thoroughly.
+
+<Takeaways>
+
+- Testing shows that software **meets its requirements** and **finds defects**. It works best when done by an **independent** party.
+- **Verification** (built right, static, during development) vs. **validation** (right product, dynamic, before release).
+- The stages are **development** (unit → integration → system), **release** and **user** testing.
+- Unit tests check **interfaces** first, then **computation** and **comparison** errors.
+- **Basis path testing** (white-box): CFG → $V(G)$ → independent paths → test cases.
+- $V(G) = R = E - N + 2 = P + 1$. With **several exits**, trust only $P + 1$.
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="Draw and measure" level="medium">
+
+Draw the flow graph of this function and compute $V(G)$ three ways:
+
+```c
+int sign(int n) {
+    int s = 0;            // 1
+    if (n > 0)            // 1 (predicate)
+        s = 1;            // 2
+    else if (n < 0)       // 3 (predicate)
+        s = -1;           // 4
+    return s;             // 5
+}
+```
+
+<Solution>
+
+The edges are 1→2, 1→3, 3→4, 3→5, 2→5, 4→5, so **E = 6** and **N = 5**.
+
+- $E - N + 2 = 6 - 5 + 2 = 3$.
+- There are two predicate nodes (1 and 3), so $P + 1 = 3$.
+- There are 3 regions: two enclosed, plus the outside. So $V(G) = 3$.
+
+You need at most **3** tests, e.g. `n = 5`, `n = -5` and `n = 0`.
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Verification or validation?" level="easy">
+
+Classify each activity: (a) a review of the design document; (b) beta users running the app; (c) checking the code against the coding standard; (d) running the acceptance tests with customer data.
+
+<Solution>
+
+(a) Verification (static). (b) Validation (dynamic). (c) Verification (static). (d) Validation (dynamic).
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "'Are we building the right product?' describes…",
+      options: ["Verification", "Validation", "Unit testing", "Refactoring"],
+      answer: 1,
+      explain: "Validation is product-oriented and dynamic; verification asks 'are we building the product right?'"
+    },
+    {
+      q: "Which testing stage is done by a separate team on a complete version before release?",
+      options: ["Development testing", "Release testing", "User testing", "Unit testing"],
+      answer: 1,
+      explain: "Release testing checks that the system meets the stakeholders' requirements."
+    },
+    {
+      q: "A flow graph has 9 edges and 7 nodes and one exit. Its cyclomatic complexity is…",
+      options: ["2", "3", "4", "16"],
+      answer: 2,
+      explain: "V(G) = E − N + 2 = 9 − 7 + 2 = 4."
+    },
+    {
+      q: "Cyclomatic complexity gives…",
+      options: ["The number of lines of code", "An upper bound on the number of tests in the basis set", "The number of classes", "The execution time"],
+      answer: 1,
+      explain: "It equals the number of independent paths."
+    },
+    {
+      q: "For code with several exit points, which formula should you use?",
+      options: ["V(G) = R", "V(G) = E − N + 2", "V(G) = P + 1", "Any of them"],
+      answer: 2,
+      explain: "Only the predicate formula is reliable when the graph has several exits."
+    },
+    {
+      q: "White-box testing is testing…",
+      options: ["As a user with zero knowledge of the code", "As a developer with full knowledge of the code", "Only the user interface", "Only by customers"],
+      answer: 1,
+      explain: "Black-box testing is the zero-knowledge, user view."
+    }
+  ]}
+/>

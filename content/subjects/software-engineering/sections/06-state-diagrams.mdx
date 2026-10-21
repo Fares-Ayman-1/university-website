@@ -1,0 +1,218 @@
+---
+number: 6
+title: State Machine Diagrams
+summary: Drawing state machine diagrams in practice. Covers how they differ from the other diagrams, the symbols (start, state, event, composite state, fork, join, final), events and guards, then worked diagrams for a taxi ride, a car agency (from the problem text, with guards), a hotel reservation with event / action labels, a microwave oven with do/exit activities, an ATM and the soda machine, with the hotel diagram implemented in code.
+topics: [What a state diagram shows, State vs other diagrams, Symbols, Events and transitions, Guards, Event / action labels, Composite states, Fork and join, Car agency, Hotel reservation, Microwave oven, ATM, Soda machine]
+duration: 50 min hands-on
+kind: practical
+sources:
+  - file: "sections/Eng_Abdullah Mohamed/sec6/section #6.pdf"
+    label: Section 6 – State Diagram (Eng. Abdullah Mohamed)
+  - file: sections/Eng_Roaa/sec6/State Diagram.pdf
+    label: Section 6 – State Diagram (Eng. Roaa)
+  - file: sections/Eng_Ahmed Mostafa/sec2/USE CASE Soda Example-.pdf
+    label: The Soda Machine – use case and state diagram case study (Eng. Ahmed Mostafa)
+    pages: "21-22"
+bookRefs:
+  - book: swe-book
+    chapter: Ch 5 · System Modeling (5.2.3 State Diagram)
+    pages: "116–118"
+  - book: uml-classroom
+    chapter: Ch 5 · The State Machine Diagram
+---
+
+<Objectives>
+
+- Explain what a state diagram shows and how it differs from the other UML diagrams.
+- Use the **symbols**: start, state, transition, composite state, fork, join and final.
+- Label transitions with **events**, **[guards]** and **/ actions**.
+- Turn a **problem description** into a state diagram, and the diagram into code.
+
+</Objectives>
+
+## What a state diagram shows
+
+A state diagram presents the **states an object can be in**, the **transitions** between them, and where the sequence of state changes **starts and ends**. For example:
+
+- a light switches from *Off* to *On*;
+- a TV changes channel when you press the remote;
+- after some time a washing machine goes from *Washing* to *Rinsing*;
+- a project is *submitted, evaluated, accepted, rejected, monitored, audited, finished, delayed*.
+
+<Callout type="note" title="One object, not many">
+  The diagrams you've studied so far model a <strong>group</strong> of classes, objects or use cases. A state diagram shows the states of <strong>a single object</strong> (one order, one car, one reservation) over its lifetime.
+</Callout>
+
+## Symbols
+
+<SlideFigure page={4} caption="Start (filled circle), state (rounded rectangle), event (a labelled arrow between states) and a composite state with activities inside." />
+
+<SlideFigure page={5} caption="Join (several states into one), fork (one state into several concurrent ones) and final state (bull's-eye)." />
+
+| Symbol | Meaning |
+|---|---|
+| ● **Start** | The initial pseudo-state |
+| ▭ **State** | A condition the object is in, named with an adjective or past participle (*Waiting*, *Confirmed*, *Repaired*) |
+| → **Transition** | Labelled `event [guard] / action`: when the **event** happens and the **guard** is true, do the **action** and move |
+| **Composite state** | A state that contains its own internal states or activities |
+| **Fork / join** | Split into concurrent states, or wait for several to finish |
+| ◉ **Final** | The object's life ends |
+
+### A first example: the taxi
+
+<SlideFigure page={6} caption="Waiting → (Get_Taxi) → Riding → (Reach_Destination) → final. The events are what trigger the transitions." />
+
+## Worked example: the car agency
+
+> The customer **enters** the car, then the car's **papers are reviewed**, then the car is **investigated**. If the repair takes **one day**, the car is **queued**; if it takes **more than one day**, it is **stored in the garage**. It moves from the garage to the queue **when the repair day is today**. It moves from the queue to **customer check** after it is **repaired**. If the customer is **not satisfied**, it is queued again; if **satisfied**, it is **released**.
+
+The **verbs** become events, the **"the car is …"** phrases become states, and the **"if …"** phrases become guards:
+
+<SlideFigure page={9} caption="Entered → Reviewed → Car investigated → [num_of_days > 1] Stored in Garage → [repair = 1 day] Queued, or [num_of_days = 1] Queued directly → (Repair) Repaired → (Review) Customer Review → (Satisfied) Released → final; Not satisfied goes back to Queued." />
+
+## Event / action labels: hotel reservation
+
+A transition label can carry an **action** after the slash: what the system **does** during the transition.
+
+<SlideFigure page={11} caption="Hotel reservation: event above the line, action below, e.g. 'room available / decrement room count'." />
+
+| From | Event / action | To |
+|---|---|---|
+| Null | room request / none | Requested |
+| Requested | room available / decrement room count | Confirmed |
+| Requested | no room available / put on list | On waiting list |
+| On waiting list | room available / decrement room count | Confirmed |
+| On waiting list | customer gives up / remove from list | Canceled |
+| Confirmed | customer cancels / increment room count | Canceled |
+| Confirmed | customer moves in / none | Used |
+| Used | customer pays / increment room count | Archived |
+
+The table translates almost line by line into code:
+
+```python title="reservation.py"
+class Hotel:
+    def __init__(self, rooms):
+        self.rooms = rooms
+        self.waiting_list = []
+
+class Reservation:
+    def __init__(self, hotel):
+        self.hotel, self.state = hotel, "Null"
+
+    def request(self):                                   # room request / none
+        assert self.state == "Null"
+        self.state = "Requested"
+        self._try_confirm()
+
+    def _try_confirm(self):
+        if self.hotel.rooms > 0:                         # room available
+            self.hotel.rooms -= 1                        #   / decrement room count
+            if self in self.hotel.waiting_list:
+                self.hotel.waiting_list.remove(self)
+            self.state = "Confirmed"
+        elif self.state == "Requested":                  # no room available
+            self.hotel.waiting_list.append(self)         #   / put on list
+            self.state = "On waiting list"
+
+    def cancel(self):
+        if self.state == "Confirmed":                    # customer cancels
+            self.hotel.rooms += 1                        #   / increment room count
+        elif self.state == "On waiting list":            # customer gives up
+            self.hotel.waiting_list.remove(self)         #   / remove from list
+        self.state = "Canceled"
+
+    def move_in(self):                                   # customer moves in / none
+        assert self.state == "Confirmed"
+        self.state = "Used"
+
+    def pay(self):                                       # customer pays
+        assert self.state == "Used"
+        self.hotel.rooms += 1                            #   / increment room count
+        self.state = "Archived"
+
+h = Hotel(rooms=1)
+a, b = Reservation(h), Reservation(h)
+a.request(); b.request()
+print(a.state, "|", b.state)          # Confirmed | On waiting list
+a.cancel(); b._try_confirm()          # a cancels, so a room is free again for b
+print(a.state, "|", b.state)          # Canceled | Confirmed
+b.move_in(); b.pay()
+print(b.state, "| rooms:", h.rooms)   # Archived | rooms: 1
+```
+
+## Activities inside states: the microwave oven
+
+<SlideFigure page={12} caption="Microwave: Waiting (do/display time) → Full power (do/set power = 600) or Half power (do/set power = 300) → timer → Set time (do/get time, exit/set time; 'number' loops) → close door → Enabled (do/display 'Ready') → start → Operation (do/operate oven); open door → Disabled (do/display 'Waiting'); cancel returns to Waiting." />
+
+Notice the **do/** activities (what happens *while* in the state), the **exit/** activity in *Set time*, the **self-transition** on *number*, and **cancel** from the outer frame back to *Waiting*.
+
+## More examples
+
+<SlideFigure page={10} caption="ATM: Reading card → Reading PIN → Choosing transaction → Performing transaction (loops back if the customer wants another) → Ejecting card. 'Card not readable' and 'Cancel pressed' jump straight to Ejecting card; too many invalid PINs ends with the card retained." />
+
+<SlideFigure page={22} source={2} caption="The soda machine: Ready → (insert coins) Collecting Money → Accepting Coins (check the amount; alert to insert the correct amount) → (money collected) Selecting Product → (product selected) Dispensing (entry/product selected, do/dispense change, do/dispense product, exit/product dispensed) → Ready." />
+
+<Takeaways>
+
+- A state diagram models **one object's** life: its **states**, the **events** that move it, the **guards** that must hold, and the **actions** done on the way.
+- Label transitions **`event [guard] / action`**, and put **`entry/ do/ exit/`** activities inside states.
+- From a problem text: **"the object is …"** gives states, **verbs/occurrences** give events, and **"if …"** gives guards.
+- Each transition becomes a **method** that checks the current state, does the action and sets the new state.
+
+</Takeaways>
+
+## Practice
+
+<Exercise title="Library book copy" level="medium">
+
+A copy of a book is **Available** when added to the library. When a member borrows it, it becomes **On loan**. When it is returned it is **Available** again, unless it is **damaged**, in which case it goes to **Repair**, then back to Available when fixed. A copy on loan for more than 30 days is **Overdue**; returning it charges a fine. A copy can be **Withdrawn** (final) from Available or Repair. Write the transitions as `event [guard] / action`.
+
+<Solution>
+
+- initial → **Available**: `add copy`
+- Available → **On loan**: `borrow / record loan`
+- On loan → **Overdue**: `day passes [days on loan > 30]`
+- On loan → **Available**: `return [not damaged]`
+- Overdue → **Available**: `return [not damaged] / charge fine`
+- On loan or Overdue → **Repair**: `return [damaged]`, with `/ charge fine` from Overdue
+- Repair → **Available**: `fixed`
+- Available or Repair → **Withdrawn**: `withdraw`, then → final.
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "A state diagram shows the states of…",
+      options: ["All the classes in a system", "A single object", "The interactions between objects", "The data flows"],
+      answer: 1,
+      explain: "Other diagrams model groups of classes, objects or use cases."
+    },
+    {
+      q: "In 'room available / decrement room count', the part after the slash is…",
+      options: ["The event", "The guard", "The action done during the transition", "The target state"],
+      answer: 2,
+      explain: "event [guard] / action."
+    },
+    {
+      q: "In the car agency, '[num_of_days > 1]' is…",
+      options: ["An event", "A guard condition", "A state", "An action"],
+      answer: 1,
+      explain: "Guards are boolean conditions in square brackets."
+    },
+    {
+      q: "'do / display time' inside the Waiting state means…",
+      options: ["Display the time once on entry", "Keep displaying the time while in Waiting", "Display the time when leaving", "A transition to Display"],
+      answer: 1,
+      explain: "do/ activities run while the object is in the state."
+    },
+    {
+      q: "Which symbol splits one state into several concurrent states?",
+      options: ["Join", "Fork", "Final", "Composite state"],
+      answer: 1,
+      explain: "A fork splits; a join synchronizes."
+    }
+  ]}
+/>
