@@ -28,6 +28,9 @@ const resourceFields = {
   number: z.number().int().nonnegative(),
   title: z.string().min(1),
   summary: z.string().min(1),
+  /** Arabic translations of title and summary, shown under the English */
+  titleAr: z.string().optional(),
+  summaryAr: z.string().optional(),
   topics: z.array(z.string()).default([]),
   duration: z.string().optional(),
   sources: z.array(sourceRef).default([]),
@@ -54,12 +57,17 @@ export const subjectSchema = z
     materialsDir: z.string(),
     tagline: z.string(),
     description: z.string(),
+    /** Arabic translations, shown under the English */
+    titleAr: z.string().optional(),
+    taglineAr: z.string().optional(),
+    descriptionAr: z.string().optional(),
+    objectivesAr: z.array(z.string()).default([]),
     level: z.string().optional(),
     instructors: z.array(z.string()).default([]),
     objectives: z.array(z.string()).default([]),
     topics: z.array(z.string()).default([]),
     grading: z
-      .array(z.object({ label: z.string(), weight: z.number() }).strict())
+      .array(z.object({ label: z.string(), labelAr: z.string().optional(), weight: z.number() }).strict())
       .default([]),
     books: z
       .array(

@@ -1,7 +1,9 @@
 ---
 number: 4
 title: "Sensors for Robotic Systems II: Encoders, Range, Velocity and Touch"
+titleAr: "مستشعرات الأنظمة الروبوتية 2: المُرمِّزات والمدى والسرعة واللمس"
 summary: How robots measure their own motion and the distance to the world. Covers incremental and absolute encoders (quadrature, index pulse, Gray code), sonar, laser rangefinders and LiDAR, infrared triangulation, tachometers and tactile skins.
+summaryAr: "كيف تقيس الروبوتات حركتها الذاتية والمسافة إلى العالم من حولها: المُرمِّزات (encoders) التزايدية والمطلقة مع الترميز التربيعي (quadrature) ونبضة الفهرسة (index pulse) وشفرة جراي (Gray code)، والسونار، ومقاييس المدى الليزرية والليدار (LiDAR)، والتثليث بالأشعة تحت الحمراء، ومقاييس سرعة الدوران (tachometers)، والجلود اللمسية."
 topics: [Incremental encoders, Absolute encoders, Gray code, Sonar, Laser rangefinder / LiDAR, Infrared, Tachometer, Tactile sensors]
 duration: 55 min study
 sources:
@@ -17,32 +19,46 @@ bookRefs:
 <Objectives>
 
 - Explain how **incremental** encoders measure displacement, how **quadrature** gives direction and ×4 resolution, and why the **index pulse** is used for homing.
+  <Ar>شرح كيف تقيس المُرمِّزات (encoders) **التزايدية** الإزاحة، وكيف يعطي **الترميز التربيعي (quadrature)** الاتجاه واستبانة ×4، ولماذا تُستخدم **نبضة الفهرسة (index pulse)** للعودة إلى الموضع المرجعي (homing).</Ar>
 - Explain how **absolute** encoders encode position, compute their resolution, and justify the use of **Gray code**.
+  <Ar>شرح كيف تُرمِّز المُرمِّزات **المطلقة** الموضع، وحساب استبانتها، وتبرير استخدام **شفرة جراي (Gray code)**.</Ar>
 - Compute range from **time-of-flight** for sonar and laser sensors and describe their failure modes.
+  <Ar>حساب المدى من **زمن الطيران (time-of-flight)** لمستشعرات السونار والليزر، ووصف أنماط إخفاقها.</Ar>
 - Describe **infrared triangulation**, **tachometers** and the sensing principles behind **tactile** skins.
+  <Ar>وصف **التثليث بالأشعة تحت الحمراء (infrared triangulation)**، و**مقاييس سرعة الدوران (tachometers)**، ومبادئ الاستشعار التي تقوم عليها الجلود **اللمسية (tactile)**.</Ar>
 
 </Objectives>
 
 ## Encoders
 
-<Definition term="Encoder">
+<Ar>المُرمِّزات</Ar>
+
+<Definition term="Encoder" termAr="المُرمِّز (Encoder)">
   A device that gives a <strong>digital output</strong> (square pulses or a binary code) in response to <strong>angular or linear displacement</strong>.
+
+  <Ar>جهاز يعطي <strong>خرجًا رقميًا</strong> (نبضات مربعة أو شفرة ثنائية) استجابةً <strong>لإزاحة زاوية أو خطية</strong>.</Ar>
 </Definition>
 
 Encoders are mechanically coupled to the motion they measure and feed the motion controller with **position (distance)**, **speed** and **direction**. **Rotary** encoders measure shaft rotation, and **linear** encoders measure straight-line travel. Both come in two kinds:
 
-| | Incremental | Absolute |
+<Ar>ترتبط المُرمِّزات (encoders) ميكانيكيًا بالحركة التي تقيسها، وتزوّد متحكِّم الحركة (motion controller) **بالموضع (المسافة)** و**السرعة** و**الاتجاه**. وتقيس المُرمِّزات **الدوّارة (rotary)** دوران العمود، بينما تقيس المُرمِّزات **الخطية (linear)** الحركة في خط مستقيم. ويأتي كلاهما بنوعين:</Ar>
+
+| | Incremental <Ar>التزايدي</Ar> | Absolute <Ar>المطلق</Ar> |
 |---|---|---|
-| Output | Pulses for each **change** from a datum | A unique **code** for every position |
-| Reference | None, so it must **home** at start-up | Built in |
-| After a power loss | Position is lost | Position is kept, so motion can resume without rehoming |
-| Cost / complexity | Lower | Higher |
+| Output <Ar>الخرج</Ar> | Pulses for each **change** from a datum <Ar>نبضات لكل **تغيّر** انطلاقًا من نقطة مرجعية (datum)</Ar> | A unique **code** for every position <Ar>**شفرة** فريدة لكل موضع</Ar> |
+| Reference <Ar>المرجع</Ar> | None, so it must **home** at start-up <Ar>لا يوجد، لذا يجب أن **يعود إلى الموضع المرجعي (home)** عند بدء التشغيل</Ar> | Built in <Ar>مدمج</Ar> |
+| After a power loss <Ar>بعد انقطاع الطاقة</Ar> | Position is lost <Ar>يضيع الموضع</Ar> | Position is kept, so motion can resume without rehoming <Ar>يُحتفَظ بالموضع، فيمكن استئناف الحركة دون إعادة العودة إلى الموضع المرجعي</Ar> |
+| Cost / complexity <Ar>التكلفة / التعقيد</Ar> | Lower <Ar>أقل</Ar> | Higher <Ar>أعلى</Ar> |
 
 ### Incremental encoders
 
+<Ar>المُرمِّزات التزايدية</Ar>
+
 An LED shines through **slots in a rotating disc** onto a photodiode or phototransistor. As the disc turns, the light is alternately passed and blocked, producing a **pulse train**. The number of pulses is proportional to the angle turned.
 
-<SlideFigure page={7} caption="Basic form of an incremental encoder: light source, slotted rotating disc, fixed aperture and detector." />
+<Ar>يسطع ضوء LED عبر **فتحات في قرص دوّار** على ثنائي ضوئي (photodiode) أو ترانزستور ضوئي (phototransistor). ومع دوران القرص يمرّ الضوء ويُحجَب بالتناوب، فيُنتج **قطارًا من النبضات (pulse train)**. ويتناسب عدد النبضات مع الزاوية التي دارها القرص.</Ar>
+
+<SlideFigure page={7} caption="Basic form of an incremental encoder: light source, slotted rotating disc, fixed aperture and detector." captionAr="الشكل الأساسي للمُرمِّز التزايدي: مصدر ضوء، وقرص دوّار ذو فتحات، وفتحة ثابتة، وكاشف." />
 
 $$
 \Delta\theta_{\text{per slot}} = \frac{360^\circ}{N_{\text{slots}}}
@@ -50,19 +66,26 @@ $$
 
 With 60 slots, one slot equals $360^\circ/60 = 6^\circ$. Offset slots allow more than a thousand slots per revolution.
 
+<Ar>مع 60 فتحة، تساوي الفتحة الواحدة $360^\circ/60 = 6^\circ$. وتتيح الفتحات المُزاحة (offset slots) أكثر من ألف فتحة في الدورة الواحدة.</Ar>
+
 #### Channels, direction and counting resolution
 
+<Ar>القنوات والاتجاه واستبانة العدّ</Ar>
+
 - A **single channel** gives position (by counting) but **not direction**.
+  <Ar>**القناة الواحدة** تعطي الموضع (بالعدّ) لكنها **لا تعطي الاتجاه**.</Ar>
 - **Two channels, A and B**, are offset by **90°** (quadrature). Whichever channel leads tells you the direction: A leads B for one direction, B leads A for the other.
+  <Ar>**قناتان، A و B**، مُزاحتان بمقدار **90°** (ترميز تربيعي، quadrature). والقناة المتقدمة هي التي تخبرك بالاتجاه: تتقدم A على B في أحد الاتجاهين، وتتقدم B على A في الاتجاه الآخر.</Ar>
 - A third **Z channel (index pulse)** gives one pulse per revolution, which is used for **homing** at start-up, since an incremental encoder has no fixed reference.
+  <Ar>وتعطي قناة ثالثة هي **القناة Z (نبضة الفهرسة، index pulse)** نبضة واحدة في كل دورة، وتُستخدم **للعودة إلى الموضع المرجعي (homing)** عند بدء التشغيل، لأن المُرمِّز التزايدي ليس له مرجع ثابت.</Ar>
 
-| Counting mode | Edges counted | Counts per slot |
+| Counting mode <Ar>نمط العدّ</Ar> | Edges counted <Ar>الحواف المعدودة</Ar> | Counts per slot <Ar>العدّات لكل فتحة</Ar> |
 |---|---|---|
-| Single (×1) | Rising edges of one channel | 1 |
-| Double (×2) | Rising and falling edges of one channel | 2 |
-| **Quadruple (×4)** | Rising and falling edges of **both** channels | **4** (most precise) |
+| Single (×1) <Ar>مفرد (×1)</Ar> | Rising edges of one channel <Ar>الحواف الصاعدة لقناة واحدة</Ar> | 1 |
+| Double (×2) <Ar>مزدوج (×2)</Ar> | Rising and falling edges of one channel <Ar>الحواف الصاعدة والهابطة لقناة واحدة</Ar> | 2 |
+| **Quadruple (×4)** <Ar>**رباعي (×4)**</Ar> | Rising and falling edges of **both** channels <Ar>الحواف الصاعدة والهابطة **لكلتا** القناتين</Ar> | **4** (most precise) <Ar>**4** (الأدق)</Ar> |
 
-<SlideFigure page={12} caption="Pulse trains of a two-channel encoder with zero index, and the coding for clockwise and counter-clockwise rotation." />
+<SlideFigure page={12} caption="Pulse trains of a two-channel encoder with zero index, and the coding for clockwise and counter-clockwise rotation." captionAr="قطارات النبضات لمُرمِّز ثنائي القنوات مع نبضة الصفر (index)، والترميز للدوران في اتجاه عقارب الساعة وعكسه." />
 
 ```python title="quadrature_decoder.py"
 # Transition table for ×4 decoding: (previous AB, current AB) -> step
@@ -85,24 +108,32 @@ print(decode([(0, 0), (0, 1), (1, 1), (1, 0), (0, 0)]))  # 0.72° forward
 
 ### Absolute encoders
 
+<Ar>المُرمِّزات المطلقة</Ar>
+
 The disc carries several **concentric tracks** read by one detector each. Every angular position produces a **unique binary number**, so the position is known at power-up.
+
+<Ar>يحمل القرص عدة **مسارات متحدة المركز (concentric tracks)**، يقرأ كلَّ مسار منها كاشفٌ خاص به. وكل موضع زاوي يُنتج **عددًا ثنائيًا فريدًا**، لذا يكون الموضع معروفًا فور تشغيل الطاقة.</Ar>
 
 $$
 \text{positions} = 2^{n} \qquad \text{resolution} = \frac{360^\circ}{2^{n}} \qquad (n = \text{number of tracks})
 $$
 
-| Tracks | Positions | Resolution |
+| Tracks <Ar>المسارات</Ar> | Positions <Ar>المواضع</Ar> | Resolution <Ar>الاستبانة</Ar> |
 |---|---|---|
 | 3 | 8 | 45° |
 | 4 | 16 | 22.5° |
 | 10 | 1,024 | ≈ 0.35° |
 | 12 | 4,096 | ≈ 0.088° |
 
-<SlideFigure page={16} caption="A 3-bit absolute encoder: each 45° sector has a unique code. ON-OFF-OFF (sector 4) means 180°–225°." />
+<SlideFigure page={16} caption="A 3-bit absolute encoder: each 45° sector has a unique code. ON-OFF-OFF (sector 4) means 180°–225°." captionAr="مُرمِّز مطلق من 3 بتات: لكل قطاع من 45° شفرة فريدة. فالشفرة ON-OFF-OFF (القطاع 4) تعني 180°–225°." />
 
 #### Why Gray code?
 
+<Ar>لماذا شفرة جراي؟</Ar>
+
 With plain binary, moving from 0111 to 1000 flips **four bits at once**. If the detectors do not all switch at exactly the same instant, the encoder can briefly output a wrong position such as 1111. **Gray code** changes **only one bit** between neighbouring positions, so a misread can only be off by one step:
+
+<Ar>في الترميز الثنائي العادي، يؤدي الانتقال من 0111 إلى 1000 إلى قلب **أربع بتات دفعة واحدة**. فإذا لم تتبدّل جميع الكواشف في اللحظة نفسها تمامًا، فقد يُخرج المُرمِّز للحظة موضعًا خاطئًا مثل 1111. أما **شفرة جراي (Gray code)** فلا تغيّر إلا **بِتًا واحدًا** بين المواضع المتجاورة، لذا لا يتجاوز خطأ القراءة خطوة واحدة:</Ar>
 
 `0000 → 0001 → 0011 → 0010 → 0110 → 0111 → 0101 → 0100 → 1100 → 1101 → 1111 → …`
 
@@ -123,9 +154,15 @@ for i in range(8):
 
 Encoders can be **optical, magnetic or laser** based. They need a dedicated electronic unit (counter or decoder) to connect to a conventional automation circuit. They are used for **robot joint control**, CNC machines, drilling, assembly and cutting machines.
 
+<Ar>يمكن أن تكون المُرمِّزات **ضوئية أو مغناطيسية أو ليزرية**. وتحتاج إلى وحدة إلكترونية مخصصة (عدّاد أو مفكِّك شفرات) لتوصيلها بدائرة أتمتة تقليدية. وتُستخدم في **التحكم في مفاصل الروبوتات**، وآلات CNC، وآلات الحفر والتجميع والقطع.</Ar>
+
 ## Sonar (ultrasonic) sensors
 
+<Ar>مستشعرات السونار (فوق الصوتية)</Ar>
+
 A sonar sends a short (about **1 ms**) burst at **50–250 kHz** and measures the **time of flight** until the echo returns. The sound travels to the obstacle **and back**:
+
+<Ar>يرسل السونار (sonar) دفقة قصيرة (نحو **1 ms**) بتردد **50–250 kHz**، ويقيس **زمن الطيران (time of flight)** حتى يعود الصدى. ينتقل الصوت إلى العائق **ثم يعود**:</Ar>
 
 $$
 d = \frac{v_{\text{sound}} \cdot t}{2}, \qquad v_{\text{sound}} \approx 343 \text{ m/s at } 20^\circ\text{C}
@@ -133,21 +170,30 @@ $$
 
 If no echo arrives within a time limit, there is no obstacle in range. Measurements repeat about **20 times per second**, which gives sonars their typical clicking sound. Each sensor covers a narrow cone, so a round robot needed a ring of about **24 sensors**, roughly 15° each, to see all around.
 
-<SlideFigure page={24} caption="Sonar principle: emit a burst, time the echo." />
+<Ar>إذا لم يصل صدى خلال مهلة زمنية محددة، فلا يوجد عائق في المدى. وتتكرر القياسات نحو **20 مرة في الثانية**، وهو ما يعطي أجهزة السونار صوت النقر المميز لها. ويغطي كل مستشعر مخروطًا ضيقًا، لذا احتاج الروبوت الدائري إلى حلقة من نحو **24 مستشعرًا**، يغطي كلٌّ منها نحو 15°، ليرى ما حوله بالكامل.</Ar>
 
-<Callout type="warning" title="Sonar failure modes">
+<SlideFigure page={24} caption="Sonar principle: emit a burst, time the echo." captionAr="مبدأ السونار: أرسل دفقة، وقِس زمن الصدى." />
+
+<Callout type="warning" title="Sonar failure modes" titleAr="أنماط إخفاق السونار">
 
 - **Specular reflection**: on smooth surfaces hit at a steep angle, the echo bounces away and the wall is **not detected**, or it returns via another surface so the obstacle seems **further away** than it is.
+  <Ar>**الانعكاس المرآوي (Specular reflection)**: على الأسطح الملساء التي تصطدم بها الموجة بزاوية ميل كبيرة، يرتد الصدى بعيدًا و**لا يُكتشف** الجدار، أو يعود عبر سطح آخر فيبدو العائق **أبعد** مما هو عليه.</Ar>
 - **Interference / crosstalk**: one sensor hears another sensor's echo and reports an obstacle **closer** than it really is. Firing sensors in sequence, or using **coded (pseudo-random) signals**, prevents this.
+  <Ar>**التداخل / التشويش المتبادل (crosstalk)**: يلتقط مستشعرٌ صدى مستشعر آخر فيُبلغ عن عائق **أقرب** مما هو في الحقيقة. ويمنع ذلك إطلاقُ المستشعرات بالتتابع، أو استخدامُ **إشارات مُرمَّزة (شبه عشوائية)**.</Ar>
 - Accuracy depends on the transducer (**piezoelectric** or **electrostatic**), the electronics and the surface material.
+  <Ar>تعتمد الدقة على المحوِّل (transducer)، **كهروضغطيًا (piezoelectric)** كان أو **كهروستاتيكيًا (electrostatic)**، وعلى الإلكترونيات، وعلى مادة السطح.</Ar>
 
 </Callout>
 
-<SlideFigure page={27} caption="Smooth surfaces: (a) undetected plane, (b) undetected corner, (c) false detection of a virtual object." />
+<SlideFigure page={27} caption="Smooth surfaces: (a) undetected plane, (b) undetected corner, (c) false detection of a virtual object." captionAr="الأسطح الملساء: (a) مستوى غير مكتشَف، (b) ركن غير مكتشَف، (c) اكتشاف خاطئ لجسم وهمي." />
 
 ## Laser rangefinders and LiDAR
 
+<Ar>مقاييس المدى الليزرية والليدار</Ar>
+
 A **laser rangefinder** measures distance with a laser beam, most often by **time of flight**:
+
+<Ar>يقيس **مقياس المدى الليزري (laser rangefinder)** المسافة بشعاع ليزر، وغالبًا بطريقة **زمن الطيران (time of flight)**:</Ar>
 
 $$
 d = \frac{c \cdot t}{2}, \qquad c \approx 3 \times 10^{8} \text{ m/s}
@@ -155,15 +201,24 @@ $$
 
 An object 10 m away returns the pulse after only $2 \times 10 / (3 \times 10^8) \approx 67$ ns, so timing must be extremely precise. Alternatives are measuring the **phase shift** of a modulated beam against a reference, and **interferometry**, which is the most accurate way to measure *changes* in distance.
 
-- A single rangefinder measures **one point at a time**, so it is a **1-D sensor**.
-- Spinning it gives a **2-D scanner** that maps a plane, used for mapping, path planning and obstacle avoidance.
-- Adding another rotating degree of freedom gives a **3-D scanner (LiDAR)** that produces a **point cloud**. LiDARs are common on autonomous vehicles.
+<Ar>الجسم الذي يبعد 10 م يعيد النبضة بعد $2 \times 10 / (3 \times 10^8) \approx 67$ ns فقط، لذا يجب أن يكون التوقيت دقيقًا للغاية. ومن البدائل قياس **إزاحة الطور (phase shift)** لشعاع مُعدَّل (modulated) مقارنةً بإشارة مرجعية، و**قياس التداخل (interferometry)**، وهو أدق طريقة لقياس *التغيّرات* في المسافة.</Ar>
 
-<SlideFigure page={31} caption="A laser scanner building a map: (a) the environment, (b) scanning, (c) the resulting map." />
+- A single rangefinder measures **one point at a time**, so it is a **1-D sensor**.
+  <Ar>يقيس مقياس المدى المفرد **نقطة واحدة في كل مرة**، لذا فهو **مستشعر أحادي البعد (1-D)**.</Ar>
+- Spinning it gives a **2-D scanner** that maps a plane, used for mapping, path planning and obstacle avoidance.
+  <Ar>وتدويره يعطي **ماسحًا ثنائي الأبعاد (2-D scanner)** يرسم خريطة لمستوى، ويُستخدم في رسم الخرائط وتخطيط المسارات وتجنّب العوائق.</Ar>
+- Adding another rotating degree of freedom gives a **3-D scanner (LiDAR)** that produces a **point cloud**. LiDARs are common on autonomous vehicles.
+  <Ar>وإضافة درجة حرية دورانية أخرى تعطي **ماسحًا ثلاثي الأبعاد (LiDAR)** يُنتج **سحابة نقاط (point cloud)**. وأجهزة الليدار شائعة في المركبات ذاتية القيادة.</Ar>
+
+<SlideFigure page={31} caption="A laser scanner building a map: (a) the environment, (b) scanning, (c) the resulting map." captionAr="ماسح ليزري يبني خريطة: (a) البيئة، (b) المسح، (c) الخريطة الناتجة." />
 
 ## Infrared distance sensors
 
+<Ar>مستشعرات المسافة بالأشعة تحت الحمراء</Ar>
+
 Light is far too fast to time with a cheap circuit, so IR range sensors use **triangulation** instead. A pulsed IR LED (about 40 kHz) lights the object, and a **detector array** sees the reflected spot. The **angle** at which it returns, and therefore its position on the array, depends on the distance.
+
+<Ar>الضوء أسرع بكثير من أن تقيس زمنه دائرةٌ رخيصة، لذا تستخدم مستشعرات المدى بالأشعة تحت الحمراء (IR) **التثليث (triangulation)** بدلًا من ذلك. يضيء LED نابض بالأشعة تحت الحمراء (نحو 40 kHz) الجسمَ، وترى **مصفوفة كواشف (detector array)** البقعة المنعكسة. وتعتمد **الزاوية** التي تعود بها البقعة، ومن ثَمّ موضعها على المصفوفة، على المسافة.</Ar>
 
 $$
 d \approx \frac{f \cdot b}{x}
@@ -171,13 +226,21 @@ $$
 
 Here $b$ is the baseline between emitter and lens, $f$ the focal length and $x$ the spot's position on the array. Resolution gets worse as distance grows. IR light is invisible, but you can see it with IR detector cards or an IR-sensitive (phone) camera.
 
-<SlideFigure page={33} caption="IR distance sensor: pulsed infrared LED and detector array." />
+<Ar>هنا $b$ هو خط الأساس (baseline) بين المُرسِل والعدسة، و $f$ البعد البؤري (focal length)، و $x$ موضع البقعة على المصفوفة. وتسوء الاستبانة كلما زادت المسافة. والأشعة تحت الحمراء غير مرئية، لكن يمكنك رؤيتها ببطاقات كشف الأشعة تحت الحمراء أو بكاميرا حساسة لها (كاميرا الهاتف).</Ar>
+
+<SlideFigure page={33} caption="IR distance sensor: pulsed infrared LED and detector array." captionAr="مستشعر المسافة بالأشعة تحت الحمراء: LED نابض بالأشعة تحت الحمراء ومصفوفة كواشف." />
 
 ## Tachometers
 
+<Ar>مقاييس سرعة الدوران</Ar>
+
 Joint velocity can be computed by **numerically differentiating** the encoder position, but differentiation amplifies **noise** and degrades control. Robots therefore often measure velocity directly with a **tachometer**.
 
+<Ar>يمكن حساب سرعة المفصل **بالاشتقاق العددي (numerical differentiation)** لموضع المُرمِّز، لكن الاشتقاق يضخّم **الضوضاء (noise)** ويُضعف التحكم. لذلك كثيرًا ما تقيس الروبوتات السرعة مباشرةً باستخدام **مقياس سرعة الدوران (tachometer)**.</Ar>
+
 A **DC tachometer** is a small DC generator with **permanent magnets**. Because the field is constant, its output voltage is **proportional to angular velocity**:
+
+<Ar>**مقياس سرعة الدوران المستمر (DC tachometer)** مولِّد تيار مستمر صغير ذو **مغناطيسات دائمة**. ولأن المجال ثابت، يكون جهد خرجه **متناسبًا مع السرعة الزاوية**:</Ar>
 
 $$
 V_{\text{out}} = K_t\,\omega
@@ -185,73 +248,101 @@ $$
 
 Commutators add a slight **ripple** that cannot be fully filtered. **AC tachometers** avoid this and some other imperfections, but simpler DC types are more common in robotics.
 
+<Ar>تضيف المبدِّلات (commutators) **تموّجًا (ripple)** طفيفًا لا يمكن ترشيحه بالكامل. وتتجنب **مقاييس سرعة الدوران المترددة (AC tachometers)** هذا العيب وبعض العيوب الأخرى، لكن الأنواع المستمرة (DC) الأبسط أكثر شيوعًا في الروبوتات.</Ar>
+
 ## Tactile sensors
+
+<Ar>المستشعرات اللمسية</Ar>
 
 Robots can also sense by **touch**. In **fingers**, tactile arrays measure the **contact force distribution** on a grasped object for better manipulation. As **artificial skin**, they let a robot feel contact anywhere on its body, which is essential for **safe human–robot collaboration**.
 
-| Principle | How force becomes a signal |
+<Ar>تستطيع الروبوتات أيضًا الاستشعار **باللمس**. ففي **الأصابع**، تقيس المصفوفات اللمسية (tactile arrays) **توزيع قوة التلامس** على الجسم الممسوك لتحسين المناولة. وبوصفها **جلدًا اصطناعيًا**، تتيح للروبوت الإحساس بالتلامس في أي مكان من جسمه، وهو أمر أساسي **للتعاون الآمن بين الإنسان والروبوت**.</Ar>
+
+| Principle <Ar>المبدأ</Ar> | How force becomes a signal <Ar>كيف تتحول القوة إلى إشارة</Ar> |
 |---|---|
-| **Deformation-based** | Surface strain is measured by strain gauges in a Wheatstone bridge |
-| **Resistive** | Resistance of a material between two electrodes changes with pressure |
-| **Capacitive** | Force changes the plate distance or area, so the capacitance changes |
-| **Optical** | Displacement changes the received light intensity |
-| **Magnetic** | Force changes the flux density or the coupling between circuits |
-| **Mechanical** | Micro-switches with on/off states |
+| **Deformation-based** <Ar>**قائم على التشوّه (Deformation-based)**</Ar> | Surface strain is measured by strain gauges in a Wheatstone bridge <Ar>يُقاس انفعال السطح بمقاييس انفعال (strain gauges) موصولة في قنطرة ويتستون (Wheatstone bridge)</Ar> |
+| **Resistive** <Ar>**مقاومي (Resistive)**</Ar> | Resistance of a material between two electrodes changes with pressure <Ar>تتغير مقاومة مادة بين قطبين كهربائيين مع الضغط</Ar> |
+| **Capacitive** <Ar>**سعوي (Capacitive)**</Ar> | Force changes the plate distance or area, so the capacitance changes <Ar>تغيّر القوة المسافة بين اللوحين أو مساحتهما، فتتغير السعة</Ar> |
+| **Optical** <Ar>**ضوئي (Optical)**</Ar> | Displacement changes the received light intensity <Ar>تغيّر الإزاحة شدة الضوء المستقبَل</Ar> |
+| **Magnetic** <Ar>**مغناطيسي (Magnetic)**</Ar> | Force changes the flux density or the coupling between circuits <Ar>تغيّر القوة كثافة التدفق المغناطيسي أو الاقتران بين الدوائر</Ar> |
+| **Mechanical** <Ar>**ميكانيكي (Mechanical)**</Ar> | Micro-switches with on/off states <Ar>مفاتيح دقيقة (micro-switches) ذات حالتَي تشغيل/إيقاف</Ar> |
 
 <Takeaways>
 
 - **Incremental** encoders count pulses (360° / slots); **quadrature** A/B channels give direction and ×4 resolution, and the **Z index** is used for homing.
+  <Ar>المُرمِّزات **التزايدية** تعدّ النبضات (360° / عدد الفتحات)؛ وقناتا A/B **التربيعيتان (quadrature)** تعطيان الاتجاه واستبانة ×4، وتُستخدم **نبضة الفهرسة Z** للعودة إلى الموضع المرجعي (homing).</Ar>
 - **Absolute** encoders give a unique $n$-bit code per position (360° / $2^n$), keep their position through power loss, and use **Gray code** to avoid multi-bit glitches.
+  <Ar>المُرمِّزات **المطلقة** تعطي شفرة فريدة من $n$ بت لكل موضع (360° / $2^n$)، وتحتفظ بموضعها عند انقطاع الطاقة، وتستخدم **شفرة جراي (Gray code)** لتجنّب أخطاء تغيّر عدة بتات معًا.</Ar>
 - **Sonar** and **laser** sensors use time of flight, $d = vt/2$; sonar suffers from reflections and crosstalk, and laser scanners build maps (**LiDAR**).
+  <Ar>تستخدم مستشعرات **السونار** و**الليزر** زمن الطيران (time of flight)، $d = vt/2$؛ ويعاني السونار من الانعكاسات والتداخل (crosstalk)، بينما تبني الماسحات الليزرية الخرائط (**LiDAR**).</Ar>
 - **IR** range sensors triangulate, **tachometers** give clean velocity ($V = K_t\omega$), and **tactile** arrays provide touch.
+  <Ar>مستشعرات المدى بالأشعة تحت الحمراء (**IR**) تعتمد التثليث، و**مقاييس سرعة الدوران (tachometers)** تعطي سرعة نظيفة ($V = K_t\omega$)، والمصفوفات **اللمسية (tactile)** توفّر حاسة اللمس.</Ar>
 
 </Takeaways>
 
 ## Practice
 
-<Exercise title="Encoder resolution" level="easy">
+<Ar>تدريب</Ar>
+
+<Exercise title="Encoder resolution" titleAr="استبانة المُرمِّز" level="easy">
 
 An incremental encoder has 500 slots and is read in quadrature (×4). What is its angular resolution? How many tracks would an absolute encoder need to match or beat it?
+
+<Ar>مُرمِّز تزايدي (incremental encoder) له 500 فتحة ويُقرأ بالترميز التربيعي (×4). ما استبانته الزاوية؟ وكم مسارًا يحتاج مُرمِّز مطلق ليساويه أو يتفوق عليه؟</Ar>
 
 <Solution>
 
 $500 \times 4 = 2000$ counts per revolution, so $360^\circ / 2000 = 0.18^\circ$. An absolute encoder needs $2^n \ge 2000$, so $n = 11$ tracks ($2048$ positions, $\approx 0.176^\circ$).
 
+<Ar>$500 \times 4 = 2000$ عدّة في الدورة، لذا $360^\circ / 2000 = 0.18^\circ$. ويحتاج المُرمِّز المطلق إلى $2^n \ge 2000$، أي $n = 11$ مسارًا ($2048$ موضعًا، $\approx 0.176^\circ$).</Ar>
+
 </Solution>
 
 </Exercise>
 
-<Exercise title="Sonar range" level="easy">
+<Exercise title="Sonar range" titleAr="مدى السونار" level="easy">
 
 A sonar's echo returns after 11.7 ms. How far away is the obstacle (sound at 343 m/s)?
+
+<Ar>يعود صدى السونار بعد 11.7 ms. كم يبعد العائق (سرعة الصوت 343 m/s)؟</Ar>
 
 <Solution>
 
 $d = 343 \times 0.0117 / 2 \approx 2.0$ m.
 
+<Ar>$d = 343 \times 0.0117 / 2 \approx 2.0$ متر.</Ar>
+
 </Solution>
 
 </Exercise>
 
-<Exercise title="Gray code" level="medium">
+<Exercise title="Gray code" titleAr="شفرة جراي" level="medium">
 
 Convert decimal 5, 6 and 7 to 3-bit Gray code and check that only one bit changes between neighbours.
+
+<Ar>حوّل الأعداد العشرية 5 و 6 و 7 إلى شفرة جراي (Gray code) من 3 بتات، وتحقّق من أن بِتًا واحدًا فقط يتغير بين كل عددين متجاورين.</Ar>
 
 <Solution>
 
 $5 = 101_2 \Rightarrow 101 \oplus 010 = 111$; $6 = 110_2 \Rightarrow 110 \oplus 011 = 101$; $7 = 111_2 \Rightarrow 111 \oplus 011 = 100$. The sequence 111 → 101 → 100 changes exactly one bit at each step.
 
+<Ar>$5 = 101_2 \Rightarrow 101 \oplus 010 = 111$؛ $6 = 110_2 \Rightarrow 110 \oplus 011 = 101$؛ $7 = 111_2 \Rightarrow 111 \oplus 011 = 100$. والتسلسل `111 → 101 → 100` يغيّر بِتًا واحدًا بالضبط في كل خطوة.</Ar>
+
 </Solution>
 
 </Exercise>
 
-<Exercise title="Why not just differentiate?" level="medium">
+<Exercise title="Why not just differentiate?" titleAr="لماذا لا نكتفي بالاشتقاق؟" level="medium">
 
 An encoder reading has ±1 count of noise and is sampled at 1 kHz. Explain why the velocity from numerical differentiation is noisy, and what a tachometer offers instead.
+
+<Ar>تحتوي قراءة المُرمِّز على ضوضاء مقدارها ±1 عدّة، وتُؤخذ عيناتها بتردد 1 kHz. اشرح لماذا تكون السرعة المحسوبة بالاشتقاق العددي مليئة بالضوضاء، وماذا يقدّم مقياس سرعة الدوران (tachometer) بديلًا عن ذلك.</Ar>
 
 <Solution>
 
 Velocity ≈ (change in counts) / Δt with Δt = 1 ms, so a ±1 count error becomes ±1000 counts/s of velocity noise. Differentiation amplifies high-frequency noise. A tachometer measures velocity **directly** as a voltage proportional to ω, so it avoids that amplification and gives a smoother signal for the velocity control loop.
+
+<Ar>السرعة ≈ (التغيّر في العدّات) / $\Delta t$ حيث $\Delta t = 1\,\text{ms}$، لذا يصبح خطأ ±1 عدّة ضوضاءً في السرعة مقدارها ±1000 عدّة/ثانية. فالاشتقاق يضخّم الضوضاء عالية التردد. أما مقياس سرعة الدوران (tachometer) فيقيس السرعة **مباشرةً** على هيئة جهد متناسب مع ω، فيتجنب ذلك التضخيم ويعطي إشارة أنعم لحلقة التحكم في السرعة.</Ar>
 
 </Solution>
 
@@ -261,45 +352,66 @@ Velocity ≈ (change in counts) / Δt with Δt = 1 ms, so a ±1 count error beco
   questions={[
     {
       q: "How does a two-channel incremental encoder determine direction?",
+      qAr: "كيف يحدد المُرمِّز التزايدي ثنائي القنوات اتجاه الدوران؟",
       options: ["From the pulse amplitude", "From the phase relationship of the two 90°-shifted channels", "From the index pulse", "It cannot determine direction"],
+      optionsAr: ["من سعة النبضة", "من علاقة الطور بين القناتين المُزاحتين بمقدار 90°", "من نبضة الفهرسة", "لا يستطيع تحديد الاتجاه"],
       answer: 1,
-      explain: "Whichever channel leads (A or B) tells you the direction of rotation."
+      explain: "Whichever channel leads (A or B) tells you the direction of rotation.",
+      explainAr: "القناة المتقدمة (A أو B) هي التي تخبرك باتجاه الدوران."
     },
     {
       q: "A 10-track absolute encoder has a resolution of about…",
+      qAr: "تبلغ استبانة مُرمِّز مطلق ذي 10 مسارات نحو…",
       options: ["36°", "3.6°", "0.35°", "0.035°"],
+      optionsAr: ["36°", "3.6°", "0.35°", "0.035°"],
       answer: 2,
-      explain: "360° / 2¹⁰ = 360 / 1024 ≈ 0.35°."
+      explain: "360° / 2¹⁰ = 360 / 1024 ≈ 0.35°.",
+      explainAr: "الاستبانة = 360° / 2¹⁰ = 360 / 1024 ≈ 0.35°."
     },
     {
       q: "Why is Gray code used on absolute encoder discs?",
+      qAr: "لماذا تُستخدم شفرة جراي على أقراص المُرمِّزات المطلقة؟",
       options: ["It uses fewer tracks", "Only one bit changes between adjacent positions", "It is easier to print", "It doubles the resolution"],
+      optionsAr: ["لأنها تستخدم مسارات أقل", "لأن بِتًا واحدًا فقط يتغير بين المواضع المتجاورة", "لأن طباعتها أسهل", "لأنها تضاعف الاستبانة"],
       answer: 1,
-      explain: "Single-bit changes prevent large errors when detectors switch at slightly different instants."
+      explain: "Single-bit changes prevent large errors when detectors switch at slightly different instants.",
+      explainAr: "التغيّرات أحادية البت تمنع الأخطاء الكبيرة عندما تتبدّل الكواشف في لحظات مختلفة قليلًا."
     },
     {
       q: "Which sensor keeps its position after a power failure without homing?",
+      qAr: "أي مستشعر يحتفظ بموضعه بعد انقطاع الطاقة دون الحاجة إلى العودة إلى الموضع المرجعي؟",
       options: ["Incremental encoder", "Absolute encoder", "Tachometer", "Sonar"],
+      optionsAr: ["المُرمِّز التزايدي", "المُرمِّز المطلق", "مقياس سرعة الدوران", "السونار"],
       answer: 1,
-      explain: "Each position has a unique code, so it is known as soon as power returns."
+      explain: "Each position has a unique code, so it is known as soon as power returns.",
+      explainAr: "لكل موضع شفرة فريدة، لذا يُعرَف الموضع فور عودة الطاقة."
     },
     {
       q: "Sonar crosstalk typically makes an obstacle appear…",
+      qAr: "التداخل (crosstalk) في السونار يجعل العائق يبدو عادةً…",
       options: ["Further away", "Closer than it is", "Not at all", "Larger"],
+      optionsAr: ["أبعد", "أقرب مما هو عليه", "غير موجود إطلاقًا", "أكبر"],
       answer: 1,
-      explain: "A sensor picks up another sensor's earlier echo and computes a shorter distance."
+      explain: "A sensor picks up another sensor's earlier echo and computes a shorter distance.",
+      explainAr: "يلتقط مستشعرٌ صدى سابقًا لمستشعر آخر فيحسب مسافة أقصر."
     },
     {
       q: "Infrared distance sensors measure range by…",
+      qAr: "تقيس مستشعرات المسافة بالأشعة تحت الحمراء المدى عن طريق…",
       options: ["Time of flight", "Triangulation of the reflected spot", "Doppler shift", "Phase interferometry"],
+      optionsAr: ["زمن الطيران", "تثليث البقعة المنعكسة", "إزاحة دوبلر", "قياس التداخل الطوري"],
       answer: 1,
-      explain: "The return angle (spot position on the detector array) changes with distance."
+      explain: "The return angle (spot position on the detector array) changes with distance.",
+      explainAr: "تتغير زاوية العودة (موضع البقعة على مصفوفة الكواشف) مع المسافة."
     },
     {
       q: "A DC tachometer's output voltage is proportional to…",
+      qAr: "يتناسب جهد خرج مقياس سرعة الدوران المستمر (DC tachometer) مع…",
       options: ["Joint angle", "Angular velocity", "Acceleration", "Torque"],
+      optionsAr: ["زاوية المفصل", "السرعة الزاوية", "التسارع", "عزم الدوران"],
       answer: 1,
-      explain: "V = K_t ω, because the permanent-magnet field is constant."
+      explain: "V = K_t ω, because the permanent-magnet field is constant.",
+      explainAr: "يساوي الجهد V القيمة K_t مضروبةً في ω، لأن مجال المغناطيس الدائم ثابت."
     }
   ]}
 />

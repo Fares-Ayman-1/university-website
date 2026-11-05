@@ -1,7 +1,9 @@
 ---
 number: 6
 title: Displaying Data from Multiple Tables Using Joins
+titleAr: "عرض البيانات من عدة جداول باستخدام الربط (Joins)"
 summary: Combine tables with SQL:1999 join syntax. Covers NATURAL JOIN, JOIN … USING and JOIN … ON, table aliases, three-way joins and extra conditions, self-joins, nonequijoins, INNER vs LEFT/RIGHT/FULL OUTER joins, and how Cartesian products and CROSS JOIN arise. Every result is counted on the HR sample.
+summaryAr: "دمج الجداول باستخدام صيغة الربط في SQL:1999: الربط الطبيعي NATURAL JOIN، والربط باستخدام USING والربط باستخدام ON، والأسماء المستعارة للجداول، والربط الثلاثي والشروط الإضافية، والربط الذاتي (self-join)، والربط غير المتساوي (nonequijoin)، والربط الداخلي INNER مقابل الربط الخارجي LEFT/RIGHT/FULL OUTER، وكيف ينشأ الضرب الديكارتي والربط التقاطعي CROSS JOIN. كل نتيجة محسوبة على عينة HR."
 kind: lab
 topics: [NATURAL JOIN, USING, ON, Table aliases, Three-way joins, Self-join, Nonequijoin, Outer joins, Cartesian product, CROSS JOIN]
 duration: 60 min hands-on
@@ -23,16 +25,25 @@ bookRefs:
 <Objectives>
 
 - Write equijoins with **NATURAL JOIN**, **USING** and **ON**, and qualify columns with **table aliases**.
+  <Ar>كتابة الربط بالتساوي (equijoin) باستخدام **NATURAL JOIN** و**USING** و**ON**، وتأهيل الأعمدة (qualify) باستخدام **الأسماء المستعارة للجداول (table aliases)**.</Ar>
 - Join **three tables** and add extra conditions to a join.
+  <Ar>ربط **ثلاثة جداول** وإضافة شروط إضافية إلى الربط.</Ar>
 - Join a table **to itself** (self-join) and join on a **range** (nonequijoin).
+  <Ar>ربط جدول **بنفسه** (الربط الذاتي، self-join) والربط على **نطاق** (الربط غير المتساوي، nonequijoin).</Ar>
 - Return unmatched rows with **LEFT, RIGHT and FULL OUTER** joins.
+  <Ar>إعادة الصفوف غير المتطابقة باستخدام الربط **LEFT و RIGHT و FULL OUTER**.</Ar>
 - Recognize and avoid accidental **Cartesian products**, and use **CROSS JOIN** on purpose.
+  <Ar>التعرّف على **الضرب الديكارتي (Cartesian product)** غير المقصود وتجنّبه، واستخدام **CROSS JOIN** عن قصد.</Ar>
 
 </Objectives>
 
 ## Why join?
 
+<Ar>لماذا نستخدم الربط؟</Ar>
+
 Normalized data is spread over several tables. An employee's department **name** lives in `DEPARTMENTS`, and its **city** lives in `LOCATIONS`. A **join** combines rows from several tables, usually by matching a **foreign key** to a **primary key**.
+
+<Ar>تتوزع البيانات المُطبَّعة (normalized) على عدة جداول؛ فـ**اسم** قسم الموظف موجود في `DEPARTMENTS`، و**مدينته** موجودة في `LOCATIONS`. ويجمع **الربط (join)** الصفوف من عدة جداول، عادةً بمطابقة **مفتاح أجنبي (foreign key)** مع **مفتاح أساسي (primary key)**.</Ar>
 
 ```sql title="SQL:1999 join syntax"
 SELECT table1.column, table2.column
@@ -46,20 +57,31 @@ FROM   table1
 
 ### Table aliases and qualified columns
 
+<Ar>الأسماء المستعارة للجداول والأعمدة المؤهَّلة</Ar>
+
 When a column name exists in both tables, **qualify** it with the table name or a **table alias**: `e.department_id`. Aliases keep code short, avoid ambiguity and help performance. A column used in `USING` must **not** be qualified anywhere in the statement.
+
+<Ar>عندما يوجد اسم العمود في الجدولين كليهما، **أهِّله (qualify)** باسم الجدول أو **باسم مستعار للجدول (table alias)**: `e.department_id`. فالأسماء المستعارة تُقصِّر الشيفرة، وتمنع الغموض، وتساعد على تحسين الأداء. أما العمود المستخدم في `USING` فيجب **ألا** يُؤهَّل في أي مكان من الجملة.</Ar>
 
 ## Equijoins
 
+<Ar>الربط بالتساوي (Equijoins)</Ar>
+
 ### NATURAL JOIN
 
+<Ar>الربط الطبيعي NATURAL JOIN</Ar>
+
 Joins on **all columns with the same name** in both tables, keeping rows whose values are equal. If the same-named columns have different data types, it's an error.
+
+<Ar>يربط على **كل الأعمدة التي تحمل الاسم نفسه** في الجدولين، ويُبقي الصفوف التي تتساوى قيمها فيها. وإذا اختلفت أنواع بيانات الأعمدة ذات الاسم نفسه، يحدث خطأ.</Ar>
 
 ```sql
 SELECT department_id, department_name, location_id, city
 FROM   departments NATURAL JOIN locations;      -- common column: location_id
 ```
 
-| DEPARTMENT_ID | DEPARTMENT_NAME | LOCATION_ID | CITY |
+{/* data-table */}
+| DEPARTMENT_ID <Ar>رقم القسم</Ar> | DEPARTMENT_NAME <Ar>اسم القسم</Ar> | LOCATION_ID <Ar>رقم الموقع</Ar> | CITY <Ar>المدينة</Ar> |
 |---|---|---|---|
 | 10 | Administration | 1700 | Seattle |
 | 20 | Marketing | 1800 | Toronto |
@@ -70,13 +92,19 @@ FROM   departments NATURAL JOIN locations;      -- common column: location_id
 | 110 | Accounting | 1700 | Seattle |
 | 190 | Contracting | 1700 | Seattle |
 
-<Callout type="warning" title="NATURAL JOIN between EMPLOYEES and DEPARTMENTS is a trap">
+<Callout type="warning" title="NATURAL JOIN between EMPLOYEES and DEPARTMENTS is a trap" titleAr="الربط الطبيعي بين EMPLOYEES و DEPARTMENTS فخ">
   Those two tables share <strong>two</strong> column names, <code>department_id</code> <em>and</em> <code>manager_id</code>. A natural join matches both, so it only returns employees whose manager also manages their department (12 of the 20 on the sample). Name the join column explicitly instead.
+
+  <Ar>يشترك هذان الجدولان في اسمَي عمودين <strong>اثنين</strong>: <code>department_id</code> <em>و</em> <code>manager_id</code>. والربط الطبيعي يطابق الاثنين معًا، لذا لا يُعيد إلا الموظفين الذين يدير مديرُهم قسمَهم أيضًا (12 من أصل 20 في العينة). سمِّ عمود الربط صراحةً بدلًا من ذلك.</Ar>
 </Callout>
 
 ### JOIN … USING
 
+<Ar>الربط باستخدام `JOIN … USING`</Ar>
+
 Names **exactly which** same-named column to join on:
+
+<Ar>يحدد **بالضبط أي** عمود من الأعمدة ذات الاسم نفسه يُستخدم للربط:</Ar>
 
 ```sql
 SELECT employee_id, last_name, location_id, department_id
@@ -91,7 +119,11 @@ WHERE  location_id = 1400;         -- Southlake IT  (location_id not qualified!)
 
 ### JOIN … ON
 
+<Ar>الربط باستخدام `JOIN … ON`</Ar>
+
 The most flexible form: any condition, and the column names don't have to match. It also keeps the join condition separate from the other search conditions.
+
+<Ar>الصيغة الأكثر مرونة: تقبل أي شرط، ولا يُشترط تطابق أسماء الأعمدة. كما أنها تفصل شرط الربط عن شروط البحث الأخرى.</Ar>
 
 ```sql
 SELECT e.employee_id, e.last_name, e.department_id,
@@ -101,6 +133,8 @@ ON     (e.department_id = d.department_id);
 ```
 
 **Three-way join**, where each `JOIN … ON` adds one table:
+
+<Ar>**الربط الثلاثي (Three-way join)**، حيث تضيف كل `JOIN … ON` جدولًا واحدًا:</Ar>
 
 ```sql
 SELECT employee_id, city, department_name
@@ -112,6 +146,8 @@ JOIN   locations   l ON d.location_id   = l.location_id;
 
 **Extra conditions** go in the `ON` clause with `AND`, or in a `WHERE` clause. For inner joins the result is the same:
 
+<Ar>توضع **الشروط الإضافية** في عبارة `ON` مع `AND`، أو في عبارة `WHERE`. وفي الربط الداخلي (inner join) تكون النتيجة واحدة:</Ar>
+
 ```sql
 SELECT e.employee_id, e.last_name, e.department_id, d.location_id
 FROM   employees e JOIN departments d
@@ -122,7 +158,11 @@ AND    e.manager_id = 149;              -- or: WHERE e.manager_id = 149
 
 ## Self-join
 
+<Ar>الربط الذاتي (Self-join)</Ar>
+
 To show each employee with their manager's name, join `EMPLOYEES` to **itself** using two aliases: `worker.manager_id = manager.employee_id`.
+
+<Ar>لعرض كل موظف مع اسم مديره، اربط `EMPLOYEES` **بنفسه** باستخدام اسمين مستعارين: `worker.manager_id = manager.employee_id`.</Ar>
 
 ```sql
 SELECT worker.last_name emp, manager.last_name mgr
@@ -130,7 +170,8 @@ FROM   employees worker JOIN employees manager
 ON     (worker.manager_id = manager.employee_id);
 ```
 
-| EMP | MGR |
+{/* data-table */}
+| EMP <Ar>الموظف</Ar> | MGR <Ar>المدير</Ar> |
 |---|---|
 | Kochhar | King |
 | Hunold | De Haan |
@@ -139,13 +180,19 @@ ON     (worker.manager_id = manager.employee_id);
 | Zlotkey | King |
 | Taylor | Zlotkey |
 | Gietz | Higgins |
-| … (19 rows) | |
+| … (19 rows) <Ar>… (19 صفًا)</Ar> | |
 
 King has no manager, so he isn't in the result. An outer join would include him.
 
+<Ar>ليس لـ King مدير، لذا لا يظهر في النتيجة. أما الربط الخارجي (outer join) فسيتضمنه.</Ar>
+
 ## Nonequijoins
 
+<Ar>الربط غير المتساوي (Nonequijoins)</Ar>
+
 When there is no equal-value column, join on a **range**, such as salary grades:
+
+<Ar>عندما لا يوجد عمود بقيم متساوية، اربط على **نطاق**، مثل درجات الرواتب:</Ar>
 
 ```sql
 SELECT e.last_name, e.salary, j.grade_level
@@ -156,9 +203,15 @@ ON     e.salary BETWEEN j.lowest_sal AND j.highest_sal;
 
 The slides do the same with the `JOBS` table's `min_salary` and `max_salary`.
 
+<Ar>تفعل الشرائح الشيء نفسه باستخدام العمودين `min_salary` و`max_salary` في الجدول `JOBS`.</Ar>
+
 ## Outer joins
 
+<Ar>الربط الخارجي (Outer joins)</Ar>
+
 An **inner** join returns only **matched** rows. In the sample, that silently drops **Grant** (no department) and **Contracting** (no employees). An **outer** join also returns the unmatched rows from one or both sides, padding the missing columns with NULL.
+
+<Ar>يُعيد الربط **الداخلي (inner)** الصفوف **المتطابقة** فقط. وفي العينة، يُسقِط ذلك بصمت **Grant** (ليس له قسم) و**Contracting** (ليس به موظفون). أما الربط **الخارجي (outer)** فيُعيد أيضًا الصفوف غير المتطابقة من أحد الطرفين أو كليهما، ويملأ الأعمدة الناقصة بالقيمة NULL.</Ar>
 
 ```sql
 SELECT e.last_name, e.department_id, d.department_name
@@ -174,18 +227,24 @@ FROM   employees e FULL OUTER JOIN departments d
 ON     (e.department_id = d.department_id);     -- 21 rows: both Grant and Contracting
 ```
 
-| Join | Rows on the sample | Keeps unmatched rows from |
+| Join <Ar>الربط</Ar> | Rows on the sample <Ar>عدد الصفوف على العينة</Ar> | Keeps unmatched rows from <Ar>يُبقي الصفوف غير المتطابقة من</Ar> |
 |---|---|---|
-| INNER | 19 | Neither table |
-| LEFT OUTER (employees left) | 20 | `EMPLOYEES`, so Grant is kept |
-| RIGHT OUTER (departments right) | 20 | `DEPARTMENTS`, so Contracting is kept |
-| FULL OUTER | 21 | Both |
+| INNER <Ar>الداخلي (INNER)</Ar> | 19 | Neither table <Ar>لا جدول منهما</Ar> |
+| LEFT OUTER (employees left) <Ar>الخارجي الأيسر LEFT OUTER (الموظفون على اليسار)</Ar> | 20 | `EMPLOYEES`, so Grant is kept <Ar>`EMPLOYEES`، لذا يبقى Grant</Ar> |
+| RIGHT OUTER (departments right) <Ar>الخارجي الأيمن RIGHT OUTER (الأقسام على اليمين)</Ar> | 20 | `DEPARTMENTS`, so Contracting is kept <Ar>`DEPARTMENTS`، لذا يبقى Contracting</Ar> |
+| FULL OUTER <Ar>الخارجي الكامل (FULL OUTER)</Ar> | 21 | Both <Ar>كلا الجدولين</Ar> |
 
 ## Cartesian products and CROSS JOIN
 
+<Ar>الضرب الديكارتي والربط التقاطعي CROSS JOIN</Ar>
+
 A **Cartesian product** pairs **every** row of one table with **every** row of the other. It happens when a join condition is **omitted** or **invalid**: 20 employees × 8 departments = **160** rows of mostly meaningless pairs. Always include a valid join condition, and remember that joining $n$ tables needs at least $n - 1$ conditions.
 
+<Ar>يُقرِن **الضرب الديكارتي (Cartesian product)** **كل** صف من أحد الجدولين مع **كل** صف من الآخر. ويحدث عندما يكون شرط الربط **محذوفًا** أو **غير صالح**: 20 موظفًا × 8 أقسام = **160** صفًا من أزواج معظمها بلا معنى. احرص دائمًا على تضمين شرط ربط صالح، وتذكّر أن ربط `n` من الجداول يحتاج إلى `n - 1` من الشروط على الأقل.</Ar>
+
 Ask for it explicitly with `CROSS JOIN`, which is useful for generating combinations:
+
+<Ar>اطلبه صراحةً باستخدام `CROSS JOIN`، وهو مفيد لتوليد التوافيق (combinations):</Ar>
 
 ```sql
 SELECT last_name, department_name
@@ -195,18 +254,27 @@ FROM   employees CROSS JOIN departments;     -- 160 rows
 <Takeaways>
 
 - **NATURAL JOIN** matches every same-named column, **USING** picks one, and **ON** allows any condition. Prefer `ON` (or `USING`) for clarity.
+  <Ar>يطابق **NATURAL JOIN** كل الأعمدة ذات الاسم نفسه، ويختار **USING** عمودًا واحدًا منها، ويسمح **ON** بأي شرط. فضِّل `ON` (أو `USING`) من أجل الوضوح.</Ar>
 - Qualify shared columns with **table aliases**, but never qualify a `USING` column.
+  <Ar>أهِّل الأعمدة المشتركة باستخدام **الأسماء المستعارة للجداول (table aliases)**، لكن لا تؤهِّل عمود `USING` أبدًا.</Ar>
 - A **self-join** uses two aliases of one table; a **nonequijoin** matches on ranges (`BETWEEN`).
+  <Ar>يستخدم **الربط الذاتي (self-join)** اسمين مستعارين لجدول واحد، ويطابق **الربط غير المتساوي (nonequijoin)** على نطاقات (`BETWEEN`).</Ar>
 - **Outer joins** keep unmatched rows: LEFT keeps the left table's, RIGHT the right table's, FULL both.
+  <Ar>يُبقي **الربط الخارجي (Outer join)** الصفوف غير المتطابقة: `LEFT` يُبقي صفوف الجدول الأيسر، و`RIGHT` صفوف الجدول الأيمن، و`FULL` صفوف الاثنين.</Ar>
 - Missing join conditions create **Cartesian products** (rows × rows); `CROSS JOIN` makes one on purpose.
+  <Ar>غياب شروط الربط يُنتج **ضربًا ديكارتيًا (Cartesian product)** (صفوف × صفوف)، و`CROSS JOIN` يُنتجه عن قصد.</Ar>
 
 </Takeaways>
 
 ## Practice
 
-<Exercise title="Employees and their cities" level="easy">
+<Ar>تدريب</Ar>
+
+<Exercise title="Employees and their cities" titleAr="الموظفون ومدنهم" level="easy">
 
 List the last name, department name and city of every employee who works in **Seattle**.
+
+<Ar>اعرض الاسم الأخير واسم القسم والمدينة لكل موظف يعمل في **Seattle**.</Ar>
 
 <Solution>
 
@@ -223,9 +291,11 @@ WHERE  l.city = 'Seattle';
 
 </Exercise>
 
-<Exercise title="Include the boss" level="medium">
+<Exercise title="Include the boss" titleAr="ضمِّن المدير الأعلى" level="medium">
 
 Modify the self-join so it lists **all** employees, including King, with `No manager` instead of a missing name.
+
+<Ar>عدِّل الربط الذاتي بحيث يعرض **كل** الموظفين، بمن فيهم King، مع `No manager` بدلًا من الاسم المفقود.</Ar>
 
 <Solution>
 
@@ -239,9 +309,11 @@ ON     worker.manager_id = manager.employee_id;      -- 20 rows
 
 </Exercise>
 
-<Exercise title="Departments without employees" level="medium">
+<Exercise title="Departments without employees" titleAr="أقسام بلا موظفين" level="medium">
 
 Write a query that returns only the departments that have **no** employees.
+
+<Ar>اكتب استعلامًا يُعيد فقط الأقسام التي **ليس** بها موظفون.</Ar>
 
 <Solution>
 
@@ -255,6 +327,8 @@ WHERE  e.employee_id IS NULL;
 
 The outer join keeps every department; the `IS NULL` test keeps only those with no matching employee.
 
+<Ar>يُبقي الربط الخارجي كل الأقسام، ثم يُبقي اختبار `IS NULL` فقط الأقسام التي ليس لها موظف مطابق.</Ar>
+
 </Solution>
 
 </Exercise>
@@ -263,39 +337,57 @@ The outer join keeps every department; the `IS NULL` test keeps only those with 
   questions={[
     {
       q: "NATURAL JOIN joins on…",
+      qAr: "يربط NATURAL JOIN على…",
       options: ["The primary key only", "All columns with the same name in both tables", "Columns listed in USING", "Any condition in ON"],
+      optionsAr: ["المفتاح الأساسي فقط", "كل الأعمدة التي تحمل الاسم نفسه في الجدولين", "الأعمدة المذكورة في USING", "أي شرط في ON"],
       answer: 1,
-      explain: "It equates every same-named column, which can surprise you."
+      explain: "It equates every same-named column, which can surprise you.",
+      explainAr: "فهو يُساوي بين كل الأعمدة ذات الاسم نفسه، وهذا قد يفاجئك."
     },
     {
       q: "In JOIN … USING (department_id), how should department_id be referenced?",
+      qAr: "عند الربط باستخدام USING (department_id)، كيف يجب الإشارة إلى department_id؟",
       options: ["e.department_id", "d.department_id", "department_id, unqualified", "Either alias"],
+      optionsAr: ["e.department_id", "d.department_id", "department_id دون تأهيل", "أيٌّ من الاسمين المستعارين"],
       answer: 2,
-      explain: "Columns in a USING clause must not be qualified."
+      explain: "Columns in a USING clause must not be qualified.",
+      explainAr: "يجب ألا تُؤهَّل الأعمدة الواردة في عبارة USING."
     },
     {
       q: "Listing each employee with their manager's name needs a…",
+      qAr: "عرض كل موظف مع اسم مديره يحتاج إلى…",
       options: ["Nonequijoin", "Self-join", "Cross join", "Natural join"],
+      optionsAr: ["ربط غير متساوٍ (Nonequijoin)", "ربط ذاتي (Self-join)", "ربط تقاطعي (Cross join)", "ربط طبيعي (Natural join)"],
       answer: 1,
-      explain: "EMPLOYEES is joined to itself through manager_id = employee_id."
+      explain: "EMPLOYEES is joined to itself through manager_id = employee_id.",
+      explainAr: "يُربط الجدول EMPLOYEES بنفسه عبر شرط مساواة manager_id بـ employee_id."
     },
     {
       q: "Matching salaries to grade ranges with BETWEEN is a…",
+      qAr: "مطابقة الرواتب مع نطاقات الدرجات باستخدام BETWEEN هي…",
       options: ["Equijoin", "Nonequijoin", "Outer join", "Natural join"],
+      optionsAr: ["ربط بالتساوي (Equijoin)", "ربط غير متساوٍ (Nonequijoin)", "ربط خارجي (Outer join)", "ربط طبيعي (Natural join)"],
       answer: 1,
-      explain: "The condition isn't an equality."
+      explain: "The condition isn't an equality.",
+      explainAr: "لأن الشرط ليس شرط مساواة."
     },
     {
       q: "Which join also returns employees without a department (employees on the left)?",
+      qAr: "أي ربط يُعيد أيضًا الموظفين الذين ليس لهم قسم (مع وضع employees على اليسار)؟",
       options: ["INNER JOIN", "LEFT OUTER JOIN", "RIGHT OUTER JOIN", "CROSS JOIN"],
+      optionsAr: ["INNER JOIN", "LEFT OUTER JOIN", "RIGHT OUTER JOIN", "CROSS JOIN"],
       answer: 1,
-      explain: "LEFT keeps unmatched rows from the left table."
+      explain: "LEFT keeps unmatched rows from the left table.",
+      explainAr: "يُبقي LEFT الصفوف غير المتطابقة من الجدول الأيسر."
     },
     {
       q: "Joining 20 employees and 8 departments with no join condition returns…",
+      qAr: "ربط 20 موظفًا و 8 أقسام دون شرط ربط يُعيد…",
       options: ["20 rows", "28 rows", "160 rows", "An error"],
+      optionsAr: ["20 صفًا", "28 صفًا", "160 صفًا", "خطأ"],
       answer: 2,
-      explain: "A Cartesian product: 20 × 8."
+      explain: "A Cartesian product: 20 × 8.",
+      explainAr: "ضرب ديكارتي: 20 × 8."
     }
   ]}
 />

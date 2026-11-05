@@ -1,7 +1,9 @@
 ---
 number: 4
 title: "Searching Problems (2): Uniform-Cost Search"
+titleAr: "مسائل البحث (2): البحث بالتكلفة الموحدة"
 summary: Weighted graphs and cumulative path cost, then uniform-cost search (a FIFO queue with priority on the cheapest path) traced on a tree and on the lab graph, implemented in the Graph class and compared with DFS and BFS.
+summaryAr: "الرسوم البيانية الموزونة وتكلفة المسار التراكمية، ثم البحث بالتكلفة الموحدة (طابور FIFO مع أولوية لأرخص مسار) بتتبّعه على شجرة وعلى الرسم البياني الخاص بالسكشن، وتنفيذه في صنف Graph، ومقارنته بـ DFS و BFS."
 kind: lab
 topics: [Weighted graphs, Path cost, Priority queue, Uniform-cost search, DFS vs BFS vs UCS]
 duration: 60 min hands-on
@@ -20,28 +22,42 @@ bookRefs:
 <Objectives>
 
 - Represent **weighted** directed and undirected graphs and compute **cumulative path cost**.
+  <Ar>تمثيل الرسوم البيانية **الموزونة (weighted)** الموجَّهة وغير الموجَّهة، وحساب **تكلفة المسار التراكمية (cumulative path cost)**.</Ar>
 - Explain the **priority queue** behind uniform-cost search and its tie-breaking rule.
+  <Ar>شرح **طابور الأولوية (priority queue)** الذي يقوم عليه البحث بالتكلفة الموحدة، وقاعدة كسر التعادل (tie-breaking) فيه.</Ar>
 - Trace UCS by hand on a weighted tree and on the lab graph.
+  <Ar>تتبّع UCS يدويًا على شجرة موزونة وعلى الرسم البياني الخاص بالسكشن.</Ar>
 - Implement `ucs()` in the `Graph` class and compare its result with DFS and BFS.
+  <Ar>تنفيذ `ucs()` في الصنف `Graph` ومقارنة نتيجته بنتيجتي DFS و BFS.</Ar>
 
 </Objectives>
 
 ## Recap: blind search on weighted graphs
 
+<Ar>مراجعة: البحث الأعمى في الرسوم البيانية الموزونة</Ar>
+
 **Uninformed (blind) search** explores the problem space without any extra information about how close a state is to the goal. Which strategy fits depends on the graph:
 
-| Graph | Strategies |
-|---|---|
-| Directed or undirected, unweighted | Depth-first, breadth-first (and the variants depth-limited, iterative deepening, bidirectional) |
-| **Weighted** | **Uniform-cost search** |
+<Ar>يستكشف **البحث غير المُوجَّه (uninformed search)** أو الأعمى فضاءَ المسألة دون أي معلومات إضافية عن مدى قرب الحالة من الهدف. وتعتمد الاستراتيجية المناسبة على نوع الرسم البياني:</Ar>
 
-<Definition term="Path cost">
+| Graph <Ar>الرسم البياني</Ar> | Strategies <Ar>الاستراتيجيات</Ar> |
+|---|---|
+| Directed or undirected, unweighted <Ar>موجَّه أو غير موجَّه، وغير موزون</Ar> | Depth-first, breadth-first (and the variants depth-limited, iterative deepening, bidirectional) <Ar>البحث بالعمق أولًا، والبحث بالعرض أولًا (وأشكالهما: البحث محدود العمق، والبحث بالتعميق التكراري، والبحث ثنائي الاتجاه)</Ar> |
+| **Weighted** <Ar>**موزون**</Ar> | **Uniform-cost search** <Ar>**البحث بالتكلفة الموحدة**</Ar> |
+
+<Definition term="Path cost" termAr="تكلفة المسار">
   The total cost of a path is the <strong>sum of the edge weights</strong> along it: $g(\text{path}) = \sum_i w(e_i)$.
+
+  <Ar>التكلفة الكلية للمسار هي <strong>مجموع أوزان الحواف</strong> على امتداده: $g(\text{path}) = \sum_i w(e_i)$.</Ar>
 </Definition>
 
 ### Weighted graph representations
 
+<Ar>تمثيلات الرسم البياني الموزون</Ar>
+
 In a weighted adjacency list each neighbour is stored with its weight, as `(neighbour, weight)`. In a matrix the cell holds the weight. **The only difference between directed and undirected graphs is the vice-versa rule**: an undirected edge is stored in both directions.
+
+<Ar>في قائمة التجاور الموزونة تُخزَّن كل عقدة مجاورة مع وزنها على شكل `(neighbour, weight)`، وفي المصفوفة تحمل الخلية الوزن. **والفرق الوحيد بين الرسوم البيانية الموجَّهة وغير الموجَّهة هو قاعدة «والعكس بالعكس» (vice-versa)**: فالحافة غير الموجَّهة تُخزَّن في الاتجاهين.</Ar>
 
 ```python title="weighted_representations.py"
 # Directed, weighted
@@ -60,37 +76,55 @@ undirected = {"A": [("B", 7)], "B": [("A", 7)]}
 
 ## Uniform-cost search
 
-<Definition term="Uniform-cost search">
+<Ar>البحث بالتكلفة الموحدة</Ar>
+
+<Definition term="Uniform-cost search" termAr="البحث بالتكلفة الموحدة">
   UCS is <strong>FIFO + a priority function</strong>: before removing a path, sort the list so the path with the <strong>lowest cumulative cost</strong> comes out first.
+
+  <Ar>البحث UCS هو <strong>FIFO + دالة أولوية</strong>: قبل إزالة أي مسار، رتّب القائمة بحيث يخرج المسار صاحب <strong>أقل تكلفة تراكمية</strong> أولًا.</Ar>
 </Definition>
 
 Two rules make the hand traces match the code:
 
+<Ar>قاعدتان تجعلان التتبّع اليدوي مطابقًا لنتيجة الشيفرة:</Ar>
+
 1. **Costs are cumulative.** A child's priority is the parent's path cost plus the edge weight, not the edge weight alone.
+   <Ar>**التكاليف تراكمية.** أولوية الابن هي تكلفة مسار الأم مضافًا إليها وزن الحافة، لا وزن الحافة وحده.</Ar>
 2. **Ties are broken alphabetically** (by the last node) so that everyone gets the same answer.
+   <Ar>**يُكسر التعادل أبجديًا** (حسب العقدة الأخيرة) حتى يحصل الجميع على الإجابة نفسها.</Ar>
 
 UCS uses the same six-step basic search loop as DFS and BFS. Only the queuing function changes.
 
+<Ar>يستخدم UCS حلقة البحث الأساسية نفسها ذات الخطوات الست التي يستخدمها DFS و BFS، ولا يتغير إلا دالة الاصطفاف (queuing function).</Ar>
+
 ### UCS on a weighted tree
 
-<SlideFigure page={10} caption="The lab's weighted tree. The goal is node 6." />
+<Ar>UCS على شجرة موزونة</Ar>
 
-| Step | Remove | List after sorting by cost (cheapest first) |
+<SlideFigure page={10} caption="The lab's weighted tree. The goal is node 6." captionAr="الشجرة الموزونة الخاصة بالسكشن، والهدف هو العقدة 6." />
+
+| Step <Ar>الخطوة</Ar> | Remove <Ar>الإزالة</Ar> | List after sorting by cost (cheapest first) <Ar>القائمة بعد الترتيب حسب التكلفة (الأرخص أولًا)</Ar> |
 |---|---|---|
 | 0 | — | 1 (0) |
 | 1 | 1 (0) | 3 (2), 2 (5) |
 | 2 | 3 (2) | 2 (5), 6 (2 + 6 = **8**), 7 (2 + 8 = **10**) |
 | 3 | 2 (5) | 5 (5 + 1 = **6**), 6 (8), 7 (10), 4 (5 + 9 = **14**) |
 | 4 | 5 (6) | 6 (8), 7 (10), 9 (6 + 7 = **13**), 4 (14), 10 (6 + 11 = **17**) |
-| 5 | **6 (8) = goal** | |
+| 5 | **6 (8) = goal** <Ar>**6 (8) = الهدف**</Ar> | |
 
 **Solution** `[1, 3, 6]` · **Visited** `[1, 3, 2, 5, 6]` · **Cost** $2 + 6 = 8$.
 
-<Callout type="note" title="Why not stop when 6 is first generated?">
+<Ar>**الحل** `[1, 3, 6]` · **العقد المُزارة** `[1, 3, 2, 5, 6]` · **التكلفة** $2 + 6 = 8$.</Ar>
+
+<Callout type="note" title="Why not stop when 6 is first generated?" titleAr="لماذا لا نتوقف عند توليد 6 لأول مرة؟">
   Node 6 enters the list at step 2, but UCS only stops when the goal is <strong>removed</strong>. Until then a cheaper path to it might still turn up. That is what makes UCS optimal.
+
+  <Ar>تدخل العقدة 6 القائمة في الخطوة 2، لكن UCS لا يتوقف إلا عندما <strong>يُزال</strong> الهدف من القائمة. فحتى ذلك الحين قد يظهر مسار أرخص إليه، وهذا ما يجعل UCS أمثل.</Ar>
 </Callout>
 
 ### UCS on the lab graph
+
+<Ar>UCS على الرسم البياني الخاص بالسكشن</Ar>
 
 <WeightedGraph
   directed
@@ -102,7 +136,7 @@ UCS uses the same six-step basic search loop as DFS and BFS. Only the queuing fu
   caption="UCS finds S → A → C → G with cost 2 + 4 + 2 = 8, the cheapest route."
 />
 
-| Current path (cost) | List after sorting |
+| Current path (cost) <Ar>المسار الحالي (التكلفة)</Ar> | List after sorting <Ar>القائمة بعد الترتيب</Ar> |
 |---|---|
 | — | `[S]` (0) |
 | `[S]` (0) | `[S,A]` (2), `[S,B]` (3), `[S,D]` (5) |
@@ -110,25 +144,33 @@ UCS uses the same six-step basic search loop as DFS and BFS. Only the queuing fu
 | `[S,B]` (3) | `[S,D]` (5), `[S,A,C]` (6), `[S,B,D]` (7) |
 | `[S,D]` (5) | `[S,A,C]` (6), `[S,B,D]` (7), `[S,D,G]` (10) |
 | `[S,A,C]` (6) | `[S,A,C,D]` (7), `[S,B,D]` (7), `[S,A,C,G]` (8), `[S,D,G]` (10) |
-| `[S,A,C,D]` (7) | D already visited, so the path is skipped |
-| `[S,B,D]` (7) | D already visited, so the path is skipped |
-| `[S,A,C,G]` (8) | **goal reached** |
+| `[S,A,C,D]` (7) | D already visited, so the path is skipped <Ar>سبقت زيارة D، لذا يُتخطى المسار</Ar> |
+| `[S,B,D]` (7) | D already visited, so the path is skipped <Ar>سبقت زيارة D، لذا يُتخطى المسار</Ar> |
+| `[S,A,C,G]` (8) | **goal reached** <Ar>**تم الوصول إلى الهدف**</Ar> |
 
 ## DFS vs. BFS vs. UCS
 
-| | DFS | BFS | UCS |
+<Ar>مقارنة DFS و BFS و UCS</Ar>
+
+| | DFS <Ar>البحث بالعمق أولًا</Ar> | BFS <Ar>البحث بالعرض أولًا</Ar> | UCS <Ar>البحث بالتكلفة الموحدة</Ar> |
 |---|---|---|---|
-| Queuing function | LIFO | FIFO | FIFO + priority (lowest cost) |
-| Solution | S → D → G | S → D → G | **S → A → C → G** |
-| Actual cost | 10 | 10 | **8** |
-| Nodes visited | 3 | 6 | 6 |
-| Optimal on weighted graphs? | No | No (only for equal step costs) | **Yes** (step costs > 0) |
+| Queuing function <Ar>دالة الاصطفاف</Ar> | LIFO <Ar>الداخل أخيرًا يخرج أولًا</Ar> | FIFO <Ar>الداخل أولًا يخرج أولًا</Ar> | FIFO + priority (lowest cost) <Ar>FIFO + أولوية (الأقل تكلفة)</Ar> |
+| Solution <Ar>الحل</Ar> | S → D → G | S → D → G | **S → A → C → G** |
+| Actual cost <Ar>التكلفة الفعلية</Ar> | 10 | 10 | **8** |
+| Nodes visited <Ar>العقد المُزارة</Ar> | 3 | 6 | 6 |
+| Optimal on weighted graphs? <Ar>أمثل في الرسوم البيانية الموزونة؟</Ar> | No <Ar>لا</Ar> | No (only for equal step costs) <Ar>لا (إلا عند تساوي تكاليف الخطوات)</Ar> | **Yes** (step costs > 0) <Ar>**نعم** (عندما تكون تكاليف الخطوات أكبر من 0)</Ar> |
 
 UCS does more work than DFS here, but it is the only one of the three that guarantees the **cheapest** path.
 
+<Ar>يبذل UCS هنا جهدًا أكبر من DFS، لكنه الوحيد بين الثلاثة الذي يضمن المسار **الأرخص**.</Ar>
+
 ## Implementation
 
+<Ar>التنفيذ</Ar>
+
 Add one method to the `Graph` class from Lab 03. The fringe stores `(cost, path)` pairs, and the sort key `(cost, last_node)` gives the cheapest-first order with alphabetical tie-breaking.
+
+<Ar>أضف دالة عضوًا (method) واحدة إلى الصنف `Graph` من السكشن 03. تخزّن الحافة (fringe) أزواجًا من الشكل `(cost, path)`، ومفتاح الترتيب `(cost, last_node)` يعطي ترتيب «الأرخص أولًا» مع كسر التعادل أبجديًا.</Ar>
 
 ```python title="graph.py — UCS method" {7}
     def ucs(self, start, goal):
@@ -162,62 +204,82 @@ print(g.ucs("S", "G"))
 # (['S', 'A', 'C', 'G'], 8, ['S', 'A', 'B', 'D', 'C', 'G'])
 ```
 
-<Callout type="tip" title="Production version: heapq">
+<Callout type="tip" title="Production version: heapq" titleAr="نسخة الاستخدام الفعلي: heapq">
   Sorting the whole list on every step costs $O(n \log n)$. A binary heap gives the cheapest path in $O(\log n)$:
   <code>heapq.heappush(fringe, (cost, path[-1], path))</code> and <code>heapq.heappop(fringe)</code>. Including <code>path[-1]</code> in the tuple keeps the alphabetical tie-breaking.
+
+  <Ar>ترتيب القائمة كاملةً في كل خطوة يكلّف $O(n \log n)$، أما الكومة الثنائية (binary heap) فتعطي أرخص مسار في $O(\log n)$: <code>heapq.heappush(fringe, (cost, path[-1], path))</code> و <code>heapq.heappop(fringe)</code>. وإدراج <code>path[-1]</code> في الصف (tuple) يحافظ على كسر التعادل الأبجدي.</Ar>
 </Callout>
 
 <Takeaways>
 
 - UCS = **FIFO + priority on the lowest cumulative path cost**.
+  <Ar>البحث UCS = **FIFO + أولوية لأقل تكلفة مسار تراكمية**.</Ar>
 - Costs **accumulate** along the path, and ties are broken **alphabetically** in the labs.
+  <Ar>**تتراكم** التكاليف على امتداد المسار، ويُكسر التعادل **أبجديًا** في السكاشن.</Ar>
 - UCS stops when the goal is **removed** from the list, not when it is generated. That is why it is optimal.
+  <Ar>يتوقف UCS عندما **يُزال** الهدف من القائمة، لا عند توليده، ولهذا فهو أمثل.</Ar>
 - On the lab graph, DFS and BFS return a path that costs 10, while UCS finds the optimal cost of 8.
+  <Ar>في الرسم البياني الخاص بالسكشن، يُرجع DFS و BFS مسارًا تكلفته 10، بينما يجد UCS التكلفة المثلى وهي 8.</Ar>
 
 </Takeaways>
 
 ## Practice
 
-<Exercise title="Change one weight" level="easy">
+<Ar>تدريب</Ar>
+
+<Exercise title="Change one weight" titleAr="غيّر وزنًا واحدًا" level="easy">
 
 In the lab graph, change the weight of **C → G** from 2 to 6. Which path does UCS return now, and at what cost?
+
+<Ar>في الرسم البياني الخاص بالسكشن، غيّر وزن **C → G** من 2 إلى 6. أي مسار يُرجعه UCS الآن، وبأي تكلفة؟</Ar>
 
 <Solution>
 
 The candidate paths are S → A → C → G = 2 + 4 + 6 = 12, S → D → G = 10, S → B → D → G = 12 and S → A → C → D → G = 2 + 4 + 1 + 5 = 12. UCS returns **S → D → G** with cost **10**.
 
+<Ar>المسارات المرشحة هي S → A → C → G = 2 + 4 + 6 = 12، و S → D → G = 10، و S → B → D → G = 12، و S → A → C → D → G = 2 + 4 + 1 + 5 = 12. ويُرجع UCS المسار **S → D → G** بتكلفة **10**.</Ar>
+
 </Solution>
 
 </Exercise>
 
-<Exercise title="Equal weights" level="medium">
+<Exercise title="Equal weights" titleAr="أوزان متساوية" level="medium">
 
 If every edge in a graph has the same weight, how does UCS behave compared with BFS?
+
+<Ar>إذا كان لكل حواف الرسم البياني الوزن نفسه، فكيف يتصرف UCS مقارنةً بـ BFS؟</Ar>
 
 <Solution>
 
 The cumulative cost becomes proportional to the path length, so UCS expands paths in order of depth, exactly like BFS. Only the tie-breaking inside one level can differ, so UCS reduces to BFS when all step costs are equal.
 
+<Ar>تصبح التكلفة التراكمية متناسبة مع طول المسار، لذا يوسّع UCS المسارات بترتيب العمق، تمامًا مثل BFS. ولا يمكن أن يختلف إلا كسر التعادل داخل المستوى الواحد، لذا يؤول UCS إلى BFS عندما تتساوى تكاليف جميع الخطوات.</Ar>
+
 </Solution>
 
 </Exercise>
 
-<Exercise title="Trace UCS yourself" level="hard">
+<Exercise title="Trace UCS yourself" titleAr="تتبّع UCS بنفسك" level="hard">
 
 For the undirected graph with edges A–B 1, A–C 4, B–C 2, B–D 5, C–D 1, run UCS from **A** to **D**. Give the visited order and the solution.
 
+<Ar>للرسم البياني غير الموجَّه ذي الحواف A–B 1، و A–C 4، و B–C 2، و B–D 5، و C–D 1، شغّل UCS من **A** إلى **D**. اذكر ترتيب الزيارة والحل.</Ar>
+
 <Solution>
 
-| Remove | List after sorting |
+| Remove <Ar>الإزالة</Ar> | List after sorting <Ar>القائمة بعد الترتيب</Ar> |
 |---|---|
 | `[A]` (0) | `[A,B]` (1), `[A,C]` (4) |
 | `[A,B]` (1) | `[A,B,A]` (2), `[A,B,C]` (3), `[A,C]` (4), `[A,B,D]` (6) |
-| `[A,B,A]` (2) | A already visited, so skipped |
+| `[A,B,A]` (2) | A already visited, so skipped <Ar>سبقت زيارة A، لذا يُتخطى</Ar> |
 | `[A,B,C]` (3) | `[A,C]` (4), `[A,B,C,D]` (4), `[A,B,C,B]` (5), `[A,B,D]` (6), `[A,B,C,A]` (7) |
-| `[A,C]` (4) | C already visited, so skipped (it wins the tie because C comes before D) |
-| `[A,B,C,D]` (4) | **goal** |
+| `[A,C]` (4) | C already visited, so skipped (it wins the tie because C comes before D) <Ar>سبقت زيارة C، لذا يُتخطى (ويفوز بالتعادل لأن C تأتي قبل D)</Ar> |
+| `[A,B,C,D]` (4) | **goal** <Ar>**الهدف**</Ar> |
 
 Visited `[A, B, C, D]`; solution **A → B → C → D** with cost **4**.
+
+<Ar>العقد المُزارة `[A, B, C, D]`؛ والحل **A → B → C → D** بتكلفة **4**.</Ar>
 
 </Solution>
 
@@ -227,33 +289,48 @@ Visited `[A, B, C, D]`; solution **A → B → C → D** with cost **4**.
   questions={[
     {
       q: "Uniform-cost search removes the path with…",
+      qAr: "يُزيل البحث بالتكلفة الموحدة المسارَ صاحب…",
       options: ["The most nodes", "The fewest nodes", "The lowest cumulative cost", "The highest edge weight"],
+      optionsAr: ["أكبر عدد من العقد", "أقل عدد من العقد", "أقل تكلفة تراكمية", "أعلى وزن حافة"],
       answer: 2,
-      explain: "UCS is FIFO + priority: the cheapest path so far is expanded first."
+      explain: "UCS is FIFO + priority: the cheapest path so far is expanded first.",
+      explainAr: "البحث UCS هو FIFO مع أولوية: يُوسَّع المسار الأرخص حتى الآن أولًا."
     },
     {
       q: "In the weighted tree, what priority does node 7 get when node 3 (cost 2) is expanded through an edge of weight 8?",
+      qAr: "في الشجرة الموزونة، ما الأولوية التي تحصل عليها العقدة 7 عند توسيع العقدة 3 (تكلفتها 2) عبر حافة وزنها 8؟",
       options: ["8", "10", "6", "2"],
+      optionsAr: ["8", "10", "6", "2"],
       answer: 1,
-      explain: "Costs are cumulative: 2 + 8 = 10."
+      explain: "Costs are cumulative: 2 + 8 = 10.",
+      explainAr: "التكاليف تراكمية: مجموع 2 و 8 يساوي 10."
     },
     {
       q: "What does UCS return on the lab graph from S to G?",
+      qAr: "ماذا يُرجع UCS في الرسم البياني الخاص بالسكشن من S إلى G؟",
       options: ["S → D → G (10)", "S → B → D → G (12)", "S → A → C → G (8)", "S → A → C → D → G (12)"],
+      optionsAr: ["S → D → G (10)", "S → B → D → G (12)", "S → A → C → G (8)", "S → A → C → D → G (12)"],
       answer: 2,
-      explain: "2 + 4 + 2 = 8 is the cheapest path."
+      explain: "2 + 4 + 2 = 8 is the cheapest path.",
+      explainAr: "المسار الذي مجموع تكاليفه 2 و 4 و 2، أي 8، هو الأرخص."
     },
     {
       q: "When does UCS stop?",
+      qAr: "متى يتوقف UCS؟",
       options: ["When the goal is first generated", "When the goal is removed from the list", "After a fixed depth", "When the list has one element"],
+      optionsAr: ["عند توليد الهدف لأول مرة", "عند إزالة الهدف من القائمة", "بعد عمق ثابت", "عندما تحتوي القائمة على عنصر واحد"],
       answer: 1,
-      explain: "Stopping on removal guarantees no cheaper path to the goal remains in the list."
+      explain: "Stopping on removal guarantees no cheaper path to the goal remains in the list.",
+      explainAr: "التوقف عند الإزالة يضمن عدم بقاء أي مسار أرخص إلى الهدف في القائمة."
     },
     {
       q: "Two paths both cost 7. Which one does the lab's rule expand first?",
+      qAr: "مساران تكلفة كلٍّ منهما 7. أيهما توسّعه قاعدة السكشن أولًا؟",
       options: ["The one added first", "The one whose last node comes first alphabetically", "The longer path", "Either one at random"],
+      optionsAr: ["المسار الذي أُضيف أولًا", "المسار الذي تأتي عقدته الأخيرة أولًا أبجديًا", "المسار الأطول", "أيٌّ منهما عشوائيًا"],
       answer: 1,
-      explain: "Ties are broken alphabetically by the last node so that all students get the same answer."
+      explain: "Ties are broken alphabetically by the last node so that all students get the same answer.",
+      explainAr: "يُكسر التعادل أبجديًا حسب العقدة الأخيرة حتى يحصل جميع الطلاب على الإجابة نفسها."
     }
   ]}
 />

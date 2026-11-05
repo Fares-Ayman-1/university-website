@@ -393,3 +393,28 @@
   color: var(--heading);
   line-height: 1.35;
 }
+
+/* ---------- Arabic translations ---------- */
+.titleAr {
+  margin-top: 6px;
+  max-width: 34ch;
+  font-size: clamp(1.25rem, 2.6vw, 1.7rem);
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--gold);
+}
+
+.summaryAr {
+  margin-top: 8px;
+  max-width: 70ch;
+  font-size: 1.05rem;
+}
+
+/* Previous/next cards: Arabic title on its own line, aligned with the card's English. */
+.pagerTitle :global(.ar) {
+  font-family: var(--font-arabic);
+  font-weight: 600;
+  font-size: 0.92em;
+  color: var(--muted);
+  text-align: inherit;
+}

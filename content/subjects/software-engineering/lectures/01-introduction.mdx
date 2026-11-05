@@ -1,7 +1,9 @@
 ---
 number: 1
 title: Introduction to Software Engineering
+titleAr: "مقدمة في هندسة البرمجيات"
 summary: What software and software engineering are, the four attributes of good software, generic vs. customized products, the four fundamental process activities, the key challenges and costs, the main types of application, and the professional and ethical responsibilities of software engineers, with the Mentcare case study.
+summaryAr: "ما البرمجيات (software) وما هندسة البرمجيات (Software Engineering)، والخصائص الأربع للبرمجيات الجيدة، والمنتجات العامة (generic) مقابل المنتجات المخصصة (customized)، وأنشطة العملية الأساسية الأربعة، والتحديات والتكاليف الرئيسية، والأنواع الرئيسية للتطبيقات، والمسؤوليات المهنية والأخلاقية لمهندسي البرمجيات، مع دراسة حالة نظام Mentcare."
 topics: [What is software, Attributes of good software, Software engineer vs developer, SE vs CS and systems engineering, Generic vs customized products, Process activities, Key challenges, Application types, Professional responsibility, ACM/IEEE code of ethics]
 duration: 45 min study
 sources:
@@ -19,202 +21,296 @@ bookRefs:
 <Objectives>
 
 - Define **software** and **software engineering**, and explain why professional software is a team effort.
+  <Ar>تعريف **البرمجيات (software)** و**هندسة البرمجيات (Software Engineering)**، وشرح سبب كون البرمجيات الاحترافية جهدًا جماعيًا.</Ar>
 - Name the four **attributes of good software**.
+  <Ar>ذكر **خصائص البرمجيات الجيدة (attributes of good software)** الأربع.</Ar>
 - Compare **generic** and **customized** software products.
+  <Ar>المقارنة بين منتجات البرمجيات **العامة (generic)** و**المخصصة (customized)**.</Ar>
 - List the four fundamental **process activities** and the three **key challenges**.
+  <Ar>سرد **أنشطة العملية (process activities)** الأساسية الأربعة و**التحديات الرئيسية (key challenges)** الثلاثة.</Ar>
 - Classify systems into the main **types of application**.
+  <Ar>تصنيف الأنظمة إلى **أنواع التطبيقات (types of application)** الرئيسية.</Ar>
 - Explain the **professional responsibilities** of a software engineer and the purpose of the ACM/IEEE code of ethics.
+  <Ar>شرح **المسؤوليات المهنية (professional responsibilities)** لمهندس البرمجيات، والغرض من ميثاق أخلاقيات ACM/IEEE.</Ar>
 
 </Objectives>
 
 ## What is software?
 
-<Definition term="Software">
+<Ar>ما البرمجيات؟</Ar>
+
+<Definition term="Software" termAr="البرمجيات">
   Computer <strong>programs and their associated documentation</strong>: everything needed to install and run the programs correctly, explain how to use the system, and keep users up to date (for example, a website for downloading new versions).
+
+  <Ar><strong>برامج الحاسوب والوثائق المرتبطة بها</strong>: كل ما يلزم لتثبيت البرامج وتشغيلها بشكل صحيح، وشرح طريقة استخدام النظام، وإبقاء المستخدمين على اطلاع بالجديد (مثل موقع ويب لتنزيل الإصدارات الجديدة).</Ar>
 </Definition>
 
 Software engineering supports **professional** software development rather than individual programming. Professional software is used by people other than its developers, is built by **teams**, and is **maintained and changed** throughout its life.
 
+<Ar>تدعم هندسة البرمجيات (Software Engineering) تطوير البرمجيات **الاحترافي** لا البرمجة الفردية. فالبرمجيات الاحترافية يستخدمها أشخاص غير مطوّريها، وتبنيها **فرق عمل**، و**تُصان وتُعدَّل** طوال عمرها.</Ar>
+
 ## Attributes of good software
+
+<Ar>خصائص البرمجيات الجيدة</Ar>
 
 Good software must deliver the required **functionality and performance**. Beyond that, professional software must have four attributes:
 
-<SlideFigure page={6} caption="The four essential attributes of professional software." />
+<Ar>يجب أن تقدّم البرمجيات الجيدة **الوظائف والأداء** المطلوبين. وإلى جانب ذلك، يجب أن تتمتع البرمجيات الاحترافية بأربع خصائص:</Ar>
 
-| Attribute | Meaning |
+<SlideFigure page={6} caption="The four essential attributes of professional software." captionAr="الخصائص الأربع الأساسية للبرمجيات الاحترافية." />
+
+| Attribute <Ar>الخاصية</Ar> | Meaning <Ar>المعنى</Ar> |
 |---|---|
-| **Maintainability** | It can evolve to meet changing needs; upgrades are easy, quick and cheap |
-| **Dependability** | It is trustworthy (reliable, secure, safe) and doesn't cause physical or economic damage when it fails |
-| **Efficiency** | It doesn't waste system resources such as memory and processor time |
-| **Acceptability** | Its intended users accept it: it is understandable, usable and compatible with their other systems |
+| **Maintainability** <Ar>**قابلية الصيانة (Maintainability)**</Ar> | It can evolve to meet changing needs; upgrades are easy, quick and cheap <Ar>يمكنها التطور لتلبية الاحتياجات المتغيرة، والترقيات سهلة وسريعة ورخيصة</Ar> |
+| **Dependability** <Ar>**الاعتمادية (Dependability)**</Ar> | It is trustworthy (reliable, secure, safe) and doesn't cause physical or economic damage when it fails <Ar>جديرة بالثقة (موثوقة، ومؤمَّنة، وآمنة) ولا تسبب أضرارًا مادية أو اقتصادية عند تعطلها</Ar> |
+| **Efficiency** <Ar>**الكفاءة (Efficiency)**</Ar> | It doesn't waste system resources such as memory and processor time <Ar>لا تهدر موارد النظام مثل الذاكرة ووقت المعالج</Ar> |
+| **Acceptability** <Ar>**القبول (Acceptability)**</Ar> | Its intended users accept it: it is understandable, usable and compatible with their other systems <Ar>يتقبلها المستخدمون المستهدفون: فهي مفهومة وسهلة الاستخدام ومتوافقة مع أنظمتهم الأخرى</Ar> |
 
 ## Software engineering
 
-<Definition term="Software engineering">
+<Ar>هندسة البرمجيات</Ar>
+
+<Definition term="Software engineering" termAr="هندسة البرمجيات">
   An <strong>engineering discipline</strong> concerned with <strong>all aspects of software production</strong>, using systematic, well-defined techniques. Its result is an effective and reliable software product, built with tools and methods chosen to fit the problem, the constraints and the resources.
+
+  <Ar><strong>تخصص هندسي</strong> يهتم <strong>بجميع جوانب إنتاج البرمجيات</strong>، باستخدام تقنيات منهجية ومحددة جيدًا. ونتيجته منتج برمجي فعّال وموثوق، يُبنى بأدوات وأساليب تُختار لتناسب المشكلة والقيود والموارد.</Ar>
 </Definition>
 
-| Software developer | Software engineer |
+| Software developer <Ar>مطوّر البرمجيات</Ar> | Software engineer <Ar>مهندس البرمجيات</Ar> |
 |---|---|
-| Builds software that runs on various computers | Applies engineering principles to design, develop, maintain and test software |
-| Mostly a **solitary** activity | A **team** activity |
-| Writes complete programs with ready-made tools | Also works with the hardware side, and creates the tools others use |
-| Works on a limited scale | Solves problems on a much larger scale |
+| Builds software that runs on various computers <Ar>يبني برمجيات تعمل على حواسيب مختلفة</Ar> | Applies engineering principles to design, develop, maintain and test software <Ar>يطبّق المبادئ الهندسية لتصميم البرمجيات وتطويرها وصيانتها واختبارها</Ar> |
+| Mostly a **solitary** activity <Ar>نشاط **فردي** في الغالب</Ar> | A **team** activity <Ar>نشاط **جماعي**</Ar> |
+| Writes complete programs with ready-made tools <Ar>يكتب برامج كاملة باستخدام أدوات جاهزة</Ar> | Also works with the hardware side, and creates the tools others use <Ar>يعمل أيضًا على جانب العتاد (hardware)، وينشئ الأدوات التي يستخدمها الآخرون</Ar> |
+| Works on a limited scale <Ar>يعمل على نطاق محدود</Ar> | Solves problems on a much larger scale <Ar>يحل المشكلات على نطاق أكبر بكثير</Ar> |
 
 ### Where it fits
 
+<Ar>موقعها بين التخصصات</Ar>
+
 - **Computer science** studies **theory and fundamentals** (languages, algorithms, AI…). Software engineering deals with the **practicalities** of developing and delivering useful software. CS is to SE what physics is to electrical engineering.
+  <Ar>تدرس **علوم الحاسب (Computer science)** **النظرية والأساسيات** (اللغات، والخوارزميات، والذكاء الاصطناعي…). أما هندسة البرمجيات فتتعامل مع **الجوانب العملية** لتطوير البرمجيات المفيدة وتسليمها. فعلاقة علوم الحاسب (CS) بهندسة البرمجيات (SE) كعلاقة الفيزياء بالهندسة الكهربائية.</Ar>
 - **System engineering** covers **all aspects** of computer-based systems: hardware, software, people and procedures. Software engineering is the **part** concerned with the software.
+  <Ar>تغطي **هندسة النظم (System engineering)** **جميع جوانب** الأنظمة القائمة على الحاسوب: العتاد (hardware)، والبرمجيات (software)، والأشخاص، والإجراءات. وهندسة البرمجيات هي **الجزء** الذي يهتم بالبرمجيات.</Ar>
 
 ## Software products
 
+<Ar>منتجات البرمجيات</Ar>
+
 <Grid cols={2}>
-  <Card title="Generic products" tag="open market">
+  <Card title="Generic products" titleAr="المنتجات العامة" tag="open market">
     Stand-alone systems that a company develops and sells to <strong>any customer</strong>. Examples: databases, word processors, drawing packages and project-management tools for PCs.
+
+    <Ar>أنظمة مستقلة (stand-alone) تطوّرها شركة وتبيعها <strong>لأي عميل</strong>. أمثلة: قواعد البيانات، ومعالجات النصوص، وحزم الرسم، وأدوات إدارة المشاريع للحواسيب الشخصية.</Ar>
   </Card>
-  <Card title="Customized products" tag="one customer">
+  <Card title="Customized products" titleAr="المنتجات المخصصة" tag="one customer">
     Systems built <strong>for a particular customer</strong> under contract. Examples: a university's admission and registration system, air traffic control, control software for an electronic device.
+
+    <Ar>أنظمة تُبنى <strong>لعميل معيّن</strong> بموجب عقد. أمثلة: نظام القبول والتسجيل في جامعة، ونظام مراقبة الحركة الجوية، وبرمجيات التحكم في جهاز إلكتروني.</Ar>
   </Card>
 </Grid>
 
-| | Generic | Customized |
+| | Generic <Ar>المنتج العام</Ar> | Customized <Ar>المنتج المخصص</Ar> |
 |---|---|---|
-| **Specification** | Produced internally, by the company's marketing department | Agreed in a **contract** between customer and developer |
-| **Users** | Many | Few |
-| **Marketing** | Required | Not required |
-| **Changes** | Driven by market demand and planned updates | Driven by the customer's time, budget and needs |
-| **Quality** | Not always the top priority | The main criterion |
-| **Development cost** | Usually not high (shared by many buyers) | High (paid by one customer) |
+| **Specification** <Ar>**التوصيف (Specification)**</Ar> | Produced internally, by the company's marketing department <Ar>يُعَد داخليًا بواسطة قسم التسويق في الشركة</Ar> | Agreed in a **contract** between customer and developer <Ar>يُتفق عليه في **عقد** بين العميل والمطوّر</Ar> |
+| **Users** <Ar>**المستخدمون**</Ar> | Many <Ar>كثيرون</Ar> | Few <Ar>قليلون</Ar> |
+| **Marketing** <Ar>**التسويق**</Ar> | Required <Ar>مطلوب</Ar> | Not required <Ar>غير مطلوب</Ar> |
+| **Changes** <Ar>**التغييرات**</Ar> | Driven by market demand and planned updates <Ar>يحركها طلب السوق والتحديثات المخطط لها</Ar> | Driven by the customer's time, budget and needs <Ar>يحركها وقت العميل وميزانيته واحتياجاته</Ar> |
+| **Quality** <Ar>**الجودة**</Ar> | Not always the top priority <Ar>ليست دائمًا الأولوية القصوى</Ar> | The main criterion <Ar>المعيار الرئيسي</Ar> |
+| **Development cost** <Ar>**تكلفة التطوير**</Ar> | Usually not high (shared by many buyers) <Ar>ليست مرتفعة عادةً (يتقاسمها مشترون كثيرون)</Ar> | High (paid by one customer) <Ar>مرتفعة (يدفعها عميل واحد)</Ar> |
 
 ## The software process
 
+<Ar>عملية البرمجيات</Ar>
+
 A **software process** is a sequence of activities that produces a software product. Different systems need different processes, but all of them include four fundamental activities:
 
-<SlideFigure page={14} caption="The four fundamental activities of every software process." />
+<Ar>**عملية البرمجيات (software process)** هي سلسلة من الأنشطة تُنتج منتجًا برمجيًا. وتحتاج الأنظمة المختلفة إلى عمليات مختلفة، لكنها جميعًا تتضمن أربعة أنشطة أساسية:</Ar>
+
+<SlideFigure page={14} caption="The four fundamental activities of every software process." captionAr="الأنشطة الأساسية الأربعة لكل عملية برمجيات." />
 
 <Steps>
 
 1. **Specification**: customers and engineers define *what* the software should do and the constraints on its operation.
+   <Ar>**التوصيف (Specification)**: يحدد العملاء والمهندسون *ما* يجب أن تفعله البرمجيات والقيود المفروضة على تشغيلها.</Ar>
 2. **Development**: the software is **designed and programmed**.
+   <Ar>**التطوير (Development)**: يجري **تصميم البرمجيات وبرمجتها**.</Ar>
 3. **Validation**: the software is checked to confirm that it does what the customer wants.
+   <Ar>**التحقق من الصلاحية (Validation)**: تُفحص البرمجيات للتأكد من أنها تفعل ما يريده العميل.</Ar>
 4. **Evolution**: the software is changed to meet changing customer and market needs.
+   <Ar>**التطور (Evolution)**: تُعدَّل البرمجيات لتلبية احتياجات العميل والسوق المتغيرة.</Ar>
 
 </Steps>
 
 ## Challenges and costs
 
+<Ar>التحديات والتكاليف</Ar>
+
 Every new software project faces three key challenges:
 
-| Challenge | What it means |
+<Ar>يواجه كل مشروع برمجي جديد ثلاثة تحديات رئيسية:</Ar>
+
+| Challenge <Ar>التحدي</Ar> | What it means <Ar>معناه</Ar> |
 |---|---|
-| **Heterogeneity** | Coping with diverse, fast-changing hardware and software platforms |
-| **Delivery** | Meeting demands for ever shorter delivery times |
-| **Trust** | Producing software that users can trust |
+| **Heterogeneity** <Ar>**عدم التجانس (Heterogeneity)**</Ar> | Coping with diverse, fast-changing hardware and software platforms <Ar>التعامل مع منصات عتاد وبرمجيات متنوعة وسريعة التغير</Ar> |
+| **Delivery** <Ar>**التسليم (Delivery)**</Ar> | Meeting demands for ever shorter delivery times <Ar>تلبية الطلب على أوقات تسليم أقصر باستمرار</Ar> |
+| **Trust** <Ar>**الثقة (Trust)**</Ar> | Producing software that users can trust <Ar>إنتاج برمجيات يمكن للمستخدمين الوثوق بها</Ar> |
 
 **Costs**: roughly **60 %** of costs are development and **40 %** testing. For custom software, **evolution often costs more than development**. Costs depend on the type of system, on required attributes such as performance and reliability, and on the development model.
 
-<Callout type="note" title="No universal method">
+<Ar>**التكاليف**: نحو **60 %** من التكاليف للتطوير و**40 %** للاختبار. وفي البرمجيات المخصصة، **كثيرًا ما تتجاوز تكلفة التطور (evolution) تكلفة التطوير**. وتعتمد التكاليف على نوع النظام، وعلى الخصائص المطلوبة مثل الأداء والموثوقية، وعلى نموذج التطوير.</Ar>
+
+<Callout type="note" title="No universal method" titleAr="لا توجد طريقة تناسب الجميع">
   There is no single best method for all systems and companies. The key factor in choosing software engineering methods is the <strong>type of application</strong> being developed.
+
+  <Ar>لا توجد طريقة واحدة هي الأفضل لجميع الأنظمة والشركات. والعامل الأهم في اختيار أساليب هندسة البرمجيات هو <strong>نوع التطبيق</strong> الذي يجري تطويره.</Ar>
 </Callout>
 
 ## Types of application
 
-| Type | Description | Example |
+<Ar>أنواع التطبيقات</Ar>
+
+| Type <Ar>النوع</Ar> | Description <Ar>الوصف</Ar> | Example <Ar>مثال</Ar> |
 |---|---|---|
-| **Stand-alone** | Runs on a local computer with no network needed | Office software, photo editors |
-| **Embedded control** | Controls and manages hardware devices | Anti-lock braking in a car, a microwave oven's controller |
-| **Interactive transaction-based** | Users interact with a remote system in real time | Amazon, online banking |
-| **Batch processing** | Processes large batches of inputs, not in real time | Monthly phone billing |
-| **Data collection** | Gathers data from sensors, often in harsh environments, and sends it on | Soil-moisture sensors in agriculture, wearable health monitors |
-| **Entertainment** | For personal use and enjoyment | Games |
-| **Modelling and simulation** | Model physical processes with many interacting objects | Weather simulation |
-| **Systems of systems** | Composed of several other software systems | An enterprise built from many integrated systems |
+| **Stand-alone** <Ar>**التطبيقات المستقلة (Stand-alone)**</Ar> | Runs on a local computer with no network needed <Ar>تعمل على حاسوب محلي دون الحاجة إلى شبكة</Ar> | Office software, photo editors <Ar>البرمجيات المكتبية، وبرامج تحرير الصور</Ar> |
+| **Embedded control** <Ar>**أنظمة التحكم المدمجة (Embedded control)**</Ar> | Controls and manages hardware devices <Ar>تتحكم في الأجهزة وتديرها</Ar> | Anti-lock braking in a car, a microwave oven's controller <Ar>نظام منع انغلاق المكابح في السيارة، ووحدة التحكم في فرن الميكروويف</Ar> |
+| **Interactive transaction-based** <Ar>**التطبيقات التفاعلية القائمة على المعاملات (Interactive transaction-based)**</Ar> | Users interact with a remote system in real time <Ar>يتفاعل المستخدمون مع نظام بعيد في الوقت الفعلي</Ar> | Amazon, online banking <Ar>Amazon، والخدمات المصرفية عبر الإنترنت</Ar> |
+| **Batch processing** <Ar>**أنظمة المعالجة الدفعية (Batch processing)**</Ar> | Processes large batches of inputs, not in real time <Ar>تعالج دفعات كبيرة من المدخلات، لا في الوقت الفعلي</Ar> | Monthly phone billing <Ar>فواتير الهاتف الشهرية</Ar> |
+| **Data collection** <Ar>**أنظمة جمع البيانات (Data collection)**</Ar> | Gathers data from sensors, often in harsh environments, and sends it on <Ar>تجمع البيانات من المستشعرات (sensors)، غالبًا في بيئات قاسية، ثم ترسلها إلى أنظمة أخرى</Ar> | Soil-moisture sensors in agriculture, wearable health monitors <Ar>مستشعرات رطوبة التربة في الزراعة، وأجهزة مراقبة الصحة القابلة للارتداء</Ar> |
+| **Entertainment** <Ar>**أنظمة الترفيه (Entertainment)**</Ar> | For personal use and enjoyment <Ar>للاستخدام الشخصي والاستمتاع</Ar> | Games <Ar>الألعاب</Ar> |
+| **Modelling and simulation** <Ar>**أنظمة النمذجة والمحاكاة (Modelling and simulation)**</Ar> | Model physical processes with many interacting objects <Ar>تنمذج عمليات فيزيائية تضم كائنات كثيرة متفاعلة</Ar> | Weather simulation <Ar>محاكاة الطقس</Ar> |
+| **Systems of systems** <Ar>**أنظمة الأنظمة (Systems of systems)**</Ar> | Composed of several other software systems <Ar>تتكون من عدة أنظمة برمجية أخرى</Ar> | An enterprise built from many integrated systems <Ar>مؤسسة مبنية من أنظمة متكاملة كثيرة</Ar> |
 
 **The web** is now the main platform: organizations build **web-based** systems, **web services** expose functionality over the web, and **cloud computing** runs applications remotely, so users pay for use instead of buying software.
 
+<Ar>أصبح **الويب (web)** الآن المنصة الرئيسية: فالمؤسسات تبني أنظمة **قائمة على الويب (web-based)**، و**خدمات الويب (web services)** تتيح الوظائف عبر الويب، و**الحوسبة السحابية (cloud computing)** تشغّل التطبيقات عن بُعد، فيدفع المستخدمون مقابل الاستخدام بدلًا من شراء البرمجيات.</Ar>
+
 ## Ethics and professional responsibility
+
+<Ar>الأخلاقيات والمسؤولية المهنية</Ar>
 
 Software engineering happens within a social and legal framework. Being a professional means behaving **honestly and ethically**, which is more than just obeying the law.
 
-| Issue | Responsibility |
+<Ar>تُمارَس هندسة البرمجيات ضمن إطار اجتماعي وقانوني. وأن تكون محترفًا يعني أن تتصرف **بأمانة وأخلاقية**، وهذا أكثر من مجرد الالتزام بالقانون.</Ar>
+
+| Issue <Ar>القضية</Ar> | Responsibility <Ar>المسؤولية</Ar> |
 |---|---|
-| **Confidentiality** | Respect the confidentiality of employers and clients, whether or not an agreement was signed |
-| **Competence** | Don't misrepresent your level of competence; don't knowingly accept work outside it |
-| **Intellectual property rights** | Know the laws on patents and copyright, and protect your employers' and clients' IP |
-| **Computer misuse** | Don't use your skills to misuse other people's computers, from playing games on an employer's machine to spreading viruses |
+| **Confidentiality** <Ar>**السرية (Confidentiality)**</Ar> | Respect the confidentiality of employers and clients, whether or not an agreement was signed <Ar>احترم سرية أصحاب العمل والعملاء، سواء وُقِّعت اتفاقية أم لا</Ar> |
+| **Competence** <Ar>**الكفاءة المهنية (Competence)**</Ar> | Don't misrepresent your level of competence; don't knowingly accept work outside it <Ar>لا تُسئ تمثيل مستوى كفاءتك، ولا تقبل عن علم عملًا يتجاوزها</Ar> |
+| **Intellectual property rights** <Ar>**حقوق الملكية الفكرية (Intellectual property rights)**</Ar> | Know the laws on patents and copyright, and protect your employers' and clients' IP <Ar>اعرف القوانين الخاصة ببراءات الاختراع وحقوق النشر، واحمِ الملكية الفكرية (IP) لأصحاب العمل والعملاء</Ar> |
+| **Computer misuse** <Ar>**إساءة استخدام الحاسوب (Computer misuse)**</Ar> | Don't use your skills to misuse other people's computers, from playing games on an employer's machine to spreading viruses <Ar>لا تستخدم مهاراتك لإساءة استخدام حواسيب الآخرين، بدءًا من اللعب على جهاز صاحب العمل وصولًا إلى نشر الفيروسات</Ar> |
 
 The **ACM/IEEE Code of Ethics** sets out **eight principles** for professional software engineers: Public, Client and Employer, Product, Judgment, Management, Profession, Colleagues, and Self.
 
-<SlideFigure page={27} caption="The short form of the ACM/IEEE Software Engineering Code of Ethics and its eight principles." />
+<Ar>يضع **ميثاق أخلاقيات ACM/IEEE (Code of Ethics)** **ثمانية مبادئ** لمهندسي البرمجيات المحترفين: الجمهور (Public)، والعميل وصاحب العمل (Client and Employer)، والمنتج (Product)، والحُكم المهني (Judgment)، والإدارة (Management)، والمهنة (Profession)، والزملاء (Colleagues)، والذات (Self).</Ar>
 
-<Callout type="example" title="An ethical dilemma">
+<SlideFigure page={27} caption="The short form of the ACM/IEEE Software Engineering Code of Ethics and its eight principles." captionAr="الصيغة المختصرة لميثاق أخلاقيات هندسة البرمجيات الصادر عن ACM/IEEE ومبادئه الثمانية." />
+
+<Callout type="example" title="An ethical dilemma" titleAr="معضلة أخلاقية">
   Your company falsifies the safety-validation records of a safety-critical system to meet a deadline. Do you keep confidentiality or warn the customer? There are no absolutes. Weigh the potential damage, how severe it would be and who would be affected. Try to resolve it while respecting your employer's rights, but a very dangerous situation can justify going public.
+
+  <Ar>تزوّر شركتك سجلات التحقق من السلامة لنظام حرج من حيث السلامة (safety-critical) كي تلتزم بموعد نهائي. هل تحافظ على السرية أم تحذّر العميل؟ لا توجد إجابات مطلقة. وازن بين الضرر المحتمل، ومدى خطورته، ومن سيتأثر به. حاول حل المسألة مع احترام حقوق صاحب العمل، لكن الموقف شديد الخطورة قد يبرر الإعلان عنه للعامة.</Ar>
 </Callout>
 
 ### Case study: Mentcare
 
+<Ar>دراسة حالة: نظام Mentcare</Ar>
+
 The **Mentcare** system is a patient information system for mental-health care, used throughout the course. It records patients, consultations, conditions and treatments. It serves two purposes: management information that lets health managers assess performance, and timely information that helps medical staff treat patients. Its users are clinical staff (doctors, nurses, health visitors) and non-medical staff (receptionists, medical-records staff and administrators). Its key features are **individual care management**, **patient monitoring** and **administrative reporting**.
+
+<Ar>نظام **Mentcare** هو نظام معلومات للمرضى في مجال رعاية الصحة النفسية، ويُستخدم مثالًا طوال المقرر. يسجّل النظام المرضى والاستشارات والحالات المرضية والعلاجات. ويخدم غرضين: معلومات إدارية تتيح لمديري الرعاية الصحية تقييم الأداء، ومعلومات في الوقت المناسب تساعد الطاقم الطبي على علاج المرضى. ومستخدموه هم الطاقم السريري (الأطباء، والممرضون، والزائرون الصحيون) والطاقم غير الطبي (موظفو الاستقبال، وموظفو السجلات الطبية، والإداريون). وأهم ميزاته **إدارة الرعاية الفردية**، و**متابعة المرضى**، و**التقارير الإدارية**.</Ar>
 
 <Takeaways>
 
 - Software = **programs + documentation**. Software engineering is the systematic, team-based engineering of all aspects of software production.
+  <Ar>البرمجيات = **البرامج + الوثائق**. وهندسة البرمجيات هي الهندسة المنهجية القائمة على العمل الجماعي لجميع جوانب إنتاج البرمجيات.</Ar>
 - Good software is **maintainable, dependable, efficient and acceptable**.
+  <Ar>البرمجيات الجيدة **قابلة للصيانة، وجديرة بالاعتماد (dependable)، وكفؤة، ومقبولة**.</Ar>
 - **Generic** products are sold to any customer; **customized** products are built under contract for one.
+  <Ar>المنتجات **العامة (generic)** تُباع لأي عميل، والمنتجات **المخصصة (customized)** تُبنى بموجب عقد لعميل واحد.</Ar>
 - Every process has **specification, development, validation and evolution**.
+  <Ar>كل عملية تتضمن **التوصيف، والتطوير، والتحقق من الصلاحية، والتطور**.</Ar>
 - The key challenges are **heterogeneity, delivery and trust**. Choose methods by the **type of application**.
+  <Ar>التحديات الرئيسية هي **عدم التجانس، والتسليم، والثقة**. واختر الأساليب وفقًا **لنوع التطبيق**.</Ar>
 - Professional responsibility covers **confidentiality, competence, IP rights and computer misuse**, guided by the ACM/IEEE code.
+  <Ar>تشمل المسؤولية المهنية **السرية، والكفاءة المهنية، وحقوق الملكية الفكرية، وإساءة استخدام الحاسوب**، مسترشدةً بميثاق ACM/IEEE.</Ar>
 
 </Takeaways>
 
 ## Practice
 
-<Exercise title="Classify the application" level="easy">
+<Ar>تدريب</Ar>
+
+<Exercise title="Classify the application" titleAr="صنّف التطبيق" level="easy">
 
 Classify each system by its type of application:
 
+<Ar>صنّف كل نظام حسب نوع التطبيق:</Ar>
+
 1. Microsoft Word on a personal computer.
+   <Ar>برنامج Microsoft Word على حاسوب شخصي.</Ar>
 2. The software that controls a car's anti-lock braking.
+   <Ar>البرمجيات التي تتحكم في نظام منع انغلاق المكابح في السيارة.</Ar>
 3. An online banking system for checking balances and making transfers.
+   <Ar>نظام مصرفي عبر الإنترنت للاستعلام عن الأرصدة وإجراء التحويلات.</Ar>
 4. A phone company system that issues monthly bills.
+   <Ar>نظام لشركة هاتف يُصدر الفواتير الشهرية.</Ar>
 5. Software that models weather conditions.
+   <Ar>برمجيات تنمذج الأحوال الجوية.</Ar>
 
 <Solution>
 
 1. Stand-alone application.
+   <Ar>تطبيق مستقل (Stand-alone).</Ar>
 2. Embedded control system.
+   <Ar>نظام تحكم مدمج (Embedded control).</Ar>
 3. Interactive transaction-based application.
+   <Ar>تطبيق تفاعلي قائم على المعاملات (Interactive transaction-based).</Ar>
 4. Batch processing system.
+   <Ar>نظام معالجة دفعية (Batch processing).</Ar>
 5. Modelling and simulation system.
+   <Ar>نظام نمذجة ومحاكاة (Modelling and simulation).</Ar>
 
 </Solution>
 
 </Exercise>
 
-<Exercise title="Generic or customized?" level="easy">
+<Exercise title="Generic or customized?" titleAr="عام أم مخصص؟" level="easy">
 
 A company builds an accounting program and sells the same version to many businesses. Another company builds an admission system for one university. Classify both and give one difference in how each is specified.
+
+<Ar>تبني شركة برنامجًا محاسبيًا وتبيع النسخة نفسها لشركات كثيرة. وتبني شركة أخرى نظام قبول لجامعة واحدة. صنّف كليهما، واذكر فرقًا واحدًا في طريقة توصيف كل منهما.</Ar>
 
 <Solution>
 
 The accounting program is a **generic** product. Its specification is produced **internally** by the company, based on the market. The admission system is a **customized** product. Its specification is agreed in a **contract** with the university.
 
+<Ar>البرنامج المحاسبي منتج **عام (generic)**، ويُعَد توصيفه **داخليًا** بواسطة الشركة بناءً على السوق. أما نظام القبول فهو منتج **مخصص (customized)**، ويُتفق على توصيفه في **عقد** مع الجامعة.</Ar>
+
 </Solution>
 
 </Exercise>
 
-<Exercise title="True or false" level="medium">
+<Exercise title="True or false" titleAr="صواب أم خطأ" level="medium">
 
 1. Software engineering focuses only on writing code.
+   <Ar>تركّز هندسة البرمجيات على كتابة الشيفرة فقط.</Ar>
 2. One software engineering method is suitable for all types of system.
+   <Ar>توجد طريقة واحدة لهندسة البرمجيات تناسب جميع أنواع الأنظمة.</Ar>
 3. Competence means accepting any job, even outside your expertise.
+   <Ar>الكفاءة المهنية تعني قبول أي عمل، حتى لو كان خارج نطاق خبرتك.</Ar>
 4. For custom software, evolution costs often exceed development costs.
+   <Ar>في البرمجيات المخصصة، كثيرًا ما تتجاوز تكاليف التطور تكاليف التطوير.</Ar>
 
 <Solution>
 
 1. **False**: it covers all aspects of production, including specification, validation and evolution.
+   <Ar>**خطأ**: فهي تغطي جميع جوانب الإنتاج، بما فيها التوصيف والتحقق من الصلاحية والتطور.</Ar>
 2. **False**: the type of application decides which methods fit.
+   <Ar>**خطأ**: نوع التطبيق هو الذي يحدد الأساليب المناسبة.</Ar>
 3. **False**: competence means being honest about your abilities and not accepting work beyond them.
+   <Ar>**خطأ**: الكفاءة المهنية تعني أن تكون صادقًا بشأن قدراتك وألا تقبل عملًا يتجاوزها.</Ar>
 4. **True**.
+   <Ar>**صواب**.</Ar>
 
 </Solution>
 
@@ -224,39 +320,57 @@ The accounting program is a **generic** product. Its specification is produced *
   questions={[
     {
       q: "Which attribute means users find the software understandable, usable and compatible with their systems?",
+      qAr: "أي خاصية تعني أن المستخدمين يجدون البرمجيات مفهومة وسهلة الاستخدام ومتوافقة مع أنظمتهم؟",
       options: ["Maintainability", "Dependability", "Efficiency", "Acceptability"],
+      optionsAr: ["قابلية الصيانة", "الاعتمادية", "الكفاءة", "القبول"],
       answer: 3,
-      explain: "Acceptability: the software is accepted by the users it was designed for."
+      explain: "Acceptability: the software is accepted by the users it was designed for.",
+      explainAr: "القبول (Acceptability): أن يتقبل البرمجياتِ المستخدمون الذين صُمِّمت لهم."
     },
     {
       q: "Which is NOT one of the four fundamental process activities?",
+      qAr: "أيٌّ مما يلي ليس من أنشطة العملية الأساسية الأربعة؟",
       options: ["Specification", "Validation", "Marketing", "Evolution"],
+      optionsAr: ["التوصيف", "التحقق من الصلاحية", "التسويق", "التطور"],
       answer: 2,
-      explain: "The four are specification, development, validation and evolution."
+      explain: "The four are specification, development, validation and evolution.",
+      explainAr: "الأنشطة الأربعة هي التوصيف والتطوير والتحقق من الصلاحية والتطور."
     },
     {
       q: "Software that controls a microwave oven's cooking process is…",
+      qAr: "البرمجيات التي تتحكم في عملية الطهي في فرن الميكروويف هي…",
       options: ["A batch processing system", "An embedded control system", "A stand-alone application", "A data collection system"],
+      optionsAr: ["نظام معالجة دفعية", "نظام تحكم مدمج", "تطبيق مستقل", "نظام جمع بيانات"],
       answer: 1,
-      explain: "Embedded control systems manage hardware devices."
+      explain: "Embedded control systems manage hardware devices.",
+      explainAr: "تدير أنظمة التحكم المدمجة الأجهزة (hardware devices)."
     },
     {
       q: "Which ethical issue requires engineers to be honest about their abilities and qualifications?",
+      qAr: "أي قضية أخلاقية تتطلب من المهندسين أن يكونوا صادقين بشأن قدراتهم ومؤهلاتهم؟",
       options: ["Confidentiality", "Competence", "Intellectual property rights", "Computer misuse"],
+      optionsAr: ["السرية", "الكفاءة المهنية", "حقوق الملكية الفكرية", "إساءة استخدام الحاسوب"],
       answer: 1,
-      explain: "Competence: don't misrepresent your level of competence."
+      explain: "Competence: don't misrepresent your level of competence.",
+      explainAr: "الكفاءة المهنية (Competence): لا تُسئ تمثيل مستوى كفاءتك."
     },
     {
       q: "Software engineering differs from computer science because it focuses on…",
+      qAr: "تختلف هندسة البرمجيات عن علوم الحاسب لأنها تركّز على…",
       options: ["Theoretical foundations", "Hardware design", "The practicalities of developing and delivering software", "Artificial intelligence"],
+      optionsAr: ["الأسس النظرية", "تصميم العتاد", "الجوانب العملية لتطوير البرمجيات وتسليمها", "الذكاء الاصطناعي"],
       answer: 2,
-      explain: "CS covers theory and fundamentals; SE covers practical development."
+      explain: "CS covers theory and fundamentals; SE covers practical development.",
+      explainAr: "تغطي علوم الحاسب (CS) النظرية والأساسيات، وتغطي هندسة البرمجيات (SE) التطوير العملي."
     },
     {
       q: "Which key challenge is about producing software users can rely on?",
+      qAr: "أي تحدٍّ رئيسي يتعلق بإنتاج برمجيات يمكن للمستخدمين الاعتماد عليها؟",
       options: ["Heterogeneity", "Delivery", "Trust", "Evolution"],
+      optionsAr: ["عدم التجانس", "التسليم", "الثقة", "التطور"],
       answer: 2,
-      explain: "Trust: techniques that show the software can be trusted by its users."
+      explain: "Trust: techniques that show the software can be trusted by its users.",
+      explainAr: "الثقة (Trust): تقنيات تُظهر أن المستخدمين يمكنهم الوثوق بالبرمجيات."
     }
   ]}
 />

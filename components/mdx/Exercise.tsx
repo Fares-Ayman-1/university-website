@@ -1,12 +1,15 @@
 import { PencilLine } from "lucide-react";
+import { ArLine } from "./Arabic";
 import styles from "./mdx.module.css";
 
 export function Exercise({
   title,
+  titleAr,
   level,
   children,
 }: {
   title: string;
+  titleAr?: string;
   level?: "easy" | "medium" | "hard";
   children: React.ReactNode;
 }) {
@@ -17,8 +20,11 @@ export function Exercise({
           <PencilLine />
         </span>
         <p className={styles.exerciseTitle}>
-          <span className={styles.exerciseKicker}>Exercise</span>
+          <span className={styles.exerciseKicker}>
+            Exercise <ArLine inline>تمرين</ArLine>
+          </span>
           {title}
+          <ArLine>{titleAr}</ArLine>
         </p>
         {level ? (
           <span className={styles.level} data-level={level}>
@@ -35,7 +41,9 @@ export function Exercise({
 export function Solution({ children }: { children: React.ReactNode }) {
   return (
     <details className={styles.solution}>
-      <summary>Show solution</summary>
+      <summary>
+        Show solution <ArLine inline>عرض الحل</ArLine>
+      </summary>
       <div className={styles.solutionBody}>{children}</div>
     </details>
   );

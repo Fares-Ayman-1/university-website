@@ -1,7 +1,9 @@
 ---
 number: 9
 title: "Software Testing II: Basis Paths, Integration, Release and User Testing"
+titleAr: "اختبار البرمجيات (2): المسارات الأساسية، واختبار التكامل والإصدار والمستخدم"
 summary: The second half of basis path testing (finding a basis set of independent paths and deriving test cases that force each path), worked through on a loop, on f1(x, y), and on a 14-node shipping-charge function. Then the remaining stages. Integration testing is seen from black-box and white-box views, then system testing, release testing (scenario, recovery and security testing) and user testing (alpha and beta).
+summaryAr: "النصف الثاني من اختبار المسار الأساسي (basis path testing): إيجاد مجموعة أساسية (basis set) من المسارات المستقلة، واشتقاق حالات اختبار تُجبر التنفيذ على سلوك كل مسار، مع أمثلة محلولة على حلقة، وعلى الدالة f1(x, y)، وعلى دالة لحساب رسوم الشحن من 14 عقدة. ثم بقية المراحل: يُعرض اختبار التكامل (integration testing) من منظوري الصندوق الأسود والصندوق الأبيض، ثم اختبار النظام، واختبار الإصدار (اختبار السيناريو واختبار الاسترداد واختبار الأمان)، واختبار المستخدم (ألفا وبيتا)."
 topics: [Independent paths, Basis set, Deriving test cases, Shipping-charge example, Integration testing, System testing, Release vs system testing, Scenario testing, Recovery testing, Security testing, Alpha testing, Beta testing]
 duration: 55 min study
 sources:
@@ -19,33 +21,47 @@ bookRefs:
 <Objectives>
 
 - Define an **independent path**, and find a **basis set** from a flow graph.
+  <Ar>تعريف **المسار المستقل (independent path)**، وإيجاد **مجموعة أساسية (basis set)** من مخطط التدفق.</Ar>
 - **Derive test cases** that force each independent path, with inputs and expected outputs.
+  <Ar>**اشتقاق حالات اختبار (test cases)** تُجبر التنفيذ على سلوك كل مسار مستقل، مع المدخلات والمخرجات المتوقعة.</Ar>
 - Explain **integration** and **system** testing, and how **release** testing differs from system testing.
+  <Ar>شرح اختبار **التكامل (integration)** واختبار **النظام (system)**، وكيف يختلف اختبار **الإصدار (release)** عن اختبار النظام.</Ar>
 - Describe **scenario**, **recovery** and **security** testing, and **alpha** vs. **beta** testing.
+  <Ar>وصف اختبار **السيناريو (scenario)** واختبار **الاسترداد (recovery)** واختبار **الأمان (security)**، واختبار **ألفا (alpha)** مقابل اختبار **بيتا (beta)**.</Ar>
 
 </Objectives>
 
 ## Step 3: independent paths
 
-<Definition term="Independent path">
+<Ar>الخطوة 3: المسارات المستقلة</Ar>
+
+<Definition term="Independent path" termAr="المسار المستقل">
   A path through the program that introduces <strong>at least one new</strong> set of statements or a new condition. In the flow graph, it moves along <strong>at least one edge not traversed</strong> by the earlier paths.
+
+  <Ar>مسار عبر البرنامج يُدخل <strong>مجموعة جديدة واحدة على الأقل</strong> من التعليمات أو شرطًا جديدًا. وفي مخطط التدفق، يمر هذا المسار عبر <strong>حافة واحدة على الأقل لم تجتزها</strong> المسارات السابقة.</Ar>
 </Definition>
 
 The **basis set** has exactly $V(G)$ independent paths. Together they make **every statement run at least once** and **every condition evaluate to both true and false**. A basis set is **not unique**: different, equally valid sets exist.
 
-| Program | $V(G)$ | Basis set |
+<Ar>تضم **المجموعة الأساسية (basis set)** عدد `V(G)` من المسارات المستقلة بالضبط. وهي معًا تجعل **كل تعليمة تُنفَّذ مرة واحدة على الأقل** و**كل شرط يُقيَّم صحيحًا مرةً وخاطئًا مرةً**. والمجموعة الأساسية **ليست فريدة**: إذ توجد مجموعات مختلفة صالحة بالقدر نفسه.</Ar>
+
+| Program <Ar>البرنامج</Ar> | $V(G)$ | Basis set <Ar>المجموعة الأساسية</Ar> |
 |---|---|---|
-| `fun()` (while loop) | 2 | 1-2-4-5 · 1-2-3-2-4-5 |
-| `f1(x, y)` (while + if) | 3 | 1-6 · 1-2-3-5-1-6 · 1-2-4-5-1-6 |
-| Two-exit `function1` | 3 | 0-5 · 0-1-2-4 · 0-1-3-4 |
+| `fun()` (while loop) <Ar>`fun()` (حلقة `while`)</Ar> | 2 | 1-2-4-5 · 1-2-3-2-4-5 |
+| `f1(x, y)` (while + if) <Ar>`f1(x, y)` (حلقة `while` مع `if`)</Ar> | 3 | 1-6 · 1-2-3-5-1-6 · 1-2-4-5-1-6 |
+| Two-exit `function1` <Ar>الدالة `function1` ذات المخرجين</Ar> | 3 | 0-5 · 0-1-2-4 · 0-1-3-4 |
 
-<SlideFigure page={8} caption="f1(x, y): V(G) = 3, so three independent paths: skip the loop; take the loop through x = x − y; take it through y = y − x." />
+<SlideFigure page={8} caption="f1(x, y): V(G) = 3, so three independent paths: skip the loop; take the loop through x = x − y; take it through y = y − x." captionAr="الدالة f1(x, y): قيمة V(G)=3، إذن توجد ثلاثة مسارات مستقلة: تخطّي الحلقة؛ والدخول في الحلقة عبر الفرع الذي يطرح y من x؛ والدخول فيها عبر الفرع الذي يطرح x من y." />
 
-<SlideFigure page={10} caption="V(G) = 4 and four independent paths. 1-2-3-4-5-10-1-2-3-6-8-9-10-1-11 is NOT independent: it only combines edges already covered." />
+<SlideFigure page={10} caption="V(G) = 4 and four independent paths. 1-2-3-4-5-10-1-2-3-6-8-9-10-1-11 is NOT independent: it only combines edges already covered." captionAr="قيمة V(G)=4 وتوجد أربعة مسارات مستقلة. أما المسار 1-2-3-4-5-10-1-2-3-6-8-9-10-1-11 فهو ليس مستقلًا: لأنه لا يفعل سوى الجمع بين حواف سبقت تغطيتها." />
 
 ## Step 4: deriving test cases
 
+<Ar>الخطوة 4: اشتقاق حالات الاختبار</Ar>
+
 Design one test case per independent path, with inputs that **force** execution along it and the **expected output**.
+
+<Ar>صمّم حالة اختبار (test case) واحدة لكل مسار مستقل، بمدخلات **تُجبر** التنفيذ على السير فيه، مع **المخرجات المتوقعة**.</Ar>
 
 ```python title="f1 is Euclid's GCD by subtraction"
 def f1(x, y):
@@ -57,17 +73,21 @@ def f1(x, y):
     return x             # node 6
 ```
 
-| Case | Path | Input | Expected |
+| Case <Ar>الحالة</Ar> | Path <Ar>المسار</Ar> | Input <Ar>المدخلات</Ar> | Expected <Ar>المتوقع</Ar> |
 |---|---|---|---|
-| 1 | 1-6 | `x = 5, y = 5` | 5 (loop skipped) |
-| 2 | 1-2-3-5-1-6 | `x = 10, y = 5` | 5 (one pass through `x = x − y`) |
-| 3 | 1-2-4-5-1-6 | `x = 5, y = 10` | 5 (one pass through `y = y − x`) |
+| 1 | 1-6 | `x = 5, y = 5` | 5 (loop skipped) <Ar>5 (تُتخطّى الحلقة)</Ar> |
+| 2 | 1-2-3-5-1-6 | `x = 10, y = 5` | 5 (one pass through `x = x − y`) <Ar>5 (مرور واحد عبر `x = x − y`)</Ar> |
+| 3 | 1-2-4-5-1-6 | `x = 5, y = 10` | 5 (one pass through `y = y − x`) <Ar>5 (مرور واحد عبر `y = y − x`)</Ar> |
 
 For `fun()` the slides use **x = 0** (enters the loop, prints 0–9, y = 13) and **x = 10** (skips the loop, y = 13). To force the second path, `x` must start at 10 or more, so in practice you'd make it a parameter.
 
+<Ar>بالنسبة إلى `fun()` تستخدم الشرائح **`x = 0`** (تدخل الحلقة، وتطبع القيم من 0 إلى 9، و`y = 13`) و**`x = 10`** (تتخطى الحلقة، و`y = 13`). ولإجبار التنفيذ على المسار الثاني يجب أن تبدأ `x` بالقيمة 10 أو أكثر، لذلك تجعلها عمليًا وسيطًا (parameter).</Ar>
+
 ### Worked example: shipping charges
 
-<SlideFigure page={14} caption="calculate(amount): 14 nodes, 19 edges and 6 predicate nodes, so V(G) = 7 regions = 19 − 14 + 2 = 6 + 1 = 7." />
+<Ar>مثال محلول: رسوم الشحن</Ar>
+
+<SlideFigure page={14} caption="calculate(amount): 14 nodes, 19 edges and 6 predicate nodes, so V(G) = 7 regions = 19 − 14 + 2 = 6 + 1 = 7." captionAr="الدالة calculate(amount): لها 14 عقدة و19 حافة و6 عقد شرط، إذن V(G)=7: سبع مناطق، و E-N+2=19-14+2=7، و P+1=6+1=7." />
 
 ```java title="calculate(): node numbers in comments"
 public double calculate(int amount) {
@@ -96,23 +116,31 @@ public double calculate(int amount) {
 
 The basis set has 7 paths, and each gets a test case:
 
-| Case | Path | Input (nextday, amount) | Expected total |
+<Ar>تضم المجموعة الأساسية 7 مسارات، ولكل منها حالة اختبار:</Ar>
+
+| Case <Ar>الحالة</Ar> | Path <Ar>المسار</Ar> | Input (nextday, amount) <Ar>المدخلات (`nextday`، `amount`)</Ar> | Expected total <Ar>الإجمالي المتوقع</Ar> |
 |---|---|---|---|
-| 1 | 1-2-3-4-14 | yes, 1500 | 1713.25 |
-| 2 | 1-2-3-5-6-14 | yes, 300 | 360.25 |
-| 3 | 1-2-3-5-7-8-14 | yes, 120 | 156.45 |
-| 4 | 1-2-3-5-7-9-10-14 | yes, 90 | 120.975 |
-| 5 | 1-2-3-5-7-9-11-12-14 | yes, 40 | 64.65 |
-| 6 | 1-2-3-5-7-9-11-13-14 | yes, 10 | 30.475 |
-| 7 | 1-3-4-14 | no, 1300 | 1472.25 |
+| 1 | 1-2-3-4-14 | yes, 1500 <Ar>نعم، 1500</Ar> | 1713.25 |
+| 2 | 1-2-3-5-6-14 | yes, 300 <Ar>نعم، 300</Ar> | 360.25 |
+| 3 | 1-2-3-5-7-8-14 | yes, 120 <Ar>نعم، 120</Ar> | 156.45 |
+| 4 | 1-2-3-5-7-9-10-14 | yes, 90 <Ar>نعم، 90</Ar> | 120.975 |
+| 5 | 1-2-3-5-7-9-11-12-14 | yes, 40 <Ar>نعم، 40</Ar> | 64.65 |
+| 6 | 1-2-3-5-7-9-11-13-14 | yes, 10 <Ar>نعم، 10</Ar> | 30.475 |
+| 7 | 1-3-4-14 | no, 1300 <Ar>لا، 1300</Ar> | 1472.25 |
 
 (The slides round cases 4 and 6 to cents.) Checking case 1: rush = 14.50, tax = 1500 × 0.0725 = 108.75, ship = 1500 × 0.06 + 14.50 = 104.50, so the total is 1500 + 108.75 + 104.50 = **1713.25**.
 
-<Callout type="warning" title="A real comparison bug">
+<Ar>(تُقرِّب الشرائح الحالتين 4 و6 إلى أقرب سنت.) التحقق من الحالة 1: `rush = 14.50`، و`tax = 1500 × 0.0725 = 108.75`، و`ship = 1500 × 0.06 + 14.50 = 104.50`، إذن الإجمالي `1500 + 108.75 + 104.50` يساوي **1713.25**.</Ar>
+
+<Callout type="warning" title="A real comparison bug" titleAr="خلل حقيقي في المقارنة">
   In Java, <code>nextday == "yes"</code> compares <strong>references</strong>, not text, so it can be false even when <code>nextday</code> holds "yes". Use <code>"yes".equals(nextday)</code>. This is exactly the kind of <strong>comparison error</strong> that unit testing should catch.
+
+  <Ar>في Java، تقارن <code>nextday == "yes"</code> بين <strong>المراجع (references)</strong> لا بين النصوص، لذا قد تكون نتيجتها خاطئة حتى عندما تحمل <code>nextday</code> القيمة «yes». استخدم <code>"yes".equals(nextday)</code>. وهذا بالضبط نوع <strong>أخطاء المقارنة</strong> الذي ينبغي أن يكتشفه اختبار الوحدة.</Ar>
 </Callout>
 
 The basis-path tests become an automated unit test (here a Python port, with pytest):
+
+<Ar>تتحول اختبارات المسار الأساسي إلى اختبار وحدة آلي (هنا نسخة منقولة إلى Python باستخدام pytest):</Ar>
 
 ```python title="test_shipping.py"
 import pytest
@@ -149,73 +177,108 @@ def test_basis_paths(nextday, amount, expected):
 
 ## Integration and system testing
 
-<SlideFigure page={24} caption="The full map: development testing (unit, integration, system), release testing (scenario, recovery, security) and user testing (alpha, beta)." />
+<Ar>اختبار التكامل واختبار النظام</Ar>
+
+<SlideFigure page={24} caption="The full map: development testing (unit, integration, system), release testing (scenario, recovery, security) and user testing (alpha, beta)." captionAr="الخريطة الكاملة: اختبار التطوير (الوحدة، والتكامل، والنظام)، واختبار الإصدار (السيناريو، والاسترداد، والأمان)، واختبار المستخدم (ألفا، وبيتا)." />
 
 ### Integration testing
 
+<Ar>اختبار التكامل</Ar>
+
 When modules are **combined**, check that they **interact correctly**. There are two views:
 
-| Black-box view | White-box view |
+<Ar>عند **دمج** الوحدات (modules)، تحقّق من أنها **تتفاعل بشكل صحيح**. وهناك منظوران:</Ar>
+
+| Black-box view <Ar>منظور الصندوق الأسود</Ar> | White-box view <Ar>منظور الصندوق الأبيض</Ar> |
 |---|---|
-| Validates **interfaces** and external behaviour | Checks **how modules connect internally** |
-| No need to know the code | Tests data flow and code-level interactions |
-| The user view: given **inputs**, do we get the **expected outputs**? | The developer view: do modules use the right **calls and data formats**? |
+| Validates **interfaces** and external behaviour <Ar>يتحقق من صلاحية **الواجهات (interfaces)** والسلوك الخارجي</Ar> | Checks **how modules connect internally** <Ar>يفحص **كيف تتصل الوحدات داخليًا**</Ar> |
+| No need to know the code <Ar>لا حاجة إلى معرفة الشيفرة</Ar> | Tests data flow and code-level interactions <Ar>يختبر تدفق البيانات والتفاعلات على مستوى الشيفرة</Ar> |
+| The user view: given **inputs**, do we get the **expected outputs**? <Ar>منظور المستخدم: عند إعطاء **مدخلات** معيّنة، هل نحصل على **المخرجات المتوقعة**؟</Ar> | The developer view: do modules use the right **calls and data formats**? <Ar>منظور المطوّر: هل تستخدم الوحدات **الاستدعاءات وصيغ البيانات** الصحيحة؟</Ar> |
 
 ### System testing
 
+<Ar>اختبار النظام</Ar>
+
 All components are **integrated**, and the system is tested **as a whole**. System testing checks that components are **compatible**, **interact correctly** and **transfer the right data at the right time** across their interfaces. The software is also combined with the other system elements (hardware, people, information) for integration and validation tests.
+
+<Ar>**تُدمَج** جميع المكوّنات (components)، ويُختبر النظام **ككل**. ويتحقق اختبار النظام من أن المكوّنات **متوافقة**، و**تتفاعل بشكل صحيح**، و**تنقل البيانات الصحيحة في الوقت الصحيح** عبر واجهاتها. كما تُدمج البرمجيات مع عناصر النظام الأخرى، أي العتاد (hardware) والأشخاص والمعلومات، لإجراء اختبارات التكامل والتحقق من الصلاحية.</Ar>
 
 ## Release testing
 
+<Ar>اختبار الإصدار</Ar>
+
 Release testing differs from system testing in two ways:
 
-| System testing | Release testing |
-|---|---|
-| Done by the **development team** | Done by a **separate team** that wasn't involved in development |
-| Aims to **discover bugs** (**defect testing**) | Aims to show the system **meets its requirements** and is good enough for external use (**validation testing**) |
+<Ar>يختلف اختبار الإصدار (Release testing) عن اختبار النظام في أمرين:</Ar>
 
-| Type | What it does |
+| System testing <Ar>اختبار النظام</Ar> | Release testing <Ar>اختبار الإصدار</Ar> |
 |---|---|
-| **Scenario testing** | Tests realistic **stories** of how users will use the system day to day. Use-case scenarios can be reused |
-| **Recovery testing** | **Forces the software to fail** in various ways, and checks that recovery (re-initialization, data recovery, restart) happens correctly and within the required time |
-| **Security testing** | Checks that the built-in **protection mechanisms** really stop improper access |
+| Done by the **development team** <Ar>يقوم به **فريق التطوير**</Ar> | Done by a **separate team** that wasn't involved in development <Ar>يقوم به **فريق منفصل** لم يشارك في التطوير</Ar> |
+| Aims to **discover bugs** (**defect testing**) <Ar>يهدف إلى **اكتشاف الأخطاء**، أي **اختبار العيوب (defect testing)**</Ar> | Aims to show the system **meets its requirements** and is good enough for external use (**validation testing**) <Ar>يهدف إلى إثبات أن النظام **يفي بمتطلباته** وأنه جيد بما يكفي للاستخدام الخارجي، أي **اختبار التحقق من الصلاحية (validation testing)**</Ar> |
+
+| Type <Ar>النوع</Ar> | What it does <Ar>ما يفعله</Ar> |
+|---|---|
+| **Scenario testing** <Ar>**اختبار السيناريو (Scenario testing)**</Ar> | Tests realistic **stories** of how users will use the system day to day. Use-case scenarios can be reused <Ar>يختبر **قصصًا** واقعية لكيفية استخدام المستخدمين للنظام يومًا بيوم. ويمكن إعادة استخدام سيناريوهات حالات الاستخدام (use cases)</Ar> |
+| **Recovery testing** <Ar>**اختبار الاسترداد (Recovery testing)**</Ar> | **Forces the software to fail** in various ways, and checks that recovery (re-initialization, data recovery, restart) happens correctly and within the required time <Ar>**يُجبر البرمجيات على الإخفاق** بطرق متنوعة، ويتحقق من أن الاسترداد (إعادة التهيئة، واسترداد البيانات، وإعادة التشغيل) يتم بشكل صحيح وضمن الوقت المطلوب</Ar> |
+| **Security testing** <Ar>**اختبار الأمان (Security testing)**</Ar> | Checks that the built-in **protection mechanisms** really stop improper access <Ar>يتحقق من أن **آليات الحماية** المدمجة تمنع فعلًا الوصول غير المشروع</Ar> |
 
 ## User testing
 
+<Ar>اختبار المستخدم</Ar>
+
 Users or customers test the system and give feedback. This matters because the **real working environment** can't be fully replicated by developers.
 
+<Ar>يختبر المستخدمون أو العملاء النظام ويقدّمون ملاحظاتهم. وهذا مهم لأن المطوّرين لا يستطيعون محاكاة **بيئة العمل الحقيقية** محاكاةً كاملة.</Ar>
+
 <Grid cols={2}>
-  <Card title="Alpha testing" tag="developer's site">
+  <Card title="Alpha testing" titleAr="اختبار ألفا" tag="developer's site">
     Done by customers <strong>at the developer's site</strong>, under the developer's supervision. The developer "looks over the user's shoulder", recording errors and usage problems.
+
+    <Ar>يجريه العملاء <strong>في موقع المطوّر</strong>، تحت إشراف المطوّر. إذ «ينظر المطوّر من فوق كتف المستخدم»، فيسجّل الأخطاء ومشكلات الاستخدام.</Ar>
   </Card>
-  <Card title="Beta testing" tag="customer's site">
+  <Card title="Beta testing" titleAr="اختبار بيتا" tag="customer's site">
     Done by end users <strong>at their own sites</strong>: a "live" use the developer can't control. Users report problems at regular intervals; the developers fix them, then release to the whole customer base.
+
+    <Ar>يجريه المستخدمون النهائيون <strong>في مواقعهم الخاصة</strong>: أي استخدام «حي» (live) لا يستطيع المطوّر التحكم فيه. ويُبلغ المستخدمون عن المشكلات على فترات منتظمة؛ فيصلحها المطوّرون، ثم يُصدرون النظام لجميع العملاء.</Ar>
   </Card>
 </Grid>
 
 In custom systems, **acceptance testing** follows: the customer tests the system with their own data to decide whether to **accept** it from the developer.
 
+<Ar>وفي الأنظمة المخصصة (custom systems)، يلي ذلك **اختبار القبول (acceptance testing)**: إذ يختبر العميل النظام ببياناته الخاصة ليقرر ما إذا كان **سيقبل** استلامه من المطوّر.</Ar>
+
 <Takeaways>
 
 - An **independent path** adds at least one new edge. A **basis set** has $V(G)$ paths and covers every statement and both outcomes of every condition, but it isn't unique.
+  <Ar>يُضيف **المسار المستقل (independent path)** حافة جديدة واحدة على الأقل. وتضم **المجموعة الأساسية (basis set)** عدد `V(G)` من المسارات، وتغطي كل تعليمة ونتيجتي كل شرط، لكنها ليست فريدة.</Ar>
 - Write **one test case per independent path**, with forcing inputs and expected outputs. Automate them.
+  <Ar>اكتب **حالة اختبار واحدة لكل مسار مستقل**، بمدخلات تُجبر التنفيذ على سلوكه ومخرجات متوقعة. واجعلها آلية (automate).</Ar>
 - **Integration** testing checks that modules interact (black-box or white-box view). **System** testing tests the integrated whole.
+  <Ar>يتحقق اختبار **التكامل (Integration)** من أن الوحدات تتفاعل (من منظور الصندوق الأسود أو الأبيض). ويختبر اختبار **النظام (System)** الكلَّ المتكامل.</Ar>
 - **Release** testing is done by a separate team to validate the requirements: **scenario**, **recovery** and **security** testing.
+  <Ar>يقوم فريق منفصل باختبار **الإصدار (Release)** للتحقق من صلاحية المتطلبات: اختبار **السيناريو** و**الاسترداد (recovery)** و**الأمان (security)**.</Ar>
 - **User** testing: **alpha** at the developer's site, **beta** live at the customer's sites.
+  <Ar>اختبار **المستخدم**: **ألفا (alpha)** في موقع المطوّر، و**بيتا (beta)** استخدام حي في مواقع العملاء.</Ar>
 
 </Takeaways>
 
 ## Practice
 
-<Exercise title="Paths and tests for sign()" level="medium">
+<Ar>تدريب</Ar>
+
+<Exercise title="Paths and tests for sign()" titleAr="المسارات والاختبارات للدالة sign()" level="medium">
 
 For the `sign(n)` function from Lecture 8 (if `n > 0` then 1, else if `n < 0` then −1, otherwise 0; nodes 1–5), list a basis set and a test case for each path.
+
+<Ar>للدالة `sign(n)` من المحاضرة 8 (إذا كان `n > 0` فالناتج 1، وإلا إذا كان `n < 0` فالناتج `−1`، وإلا فالناتج 0؛ والعقد من 1 إلى 5)، اكتب مجموعة أساسية وحالة اختبار لكل مسار.</Ar>
 
 <Solution>
 
 $V(G) = 3$, so there are three paths:
 
-| Path | Input | Expected |
+<Ar>`V(G) = 3`، إذن توجد ثلاثة مسارات:</Ar>
+
+| Path <Ar>المسار</Ar> | Input <Ar>المدخلات</Ar> | Expected <Ar>المتوقع</Ar> |
 |---|---|---|
 | 1-2-5 | `n = 7` | 1 |
 | 1-3-4-5 | `n = -7` | −1 |
@@ -225,21 +288,31 @@ $V(G) = 3$, so there are three paths:
 
 </Exercise>
 
-<Exercise title="Name the test" level="easy">
+<Exercise title="Name the test" titleAr="سمِّ نوع الاختبار" level="easy">
 
 Which kind of testing is each?
 
+<Ar>ما نوع الاختبار في كل حالة؟</Ar>
+
 1. Unplugging the database server mid-transaction to check that no data is lost when it restarts.
+   <Ar>فصل خادم (server) قاعدة البيانات في منتصف معاملة (transaction) للتحقق من عدم فقدان أي بيانات عند إعادة تشغيله.</Ar>
 2. A game company invites 5,000 players to try a pre-release version at home.
+   <Ar>شركة ألعاب تدعو 5,000 لاعب لتجربة نسخة سابقة للإصدار في منازلهم.</Ar>
 3. A separate QA team checks a complete build against the requirements document.
+   <Ar>فريق ضمان جودة (QA) منفصل يفحص نسخة كاملة (build) مقابل وثيقة المتطلبات.</Ar>
 4. Checking that the payment module receives the order total in the expected format from the cart module.
+   <Ar>التحقق من أن وحدة الدفع تتلقى إجمالي الطلب بالصيغة المتوقعة من وحدة سلة المشتريات.</Ar>
 
 <Solution>
 
 1. Recovery testing (release testing).
+   <Ar>اختبار الاسترداد (recovery testing)، ضمن اختبار الإصدار.</Ar>
 2. Beta testing (user testing).
+   <Ar>اختبار بيتا (beta testing)، ضمن اختبار المستخدم.</Ar>
 3. Release testing.
+   <Ar>اختبار الإصدار (release testing).</Ar>
 4. Integration testing (interface, black-box view).
+   <Ar>اختبار التكامل (integration testing)، من حيث الواجهة ومن منظور الصندوق الأسود.</Ar>
 
 </Solution>
 
@@ -249,39 +322,57 @@ Which kind of testing is each?
   questions={[
     {
       q: "A path is independent if it…",
+      qAr: "يكون المسار مستقلًا إذا…",
       options: ["Is the longest path", "Traverses at least one edge not covered by earlier paths", "Visits every node", "Contains a loop"],
+      optionsAr: ["كان أطول مسار", "اجتاز حافة واحدة على الأقل لم تغطها المسارات السابقة", "مرّ بكل العقد", "احتوى على حلقة"],
       answer: 1,
-      explain: "Each new independent path introduces at least one new edge."
+      explain: "Each new independent path introduces at least one new edge.",
+      explainAr: "كل مسار مستقل جديد يُضيف حافة جديدة واحدة على الأقل."
     },
     {
       q: "How many test cases does basis path testing need for a flow graph with V(G) = 7?",
+      qAr: "كم حالة اختبار يحتاج إليها اختبار المسار الأساسي لمخطط تدفق له V(G)=7؟",
       options: ["At most 7", "Exactly 14", "1", "19"],
+      optionsAr: ["7 على الأكثر", "14 بالضبط", "1", "19"],
       answer: 0,
-      explain: "V(G) is the number of independent paths: an upper bound on the tests needed."
+      explain: "V(G) is the number of independent paths: an upper bound on the tests needed.",
+      explainAr: "قيمة V(G) هي عدد المسارات المستقلة، أي حد أعلى لعدد الاختبارات المطلوبة."
     },
     {
       q: "Release testing differs from system testing because it is…",
+      qAr: "يختلف اختبار الإصدار عن اختبار النظام لأنه…",
       options: ["Done by developers to find bugs", "Done by a separate team to show the system meets its requirements", "Done only by end users", "Only white-box"],
+      optionsAr: ["يقوم به المطوّرون للعثور على الأخطاء", "يقوم به فريق منفصل لإثبات أن النظام يفي بمتطلباته", "يقوم به المستخدمون النهائيون فقط", "اختبار صندوق أبيض فقط"],
       answer: 1,
-      explain: "System testing is defect testing by the team; release testing is validation by an independent team."
+      explain: "System testing is defect testing by the team; release testing is validation by an independent team.",
+      explainAr: "اختبار النظام هو اختبار عيوب يجريه الفريق؛ أما اختبار الإصدار فهو تحقق من الصلاحية يجريه فريق مستقل."
     },
     {
       q: "Forcing the software to fail and checking that it restarts correctly is…",
+      qAr: "إجبار البرمجيات على الإخفاق والتحقق من أنها تُعيد التشغيل بشكل صحيح هو…",
       options: ["Scenario testing", "Recovery testing", "Security testing", "Alpha testing"],
+      optionsAr: ["اختبار السيناريو", "اختبار الاسترداد", "اختبار الأمان", "اختبار ألفا"],
       answer: 1,
-      explain: "Recovery testing checks re-initialization, data recovery and restart."
+      explain: "Recovery testing checks re-initialization, data recovery and restart.",
+      explainAr: "يتحقق اختبار الاسترداد من إعادة التهيئة واسترداد البيانات وإعادة التشغيل."
     },
     {
       q: "Beta testing is conducted…",
+      qAr: "يُجرى اختبار بيتا…",
       options: ["At the developer's site under supervision", "At customer sites by end users, live", "By the development team", "Before unit testing"],
+      optionsAr: ["في موقع المطوّر تحت الإشراف", "في مواقع العملاء على يد المستخدمين النهائيين، استخدامًا حيًا", "على يد فريق التطوير", "قبل اختبار الوحدة"],
       answer: 1,
-      explain: "Alpha is at the developer's site; beta is live at customer sites."
+      explain: "Alpha is at the developer's site; beta is live at customer sites.",
+      explainAr: "اختبار ألفا يكون في موقع المطوّر؛ أما اختبار بيتا فيكون حيًا في مواقع العملاء."
     },
     {
       q: "Integration testing from the black-box view focuses on…",
+      qAr: "يركّز اختبار التكامل من منظور الصندوق الأسود على…",
       options: ["Internal data flow between modules", "Interfaces and external behaviour", "Cyclomatic complexity", "Code style"],
+      optionsAr: ["تدفق البيانات الداخلي بين الوحدات", "الواجهات والسلوك الخارجي", "التعقيد الدوري", "أسلوب كتابة الشيفرة"],
       answer: 1,
-      explain: "Black-box: specific inputs produce the expected outputs; white-box examines the internal connections."
+      explain: "Black-box: specific inputs produce the expected outputs; white-box examines the internal connections.",
+      explainAr: "الصندوق الأسود: مدخلات محددة تُنتج المخرجات المتوقعة؛ أما الصندوق الأبيض فيفحص الاتصالات الداخلية."
     }
   ]}
 />

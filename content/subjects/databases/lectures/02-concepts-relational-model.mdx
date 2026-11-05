@@ -1,7 +1,9 @@
 ---
 number: 2
 title: Database Concepts, Architecture and the Relational Model
+titleAr: "مفاهيم قواعد البيانات ومعماريتها والنموذج العلائقي"
 summary: Data models, schemas and states, the three-schema architecture and data independence, DBMS languages and client–server architectures, then the relational model itself (relations, keys and integrity constraints) and the SQL DDL and DML that build and change tables.
+summaryAr: "نماذج البيانات (data models)، والمخططات (schemas) والحالات (states)، ومعمارية المستويات الثلاثة (three-schema architecture) واستقلالية البيانات، ولغات نظام إدارة قواعد البيانات ومعماريات العميل والخادم (client–server)، ثم النموذج العلائقي (relational model) نفسه (العلاقات والمفاتيح وقيود السلامة)، وأوامر SQL من نوعي DDL و DML التي تُنشئ الجداول وتغيّرها."
 topics: [Data models, Schema vs state, Three-schema architecture, Data independence, Client–server, Relations and keys, Integrity constraints, SQL DDL and DML]
 duration: 70 min study
 sources:
@@ -27,168 +29,240 @@ bookRefs:
 <Objectives>
 
 - Define a **data model**, name its three categories, and distinguish a **schema** from a **state**.
+  <Ar>تعريف **نموذج البيانات (data model)**، وتسمية فئاته الثلاث، والتمييز بين **المخطط (schema)** و**الحالة (state)**.</Ar>
 - Explain the **three-schema architecture** and the two kinds of **data independence**.
+  <Ar>شرح **معمارية المستويات الثلاثة (three-schema architecture)** ونوعَي **استقلالية البيانات (data independence)**.</Ar>
 - Describe DBMS **languages**, **interfaces** and **centralized / 2-tier / 3-tier** architectures.
+  <Ar>وصف **لغات** نظام إدارة قواعد البيانات و**واجهاته (interfaces)** والمعماريات **المركزية / ثنائية الطبقات (2-tier) / ثلاثية الطبقات (3-tier)**.</Ar>
 - Use the vocabulary of the **relational model**: relation, tuple, attribute, domain, degree, cardinality, **keys**.
+  <Ar>استخدام مصطلحات **النموذج العلائقي (relational model)**: العلاقة (relation)، والصف (tuple)، والسمة (attribute)، والنطاق (domain)، والدرجة (degree)، والتعداد (cardinality)، و**المفاتيح (keys)**.</Ar>
 - Write SQL **DDL** (`CREATE`, `ALTER`, `DROP`) with **integrity constraints**, and **DML** (`INSERT`, `UPDATE`, `DELETE`).
+  <Ar>كتابة أوامر **لغة تعريف البيانات (DDL)** في SQL (`CREATE` و `ALTER` و `DROP`) مع **قيود السلامة (integrity constraints)**، وأوامر **لغة معالجة البيانات (DML)** (`INSERT` و `UPDATE` و `DELETE`).</Ar>
 
 </Objectives>
 
 ## Part A · Concepts and architecture
 
+<Ar>الجزء A · المفاهيم والمعمارية</Ar>
+
 ### Data models
 
-<Definition term="Data model">
+<Ar>نماذج البيانات</Ar>
+
+<Definition term="Data model" termAr="نموذج البيانات">
   A set of concepts for describing the <strong>structure</strong> of a database, the <strong>operations</strong> that manipulate it, and the <strong>constraints</strong> it must obey.
+
+  <Ar>مجموعة من المفاهيم لوصف <strong>بنية</strong> قاعدة البيانات، و<strong>العمليات</strong> التي تعالجها، و<strong>القيود (constraints)</strong> التي يجب أن تلتزم بها.</Ar>
 </Definition>
 
 Operations can be basic (generic insert, delete, update) or user-defined (`compute_student_gpa`, `update_inventory`).
 
-| Category | Level | Examples |
+<Ar>قد تكون العمليات أساسية (إدراج وحذف وتحديث عامة) أو معرَّفة من المستخدم (`compute_student_gpa` و `update_inventory`).</Ar>
+
+| Category <Ar>الفئة</Ar> | Level <Ar>المستوى</Ar> | Examples <Ar>أمثلة</Ar> |
 |---|---|---|
-| **Conceptual** (high-level, semantic) | Close to how users see the data: entities, attributes, relationships | ER, EER models |
-| **Representational** (implementation) | Understood by users but implemented directly by DBMSs | **Relational**, network, hierarchical |
-| **Physical** (low-level, internal) | How data is stored: record formats, orderings, access paths such as **indexes** | Storage definitions |
+| **Conceptual** (high-level, semantic) <Ar>**المفاهيمي (Conceptual)** (عالي المستوى، دلالي)</Ar> | Close to how users see the data: entities, attributes, relationships <Ar>قريب من طريقة رؤية المستخدمين للبيانات: الكيانات والسمات والعلاقات</Ar> | ER, EER models <Ar>نموذجا ER و EER</Ar> |
+| **Representational** (implementation) <Ar>**التمثيلي (Representational)** (التنفيذي)</Ar> | Understood by users but implemented directly by DBMSs <Ar>يفهمه المستخدمون لكن تنفّذه أنظمة إدارة قواعد البيانات مباشرة</Ar> | **Relational**, network, hierarchical <Ar>**العلائقي**، والشبكي، والهرمي</Ar> |
+| **Physical** (low-level, internal) <Ar>**الفيزيائي (Physical)** (منخفض المستوى، داخلي)</Ar> | How data is stored: record formats, orderings, access paths such as **indexes** <Ar>كيفية تخزين البيانات: صيغ السجلات، وترتيبها، ومسارات الوصول (access paths) مثل **الفهارس (indexes)**</Ar> | Storage definitions <Ar>تعريفات التخزين</Ar> |
 
 ### Schema versus state
 
+<Ar>المخطط مقابل الحالة</Ar>
+
 <Grid cols={2}>
-  <Card title="Database schema" tag="intension">
+  <Card title="Database schema" titleAr="مخطط قاعدة البيانات" tag="intension">
     The <strong>description</strong> of the database: structure, data types and constraints. It is drawn as a <strong>schema diagram</strong> and changes <strong>very rarely</strong>.
+
+    <Ar><strong>وصف</strong> قاعدة البيانات: البنية وأنواع البيانات والقيود. ويُرسم على هيئة <strong>مخطط بياني للمخطط (schema diagram)</strong>، و<strong>نادرًا جدًا</strong> ما يتغير.</Ar>
   </Card>
-  <Card title="Database state" tag="extension">
+  <Card title="Database state" titleAr="حالة قاعدة البيانات" tag="extension">
     The actual <strong>data</strong> at a moment in time, also called an <strong>instance</strong> or snapshot. It changes with <strong>every</strong> update.
+
+    <Ar><strong>البيانات</strong> الفعلية في لحظة زمنية معينة، وتُسمى أيضًا <strong>instance</strong> أو اللقطة (snapshot). وتتغير مع <strong>كل</strong> تحديث.</Ar>
   </Card>
 </Grid>
 
-<SlideFigure page={10} caption="A schema diagram: the structure of STUDENT, COURSE, PREREQUISITE, SECTION and GRADE_REPORT." />
+<SlideFigure page={10} caption="A schema diagram: the structure of STUDENT, COURSE, PREREQUISITE, SECTION and GRADE_REPORT." captionAr="مخطط بياني للمخطط (schema diagram): بنية STUDENT و COURSE و PREREQUISITE و SECTION و GRADE_REPORT." />
 
-<SlideFigure page={11} caption="A database state: the same schema filled with data at one moment." />
+<SlideFigure page={11} caption="A database state: the same schema filled with data at one moment." captionAr="حالة قاعدة البيانات: المخطط نفسه مملوءًا بالبيانات في لحظة واحدة." />
 
 ### The three-schema architecture
 
+<Ar>معمارية المستويات الثلاثة</Ar>
+
 The three-schema architecture separates user applications from the physical database. It supports **program–data independence** and **multiple views**.
 
-<SlideFigure page={14} caption="External views on top, one conceptual schema in the middle, one internal schema above the stored database." />
+<Ar>تفصل معمارية المستويات الثلاثة (three-schema architecture) تطبيقات المستخدمين عن قاعدة البيانات الفيزيائية، وهي تدعم **استقلال البرامج عن البيانات (program–data independence)** و**العروض المتعددة (multiple views)**.</Ar>
 
-| Level | Describes | Example (university) |
+<SlideFigure page={14} caption="External views on top, one conceptual schema in the middle, one internal schema above the stored database." captionAr="العروض الخارجية في الأعلى، ومخطط مفاهيمي واحد في الوسط، ومخطط داخلي واحد فوق قاعدة البيانات المخزنة." />
+
+| Level <Ar>المستوى</Ar> | Describes <Ar>يصف</Ar> | Example (university) <Ar>مثال (جامعة)</Ar> |
 |---|---|---|
-| **External** (user views) | What each user group sees; there can be **many** external schemas | A student sees only their own grades; a lecturer sees all grades in their course |
-| **Conceptual** (community view) | Structure and constraints of the **whole** database, with no storage details | Students, Courses, Instructors, Enrollments and their relationships |
-| **Internal** (physical) | Storage structures and **access paths**: files, indexes, B-trees, hashing | `STUDENT` stored as a heap file with a B-tree index on `sid` |
+| **External** (user views) <Ar>**الخارجي (External)** (عروض المستخدمين)</Ar> | What each user group sees; there can be **many** external schemas <Ar>ما تراه كل مجموعة من المستخدمين، وقد توجد مخططات خارجية **كثيرة**</Ar> | A student sees only their own grades; a lecturer sees all grades in their course <Ar>يرى الطالب درجاته فقط، ويرى المحاضر كل الدرجات في مقرره</Ar> |
+| **Conceptual** (community view) <Ar>**المفاهيمي (Conceptual)** (الرؤية المشتركة)</Ar> | Structure and constraints of the **whole** database, with no storage details <Ar>بنية قاعدة البيانات **بأكملها** وقيودها، دون تفاصيل التخزين</Ar> | Students, Courses, Instructors, Enrollments and their relationships <Ar>الطلاب والمقررات والمدرّسون والتسجيلات والعلاقات بينها</Ar> |
+| **Internal** (physical) <Ar>**الداخلي (Internal)** (الفيزيائي)</Ar> | Storage structures and **access paths**: files, indexes, B-trees, hashing <Ar>بُنى التخزين و**مسارات الوصول (access paths)**: الملفات والفهارس وأشجار B-tree والتجزئة (hashing)</Ar> | `STUDENT` stored as a heap file with a B-tree index on `sid` <Ar>`STUDENT` مخزَّن كملف كومة (heap file) مع فهرس B-tree على `sid`</Ar> |
 
 A database has exactly **one** conceptual and **one** internal schema, but may have **many** external schemas. The DBMS **maps** requests between levels.
 
-<Definition term="Data independence">
+<Ar>لقاعدة البيانات مخطط مفاهيمي **واحد** بالضبط ومخطط داخلي **واحد**، لكن قد تكون لها مخططات خارجية **كثيرة**. ويتولى نظام إدارة قواعد البيانات **تحويل (maps)** الطلبات بين المستويات.</Ar>
+
+<Definition term="Data independence" termAr="استقلالية البيانات">
   The capacity to change the schema at one level <strong>without</strong> changing the schema at the next higher level.
+
+  <Ar>القدرة على تغيير المخطط في مستوى ما <strong>دون</strong> تغيير المخطط في المستوى الأعلى التالي.</Ar>
 </Definition>
 
 <Grid cols={2}>
-  <Card title="Logical data independence" tag="conceptual → external">
+  <Card title="Logical data independence" titleAr="استقلالية البيانات المنطقية" tag="conceptual → external">
     Change the <strong>conceptual</strong> schema (add a table or a column) without changing <strong>external</strong> schemas or the programs that use them. It is harder to achieve.
+
+    <Ar>تغيير المخطط <strong>المفاهيمي</strong> (إضافة جدول أو عمود) دون تغيير المخططات <strong>الخارجية</strong> أو البرامج التي تستخدمها، وهي أصعب تحقيقًا.</Ar>
   </Card>
-  <Card title="Physical data independence" tag="internal → conceptual">
+  <Card title="Physical data independence" titleAr="استقلالية البيانات الفيزيائية" tag="internal → conceptual">
     Change the <strong>internal</strong> schema (add an index, move files) without changing the <strong>conceptual</strong> schema. It is easier and very common.
+
+    <Ar>تغيير المخطط <strong>الداخلي</strong> (إضافة فهرس أو نقل ملفات) دون تغيير المخطط <strong>المفاهيمي</strong>، وهي أسهل وشائعة جدًا.</Ar>
   </Card>
 </Grid>
 
 ### Languages, interfaces and tools
 
-| Language | Purpose |
+<Ar>اللغات والواجهات والأدوات</Ar>
+
+| Language <Ar>اللغة</Ar> | Purpose <Ar>الغرض</Ar> |
 |---|---|
-| **DDL**: Data Definition Language | Define the conceptual schema, and in many DBMSs also views and storage |
-| **SDL / VDL** | Storage and view definition languages, where the DBMS separates them |
-| **DML**: Data Manipulation Language | Retrieve and update data, either stand-alone (interactive SQL) or embedded in a host language |
+| **DDL**: Data Definition Language <Ar>**DDL**: لغة تعريف البيانات</Ar> | Define the conceptual schema, and in many DBMSs also views and storage <Ar>تعريف المخطط المفاهيمي، وفي كثير من أنظمة إدارة قواعد البيانات تعريف العروض والتخزين أيضًا</Ar> |
+| **SDL / VDL** <Ar>**SDL / VDL** (لغتا تعريف التخزين والعروض)</Ar> | Storage and view definition languages, where the DBMS separates them <Ar>لغتا تعريف التخزين وتعريف العروض، في الأنظمة التي تفصل بينهما</Ar> |
+| **DML**: Data Manipulation Language <Ar>**DML**: لغة معالجة البيانات</Ar> | Retrieve and update data, either stand-alone (interactive SQL) or embedded in a host language <Ar>استرجاع البيانات وتحديثها، إما بصورة مستقلة (SQL تفاعلية) أو مضمَّنة في لغة مضيفة (host language)</Ar> |
 
 **Interfaces** include interactive SQL (e.g. SQL\*Plus in Oracle), programmer APIs, menu-, form- and graphics-based UIs, web browsers, speech, parametric interfaces for bank tellers, and DBA interfaces for accounts, privileges and schema changes. **Utilities** handle loading, backup, reorganization, reports and performance monitoring. The **data dictionary** stores schema descriptions and design decisions; an *active* dictionary is used by the DBMS itself, a *passive* one only by people.
 
+<Ar>تشمل **الواجهات (Interfaces)** لغة SQL التفاعلية (مثل `SQL*Plus` في Oracle)، وواجهات برمجة التطبيقات (APIs) للمبرمجين، وواجهات المستخدم القائمة على القوائم والنماذج والرسوميات، ومتصفحات الويب، والكلام، والواجهات البارامترية لصرّافي البنوك، وواجهات مدير قاعدة البيانات (DBA) للحسابات والامتيازات (privileges) وتغييرات المخطط. وتتولى **الأدوات المساعدة (Utilities)** التحميل والنسخ الاحتياطي وإعادة التنظيم والتقارير ومراقبة الأداء. ويخزّن **قاموس البيانات (data dictionary)** أوصاف المخطط وقرارات التصميم؛ فالقاموس *النشط (active)* يستخدمه نظام إدارة قواعد البيانات نفسه، أما *الخامل (passive)* فلا يستخدمه إلا البشر.</Ar>
+
 ### Centralized and client–server architectures
 
-| Architecture | Where the work happens |
-|---|---|
-| **Centralized** | DBMS, applications and UI all run on one machine; users connect through terminals |
-| **2-tier client–server** | **Clients** run the UI and application and talk to a **DBMS server** through an API (**ODBC**, **JDBC**) |
-| **3-tier** | A middle **application/web server** holds the business logic between the client (browser) and the database server; typical of web apps |
+<Ar>المعماريات المركزية ومعماريات العميل والخادم</Ar>
 
-<SlideFigure page={31} caption="Three-tier architecture: presentation layer, business-logic layer and database services layer." />
+| Architecture <Ar>المعمارية</Ar> | Where the work happens <Ar>أين يتم العمل</Ar> |
+|---|---|
+| **Centralized** <Ar>**المركزية**</Ar> | DBMS, applications and UI all run on one machine; users connect through terminals <Ar>يعمل نظام إدارة قواعد البيانات والتطبيقات وواجهة المستخدم كلها على جهاز واحد، ويتصل المستخدمون عبر الطرفيات (terminals)</Ar> |
+| **2-tier client–server** <Ar>**العميل والخادم ثنائية الطبقات (2-tier)**</Ar> | **Clients** run the UI and application and talk to a **DBMS server** through an API (**ODBC**, **JDBC**) <Ar>تشغّل **أجهزة العملاء (Clients)** واجهة المستخدم والتطبيق، وتتواصل مع **خادم نظام إدارة قواعد البيانات (DBMS server)** عبر واجهة برمجة (API) مثل **ODBC** و**JDBC**</Ar> |
+| **3-tier** <Ar>**ثلاثية الطبقات (3-tier)**</Ar> | A middle **application/web server** holds the business logic between the client (browser) and the database server; typical of web apps <Ar>يحتوي **خادم تطبيقات/ويب (application/web server)** في الطبقة الوسطى على منطق العمل (business logic) بين العميل (المتصفح) وخادم قاعدة البيانات، وهي المعمارية النمطية لتطبيقات الويب</Ar> |
+
+<SlideFigure page={31} caption="Three-tier architecture: presentation layer, business-logic layer and database services layer." captionAr="المعمارية ثلاثية الطبقات: طبقة العرض، وطبقة منطق العمل، وطبقة خدمات قاعدة البيانات." />
 
 DBMSs are also classified by **data model** (relational, object, object-relational…), by number of users (**single-** or **multi-user**) and by **distribution** (centralized or distributed).
 
+<Ar>تُصنَّف أنظمة إدارة قواعد البيانات أيضًا حسب **نموذج البيانات** (علائقي، كائني، كائني علائقي…)، وحسب عدد المستخدمين (**أحادية المستخدم** أو **متعددة المستخدمين**)، وحسب **التوزيع (distribution)** (مركزية أو موزعة).</Ar>
+
 ## Part B · The relational data model
+
+<Ar>الجزء B · نموذج البيانات العلائقي</Ar>
 
 The relational model has two parts: **data structure** (data organized into **tables**) and **data manipulation** (powerful operations, usually written in **SQL**).
 
-<Definition term="Relation">
+<Ar>للنموذج العلائقي (relational model) جزءان: **بنية البيانات** (بيانات منظمة في **جداول**) و**معالجة البيانات** (عمليات قوية تُكتب عادةً بلغة **SQL**).</Ar>
+
+<Definition term="Relation" termAr="العلاقة">
   A named, two-dimensional <strong>table</strong> of data. It has a <strong>relation schema</strong> (name, plus the name and domain of each attribute) and a <strong>relation instance</strong> (its current set of rows, called <strong>tuples</strong>).
+
+  <Ar><strong>جدول</strong> بيانات ثنائي الأبعاد له اسم. ولها <strong>مخطط علاقة (relation schema)</strong> (الاسم، إضافة إلى اسم كل سمة ونطاقها) و<strong>حالة علاقة (relation instance)</strong> (مجموعة صفوفها الحالية، وتُسمى <strong>الصفوف (tuples)</strong>).</Ar>
 </Definition>
 
 $$
 \text{Students}(\underline{sid}: \text{string},\ name: \text{string},\ login: \text{string},\ age: \text{integer},\ gpa: \text{real})
 $$
 
-| Formal term | Informal term |
+| Formal term <Ar>المصطلح الرسمي</Ar> | Informal term <Ar>المصطلح غير الرسمي</Ar> |
 |---|---|
-| Relation | Table |
-| Tuple | Row / record |
-| Attribute | Column / field |
-| Domain | Set of allowed values (a data type) |
-| **Degree** | Number of attributes (columns) |
-| **Cardinality** | Number of tuples (rows) in an instance |
+| Relation <Ar>العلاقة</Ar> | Table <Ar>الجدول</Ar> |
+| Tuple <Ar>الصف (tuple)</Ar> | Row / record <Ar>الصف / السجل</Ar> |
+| Attribute <Ar>السمة</Ar> | Column / field <Ar>العمود / الحقل</Ar> |
+| Domain <Ar>النطاق</Ar> | Set of allowed values (a data type) <Ar>مجموعة القيم المسموح بها (نوع بيانات)</Ar> |
+| **Degree** <Ar>**الدرجة**</Ar> | Number of attributes (columns) <Ar>عدد السمات (الأعمدة)</Ar> |
+| **Cardinality** <Ar>**التعداد (Cardinality)**</Ar> | Number of tuples (rows) in an instance <Ar>عدد الصفوف في حالة العلاقة</Ar> |
 
 ### Properties of relations
 
+<Ar>خصائص العلاقات</Ar>
+
 - Every relation has a **unique name**, and attribute names are unique within a relation.
+  <Ar>لكل علاقة **اسم فريد**، وأسماء السمات فريدة داخل العلاقة الواحدة.</Ar>
 - Every value is **atomic**: not multivalued, not composite.
+  <Ar>كل قيمة **ذرّية (atomic)**: ليست متعددة القيم ولا مركبة.</Ar>
 - Every row is **unique**: no two tuples are identical.
+  <Ar>كل صف **فريد**: لا يوجد صفان متطابقان.</Ar>
 - The **order of rows and of columns does not matter**.
+  <Ar>**ترتيب الصفوف والأعمدة لا يهم**.</Ar>
 
 ### Keys
 
-| Key | Definition | Example in `STUDENT(StudentID, Email, Name)` |
+<Ar>المفاتيح</Ar>
+
+| Key <Ar>المفتاح</Ar> | Definition <Ar>التعريف</Ar> | Example in `STUDENT(StudentID, Email, Name)` <Ar>مثال في `STUDENT(StudentID, Email, Name)`</Ar> |
 |---|---|---|
-| **Superkey** | Any set of attributes that uniquely identifies a row | \{StudentID, Email\}, \{StudentID, Name\}, … |
-| **Candidate key** | A **minimal** superkey: remove any attribute and it stops being unique | \{StudentID\}, \{Email\} |
-| **Primary key** | The candidate key **chosen** to identify rows. It can't be `NULL` and should rarely change | \{StudentID\} |
-| **Foreign key** | Attribute(s) in one relation that **refer to the primary key** of another; on the "many" side of a relationship | `ENROLLMENT.StudentID → STUDENT.StudentID` |
+| **Superkey** <Ar>**المفتاح الأعلى**</Ar> | Any set of attributes that uniquely identifies a row <Ar>أي مجموعة من السمات تحدد الصف بشكل فريد</Ar> | \{StudentID, Email\}, \{StudentID, Name\}, … <Ar>مثل `{StudentID, Email}` و `{StudentID, Name}` و…</Ar> |
+| **Candidate key** <Ar>**المفتاح المرشَّح**</Ar> | A **minimal** superkey: remove any attribute and it stops being unique <Ar>مفتاح أعلى **أدنى (minimal)**: إذا حُذفت منه أي سمة لم يعد فريدًا</Ar> | \{StudentID\}, \{Email\} <Ar>`{StudentID}` أو `{Email}`</Ar> |
+| **Primary key** <Ar>**المفتاح الأساسي**</Ar> | The candidate key **chosen** to identify rows. It can't be `NULL` and should rarely change <Ar>المفتاح المرشَّح **المختار** لتحديد الصفوف، ولا يجوز أن يكون `NULL`، وينبغي أن يتغير نادرًا</Ar> | \{StudentID\} <Ar>المفتاح `{StudentID}`</Ar> |
+| **Foreign key** <Ar>**المفتاح الأجنبي**</Ar> | Attribute(s) in one relation that **refer to the primary key** of another; on the "many" side of a relationship <Ar>سمة أو سمات في علاقة **تشير إلى المفتاح الأساسي** لعلاقة أخرى، وتكون في جهة «المتعدد (many)» من الارتباط</Ar> | `ENROLLMENT.StudentID → STUDENT.StudentID` |
 
 Keys can be **simple** (one attribute) or **composite** (several attributes), and they are usually indexed to speed up queries.
 
-<SlideFigure page={32} source={1} caption="The COMPANY relational schema. Underlined attributes are primary keys; arrows are foreign keys." />
+<Ar>قد تكون المفاتيح **بسيطة (simple)** (سمة واحدة) أو **مركبة (composite)** (عدة سمات)، وعادةً ما تُفهرَس لتسريع الاستعلامات.</Ar>
+
+<SlideFigure page={32} source={1} caption="The COMPANY relational schema. Underlined attributes are primary keys; arrows are foreign keys." captionAr="المخطط العلائقي لقاعدة بيانات COMPANY: السمات المسطَّر تحتها مفاتيح أساسية، والأسهم مفاتيح أجنبية." />
 
 ### Integrity constraints
 
+<Ar>قيود السلامة</Ar>
+
 Integrity constraints are conditions on the schema that every **legal instance** must satisfy. The DBMS checks them whenever data changes.
 
+<Ar>قيود السلامة (integrity constraints) شروط على المخطط يجب أن تحققها كل **حالة قانونية (legal instance)**، ويتحقق منها نظام إدارة قواعد البيانات كلما تغيّرت البيانات.</Ar>
+
 <Grid cols={2}>
-  <Card title="Domain constraint">Every value in a column must come from that column's domain (type, range, format).</Card>
-  <Card title="Key / entity integrity">Primary-key values must be <strong>unique</strong> and <strong>not NULL</strong>.</Card>
-  <Card title="Referential integrity">A foreign-key value must <strong>match</strong> an existing primary-key value in the referenced table, or be NULL.</Card>
-  <Card title="General constraints">Business rules expressed with <code>CHECK</code> or assertions, e.g. salary must be positive.</Card>
+  <Card title="Domain constraint" titleAr="قيد النطاق">Every value in a column must come from that column's domain (type, range, format).<Ar>يجب أن تأتي كل قيمة في العمود من نطاق (domain) ذلك العمود (النوع والمدى والصيغة).</Ar></Card>
+
+  <Card title="Key / entity integrity" titleAr="قيد المفتاح / سلامة الكيان">Primary-key values must be <strong>unique</strong> and <strong>not NULL</strong>.<Ar>يجب أن تكون قيم المفتاح الأساسي <strong>فريدة</strong> و<strong>غير فارغة (not NULL)</strong>.</Ar></Card>
+
+  <Card title="Referential integrity" titleAr="السلامة المرجعية">A foreign-key value must <strong>match</strong> an existing primary-key value in the referenced table, or be NULL.<Ar>يجب أن <strong>تطابق</strong> قيمة المفتاح الأجنبي قيمة مفتاح أساسي موجودة في الجدول المُشار إليه، أو أن تكون NULL.</Ar></Card>
+
+  <Card title="General constraints" titleAr="القيود العامة">Business rules expressed with <code>CHECK</code> or assertions, e.g. salary must be positive.<Ar>قواعد عمل (business rules) يُعبَّر عنها باستخدام <code>CHECK</code> أو التأكيدات (assertions)، مثل: يجب أن يكون الراتب موجبًا.</Ar></Card>
 </Grid>
 
 What happens when a referenced (parent) row is **deleted or updated**?
 
-| Rule | Effect |
+<Ar>ماذا يحدث عندما **يُحذف أو يُحدَّث** صف مُشار إليه (الصف الأب parent)؟</Ar>
+
+| Rule <Ar>القاعدة</Ar> | Effect <Ar>الأثر</Ar> |
 |---|---|
-| **RESTRICT / NO ACTION** | Reject the change while child rows still refer to it |
-| **CASCADE** | Apply the same delete or update to the child rows |
-| **SET NULL** | Set the child's foreign key to NULL (not allowed when the FK is part of the child's primary key, as in weak entities) |
-| **SET DEFAULT** | Set the child's foreign key to its default value |
+| **RESTRICT / NO ACTION** <Ar>**الرفض (RESTRICT / NO ACTION)**</Ar> | Reject the change while child rows still refer to it <Ar>رفض التغيير ما دامت صفوف الأبناء (child rows) تشير إليه</Ar> |
+| **CASCADE** <Ar>**التتالي (CASCADE)**</Ar> | Apply the same delete or update to the child rows <Ar>تطبيق الحذف أو التحديث نفسه على صفوف الأبناء</Ar> |
+| **SET NULL** <Ar>**التعيين إلى NULL**</Ar> | Set the child's foreign key to NULL (not allowed when the FK is part of the child's primary key, as in weak entities) <Ar>جعل المفتاح الأجنبي في صف الابن NULL (غير مسموح عندما يكون المفتاح الأجنبي FK جزءًا من المفتاح الأساسي للابن، كما في الكيانات الضعيفة weak entities)</Ar> |
+| **SET DEFAULT** <Ar>**التعيين إلى القيمة الافتراضية (SET DEFAULT)**</Ar> | Set the child's foreign key to its default value <Ar>جعل المفتاح الأجنبي في صف الابن مساويًا لقيمته الافتراضية</Ar> |
 
 ### External and physical schemas in an RDBMS
 
+<Ar>المخططات الخارجية والفيزيائية في نظام قواعد بيانات علائقي (RDBMS)</Ar>
+
 The **conceptual** schema is the set of relation schemas. The **physical** schema says how they're stored (file organization, **indexes**), and choosing it is **physical database design**. The **external** schemas are made of **views**: virtual relations defined by a query that store no data. A **materialized view** is a precomputed copy that *is* stored.
+
+<Ar>المخطط **المفاهيمي** هو مجموعة مخططات العلاقات. ويحدد المخطط **الفيزيائي** كيف تُخزَّن (تنظيم الملفات، و**الفهارس**)، واختياره هو **التصميم الفيزيائي لقاعدة البيانات (physical database design)**. أما المخططات **الخارجية** فتتكون من **العروض (views)**: علاقات افتراضية يعرّفها استعلام ولا تخزّن أي بيانات. و**العرض المُجسَّد (materialized view)** نسخة محسوبة مسبقًا *تُخزَّن* فعلًا.</Ar>
 
 ## SQL: defining and changing data
 
-| Category | Commands |
+<Ar>لغة SQL: تعريف البيانات وتغييرها</Ar>
+
+| Category <Ar>الفئة</Ar> | Commands <Ar>الأوامر</Ar> |
 |---|---|
-| **DDL**: definition | `CREATE`, `ALTER`, `DROP`, `TRUNCATE`, `RENAME`, `COMMENT` |
-| **DML**: manipulation | `INSERT`, `UPDATE`, `DELETE` (and `SELECT`, sometimes called **DQL**) |
-| **DCL**: control | `GRANT`, `REVOKE` |
-| **TCL**: transactions | `COMMIT`, `ROLLBACK`, `SAVEPOINT` |
+| **DDL**: definition <Ar>**DDL**: التعريف</Ar> | `CREATE`, `ALTER`, `DROP`, `TRUNCATE`, `RENAME`, `COMMENT` |
+| **DML**: manipulation <Ar>**DML**: المعالجة</Ar> | `INSERT`, `UPDATE`, `DELETE` (and `SELECT`, sometimes called **DQL**) <Ar>`INSERT` و `UPDATE` و `DELETE` (و `SELECT` الذي يُسمى أحيانًا **DQL**)</Ar> |
+| **DCL**: control <Ar>**DCL**: التحكم</Ar> | `GRANT`, `REVOKE` |
+| **TCL**: transactions <Ar>**TCL**: المعاملات</Ar> | `COMMIT`, `ROLLBACK`, `SAVEPOINT` |
 
 ### CREATE TABLE with constraints
+
+<Ar>الأمر CREATE TABLE مع القيود</Ar>
 
 ```sql title="company_ddl.sql"
 CREATE TABLE department (
@@ -218,11 +292,15 @@ ALTER TABLE department
   ADD CONSTRAINT fk_dept_mgr FOREIGN KEY (mgr_ssn) REFERENCES employee(ssn);
 ```
 
-<Callout type="note" title="Dialects differ">
+<Callout type="note" title="Dialects differ" titleAr="اختلاف اللهجات (Dialects)">
   The slides use standard SQL. Oracle (used in the labs) writes strings as <code>VARCHAR2</code>, supports <code>ON DELETE CASCADE</code> and <code>ON DELETE SET NULL</code>, but has no <code>ON UPDATE CASCADE</code> or <code>SET DEFAULT</code>. MySQL supports more options. Table names must start with a letter, may contain <code>_</code>, <code>#</code> and digits, can't be reserved words, and in Oracle 11g are limited to 30 characters.
+
+  <Ar>تستخدم الشرائح SQL القياسية. أما Oracle (المستخدم في السكاشن labs) فيكتب النصوص بالنوع <code>VARCHAR2</code>، ويدعم <code>ON DELETE CASCADE</code> و <code>ON DELETE SET NULL</code>، لكنه لا يدعم <code>ON UPDATE CASCADE</code> ولا <code>SET DEFAULT</code>. ويدعم MySQL خيارات أكثر. ويجب أن تبدأ أسماء الجداول بحرف، ويمكن أن تحتوي على <code>_</code> و <code>#</code> والأرقام، ولا يجوز أن تكون كلمات محجوزة (reserved words)، وطولها محدود بـ 30 حرفًا في Oracle 11g.</Ar>
 </Callout>
 
 ### ALTER and DROP
+
+<Ar>الأمران ALTER و DROP</Ar>
 
 ```sql title="alter_drop.sql"
 ALTER TABLE employee ADD job VARCHAR(12);          -- new column, NULL in every existing row
@@ -234,7 +312,11 @@ DROP TABLE dependent;                               -- removes the data AND the 
 
 A new column can't be declared `NOT NULL` without a default, because every existing row would start as `NULL`.
 
+<Ar>لا يمكن تعريف عمود جديد بأنه `NOT NULL` دون قيمة افتراضية، لأن كل صف موجود سيبدأ بالقيمة `NULL`.</Ar>
+
 ### INSERT, UPDATE and DELETE
+
+<Ar>الأوامر INSERT و UPDATE و DELETE</Ar>
 
 ```sql title="dml.sql"
 -- Values in column order…
@@ -250,57 +332,81 @@ DELETE FROM employee WHERE dno IN (SELECT dnumber FROM department WHERE dname = 
 DELETE FROM employee;     -- no WHERE: deletes every row (the table stays, empty)
 ```
 
-<Callout type="warning" title="Constraints are checked on every change">
+<Callout type="warning" title="Constraints are checked on every change" titleAr="تُفحص القيود عند كل تغيير">
   Inserting a duplicate or NULL primary key, a foreign key with no matching parent, or a value outside a <code>CHECK</code> range is <strong>rejected</strong>. Deleting a parent row follows its referential action (RESTRICT, CASCADE, SET NULL…).
+
+  <Ar>إدراج مفتاح أساسي مكرر أو فارغ (NULL)، أو مفتاح أجنبي لا يقابله صف أب، أو قيمة خارج المدى الذي يحدده <code>CHECK</code>، كل ذلك <strong>يُرفض</strong>. أما حذف صف أب فيتبع الإجراء المرجعي (referential action) الخاص به (RESTRICT و CASCADE و SET NULL…).</Ar>
 </Callout>
 
 <Takeaways>
 
 - Data models are **conceptual**, **representational** or **physical**. The **schema** (intension) rarely changes, while the **state** (extension) changes constantly.
+  <Ar>نماذج البيانات إما **مفاهيمية** أو **تمثيلية** أو **فيزيائية**. و**المخطط (schema)** (ويُسمى intension) نادرًا ما يتغير، بينما تتغير **الحالة (state)** (وتُسمى extension) باستمرار.</Ar>
 - The **three-schema architecture** (external, conceptual, internal) gives **logical** and **physical data independence**.
+  <Ar>تمنح **معمارية المستويات الثلاثة (three-schema architecture)** (الخارجي والمفاهيمي والداخلي) **استقلالية البيانات المنطقية** و**الفيزيائية**.</Ar>
 - Architectures go from **centralized** to **2-tier** (client + DB server) to **3-tier** (client + application server + DB server).
+  <Ar>تتدرج المعماريات من **المركزية** إلى **ثنائية الطبقات (2-tier)** (عميل + خادم قاعدة بيانات) إلى **ثلاثية الطبقات (3-tier)** (عميل + خادم تطبيقات + خادم قاعدة بيانات).</Ar>
 - A relation is a table with **atomic** values and **unique** rows. Keys go from superkey to candidate key to **primary** key, and **foreign keys** link tables.
+  <Ar>العلاقة جدول قيمه **ذرّية** وصفوفه **فريدة**. وتتدرج المفاتيح من المفتاح الأعلى (superkey) إلى المفتاح المرشَّح (candidate key) إلى المفتاح **الأساسي**، و**المفاتيح الأجنبية (foreign keys)** تربط الجداول.</Ar>
 - **Domain**, **entity** and **referential integrity** constraints are declared in `CREATE TABLE` and enforced on every `INSERT`, `UPDATE` and `DELETE`.
+  <Ar>قيود **النطاق** و**سلامة الكيان** و**السلامة المرجعية** تُعرَّف في `CREATE TABLE` وتُفرض عند كل `INSERT` و `UPDATE` و `DELETE`.</Ar>
 
 </Takeaways>
 
 ## Practice
 
-<Exercise title="Design a relational schema" level="medium">
+<Ar>تدريب</Ar>
+
+<Exercise title="Design a relational schema" titleAr="صمّم مخططًا علائقيًا" level="medium">
 
 Each student has a unique Student_ID, a Name and a Major. Each course has a unique Course_ID, a Course_Name and Credits. A student can enroll in many courses, and each enrollment stores a Grade. Give the relations with their primary and foreign keys.
+
+<Ar>لكل طالب رقم فريد `Student_ID` واسم `Name` وتخصص `Major`. ولكل مقرر رقم فريد `Course_ID` واسم `Course_Name` وعدد ساعات معتمدة `Credits`. ويمكن للطالب التسجيل في مقررات كثيرة، ويُخزَّن مع كل تسجيل التقدير `Grade`. اكتب العلاقات مع مفاتيحها الأساسية والأجنبية.</Ar>
 
 <Solution>
 
 - `STUDENT(Student_ID, Name, Major)`: PK `Student_ID`.
+  <Ar>`STUDENT(Student_ID, Name, Major)`: المفتاح الأساسي (PK) هو `Student_ID`.</Ar>
 - `COURSE(Course_ID, Course_Name, Credits)`: PK `Course_ID`.
+  <Ar>`COURSE(Course_ID, Course_Name, Credits)`: المفتاح الأساسي (PK) هو `Course_ID`.</Ar>
 - `ENROLLMENT(Student_ID, Course_ID, Grade)`: PK `(Student_ID, Course_ID)`; FKs `Student_ID → STUDENT`, `Course_ID → COURSE`.
+  <Ar>`ENROLLMENT(Student_ID, Course_ID, Grade)`: المفتاح الأساسي (PK) هو `(Student_ID, Course_ID)`، والمفتاحان الأجنبيان (FKs) هما `Student_ID → STUDENT` و `Course_ID → COURSE`.</Ar>
 
 The many-to-many relationship becomes its own relation, with a **composite** primary key made of two foreign keys.
+
+<Ar>يتحول الارتباط متعدد-إلى-متعدد (many-to-many) إلى علاقة مستقلة، مفتاحها الأساسي **مركّب (composite)** من مفتاحين أجنبيين.</Ar>
 
 </Solution>
 
 </Exercise>
 
-<Exercise title="Which data independence?" level="easy">
+<Exercise title="Which data independence?" titleAr="أي نوع من استقلالية البيانات؟" level="easy">
 
 (a) The DBA adds a B-tree index on `employee.lname`. (b) A new column `email` is added to `STUDENT`, and the student-portal view doesn't change. Which kind of data independence lets programs keep working in each case?
+
+<Ar>(a) يضيف مدير قاعدة البيانات (DBA) فهرس B-tree على `employee.lname`. (b) يُضاف عمود جديد `email` إلى `STUDENT`، ولا يتغير عرض (view) بوابة الطلاب. أي نوع من استقلالية البيانات يسمح للبرامج بمواصلة العمل في كل حالة؟</Ar>
 
 <Solution>
 
 (a) **Physical** data independence: the internal schema changed and the conceptual schema did not. (b) **Logical** data independence: the conceptual schema changed and the external schema (the view) did not.
 
+<Ar>(a) استقلالية البيانات **الفيزيائية**: تغيّر المخطط الداخلي ولم يتغير المخطط المفاهيمي. (b) استقلالية البيانات **المنطقية**: تغيّر المخطط المفاهيمي ولم يتغير المخطط الخارجي (العرض).</Ar>
+
 </Solution>
 
 </Exercise>
 
-<Exercise title="Will these statements run?" level="medium">
+<Exercise title="Will these statements run?" titleAr="هل ستُنفَّذ هذه العبارات؟" level="medium">
 
 Given `employee` above, with `ssn` as the primary key: (1) `INSERT INTO employee (fname, lname, ssn) VALUES ('Jann', 'Jams', NULL);` (2) `UPDATE employee SET ssn = '123456789' WHERE ssn = '333445555';` when another employee already has `ssn = '123456789'`.
+
+<Ar>بالنظر إلى الجدول `employee` أعلاه، حيث `ssn` هو المفتاح الأساسي: (1) `INSERT INTO employee (fname, lname, ssn) VALUES ('Jann', 'Jams', NULL);` (2) `UPDATE employee SET ssn = '123456789' WHERE ssn = '333445555';` عندما يكون لموظف آخر بالفعل `ssn = '123456789'`.</Ar>
 
 <Solution>
 
 Both are **rejected**. (1) violates **entity integrity**, since a primary key can't be NULL. (2) would create a **duplicate** primary key. It could also break employees whose `super_ssn` points to `333445555`, depending on the referential action.
+
+<Ar>كلتاهما **مرفوضة**. (1) تنتهك **سلامة الكيان (entity integrity)**، لأن المفتاح الأساسي لا يجوز أن يكون NULL. و(2) ستُنشئ مفتاحًا أساسيًا **مكررًا**، وقد تُفسد أيضًا بيانات الموظفين الذين يشير `super_ssn` لديهم إلى `333445555`، بحسب الإجراء المرجعي (referential action).</Ar>
 
 </Solution>
 
@@ -310,45 +416,66 @@ Both are **rejected**. (1) violates **entity integrity**, since a primary key ca
   questions={[
     {
       q: "The database schema is also called the…",
+      qAr: "يُسمى مخطط قاعدة البيانات أيضًا…",
       options: ["Extension", "Intension", "Instance", "Snapshot"],
+      optionsAr: ["الامتداد (Extension)", "المفهوم (Intension)", "الحالة (Instance)", "اللقطة (Snapshot)"],
       answer: 1,
-      explain: "Schema = intension (the description); state = extension (the data)."
+      explain: "Schema = intension (the description); state = extension (the data).",
+      explainAr: "المخطط = intension (الوصف)، والحالة = extension (البيانات)."
     },
     {
       q: "Adding an index without changing the conceptual schema is an example of…",
+      qAr: "إضافة فهرس دون تغيير المخطط المفاهيمي مثال على…",
       options: ["Logical data independence", "Physical data independence", "Referential integrity", "A materialized view"],
+      optionsAr: ["استقلالية البيانات المنطقية", "استقلالية البيانات الفيزيائية", "السلامة المرجعية", "العرض المُجسَّد"],
       answer: 1,
-      explain: "Changes to the internal (physical) level don't affect the conceptual level."
+      explain: "Changes to the internal (physical) level don't affect the conceptual level.",
+      explainAr: "التغييرات في المستوى الداخلي (الفيزيائي) لا تؤثر في المستوى المفاهيمي."
     },
     {
       q: "In a 3-tier architecture, the business logic runs on the…",
+      qAr: "في المعمارية ثلاثية الطبقات، يعمل منطق العمل على…",
       options: ["Client", "Application/web server", "Database server", "Data dictionary"],
+      optionsAr: ["العميل", "خادم التطبيقات/الويب", "خادم قاعدة البيانات", "قاموس البيانات"],
       answer: 1,
-      explain: "The middle tier sits between the presentation layer and the database server."
+      explain: "The middle tier sits between the presentation layer and the database server.",
+      explainAr: "تقع الطبقة الوسطى بين طبقة العرض وخادم قاعدة البيانات."
     },
     {
       q: "A minimal superkey is called a…",
+      qAr: "يُسمى المفتاح الأعلى الأدنى (minimal superkey)…",
       options: ["Foreign key", "Candidate key", "Composite key", "Super key"],
+      optionsAr: ["المفتاح الأجنبي", "المفتاح المرشَّح", "المفتاح المركّب", "المفتاح الأعلى"],
       answer: 1,
-      explain: "Remove any attribute from a candidate key and it no longer identifies rows uniquely."
+      explain: "Remove any attribute from a candidate key and it no longer identifies rows uniquely.",
+      explainAr: "إذا حُذفت أي سمة من المفتاح المرشَّح لم يعد يحدد الصفوف بشكل فريد."
     },
     {
       q: "The degree of a relation is…",
+      qAr: "درجة العلاقة (degree) هي…",
       options: ["Its number of rows", "Its number of attributes", "Its number of keys", "Its number of foreign keys"],
+      optionsAr: ["عدد صفوفها", "عدد سماتها", "عدد مفاتيحها", "عدد مفاتيحها الأجنبية"],
       answer: 1,
-      explain: "Degree = columns; cardinality = rows."
+      explain: "Degree = columns; cardinality = rows.",
+      explainAr: "الدرجة = عدد الأعمدة، والتعداد (cardinality) = عدد الصفوف."
     },
     {
       q: "Which constraint says a foreign key must match an existing primary key (or be NULL)?",
+      qAr: "أي قيد ينص على أن المفتاح الأجنبي يجب أن يطابق مفتاحًا أساسيًا موجودًا (أو أن يكون NULL)؟",
       options: ["Domain", "Entity integrity", "Referential integrity", "CHECK"],
+      optionsAr: ["النطاق", "سلامة الكيان", "السلامة المرجعية", "CHECK"],
       answer: 2,
-      explain: "Referential integrity keeps references between tables valid."
+      explain: "Referential integrity keeps references between tables valid.",
+      explainAr: "تحافظ السلامة المرجعية على صحة الإشارات بين الجداول."
     },
     {
       q: "DELETE FROM employee; (with no WHERE clause)…",
+      qAr: "الأمر DELETE FROM employee; (دون عبارة WHERE)…",
       options: ["Drops the table", "Deletes every row but keeps the table", "Fails with a syntax error", "Deletes only NULL rows"],
+      optionsAr: ["يحذف الجدول نفسه", "يحذف كل الصفوف لكنه يُبقي الجدول", "يفشل بخطأ في الصيغة", "يحذف الصفوف الفارغة (NULL) فقط"],
       answer: 1,
-      explain: "DELETE removes rows; DROP TABLE removes the table and its definition."
+      explain: "DELETE removes rows; DROP TABLE removes the table and its definition.",
+      explainAr: "يحذف DELETE الصفوف، بينما يحذف DROP TABLE الجدول وتعريفه."
     }
   ]}
 />

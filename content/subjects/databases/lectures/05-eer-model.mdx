@@ -1,7 +1,9 @@
 ---
 number: 5
 title: Enhanced Entity–Relationship (EER) Modeling
+titleAr: "نمذجة الكيان والعلاقة الموسَّعة (EER)"
 summary: The EER model adds object-oriented ideas to ER. Covers superclasses and subclasses, inheritance, specialization and generalization, the disjointness and completeness constraints, hierarchies and lattices with shared subclasses, and categories (union types).
+summaryAr: "يضيف النموذج الموسَّع (EER) أفكارًا كائنية التوجه إلى نموذج ER: الأصناف العليا (superclasses) والأصناف الفرعية (subclasses)، والوراثة (inheritance)، والتخصيص (specialization) والتعميم (generalization)، وقيدا الانفصال (disjointness) والاكتمال (completeness)، والتسلسلات الهرمية والشبكات (lattices) ذات الأصناف الفرعية المشتركة، والفئات (categories) أو أنواع الاتحاد (union types)."
 topics: [Subclasses and superclasses, Inheritance, Specialization, Generalization, Disjoint vs overlapping, Total vs partial, Lattices, Categories]
 duration: 45 min study
 sources:
@@ -19,163 +21,238 @@ bookRefs:
 <Objectives>
 
 - Explain **superclass/subclass** (IS-A) relationships and **attribute and relationship inheritance**.
+  <Ar>شرح علاقات **الصنف الأعلى/الصنف الفرعي (superclass/subclass)** (علاقة IS-A) و**وراثة السمات والعلاقات (inheritance)**.</Ar>
 - Distinguish **specialization** (top-down) from **generalization** (bottom-up).
+  <Ar>التمييز بين **التخصيص (specialization)** (من الأعلى إلى الأسفل) و**التعميم (generalization)** (من الأسفل إلى الأعلى).</Ar>
 - Apply the **disjointness** (d / o) and **completeness** (total / partial) constraints, and recognize **predicate-**, **attribute-** and **user-defined** subclasses.
+  <Ar>تطبيق قيدَي **الانفصال (disjointness)** (d / o) و**الاكتمال (completeness)** (كلي / جزئي)، والتعرّف على الأصناف الفرعية **المعرَّفة بشرط (predicate-defined)** و**المعرَّفة بسمة (attribute-defined)** و**المعرَّفة من المستخدم (user-defined)**.</Ar>
 - Read **hierarchies** and **lattices**, including **shared subclasses** (multiple inheritance).
+  <Ar>قراءة **التسلسلات الهرمية (hierarchies)** و**الشبكات (lattices)**، بما في ذلك **الأصناف الفرعية المشتركة (shared subclasses)** (الوراثة المتعددة).</Ar>
 - Model **categories (union types)** and tell them apart from shared subclasses.
+  <Ar>نمذجة **الفئات (categories)** (أنواع الاتحاد union types) والتمييز بينها وبين الأصناف الفرعية المشتركة.</Ar>
 
 </Objectives>
 
 ## Why extend the ER model?
 
+<Ar>لماذا نوسّع نموذج ER؟</Ar>
+
 Basic ER can't express that some employees are **secretaries** with a typing speed, some are **engineers** with an engineering type, and some are **salaried** while others are **hourly**. The **Enhanced (Extended) ER** model keeps every ER concept and adds:
 
+<Ar>لا يستطيع نموذج ER الأساسي التعبير عن أن بعض الموظفين **سكرتيرون** لهم سرعة كتابة، وبعضهم **مهندسون** لهم نوع هندسة، وبعضهم **برواتب شهرية (salaried)** بينما يعمل آخرون **بأجر بالساعة (hourly)**. أما نموذج **الكيان والعلاقة المحسَّن (الموسَّع) Enhanced (Extended) ER** فيحتفظ بكل مفاهيم ER ويضيف:</Ar>
+
 - **subclasses / superclasses**
+  <Ar>**الأصناف الفرعية / الأصناف العليا (subclasses / superclasses)**</Ar>
 - **specialization / generalization**
+  <Ar>**التخصيص / التعميم (specialization / generalization)**</Ar>
 - **categories** (union types)
+  <Ar>**الفئات (categories)** (أنواع الاتحاد union types)</Ar>
 - **attribute and relationship inheritance**, an object-oriented idea
+  <Ar>**وراثة السمات والعلاقات (inheritance)**، وهي فكرة كائنية التوجه</Ar>
 
 ## Subclasses and superclasses
 
-<Definition term="Subclass">
+<Ar>الأصناف الفرعية والأصناف العليا</Ar>
+
+<Definition term="Subclass" termAr="الصنف الفرعي">
   A meaningful <strong>subgrouping</strong> of an entity type's entities. Every member of a subclass is <strong>the same real-world entity</strong> as some member of the <strong>superclass</strong>, playing a more specific role. The link between them is an <strong>IS-A</strong> relationship: a SECRETARY <em>is an</em> EMPLOYEE.
+
+  <Ar><strong>تجميع فرعي</strong> ذو معنى لكيانات نوع كيان ما. فكل عضو في الصنف الفرعي هو <strong>الكيان الحقيقي نفسه</strong> لعضو ما في <strong>الصنف الأعلى (superclass)</strong>، لكنه يؤدي دورًا أكثر تحديدًا. والرابط بينهما علاقة <strong>IS-A</strong>: فالسكرتير SECRETARY <em>هو</em> موظف EMPLOYEE.</Ar>
 </Definition>
 
-<SlideFigure page={5} caption="Three specializations of EMPLOYEE: by job type, managers, and by method of pay." />
+<SlideFigure page={5} caption="Three specializations of EMPLOYEE: by job type, managers, and by method of pay." captionAr="ثلاثة تخصيصات للكيان EMPLOYEE: حسب نوع الوظيفة، والمديرون، وحسب طريقة الدفع." />
 
 - An entity **can't** exist only in a subclass; it must also be in the superclass.
+  <Ar>**لا يمكن** أن يوجد الكيان في الصنف الفرعي فقط، بل يجب أن يكون في الصنف الأعلى أيضًا.</Ar>
 - An entity **may** belong to several subclasses. A salaried engineering manager is in MANAGER, ENGINEER and SALARIED_EMPLOYEE.
+  <Ar>**يمكن** أن ينتمي الكيان إلى عدة أصناف فرعية؛ فمدير الهندسة ذو الراتب الشهري ينتمي إلى MANAGER و ENGINEER و SALARIED_EMPLOYEE.</Ar>
 - A superclass entity **need not** belong to any subclass.
+  <Ar>**لا يلزم** أن ينتمي كيان الصنف الأعلى إلى أي صنف فرعي.</Ar>
 
 ### Inheritance
 
+<Ar>الوراثة</Ar>
+
 A subclass member **inherits** all **attributes** and all **relationships** of its superclass. A SECRETARY has Name, SSN, Address… from EMPLOYEE, plus its own **specific (local) attributes** such as `Typing_speed`. A subclass can also take part in its **own relationships**: only HOURLY_EMPLOYEEs `BELONGS_TO` a TRADE_UNION.
+
+<Ar>**يرث (inherits)** عضو الصنف الفرعي كل **سمات** صنفه الأعلى وكل **علاقاته**. فللسكرتير SECRETARY السمات Name و SSN و Address… من EMPLOYEE، إضافة إلى **سماته الخاصة (المحلية local)** مثل `Typing_speed`. ويمكن للصنف الفرعي أيضًا أن يشارك في **علاقاته الخاصة**: فالعاملون بالساعة HOURLY_EMPLOYEEs وحدهم هم الذين ينتمون (`BELONGS_TO`) إلى نقابة TRADE_UNION.</Ar>
 
 ## Specialization and generalization
 
+<Ar>التخصيص والتعميم</Ar>
+
 <Grid cols={2}>
-  <Card title="Specialization" tag="top-down">
+  <Card title="Specialization" titleAr="التخصيص" tag="top-down">
     Start from one entity type and define a set of <strong>subclasses</strong> based on a distinguishing characteristic: \{SECRETARY, TECHNICIAN, ENGINEER\} by job type, or \{SALARIED, HOURLY\} by method of pay. One superclass can have <strong>several</strong> specializations.
+
+    <Ar>ابدأ من نوع كيان واحد وعرّف مجموعة من <strong>الأصناف الفرعية</strong> بناءً على خاصية مميِّزة: `{SECRETARY, TECHNICIAN, ENGINEER}` حسب نوع الوظيفة، أو `{SALARIED, HOURLY}` حسب طريقة الدفع. ويمكن أن يكون للصنف الأعلى الواحد <strong>عدة</strong> تخصيصات.</Ar>
   </Card>
-  <Card title="Generalization" tag="bottom-up">
+  <Card title="Generalization" titleAr="التعميم" tag="bottom-up">
     Start from several entity types with common features and build a <strong>superclass</strong> from them. CAR and TRUCK share Vehicle_id, Price and License_plate_no, so they generalize into VEHICLE.
+
+    <Ar>ابدأ من عدة أنواع كيانات لها خصائص مشتركة وابنِ منها <strong>صنفًا أعلى</strong>. فالكيانان CAR و TRUCK يشتركان في Vehicle_id و Price و License_plate_no، لذا يُعمَّمان إلى VEHICLE.</Ar>
   </Card>
 </Grid>
 
-<SlideFigure page={15} caption="Generalization: (a) CAR and TRUCK separately; (b) their common attributes moved up to VEHICLE." />
+<SlideFigure page={15} caption="Generalization: (a) CAR and TRUCK separately; (b) their common attributes moved up to VEHICLE." captionAr="التعميم: (a) الكيانان CAR و TRUCK كلٌّ على حدة؛ (b) نُقلت سماتهما المشتركة إلى الأعلى في VEHICLE." />
 
 The two are views of the same structure, so the notation does **not** draw arrows to say which process was used. In practice designers combine top-down **refinement** and bottom-up **synthesis**.
 
+<Ar>العمليتان رؤيتان للبنية نفسها، لذا **لا** يرسم الترميز أسهمًا تبيّن أي العمليتين استُخدمت. وفي الممارسة العملية يجمع المصممون بين **التنقيح (refinement)** من الأعلى إلى الأسفل و**التركيب (synthesis)** من الأسفل إلى الأعلى.</Ar>
+
 ### Who belongs to which subclass?
 
-| Kind | Membership decided by | Example |
-|---|---|---|
-| **Predicate-defined** subclass | A condition on superclass attributes, written beside the link | `ENGINEER = EMPLOYEE[Job_type = 'Engineer']` |
-| **Attribute-defined** specialization | All subclasses use a condition on the **same defining attribute** | `Job_type` decides SECRETARY / TECHNICIAN / ENGINEER |
-| **User-defined** subclass | No condition; a user assigns each entity | MANAGER |
+<Ar>من ينتمي إلى أي صنف فرعي؟</Ar>
 
-<SlideFigure page={20} caption="An attribute-defined specialization on Job_type." />
+| Kind <Ar>النوع</Ar> | Membership decided by <Ar>العضوية تُحدَّد بواسطة</Ar> | Example <Ar>مثال</Ar> |
+|---|---|---|
+| **Predicate-defined** subclass <Ar>صنف فرعي **معرَّف بشرط (Predicate-defined)**</Ar> | A condition on superclass attributes, written beside the link <Ar>شرط على سمات الصنف الأعلى، يُكتب بجوار الرابط</Ar> | `ENGINEER = EMPLOYEE[Job_type = 'Engineer']` |
+| **Attribute-defined** specialization <Ar>تخصيص **معرَّف بسمة (Attribute-defined)**</Ar> | All subclasses use a condition on the **same defining attribute** <Ar>تستخدم كل الأصناف الفرعية شرطًا على **سمة التعريف نفسها (defining attribute)**</Ar> | `Job_type` decides SECRETARY / TECHNICIAN / ENGINEER <Ar>تحدد `Job_type` الانتماء إلى SECRETARY / TECHNICIAN / ENGINEER</Ar> |
+| **User-defined** subclass <Ar>صنف فرعي **معرَّف من المستخدم (User-defined)**</Ar> | No condition; a user assigns each entity <Ar>لا يوجد شرط، بل يعيّن المستخدم كل كيان</Ar> | MANAGER <Ar>المدير MANAGER</Ar> |
+
+<SlideFigure page={20} caption="An attribute-defined specialization on Job_type." captionAr="تخصيص معرَّف بالسمة Job_type." />
 
 ## Constraints on specialization
 
+<Ar>قيود التخصيص</Ar>
+
 <Grid cols={2}>
-  <Card title="Disjointness" tag="d / o">
+  <Card title="Disjointness" titleAr="الانفصال" tag="d / o">
     <strong>Disjoint (d)</strong>: an entity is in <strong>at most one</strong> subclass. <strong>Overlapping (o)</strong>: an entity may be in <strong>several</strong> subclasses.
+
+    <Ar><strong>منفصل (Disjoint) (d)</strong>: ينتمي الكيان إلى صنف فرعي <strong>واحد على الأكثر</strong>. <strong>متداخل (Overlapping) (o)</strong>: يمكن أن ينتمي الكيان إلى <strong>عدة</strong> أصناف فرعية.</Ar>
   </Card>
-  <Card title="Completeness" tag="total / partial">
+  <Card title="Completeness" titleAr="الاكتمال" tag="total / partial">
     <strong>Total</strong> (double line): every superclass entity is in <strong>some</strong> subclass. <strong>Partial</strong> (single line): some entities belong to none.
+
+    <Ar><strong>كلي (Total)</strong> (خط مزدوج): كل كيان في الصنف الأعلى ينتمي إلى صنف فرعي <strong>ما</strong>. <strong>جزئي (Partial)</strong> (خط مفرد): بعض الكيانات لا تنتمي إلى أي صنف فرعي.</Ar>
   </Card>
 </Grid>
 
 That gives four combinations:
 
-| | Total | Partial |
-|---|---|---|
-| **Disjoint** | Every VEHICLE is exactly one of CAR or TRUCK | An EMPLOYEE is at most one of SECRETARY / TECHNICIAN / ENGINEER, or none of them |
-| **Overlapping** | Every PART is manufactured, purchased or **both** | A person may be any mix of the subclasses, or none |
+<Ar>وينتج عن ذلك أربعة تركيبات:</Ar>
 
-<SlideFigure page={26} caption="Overlapping total specialization: a PART can be both MANUFACTURED and PURCHASED." />
+| | Total <Ar>كلي</Ar> | Partial <Ar>جزئي</Ar> |
+|---|---|---|
+| **Disjoint** <Ar>**منفصل**</Ar> | Every VEHICLE is exactly one of CAR or TRUCK <Ar>كل VEHICLE هي بالضبط إما CAR أو TRUCK</Ar> | An EMPLOYEE is at most one of SECRETARY / TECHNICIAN / ENGINEER, or none of them <Ar>الموظف EMPLOYEE واحد على الأكثر من SECRETARY / TECHNICIAN / ENGINEER، أو لا شيء منها</Ar> |
+| **Overlapping** <Ar>**متداخل**</Ar> | Every PART is manufactured, purchased or **both** <Ar>كل قطعة PART إما مصنَّعة أو مشتراة أو **كلاهما**</Ar> | A person may be any mix of the subclasses, or none <Ar>قد يكون الشخص أي مزيج من الأصناف الفرعية، أو لا شيء منها</Ar> |
+
+<SlideFigure page={26} caption="Overlapping total specialization: a PART can be both MANUFACTURED and PURCHASED." captionAr="تخصيص متداخل كلي: يمكن أن تكون القطعة PART مصنَّعة MANUFACTURED ومشتراة PURCHASED معًا." />
 
 Formally, for a specialization $Z = \{S_1, \dots, S_n\}$ of superclass $G$:
+
+<Ar>رسميًا، لتخصيص $Z = \{S_1, \dots, S_n\}$ للصنف الأعلى $G$:</Ar>
 
 $$
 \text{total: } S_1 \cup S_2 \cup \dots \cup S_n = G \qquad\qquad \text{disjoint: } S_i \cap S_j = \emptyset \ \ (i \neq j)
 $$
 
-<Callout type="tip" title="Generalizations are usually total">
+<Callout type="tip" title="Generalizations are usually total" titleAr="التعميمات كلية عادةً">
   A superclass built <em>from</em> its subclasses only contains entities that were already in one of them.
+
+  <Ar>الصنف الأعلى المبني <em>من</em> أصنافه الفرعية لا يحتوي إلا على كيانات كانت موجودة أصلًا في أحدها.</Ar>
 </Callout>
 
 ## Hierarchies, lattices and shared subclasses
 
+<Ar>التسلسلات الهرمية والشبكات والأصناف الفرعية المشتركة</Ar>
+
 - In a **hierarchy**, every subclass has **one** superclass (**single inheritance**), so it forms a tree.
+  <Ar>في **التسلسل الهرمي (hierarchy)** يكون لكل صنف فرعي صنف أعلى **واحد** (**وراثة مفردة single inheritance**)، فيتشكل على هيئة شجرة.</Ar>
 - In a **lattice**, a subclass can have **several** superclasses (**multiple inheritance**). Such a subclass is a **shared subclass**.
+  <Ar>في **الشبكة (lattice)** يمكن أن يكون للصنف الفرعي **عدة** أصناف عليا (**وراثة متعددة multiple inheritance**)، ويُسمى هذا الصنف الفرعي **صنفًا فرعيًا مشتركًا (shared subclass)**.</Ar>
 - A subclass inherits from **all** its ancestors, not just its direct superclass.
+  <Ar>يرث الصنف الفرعي من **كل** أسلافه، لا من صنفه الأعلى المباشر فقط.</Ar>
 
-<SlideFigure page={28} caption="ENGINEERING_MANAGER is a shared subclass of ENGINEER, MANAGER and SALARIED_EMPLOYEE." />
+<SlideFigure page={28} caption="ENGINEERING_MANAGER is a shared subclass of ENGINEER, MANAGER and SALARIED_EMPLOYEE." captionAr="الصنف ENGINEERING_MANAGER صنف فرعي مشترك للأصناف ENGINEER و MANAGER و SALARIED_EMPLOYEE." />
 
-<SlideFigure page={31} caption="A UNIVERSITY specialization lattice: a STUDENT_ASSISTANT is both an EMPLOYEE and a STUDENT." />
+<SlideFigure page={31} caption="A UNIVERSITY specialization lattice: a STUDENT_ASSISTANT is both an EMPLOYEE and a STUDENT." captionAr="شبكة تخصيص لقاعدة بيانات UNIVERSITY: المساعد الطالب STUDENT_ASSISTANT موظف EMPLOYEE وطالب STUDENT في آن واحد." />
 
 ## Categories (union types)
 
+<Ar>الفئات (أنواع الاتحاد)</Ar>
+
 Sometimes one subclass needs **one relationship with several different superclasses**. In vehicle registration, an **OWNER** may be a PERSON, a BANK (holding a lien) or a COMPANY. The category `OWNER` is a subset of the **union** of the three:
+
+<Ar>يحتاج صنف فرعي واحد أحيانًا إلى **علاقة واحدة مع عدة أصناف عليا مختلفة**. ففي تسجيل المركبات، قد يكون **المالك (OWNER)** شخصًا PERSON، أو بنكًا BANK (يحتفظ بحق رهن lien)، أو شركة COMPANY. والفئة `OWNER` مجموعة جزئية من **اتحاد** الثلاثة:</Ar>
 
 $$
 T \subseteq (D_1 \cup D_2 \cup \dots \cup D_n), \qquad n > 1
 $$
 
-<SlideFigure page={34} caption="Two categories: OWNER (∪ of PERSON, BANK, COMPANY) and REGISTERED_VEHICLE (∪ of CAR, TRUCK)." />
+<SlideFigure page={34} caption="Two categories: OWNER (∪ of PERSON, BANK, COMPANY) and REGISTERED_VEHICLE (∪ of CAR, TRUCK)." captionAr="فئتان: OWNER (اتحاد ∪ للكيانات PERSON و BANK و COMPANY) و REGISTERED_VEHICLE (اتحاد ∪ للكيانين CAR و TRUCK)." />
 
-| | Shared subclass | Category (union type) |
+| | Shared subclass <Ar>الصنف الفرعي المشترك</Ar> | Category (union type) <Ar>الفئة (نوع الاتحاد)</Ar> |
 |---|---|---|
-| Members are in… | **All** of the superclasses (**intersection**) | **At least one** of the superclasses (**union**) |
-| Inheritance | Inherits from **all** superclasses | **Selective**: each member inherits from the superclass it belongs to |
-| Example | ENGINEERING_MANAGER is an engineer **and** a manager **and** salaried | An OWNER is a person **or** a bank **or** a company |
+| Members are in… <Ar>الأعضاء موجودون في…</Ar> | **All** of the superclasses (**intersection**) <Ar>**كل** الأصناف العليا (**التقاطع**)</Ar> | **At least one** of the superclasses (**union**) <Ar>صنف أعلى **واحد على الأقل** (**الاتحاد**)</Ar> |
+| Inheritance <Ar>الوراثة</Ar> | Inherits from **all** superclasses <Ar>يرث من **كل** الأصناف العليا</Ar> | **Selective**: each member inherits from the superclass it belongs to <Ar>**انتقائية**: يرث كل عضو من الصنف الأعلى الذي ينتمي إليه</Ar> |
+| Example <Ar>مثال</Ar> | ENGINEERING_MANAGER is an engineer **and** a manager **and** salaried <Ar>ENGINEERING_MANAGER مهندس **و**مدير **و**ذو راتب شهري</Ar> | An OWNER is a person **or** a bank **or** a company <Ar>المالك OWNER شخص **أو** بنك **أو** شركة</Ar> |
 
 ## Notation and general concepts
 
-| EER symbol | Meaning |
+<Ar>الترميز والمفاهيم العامة</Ar>
+
+| EER symbol <Ar>رمز EER</Ar> | Meaning <Ar>المعنى</Ar> |
 |---|---|
-| Circle with **d** / **o** | Disjoint / overlapping specialization |
-| Circle with **∪** | Category (union type) |
-| ⊂ on the line to a subclass | Subset direction (superclass ⊃ subclass) |
-| Single / **double** line from superclass | Partial / **total** specialization |
-| Text next to the line | Defining predicate or attribute value |
+| Circle with **d** / **o** <Ar>دائرة بداخلها **d** / **o**</Ar> | Disjoint / overlapping specialization <Ar>تخصيص منفصل / متداخل</Ar> |
+| Circle with **∪** <Ar>دائرة بداخلها **∪**</Ar> | Category (union type) <Ar>فئة (نوع اتحاد)</Ar> |
+| ⊂ on the line to a subclass <Ar>الرمز ⊂ على الخط المتجه إلى الصنف الفرعي</Ar> | Subset direction (superclass ⊃ subclass) <Ar>اتجاه المجموعة الجزئية (الصنف الأعلى ⊃ الصنف الفرعي)</Ar> |
+| Single / **double** line from superclass <Ar>خط مفرد / **مزدوج** من الصنف الأعلى</Ar> | Partial / **total** specialization <Ar>تخصيص جزئي / **كلي**</Ar> |
+| Text next to the line <Ar>نص بجوار الخط</Ar> | Defining predicate or attribute value <Ar>الشرط المعرِّف أو قيمة السمة</Ar> |
 
 **UML** draws specialization as a hollow triangle on the generalization link, with constraints such as `{disjoint, complete}`.
 
+<Ar>ترسم **UML** التخصيص على هيئة مثلث مفرغ على رابط التعميم، مع قيود مثل `{disjoint, complete}`.</Ar>
+
 The EER model rests on general data abstractions: **classification and instantiation**, **identification**, **specialization and generalization**, and **aggregation and association**. **Ontologies** use the same conceptual-modeling ideas to standardize the vocabulary of a field (medicine, science, engineering).
+
+<Ar>يقوم نموذج EER على تجريدات عامة للبيانات: **التصنيف والتمثيل (classification and instantiation)**، و**التعريف (identification)**، و**التخصيص والتعميم**، و**التجميع والارتباط (aggregation and association)**. وتستخدم **الأنطولوجيات (Ontologies)** أفكار النمذجة المفاهيمية نفسها لتوحيد مفردات مجال معيّن (الطب، والعلوم، والهندسة).</Ar>
 
 <Takeaways>
 
 - EER = ER + **subclasses/superclasses**, **specialization/generalization**, **categories** and **inheritance**.
+  <Ar>EER = ER + **الأصناف الفرعية/الأصناف العليا**، و**التخصيص/التعميم**، و**الفئات**، و**الوراثة**.</Ar>
 - A subclass entity **is** a superclass entity in a specific role, and it **inherits** all attributes and relationships.
+  <Ar>كيان الصنف الفرعي **هو** كيان الصنف الأعلى في دور محدد، وهو **يرث** كل السمات والعلاقات.</Ar>
 - Constraints: **disjoint (d) / overlapping (o)** and **total (double line) / partial (single line)**.
+  <Ar>القيود: **منفصل (d) / متداخل (o)** و**كلي (خط مزدوج) / جزئي (خط مفرد)**.</Ar>
 - **Lattices** allow **shared subclasses** (members of all superclasses, the intersection). **Categories** are members of **any** of their superclasses (the union).
+  <Ar>تسمح **الشبكات (Lattices)** **بالأصناف الفرعية المشتركة** (أعضاء في كل الأصناف العليا، أي التقاطع). أما **الفئات (Categories)** فأعضاؤها ينتمون إلى **أي** من أصنافها العليا (الاتحاد).</Ar>
 
 </Takeaways>
 
 ## Practice
 
-<Exercise title="Choose the constraints" level="medium">
+<Ar>تدريب</Ar>
+
+<Exercise title="Choose the constraints" titleAr="اختر القيود" level="medium">
 
 For each specialization, give disjoint/overlapping and total/partial: (a) ACCOUNT into SAVINGS and CHECKING, where every account is exactly one type; (b) PERSON into STUDENT and EMPLOYEE at a university; (c) EMPLOYEE into MANAGER.
+
+<Ar>لكل تخصيص، حدّد هل هو منفصل/متداخل وهل هو كلي/جزئي: (a) تخصيص ACCOUNT إلى SAVINGS و CHECKING، حيث يكون كل حساب من نوع واحد بالضبط؛ (b) تخصيص PERSON إلى STUDENT و EMPLOYEE في جامعة؛ (c) تخصيص EMPLOYEE إلى MANAGER.</Ar>
 
 <Solution>
 
 (a) **Disjoint, total**. (b) **Overlapping** (a student assistant is both) and **partial** (alumni and visitors are neither). (c) A single subclass, so disjointness doesn't apply; it is **partial**, since most employees aren't managers.
 
+<Ar>(a) **منفصل، كلي**. (b) **متداخل** (فالمساعد الطالب ينتمي إلى الاثنين) و**جزئي** (فالخريجون والزوار لا ينتمون إلى أي منهما). (c) صنف فرعي واحد، لذا لا ينطبق قيد الانفصال؛ وهو **جزئي**، لأن معظم الموظفين ليسوا مديرين.</Ar>
+
 </Solution>
 
 </Exercise>
 
-<Exercise title="Shared subclass or category?" level="medium">
+<Exercise title="Shared subclass or category?" titleAr="صنف فرعي مشترك أم فئة؟" level="medium">
 
 (a) TEACHING_ASSISTANT is both a GRAD_STUDENT and an EMPLOYEE. (b) A PAYER for a hospital bill is a PATIENT, an INSURANCE_COMPANY or an EMPLOYER. Which construct fits each?
+
+<Ar>(a) المعيد TEACHING_ASSISTANT طالب دراسات عليا GRAD_STUDENT وموظف EMPLOYEE معًا. (b) دافع فاتورة المستشفى PAYER إما مريض PATIENT أو شركة تأمين INSURANCE_COMPANY أو جهة عمل EMPLOYER. أي بنية تناسب كلًّا منهما؟</Ar>
 
 <Solution>
 
 (a) A **shared subclass**: every TA belongs to **both** superclasses (intersection) and inherits from both. (b) A **category**: each payer belongs to **one** of several different entity types (union).
+
+<Ar>(a) **صنف فرعي مشترك**: كل معيد (TA) ينتمي إلى **كلا** الصنفين الأعليين (التقاطع) ويرث منهما معًا. (b) **فئة**: كل دافع ينتمي إلى **واحد** من عدة أنواع كيانات مختلفة (الاتحاد).</Ar>
 
 </Solution>
 
@@ -185,39 +262,57 @@ For each specialization, give disjoint/overlapping and total/partial: (a) ACCOUN
   questions={[
     {
       q: "The relationship between a subclass and its superclass is called…",
+      qAr: "تُسمى العلاقة بين الصنف الفرعي وصنفه الأعلى…",
       options: ["HAS-A", "IS-A", "PART-OF", "USES"],
+      optionsAr: ["HAS-A", "IS-A", "PART-OF", "USES"],
       answer: 1,
-      explain: "A SECRETARY IS-A EMPLOYEE."
+      explain: "A SECRETARY IS-A EMPLOYEE.",
+      explainAr: "السكرتير SECRETARY هو (IS-A) موظف EMPLOYEE."
     },
     {
       q: "Defining subclasses from one entity type is…",
+      qAr: "تعريف أصناف فرعية انطلاقًا من نوع كيان واحد هو…",
       options: ["Generalization", "Specialization", "Aggregation", "Classification"],
+      optionsAr: ["التعميم", "التخصيص", "التجميع", "التصنيف"],
       answer: 1,
-      explain: "Specialization is top-down; generalization is bottom-up."
+      explain: "Specialization is top-down; generalization is bottom-up.",
+      explainAr: "التخصيص من الأعلى إلى الأسفل، والتعميم من الأسفل إلى الأعلى."
     },
     {
       q: "A 'd' in the specialization circle means…",
+      qAr: "الحرف «d» في دائرة التخصيص يعني…",
       options: ["Derived", "Disjoint: an entity is in at most one subclass", "Dependent", "Default"],
+      optionsAr: ["مشتق (Derived)", "منفصل (Disjoint): ينتمي الكيان إلى صنف فرعي واحد على الأكثر", "معتمد (Dependent)", "افتراضي (Default)"],
       answer: 1,
-      explain: "'o' would mean overlapping."
+      explain: "'o' would mean overlapping.",
+      explainAr: "أما الحرف «o» فيعني متداخل."
     },
     {
       q: "Total specialization is drawn with…",
+      qAr: "يُرسم التخصيص الكلي باستخدام…",
       options: ["A dashed line", "A double line from the superclass", "An arrow", "A ∪ symbol"],
+      optionsAr: ["خط متقطع", "خط مزدوج من الصنف الأعلى", "سهم", "الرمز ∪"],
       answer: 1,
-      explain: "Every superclass entity must belong to some subclass."
+      explain: "Every superclass entity must belong to some subclass.",
+      explainAr: "يجب أن ينتمي كل كيان في الصنف الأعلى إلى صنف فرعي ما."
     },
     {
       q: "A subclass with more than one superclass in a lattice is a…",
+      qAr: "الصنف الفرعي الذي له أكثر من صنف أعلى في الشبكة هو…",
       options: ["Category", "Shared subclass", "Weak entity", "Predicate-defined subclass"],
+      optionsAr: ["فئة", "صنف فرعي مشترك", "كيان ضعيف", "صنف فرعي معرَّف بشرط"],
       answer: 1,
-      explain: "Shared subclasses give multiple inheritance."
+      explain: "Shared subclasses give multiple inheritance.",
+      explainAr: "الأصناف الفرعية المشتركة تتيح الوراثة المتعددة."
     },
     {
       q: "A category (union type) member must belong to…",
+      qAr: "يجب أن ينتمي عضو الفئة (نوع الاتحاد) إلى…",
       options: ["All of its superclasses", "At least one of its superclasses", "Exactly two superclasses", "No superclass"],
+      optionsAr: ["كل أصنافها العليا", "صنف أعلى واحد على الأقل من أصنافها العليا", "صنفين أعليين بالضبط", "لا صنف أعلى"],
       answer: 1,
-      explain: "A category is a subset of the union of its superclasses."
+      explain: "A category is a subset of the union of its superclasses.",
+      explainAr: "الفئة مجموعة جزئية من اتحاد أصنافها العليا."
     }
   ]}
 />

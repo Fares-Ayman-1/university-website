@@ -1,7 +1,9 @@
 ---
 number: 2
 title: Software Processes
+titleAr: "عمليات البرمجيات"
 summary: The software process and its four activities, plan-driven vs. agile processes, and the three generic process models (waterfall, incremental development, and reuse-oriented engineering) with their advantages, problems and when to use each. Then coping with change through change avoidance and tolerance, prototyping, and incremental delivery.
+summaryAr: "عملية البرمجيات (software process) وأنشطتها الأربعة، والعمليات الموجَّهة بالخطة (plan-driven) مقابل العمليات الرشيقة (agile)، ونماذج العمليات العامة الثلاثة (نموذج الشلال، والتطوير التزايدي، والهندسة الموجَّهة لإعادة الاستخدام) مع مزاياها ومشكلاتها ومتى يُستخدم كل منها. ثم التعامل مع التغيير عبر تجنّب التغيير وتحمّله، وبناء النماذج الأولية (prototyping)، والتسليم التزايدي (incremental delivery)."
 topics: [Process activities, Process descriptions, Plan-driven vs agile, Waterfall model, Incremental development, Reuse-oriented SE, COTS, Coping with change, Prototyping, Incremental delivery]
 duration: 50 min study
 sources:
@@ -19,185 +21,279 @@ bookRefs:
 <Objectives>
 
 - Describe the four **fundamental process activities** and what a process description contains.
+  <Ar>وصف **أنشطة العملية الأساسية (fundamental process activities)** الأربعة، وما يحتويه وصف العملية.</Ar>
 - Distinguish **plan-driven** from **agile** processes.
+  <Ar>التمييز بين العمليات **الموجَّهة بالخطة (plan-driven)** والعمليات **الرشيقة (agile)**.</Ar>
 - Explain the **waterfall**, **incremental** and **reuse-oriented** models, with their pros, cons and when to use each.
+  <Ar>شرح نماذج **الشلال (waterfall)** و**التزايدي (incremental)** و**الموجَّه لإعادة الاستخدام (reuse-oriented)**، مع مزاياها وعيوبها ومتى يُستخدم كل منها.</Ar>
 - Explain **change avoidance** and **change tolerance**, and how **prototyping** and **incremental delivery** support them.
+  <Ar>شرح **تجنّب التغيير (change avoidance)** و**تحمّل التغيير (change tolerance)**، وكيف يدعمهما **بناء النماذج الأولية (prototyping)** و**التسليم التزايدي (incremental delivery)**.</Ar>
 
 </Objectives>
 
 ## The software process
 
-<Definition term="Software process">
+<Ar>عملية البرمجيات</Ar>
+
+<Definition term="Software process" termAr="عملية البرمجيات">
   A structured set of related activities that leads to the production of a software product.
+
+  <Ar>مجموعة منظَّمة من الأنشطة المترابطة تؤدي إلى إنتاج منتج برمجي.</Ar>
 </Definition>
 
 Every process includes four activities:
 
+<Ar>تتضمن كل عملية أربعة أنشطة:</Ar>
+
 <Steps>
 
 1. **Software specification**: define the functionality of the software and the constraints on its operation.
+   <Ar>**توصيف البرمجيات (Software specification)**: تحديد وظائف البرمجيات والقيود المفروضة على تشغيلها.</Ar>
 2. **Software design and implementation**: produce software that meets the specification.
+   <Ar>**تصميم البرمجيات وتنفيذها (design and implementation)**: إنتاج برمجيات تستوفي التوصيف.</Ar>
 3. **Software validation (testing)**: check that the software does what the customer wants.
+   <Ar>**التحقق من صلاحية البرمجيات (validation)، أي الاختبار**: التأكد من أن البرمجيات تفعل ما يريده العميل.</Ar>
 4. **Software evolution (maintenance)**: change the software to meet changing customer needs.
+   <Ar>**تطور البرمجيات (evolution)، أي الصيانة**: تعديل البرمجيات لتلبية احتياجات العميل المتغيرة.</Ar>
 
 </Steps>
 
 A **process description** also states the **order** of the activities, the **products** (outcomes) of each activity, the **roles** of the people involved (project manager, configuration manager, programmer…), and the **pre- and post-conditions** that hold before and after each activity.
 
+<Ar>ويحدد **وصف العملية (process description)** أيضًا **ترتيب** الأنشطة، و**نواتج** كل نشاط (مخرجاته)، و**أدوار** الأشخاص المشاركين (مدير المشروع، ومدير التهيئة (configuration manager)، والمبرمج…)، و**الشروط المسبقة واللاحقة (pre- and post-conditions)** التي تتحقق قبل كل نشاط وبعده.</Ar>
+
 ### Plan-driven vs. agile
 
-| Plan-driven | Agile |
+<Ar>الموجَّه بالخطة مقابل الرشيق</Ar>
+
+| Plan-driven <Ar>الموجَّه بالخطة (Plan-driven)</Ar> | Agile <Ar>الرشيق (Agile)</Ar> |
 |---|---|
-| All activities are **planned in advance**; progress is measured against the plan | Planning is **incremental**; it is easy to change the process as requirements change |
+| All activities are **planned in advance**; progress is measured against the plan <Ar>جميع الأنشطة **مخطط لها مسبقًا**، ويُقاس التقدم مقارنةً بالخطة</Ar> | Planning is **incremental**; it is easy to change the process as requirements change <Ar>التخطيط **تزايدي**، ومن السهل تغيير العملية مع تغيّر المتطلبات</Ar> |
 
 There is no right or wrong process. In practice you balance the two, and most large systems combine elements of all three models below.
 
+<Ar>لا توجد عملية صحيحة وأخرى خاطئة. فعمليًا توازن بين الاثنين، ومعظم الأنظمة الكبيرة تجمع عناصر من النماذج الثلاثة الآتية جميعها.</Ar>
+
 ## The waterfall model
 
-<SlideFigure page={10} caption="The waterfall model: requirements definition → system and software design → implementation and unit testing → integration and system testing → operation and maintenance." />
+<Ar>نموذج الشلال</Ar>
+
+<SlideFigure page={10} caption="The waterfall model: requirements definition → system and software design → implementation and unit testing → integration and system testing → operation and maintenance." captionAr="نموذج الشلال (waterfall): تعريف المتطلبات ← تصميم النظام والبرمجيات ← التنفيذ واختبار الوحدات ← التكامل واختبار النظام ← التشغيل والصيانة." />
 
 A **plan-driven** model with **separate, distinct phases**: each phase must finish (and be signed off) before the next starts.
 
+<Ar>نموذج **موجَّه بالخطة (plan-driven)** ذو **مراحل منفصلة ومتمايزة**: يجب أن تنتهي كل مرحلة (ويُصادَق عليها) قبل أن تبدأ المرحلة التالية.</Ar>
+
 <Grid cols={2}>
-  <Card title="Advantages" tag="+">
+  <Card title="Advantages" titleAr="المزايا" tag="+">
     Simple to understand and use. Easy to manage: each phase produces documents, so progress is <strong>visible</strong> against the plan. Phases are clearly defined and done one at a time.
+
+    <Ar>بسيط الفهم والاستخدام. سهل الإدارة: كل مرحلة تُنتج وثائق، فيكون التقدم <strong>مرئيًا</strong> مقارنةً بالخطة. والمراحل محددة بوضوح وتُنفَّذ واحدة تلو الأخرى.</Ar>
   </Card>
-  <Card title="Disadvantages" tag="−">
+  <Card title="Disadvantages" titleAr="العيوب" tag="−">
     Producing and approving documents is costly. <strong>No working software until late</strong> in the project, so the final product takes a long time. Requirements can't change once in the contract. <strong>High risk</strong>.
+
+    <Ar>إنتاج الوثائق واعتمادها مكلف. <strong>لا توجد برمجيات عاملة إلا في مرحلة متأخرة</strong> من المشروع، لذا يستغرق الوصول إلى المنتج النهائي وقتًا طويلًا. ولا يمكن تغيير المتطلبات بعد إدراجها في العقد. <strong>مخاطرة عالية</strong>.</Ar>
   </Card>
 </Grid>
 
 **Use it only when** the requirements are **well understood** from the start, are **unlikely to change**, and delivery time isn't critical. It also suits **large systems-engineering projects** developed at several sites, where the plan coordinates the work.
 
+<Ar>**استخدمه فقط عندما** تكون المتطلبات **مفهومة جيدًا** منذ البداية، و**من غير المرجح أن تتغير**، ولا يكون وقت التسليم حرجًا. ويناسب أيضًا **مشاريع هندسة النظم الكبيرة** التي تُطوَّر في عدة مواقع، حيث تنسّق الخطة العمل.</Ar>
+
 ## Incremental development
 
-<SlideFigure page={13} caption="Incremental development: specification, development and validation run concurrently, producing an initial version, intermediate versions and the final version." />
+<Ar>التطوير التزايدي</Ar>
+
+<SlideFigure page={13} caption="Incremental development: specification, development and validation run concurrently, producing an initial version, intermediate versions and the final version." captionAr="التطوير التزايدي (incremental development): يجري التوصيف والتطوير والتحقق من الصلاحية بالتزامن، فتُنتَج نسخة أولية، ثم نسخ وسيطة، ثم النسخة النهائية." />
 
 The system is developed as a **series of versions (increments)**, each adding functionality to the previous one. You build an initial implementation, show it to users, and evolve it through several versions. Specification, development and validation are **interleaved**. It may be plan-driven or agile.
 
-| Benefits (vs. waterfall) | Problems |
-|---|---|
-| **Cheaper to change**: much less analysis and documentation to redo | **The process isn't visible**: managers lack regular deliverables, and documenting every version isn't cost-effective |
-| **Faster delivery** of useful software, even before all functions exist | **The structure degrades** as increments are added, unless time and money go into **refactoring** |
-| **Easier customer feedback**: only the current increment must change if something is wrong | |
+<Ar>يُطوَّر النظام في صورة **سلسلة من النسخ (increments)**، تضيف كل منها وظائف إلى النسخة السابقة. تبني تنفيذًا أوليًا، وتعرضه على المستخدمين، وتطوّره عبر عدة نسخ. ويكون التوصيف والتطوير والتحقق من الصلاحية **متداخلة**. وقد يكون موجَّهًا بالخطة أو رشيقًا.</Ar>
 
-<SlideFigure page={18} caption="Waterfall delivers value only at the end, with risk growing until release. Agile, incremental delivery releases value repeatedly and keeps risk low." />
+| Benefits (vs. waterfall) <Ar>الفوائد (مقارنةً بالشلال)</Ar> | Problems <Ar>المشكلات</Ar> |
+|---|---|
+| **Cheaper to change**: much less analysis and documentation to redo <Ar>**التغيير أقل تكلفة**: قدر أقل بكثير من التحليل والتوثيق يلزم إعادته</Ar> | **The process isn't visible**: managers lack regular deliverables, and documenting every version isn't cost-effective <Ar>**العملية غير مرئية**: يفتقر المديرون إلى مُخرَجات منتظمة، وتوثيق كل نسخة غير مجدٍ من حيث التكلفة</Ar> |
+| **Faster delivery** of useful software, even before all functions exist <Ar>**تسليم أسرع** لبرمجيات مفيدة، حتى قبل اكتمال جميع الوظائف</Ar> | **The structure degrades** as increments are added, unless time and money go into **refactoring** <Ar>**تتدهور البنية** مع إضافة الزيادات، ما لم يُخصَّص وقت ومال **لإعادة الهيكلة (refactoring)**</Ar> |
+| **Easier customer feedback**: only the current increment must change if something is wrong <Ar>**الحصول على ملاحظات العميل أسهل**: لا يلزم تغيير إلا الزيادة الحالية إذا كان هناك خطأ</Ar> | |
+
+<SlideFigure page={18} caption="Waterfall delivers value only at the end, with risk growing until release. Agile, incremental delivery releases value repeatedly and keeps risk low." captionAr="يقدّم نموذج الشلال القيمة في النهاية فقط، مع تزايد المخاطر حتى الإصدار. أما التسليم التزايدي الرشيق فيقدّم القيمة مرارًا ويُبقي المخاطر منخفضة." />
 
 ## Reuse-oriented software engineering
 
+<Ar>هندسة البرمجيات الموجَّهة لإعادة الاستخدام</Ar>
+
 This approach assumes many **reusable components** exist. Development focuses on **integrating** them rather than building from scratch.
 
-<SlideFigure page={20} caption="Reuse-oriented process: requirements specification → component analysis → requirements modification → system design with reuse → development and integration → system validation." />
+<Ar>يفترض هذا النهج وجود كثير من **المكوّنات القابلة لإعادة الاستخدام (reusable components)**، فيركّز التطوير على **دمجها (integrating)** بدلًا من البناء من الصفر.</Ar>
+
+<SlideFigure page={20} caption="Reuse-oriented process: requirements specification → component analysis → requirements modification → system design with reuse → development and integration → system validation." captionAr="العملية الموجَّهة لإعادة الاستخدام (reuse-oriented): توصيف المتطلبات ← تحليل المكوّنات ← تعديل المتطلبات ← تصميم النظام مع إعادة الاستخدام ← التطوير والتكامل ← التحقق من صلاحية النظام." />
 
 Three kinds of reusable component:
 
-1. **Stand-alone application systems** (**COTS**: commercial off-the-shelf), configured for a particular environment.
-2. **Collections of objects** developed as a package for a component framework such as .NET or J2EE.
-3. **Web services** built to service standards and available for remote invocation.
+<Ar>ثلاثة أنواع من المكوّنات القابلة لإعادة الاستخدام:</Ar>
 
-| Advantages | Disadvantages |
+1. **Stand-alone application systems** (**COTS**: commercial off-the-shelf), configured for a particular environment.
+   <Ar>**أنظمة التطبيقات المستقلة (Stand-alone application systems)** (**المكوّنات الجاهزة (COTS)**: منتجات تجارية جاهزة)، تُهيَّأ لبيئة معيّنة.</Ar>
+2. **Collections of objects** developed as a package for a component framework such as .NET or J2EE.
+   <Ar>**مجموعات من الكائنات (objects)** تُطوَّر كحزمة لإطار عمل مكوّنات (component framework) مثل `.NET` أو J2EE.</Ar>
+3. **Web services** built to service standards and available for remote invocation.
+   <Ar>**خدمات الويب (Web services)** المبنية وفق معايير الخدمات والمتاحة للاستدعاء عن بُعد.</Ar>
+
+| Advantages <Ar>المزايا</Ar> | Disadvantages <Ar>العيوب</Ar> |
 |---|---|
-| Less software to develop, so **lower cost and risk** | **Loss of control** over how the reused parts evolve |
-| **Faster delivery** | **Requirements compromises** are inevitable, so the system may not fully meet users' needs |
+| Less software to develop, so **lower cost and risk** <Ar>برمجيات أقل يلزم تطويرها، ومن ثَمّ **تكلفة ومخاطر أقل**</Ar> | **Loss of control** over how the reused parts evolve <Ar>**فقدان السيطرة** على طريقة تطور الأجزاء المُعاد استخدامها</Ar> |
+| **Faster delivery** <Ar>**تسليم أسرع**</Ar> | **Requirements compromises** are inevitable, so the system may not fully meet users' needs <Ar>**التنازلات في المتطلبات** أمر لا مفر منه، لذا قد لا يلبي النظام احتياجات المستخدمين بالكامل</Ar> |
 
 ## Coping with change
 
+<Ar>التعامل مع التغيير</Ar>
+
 Change is **inevitable** in large projects: the business changes, new technologies appear, and platforms change. Change causes **rework** (for example, re-analyzing requirements) on top of implementing new functions. Two approaches reduce rework costs:
 
-| Approach | Idea | Supported by |
+<Ar>التغيير **حتمي** في المشاريع الكبيرة: فبيئة العمل تتغير، وتظهر تقنيات جديدة، وتتغير المنصات. ويسبب التغيير **إعادة العمل (rework)** (مثل إعادة تحليل المتطلبات) إضافةً إلى تنفيذ الوظائف الجديدة. ويوجد نهجان لتقليل تكاليف إعادة العمل:</Ar>
+
+| Approach <Ar>النهج</Ar> | Idea <Ar>الفكرة</Ar> | Supported by <Ar>يدعمه</Ar> |
 |---|---|---|
-| **Change avoidance** | Predict changes **before** significant rework is needed | Prototyping |
-| **Change tolerance** | Design the process so changes are **cheap** to absorb | Incremental delivery (it supports both) |
+| **Change avoidance** <Ar>**تجنّب التغيير (Change avoidance)**</Ar> | Predict changes **before** significant rework is needed <Ar>توقّع التغييرات **قبل** الحاجة إلى إعادة عمل كبيرة</Ar> | Prototyping <Ar>بناء النماذج الأولية (Prototyping)</Ar> |
+| **Change tolerance** <Ar>**تحمّل التغيير (Change tolerance)**</Ar> | Design the process so changes are **cheap** to absorb <Ar>تصميم العملية بحيث يكون استيعاب التغييرات **قليل التكلفة**</Ar> | Incremental delivery (it supports both) <Ar>التسليم التزايدي (Incremental delivery)، ويدعم الاثنين</Ar> |
 
 ### Prototyping
 
+<Ar>بناء النماذج الأولية</Ar>
+
 A **prototype** is an initial version of the system, built quickly to demonstrate concepts, try design options, and learn more about the problem. It helps in:
 
-- **requirements engineering**, to elicit and validate requirements, since users get new ideas;
-- **design**, to explore options and develop the user interface, for example checking that a database design supports the most common queries efficiently.
+<Ar>**النموذج الأولي (prototype)** نسخة أولية من النظام تُبنى بسرعة لعرض المفاهيم، وتجربة خيارات التصميم، ومعرفة المزيد عن المشكلة. ويساعد في:</Ar>
 
-<SlideFigure page={28} caption="Prototype development: establish objectives → define functionality → develop → evaluate, producing a plan, an outline definition, an executable prototype and an evaluation report." />
+- **requirements engineering**, to elicit and validate requirements, since users get new ideas;
+  <Ar>**هندسة المتطلبات (requirements engineering)**، لاستنباط المتطلبات والتحقق من صلاحيتها، إذ يكتسب المستخدمون أفكارًا جديدة؛</Ar>
+- **design**, to explore options and develop the user interface, for example checking that a database design supports the most common queries efficiently.
+  <Ar>**التصميم**، لاستكشاف الخيارات وتطوير واجهة المستخدم، مثل التحقق من أن تصميم قاعدة البيانات يدعم الاستعلامات الأكثر شيوعًا بكفاءة.</Ar>
+
+<SlideFigure page={28} caption="Prototype development: establish objectives → define functionality → develop → evaluate, producing a plan, an outline definition, an executable prototype and an evaluation report." captionAr="تطوير النموذج الأولي: تحديد الأهداف ← تعريف الوظائف ← التطوير ← التقييم، مع إنتاج خطة، وتعريف مبدئي، ونموذج أولي قابل للتنفيذ، وتقرير تقييم." />
 
 A prototype focuses on areas that are **not well understood** and on **functional** requirements. It may leave out error checking and non-functional qualities such as reliability and security.
 
-<Callout type="warning" title="Throw prototypes away">
+<Ar>يركّز النموذج الأولي على الجوانب **غير المفهومة جيدًا** وعلى المتطلبات **الوظيفية (functional)**. وقد يُغفل التحقق من الأخطاء والخصائص غير الوظيفية (non-functional) مثل الموثوقية والأمان.</Ar>
+
+<Callout type="warning" title="Throw prototypes away" titleAr="تخلَّص من النماذج الأولية">
   Don't turn a prototype into the production system. It may be impossible to tune it to meet non-functional requirements; it is usually <strong>undocumented</strong>; its structure has <strong>degraded</strong> through rapid change; and it won't meet the organization's quality standards.
+
+  <Ar>لا تحوّل النموذج الأولي إلى نظام الإنتاج. فقد يستحيل ضبطه ليستوفي المتطلبات غير الوظيفية (non-functional)، وهو عادةً <strong>غير موثَّق</strong>، وبنيته <strong>متدهورة</strong> بسبب التغييرات السريعة، ولن يستوفي معايير الجودة في المؤسسة.</Ar>
 </Callout>
 
 ### Incremental delivery
 
+<Ar>التسليم التزايدي</Ar>
+
 Instead of one delivery, the system is **delivered and deployed** in increments. Requirements are **prioritized**, and the highest-priority ones come first. Each new increment is **integrated** with the existing ones.
 
-<SlideFigure page={33} caption="Incremental delivery: define outline requirements, assign them to increments, design the architecture, then develop, validate, integrate, validate and deploy each increment until the system is complete." />
+<Ar>بدلًا من تسليم واحد، **يُسلَّم النظام ويُنشَر (deployed)** على زيادات (increments). و**تُرتَّب المتطلبات حسب الأولوية**، فتأتي الأعلى أولوية أولًا. و**تُدمَج** كل زيادة جديدة مع الزيادات الموجودة.</Ar>
 
-| Incremental **development** | Incremental **delivery** |
+<SlideFigure page={33} caption="Incremental delivery: define outline requirements, assign them to increments, design the architecture, then develop, validate, integrate, validate and deploy each increment until the system is complete." captionAr="التسليم التزايدي: تحديد المتطلبات المبدئية، وتوزيعها على الزيادات، وتصميم المعمارية، ثم تطوير كل زيادة والتحقق من صلاحيتها ودمجها والتحقق من صلاحيتها ونشرها حتى يكتمل النظام." />
+
+| Incremental **development** <Ar>**التطوير** التزايدي</Ar> | Incremental **delivery** <Ar>**التسليم** التزايدي</Ar> |
 |---|---|
-| Each increment is evaluated by customers **without** deploying it | Each increment is **deployed** for real use by end users |
-| The normal approach in agile methods | Gives a more realistic evaluation of practical use |
-| | Hard for **replacement systems**, because early increments do less than the old system |
+| Each increment is evaluated by customers **without** deploying it <Ar>يقيّم العملاء كل زيادة **دون** نشرها</Ar> | Each increment is **deployed** for real use by end users <Ar>**تُنشَر** كل زيادة للاستخدام الفعلي من قِبل المستخدمين النهائيين</Ar> |
+| The normal approach in agile methods <Ar>النهج المعتاد في الأساليب الرشيقة (agile)</Ar> | Gives a more realistic evaluation of practical use <Ar>يعطي تقييمًا أكثر واقعية للاستخدام العملي</Ar> |
+| | Hard for **replacement systems**, because early increments do less than the old system <Ar>صعب في **الأنظمة البديلة (replacement systems)**، لأن الزيادات الأولى تؤدي وظائف أقل من النظام القديم</Ar> |
 
 **Advantages of incremental delivery**: customers get value from the first increment, which meets their most critical needs; early increments act as prototypes but are part of the real system; the most important services are delivered first and so are **tested the most**; and the overall risk of failure is lower.
 
+<Ar>**مزايا التسليم التزايدي**: يحصل العملاء على قيمة من الزيادة الأولى التي تلبي أهم احتياجاتهم؛ وتعمل الزيادات الأولى كنماذج أولية لكنها جزء من النظام الحقيقي؛ وتُسلَّم الخدمات الأهم أولًا فتكون **الأكثر اختبارًا**؛ ويكون خطر الإخفاق الإجمالي أقل.</Ar>
+
 **Problems**: it is hard to identify the **common facilities** that all increments need when requirements aren't detailed until each increment is built. And there is no complete specification until the last increment, which conflicts with contracts that require one up front (as in many government agencies).
+
+<Ar>**المشكلات**: يصعب تحديد **المرافق المشتركة (common facilities)** التي تحتاجها جميع الزيادات عندما لا تُفصَّل المتطلبات إلا عند بناء كل زيادة. كما لا يوجد توصيف كامل حتى الزيادة الأخيرة، وهذا يتعارض مع العقود التي تشترط توصيفًا كاملًا مسبقًا (كما في كثير من الجهات الحكومية).</Ar>
 
 <Takeaways>
 
 - Every process has **specification, design and implementation, validation and evolution**.
+  <Ar>كل عملية تتضمن **التوصيف، والتصميم والتنفيذ، والتحقق من الصلاحية، والتطور**.</Ar>
 - **Waterfall**: plan-driven, visible and easy to manage, but inflexible and risky. Use it for stable, well-understood requirements.
+  <Ar>**الشلال (Waterfall)**: موجَّه بالخطة، وتقدّمه مرئي وإدارته سهلة، لكنه غير مرن وعالي المخاطر. استخدمه للمتطلبات المستقرة والمفهومة جيدًا.</Ar>
 - **Incremental**: cheaper change, earlier value and feedback, but poor visibility and degrading structure.
+  <Ar>**التزايدي (Incremental)**: تغيير أقل تكلفة، وقيمة وملاحظات أبكر، لكن مع ضعف وضوح التقدم وتدهور البنية.</Ar>
 - **Reuse-oriented**: integrate COTS, framework components and web services. It is faster and cheaper, but you lose control and must compromise.
+  <Ar>**الموجَّه لإعادة الاستخدام (Reuse-oriented)**: دمج المكوّنات الجاهزة (COTS) ومكوّنات أطر العمل وخدمات الويب. وهو أسرع وأرخص، لكنك تفقد السيطرة وتضطر إلى تقديم تنازلات.</Ar>
 - Reduce rework through **change avoidance** (prototyping) and **change tolerance** (incremental delivery). Throw prototypes away.
+  <Ar>قلّل إعادة العمل عبر **تجنّب التغيير** (بناء النماذج الأولية) و**تحمّل التغيير** (التسليم التزايدي). وتخلَّص من النماذج الأولية.</Ar>
 
 </Takeaways>
 
 ## Practice
 
-<Exercise title="Pick the process model" level="medium">
+<Ar>تدريب</Ar>
+
+<Exercise title="Pick the process model" titleAr="اختر نموذج العملية" level="medium">
 
 Choose a suitable process model for each project and justify it:
 
+<Ar>اختر نموذج عملية مناسبًا لكل مشروع، وبرّر اختيارك:</Ar>
+
 1. An aircraft flight-control program with stable, fully specified requirements that must pass strict certification.
+   <Ar>برنامج للتحكم في طيران طائرة، متطلباته مستقرة وموصَّفة بالكامل، ويجب أن يجتاز اعتمادًا (certification) صارمًا.</Ar>
 2. A startup's web app whose features change every few weeks based on user feedback.
+   <Ar>تطبيق ويب لشركة ناشئة تتغير ميزاته كل بضعة أسابيع بناءً على ملاحظات المستخدمين.</Ar>
 3. A company HR system that can be assembled mostly from an existing payroll package and web services.
+   <Ar>نظام موارد بشرية (HR) لشركة يمكن تجميعه في معظمه من حزمة رواتب موجودة وخدمات ويب.</Ar>
 
 <Solution>
 
 1. **Waterfall** (plan-driven): the requirements are well understood and stable, and certification needs complete documentation of each phase.
+   <Ar>**الشلال (Waterfall)** (موجَّه بالخطة): المتطلبات مفهومة جيدًا ومستقرة، والاعتماد يتطلب توثيقًا كاملًا لكل مرحلة.</Ar>
 2. **Incremental development**, delivered with an agile approach: requirements change constantly, and frequent feedback is essential.
+   <Ar>**التطوير التزايدي (Incremental development)** مع التسليم بنهج رشيق (agile): المتطلبات تتغير باستمرار، والملاحظات المتكررة ضرورية.</Ar>
 3. **Reuse-oriented**: the system is mostly integration of COTS components and web services, which is faster and cheaper. Expect some requirements compromises.
+   <Ar>**الموجَّه لإعادة الاستخدام (Reuse-oriented)**: النظام في معظمه دمج لمكوّنات جاهزة (COTS) وخدمات ويب، وهذا أسرع وأرخص. وتوقّع بعض التنازلات في المتطلبات.</Ar>
 
 </Solution>
 
 </Exercise>
 
-<Exercise title="Plan-driven or agile?" level="easy">
+<Exercise title="Plan-driven or agile?" titleAr="موجَّه بالخطة أم رشيق؟" level="easy">
 
 Classify each statement:
+
+<Ar>صنّف كل عبارة:</Ar>
 
 a) Every requirement must be approved and documented before coding starts.
 b) A small team releases a mobile app update every two weeks based on feedback.
 c) A government project requires fixed deadlines and complete documentation for all stages.
 
+<Ar>أ) يجب اعتماد كل متطلب وتوثيقه قبل بدء كتابة الشيفرة. ب) فريق صغير يُصدر تحديثًا لتطبيق جوّال كل أسبوعين بناءً على الملاحظات. ج) مشروع حكومي يشترط مواعيد نهائية ثابتة وتوثيقًا كاملًا لجميع المراحل.</Ar>
+
 <Solution>
 
 a) Plan-driven. b) Agile. c) Plan-driven.
+
+<Ar>أ) موجَّه بالخطة (Plan-driven). ب) رشيق (Agile). ج) موجَّه بالخطة.</Ar>
 
 </Solution>
 
 </Exercise>
 
-<Exercise title="Why not ship the prototype?" level="easy">
+<Exercise title="Why not ship the prototype?" titleAr="لماذا لا نسلّم النموذج الأولي؟" level="easy">
 
 A manager wants to ship the throw-away prototype "since it already works". Give three reasons against it.
+
+<Ar>يريد مدير تسليم النموذج الأولي المُعَد للتخلص منه (throw-away prototype) «لأنه يعمل بالفعل». اذكر ثلاثة أسباب ضد ذلك.</Ar>
 
 <Solution>
 
 Any three of the following:
 
+<Ar>أي ثلاثة مما يلي:</Ar>
+
 - It is probably impossible to tune it to meet non-functional requirements such as performance, security and reliability.
+  <Ar>من المرجح أنه يستحيل ضبطه ليستوفي المتطلبات غير الوظيفية (non-functional) مثل الأداء والأمان والموثوقية.</Ar>
 - It is usually undocumented.
+  <Ar>هو عادةً غير موثَّق.</Ar>
 - Its structure has degraded through rapid change, so maintaining it would be costly.
+  <Ar>تدهورت بنيته بسبب التغييرات السريعة، لذا ستكون صيانته مكلفة.</Ar>
 - It doesn't meet the organization's quality standards.
+  <Ar>لا يستوفي معايير الجودة في المؤسسة.</Ar>
 
 </Solution>
 
@@ -207,39 +303,57 @@ Any three of the following:
   questions={[
     {
       q: "A major disadvantage of the waterfall model is that…",
+      qAr: "من العيوب الرئيسية لنموذج الشلال أنه…",
       options: ["It allows customer changes at any time", "It delivers working software early", "No working software is produced until late stages", "It is only used in agile projects"],
+      optionsAr: ["يسمح بتغييرات العميل في أي وقت", "يسلّم برمجيات عاملة مبكرًا", "لا يُنتج برمجيات عاملة إلا في المراحل المتأخرة", "يُستخدم فقط في المشاريع الرشيقة"],
       answer: 2,
-      explain: "Phases run in sequence, so software appears only near the end."
+      explain: "Phases run in sequence, so software appears only near the end.",
+      explainAr: "تُنفَّذ المراحل بالتتابع، لذا لا تظهر البرمجيات إلا قرب النهاية."
     },
     {
       q: "A common problem with incremental development is…",
+      qAr: "من المشكلات الشائعة في التطوير التزايدي…",
       options: ["Lack of visibility of progress", "Low customer involvement", "Too much documentation", "No feedback from users"],
+      optionsAr: ["ضعف وضوح التقدم", "قلة مشاركة العميل", "كثرة التوثيق", "غياب ملاحظات المستخدمين"],
       answer: 0,
-      explain: "Managers lack regular deliverables, and documenting every version isn't cost-effective."
+      explain: "Managers lack regular deliverables, and documenting every version isn't cost-effective.",
+      explainAr: "يفتقر المديرون إلى مُخرَجات منتظمة، وتوثيق كل نسخة غير مجدٍ من حيث التكلفة."
     },
     {
       q: "Reuse-oriented software engineering focuses on…",
+      qAr: "تركّز هندسة البرمجيات الموجَّهة لإعادة الاستخدام على…",
       options: ["Creating every component from scratch", "Integrating existing components", "Avoiding testing", "Throwing away old systems"],
+      optionsAr: ["إنشاء كل مكوّن من الصفر", "دمج المكوّنات الموجودة", "تجنّب الاختبار", "التخلص من الأنظمة القديمة"],
       answer: 1,
-      explain: "It integrates COTS systems, framework components and web services."
+      explain: "It integrates COTS systems, framework components and web services.",
+      explainAr: "تدمج أنظمة COTS الجاهزة ومكوّنات أطر العمل وخدمات الويب."
     },
     {
       q: "Change avoidance means…",
+      qAr: "تجنّب التغيير (change avoidance) يعني…",
       options: ["Ignoring customer change requests", "Predicting possible changes early to reduce rework", "Refusing to update software", "Changing requirements constantly"],
+      optionsAr: ["تجاهل طلبات التغيير من العميل", "توقّع التغييرات المحتملة مبكرًا لتقليل إعادة العمل", "رفض تحديث البرمجيات", "تغيير المتطلبات باستمرار"],
       answer: 1,
-      explain: "A prototype, for example, reveals needed changes before costly rework."
+      explain: "A prototype, for example, reveals needed changes before costly rework.",
+      explainAr: "النموذج الأولي مثلًا يكشف التغييرات اللازمة قبل إعادة العمل المكلفة."
     },
     {
       q: "Which supports BOTH change avoidance and change tolerance?",
+      qAr: "أيٌّ مما يلي يدعم تجنّب التغيير وتحمّل التغيير معًا؟",
       options: ["System prototyping", "Incremental delivery", "The waterfall model", "Throw-away prototypes"],
+      optionsAr: ["بناء النماذج الأولية للنظام", "التسليم التزايدي", "نموذج الشلال", "النماذج الأولية المُعَدة للتخلص منها"],
       answer: 1,
-      explain: "Increments get early feedback (avoidance), and later increments absorb changes cheaply (tolerance)."
+      explain: "Increments get early feedback (avoidance), and later increments absorb changes cheaply (tolerance).",
+      explainAr: "تحصل الزيادات على ملاحظات مبكرة (التجنّب)، وتستوعب الزيادات اللاحقة التغييرات بتكلفة قليلة (التحمّل)."
     },
     {
       q: "When is the waterfall model appropriate?",
+      qAr: "متى يكون نموذج الشلال مناسبًا؟",
       options: ["Requirements are unclear and changing", "Requirements are well understood and stable", "Delivery must be as fast as possible", "The customer wants to change features weekly"],
+      optionsAr: ["عندما تكون المتطلبات غير واضحة ومتغيرة", "عندما تكون المتطلبات مفهومة جيدًا ومستقرة", "عندما يجب أن يكون التسليم بأسرع ما يمكن", "عندما يريد العميل تغيير الميزات أسبوعيًا"],
       answer: 1,
-      explain: "It is plan-driven, so it needs stable, well-understood requirements."
+      explain: "It is plan-driven, so it needs stable, well-understood requirements.",
+      explainAr: "هو موجَّه بالخطة، لذا يحتاج إلى متطلبات مستقرة ومفهومة جيدًا."
     }
   ]}
 />

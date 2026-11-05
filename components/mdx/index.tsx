@@ -9,6 +9,7 @@ import { SlideFigure } from "./SlideFigure";
 import { Tree } from "./Tree";
 import { WeightedGraph } from "./WeightedGraph";
 import { AgentLoop } from "./AgentLoop";
+import { Ar, ArInline } from "./Arabic";
 
 type Context = { subject: string; collection: Collection; slug: string };
 
@@ -33,6 +34,8 @@ export function createMdxComponents(context: Context): MDXComponents {
     Tree,
     WeightedGraph,
     AgentLoop,
+    Ar,
+    ArInline,
     SlideFigure: (props: Omit<React.ComponentProps<typeof SlideFigure>, "context">) => (
       <SlideFigure {...props} context={context} />
     ),

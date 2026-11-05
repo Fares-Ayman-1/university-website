@@ -1,7 +1,9 @@
 ---
 number: 4
 title: Archiving and Compression
+titleAr: "الأرشفة والضغط"
 summary: Why and how to bundle and shrink files on Linux. Covers gzip/gunzip, bzip2/bunzip2 and xz, the difference between compressing and archiving, tar's create, list and extract modes with gzip, bzip2 and xz compression, appending to an archive, and zip/unzip for cross-platform archives.
+summaryAr: "لماذا وكيف تجمع الملفات وتقلّص حجمها في لينكس (Linux). يتناول gzip/gunzip و bzip2/bunzip2 و xz، والفرق بين الضغط (compression) والأرشفة (archiving)، وأوضاع tar للإنشاء والعرض والاستخراج مع الضغط بـ gzip و bzip2 و xz، والإلحاق بأرشيف موجود، و zip/unzip للأرشيفات المتوافقة مع مختلف الأنظمة (cross-platform)."
 kind: practical
 topics: [Compression vs archiving, gzip / gunzip, bzip2 / bunzip2, xz, tar create / list / extract, tar with -z -j -J, tar -r, zip / unzip]
 duration: 45 min hands-on
@@ -17,27 +19,40 @@ bookRefs:
 <Objectives>
 
 - Explain **why** files are archived and compressed, and the difference between the two.
+  <Ar>شرح **سبب** أرشفة الملفات (archiving) وضغطها (compression)، والفرق بين الاثنين.</Ar>
 - Compress and decompress single files with **gzip**, **bzip2** and **xz**.
+  <Ar>ضغط الملفات المفردة وفك ضغطها باستخدام **gzip** و**bzip2** و**xz**.</Ar>
 - Use **tar** in its three modes (**create**, **list**, **extract**), with and without compression, and **append** to an archive.
+  <Ar>استخدام **tar** بأوضاعه الثلاثة (**الإنشاء** و**العرض** و**الاستخراج**)، مع الضغط ودونه، و**الإلحاق (append)** بأرشيف.</Ar>
 - Create, list and extract **zip** archives.
+  <Ar>إنشاء أرشيفات **zip** وعرض محتوياتها واستخراجها.</Ar>
 
 </Objectives>
 
 ## Why archive and compress?
 
-- **Transfer**: smaller files move faster.
-- **Convenience**: one bundle is easier to send than hundreds of files.
-- **Space**: archives and compressed files take less room, which matters on USB drives.
+<Ar>لماذا نؤرشف ونضغط؟</Ar>
 
-| Operation | Does | Tools |
+- **Transfer**: smaller files move faster.
+  <Ar>**النقل**: الملفات الأصغر تنتقل أسرع.</Ar>
+- **Convenience**: one bundle is easier to send than hundreds of files.
+  <Ar>**السهولة**: إرسال حزمة واحدة أسهل من إرسال مئات الملفات.</Ar>
+- **Space**: archives and compressed files take less room, which matters on USB drives.
+  <Ar>**المساحة**: الأرشيفات والملفات المضغوطة تشغل مساحة أقل، وهذا مهم في وحدات تخزين USB.</Ar>
+
+| Operation <Ar>العملية</Ar> | Does <Ar>ماذا تفعل</Ar> | Tools <Ar>الأدوات</Ar> |
 |---|---|---|
-| **Compression** | Makes **one** file smaller | `gzip`, `bzip2`, `xz` |
-| **Archiving** | Combines **many** files and directories into **one** file | `tar` |
-| **Both** | Bundles and compresses in one go | `tar -z/-j/-J`, `zip` |
+| **Compression** <Ar>**الضغط (Compression)**</Ar> | Makes **one** file smaller <Ar>تصغّر حجم ملف **واحد**</Ar> | `gzip`, `bzip2`, `xz` |
+| **Archiving** <Ar>**الأرشفة (Archiving)**</Ar> | Combines **many** files and directories into **one** file <Ar>تجمع ملفات ومجلدات **كثيرة** في ملف **واحد**</Ar> | `tar` |
+| **Both** <Ar>**كلاهما**</Ar> | Bundles and compresses in one go <Ar>تجمع وتضغط في خطوة واحدة</Ar> | `tar -z/-j/-J`, `zip` |
 
 Compression is **lossless**: decompressing gives back the exact original. Text compresses very well, while already-compressed media (JPEG, MP4) barely shrinks.
 
+<Ar>الضغط هنا **بلا فقدان (lossless)**: فك الضغط يعيد الأصل كما هو تمامًا. النصوص تنضغط جيدًا جدًا، بينما الوسائط المضغوطة أصلًا (JPEG و MP4) بالكاد يصغر حجمها.</Ar>
+
 ## gzip and bzip2
+
+<Ar>الأداتان gzip و bzip2</Ar>
 
 ```bash title="Terminal"
 cp /usr/share/dict/words .      # a large text file to practise on
@@ -51,35 +66,43 @@ bzip2 words                     # → words.bz2 (usually smaller than .gz, but s
 bunzip2 words.bz2               # → words
 ```
 
-| Tool | Extension | Compress | Decompress | Character |
+| Tool <Ar>الأداة</Ar> | Extension <Ar>الامتداد</Ar> | Compress <Ar>الضغط</Ar> | Decompress <Ar>فك الضغط</Ar> | Character <Ar>الخصائص</Ar> |
 |---|---|---|---|---|
-| **gzip** | `.gz` | `gzip file` | `gunzip file.gz` | Fast and universal |
-| **bzip2** | `.bz2` | `bzip2 file` | `bunzip2 file.bz2` | Better ratio, slower |
-| **xz** | `.xz` | `xz file` | `unxz file.xz` | Best ratio, slowest to compress |
+| **gzip** <Ar>الأداة **gzip**</Ar> | `.gz` | `gzip file` | `gunzip file.gz` | Fast and universal <Ar>سريعة ومنتشرة في كل مكان</Ar> |
+| **bzip2** <Ar>الأداة **bzip2**</Ar> | `.bz2` | `bzip2 file` | `bunzip2 file.bz2` | Better ratio, slower <Ar>نسبة ضغط أفضل، لكنها أبطأ</Ar> |
+| **xz** <Ar>الأداة **xz**</Ar> | `.xz` | `xz file` | `unxz file.xz` | Best ratio, slowest to compress <Ar>أفضل نسبة ضغط، والأبطأ في الضغط</Ar> |
 
 Useful options: `-k` keeps the original file, `-v` shows the compression ratio, `-l` (gzip) lists sizes, and `-c` writes to standard output.
 
+<Ar>خيارات مفيدة: `-k` يُبقي الملف الأصلي، و `-v` يعرض نسبة الضغط، و `-l` (في gzip) يعرض الأحجام، و `-c` يكتب إلى المخرج القياسي (standard output).</Ar>
+
 ## tar: tape archive
+
+<Ar>الأمر tar: أرشيف الشريط (tape archive)</Ar>
 
 `tar` bundles files and directories, preserving the directory structure, permissions and timestamps, into one **tarball**. It has **three modes**:
 
-| Mode | Option | Does |
+<Ar>يجمع `tar` الملفات والمجلدات في ملف واحد يُسمّى **tarball**، مع الحفاظ على بنية المجلدات والصلاحيات (permissions) والطوابع الزمنية (timestamps). وله **ثلاثة أوضاع**:</Ar>
+
+| Mode <Ar>الوضع</Ar> | Option <Ar>الخيار</Ar> | Does <Ar>الوظيفة</Ar> |
 |---|---|---|
-| **Create** | `-c` | Make a new archive |
-| **List** (table) | `-t` | Show the contents without extracting |
-| **Extract** | `-x` | Pull files out of the archive |
+| **Create** <Ar>**الإنشاء**</Ar> | `-c` | Make a new archive <Ar>إنشاء أرشيف جديد</Ar> |
+| **List** (table) <Ar>**العرض** (جدول المحتويات)</Ar> | `-t` | Show the contents without extracting <Ar>عرض المحتويات دون استخراجها</Ar> |
+| **Extract** <Ar>**الاستخراج**</Ar> | `-x` | Pull files out of the archive <Ar>إخراج الملفات من الأرشيف</Ar> |
 
 Add these options to a mode:
 
-| Option | Meaning |
+<Ar>أضف هذه الخيارات إلى الوضع:</Ar>
+
+| Option <Ar>الخيار</Ar> | Meaning <Ar>المعنى</Ar> |
 |---|---|
-| `-f FILE` | The archive **file** name (almost always needed; put it last in the group) |
-| `-v` | **Verbose**: list each file as it is processed |
-| `-z` | Compress or decompress with **gzip** (`.tar.gz` / `.tgz`) |
-| `-j` | Compress or decompress with **bzip2** (`.tar.bz2`) |
-| `-J` | Compress or decompress with **xz** (`.tar.xz`) |
-| `-r` | **Append** files to an existing (uncompressed) archive |
-| `-C DIR` | Change to DIR before extracting |
+| `-f FILE` | The archive **file** name (almost always needed; put it last in the group) <Ar>اسم **ملف** الأرشيف (مطلوب في أغلب الأحيان، وضعه آخر الخيارات في المجموعة)</Ar> |
+| `-v` | **Verbose**: list each file as it is processed <Ar>**التفصيل (Verbose)**: عرض كل ملف أثناء معالجته</Ar> |
+| `-z` | Compress or decompress with **gzip** (`.tar.gz` / `.tgz`) <Ar>الضغط أو فك الضغط باستخدام **gzip** (`.tar.gz` / `.tgz`)</Ar> |
+| `-j` | Compress or decompress with **bzip2** (`.tar.bz2`) <Ar>الضغط أو فك الضغط باستخدام **bzip2** (`.tar.bz2`)</Ar> |
+| `-J` | Compress or decompress with **xz** (`.tar.xz`) <Ar>الضغط أو فك الضغط باستخدام **xz** (`.tar.xz`)</Ar> |
+| `-r` | **Append** files to an existing (uncompressed) archive <Ar>**إلحاق** ملفات بأرشيف موجود (غير مضغوط)</Ar> |
+| `-C DIR` | Change to DIR before extracting <Ar>الانتقال إلى المجلد `DIR` قبل الاستخراج</Ar> |
 
 ```bash title="Terminal"
 mkdir -p ~/mybackups
@@ -93,17 +116,25 @@ tar -rvf ~/mybackups/udev.tar /etc/hosts      # append a file (uncompressed arch
 tar -tf ~/mybackups/udev.tar | grep hosts     # verify that it was added
 ```
 
-<Callout type="note" title="The leading slash">
+<Callout type="note" title="The leading slash" titleAr="الشرطة المائلة في بداية المسار">
   When you archive `/etc/udev`, tar prints <em>"Removing leading '/' from member names"</em> and stores <code>etc/udev/…</code>. Extracting then recreates <code>etc/udev</code> <strong>under the current directory</strong>, so a restore can't accidentally overwrite the real system files.
+
+  <Ar>عندما تؤرشف `/etc/udev`، يطبع tar الرسالة <em>«Removing leading '/' from member names»</em> ويخزّن <code>etc/udev/…</code>. وعند الاستخراج يُعاد إنشاء <code>etc/udev</code> <strong>تحت المجلد الحالي</strong>، فلا يمكن لعملية الاستعادة أن تستبدل ملفات النظام الحقيقية عن طريق الخطأ.</Ar>
 </Callout>
 
-<Callout type="tip" title="How to remember tar">
+<Callout type="tip" title="How to remember tar" titleAr="كيف تتذكر خيارات tar">
   <strong>c</strong>reate / e<strong>x</strong>tract / lis<strong>t</strong> + <strong>v</strong>erbose + <strong>f</strong>ile, with <strong>z</strong> for gzip. "<code>tar -czvf</code>: create zipped verbose file." "<code>tar -xzvf</code>: extract zipped verbose file."
+
+  <Ar><strong>c</strong> للإنشاء (create) / <strong>x</strong> للاستخراج (extract) / <strong>t</strong> للعرض (list) + <strong>v</strong> للتفصيل (verbose) + <strong>f</strong> للملف (file)، مع <strong>z</strong> لـ gzip. «<code>tar -czvf</code>: أنشئ (create) ملفًا (file) مضغوطًا (zipped) مع التفصيل (verbose)». «<code>tar -xzvf</code>: استخرج (extract) ملفًا مضغوطًا مع التفصيل».</Ar>
 </Callout>
 
 ## zip and unzip
 
+<Ar>الأداتان zip و unzip</Ar>
+
 `zip` archives **and** compresses at once, and is the standard on Windows, so it is the best choice for sharing with non-Linux users.
+
+<Ar>يؤرشف `zip` **و**يضغط في آنٍ واحد، وهو المعيار في ويندوز (Windows)، ولذلك فهو الخيار الأفضل للمشاركة مع مستخدمي الأنظمة غير لينكس.</Ar>
 
 ```bash title="Terminal"
 zip words.zip words                    # compress a single file
@@ -114,26 +145,34 @@ unzip udev.zip                         # extract into the current directory
 unzip udev.zip -d /tmp/out             # extract into another directory
 ```
 
-| | tar.gz / tar.bz2 / tar.xz | zip |
+| | tar.gz / tar.bz2 / tar.xz <Ar>أرشيفات `tar.gz` / `tar.bz2` / `tar.xz`</Ar> | zip <Ar>أرشيفات `zip`</Ar> |
 |---|---|---|
-| Typical platform | Linux and UNIX | Windows and everywhere |
-| Compression | The whole archive as one stream (better ratio) | Each file separately (fast random access) |
-| Permissions and ownership | Fully preserved | Limited |
+| Typical platform <Ar>المنصة المعتادة</Ar> | Linux and UNIX <Ar>لينكس و UNIX</Ar> | Windows and everywhere <Ar>ويندوز وكل مكان</Ar> |
+| Compression <Ar>الضغط</Ar> | The whole archive as one stream (better ratio) <Ar>الأرشيف كله كتدفق (stream) واحد (نسبة ضغط أفضل)</Ar> | Each file separately (fast random access) <Ar>كل ملف على حدة (وصول عشوائي سريع)</Ar> |
+| Permissions and ownership <Ar>الصلاحيات والملكية</Ar> | Fully preserved <Ar>محفوظة بالكامل</Ar> | Limited <Ar>محدودة</Ar> |
 
 <Takeaways>
 
 - **Compression** shrinks one file (`gzip`, `bzip2`, `xz`); **archiving** bundles many (`tar`).
+  <Ar>**الضغط (Compression)** يصغّر ملفًا واحدًا (`gzip` و `bzip2` و `xz`)، و**الأرشفة (archiving)** تجمع ملفات كثيرة (`tar`).</Ar>
 - `gzip`/`gunzip` (`.gz`) are fast; `bzip2`/`bunzip2` (`.bz2`) and `xz` (`.xz`) compress better and more slowly. All of them replace the original unless you use `-k`.
+  <Ar>`gzip`/`gunzip` (`.gz`) سريعان، أما `bzip2`/`bunzip2` (`.bz2`) و `xz` (`.xz`) فتضغط بشكل أفضل لكن أبطأ. وجميعها تستبدل الملف الأصلي ما لم تستخدم `-k`.</Ar>
 - `tar` modes are **c**reate, **t** (list) and e**x**tract; `-f` names the file, `-v` is verbose, and `-z`/`-j`/`-J` add compression.
+  <Ar>أوضاع `tar` هي الإنشاء **c** (create)، والعرض **t** (list)، والاستخراج **x** (extract)؛ و `-f` يحدد اسم الملف، و `-v` للتفصيل (verbose)، و `-z`/`-j`/`-J` تضيف الضغط.</Ar>
 - `zip -r` and `unzip` (`-l` to list, `-d` to choose the target) are the cross-platform option.
+  <Ar>`zip -r` و `unzip` (`-l` للعرض، و `-d` لاختيار المجلد الهدف) هما الخيار المتوافق مع مختلف الأنظمة (cross-platform).</Ar>
 
 </Takeaways>
 
 ## Practice
 
-<Exercise title="Back up your labs" level="easy">
+<Ar>تدريب</Ar>
+
+<Exercise title="Back up your labs" titleAr="انسخ معاملك احتياطيًا" level="easy">
 
 Create a gzip-compressed archive `labs.tar.gz` of the `~/projects` directory, then list its contents without extracting.
+
+<Ar>أنشئ أرشيفًا مضغوطًا بـ gzip باسم `labs.tar.gz` للمجلد `~/projects`، ثم اعرض محتوياته دون استخراجها.</Ar>
 
 <Solution>
 
@@ -146,9 +185,11 @@ tar -tzvf labs.tar.gz      # -z is optional when listing with modern GNU tar
 
 </Exercise>
 
-<Exercise title="Restore somewhere safe" level="medium">
+<Exercise title="Restore somewhere safe" titleAr="الاستعادة في مكان آمن" level="medium">
 
 Extract only the contents of `labs.tar.gz` into `/tmp/check` to inspect them, without touching your real files.
+
+<Ar>استخرج محتويات `labs.tar.gz` فقط إلى `/tmp/check` لفحصها، دون المساس بملفاتك الحقيقية.</Ar>
 
 <Solution>
 
@@ -162,13 +203,17 @@ ls -R /tmp/check
 
 </Exercise>
 
-<Exercise title="Which tool?" level="easy">
+<Exercise title="Which tool?" titleAr="أي أداة؟" level="easy">
 
 You need to email a folder of reports to a colleague on Windows. Which command do you use?
+
+<Ar>تحتاج إلى إرسال مجلد من التقارير بالبريد الإلكتروني إلى زميل يستخدم ويندوز (Windows). أي أمر تستخدم؟</Ar>
 
 <Solution>
 
 `zip -r reports.zip reports/`. Windows opens `.zip` files natively, while a `.tar.gz` needs extra software.
+
+<Ar>`zip -r reports.zip reports/`. يفتح ويندوز ملفات `.zip` بشكل مدمج (natively)، بينما يحتاج ملف `.tar.gz` إلى برنامج إضافي.</Ar>
 
 </Solution>
 
@@ -178,39 +223,57 @@ You need to email a folder of reports to a colleague on Windows. Which command d
   questions={[
     {
       q: "What does gzip file.txt produce?",
+      qAr: "ماذا ينتج الأمر gzip file.txt؟",
       options: ["file.txt.zip and keeps file.txt", "file.txt.gz and removes file.txt", "file.tar", "file.txt.bz2"],
+      optionsAr: ["file.txt.zip ويُبقي file.txt", "file.txt.gz ويحذف file.txt", "file.tar", "file.txt.bz2"],
       answer: 1,
-      explain: "gzip replaces the original unless you use -k."
+      explain: "gzip replaces the original unless you use -k.",
+      explainAr: "يستبدل gzip الملف الأصلي ما لم تستخدم -k."
     },
     {
       q: "Which tar option lists an archive's contents?",
+      qAr: "أي خيار في tar يعرض محتويات الأرشيف؟",
       options: ["-c", "-x", "-t", "-r"],
+      optionsAr: ["-c", "-x", "-t", "-r"],
       answer: 2,
-      explain: "-t shows the table of contents."
+      explain: "-t shows the table of contents.",
+      explainAr: "الخيار -t يعرض جدول المحتويات."
     },
     {
       q: "What does tar -zcvf backup.tar.gz dir do?",
+      qAr: "ماذا يفعل الأمر tar -zcvf backup.tar.gz dir؟",
       options: ["Extracts dir", "Creates a gzip-compressed archive of dir", "Lists backup.tar.gz", "Appends dir"],
+      optionsAr: ["يستخرج dir", "ينشئ أرشيفًا مضغوطًا بـ gzip للمجلد dir", "يعرض محتويات backup.tar.gz", "يُلحق dir"],
       answer: 1,
-      explain: "z = gzip, c = create, v = verbose, f = file name."
+      explain: "z = gzip, c = create, v = verbose, f = file name.",
+      explainAr: "الحرف z يعني gzip، و c يعني الإنشاء (create)، و v يعني التفصيل (verbose)، و f يعني اسم الملف (file)."
     },
     {
       q: "Which option compresses a tar archive with bzip2?",
+      qAr: "أي خيار يضغط أرشيف tar باستخدام bzip2؟",
       options: ["-z", "-j", "-J", "-b"],
+      optionsAr: ["-z", "-j", "-J", "-b"],
       answer: 1,
-      explain: "-z gzip, -j bzip2, -J xz."
+      explain: "-z gzip, -j bzip2, -J xz.",
+      explainAr: "الخيار -z لـ gzip، و -j لـ bzip2، و -J لـ xz."
     },
     {
       q: "What do you need to include a directory in a zip archive?",
+      qAr: "ماذا تحتاج لتضمين مجلد في أرشيف zip؟",
       options: ["zip -d", "zip -r", "zip -l", "zip -x"],
+      optionsAr: ["zip -d", "zip -r", "zip -l", "zip -x"],
       answer: 1,
-      explain: "-r recurses into directories."
+      explain: "-r recurses into directories.",
+      explainAr: "الخيار -r يدخل إلى المجلدات تعاوديًا (recursively)."
     },
     {
       q: "How do you list a zip archive without extracting it?",
+      qAr: "كيف تعرض محتويات أرشيف zip دون استخراجه؟",
       options: ["unzip -l file.zip", "zip -t file.zip", "tar -tf file.zip", "cat file.zip"],
+      optionsAr: ["unzip -l file.zip", "zip -t file.zip", "tar -tf file.zip", "cat file.zip"],
       answer: 0,
-      explain: "unzip -l lists the contents."
+      explain: "unzip -l lists the contents.",
+      explainAr: "الأمر unzip -l يعرض المحتويات."
     }
   ]}
 />

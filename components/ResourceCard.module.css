@@ -151,3 +151,16 @@
     display: none;
   }
 }
+
+/* ---------- Arabic translations ---------- */
+.title :global(.ar) {
+  font-family: var(--font-arabic);
+  font-size: 0.82em;
+  font-weight: 600;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.summaryAr {
+  margin-top: 4px;
+}

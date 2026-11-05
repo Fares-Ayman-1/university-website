@@ -1,7 +1,9 @@
 ---
 number: 5
 title: "System Modelling I: UML and Use Case Diagrams"
+titleAr: "نمذجة النظام 1: لغة UML ومخططات حالات الاستخدام"
 summary: What system modelling is and when models are used, the 13 UML diagram types (structural vs. behavioural), and use case modelling in depth. Covers actors (primary and secondary), use cases, the system boundary, textual use case descriptions and scenarios, and the four relationships (association, include, extend and generalization of actors and use cases, including abstract ones).
+summaryAr: "ما نمذجة النظام (system modelling) ومتى تُستخدم النماذج، وأنواع مخططات UML الثلاثة عشر (الهيكلية (structural) مقابل السلوكية (behavioural))، ونمذجة حالات الاستخدام (use case) بالتفصيل. وتغطي الفاعلين (actors) الأساسيين والثانويين، وحالات الاستخدام، وحدود النظام (system boundary)، والأوصاف النصية لحالات الاستخدام وسيناريوهاتها، والعلاقات الأربع (الارتباط، والتضمين «include»، والتوسيع «extend»، وتعميم الفاعلين وحالات الاستخدام، بما فيها المجرَّدة)."
 topics: [System modelling, UML diagram types, Use case diagram, Actors, Primary vs secondary actors, System boundary, Use case descriptions, Scenarios, Include, Extend, Actor generalization, Use case generalization]
 duration: 55 min study
 sources:
@@ -21,77 +23,109 @@ bookRefs:
 <Objectives>
 
 - Explain what **system modelling** is and **when** models are used.
+  <Ar>شرح ماهية **نمذجة النظام (system modelling)** و**متى** تُستخدم النماذج.</Ar>
 - Name the **13 UML diagrams** and group them as **structural** or **behavioural**.
+  <Ar>ذكر **مخططات UML الثلاثة عشر** وتصنيفها إلى **هيكلية (structural)** أو **سلوكية (behavioural)**.</Ar>
 - Draw a **use case diagram** with actors, use cases and a system boundary.
+  <Ar>رسم **مخطط حالات الاستخدام (use case diagram)** بالفاعلين (actors) وحالات الاستخدام وحدود النظام.</Ar>
 - Tell **primary** from **secondary** actors, and write a **textual use case description**.
+  <Ar>التمييز بين الفاعلين **الأساسيين (primary)** و**الثانويين (secondary)**، وكتابة **وصف نصي لحالة الاستخدام**.</Ar>
 - Use the **include**, **extend** and **generalization** relationships correctly.
+  <Ar>استخدام علاقات **التضمين «include»** و**التوسيع «extend»** و**التعميم (generalization)** استخدامًا صحيحًا.</Ar>
 
 </Objectives>
 
 ## System modelling
 
-<Definition term="System modelling">
+<Ar>نمذجة النظام</Ar>
+
+<Definition term="System modelling" termAr="نمذجة النظام">
   Developing <strong>abstract models</strong> of a system, each presenting a different <strong>view or perspective</strong> of it, usually in a graphical notation based on the <strong>UML</strong>.
+
+  <Ar>تطوير <strong>نماذج مجرَّدة</strong> للنظام، يقدّم كل منها <strong>رؤية أو منظورًا</strong> مختلفًا له، وعادةً بترميز رسومي مبني على لغة <strong>UML</strong>.</Ar>
 </Definition>
 
 Models are used:
 
+<Ar>تُستخدم النماذج:</Ar>
+
 - **during requirements engineering**, to help derive the requirements;
+  <Ar>**أثناء هندسة المتطلبات**، للمساعدة في استخلاص المتطلبات؛</Ar>
 - **during design**, to describe the system to the engineers who implement it;
+  <Ar>**أثناء التصميم**، لوصف النظام للمهندسين الذين ينفّذونه؛</Ar>
 - **after implementation**, to document the system's structure and operation.
+  <Ar>**بعد التنفيذ**، لتوثيق بنية النظام وطريقة عمله.</Ar>
 
 ### UML diagram types
 
-<SlideFigure page={5} caption="The 13 UML diagram types: six structural and seven behavioural." />
+<Ar>أنواع مخططات UML</Ar>
 
-| Structural (static structure) | Behavioural (dynamic behaviour) |
+<SlideFigure page={5} caption="The 13 UML diagram types: six structural and seven behavioural." captionAr="أنواع مخططات UML الثلاثة عشر: ستة هيكلية وسبعة سلوكية." />
+
+| Structural (static structure) <Ar>الهيكلية (البنية الساكنة)</Ar> | Behavioural (dynamic behaviour) <Ar>السلوكية (السلوك الديناميكي)</Ar> |
 |---|---|
-| **Class**, Object, Component, Composite structure, Deployment, Package | **Use case**, **Sequence**, **Activity**, **State machine**, Communication, Interaction overview, Timing |
+| **Class**, Object, Component, Composite structure, Deployment, Package <Ar>**الأصناف (Class)**، والكائنات (Object)، والمكوّنات (Component)، والبنية المركّبة (Composite structure)، والنشر (Deployment)، والحزم (Package)</Ar> | **Use case**, **Sequence**, **Activity**, **State machine**, Communication, Interaction overview, Timing <Ar>**حالات الاستخدام (Use case)**، و**التتابع (Sequence)**، و**النشاط (Activity)**، و**آلة الحالات (State machine)**، والاتصال (Communication)، ونظرة عامة على التفاعل (Interaction overview)، والتوقيت (Timing)</Ar> |
 
 This course focuses on the **use case**, **activity**, **state**, **sequence** and **class** diagrams.
 
+<Ar>يركّز هذا المقرر على مخططات **حالات الاستخدام**، و**النشاط**، و**الحالات**، و**التتابع**، و**الأصناف**.</Ar>
+
 ## Use case diagrams
+
+<Ar>مخططات حالات الاستخدام</Ar>
 
 Use case modelling supports **requirements elicitation**: it describes what a user expects from the system, from the **user's perspective**. It is a common language for developers and users to agree on the system's functions.
 
-<SlideFigure page={9} caption="Use case diagram elements: actor (stick figure), use case (oval), association (line), note, and dashed line attaching a note." />
+<Ar>تدعم نمذجة حالات الاستخدام (use case modelling) **استنباط المتطلبات (requirements elicitation)**: فهي تصف ما يتوقعه المستخدم من النظام، من **منظور المستخدم**. وهي لغة مشتركة يتفق بها المطورون والمستخدمون على وظائف النظام.</Ar>
 
-| Element | Notation | Meaning |
+<SlideFigure page={9} caption="Use case diagram elements: actor (stick figure), use case (oval), association (line), note, and dashed line attaching a note." captionAr="عناصر مخطط حالات الاستخدام: الفاعل (شكل بشري مبسَّط)، وحالة الاستخدام (شكل بيضاوي)، والارتباط (خط)، والملاحظة، والخط المتقطع الذي يربط الملاحظة." />
+
+| Element <Ar>العنصر</Ar> | Notation <Ar>الترميز</Ar> | Meaning <Ar>المعنى</Ar> |
 |---|---|---|
-| **Actor** | Stick figure | Anyone or anything **outside** the system that interacts with it: a person, group, organization or another system |
-| **Use case** | Oval with a name | Something the system should **do** for an actor, a task |
-| **Association** | Solid line | An actor takes part in a use case |
-| **System boundary** | Rectangle around the use cases | The **scope** of the system: use cases inside, actors outside. Optional, but useful for complex systems with subsystems |
-| **Note** | Rectangle with a folded corner, attached by a dashed line | Clarifies an aspect or task |
+| **Actor** <Ar>**الفاعل (Actor)**</Ar> | Stick figure <Ar>شكل بشري مبسَّط</Ar> | Anyone or anything **outside** the system that interacts with it: a person, group, organization or another system <Ar>أي شخص أو شيء **خارج** النظام يتفاعل معه: شخص، أو مجموعة، أو مؤسسة، أو نظام آخر</Ar> |
+| **Use case** <Ar>**حالة الاستخدام (Use case)**</Ar> | Oval with a name <Ar>شكل بيضاوي يحمل اسمًا</Ar> | Something the system should **do** for an actor, a task <Ar>شيء يجب أن **يفعله** النظام للفاعل، أي مهمة</Ar> |
+| **Association** <Ar>**الارتباط (Association)**</Ar> | Solid line <Ar>خط متصل</Ar> | An actor takes part in a use case <Ar>يشارك الفاعل في حالة استخدام</Ar> |
+| **System boundary** <Ar>**حدود النظام (System boundary)**</Ar> | Rectangle around the use cases <Ar>مستطيل يحيط بحالات الاستخدام</Ar> | The **scope** of the system: use cases inside, actors outside. Optional, but useful for complex systems with subsystems <Ar>**نطاق** النظام: حالات الاستخدام داخله والفاعلون خارجه. وهو اختياري، لكنه مفيد للأنظمة المعقدة ذات الأنظمة الفرعية</Ar> |
+| **Note** <Ar>**الملاحظة (Note)**</Ar> | Rectangle with a folded corner, attached by a dashed line <Ar>مستطيل بزاوية مطوية، يُربط بخط متقطع</Ar> | Clarifies an aspect or task <Ar>توضّح جانبًا أو مهمة</Ar> |
 
-<SlideFigure page={11} caption="Student administration: the Professor actor can query student data, issue certificates and announce exams." />
+<SlideFigure page={11} caption="Student administration: the Professor actor can query student data, issue certificates and announce exams." captionAr="إدارة شؤون الطلاب: يستطيع الفاعل Professor الاستعلام عن بيانات الطلاب، وإصدار الشهادات، والإعلان عن الامتحانات." />
 
 To build a diagram, ask three questions: **What** is being described? (the system) **Who** interacts with it? (the actors) **What can they do?** (the use cases)
 
+<Ar>لبناء المخطط، اطرح ثلاثة أسئلة: **ما** الذي يجري وصفه؟ (النظام) **مَن** يتفاعل معه؟ (الفاعلون) **ماذا يمكنهم أن يفعلوا؟** (حالات الاستخدام)</Ar>
+
 ### Primary and secondary actors
 
-| Primary actor | Secondary actor |
+<Ar>الفاعلون الأساسيون والثانويون</Ar>
+
+| Primary actor <Ar>الفاعل الأساسي</Ar> | Secondary actor <Ar>الفاعل الثانوي</Ar> |
 |---|---|
-| **Initiates** the use case | **Helps** the primary actor complete it |
-| Gets a **direct benefit** from it | Gets **no direct benefit** |
-| "Who starts it?" | "Who assists or provides a service?" |
+| **Initiates** the use case <Ar>**يبدأ** حالة الاستخدام</Ar> | **Helps** the primary actor complete it <Ar>**يساعد** الفاعل الأساسي على إكمالها</Ar> |
+| Gets a **direct benefit** from it <Ar>يحصل منها على **فائدة مباشرة**</Ar> | Gets **no direct benefit** <Ar>لا يحصل على **فائدة مباشرة**</Ar> |
+| "Who starts it?" <Ar>«مَن يبدؤها؟»</Ar> | "Who assists or provides a service?" <Ar>«مَن يساعد أو يقدّم خدمة؟»</Ar> |
 
 Actors can be **human** (Student, Professor) or **non-human** (an e-mail server, a bank system).
 
-<SlideFigure page={15} caption="ATM: the ATM Customer is the primary actor (withdraw, query, transfer); the Operator is a secondary actor (add cash, startup, shutdown)." />
+<Ar>يمكن أن يكون الفاعلون **بشريين** (مثل Student و Professor) أو **غير بشريين** (مثل خادم بريد إلكتروني، أو نظام مصرفي).</Ar>
+
+<SlideFigure page={15} caption="ATM: the ATM Customer is the primary actor (withdraw, query, transfer); the Operator is a secondary actor (add cash, startup, shutdown)." captionAr="الصراف الآلي (ATM): الفاعل ATM Customer هو الفاعل الأساسي (السحب، والاستعلام، والتحويل)؛ والفاعل Operator فاعل ثانوي (إضافة النقود، والتشغيل، والإيقاف)." />
 
 ## Use case descriptions
 
+<Ar>أوصاف حالات الاستخدام</Ar>
+
 A use case diagram is a simple overview. It **doesn't show the order** in which use cases run, and it is **implementation-independent**. Give the details as a **textual flow of events**, a **structured table**, or a **sequence diagram**. A description contains at least:
 
-| Part | Content |
+<Ar>مخطط حالات الاستخدام نظرة عامة بسيطة. فهو **لا يُظهر الترتيب** الذي تُنفَّذ به حالات الاستخدام، وهو **مستقل عن التنفيذ (implementation-independent)**. لذا قدّم التفاصيل في صورة **تدفق نصي للأحداث**، أو **جدول منظَّم**، أو **مخطط تتابع (sequence diagram)**. ويحتوي الوصف على الأقل على:</Ar>
+
+| Part <Ar>الجزء</Ar> | Content <Ar>المحتوى</Ar> |
 |---|---|
-| **Use case** | Identifier and name |
-| **Initiator** | The actor who starts it |
-| **Goal** | A short description of what it achieves |
-| **Pre-condition(s)** | What must hold **before** it can run |
-| **Post-condition(s)** | What holds **after** it completes |
-| **Main success scenario** | The numbered steps normally followed to reach the goal |
+| **Use case** <Ar>**حالة الاستخدام**</Ar> | Identifier and name <Ar>المعرِّف والاسم</Ar> |
+| **Initiator** <Ar>**البادئ (Initiator)**</Ar> | The actor who starts it <Ar>الفاعل الذي يبدؤها</Ar> |
+| **Goal** <Ar>**الهدف**</Ar> | A short description of what it achieves <Ar>وصف قصير لما تحققه</Ar> |
+| **Pre-condition(s)** <Ar>**الشروط المسبقة (Pre-conditions)**</Ar> | What must hold **before** it can run <Ar>ما يجب أن يتحقق **قبل** أن يمكن تنفيذها</Ar> |
+| **Post-condition(s)** <Ar>**الشروط اللاحقة (Post-conditions)**</Ar> | What holds **after** it completes <Ar>ما يتحقق **بعد** اكتمالها</Ar> |
+| **Main success scenario** <Ar>**سيناريو النجاح الرئيسي**</Ar> | The numbered steps normally followed to reach the goal <Ar>الخطوات المرقَّمة التي تُتبع عادةً للوصول إلى الهدف</Ar> |
 
 ```text title="Use case: make reservation (hotel system)"
 Identifier and name  make reservation
@@ -117,96 +151,150 @@ Main success scenario
 
 ### Scenarios
 
+<Ar>السيناريوهات</Ar>
+
 A **scenario** is **one instance** of a use case: a particular sequence of interactions. Each use case has a set of possible scenarios. For **borrow book**:
 
+<Ar>**السيناريو (scenario)** هو **نسخة واحدة (instance)** من حالة الاستخدام: تسلسل معيّن من التفاعلات. ولكل حالة استخدام مجموعة من السيناريوهات الممكنة. ففي حالة الاستخدام **borrow book** (استعارة كتاب):</Ar>
+
 - a member with no outstanding loans borrows a book → **success** (the main success scenario);
+  <Ar>عضو ليس لديه استعارات معلّقة يستعير كتابًا ← **نجاح** (سيناريو النجاح الرئيسي)؛</Ar>
 - a member who has exceeded the loan quota tries to borrow → **refused**.
+  <Ar>عضو تجاوز الحد المسموح من الاستعارات يحاول الاستعارة ← **رفض**.</Ar>
 
 Same goal, different circumstances and outcome.
 
+<Ar>الهدف نفسه، لكن الظروف والنتيجة مختلفة.</Ar>
+
 ## Use case relationships
 
-| Relationship | Between | Notation |
+<Ar>علاقات حالات الاستخدام</Ar>
+
+| Relationship <Ar>العلاقة</Ar> | Between <Ar>بين</Ar> | Notation <Ar>الترميز</Ar> |
 |---|---|---|
-| **Association** | Actor ↔ use case only | Solid line |
-| **Include** | Use case → use case | Dashed arrow labelled «include», from the **base** to the **included** case |
-| **Extend** | Use case → use case | Dashed arrow labelled «extend», from the **extending** case to the **base** |
-| **Generalization** | Actor → actor, or use case → use case | Solid line with a **hollow triangle** pointing to the parent |
+| **Association** <Ar>**الارتباط (Association)**</Ar> | Actor ↔ use case only <Ar>الفاعل ↔ حالة الاستخدام فقط</Ar> | Solid line <Ar>خط متصل</Ar> |
+| **Include** <Ar>**التضمين «include»**</Ar> | Use case → use case <Ar>حالة استخدام ← حالة استخدام</Ar> | Dashed arrow labelled «include», from the **base** to the **included** case <Ar>سهم متقطع يحمل التسمية «include»، من الحالة **الأساسية** إلى الحالة **المُضمَّنة**</Ar> |
+| **Extend** <Ar>**التوسيع «extend»**</Ar> | Use case → use case <Ar>حالة استخدام ← حالة استخدام</Ar> | Dashed arrow labelled «extend», from the **extending** case to the **base** <Ar>سهم متقطع يحمل التسمية «extend»، من الحالة **المُوسِّعة** إلى الحالة **الأساسية**</Ar> |
+| **Generalization** <Ar>**التعميم (Generalization)**</Ar> | Actor → actor, or use case → use case <Ar>فاعل ← فاعل، أو حالة استخدام ← حالة استخدام</Ar> | Solid line with a **hollow triangle** pointing to the parent <Ar>خط متصل ينتهي **بمثلث أجوف** يشير إلى الأب</Ar> |
 
 ### «include»
 
+<Ar>علاقة التضمين «include»</Ar>
+
 The behaviour of the **included** use case is always integrated into the **base** use case, which needs it in order to do its job. Use it to factor out **common behaviour** shared by several use cases.
 
-<SlideFigure page={24} caption="«include» examples: Deposit Funds and Withdraw Cash both include Customer Authentication." />
+<Ar>يُدمج سلوك حالة الاستخدام **المُضمَّنة** دائمًا في حالة الاستخدام **الأساسية (base)**، التي تحتاج إليه لتؤدي عملها. واستخدمها لاستخلاص **السلوك المشترك** بين عدة حالات استخدام.</Ar>
+
+<SlideFigure page={24} caption="«include» examples: Deposit Funds and Withdraw Cash both include Customer Authentication." captionAr="أمثلة على «include»: كلٌّ من Deposit Funds و Withdraw Cash تتضمن Customer Authentication." />
 
 ### «extend»
 
+<Ar>علاقة التوسيع «extend»</Ar>
+
 The **extending** use case adds **optional or conditional** behaviour to a **base** use case at defined **extension points**.
 
+<Ar>تضيف حالة الاستخدام **المُوسِّعة** سلوكًا **اختياريًا أو مشروطًا** إلى حالة استخدام **أساسية** عند **نقاط توسيع (extension points)** محددة.</Ar>
+
 - The extending use case **depends on** the base; the base must be **meaningful on its own**.
+  <Ar>حالة الاستخدام المُوسِّعة **تعتمد على** الحالة الأساسية؛ ويجب أن تكون الحالة الأساسية **ذات معنى بمفردها**.</Ar>
 - The extension is usually **optional**. Attach a **note with the condition** saying when it happens.
+  <Ar>يكون التوسيع عادةً **اختياريًا**. أرفق **ملاحظة تحمل الشرط** توضّح متى يحدث.</Ar>
 
-<SlideFigure page={28} caption="«extend»: View Order History is optional; Refuse Loan extends Borrow Copy of Book only when the member has the maximum number of books." />
+<SlideFigure page={28} caption="«extend»: View Order History is optional; Refuse Loan extends Borrow Copy of Book only when the member has the maximum number of books." captionAr="علاقة «extend»: الحالة View Order History اختيارية؛ والحالة Refuse Loan توسّع Borrow Copy of Book فقط عندما يكون لدى العضو الحد الأقصى من الكتب." />
 
-<Callout type="tip" title="Remember the arrow directions">
+<Callout type="tip" title="Remember the arrow directions" titleAr="تذكّر اتجاهات الأسهم">
   «include» points <strong>from the base to the included</strong> case ("the base needs it"). «extend» points <strong>from the extension to the base</strong> ("I extend you, sometimes"). Example: <em>Sneeze</em> «include» <em>Close eyes</em> (it always happens), while <em>Say "Excuse me"</em> «extend» <em>Sneeze</em> (only sometimes).
+
+  <Ar>يشير «include» <strong>من الحالة الأساسية إلى الحالة المُضمَّنة</strong> («الأساسية تحتاج إليها»). ويشير «extend» <strong>من التوسيع إلى الحالة الأساسية</strong> («أنا أوسّعك، أحيانًا»). مثال: <em>Sneeze</em> (العطس) «include» <em>Close eyes</em> (إغلاق العينين) (يحدث دائمًا)، بينما <em>Say "Excuse me"</em> (قول «عذرًا») «extend» <em>Sneeze</em> (أحيانًا فقط).</Ar>
 </Callout>
 
 ### Generalization of actors
 
+<Ar>تعميم الفاعلين</Ar>
+
 When actors share use cases, a **sub-actor inherits** every use case of its **super-actor** (an "is a" relationship). If actor A inherits from B, A can use B's use cases plus its own, but B can only use its own. Multiple inheritance is allowed.
 
-<SlideFigure page={34} caption="Left: Professor AND Assistant are both needed to query student data. Right: an abstract Research Associate super-actor means a Professor OR an Assistant can query it." />
+<Ar>عندما يشترك الفاعلون في حالات استخدام، **يرث الفاعل الفرعي (sub-actor)** كل حالات الاستخدام الخاصة **بالفاعل الأعلى (super-actor)** (علاقة «is a»، أي «هو نوع من»). فإذا ورث الفاعل A من B، يمكن لـ A استخدام حالات استخدام B إضافةً إلى حالاته الخاصة، بينما لا يستطيع B استخدام إلا حالاته الخاصة. والوراثة المتعددة (multiple inheritance) مسموحة.</Ar>
+
+<SlideFigure page={34} caption="Left: Professor AND Assistant are both needed to query student data. Right: an abstract Research Associate super-actor means a Professor OR an Assistant can query it." captionAr="يسارًا: يلزم الفاعلان Professor و Assistant كلاهما (AND) للاستعلام عن بيانات الطلاب. يمينًا: وجود فاعل أعلى مجرَّد (abstract) هو Research Associate يعني أن Professor أو (OR) Assistant يستطيع الاستعلام عنها." />
 
 An **abstract actor** (`{abstract}`) groups the common properties of its sub-actors; only its sub-actors take part in practice.
 
+<Ar>**الفاعل المجرَّد (abstract actor)** (`{abstract}`) يجمع الخصائص المشتركة لفاعليه الفرعيين؛ ولا يشارك عمليًا إلا فاعلوه الفرعيون.</Ar>
+
 ### Generalization of use cases
+
+<Ar>تعميم حالات الاستخدام</Ar>
 
 If use case A generalizes B, then **B inherits A's behaviour** (and may extend or override it) and inherits all of A's relationships. An **abstract** use case (`{abstract}`) **can't be executed directly**; only its specializations can.
 
-<SlideFigure page={36} caption="Announce event is abstract; Announce talk and Announce lecture specialize it." />
+<Ar>إذا كانت حالة الاستخدام A تعمّم B، فإن **B ترث سلوك A** (وقد توسّعه أو تعيد تعريفه (override)) وترث جميع علاقات A. وحالة الاستخدام **المجرَّدة (abstract)** (`{abstract}`) **لا يمكن تنفيذها مباشرة**؛ بل تُنفَّذ تخصيصاتها (specializations) فقط.</Ar>
+
+<SlideFigure page={36} caption="Announce event is abstract; Announce talk and Announce lecture specialize it." captionAr="الحالة Announce event مجرَّدة؛ والحالتان Announce talk و Announce lecture تخصّصانها." />
 
 <Takeaways>
 
 - **System models** give different views of a system; most use **UML** (6 structural + 7 behavioural diagrams).
+  <Ar>تقدّم **نماذج النظام** رؤى مختلفة له؛ ومعظمها يستخدم **UML** (6 مخططات هيكلية + 7 سلوكية).</Ar>
 - A **use case diagram** shows **actors** (outside), **use cases** (inside) and the **system boundary**.
+  <Ar>يُظهر **مخطط حالات الاستخدام** **الفاعلين** (في الخارج)، و**حالات الاستخدام** (في الداخل)، و**حدود النظام**.</Ar>
 - A **primary** actor starts the use case and benefits; a **secondary** actor helps.
+  <Ar>الفاعل **الأساسي** يبدأ حالة الاستخدام ويستفيد منها؛ والفاعل **الثانوي** يساعد.</Ar>
 - Describe each use case textually: **initiator, goal, pre/post-conditions, main success scenario**. A **scenario** is one instance.
+  <Ar>صِف كل حالة استخدام نصيًا: **البادئ، والهدف، والشروط المسبقة واللاحقة، وسيناريو النجاح الرئيسي**. و**السيناريو** نسخة واحدة منها.</Ar>
 - **«include»**: always, base → included. **«extend»**: optional or conditional, extension → base. **Generalization**: inheritance between actors or between use cases.
+  <Ar>**«include»**: دائمًا، الأساسية ← المُضمَّنة. **«extend»**: اختياري أو مشروط، التوسيع ← الأساسية. **التعميم (Generalization)**: وراثة بين الفاعلين أو بين حالات الاستخدام.</Ar>
 
 </Takeaways>
 
 ## Practice
 
-<Exercise title="Library use cases" level="medium">
+<Ar>تدريب</Ar>
+
+<Exercise title="Library use cases" titleAr="حالات الاستخدام في نظام مكتبة" level="medium">
 
 A library system lets **members** search the catalogue and borrow and return books. Borrowing and returning both require the **librarian** to log in. If a member returns a book late, the system **charges a fine**. Identify the actors, the use cases and the relationships.
+
+<Ar>يتيح نظام مكتبة **للأعضاء** البحث في الفهرس واستعارة الكتب وإرجاعها. وتتطلب الاستعارة والإرجاع كلاهما أن يسجّل **أمين المكتبة** دخوله. وإذا أرجع عضو كتابًا متأخرًا، **يفرض النظام غرامة**. حدّد الفاعلين وحالات الاستخدام والعلاقات.</Ar>
 
 <Solution>
 
 - **Actors**: Member (primary for search, borrow and return) and Librarian (who records loans and returns, and logs in).
+  <Ar>**الفاعلون**: Member (العضو، وهو فاعل أساسي في البحث والاستعارة والإرجاع) و Librarian (أمين المكتبة، الذي يسجّل الاستعارات والإرجاعات ويسجّل الدخول).</Ar>
 - **Use cases**: Search catalogue, Borrow book, Return book, Log in, Charge fine.
+  <Ar>**حالات الاستخدام**: Search catalogue (البحث في الفهرس)، و Borrow book (استعارة كتاب)، و Return book (إرجاع كتاب)، و Log in (تسجيل الدخول)، و Charge fine (فرض غرامة).</Ar>
 - **Relationships**:
+  <Ar>**العلاقات**:</Ar>
   - Borrow book «include» Log in, and Return book «include» Log in. This is common, always-required behaviour.
+    <Ar>Borrow book «include» Log in، و Return book «include» Log in. وهذا سلوك مشترك ومطلوب دائمًا.</Ar>
   - Charge fine «extend» Return book, with the condition note *[book returned after due date]*.
+    <Ar>Charge fine «extend» Return book، مع ملاحظة تحمل الشرط *[أُرجع الكتاب بعد موعد الاستحقاق]*.</Ar>
 
 </Solution>
 
 </Exercise>
 
-<Exercise title="Include or extend?" level="easy">
+<Exercise title="Include or extend?" titleAr="تضمين أم توسيع؟" level="easy">
 
 Choose the right relationship:
 
+<Ar>اختر العلاقة الصحيحة:</Ar>
+
 1. Every online payment must verify the card.
+   <Ar>يجب أن تتحقق كل عملية دفع إلكتروني من البطاقة.</Ar>
 2. While placing an order, a customer may apply a discount coupon.
+   <Ar>أثناء تقديم طلب، قد يستخدم العميل قسيمة خصم.</Ar>
 3. Both "transfer money" and "pay bill" need the user to be authenticated.
+   <Ar>كلٌّ من «transfer money» (تحويل الأموال) و«pay bill» (دفع الفاتورة) يتطلب التحقق من هوية المستخدم.</Ar>
 
 <Solution>
 
 1. Make payment «include» Verify card (it always happens).
+   <Ar>Make payment «include» Verify card (يحدث دائمًا).</Ar>
 2. Apply coupon «extend» Place order (optional).
+   <Ar>Apply coupon «extend» Place order (اختياري).</Ar>
 3. Transfer money «include» Authenticate, and Pay bill «include» Authenticate (shared behaviour).
+   <Ar>Transfer money «include» Authenticate، و Pay bill «include» Authenticate (سلوك مشترك).</Ar>
 
 </Solution>
 
@@ -216,39 +304,57 @@ Choose the right relationship:
   questions={[
     {
       q: "Which of these is a STRUCTURAL UML diagram?",
+      qAr: "أيٌّ مما يلي من مخططات UML الهيكلية (STRUCTURAL)؟",
       options: ["Use case diagram", "Sequence diagram", "Class diagram", "Activity diagram"],
+      optionsAr: ["مخطط حالات الاستخدام", "مخطط التتابع", "مخطط الأصناف", "مخطط النشاط"],
       answer: 2,
-      explain: "Class, object, component, composite structure, deployment and package diagrams are structural."
+      explain: "Class, object, component, composite structure, deployment and package diagrams are structural.",
+      explainAr: "مخططات الأصناف، والكائنات، والمكوّنات، والبنية المركّبة، والنشر، والحزم مخططات هيكلية."
     },
     {
       q: "A secondary actor…",
+      qAr: "الفاعل الثانوي…",
       options: ["Starts the use case", "Gets the main benefit", "Helps the primary actor complete the use case", "Must be human"],
+      optionsAr: ["يبدأ حالة الاستخدام", "يحصل على الفائدة الرئيسية", "يساعد الفاعل الأساسي على إكمال حالة الاستخدام", "يجب أن يكون بشريًا"],
       answer: 2,
-      explain: "It assists or provides a service, and gets no direct benefit."
+      explain: "It assists or provides a service, and gets no direct benefit.",
+      explainAr: "يساعد أو يقدّم خدمة، ولا يحصل على فائدة مباشرة."
     },
     {
       q: "Which relationship adds optional or conditional behaviour to a base use case?",
+      qAr: "أي علاقة تضيف سلوكًا اختياريًا أو مشروطًا إلى حالة استخدام أساسية؟",
       options: ["«include»", "«extend»", "Association", "Aggregation"],
+      optionsAr: ["«include»", "«extend»", "الارتباط", "التجميع"],
       answer: 1,
-      explain: "«extend» adds optional behaviour at extension points; the base still makes sense alone."
+      explain: "«extend» adds optional behaviour at extension points; the base still makes sense alone.",
+      explainAr: "تضيف «extend» سلوكًا اختياريًا عند نقاط التوسيع، وتبقى الحالة الأساسية ذات معنى بمفردها."
     },
     {
       q: "In «include», the dashed arrow points…",
+      qAr: "في علاقة «include»، يشير السهم المتقطع…",
       options: ["From the included case to the base", "From the base to the included case", "From the actor to the use case", "In both directions"],
+      optionsAr: ["من الحالة المُضمَّنة إلى الحالة الأساسية", "من الحالة الأساسية إلى الحالة المُضمَّنة", "من الفاعل إلى حالة الاستخدام", "في الاتجاهين"],
       answer: 1,
-      explain: "The base use case depends on (includes) the included one."
+      explain: "The base use case depends on (includes) the included one.",
+      explainAr: "حالة الاستخدام الأساسية تعتمد على الحالة المُضمَّنة (أي تتضمنها)."
     },
     {
       q: "An abstract use case…",
+      qAr: "حالة الاستخدام المجرَّدة…",
       options: ["Is executed first", "Cannot be executed directly; only its specializations run", "Has no name", "Is always included"],
+      optionsAr: ["تُنفَّذ أولًا", "لا يمكن تنفيذها مباشرة؛ تُنفَّذ تخصيصاتها فقط", "ليس لها اسم", "تكون مُضمَّنة دائمًا"],
       answer: 1,
-      explain: "It is marked {abstract} and only its sub-use cases are executable."
+      explain: "It is marked {abstract} and only its sub-use cases are executable.",
+      explainAr: "تُعلَّم بالوسم {abstract}، ولا يمكن تنفيذ إلا حالات الاستخدام الفرعية لها."
     },
     {
       q: "A scenario is…",
+      qAr: "السيناريو هو…",
       options: ["A whole use case diagram", "One instance of a use case", "An actor's role", "A system boundary"],
+      optionsAr: ["مخطط حالات استخدام كامل", "نسخة واحدة من حالة الاستخدام", "دور الفاعل", "حدود النظام"],
       answer: 1,
-      explain: "Each use case has a set of possible scenarios."
+      explain: "Each use case has a set of possible scenarios.",
+      explainAr: "لكل حالة استخدام مجموعة من السيناريوهات الممكنة."
     }
   ]}
 />

@@ -1,12 +1,15 @@
 {
   "title": "Operating Systems",
+  "titleAr": "نظم التشغيل",
   "shortTitle": "OS",
   "code": "OS",
   "order": 4,
   "materialsDir": "Operating system",
   "level": "Operating System Concepts, 10th ed.",
   "tagline": "What really happens between your program and the hardware: processes, threads and the kernel.",
+  "taglineAr": "ما الذي يحدث فعلًا بين برنامجك والعتاد (hardware): العمليات (processes) والخيوط (threads) والنواة (kernel).",
   "description": "An operating system is the program that manages a computer's hardware and gives every other program a clean, safe environment to run in. The lectures follow Operating System Concepts (10th edition): how a computer system is organized, which services an OS provides and how programs request them through system calls, how processes are created, scheduled and communicate, and how threads exploit multicore hardware. The sections are practical Linux labs based on NDG Linux Essentials: the shell, getting help, working with files, and archiving.",
+  "descriptionAr": "نظام التشغيل (operating system) هو البرنامج الذي يدير عتاد الحاسوب (hardware) ويوفّر لكل البرامج الأخرى بيئة نظيفة وآمنة تعمل فيها. تتبع المحاضرات الطبعة العاشرة من كتاب Operating System Concepts: كيف يُنظَّم نظام الحاسوب، وما الخدمات التي يقدمها نظام التشغيل وكيف تطلبها البرامج عبر استدعاءات النظام (system calls)، وكيف تُنشأ العمليات (processes) وتُجدوَل وتتواصل، وكيف تستفيد الخيوط (threads) من العتاد متعدد الأنوية (multicore). أما السكاشن (Sections) فهي معامل لينكس (Linux) عملية مبنية على NDG Linux Essentials: الصدفة (shell)، والحصول على المساعدة، والتعامل مع الملفات، والأرشفة (archiving).",
   "instructors": ["Dr. Mostafa Elgendy", "Eng. Ibrahim Reyad (Linux labs)"],
   "objectives": [
     "Describe the organization of a computer system and the role of the operating system within it.",
@@ -14,6 +17,13 @@
     "Describe processes, their states and scheduling, and how they are created and communicate.",
     "Explain threads, multicore programming and the main multithreading models.",
     "Work confidently on the Linux command line: navigation, help, files and archives."
+  ],
+  "objectivesAr": [
+    "وصف تنظيم نظام الحاسوب ودور نظام التشغيل فيه.",
+    "شرح الخدمات التي يقدمها نظام التشغيل وكيف تستخدمها التطبيقات عبر استدعاءات النظام (system calls).",
+    "وصف العمليات (processes) وحالاتها وجدولتها، وكيف تُنشأ وتتواصل فيما بينها.",
+    "شرح الخيوط (threads) والبرمجة متعددة الأنوية (multicore) ونماذج تعدد الخيوط (multithreading) الرئيسية.",
+    "العمل بثقة على سطر أوامر لينكس (Linux): التنقل، والمساعدة، والملفات، والأرشيفات."
   ],
   "topics": [
     "Computer-system organization",
@@ -28,11 +38,11 @@
     "Files, help and archiving in Linux"
   ],
   "grading": [
-    { "label": "Final exam", "weight": 50 },
-    { "label": "Attendance & assignments", "weight": 15 },
-    { "label": "Midterm", "weight": 15 },
-    { "label": "Lab oral", "weight": 10 },
-    { "label": "Lab practical", "weight": 10 }
+    { "label": "Final exam", "labelAr": "الامتحان النهائي", "weight": 50 },
+    { "label": "Attendance & assignments", "labelAr": "الحضور والتكليفات", "weight": 15 },
+    { "label": "Midterm", "labelAr": "امتحان منتصف الفصل", "weight": 15 },
+    { "label": "Lab oral", "labelAr": "الامتحان الشفهي للمعمل", "weight": 10 },
+    { "label": "Lab practical", "labelAr": "الامتحان العملي للمعمل", "weight": 10 }
   ],
   "books": [
     {

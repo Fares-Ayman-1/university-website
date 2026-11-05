@@ -2,6 +2,7 @@ import { BookOpen, FlaskConical } from "lucide-react";
 import { COLLECTION_META, getCollection, type Collection } from "@/lib/content";
 import { ResourceCard } from "./ResourceCard";
 import styles from "./CollectionList.module.css";
+import { ArLine } from "./mdx/Arabic";
 
 export function CollectionList({ subject, collection }: { subject: string; collection: Collection }) {
   const items = getCollection(subject, collection);
@@ -15,8 +16,14 @@ export function CollectionList({ subject, collection }: { subject: string; colle
           <Icon />
         </span>
         <div>
-          <h2 className={styles.title}>{meta.label}</h2>
-          <p className={styles.description}>{meta.description}</p>
+          <h2 className={styles.title}>
+            {meta.label}
+            <ArLine>{meta.labelAr}</ArLine>
+          </h2>
+          <p className={styles.description}>
+            {meta.description}
+            <ArLine>{meta.descriptionAr}</ArLine>
+          </p>
         </div>
       </header>
 

@@ -1,7 +1,9 @@
 ---
 number: 0
 title: Introduction to Oracle SQL and the HR Schema
+titleAr: "مقدمة إلى Oracle SQL ومخطط HR"
 summary: Sets up the SQL labs. Covers what Oracle Database 11g offers, relational database concepts and terminology, ER-diagram conventions in Oracle's notation, the four families of SQL statements, the tools (SQL Developer and SQL*Plus), and the HR sample schema that every lab queries.
+summaryAr: "تمهيد لسكاشن SQL العملية: ما يقدمه Oracle Database 11g، ومفاهيم قواعد البيانات العلائقية ومصطلحاتها، واصطلاحات مخطط الكيان والعلاقة (ER diagram) بترميز Oracle، والعائلات الأربع لجمل SQL، والأدوات (SQL Developer و SQL*Plus)، ومخطط HR التجريبي الذي تستعلم منه كل السكاشن."
 kind: concept
 topics: [Oracle Database 11g, RDBMS concepts, ERD conventions, Relational terminology, SQL statement types, SQL Developer, HR schema]
 duration: 30 min study
@@ -20,107 +22,150 @@ bookRefs:
 <Objectives>
 
 - Explain what a **relational database** is and how Oracle implements an **RDBMS / ORDBMS**.
+  <Ar>شرح ما هي **قاعدة البيانات العلائقية (relational database)** وكيف تُنفِّذ Oracle **نظام إدارة قواعد البيانات العلائقية / العلائقية الكائنية (RDBMS / ORDBMS)**.</Ar>
 - Read an ER diagram in Oracle's notation (**#**, **\***, **o**).
+  <Ar>قراءة مخطط الكيان والعلاقة (ER diagram) بترميز Oracle (**#**، **\***، **o**).</Ar>
 - Use the standard **relational terminology**: row, column, primary key, foreign key, field, NULL.
+  <Ar>استخدام **المصطلحات العلائقية (relational terminology)** القياسية: الصف (row)، والعمود (column)، والمفتاح الأساسي (primary key)، والمفتاح الأجنبي (foreign key)، والحقل (field)، والقيمة الفارغة (NULL).</Ar>
 - Group SQL statements into **DML, DDL, DCL and transaction control**.
+  <Ar>تصنيف جمل SQL إلى **DML و DDL و DCL والتحكم في المعاملات (transaction control)**.</Ar>
 - Find your way around the **HR schema** used in every lab.
+  <Ar>التنقل في **مخطط HR (HR schema)** المستخدم في كل سكشن.</Ar>
 
 </Objectives>
 
 ## Oracle Database 11g at a glance
 
+<Ar>نظرة سريعة على Oracle Database 11g</Ar>
+
 The labs follow Oracle's *SQL Fundamentals I* course. Oracle Database 11g is an **object-relational** DBMS (ORDBMS). It is fully relational, and it adds user-defined types, objects and large multimedia data types. Its focus areas are **manageability**, **high availability**, **performance**, **security** and **information integration**. It sits inside a wider product family: Fusion Middleware, Enterprise Manager Grid Control and BI Publisher.
+
+<Ar>تتبع السكاشن العملية مقرر *SQL Fundamentals I* من Oracle. ونظام Oracle Database 11g هو نظام إدارة قواعد بيانات **علائقي كائني (object-relational)** (ORDBMS)؛ فهو علائقي بالكامل، ويضيف أنواعًا يعرّفها المستخدم (user-defined types) وكائنات (objects) وأنواع بيانات كبيرة للوسائط المتعددة. ومجالات تركيزه هي **سهولة الإدارة (manageability)** و**الإتاحة العالية (high availability)** و**الأداء** و**الأمان** و**تكامل المعلومات (information integration)**. وهو جزء من عائلة منتجات أوسع: Fusion Middleware و Enterprise Manager Grid Control و BI Publisher.</Ar>
 
 ## Relational concepts
 
+<Ar>مفاهيم النموذج العلائقي</Ar>
+
 Dr. **E. F. Codd** proposed the relational model in **1970**. It has three parts:
 
-- a collection of objects, or **relations** (tables),
-- a set of **operators** that act on relations,
-- **data integrity** rules for accuracy and consistency.
+<Ar>اقترح الدكتور **E. F. Codd** النموذج العلائقي (relational model) عام **1970**، ويتكون من ثلاثة أجزاء:</Ar>
 
-<Definition term="Relational database">
+- a collection of objects, or **relations** (tables),
+  <Ar>مجموعة من الكائنات، أي **العلاقات (relations)** (الجداول)،</Ar>
+- a set of **operators** that act on relations,
+  <Ar>مجموعة من **المؤثرات (operators)** التي تعمل على العلاقات،</Ar>
+- **data integrity** rules for accuracy and consistency.
+  <Ar>قواعد **سلامة البيانات (data integrity)** لضمان الدقة والاتساق.</Ar>
+
+<Definition term="Relational database" termAr="قاعدة البيانات العلائقية">
   A collection of relations, i.e. <strong>two-dimensional tables</strong>, managed by the Oracle server.
+
+  <Ar>مجموعة من العلاقات (relations)، أي <strong>جداول ثنائية الأبعاد</strong>، يديرها خادم Oracle (Oracle server).</Ar>
 </Definition>
 
 Designing a database goes from the client's mental model, to an **entity model** (ER diagram), to a **table model**, to **tables on disk**.
 
+<Ar>يمر تصميم قاعدة البيانات بمراحل: من النموذج الذهني لدى العميل، إلى **نموذج الكيانات (entity model)** (مخطط ER)، إلى **نموذج الجداول (table model)**، ثم إلى **جداول مخزنة على القرص**.</Ar>
+
 ### ER diagrams in Oracle's notation
 
-<SlideFigure page={21} caption="'Assign one or more employees to a department… some departments do not yet have employees.'" />
+<Ar>مخططات ER بترميز Oracle</Ar>
 
-| Convention | Meaning |
+<SlideFigure page={21} caption="'Assign one or more employees to a department… some departments do not yet have employees.'" captionAr="«عيِّن موظفًا واحدًا أو أكثر في القسم… بعض الأقسام ليس بها موظفون بعد.»" />
+
+| Convention <Ar>الاصطلاح</Ar> | Meaning <Ar>المعنى</Ar> |
 |---|---|
-| Entity in a soft box, **singular, uppercase** name | `EMPLOYEE`, `DEPARTMENT` |
-| Attribute in **singular, lowercase** | `number`, `name`, `job title` |
-| `#` | Part of the **primary unique identifier** (UID); `(#)` is a secondary UID |
-| `*` | **Mandatory** attribute |
-| `o` | **Optional** attribute |
-| Solid line end / dashed line end | The relationship is mandatory / optional on that side |
-| Crow's foot | "One or more" (the *many* side) |
+| Entity in a soft box, **singular, uppercase** name <Ar>الكيان (entity) داخل مربع بحواف مستديرة، باسم **مفرد وبأحرف كبيرة**</Ar> | `EMPLOYEE`, `DEPARTMENT` |
+| Attribute in **singular, lowercase** <Ar>السمة (attribute) باسم **مفرد وبأحرف صغيرة**</Ar> | `number`, `name`, `job title` |
+| `#` | Part of the **primary unique identifier** (UID); `(#)` is a secondary UID <Ar>جزء من **المعرّف الفريد الأساسي (primary unique identifier)** (UID)؛ و`(#)` معرّف فريد ثانوي</Ar> |
+| `*` | **Mandatory** attribute <Ar>سمة **إلزامية (mandatory)**</Ar> |
+| `o` | **Optional** attribute <Ar>سمة **اختيارية (optional)**</Ar> |
+| Solid line end / dashed line end <Ar>طرف خط متصل / طرف خط متقطع</Ar> | The relationship is mandatory / optional on that side <Ar>العلاقة إلزامية / اختيارية من ذلك الطرف</Ar> |
+| Crow's foot <Ar>قدم الغراب (crow's foot)</Ar> | "One or more" (the *many* side) <Ar>«واحد أو أكثر» (طرف *المتعدد*)</Ar> |
 
 ### Relating tables
 
+<Ar>ربط الجداول</Ar>
+
 Each row is uniquely identified by its **primary key**, and a **foreign key** links a row to the primary key of a row in another (or the same) table. `EMPLOYEES.department_id` is a foreign key to `DEPARTMENTS.department_id`.
 
-<SlideFigure page={24} caption="Relational database terminology on the EMPLOYEES table." />
+<Ar>يُعرَّف كل صف تعريفًا فريدًا بواسطة **مفتاحه الأساسي (primary key)**، ويربط **المفتاح الأجنبي (foreign key)** الصف بالمفتاح الأساسي لصف في جدول آخر (أو في الجدول نفسه). فالعمود `EMPLOYEES.department_id` مفتاح أجنبي يشير إلى `DEPARTMENTS.department_id`.</Ar>
 
-| # | Term | In the figure |
+<SlideFigure page={24} caption="Relational database terminology on the EMPLOYEES table." captionAr="مصطلحات قواعد البيانات العلائقية على جدول EMPLOYEES." />
+
+| # | Term <Ar>المصطلح</Ar> | In the figure <Ar>في الشكل</Ar> |
 |---|---|---|
-| 1 | **Row** (tuple) | All the data for one employee |
-| 2 | **Primary key** column | `EMPLOYEE_ID`, unique for every row |
-| 3 | **Non-key** column | e.g. `SALARY` |
-| 4 | **Foreign key** column | `DEPARTMENT_ID`, which refers to DEPARTMENTS |
-| 5 | **Field** | The intersection of one row and one column |
-| 6 | **NULL** field | A field with no value |
+| 1 | **Row** (tuple) <Ar>**الصف (row)** (tuple)</Ar> | All the data for one employee <Ar>كل البيانات الخاصة بموظف واحد</Ar> |
+| 2 | **Primary key** column <Ar>عمود **المفتاح الأساسي (primary key)**</Ar> | `EMPLOYEE_ID`, unique for every row <Ar>`EMPLOYEE_ID`، وهو فريد لكل صف</Ar> |
+| 3 | **Non-key** column <Ar>عمود **غير مفتاحي (non-key)**</Ar> | e.g. `SALARY` <Ar>مثل `SALARY`</Ar> |
+| 4 | **Foreign key** column <Ar>عمود **المفتاح الأجنبي (foreign key)**</Ar> | `DEPARTMENT_ID`, which refers to DEPARTMENTS <Ar>`DEPARTMENT_ID`، ويشير إلى جدول DEPARTMENTS</Ar> |
+| 5 | **Field** <Ar>**الحقل (field)**</Ar> | The intersection of one row and one column <Ar>تقاطع صف واحد مع عمود واحد</Ar> |
+| 6 | **NULL** field <Ar>حقل **NULL**</Ar> | A field with no value <Ar>حقل ليست فيه قيمة</Ar> |
 
 ## SQL
 
+<Ar>لغة SQL</Ar>
+
 **SQL** (Structured Query Language) is the **ANSI standard** language for relational databases. It is efficient, easy to learn, and **functionally complete**: one language defines, retrieves and manipulates data.
+
+<Ar>لغة **SQL** (لغة الاستعلام البنيوية، Structured Query Language) هي اللغة **القياسية وفق ANSI (ANSI standard)** لقواعد البيانات العلائقية. وهي فعّالة وسهلة التعلم و**مكتملة وظيفيًا (functionally complete)**: لغة واحدة تُعرِّف البيانات وتسترجعها وتعالجها.</Ar>
 
 ```sql
 SELECT department_name
 FROM   departments;
 ```
 
-| Category | Statements | Purpose |
+| Category <Ar>الفئة</Ar> | Statements <Ar>الجمل</Ar> | Purpose <Ar>الغرض</Ar> |
 |---|---|---|
-| **DML**: data manipulation | `SELECT`, `INSERT`, `UPDATE`, `DELETE`, `MERGE` | Read and change rows |
-| **DDL**: data definition | `CREATE`, `ALTER`, `DROP`, `RENAME`, `TRUNCATE`, `COMMENT` | Create and change structures |
-| **DCL**: data control | `GRANT`, `REVOKE` | Give and remove privileges |
-| **Transaction control** | `COMMIT`, `ROLLBACK`, `SAVEPOINT` | Make DML changes permanent or undo them |
+| **DML**: data manipulation <Ar>**DML**: لغة معالجة البيانات (data manipulation)</Ar> | `SELECT`, `INSERT`, `UPDATE`, `DELETE`, `MERGE` | Read and change rows <Ar>قراءة الصفوف وتعديلها</Ar> |
+| **DDL**: data definition <Ar>**DDL**: لغة تعريف البيانات (data definition)</Ar> | `CREATE`, `ALTER`, `DROP`, `RENAME`, `TRUNCATE`, `COMMENT` | Create and change structures <Ar>إنشاء الهياكل وتعديلها</Ar> |
+| **DCL**: data control <Ar>**DCL**: لغة التحكم في البيانات (data control)</Ar> | `GRANT`, `REVOKE` | Give and remove privileges <Ar>منح الصلاحيات وسحبها</Ar> |
+| **Transaction control** <Ar>**التحكم في المعاملات (Transaction control)**</Ar> | `COMMIT`, `ROLLBACK`, `SAVEPOINT` | Make DML changes permanent or undo them <Ar>جعل تغييرات DML دائمة أو التراجع عنها</Ar> |
 
 **Tools:** the primary lab tool is **Oracle SQL Developer**, a free graphical IDE. The **SQL\*Plus** command line works too.
+
+<Ar>**الأدوات:** الأداة الأساسية في السكاشن هي **Oracle SQL Developer**، وهي بيئة تطوير رسومية (IDE) مجانية. ويعمل سطر الأوامر **SQL\*Plus** أيضًا.</Ar>
 
 <Steps>
 
 1. Install Oracle Database (Express Edition is free) and **SQL Developer**.
+   <Ar>ثبِّت Oracle Database (الإصدار Express Edition مجاني) و**SQL Developer**.</Ar>
 2. In SQL Developer, create a **new connection**: user `hr`, its password, host `localhost`, port `1521`, and the service name of your install.
+   <Ar>في SQL Developer، أنشئ **اتصالًا جديدًا (new connection)**: المستخدم `hr` وكلمة مروره، والمضيف (host) `localhost`، والمنفذ (port) `1521`، واسم الخدمة (service name) الخاص بتثبيتك.</Ar>
 3. Expand **Tables** in the connection tree to browse `EMPLOYEES`, `DEPARTMENTS` and the rest.
+   <Ar>وسِّع **Tables** في شجرة الاتصال لتتصفح `EMPLOYEES` و`DEPARTMENTS` وبقية الجداول.</Ar>
 4. Open a **SQL Worksheet**, type a statement and press **Ctrl+Enter** to run it.
+   <Ar>افتح **SQL Worksheet** (ورقة عمل SQL)، واكتب جملة، ثم اضغط **Ctrl+Enter** لتنفيذها.</Ar>
 
 </Steps>
 
 ## The HR schema
 
-<SlideFigure page={30} caption="The Human Resources (HR) schema." />
+<Ar>مخطط HR</Ar>
 
-| Table | Key columns | Holds |
+<SlideFigure page={30} caption="The Human Resources (HR) schema." captionAr="مخطط الموارد البشرية (HR)." />
+
+| Table <Ar>الجدول</Ar> | Key columns <Ar>الأعمدة المفتاحية</Ar> | Holds <Ar>يحتوي على</Ar> |
 |---|---|---|
-| `EMPLOYEES` | `employee_id`; FKs `department_id`, `job_id`, `manager_id` (self-reference) | Names, email, phone, `hire_date`, `salary`, `commission_pct` |
-| `DEPARTMENTS` | `department_id`; FKs `manager_id`, `location_id` | `department_name` |
+| `EMPLOYEES` | `employee_id`; FKs `department_id`, `job_id`, `manager_id` (self-reference) <Ar>`employee_id`؛ والمفاتيح الأجنبية `department_id` و`job_id` و`manager_id` (مرجع ذاتي)</Ar> | Names, email, phone, `hire_date`, `salary`, `commission_pct` <Ar>الأسماء والبريد الإلكتروني والهاتف و`hire_date` و`salary` و`commission_pct`</Ar> |
+| `DEPARTMENTS` | `department_id`; FKs `manager_id`, `location_id` <Ar>`department_id`؛ والمفتاحان الأجنبيان `manager_id` و`location_id`</Ar> | `department_name` |
 | `JOBS` | `job_id` | `job_title`, `min_salary`, `max_salary` |
-| `JOB_HISTORY` | (`employee_id`, `start_date`) | Previous jobs: `end_date`, `job_id`, `department_id` |
-| `LOCATIONS` | `location_id`; FK `country_id` | Address, `postal_code`, `city`, `state_province` |
-| `COUNTRIES` | `country_id`; FK `region_id` | `country_name` |
+| `JOB_HISTORY` | (`employee_id`, `start_date`) | Previous jobs: `end_date`, `job_id`, `department_id` <Ar>الوظائف السابقة: `end_date` و`job_id` و`department_id`</Ar> |
+| `LOCATIONS` | `location_id`; FK `country_id` <Ar>`location_id`؛ والمفتاح الأجنبي `country_id`</Ar> | Address, `postal_code`, `city`, `state_province` <Ar>العنوان و`postal_code` و`city` و`state_province`</Ar> |
+| `COUNTRIES` | `country_id`; FK `region_id` <Ar>`country_id`؛ والمفتاح الأجنبي `region_id`</Ar> | `country_name` |
 | `REGIONS` | `region_id` | `region_name` |
-| `JOB_GRADES` | (course table) | `grade_level`, `lowest_sal`, `highest_sal` |
+| `JOB_GRADES` | (course table) <Ar>(جدول خاص بالمقرر)</Ar> | `grade_level`, `lowest_sal`, `highest_sal` |
 
 ### The sample rows used in these sections
 
+<Ar>صفوف العينة المستخدمة في هذه السكاشن</Ar>
+
 The labs use these 20 employees. Exact hire dates can differ between HR versions; your database may show different years.
 
-| ID | Name | Job | Salary | Comm | Mgr | Dept | Hired |
+<Ar>تستخدم السكاشن هؤلاء الموظفين الـ 20. وقد تختلف تواريخ التعيين الدقيقة بين إصدارات HR، فقد تعرض قاعدة بياناتك سنوات مختلفة.</Ar>
+
+{/* data-table */}
+| ID <Ar>الرقم</Ar> | Name <Ar>الاسم</Ar> | Job <Ar>الوظيفة</Ar> | Salary <Ar>الراتب</Ar> | Comm <Ar>العمولة</Ar> | Mgr <Ar>المدير</Ar> | Dept <Ar>القسم</Ar> | Hired <Ar>تاريخ التعيين</Ar> |
 |---|---|---|---|---|---|---|---|
 | 100 | Steven King | AD_PRES | 24000 | | | 90 | 17-JUN-03 |
 | 101 | Neena Kochhar | AD_VP | 17000 | | 100 | 90 | 21-SEP-05 |
@@ -145,7 +190,10 @@ The labs use these 20 employees. Exact hire dates can differ between HR versions
 
 **DEPARTMENTS:**
 
-| ID | Name | Manager | Location |
+<Ar>**جدول DEPARTMENTS:**</Ar>
+
+{/* data-table */}
+| ID <Ar>الرقم</Ar> | Name <Ar>الاسم</Ar> | Manager <Ar>المدير</Ar> | Location <Ar>الموقع</Ar> |
 |---|---|---|---|
 | 10 | Administration | 200 | 1700 |
 | 20 | Marketing | 201 | 1800 |
@@ -158,36 +206,52 @@ The labs use these 20 employees. Exact hire dates can differ between HR versions
 
 Notice two edge cases that the later labs rely on: **Grant has no department**, and **Contracting has no employees**.
 
+<Ar>لاحظ حالتين حدّيتين (edge cases) تعتمد عليهما السكاشن اللاحقة: **Grant ليس له قسم**، و**قسم Contracting ليس به موظفون**.</Ar>
+
 <Takeaways>
 
 - A relational database is a set of **tables** linked by **primary and foreign keys**; Oracle 11g is an **ORDBMS**.
+  <Ar>قاعدة البيانات العلائقية مجموعة من **الجداول** المرتبطة عبر **المفاتيح الأساسية والأجنبية (primary and foreign keys)**، ونظام Oracle 11g هو **ORDBMS**.</Ar>
 - Oracle ERDs mark UIDs with `#`, mandatory attributes with `*` and optional ones with `o`.
+  <Ar>تُعلِّم مخططات ER في Oracle المعرّفات الفريدة (UIDs) بالرمز `#`، والسمات الإلزامية بالرمز `*`، والاختيارية بالرمز `o`.</Ar>
 - SQL statements fall into **DML**, **DDL**, **DCL** and **transaction control**.
+  <Ar>تنقسم جمل SQL إلى **DML** و**DDL** و**DCL** و**التحكم في المعاملات (transaction control)**.</Ar>
 - Every lab queries the **HR** schema, mostly `EMPLOYEES` and `DEPARTMENTS`.
+  <Ar>كل السكاشن تستعلم من مخطط **HR**، وغالبًا من `EMPLOYEES` و`DEPARTMENTS`.</Ar>
 
 </Takeaways>
 
 ## Practice
 
-<Exercise title="Classify the statements" level="easy">
+<Ar>تدريب</Ar>
+
+<Exercise title="Classify the statements" titleAr="صنِّف الجمل" level="easy">
 
 Classify each statement: `TRUNCATE`, `MERGE`, `SAVEPOINT`, `REVOKE`, `COMMENT`, `SELECT`.
+
+<Ar>صنِّف كل جملة: `TRUNCATE`، `MERGE`، `SAVEPOINT`، `REVOKE`، `COMMENT`، `SELECT`.</Ar>
 
 <Solution>
 
 `TRUNCATE`: DDL · `MERGE`: DML · `SAVEPOINT`: transaction control · `REVOKE`: DCL · `COMMENT`: DDL · `SELECT`: DML (data retrieval).
 
+<Ar>`TRUNCATE`: من DDL · `MERGE`: من DML · `SAVEPOINT`: من التحكم في المعاملات · `REVOKE`: من DCL · `COMMENT`: من DDL · `SELECT`: من DML (استرجاع البيانات).</Ar>
+
 </Solution>
 
 </Exercise>
 
-<Exercise title="Read the keys" level="easy">
+<Exercise title="Read the keys" titleAr="اقرأ المفاتيح" level="easy">
 
 In the HR schema, which column links an employee to their manager, and what kind of relationship is it?
+
+<Ar>في مخطط HR، ما العمود الذي يربط الموظف بمديره، وما نوع هذه العلاقة؟</Ar>
 
 <Solution>
 
 `EMPLOYEES.manager_id` is a **foreign key to `EMPLOYEES.employee_id`** in the same table, so it is a **recursive (self-referencing)** relationship. King's `manager_id` is NULL because he has no manager.
+
+<Ar>العمود `EMPLOYEES.manager_id` **مفتاح أجنبي يشير إلى `EMPLOYEES.employee_id`** في الجدول نفسه، لذا فهي علاقة **تكرارية ذاتية المرجع (recursive / self-referencing)**. وقيمة `manager_id` الخاصة بـ King فارغة (NULL) لأنه ليس له مدير.</Ar>
 
 </Solution>
 
@@ -197,33 +261,48 @@ In the HR schema, which column links an employee to their manager, and what kind
   questions={[
     {
       q: "Who proposed the relational model, and when?",
+      qAr: "من اقترح النموذج العلائقي، ومتى؟",
       options: ["Larry Ellison, 1977", "E. F. Codd, 1970", "Peter Chen, 1976", "Edgar Dijkstra, 1968"],
+      optionsAr: ["Larry Ellison, 1977", "E. F. Codd, 1970", "Peter Chen, 1976", "Edgar Dijkstra, 1968"],
       answer: 1,
-      explain: "Codd's 1970 paper is the basis of every RDBMS."
+      explain: "Codd's 1970 paper is the basis of every RDBMS.",
+      explainAr: "بحث Codd المنشور عام 1970 هو أساس كل أنظمة RDBMS."
     },
     {
       q: "In Oracle ERD notation, '*' next to an attribute means…",
+      qAr: "في ترميز مخططات ER في Oracle، الرمز «*» بجوار السمة يعني…",
       options: ["Primary key", "Optional", "Mandatory", "Foreign key"],
+      optionsAr: ["مفتاح أساسي", "اختيارية", "إلزامية", "مفتاح أجنبي"],
       answer: 2,
-      explain: "# = unique identifier, * = mandatory, o = optional."
+      explain: "# = unique identifier, * = mandatory, o = optional.",
+      explainAr: "الرمز # = معرّف فريد، و * = إلزامية، و o = اختيارية."
     },
     {
       q: "GRANT and REVOKE are…",
+      qAr: "الأمران GRANT و REVOKE من جمل…",
       options: ["DML", "DDL", "DCL", "Transaction control"],
+      optionsAr: ["DML", "DDL", "DCL", "التحكم في المعاملات"],
       answer: 2,
-      explain: "Data control language manages privileges."
+      explain: "Data control language manages privileges.",
+      explainAr: "لغة التحكم في البيانات (DCL) تدير الصلاحيات."
     },
     {
       q: "The intersection of a row and a column is a…",
+      qAr: "تقاطع الصف مع العمود يُسمّى…",
       options: ["Field", "Key", "Tuple", "Domain"],
+      optionsAr: ["حقل", "مفتاح", "صف (tuple)", "نطاق (domain)"],
       answer: 0,
-      explain: "A field holds one value, or NULL."
+      explain: "A field holds one value, or NULL.",
+      explainAr: "يحمل الحقل قيمة واحدة، أو NULL."
     },
     {
       q: "Which statement makes DML changes permanent?",
+      qAr: "أي جملة تجعل تغييرات DML دائمة؟",
       options: ["SAVEPOINT", "COMMIT", "ROLLBACK", "TRUNCATE"],
+      optionsAr: ["SAVEPOINT", "COMMIT", "ROLLBACK", "TRUNCATE"],
       answer: 1,
-      explain: "COMMIT ends the transaction and saves its changes."
+      explain: "COMMIT ends the transaction and saves its changes.",
+      explainAr: "تُنهي COMMIT المعاملة وتحفظ تغييراتها."
     }
   ]}
 />

@@ -8,6 +8,7 @@ import rehypeKatex from "rehype-katex";
 import rehypePrettyCode, { type Options as PrettyCodeOptions } from "rehype-pretty-code";
 import { createMdxComponents } from "@/components/mdx";
 import { quantroCodeTheme } from "./code-theme";
+import { remarkArabic } from "./remark-arabic";
 import type { ResourceItem } from "./content";
 
 const prettyCodeOptions: PrettyCodeOptions = {
@@ -29,7 +30,7 @@ export async function renderResource(item: ResourceItem) {
       // dangerous globals stay blocked.
       blockJS: false,
       mdxOptions: {
-        remarkPlugins: [remarkGfm, remarkMath],
+        remarkPlugins: [remarkGfm, remarkMath, remarkArabic],
         rehypePlugins: [
           rehypeSlug,
           [

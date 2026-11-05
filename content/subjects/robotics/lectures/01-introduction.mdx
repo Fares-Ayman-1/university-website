@@ -1,7 +1,9 @@
 ---
 number: 1
 title: Introduction to Robotics
+titleAr: "مقدمة في علم الروبوتات"
 summary: Where robots came from, how the major associations define them, what a robotic system is made of, and how robots are classified by capability, generation, mobility, power, control and function.
+summaryAr: "من أين جاءت الروبوتات، وكيف تعرّفها الجمعيات الكبرى، ومِمَّ يتكوّن النظام الروبوتي (robotic system)، وكيف تُصنَّف الروبوتات حسب القدرة والجيل والتنقّل ومصدر الطاقة وطريقة التحكم والوظيفة."
 topics: [History, Asimov's laws, Definitions, Robotic system, Classification]
 duration: 35 min study
 sources:
@@ -17,176 +19,242 @@ bookRefs:
 <Objectives>
 
 - Outline the key milestones in the history of robotics and state **Asimov's laws**.
+  <Ar>استعراض أهم المحطات في تاريخ علم الروبوتات (Robotics)، وذكر **قوانين أسيموف (Asimov's laws)**.</Ar>
 - Compare the robot definitions of the **RIA** and **JARA**, and describe a robot as a machine that **senses, thinks and acts**.
+  <Ar>المقارنة بين تعريفَي الروبوت لدى **RIA** و**JARA**، ووصف الروبوت بأنه آلة **تستشعر وتفكّر وتتصرّف**.</Ar>
 - Name the components of a **robotic system** and the disciplines robotics draws on.
+  <Ar>تسمية مكوّنات **النظام الروبوتي (robotic system)** والتخصصات التي يستند إليها علم الروبوتات.</Ar>
 - Classify a robot using the **JIRA**, **RIA** and **AFR** schemes, by **generation**, and by **function**.
+  <Ar>تصنيف الروبوت باستخدام مخططات **JIRA** و**RIA** و**AFR**، وحسب **الجيل**، وحسب **الوظيفة**.</Ar>
 
 </Objectives>
 
 ## What is a robot?
 
-<Definition term="Robot (general)">
+<Ar>ما الروبوت؟</Ar>
+
+<Definition term="Robot (general)" termAr="الروبوت (تعريف عام)">
   A machine that <strong>senses, thinks and acts</strong>. It must have sensors, processing that emulates some aspects of cognition, and actuators.
+
+  <Ar>آلة <strong>تستشعر وتفكّر وتتصرّف</strong>. ويجب أن تحتوي على مستشعرات (sensors)، ومعالجة تحاكي بعض جوانب الإدراك المعرفي (cognition)، ومشغِّلات (actuators).</Ar>
 </Definition>
 
 This is exactly the **agent** from the AI course: percepts come in through sensors, a program decides, and actuators change the world. Seen as a black box, a robot takes **human directions as input** and produces **many types of work, done automatically**, as output.
 
+<Ar>هذا هو بالضبط **الوكيل (agent)** الذي درسناه في مقرر الذكاء الاصطناعي: تدخل الإدراكات (percepts) عبر المستشعرات، ويتخذ برنامجٌ القرار، وتغيّر المشغِّلات العالم. وإذا نظرنا إلى الروبوت على أنه صندوق أسود (black box)، فهو يأخذ **توجيهات الإنسان مدخلاتٍ** وينتج **أنواعًا كثيرة من العمل تُنجَز آليًا** مخرجاتٍ.</Ar>
+
 ## A short history
 
-| Year | Milestone |
+<Ar>لمحة تاريخية موجزة</Ar>
+
+| Year <Ar>السنة</Ar> | Milestone <Ar>المحطة</Ar> |
 |---|---|
-| **1922** | Czech writer Karel Čapek's play *Rossum's Universal Robots* introduces the word **robot**, from *robota* (forced labour, work). |
-| **1950** | Isaac Asimov publishes *I, Robot* with his **Three Laws of Robotics**. |
-| **1954** | George Devol develops the **first programmable robot**. |
-| **1955** | Denavit and Hartenberg develop **homogeneous transformation matrices**, still used today for robot kinematics (Ch. 8–9). |
-| **1962** | **Unimation** is formed and the first industrial robots appear. |
-| **1973** | Cincinnati Milacron introduces the **T3**, which becomes very popular in industry. |
-| **1990** | Cincinnati Milacron's robot business is acquired by **ABB**. |
+| **1922** | Czech writer Karel Čapek's play *Rossum's Universal Robots* introduces the word **robot**, from *robota* (forced labour, work). <Ar>تقدّم مسرحية الكاتب التشيكي كارل تشابيك (Karel Čapek) *Rossum's Universal Robots* كلمة **روبوت (robot)**، المشتقة من *robota* (السُّخرة، العمل).</Ar> |
+| **1950** | Isaac Asimov publishes *I, Robot* with his **Three Laws of Robotics**. <Ar>ينشر إسحاق أسيموف (Isaac Asimov) كتاب *I, Robot* متضمنًا **قوانين الروبوتات الثلاثة (Three Laws of Robotics)**.</Ar> |
+| **1954** | George Devol develops the **first programmable robot**. <Ar>يطوّر جورج ديفول (George Devol) **أول روبوت قابل للبرمجة**.</Ar> |
+| **1955** | Denavit and Hartenberg develop **homogeneous transformation matrices**, still used today for robot kinematics (Ch. 8–9). <Ar>يطوّر دينافيت وهارتنبرغ (Denavit and Hartenberg) **مصفوفات التحويل المتجانس (homogeneous transformation matrices)**، التي لا تزال تُستخدم حتى اليوم في علم حركة الروبوتات (kinematics) (الفصلان 8–9).</Ar> |
+| **1962** | **Unimation** is formed and the first industrial robots appear. <Ar>تأسيس شركة **Unimation** وظهور أولى الروبوتات الصناعية.</Ar> |
+| **1973** | Cincinnati Milacron introduces the **T3**, which becomes very popular in industry. <Ar>تطرح شركة Cincinnati Milacron الروبوت **T3** الذي يحظى بانتشار واسع في الصناعة.</Ar> |
+| **1990** | Cincinnati Milacron's robot business is acquired by **ABB**. <Ar>تستحوذ شركة **ABB** على قطاع الروبوتات في Cincinnati Milacron.</Ar> |
 
 ### Asimov's laws of robotics
 
+<Ar>قوانين أسيموف للروبوتات</Ar>
+
 Asimov proposed three laws and later added a **zeroth law** that outranks them all. Each law yields to the laws above it.
+
+<Ar>اقترح أسيموف ثلاثة قوانين، ثم أضاف لاحقًا **القانون الصفري (zeroth law)** الذي يعلو عليها جميعًا. ويخضع كل قانون للقوانين التي تعلوه.</Ar>
 
 <Steps>
 
 1. **Law 0**: A robot may not injure **humanity** or, through inaction, allow humanity to come to harm.
+   <Ar>**القانون 0**: لا يجوز للروبوت أن يؤذي **البشرية**، أو أن يسمح بتقاعسه عن الفعل بأن يلحق بها الأذى.</Ar>
 2. **Law 1**: A robot may not injure a **human being** or, through inaction, allow a human being to come to harm, unless this would violate a higher-order law.
+   <Ar>**القانون 1**: لا يجوز للروبوت أن يؤذي **إنسانًا**، أو أن يسمح بتقاعسه عن الفعل بأن يلحق به الأذى، ما لم يتعارض ذلك مع قانون أعلى رتبة.</Ar>
 3. **Law 2**: A robot must **obey orders** given by human beings, except where such orders conflict with a higher-order law.
+   <Ar>**القانون 2**: يجب على الروبوت أن **يطيع الأوامر** التي يصدرها البشر، إلا إذا تعارضت هذه الأوامر مع قانون أعلى رتبة.</Ar>
 4. **Law 3**: A robot must **protect its own existence**, as long as this does not conflict with a higher-order law.
+   <Ar>**القانون 3**: يجب على الروبوت أن **يحمي وجوده**، ما دام ذلك لا يتعارض مع قانون أعلى رتبة.</Ar>
 
 </Steps>
 
 ## Formal definitions
 
+<Ar>التعريفات الرسمية</Ar>
+
 <Grid cols={2}>
-  <Card title="Robotics Industry Association (RIA)" tag="USA">
+  <Card title="Robotics Industry Association (RIA)" titleAr="جمعية صناعة الروبوتات (RIA)" tag="USA">
     A <strong>re-programmable, multifunctional manipulator</strong> designed to move material, parts, tools or specialised devices through <strong>variable programmed motions</strong> for the performance of a variety of tasks.
+
+    <Ar><strong>ذراع آلية (manipulator) قابلة لإعادة البرمجة ومتعددة الوظائف</strong>، مصمَّمة لتحريك المواد أو القطع أو الأدوات أو الأجهزة المتخصصة عبر <strong>حركات مبرمجة متغيرة</strong> لأداء مجموعة متنوعة من المهام.</Ar>
   </Card>
-  <Card title="Japan Robot Association (JARA)" tag="Japan">
+  <Card title="Japan Robot Association (JARA)" titleAr="جمعية الروبوتات اليابانية (JARA)" tag="Japan">
     Devices capable of moving in a <strong>flexible manner analogous to the moving parts of living organisms</strong>, with or without intelligent functions, allowing operations in response to human commands.
+
+    <Ar>أجهزة قادرة على الحركة <strong>بطريقة مرنة تشبه حركة الأجزاء المتحركة في الكائنات الحية</strong>، سواء أكانت لها وظائف ذكية أم لا، بما يتيح تنفيذ العمليات استجابةً لأوامر الإنسان.</Ar>
   </Card>
 </Grid>
 
 The RIA definition is narrow and industrial: it is about manipulators that can be reprogrammed. The JARA definition is broader, so many devices that would not count as robots in the USA are called robots in Japan. This is one reason robot statistics differ between countries.
 
+<Ar>تعريف RIA ضيّق وذو طابع صناعي: فهو يدور حول الأذرع الآلية (manipulators) القابلة لإعادة البرمجة. أما تعريف JARA فأوسع، ولذلك تُسمّى في اليابان أجهزةٌ كثيرة روبوتاتٍ مع أنها لا تُعدّ كذلك في الولايات المتحدة. وهذا أحد أسباب اختلاف إحصاءات الروبوتات بين الدول.</Ar>
+
 ## The robotic system
+
+<Ar>النظام الروبوتي</Ar>
 
 **Robotics** is the art, knowledge base and know-how of designing, applying and using robots. It is **interdisciplinary**, drawing on mechanical engineering, electrical and electronic engineering, computer science, biology and more.
 
-<SlideFigure page={8} caption="Components of a robotic system." />
+<Ar>**علم الروبوتات (Robotics)** هو فنّ تصميم الروبوتات وتطبيقها واستخدامها، وقاعدته المعرفية وخبرته العملية (know-how). وهو علم **متعدد التخصصات (interdisciplinary)**، يستند إلى الهندسة الميكانيكية، والهندسة الكهربائية والإلكترونية، وعلوم الحاسب، وعلم الأحياء، وغيرها.</Ar>
 
-| Component | Role |
+<SlideFigure page={8} caption="Components of a robotic system." captionAr="مكوّنات النظام الروبوتي." />
+
+| Component <Ar>المكوّن</Ar> | Role <Ar>الدور</Ar> |
 |---|---|
-| **Mechanical arm** | The manipulator that moves in space |
-| **End-of-arm tooling** | The gripper or tool that does the work |
-| **Computer controller** | Coordinates all motion; the "brain" |
-| **Sensors** | Report the state of the robot and its surroundings |
-| **Power supply** | Electric, hydraulic or pneumatic energy |
-| **Input device / teach pendant** | How a human gives instructions or teaches positions |
-| **Program storage or network** | Where programs are kept and loaded from |
+| **Mechanical arm** <Ar>**الذراع الميكانيكية**</Ar> | The manipulator that moves in space <Ar>الذراع الآلية (manipulator) التي تتحرك في الفضاء</Ar> |
+| **End-of-arm tooling** <Ar>**أدوات نهاية الذراع (End-of-arm tooling)**</Ar> | The gripper or tool that does the work <Ar>القابض (gripper) أو الأداة التي تنجز العمل</Ar> |
+| **Computer controller** <Ar>**المتحكِّم الحاسوبي (controller)**</Ar> | Coordinates all motion; the "brain" <Ar>ينسّق جميع الحركات؛ إنه «الدماغ»</Ar> |
+| **Sensors** <Ar>**المستشعرات (Sensors)**</Ar> | Report the state of the robot and its surroundings <Ar>تُبلغ عن حالة الروبوت والبيئة المحيطة به</Ar> |
+| **Power supply** <Ar>**مصدر الطاقة**</Ar> | Electric, hydraulic or pneumatic energy <Ar>طاقة كهربائية أو هيدروليكية أو هوائية (pneumatic)</Ar> |
+| **Input device / teach pendant** <Ar>**جهاز الإدخال / لوحة التعليم (teach pendant)**</Ar> | How a human gives instructions or teaches positions <Ar>الوسيلة التي يعطي بها الإنسان التعليمات أو يعلّم الروبوت المواضع</Ar> |
+| **Program storage or network** <Ar>**تخزين البرامج أو الشبكة**</Ar> | Where programs are kept and loaded from <Ar>المكان الذي تُحفظ فيه البرامج وتُحمَّل منه</Ar> |
 
 ## Classifying robots
 
+<Ar>تصنيف الروبوتات</Ar>
+
 ### By capability: JIRA classes
+
+<Ar>حسب القدرة: فئات JIRA</Ar>
 
 The Japanese Industrial Robot Association classifies robots into six classes of increasing autonomy:
 
-| Class | Name | Description |
-|---|---|---|
-| 1 | **Manual-handling device** | Several degrees of freedom, but every motion is driven by a human operator |
-| 2 | **Fixed-sequence robot** | Repeats a set sequence that is hard to change |
-| 3 | **Variable-sequence robot** | Performs the successive stages of a task by a predetermined method that is **easy to modify** |
-| 4 | **Playback robot** | A human operator performs the task by **leading the robot**, which records and replays it |
-| 5 | **Numerical-control robot** | The operator **supplies a movement program** instead of teaching the task manually |
-| 6 | **Intelligent robot** | **Understands its environment** and completes the task despite changes in it |
+<Ar>تصنّف جمعية الروبوتات الصناعية اليابانية (Japanese Industrial Robot Association) الروبوتات إلى ست فئات تتزايد فيها درجة الاستقلالية (autonomy):</Ar>
 
-<Callout type="note" title="RIA only counts classes 3–6">
+| Class <Ar>الفئة</Ar> | Name <Ar>الاسم</Ar> | Description <Ar>الوصف</Ar> |
+|---|---|---|
+| 1 | **Manual-handling device** <Ar>**جهاز المناولة اليدوية (Manual-handling device)**</Ar> | Several degrees of freedom, but every motion is driven by a human operator <Ar>له عدة درجات حرية (DOF)، لكن كل حركة فيه يقودها مشغّل بشري</Ar> |
+| 2 | **Fixed-sequence robot** <Ar>**روبوت التسلسل الثابت (Fixed-sequence)**</Ar> | Repeats a set sequence that is hard to change <Ar>يكرر تسلسلًا محددًا يصعب تغييره</Ar> |
+| 3 | **Variable-sequence robot** <Ar>**روبوت التسلسل المتغير (Variable-sequence)**</Ar> | Performs the successive stages of a task by a predetermined method that is **easy to modify** <Ar>ينفّذ المراحل المتتالية لمهمة ما بطريقة محددة مسبقًا **يسهل تعديلها**</Ar> |
+| 4 | **Playback robot** <Ar>**روبوت إعادة التشغيل (Playback)**</Ar> | A human operator performs the task by **leading the robot**, which records and replays it <Ar>يؤدي المشغّل البشري المهمة **بقيادة الروبوت**، فيسجّلها الروبوت ويعيد تنفيذها</Ar> |
+| 5 | **Numerical-control robot** <Ar>**روبوت التحكم الرقمي (Numerical-control)**</Ar> | The operator **supplies a movement program** instead of teaching the task manually <Ar>المشغّل **يزوّده ببرنامج حركة** بدلًا من تعليمه المهمة يدويًا</Ar> |
+| 6 | **Intelligent robot** <Ar>**الروبوت الذكي (Intelligent robot)**</Ar> | **Understands its environment** and completes the task despite changes in it <Ar>**يفهم بيئته** ويُكمل المهمة رغم التغيّرات التي تطرأ عليها</Ar> |
+
+<Callout type="note" title="RIA only counts classes 3–6" titleAr="لا تعدّ RIA روبوتات إلا الفئات 3–6">
   The Robotics Institute of America considers only the variable-sequence, playback, numerical-control and intelligent robots (JIRA classes 3–6) to be robots. Manual-handling devices and fixed-sequence machines do not qualify.
+
+  <Ar>لا يعدّ معهد الروبوتات الأمريكي (Robotics Institute of America) روبوتاتٍ إلا روبوتات التسلسل المتغير، وإعادة التشغيل (playback)، والتحكم الرقمي، والروبوتات الذكية (فئات JIRA من 3 إلى 6). أما أجهزة المناولة اليدوية وآلات التسلسل الثابت فلا تُعدّ روبوتات.</Ar>
 </Callout>
 
 ### AFR types (French Robotics Association)
 
-| Type | Description |
+<Ar>أنواع AFR (الجمعية الفرنسية للروبوتات)</Ar>
+
+| Type <Ar>النوع</Ar> | Description <Ar>الوصف</Ar> |
 |---|---|
-| **A** | Manual handling devices / telerobotics |
-| **B** | Automatic handling devices with predetermined cycles |
-| **C** | Programmable, servo-controlled robots with continuous or point-to-point trajectories |
-| **D** | Like type C, but able to **acquire information** about the environment |
+| **A** | Manual handling devices / telerobotics <Ar>أجهزة المناولة اليدوية / التحكم الروبوتي عن بُعد (telerobotics)</Ar> |
+| **B** | Automatic handling devices with predetermined cycles <Ar>أجهزة مناولة آلية ذات دورات محددة مسبقًا</Ar> |
+| **C** | Programmable, servo-controlled robots with continuous or point-to-point trajectories <Ar>روبوتات قابلة للبرمجة يُتحكَّم بها بالمؤازرة (servo-controlled)، ذات مسارات مستمرة أو من نقطة إلى نقطة (point-to-point)</Ar> |
+| **D** | Like type C, but able to **acquire information** about the environment <Ar>مثل النوع C، لكنها قادرة على **اكتساب معلومات** عن البيئة</Ar> |
 
 ### Other ways to classify
 
-| Criterion | Categories |
+<Ar>طرق أخرى للتصنيف</Ar>
+
+| Criterion <Ar>المعيار</Ar> | Categories <Ar>الفئات</Ar> |
 |---|---|
-| Use | Industrial, non-industrial |
-| Mobility | Fixed, mobile |
-| Power source | Electric, hydraulic, pneumatic |
-| Method of control | Non-servo, servo-controlled |
-| Capability | 1st, 2nd, 3rd generation |
-| Kinematic configuration | RRR, RRP, RPP, PPP (R = revolute, P = prismatic; see Lecture 2) |
+| Use <Ar>الاستخدام</Ar> | Industrial, non-industrial <Ar>صناعي، غير صناعي</Ar> |
+| Mobility <Ar>التنقّل</Ar> | Fixed, mobile <Ar>ثابت، متنقّل</Ar> |
+| Power source <Ar>مصدر الطاقة</Ar> | Electric, hydraulic, pneumatic <Ar>كهربائي، هيدروليكي، هوائي (pneumatic)</Ar> |
+| Method of control <Ar>طريقة التحكم</Ar> | Non-servo, servo-controlled <Ar>غير مؤازَر (non-servo)، مُتحكَّم به بالمؤازرة (servo-controlled)</Ar> |
+| Capability <Ar>القدرة</Ar> | 1st, 2nd, 3rd generation <Ar>الجيل الأول، الثاني، الثالث</Ar> |
+| Kinematic configuration <Ar>التهيئة الحركية (Kinematic configuration)</Ar> | RRR, RRP, RPP, PPP (R = revolute, P = prismatic; see Lecture 2) <Ar>RRR و RRP و RPP و PPP (حيث R = مفصل دوّار (revolute)، و P = مفصل منزلق (prismatic)؛ انظر المحاضرة 2)</Ar> |
 
 ### Robot generations
 
+<Ar>أجيال الروبوتات</Ar>
+
 <Grid cols={3}>
-  <Card title="1st generation" tag="1960s–70s">Reprogrammable arm-type manipulators that only memorise repetitive movements, using **internal sensors** only.</Card>
-  <Card title="2nd generation" tag="1980s">**External sensors** and feedback let them make limited decisions and respond to the working environment.</Card>
-  <Card title="3rd generation" tag="late 1990s+">Use **artificial intelligence** to recognise, learn and think, and adapt to new situations.</Card>
+  <Card title="1st generation" titleAr="الجيل الأول" tag="1960s–70s">Reprogrammable arm-type manipulators that only memorise repetitive movements, using **internal sensors** only.<Ar>أذرع آلية (manipulators) قابلة لإعادة البرمجة لا تحفظ إلا الحركات المتكررة، وتستخدم **المستشعرات الداخلية** فقط.</Ar></Card>
+  <Card title="2nd generation" titleAr="الجيل الثاني" tag="1980s">**External sensors** and feedback let them make limited decisions and respond to the working environment.<Ar>تتيح لها **المستشعرات الخارجية** والتغذية الراجعة (feedback) اتخاذ قرارات محدودة والاستجابة لبيئة العمل.</Ar></Card>
+  <Card title="3rd generation" titleAr="الجيل الثالث" tag="late 1990s+">Use **artificial intelligence** to recognise, learn and think, and adapt to new situations.<Ar>تستخدم **الذكاء الاصطناعي (Artificial Intelligence)** للتعرّف والتعلّم والتفكير، والتكيّف مع المواقف الجديدة.</Ar></Card>
 </Grid>
 
 ### By function
 
+<Ar>حسب الوظيفة</Ar>
+
 <Grid cols={2}>
-  <Card title="Manipulators" tag="arms and hands">Industrial robotic arms, such as 6-axis articulated robots and 4-axis palletisers.</Card>
-  <Card title="Motion generators" tag="platforms">Flight simulators, SCARA robots and moving platforms.</Card>
-  <Card title="Locomotors" tag="mobile">Legged robots (Aibo, Big Dog, hexapods), humanoids (ASIMO, NAO) and wheeled robots (Mars rovers, indoor and outdoor robots).</Card>
-  <Card title="Swimming and flying" tag="AUV / UAV">Autonomous underwater vehicles, unmanned aerial vehicles and micro-robots. Robots also work in space, for example on the International Space Station.</Card>
+  <Card title="Manipulators" titleAr="الأذرع الآلية (Manipulators)" tag="arms and hands">Industrial robotic arms, such as 6-axis articulated robots and 4-axis palletisers.<Ar>الأذرع الروبوتية الصناعية، مثل الروبوتات المفصلية (articulated) سداسية المحاور وروبوتات رصّ المنصات (palletisers) رباعية المحاور.</Ar></Card>
+  <Card title="Motion generators" titleAr="مولِّدات الحركة (Motion generators)" tag="platforms">Flight simulators, SCARA robots and moving platforms.<Ar>أجهزة محاكاة الطيران، وروبوتات SCARA، والمنصات المتحركة.</Ar></Card>
+  <Card title="Locomotors" titleAr="روبوتات التنقّل (Locomotors)" tag="mobile">Legged robots (Aibo, Big Dog, hexapods), humanoids (ASIMO, NAO) and wheeled robots (Mars rovers, indoor and outdoor robots).<Ar>الروبوتات ذات الأرجل (Aibo و Big Dog والروبوتات سداسية الأرجل)، والروبوتات الشبيهة بالبشر (humanoids) (ASIMO و NAO)، والروبوتات ذات العجلات (مركبات استكشاف المريخ، والروبوتات الداخلية والخارجية).</Ar></Card>
+  <Card title="Swimming and flying" titleAr="الروبوتات السابحة والطائرة" tag="AUV / UAV">Autonomous underwater vehicles, unmanned aerial vehicles and micro-robots. Robots also work in space, for example on the International Space Station.<Ar>المركبات ذاتية التشغيل تحت الماء (AUV)، والمركبات الجوية غير المأهولة (UAV)، والروبوتات الدقيقة (micro-robots). وتعمل الروبوتات أيضًا في الفضاء، كما في محطة الفضاء الدولية.</Ar></Card>
 </Grid>
 
-<SlideFigure page={16} caption="Manipulators: industrial robotic arms." />
+<SlideFigure page={16} caption="Manipulators: industrial robotic arms." captionAr="الأذرع الآلية: الأذرع الروبوتية الصناعية." />
 
-<SlideFigure page={19} caption="Mobile wheeled robots: indoor, outdoor and planetary." />
+<SlideFigure page={19} caption="Mobile wheeled robots: indoor, outdoor and planetary." captionAr="الروبوتات المتنقلة ذات العجلات: الداخلية والخارجية والكوكبية." />
 
 <Takeaways>
 
 - A robot **senses, thinks and acts**, just like an AI agent.
+  <Ar>الروبوت **يستشعر ويفكّر ويتصرّف**، تمامًا مثل وكيل الذكاء الاصطناعي (AI agent).</Ar>
 - The **RIA** definition centres on reprogrammable manipulators; **JARA**'s definition is much broader.
+  <Ar>يتمحور تعريف **RIA** حول الأذرع الآلية (manipulators) القابلة لإعادة البرمجة، أما تعريف **JARA** فأوسع بكثير.</Ar>
 - A robotic system combines an arm, end-of-arm tooling, a controller, sensors, power, input devices and program storage.
+  <Ar>يجمع النظام الروبوتي (robotic system) بين الذراع، وأدوات نهاية الذراع (end-of-arm tooling)، والمتحكِّم (controller)، والمستشعرات، ومصدر الطاقة، وأجهزة الإدخال، وتخزين البرامج.</Ar>
 - **JIRA** has six classes (RIA counts 3–6), **AFR** has types A–D, and robots can also be grouped by **generation**, mobility, power, control and **function**.
+  <Ar>لدى **JIRA** ست فئات (تعدّ RIA منها الفئات 3–6)، ولدى **AFR** الأنواع A–D، ويمكن أيضًا تجميع الروبوتات حسب **الجيل** والتنقّل والطاقة والتحكم و**الوظيفة**.</Ar>
 
 </Takeaways>
 
 ## Practice
 
-<Exercise title="Which JIRA class?" level="easy">
+<Ar>تدريب</Ar>
+
+<Exercise title="Which JIRA class?" titleAr="أي فئة من فئات JIRA؟" level="easy">
 
 A painter guides a spray-painting robot's arm through a car door once; the robot records the motion and repeats it on every door. Which class is it, and does RIA consider it a robot?
+
+<Ar>يوجّه عاملُ طلاءٍ ذراعَ روبوت الطلاء بالرش عبر باب سيارة مرة واحدة؛ فيسجّل الروبوت الحركة ويكررها على كل باب. إلى أي فئة ينتمي، وهل تعدّه RIA روبوتًا؟</Ar>
 
 <Solution>
 
 It is a **playback robot** (JIRA class 4), because a human leads it through the task once. RIA counts classes 3–6, so **yes**, it is a robot under the RIA definition.
 
+<Ar>إنه **روبوت إعادة تشغيل (playback robot)** (الفئة 4 في JIRA)، لأن إنسانًا يقوده عبر المهمة مرة واحدة. وتعدّ RIA الفئات 3–6 روبوتات، لذا **نعم**، هو روبوت وفق تعريف RIA.</Ar>
+
 </Solution>
 
 </Exercise>
 
-<Exercise title="Classify a robot vacuum" level="medium">
+<Exercise title="Classify a robot vacuum" titleAr="صنّف المكنسة الروبوتية" level="medium">
 
 Classify a home robot vacuum by use, mobility, power source, generation and function.
+
+<Ar>صنّف المكنسة الروبوتية المنزلية حسب الاستخدام والتنقّل ومصدر الطاقة والجيل والوظيفة.</Ar>
 
 <Solution>
 
 Non-industrial · mobile · electric · 2nd or 3rd generation (it uses external sensors for obstacles and dirt; newer models build maps and learn room layouts) · locomotor (wheeled mobile robot).
 
+<Ar>غير صناعية · متنقّلة · كهربائية · من الجيل الثاني أو الثالث (تستخدم مستشعرات خارجية لاكتشاف العوائق والأوساخ، والطرازات الأحدث تبني خرائط وتتعلّم تخطيط الغرف) · روبوت تنقّل (locomotor) (روبوت متنقّل ذو عجلات).</Ar>
+
 </Solution>
 
 </Exercise>
 
-<Exercise title="Laws in conflict" level="medium">
+<Exercise title="Laws in conflict" titleAr="تعارض القوانين" level="medium">
 
 A human orders a robot to walk into a fire to rescue a child. Which laws are involved, and what should the robot do?
+
+<Ar>يأمر إنسانٌ روبوتًا بالدخول إلى حريق لإنقاذ طفل. ما القوانين المعنية، وماذا ينبغي للروبوت أن يفعل؟</Ar>
 
 <Solution>
 
 **Law 1** (prevent harm to a human through inaction) and **Law 2** (obey orders) both push the robot to act. **Law 3** (self-preservation) pushes against it, but Law 3 ranks lowest. The robot should attempt the rescue, as long as doing so does not put other humans at greater risk.
+
+<Ar>يدفع كلٌّ من **القانون 1** (منع الأذى الذي يلحق بالإنسان بسبب التقاعس) و**القانون 2** (طاعة الأوامر) الروبوتَ إلى التصرّف. ويدفعه **القانون 3** (حماية الذات) في الاتجاه المعاكس، لكن القانون 3 هو الأدنى رتبة. لذا ينبغي للروبوت أن يحاول الإنقاذ، ما دام ذلك لا يعرّض بشرًا آخرين لخطر أكبر.</Ar>
 
 </Solution>
 
@@ -196,39 +264,57 @@ A human orders a robot to walk into a fire to rescue a child. Which laws are inv
   questions={[
     {
       q: "The word 'robot' was introduced in…",
+      qAr: "ظهرت كلمة «robot» لأول مرة في…",
       options: ["Asimov's I, Robot (1950)", "Čapek's Rossum's Universal Robots (1922)", "Unimation's first catalogue (1962)", "Devol's patent (1954)"],
+      optionsAr: ["كتاب أسيموف I, Robot (1950)", "مسرحية تشابيك Rossum's Universal Robots (1922)", "أول كتالوج لشركة Unimation (1962)", "براءة اختراع ديفول (1954)"],
       answer: 1,
-      explain: "Karel Čapek's 1922 play introduced the word, from 'robota', meaning forced labour or work."
+      explain: "Karel Čapek's 1922 play introduced the word, from 'robota', meaning forced labour or work.",
+      explainAr: "قدّمت مسرحية كارل تشابيك عام 1922 هذه الكلمة، المشتقة من «robota» بمعنى السُّخرة أو العمل."
     },
     {
       q: "Which of Asimov's laws has the highest priority?",
+      qAr: "أي قوانين أسيموف له الأولوية العليا؟",
       options: ["Law 1", "Law 2", "Law 3", "Law 0"],
+      optionsAr: ["القانون 1", "القانون 2", "القانون 3", "القانون 0"],
       answer: 3,
-      explain: "The zeroth law (protect humanity) was added later and outranks the other three."
+      explain: "The zeroth law (protect humanity) was added later and outranks the other three.",
+      explainAr: "أُضيف القانون الصفري (حماية البشرية) لاحقًا، وهو يعلو على القوانين الثلاثة الأخرى."
     },
     {
       q: "A robot that is taught by an operator physically leading it through a task is a…",
+      qAr: "الروبوت الذي يعلّمه المشغّل بقيادته فعليًا عبر المهمة هو…",
       options: ["Fixed-sequence robot", "Playback robot", "Numerical-control robot", "Intelligent robot"],
+      optionsAr: ["روبوت تسلسل ثابت", "روبوت إعادة تشغيل", "روبوت تحكم رقمي", "روبوت ذكي"],
       answer: 1,
-      explain: "Playback robots (class 4) record what the human demonstrates and replay it."
+      explain: "Playback robots (class 4) record what the human demonstrates and replay it.",
+      explainAr: "تسجّل روبوتات إعادة التشغيل (الفئة 4) ما يعرضه الإنسان ثم تعيد تنفيذه."
     },
     {
       q: "Which JIRA classes does the RIA consider to be robots?",
+      qAr: "ما فئات JIRA التي تعدّها RIA روبوتات؟",
       options: ["1–6", "1–3", "3–6", "5–6"],
+      optionsAr: ["1–6", "1–3", "3–6", "5–6"],
       answer: 2,
-      explain: "Variable-sequence, playback, numerical-control and intelligent robots."
+      explain: "Variable-sequence, playback, numerical-control and intelligent robots.",
+      explainAr: "روبوتات التسلسل المتغير، وإعادة التشغيل، والتحكم الرقمي، والروبوتات الذكية."
     },
     {
       q: "Second-generation robots differ from first-generation robots mainly because they…",
+      qAr: "تختلف روبوتات الجيل الثاني عن روبوتات الجيل الأول أساسًا لأنها…",
       options: ["Use AI to learn", "Use external sensors and feedback", "Are hydraulically powered", "Have more joints"],
+      optionsAr: ["تستخدم الذكاء الاصطناعي للتعلّم", "تستخدم مستشعرات خارجية وتغذية راجعة", "تعمل بالطاقة الهيدروليكية", "لها مفاصل أكثر"],
       answer: 1,
-      explain: "External sensing and feedback let them make limited decisions about their environment."
+      explain: "External sensing and feedback let them make limited decisions about their environment.",
+      explainAr: "يتيح لها الاستشعار الخارجي والتغذية الراجعة اتخاذ قرارات محدودة بشأن بيئتها."
     },
     {
       q: "In 1955 Denavit and Hartenberg contributed…",
+      qAr: "في عام 1955 قدّم دينافيت وهارتنبرغ…",
       options: ["The first programmable robot", "Homogeneous transformation matrices", "The T3 industrial robot", "The three laws"],
+      optionsAr: ["أول روبوت قابل للبرمجة", "مصفوفات التحويل المتجانس", "الروبوت الصناعي T3", "القوانين الثلاثة"],
       answer: 1,
-      explain: "Their convention is still the standard way to describe manipulator kinematics."
+      explain: "Their convention is still the standard way to describe manipulator kinematics.",
+      explainAr: "لا يزال اصطلاحهما الطريقة القياسية لوصف علم حركة الأذرع الآلية (manipulator kinematics)."
     }
   ]}
 />

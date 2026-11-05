@@ -1,7 +1,9 @@
 ---
 number: 4
 title: Requirements Engineering
+titleAr: "هندسة المتطلبات"
 summary: What requirements and requirements engineering are, completeness and consistency, stakeholders, user vs. system requirements and their readers, functional vs. non-functional requirements (product, organizational and external) with measurable metrics, and the RE process. That process covers the feasibility study, elicitation and analysis (interviews, scenarios, ethnography), specification in the SRS, and validation (reviews and prototyping).
+summaryAr: "ما المتطلبات وما هندسة المتطلبات (requirements engineering)، والاكتمال والاتساق، وأصحاب المصلحة (stakeholders)، ومتطلبات المستخدم مقابل متطلبات النظام وقرّاء كل منهما، والمتطلبات الوظيفية (functional) مقابل غير الوظيفية (non-functional) بأنواعها (متطلبات المنتج، والتنظيمية، والخارجية) مع مقاييس قابلة للقياس، وعملية هندسة المتطلبات. وتغطي هذه العملية دراسة الجدوى (feasibility study)، والاستنباط والتحليل (المقابلات، والسيناريوهات، والإثنوغرافيا)، والتوصيف في وثيقة SRS، والتحقق من الصلاحية (المراجعات وبناء النماذج الأولية)."
 topics: [Requirement definition, Completeness and consistency, Stakeholders, User vs system requirements, Functional requirements, Non-functional requirements, NFR metrics, Feasibility study, Elicitation and analysis, Interviews, Scenarios, Ethnography, SRS document, Requirements validation]
 duration: 55 min study
 sources:
@@ -19,61 +21,92 @@ bookRefs:
 <Objectives>
 
 - Define a **requirement** and **requirements engineering**, and explain **completeness** and **consistency**.
+  <Ar>تعريف **المتطلب (requirement)** و**هندسة المتطلبات (requirements engineering)**، وشرح **الاكتمال (completeness)** و**الاتساق (consistency)**.</Ar>
 - Identify the **stakeholders** of a system.
+  <Ar>تحديد **أصحاب المصلحة (stakeholders)** في النظام.</Ar>
 - Distinguish **user** from **system** requirements and **functional** from **non-functional** ones.
+  <Ar>التمييز بين متطلبات **المستخدم** ومتطلبات **النظام**، وبين المتطلبات **الوظيفية (functional)** و**غير الوظيفية (non-functional)**.</Ar>
 - Classify non-functional requirements and write them **measurably**.
+  <Ar>تصنيف المتطلبات غير الوظيفية وكتابتها **بصورة قابلة للقياس**.</Ar>
 - Describe the **RE process**: feasibility, elicitation and analysis, specification and validation.
+  <Ar>وصف **عملية هندسة المتطلبات (RE process)**: دراسة الجدوى، والاستنباط والتحليل، والتوصيف، والتحقق من الصلاحية.</Ar>
 
 </Objectives>
 
 ## Requirements and requirements engineering
 
-<Definition term="Requirement">
+<Ar>المتطلبات وهندسة المتطلبات</Ar>
+
+<Definition term="Requirement" termAr="المتطلب">
   A <strong>function, constraint or other property</strong> that the system must provide to meet the needs of its intended users.
+
+  <Ar><strong>وظيفة أو قيد أو خاصية أخرى</strong> يجب أن يوفرها النظام لتلبية احتياجات مستخدميه المستهدفين.</Ar>
 </Definition>
 
-<Definition term="Requirements engineering (RE)">
+<Definition term="Requirements engineering (RE)" termAr="هندسة المتطلبات (RE)">
   Establishing, systematically, the <strong>services</strong> a customer requires from a system and the <strong>constraints</strong> under which it operates and is developed. Requirements are defined, managed and tested with well-defined techniques.
+
+  <Ar>التحديد المنهجي <strong>للخدمات</strong> التي يطلبها العميل من النظام <strong>وللقيود</strong> التي يعمل في ظلها ويُطوَّر. وتُعرَّف المتطلبات وتُدار وتُختبر بتقنيات محددة جيدًا.</Ar>
 </Definition>
 
 A functional specification should be:
 
+<Ar>يجب أن يكون التوصيف الوظيفي (functional specification):</Ar>
+
 - **complete**: every service the user requires is defined;
+  <Ar>**مكتملًا (complete)**: كل خدمة يحتاجها المستخدم معرَّفة؛</Ar>
 - **consistent**: no requirements contradict each other.
+  <Ar>**متسقًا (consistent)**: لا تتعارض المتطلبات فيما بينها.</Ar>
 
 For large, complex systems this is practically **impossible** to achieve fully: mistakes and omissions are easy to make, and there are many **stakeholders** with different needs.
 
+<Ar>في الأنظمة الكبيرة والمعقدة يكاد يكون تحقيق ذلك بالكامل **مستحيلًا** عمليًا: فالوقوع في الأخطاء والإغفالات سهل، ويوجد كثير من **أصحاب المصلحة (stakeholders)** باحتياجات مختلفة.</Ar>
+
 ### Stakeholders
+
+<Ar>أصحاب المصلحة</Ar>
 
 A **stakeholder** is any person or organization affected by the system: **system owners** (who pay), **end users**, **system managers**, the **project groups** that develop it (engineers, testers, trainers), and **external** stakeholders (marketing, government…).
 
-<Callout type="example" title="Stakeholders of the Mentcare (MHC-PMS) system">
+<Ar>**صاحب المصلحة (stakeholder)** هو أي شخص أو جهة تتأثر بالنظام: **مالكو النظام** (الذين يدفعون)، و**المستخدمون النهائيون**، و**مديرو النظام**، و**فرق المشروع** التي تطوّره (المهندسون، والمختبِرون، والمدرِّبون)، وأصحاب المصلحة **الخارجيون** (التسويق، والحكومة…).</Ar>
+
+<Callout type="example" title="Stakeholders of the Mentcare (MHC-PMS) system" titleAr="أصحاب المصلحة في نظام Mentcare (MHC-PMS)">
   Patients whose information is recorded; doctors who assess and treat them; nurses who coordinate consultations; medical receptionists who manage appointments; IT staff who install and maintain the system; and a medical ethics manager who ensures it meets ethical guidelines.
+
+  <Ar>المرضى الذين تُسجَّل معلوماتهم؛ والأطباء الذين يقيّمون حالاتهم ويعالجونهم؛ والممرضون الذين ينسّقون الاستشارات؛ وموظفو الاستقبال الطبي الذين يديرون المواعيد؛ وموظفو تقنية المعلومات (IT) الذين يثبّتون النظام ويصونونه؛ ومدير الأخلاقيات الطبية الذي يضمن التزام النظام بالإرشادات الأخلاقية.</Ar>
 </Callout>
 
 ## User and system requirements
 
-| | User requirements | System requirements |
+<Ar>متطلبات المستخدم ومتطلبات النظام</Ar>
+
+| | User requirements <Ar>متطلبات المستخدم</Ar> | System requirements <Ar>متطلبات النظام</Ar> |
 |---|---|---|
-| **Form** | Natural language plus diagrams | A structured, detailed document |
-| **Content** | The **services** the system provides and its operating constraints | Detailed descriptions of functions, services and constraints: what must be implemented |
-| **Focus** | **What** the system should do | **How** the system will do it |
-| **Document** | Business Requirements Specification (BRS) | System Requirements Specification (SRS) |
+| **Form** <Ar>**الشكل**</Ar> | Natural language plus diagrams <Ar>لغة طبيعية مع مخططات</Ar> | A structured, detailed document <Ar>وثيقة منظَّمة ومفصّلة</Ar> |
+| **Content** <Ar>**المحتوى**</Ar> | The **services** the system provides and its operating constraints <Ar>**الخدمات** التي يقدمها النظام وقيود تشغيله</Ar> | Detailed descriptions of functions, services and constraints: what must be implemented <Ar>أوصاف مفصّلة للوظائف والخدمات والقيود: ما يجب تنفيذه</Ar> |
+| **Focus** <Ar>**التركيز**</Ar> | **What** the system should do <Ar>**ماذا** يجب أن يفعل النظام</Ar> | **How** the system will do it <Ar>**كيف** سيفعله النظام</Ar> |
+| **Document** <Ar>**الوثيقة**</Ar> | Business Requirements Specification (BRS) <Ar>وثيقة توصيف متطلبات العمل (BRS)</Ar> | System Requirements Specification (SRS) <Ar>وثيقة توصيف متطلبات النظام (SRS)</Ar> |
 
-<SlideFigure page={10} caption="One user requirement (monthly drug-cost reports) refined into five detailed system requirements." />
+<SlideFigure page={10} caption="One user requirement (monthly drug-cost reports) refined into five detailed system requirements." captionAr="متطلب مستخدم واحد (تقارير شهرية بتكاليف الأدوية) مُفصَّل إلى خمسة متطلبات نظام تفصيلية." />
 
-<SlideFigure page={11} caption="Readers of each type: user requirements are read by client managers, end users, client engineers, contractor managers and system architects; system requirements by end users, client engineers, system architects and software developers." />
+<SlideFigure page={11} caption="Readers of each type: user requirements are read by client managers, end users, client engineers, contractor managers and system architects; system requirements by end users, client engineers, system architects and software developers." captionAr="قرّاء كل نوع: يقرأ متطلباتِ المستخدم مديرو العميل، والمستخدمون النهائيون، ومهندسو العميل، ومديرو المقاول، ومعماريو النظام؛ ويقرأ متطلباتِ النظام المستخدمون النهائيون، ومهندسو العميل، ومعماريو النظام، ومطورو البرمجيات." />
 
 ## Functional and non-functional requirements
 
-| Functional | Non-functional |
+<Ar>المتطلبات الوظيفية وغير الوظيفية</Ar>
+
+| Functional <Ar>الوظيفية (Functional)</Ar> | Non-functional <Ar>غير الوظيفية (Non-functional)</Ar> |
 |---|---|
-| Something the system must **do** | **How** the system does it: its qualities and constraints |
-| Usually **noun + verb**: "The system prints an invoice." | Usually has an **adverb**: "The system prints invoices **quickly**." |
+| Something the system must **do** <Ar>شيء يجب أن **يفعله** النظام</Ar> | **How** the system does it: its qualities and constraints <Ar>**كيف** يفعل النظام ذلك: خصائص جودته وقيوده</Ar> |
+| Usually **noun + verb**: "The system prints an invoice." <Ar>عادةً **اسم + فعل**: «يطبع النظام فاتورة».</Ar> | Usually has an **adverb**: "The system prints invoices **quickly**." <Ar>عادةً يتضمن **ظرفًا (adverb)**: «يطبع النظام الفواتير **بسرعة**».</Ar> |
 
 ### Functional requirements
 
+<Ar>المتطلبات الوظيفية</Ar>
+
 Also called **behavioural** or operational requirements: they state the **services** the system provides, its **outputs** for given **inputs**, and how it behaves in particular situations. They may also say what the system should **not** do.
+
+<Ar>تُسمى أيضًا المتطلبات **السلوكية (behavioural)** أو التشغيلية: وهي تحدد **الخدمات** التي يقدمها النظام، و**مخرجاته** المقابلة **لمدخلات** معيّنة، وكيف يتصرف في مواقف محددة. وقد تذكر أيضًا ما **لا** ينبغي للنظام فعله.</Ar>
 
 ```text title="Mentcare functional requirements"
 1. A user shall be able to search the appointment lists for all clinics.
@@ -83,157 +116,235 @@ Also called **behavioural** or operational requirements: they state the **servic
    her eight-digit employee number.
 ```
 
-<Callout type="warning" title="Imprecision causes trouble">
+<Callout type="warning" title="Imprecision causes trouble" titleAr="عدم الدقة يسبب المشكلات">
   What does "search" mean in requirement 1? The <strong>user</strong> means "search for a patient name across all appointments in all clinics". The <strong>developer</strong> may implement "choose a clinic, then search in it". Ambiguous requirements are read differently by users and developers.
+
+  <Ar>ماذا تعني كلمة «search» (البحث) في المتطلب 1؟ يقصد <strong>المستخدم</strong> «البحث عن اسم مريض في جميع المواعيد في كل العيادات». وقد ينفّذ <strong>المطوّر</strong> «اختيار عيادة، ثم البحث فيها». فالمتطلبات الغامضة يقرؤها المستخدمون والمطورون بطرق مختلفة.</Ar>
 </Callout>
 
 ### Non-functional requirements
 
+<Ar>المتطلبات غير الوظيفية</Ar>
+
 Non-functional requirements (NFRs) define system **properties** (reliability, safety, response time…) and **constraints** (on the development process, devices, standards). They often apply to the **whole system** rather than one feature, and they can be **more critical** than functional ones: a system that misses them may be **useless**.
 
-<SlideFigure page={18} caption="Types of non-functional requirement: product (usability, efficiency, dependability, security), organizational (environmental, operational, development) and external (regulatory, ethical, legislative)." />
+<Ar>تحدد المتطلبات غير الوظيفية (NFRs) **خصائص** النظام (الموثوقية، والسلامة، وزمن الاستجابة…) و**قيوده** (على عملية التطوير، والأجهزة، والمعايير). وكثيرًا ما تنطبق على **النظام بأكمله** لا على ميزة واحدة، وقد تكون **أكثر أهمية** من المتطلبات الوظيفية: فالنظام الذي لا يستوفيها قد يكون **عديم الفائدة**.</Ar>
 
-| Class | Source | Mentcare example |
+<SlideFigure page={18} caption="Types of non-functional requirement: product (usability, efficiency, dependability, security), organizational (environmental, operational, development) and external (regulatory, ethical, legislative)." captionAr="أنواع المتطلبات غير الوظيفية: متطلبات المنتج (سهولة الاستخدام، والكفاءة، والاعتمادية، والأمان)، والمتطلبات التنظيمية (البيئية، والتشغيلية، والتطويرية)، والمتطلبات الخارجية (الرقابية، والأخلاقية، والتشريعية)." />
+
+| Class <Ar>الفئة</Ar> | Source <Ar>المصدر</Ar> | Mentcare example <Ar>مثال من Mentcare</Ar> |
 |---|---|---|
-| **Product** | How the delivered product must behave (speed, reliability…) | "Available to all clinics during working hours (Mon–Fri, 08:30–17:30); downtime shall not exceed five seconds in any one day." |
-| **Organizational** | Policies and procedures of the customer's and developer's organizations | "Users shall authenticate themselves using their health authority identity card." |
-| **External** | Factors outside the system: interoperability, laws, ethics | "The system shall implement patient privacy provisions as set out in HStan-03-2006-priv." |
+| **Product** <Ar>**متطلبات المنتج (Product)**</Ar> | How the delivered product must behave (speed, reliability…) <Ar>كيف يجب أن يتصرف المنتج المُسلَّم (السرعة، والموثوقية…)</Ar> | "Available to all clinics during working hours (Mon–Fri, 08:30–17:30); downtime shall not exceed five seconds in any one day." <Ar>«يكون متاحًا لجميع العيادات خلال ساعات العمل (من الاثنين إلى الجمعة، من 08:30 إلى 17:30)، ولا يتجاوز زمن التوقف خمس ثوانٍ في أي يوم».</Ar> |
+| **Organizational** <Ar>**المتطلبات التنظيمية (Organizational)**</Ar> | Policies and procedures of the customer's and developer's organizations <Ar>سياسات وإجراءات مؤسستَي العميل والمطوّر</Ar> | "Users shall authenticate themselves using their health authority identity card." <Ar>«يجب أن يُثبت المستخدمون هويتهم باستخدام بطاقة الهوية الصادرة عن الهيئة الصحية».</Ar> |
+| **External** <Ar>**المتطلبات الخارجية (External)**</Ar> | Factors outside the system: interoperability, laws, ethics <Ar>عوامل خارج النظام: قابلية التشغيل البيني (interoperability)، والقوانين، والأخلاقيات</Ar> | "The system shall implement patient privacy provisions as set out in HStan-03-2006-priv." <Ar>«يجب أن ينفّذ النظام أحكام خصوصية المرضى كما وردت في HStan-03-2006-priv».</Ar> |
 
 ### Measurable NFRs
 
+<Ar>المتطلبات غير الوظيفية القابلة للقياس</Ar>
+
 Write NFRs **quantitatively**, so they can be objectively **tested**:
 
-| Property | Measure |
+<Ar>اكتب المتطلبات غير الوظيفية (NFRs) **كميًا**، حتى يمكن **اختبارها** بموضوعية:</Ar>
+
+| Property <Ar>الخاصية</Ar> | Measure <Ar>المقياس</Ar> |
 |---|---|
-| **Speed** | Transactions processed per second; user/event response time; screen refresh time |
-| **Size** | Megabytes; number of ROM chips |
-| **Ease of use** | Training time; number of help frames |
-| **Reliability** | Mean time to failure; probability of unavailability; rate of failure occurrence; availability |
-| **Robustness** | Time to restart after failure; percentage of events causing failure; probability of data corruption on failure |
-| **Portability** | Percentage of target-dependent statements; number of target systems |
+| **Speed** <Ar>**السرعة**</Ar> | Transactions processed per second; user/event response time; screen refresh time <Ar>عدد المعاملات المعالَجة في الثانية؛ وزمن الاستجابة للمستخدم أو الحدث؛ وزمن تحديث الشاشة</Ar> |
+| **Size** <Ar>**الحجم**</Ar> | Megabytes; number of ROM chips <Ar>الميجابايت؛ وعدد شرائح ROM</Ar> |
+| **Ease of use** <Ar>**سهولة الاستخدام**</Ar> | Training time; number of help frames <Ar>زمن التدريب؛ وعدد إطارات المساعدة</Ar> |
+| **Reliability** <Ar>**الموثوقية (Reliability)**</Ar> | Mean time to failure; probability of unavailability; rate of failure occurrence; availability <Ar>متوسط الزمن حتى الإخفاق (Mean time to failure)؛ واحتمال عدم التوافر؛ ومعدل حدوث الإخفاقات؛ والتوافر (availability)</Ar> |
+| **Robustness** <Ar>**المتانة (Robustness)**</Ar> | Time to restart after failure; percentage of events causing failure; probability of data corruption on failure <Ar>زمن إعادة التشغيل بعد الإخفاق؛ ونسبة الأحداث المسببة للإخفاق؛ واحتمال تلف البيانات عند الإخفاق</Ar> |
+| **Portability** <Ar>**قابلية النقل (Portability)**</Ar> | Percentage of target-dependent statements; number of target systems <Ar>نسبة التعليمات المعتمدة على المنصة المستهدفة؛ وعدد الأنظمة المستهدفة</Ar> |
 
 "The system should be easy to use" can't be tested. "Medical staff shall be able to use all system functions after two hours of training" can.
 
+<Ar>عبارة «يجب أن يكون النظام سهل الاستخدام» لا يمكن اختبارها، أما عبارة «يجب أن يتمكن الطاقم الطبي من استخدام جميع وظائف النظام بعد ساعتين من التدريب» فيمكن اختبارها.</Ar>
+
 ## The requirements engineering process
+
+<Ar>عملية هندسة المتطلبات</Ar>
 
 RE is **iterative**: its activities are interleaved.
 
-<SlideFigure page={24} caption="The RE process: feasibility study → elicitation and analysis → specification → validation, producing a feasibility report, system models, user and system requirements, and the requirements document." />
+<Ar>هندسة المتطلبات (RE) عملية **تكرارية**: أنشطتها متداخلة.</Ar>
+
+<SlideFigure page={24} caption="The RE process: feasibility study → elicitation and analysis → specification → validation, producing a feasibility report, system models, user and system requirements, and the requirements document." captionAr="عملية هندسة المتطلبات: دراسة الجدوى ← الاستنباط والتحليل ← التوصيف ← التحقق من الصلاحية، مع إنتاج تقرير الجدوى، ونماذج النظام، ومتطلبات المستخدم والنظام، ووثيقة المتطلبات." />
 
 <Steps>
 
 1. **Feasibility study**: is the system **worthwhile**, buildable with current technology, within budget, and able to integrate with existing systems? It should be quick and cheap, and it informs whether to continue.
+   <Ar>**دراسة الجدوى (Feasibility study)**: هل النظام **يستحق** البناء، وهل يمكن بناؤه بالتقنيات الحالية وضمن الميزانية، وهل يمكنه التكامل مع الأنظمة الموجودة؟ ويجب أن تكون سريعة وقليلة التكلفة، وهي تساعد على تقرير ما إذا كان ينبغي الاستمرار.</Ar>
 2. **Elicitation and analysis**: draw out the requirements from stakeholders.
+   <Ar>**الاستنباط والتحليل (Elicitation and analysis)**: استخراج المتطلبات من أصحاب المصلحة.</Ar>
 3. **Specification**: document the requirements.
+   <Ar>**التوصيف (Specification)**: توثيق المتطلبات.</Ar>
 4. **Validation**: check the specification for errors, ambiguities, omissions and conflicts.
+   <Ar>**التحقق من الصلاحية (Validation)**: فحص التوصيف بحثًا عن الأخطاء والغموض والإغفالات والتعارضات.</Ar>
 
 </Steps>
 
 ### 1 · Elicitation and analysis
 
+<Ar>1 · الاستنباط والتحليل</Ar>
+
 Technical staff work with stakeholders to learn about the application domain, the services needed, the required performance and the hardware constraints. Related requirements are discovered, grouped into clusters, **prioritized**, and **negotiated** (conflicts, cost and timeline).
+
+<Ar>يعمل الفريق التقني مع أصحاب المصلحة للتعرّف على مجال التطبيق، والخدمات المطلوبة، والأداء المطلوب، وقيود العتاد (hardware). فتُكتشف المتطلبات المترابطة، وتُجمَّع في مجموعات، و**تُرتَّب حسب الأولوية**، و**يُتفاوض عليها** (التعارضات، والتكلفة، والجدول الزمني).</Ar>
 
 **Requirements discovery techniques:**
 
+<Ar>**تقنيات اكتشاف المتطلبات:**</Ar>
+
 <Grid cols={3}>
-  <Card title="Interviews" tag="talk">
+  <Card title="Interviews" titleAr="المقابلات" tag="talk">
     <strong>Closed</strong> (a fixed list of questions) or <strong>open</strong> (explore issues), usually mixed. Be open-minded, and prompt discussion with questions, a proposal or a prototype.
+
+    <Ar><strong>مغلقة</strong> (قائمة ثابتة من الأسئلة) أو <strong>مفتوحة</strong> (استكشاف القضايا)، وعادةً يُمزج بينهما. كن منفتح الذهن، وحفّز النقاش بالأسئلة أو بمقترح أو بنموذج أولي (prototype).</Ar>
   </Card>
-  <Card title="Scenarios" tag="examples">
+  <Card title="Scenarios" titleAr="السيناريوهات" tag="examples">
     Real-life examples of how the system is used for one task: the starting situation, the normal flow, what can go wrong, concurrent activities, and the end state.
+
+    <Ar>أمثلة واقعية لكيفية استخدام النظام في مهمة واحدة: الموقف الابتدائي، والمسار الطبيعي، وما قد يحدث من أخطاء، والأنشطة المتزامنة، والحالة النهائية.</Ar>
   </Card>
-  <Card title="Ethnography" tag="observe">
+  <Card title="Ethnography" titleAr="الإثنوغرافيا" tag="observe">
     The analyst <strong>observes</strong> people at work to find <strong>implicit</strong> social and organizational requirements. Good for existing processes, but it can't identify new features.
+
+    <Ar><strong>يراقب</strong> المحلل الأشخاص أثناء عملهم لاكتشاف المتطلبات الاجتماعية والتنظيمية <strong>الضمنية</strong>. وهي جيدة للعمليات القائمة، لكنها لا تستطيع تحديد ميزات جديدة.</Ar>
   </Card>
 </Grid>
 
-<SlideFigure page={30} caption="Scenario for collecting a patient's medical history in Mentcare: the initial assumption and the normal flow." />
+<SlideFigure page={30} caption="Scenario for collecting a patient's medical history in Mentcare: the initial assumption and the normal flow." captionAr="سيناريو جمع التاريخ الطبي لمريض في نظام Mentcare: الافتراض الابتدائي والمسار الطبيعي." />
 
 ### 2 · Specification: the SRS
 
+<Ar>2 · التوصيف: وثيقة SRS</Ar>
+
 **Specification** means writing the user and system requirements in a **requirements document**. Ideally the requirements are clear, unambiguous, easy to understand, complete and consistent. The **software requirements specification (SRS)** is the **official statement of what the developers must build**. It contains the user requirements and the system requirements (detailed ones may go in a separate document), and it may form part of the **contract**.
 
-<SlideFigure page={35} caption="Users of the requirements document: customers, managers, system engineers, test engineers and maintenance engineers." />
+<Ar>**التوصيف (Specification)** يعني كتابة متطلبات المستخدم ومتطلبات النظام في **وثيقة المتطلبات**. ومن المثالي أن تكون المتطلبات واضحة، وخالية من الغموض، وسهلة الفهم، ومكتملة، ومتسقة. و**وثيقة توصيف متطلبات البرمجيات (SRS)** هي **البيان الرسمي لما يجب على المطورين بناؤه**. وهي تحتوي على متطلبات المستخدم ومتطلبات النظام (وقد توضع المتطلبات التفصيلية في وثيقة منفصلة)، وقد تشكّل جزءًا من **العقد**.</Ar>
+
+<SlideFigure page={35} caption="Users of the requirements document: customers, managers, system engineers, test engineers and maintenance engineers." captionAr="مستخدمو وثيقة المتطلبات: العملاء، والمديرون، ومهندسو النظام، ومهندسو الاختبار، ومهندسو الصيانة." />
 
 ### 3 · Validation
 
+<Ar>3 · التحقق من الصلاحية</Ar>
+
 Customers and developers read the document in detail and check its:
 
-| Check | Question |
+<Ar>يقرأ العملاء والمطورون الوثيقة بالتفصيل ويفحصون:</Ar>
+
+| Check <Ar>الفحص</Ar> | Question <Ar>السؤال</Ar> |
 |---|---|
-| **Validity** | Does the system provide the functions that best support the customer's needs? |
-| **Consistency** | Are there conflicting requirements? |
-| **Completeness** | Are all the functions the customer requires included? |
-| **Realism** | Can they be implemented with the available budget and technology? |
+| **Validity** <Ar>**الصلاحية (Validity)**</Ar> | Does the system provide the functions that best support the customer's needs? <Ar>هل يقدم النظام الوظائف التي تدعم احتياجات العميل على أفضل وجه؟</Ar> |
+| **Consistency** <Ar>**الاتساق (Consistency)**</Ar> | Are there conflicting requirements? <Ar>هل توجد متطلبات متعارضة؟</Ar> |
+| **Completeness** <Ar>**الاكتمال (Completeness)**</Ar> | Are all the functions the customer requires included? <Ar>هل تتضمن جميع الوظائف التي يطلبها العميل؟</Ar> |
+| **Realism** <Ar>**الواقعية (Realism)**</Ar> | Can they be implemented with the available budget and technology? <Ar>هل يمكن تنفيذها بالميزانية والتقنيات المتاحة؟</Ar> |
 
 Techniques include **requirements reviews** (systematic manual analysis) and **prototyping** (checking the requirements with an executable model).
+
+<Ar>ومن التقنيات المستخدمة **مراجعات المتطلبات (requirements reviews)** (تحليل يدوي منهجي) و**بناء النماذج الأولية (prototyping)** (فحص المتطلبات باستخدام نموذج قابل للتنفيذ).</Ar>
 
 <Takeaways>
 
 - A requirement is a **service or constraint**; RE defines, manages and tests requirements systematically.
+  <Ar>المتطلب **خدمة أو قيد**؛ وهندسة المتطلبات (RE) تعرّف المتطلبات وتديرها وتختبرها بصورة منهجية.</Ar>
 - **User** requirements say **what** (natural language, for customers); **system** requirements say **how** (detailed, for developers).
+  <Ar>متطلبات **المستخدم** تحدد **ماذا** (بلغة طبيعية، للعملاء)؛ ومتطلبات **النظام** تحدد **كيف** (مفصّلة، للمطورين).</Ar>
 - **Functional** requirements are what the system does; **non-functional** ones are its qualities and constraints (**product, organizational, external**). Make NFRs **measurable**.
+  <Ar>المتطلبات **الوظيفية** هي ما يفعله النظام؛ و**غير الوظيفية** هي خصائص جودته وقيوده (**المنتج، والتنظيمية، والخارجية**). واجعل المتطلبات غير الوظيفية **قابلة للقياس**.</Ar>
 - The RE process is **feasibility → elicitation and analysis (interviews, scenarios, ethnography) → specification (SRS) → validation (validity, consistency, completeness, realism)**.
+  <Ar>عملية هندسة المتطلبات هي **دراسة الجدوى ← الاستنباط والتحليل (المقابلات، والسيناريوهات، والإثنوغرافيا) ← التوصيف (SRS) ← التحقق من الصلاحية (الصلاحية، والاتساق، والاكتمال، والواقعية)**.</Ar>
 
 </Takeaways>
 
 ## Practice
 
-<Exercise title="Functional or non-functional?" level="easy">
+<Ar>تدريب</Ar>
+
+<Exercise title="Functional or non-functional?" titleAr="وظيفي أم غير وظيفي؟" level="easy">
 
 Classify each requirement:
 
+<Ar>صنّف كل متطلب:</Ar>
+
 1. The application must respond to any user request within 2 seconds under normal network conditions.
+   <Ar>يجب أن يستجيب التطبيق لأي طلب من المستخدم خلال ثانيتين في ظروف الشبكة العادية.</Ar>
 2. The system shall let a librarian register a new book with its ISBN.
+   <Ar>يجب أن يتيح النظام لأمين المكتبة تسجيل كتاب جديد برقم ISBN الخاص به.</Ar>
 3. The web application must be available 99.9 % of the time during a calendar year.
+   <Ar>يجب أن يكون تطبيق الويب متاحًا 99.9 % من الوقت خلال السنة الميلادية.</Ar>
 4. The mobile app should work on both Android and iOS.
+   <Ar>يجب أن يعمل تطبيق الجوّال على نظامَي Android و iOS كليهما.</Ar>
 5. The system shall support up to 500 concurrent users without performance degradation.
+   <Ar>يجب أن يدعم النظام حتى 500 مستخدم متزامن دون تراجع في الأداء.</Ar>
 
 <Solution>
 
 1. Non-functional (product: performance).
+   <Ar>غير وظيفي (متطلب منتج: الأداء).</Ar>
 2. Functional.
+   <Ar>وظيفي.</Ar>
 3. Non-functional (product: dependability/availability).
+   <Ar>غير وظيفي (متطلب منتج: الاعتمادية / التوافر).</Ar>
 4. Non-functional (product: portability).
+   <Ar>غير وظيفي (متطلب منتج: قابلية النقل).</Ar>
 5. Non-functional (product: performance/scalability).
+   <Ar>غير وظيفي (متطلب منتج: الأداء / قابلية التوسع (scalability)).</Ar>
 
 </Solution>
 
 </Exercise>
 
-<Exercise title="Make it testable" level="medium">
+<Exercise title="Make it testable" titleAr="اجعله قابلًا للاختبار" level="medium">
 
 Rewrite these vague requirements as measurable non-functional requirements:
 
+<Ar>أعد كتابة هذه المتطلبات المبهمة في صورة متطلبات غير وظيفية قابلة للقياس:</Ar>
+
 1. "The system should be fast."
+   <Ar>«يجب أن يكون النظام سريعًا».</Ar>
 2. "The system should be reliable."
+   <Ar>«يجب أن يكون النظام موثوقًا».</Ar>
 3. "The system should be easy to learn."
+   <Ar>«يجب أن يكون النظام سهل التعلم».</Ar>
 
 <Solution>
 
 1. "The system shall display search results within **1 second** for 95 % of queries."
+   <Ar>«يجب أن يعرض النظام نتائج البحث خلال **ثانية واحدة** في 95 % من الاستعلامات».</Ar>
 2. "The **mean time to failure** shall be at least **500 hours**, and availability shall be at least **99.5 %** during working hours."
+   <Ar>«يجب ألا يقل **متوسط الزمن حتى الإخفاق (mean time to failure)** عن **500 ساعة**، وألا يقل التوافر عن **99.5 %** خلال ساعات العمل».</Ar>
 3. "New staff shall be able to use all core functions after **at most 2 hours of training**."
+   <Ar>«يجب أن يتمكن الموظفون الجدد من استخدام جميع الوظائف الأساسية بعد **ساعتين من التدريب على الأكثر**».</Ar>
 
 (Any measure from the metrics table is fine, as long as it is a number that a test can check.)
+
+<Ar>(أي مقياس من جدول المقاييس مقبول، ما دام رقمًا يمكن لاختبارٍ التحقق منه.)</Ar>
 
 </Solution>
 
 </Exercise>
 
-<Exercise title="Classify the NFR" level="medium">
+<Exercise title="Classify the NFR" titleAr="صنّف المتطلب غير الوظيفي" level="medium">
 
 Classify each as a product, organizational or external requirement:
 
+<Ar>صنّف كلًّا مما يلي على أنه متطلب منتج أو متطلب تنظيمي أو متطلب خارجي:</Ar>
+
 1. The system shall comply with the country's data-protection law.
+   <Ar>يجب أن يلتزم النظام بقانون حماية البيانات في الدولة.</Ar>
 2. The system shall be developed in Java, following the company's coding standards.
+   <Ar>يجب أن يُطوَّر النظام بلغة Java، مع اتباع معايير كتابة الشيفرة في الشركة.</Ar>
 3. The system shall not use more than 512 MB of memory.
+   <Ar>يجب ألا يستخدم النظام أكثر من 512 MB من الذاكرة.</Ar>
 
 <Solution>
 
 1. External (legislative).
+   <Ar>خارجي (تشريعي).</Ar>
 2. Organizational (development).
+   <Ar>تنظيمي (تطويري).</Ar>
 3. Product (efficiency: space).
+   <Ar>متطلب منتج (الكفاءة: المساحة).</Ar>
 
 </Solution>
 
@@ -243,39 +354,57 @@ Classify each as a product, organizational or external requirement:
   questions={[
     {
       q: "Requirements written in natural language so customers can easily understand them are…",
+      qAr: "المتطلبات المكتوبة بلغة طبيعية ليفهمها العملاء بسهولة هي…",
       options: ["System requirements", "User requirements", "Design specifications", "Test cases"],
+      optionsAr: ["متطلبات النظام", "متطلبات المستخدم", "مواصفات التصميم", "حالات الاختبار"],
       answer: 1,
-      explain: "User requirements are for customers; system requirements are detailed, for developers."
+      explain: "User requirements are for customers; system requirements are detailed, for developers.",
+      explainAr: "متطلبات المستخدم موجهة للعملاء؛ ومتطلبات النظام مفصّلة وموجهة للمطورين."
     },
     {
       q: "If a requirement describes how well the system performs rather than what it does, it is…",
+      qAr: "إذا وصف المتطلب مدى جودة أداء النظام بدلًا مما يفعله، فهو…",
       options: ["Functional", "Non-functional", "A user story", "A domain model"],
+      optionsAr: ["وظيفي", "غير وظيفي", "قصة مستخدم", "نموذج مجال"],
       answer: 1,
-      explain: "Non-functional requirements describe qualities and constraints."
+      explain: "Non-functional requirements describe qualities and constraints.",
+      explainAr: "تصف المتطلبات غير الوظيفية خصائص الجودة والقيود."
     },
     {
       q: "Which is NOT an activity of the RE process?",
+      qAr: "أيٌّ مما يلي ليس من أنشطة عملية هندسة المتطلبات؟",
       options: ["Elicitation and analysis", "Specification", "Validation", "Code optimization"],
+      optionsAr: ["الاستنباط والتحليل", "التوصيف", "التحقق من الصلاحية", "تحسين الشيفرة"],
       answer: 3,
-      explain: "RE covers feasibility, elicitation and analysis, specification and validation."
+      explain: "RE covers feasibility, elicitation and analysis, specification and validation.",
+      explainAr: "تغطي هندسة المتطلبات دراسة الجدوى، والاستنباط والتحليل، والتوصيف، والتحقق من الصلاحية."
     },
     {
       q: "Which discovery technique observes people in their real working environment?",
+      qAr: "أي تقنية اكتشاف تراقب الأشخاص في بيئة عملهم الحقيقية؟",
       options: ["Closed interviews", "Ethnography", "Prototyping", "Requirements reviews"],
+      optionsAr: ["المقابلات المغلقة", "الإثنوغرافيا", "بناء النماذج الأولية", "مراجعات المتطلبات"],
       answer: 1,
-      explain: "Ethnography reveals implicit, social and organizational requirements."
+      explain: "Ethnography reveals implicit, social and organizational requirements.",
+      explainAr: "تكشف الإثنوغرافيا (Ethnography) المتطلبات الضمنية والاجتماعية والتنظيمية."
     },
     {
       q: "Which validation check asks whether the requirements can be built with the available budget and technology?",
+      qAr: "أي فحص من فحوص التحقق من الصلاحية يسأل عمّا إذا كان يمكن بناء المتطلبات بالميزانية والتقنيات المتاحة؟",
       options: ["Validity", "Consistency", "Completeness", "Realism"],
+      optionsAr: ["الصلاحية", "الاتساق", "الاكتمال", "الواقعية"],
       answer: 3,
-      explain: "Realism checks whether implementation is feasible."
+      explain: "Realism checks whether implementation is feasible.",
+      explainAr: "تفحص الواقعية (Realism) ما إذا كان التنفيذ ممكنًا."
     },
     {
       q: "'Users shall authenticate with their health authority identity card' is which kind of NFR?",
+      qAr: "عبارة «يجب أن يُثبت المستخدمون هويتهم ببطاقة الهوية الصادرة عن الهيئة الصحية» من أي نوع من المتطلبات غير الوظيفية؟",
       options: ["Product", "Organizational", "External", "Functional"],
+      optionsAr: ["متطلب منتج", "متطلب تنظيمي", "متطلب خارجي", "متطلب وظيفي"],
       answer: 1,
-      explain: "It comes from the organization's policies and procedures."
+      explain: "It comes from the organization's policies and procedures.",
+      explainAr: "مصدره سياسات المؤسسة وإجراءاتها."
     }
   ]}
 />

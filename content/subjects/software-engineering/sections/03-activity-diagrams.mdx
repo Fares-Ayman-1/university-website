@@ -1,7 +1,9 @@
 ---
 number: 3
 title: Activity Diagrams
+titleAr: "مخططات النشاط"
 summary: Drawing activity diagrams in practice. Covers the symbols (start, activity, connector, decision, fork and join bars, end), then worked diagrams for a login page, a banking system (withdraw or deposit), word editing with parallel printing, and turning the library's "Issue book" algorithm step by step into an activity diagram, ending with the student-registration task.
+summaryAr: "رسم مخططات النشاط (activity diagrams) عمليًا: الرموز (البداية، والنشاط، والموصِّل، ونقطة القرار، وقضيبا التفرّع والالتقاء، والنهاية)، ثم مخططات محلولة لصفحة تسجيل الدخول، ونظام مصرفي (سحب أو إيداع)، وتحرير مستند مع طباعة متوازية، وتحويل خوارزمية «Issue book» في نظام المكتبة خطوة بخطوة إلى مخطط نشاط، وانتهاءً بمهمة نظام تسجيل الطلاب."
 topics: [Activity diagram symbols, Control flow, Decision nodes and guards, Fork and join, Login activity diagram, Banking activity diagram, Word-editing example, Issue book walkthrough, From algorithm to diagram]
 duration: 50 min hands-on
 kind: practical
@@ -22,54 +24,83 @@ bookRefs:
 <Objectives>
 
 - Use the activity diagram **symbols** correctly.
+  <Ar>استخدام **رموز** مخطط النشاط (activity diagram) استخدامًا صحيحًا.</Ar>
 - Read and draw diagrams with **decisions**, **loops** and **parallel** paths.
+  <Ar>قراءة ورسم مخططات تحتوي على **نقاط قرار (decisions)** و**حلقات تكرار (loops)** ومسارات **متوازية**.</Ar>
 - Turn a step-by-step **algorithm** or use case into an activity diagram.
+  <Ar>تحويل **خوارزمية** مكتوبة خطوة بخطوة، أو حالة استخدام (use case)، إلى مخطط نشاط.</Ar>
 
 </Objectives>
 
 ## What an activity diagram is for
 
+<Ar>فيمَ يُستخدم مخطط النشاط</Ar>
+
 An activity diagram is essentially a **flowchart** of the activities a system performs: the **flow of control** from one operation to the next, which can be **sequential**, **branched** or **concurrent**. It is used to:
 
+<Ar>مخطط النشاط (activity diagram) في جوهره **مخطط انسيابي (flowchart)** للأنشطة التي يؤديها النظام: أي **تدفق التحكم (flow of control)** من عملية إلى التي تليها، وقد يكون **تتابعيًا (sequential)** أو **متفرعًا (branched)** أو **متزامنًا (concurrent)**. ويُستخدم من أجل:</Ar>
+
 - show the logic of an **algorithm**;
+  <Ar>توضيح منطق **خوارزمية**؛</Ar>
 - describe the steps of a **use case**;
+  <Ar>وصف خطوات **حالة استخدام (use case)**؛</Ar>
 - show **business processes** and workflows between users and the system;
+  <Ar>توضيح **إجراءات العمل (business processes)** وسير العمل (workflows) بين المستخدمين والنظام؛</Ar>
 - clarify **complex** use cases.
+  <Ar>توضيح حالات الاستخدام **المعقدة**.</Ar>
 
 ## Symbols
 
-| Symbol | Name | Meaning |
+<Ar>الرموز</Ar>
+
+| Symbol <Ar>الرمز</Ar> | Name <Ar>الاسم</Ar> | Meaning <Ar>المعنى</Ar> |
 |---|---|---|
-| ● filled circle | **Start** | The beginning of the process |
-| ▭ rounded rectangle | **Activity** (action) | A step performed by a user or the software |
-| → arrow | **Connector** (control flow) | The direction of flow: the next step starts when this one completes |
-| ◇ diamond | **Decision** | One input, several outputs, each labelled with a **condition** |
-| ━ thick bar, one in and several out | **Fork** | Splits one flow into **concurrent** flows |
-| ━ thick bar, several in and one out | **Join** (synchronization) | Combines concurrent flows back into one |
-| ◉ ringed circle | **End** | The end of all flows |
-| Folded-corner rectangle | **Note** | A comment, attached by a dashed line |
+| ● filled circle <Ar>● دائرة مصمتة</Ar> | **Start** <Ar>**البداية (Start)**</Ar> | The beginning of the process <Ar>بداية العملية</Ar> |
+| ▭ rounded rectangle <Ar>▭ مستطيل بزوايا مستديرة</Ar> | **Activity** (action) <Ar>**النشاط (Activity)** (الإجراء)</Ar> | A step performed by a user or the software <Ar>خطوة يؤديها المستخدم أو البرنامج</Ar> |
+| → arrow <Ar>→ سهم</Ar> | **Connector** (control flow) <Ar>**الموصِّل (Connector)** (تدفق التحكم)</Ar> | The direction of flow: the next step starts when this one completes <Ar>اتجاه التدفق: تبدأ الخطوة التالية عندما تكتمل هذه الخطوة</Ar> |
+| ◇ diamond <Ar>◇ معيّن</Ar> | **Decision** <Ar>**نقطة القرار (Decision)**</Ar> | One input, several outputs, each labelled with a **condition** <Ar>مدخل واحد وعدة مخرجات، يُعنوَن كل منها **بشرط (condition)**</Ar> |
+| ━ thick bar, one in and several out <Ar>━ قضيب سميك، بمدخل واحد وعدة مخرجات</Ar> | **Fork** <Ar>**التفرّع (Fork)**</Ar> | Splits one flow into **concurrent** flows <Ar>يقسم تدفقًا واحدًا إلى تدفقات **متزامنة (concurrent)**</Ar> |
+| ━ thick bar, several in and one out <Ar>━ قضيب سميك، بعدة مدخلات ومخرج واحد</Ar> | **Join** (synchronization) <Ar>**الالتقاء (Join)** (المزامنة)</Ar> | Combines concurrent flows back into one <Ar>يعيد دمج التدفقات المتزامنة في تدفق واحد</Ar> |
+| ◉ ringed circle <Ar>◉ دائرة داخل حلقة</Ar> | **End** <Ar>**النهاية (End)**</Ar> | The end of all flows <Ar>نهاية جميع التدفقات</Ar> |
+| Folded-corner rectangle <Ar>مستطيل بزاوية مطوية</Ar> | **Note** <Ar>**الملاحظة (Note)**</Ar> | A comment, attached by a dashed line <Ar>تعليق يُربط بخط متقطع</Ar> |
 
 ## Worked examples
 
+<Ar>أمثلة محلولة</Ar>
+
 ### Login page
 
-<SlideFigure page={8} caption="Login: the client enters a name and password; if they're wrong, 'Invalid login/password' loops back to try again; if they're correct, the client logs in and their settings are displayed. Notes give the precondition ('Client is registered') and the result." />
+<Ar>صفحة تسجيل الدخول</Ar>
+
+<SlideFigure page={8} caption="Login: the client enters a name and password; if they're wrong, 'Invalid login/password' loops back to try again; if they're correct, the client logs in and their settings are displayed. Notes give the precondition ('Client is registered') and the result." captionAr="تسجيل الدخول: يُدخل العميل الاسم وكلمة المرور؛ فإذا كانا خاطئين تظهر «Invalid login/password» ويعود المسار للمحاولة مجددًا؛ وإذا كانا صحيحين يسجّل العميل الدخول وتُعرض إعداداته. وتوضّح الملاحظات الشرط المسبق («Client is registered») والنتيجة." />
 
 Notice the **loop**: the *No* branch flows back to the input activity. A loop in an activity diagram is simply a decision whose branch returns to an earlier activity.
 
+<Ar>لاحظ **حلقة التكرار (loop)**: فالفرع *No* يعود إلى نشاط الإدخال. والحلقة في مخطط النشاط ما هي إلا نقطة قرار يعود أحد فروعها إلى نشاط سابق.</Ar>
+
 ### Banking: withdraw or deposit
 
-<SlideFigure page={11} caption="Banking: check the account, then branch to Withdraw or Deposit. A withdrawal checks the balance (not enough → not allowed; enough → withdraw); both paths end by updating the account balance." />
+<Ar>النظام المصرفي: سحب أو إيداع</Ar>
+
+<SlideFigure page={11} caption="Banking: check the account, then branch to Withdraw or Deposit. A withdrawal checks the balance (not enough → not allowed; enough → withdraw); both paths end by updating the account balance." captionAr="النظام المصرفي: التحقق من الحساب، ثم التفرع إلى Withdraw أو Deposit. في السحب يُفحص الرصيد (غير كافٍ ← غير مسموح؛ كافٍ ← سحب)؛ وينتهي المساران كلاهما بتحديث رصيد الحساب." />
 
 Showing withdrawals and deposits **on one chart** makes the shared steps (check account, update balance) obvious.
 
+<Ar>عرض عمليتي السحب والإيداع **في مخطط واحد** يجعل الخطوات المشتركة (التحقق من الحساب، وتحديث الرصيد) واضحة.</Ar>
+
 ### Word editing with parallel printing
 
-<SlideFigure page={13} caption="Word editing: create, save and type a document, optionally open graphics or spreadsheet packages (guards [graphics needed], [table needed]), save, then print a hard copy while the printer receives the file in parallel, and exit." />
+<Ar>تحرير مستند مع طباعة متوازية</Ar>
+
+<SlideFigure page={13} caption="Word editing: create, save and type a document, optionally open graphics or spreadsheet packages (guards [graphics needed], [table needed]), save, then print a hard copy while the printer receives the file in parallel, and exit." captionAr="تحرير مستند: إنشاء مستند وحفظه والكتابة فيه، وفتح حزم الرسوم أو الجداول الإلكترونية اختياريًا بحسب شرطَي الحراسة [graphics needed] و [table needed]، ثم الحفظ، ثم طباعة نسخة ورقية بينما تستقبل الطابعة الملف بالتوازي، ثم الخروج." />
 
 ## From algorithm to diagram: "Issue book"
 
+<Ar>من الخوارزمية إلى المخطط: «Issue book» (إعارة كتاب)</Ar>
+
 Write the steps first, then map **each step to an activity** and **each "if" to a decision**:
+
+<Ar>اكتب الخطوات أولًا، ثم حوّل **كل خطوة إلى نشاط** و**كل «if» إلى نقطة قرار**:</Ar>
 
 ```text title="Issue book: the algorithm"
 1. Start
@@ -88,9 +119,11 @@ Write the steps first, then map **each step to an activity** and **each "if" to 
 10. End
 ```
 
-<SlideFigure page={18} source={1} caption="The resulting activity diagram: four decisions, each with a failure branch that shows a message and ends; the success path issues the book, updates the database and confirms." />
+<SlideFigure page={18} source={1} caption="The resulting activity diagram: four decisions, each with a failure branch that shows a message and ends; the success path issues the book, updates the database and confirms." captionAr="مخطط النشاط الناتج: أربع نقاط قرار، لكل منها فرع إخفاق يعرض رسالة وينتهي؛ أما مسار النجاح فيُعير الكتاب ويحدّث قاعدة البيانات ويؤكد العملية." />
 
 The same logic as code shows the one-to-one mapping. Every decision diamond is an `if`, and every failure branch ends early:
+
+<Ar>كتابة المنطق نفسه على هيئة شيفرة توضّح التقابل واحدًا لواحد: فكل معيّن قرار هو `if`، وكل فرع إخفاق ينتهي مبكرًا:</Ar>
 
 ```python title="issue_book.py"
 def issue_book(member_id, book_id, db):
@@ -107,53 +140,80 @@ def issue_book(member_id, book_id, db):
     return "Book issued successfully"                   # Success message
 ```
 
-<Callout type="tip" title="Checklist before you hand in a diagram">
+<Callout type="tip" title="Checklist before you hand in a diagram" titleAr="قائمة مراجعة قبل تسليم المخطط">
   One start node. Every activity reachable and labelled with a <strong>verb phrase</strong>. Every decision's outgoing flows labelled with <strong>complementary</strong> guards (yes/no, [valid]/[invalid]). Every fork matched by a join. Every path reaching an end node.
+
+  <Ar>عقدة بداية واحدة. كل نشاط يمكن الوصول إليه ومعنوَن <strong>بعبارة فعلية</strong>. التدفقات الخارجة من كل نقطة قرار معنونة بشروط حراسة (guards) <strong>متكاملة</strong> (yes/no، [valid]/[invalid]). كل تفرّع (fork) يقابله التقاء (join). كل مسار يصل إلى عقدة نهاية.</Ar>
 </Callout>
 
 <Takeaways>
 
 - An activity diagram is a **flowchart of control flow**: start, activities, connectors, decisions, fork/join, end.
+  <Ar>مخطط النشاط هو **مخطط انسيابي لتدفق التحكم**: البداية، والأنشطة، والموصِّلات، ونقاط القرار، والتفرّع/الالتقاء (fork/join)، والنهاية.</Ar>
 - Loops are decisions whose branch **returns** to an earlier activity.
+  <Ar>حلقات التكرار نقاط قرار **يعود** أحد فروعها إلى نشاط سابق.</Ar>
 - Use **fork/join** for steps that happen **at the same time**, e.g. printing while the printer receives the file.
+  <Ar>استخدم **التفرّع/الالتقاء (fork/join)** للخطوات التي تحدث **في الوقت نفسه**، مثل الطباعة بينما تستقبل الطابعة الملف.</Ar>
 - To draw one, first write the **numbered steps**: each step becomes an activity and each "if" becomes a decision with labelled guards.
+  <Ar>لرسم المخطط، اكتب أولًا **الخطوات المرقّمة**: فتصبح كل خطوة نشاطًا، ويصبح كل «if» نقطة قرار بشروط حراسة معنونة.</Ar>
 
 </Takeaways>
 
 ## Practice
 
-<Exercise title="Register Course activity diagram" level="medium">
+<Ar>تدريب</Ar>
+
+<Exercise title="Register Course activity diagram" titleAr="مخطط النشاط لحالة Register Course" level="medium">
 
 Using the student registration system from Section 2, describe the activity diagram for **Register Course**: the student logs in; if the login fails they retry; then they select a course; the system checks the prerequisites and seat availability; if a check fails it shows a message and the student may choose another course; otherwise it registers the student and **at the same time** emails a confirmation and updates the class list.
+
+<Ar>باستخدام نظام تسجيل الطلاب من السكشن 2، صِف مخطط النشاط لحالة **تسجيل مقرر (Register Course)**: يسجّل الطالب الدخول، فإذا فشل تسجيل الدخول يعيد المحاولة؛ ثم يختار مقررًا؛ ويتحقق النظام من المتطلبات السابقة (prerequisites) ومن توفر المقاعد؛ فإذا فشل أحد الفحوص يعرض رسالة ويمكن للطالب اختيار مقرر آخر؛ وإلا فإنه يسجّل الطالب، و**في الوقت نفسه** يرسل تأكيدًا بالبريد الإلكتروني ويحدّث قائمة طلاب الفصل.</Ar>
 
 <Solution>
 
 1. Start → *Enter ID and password* → decision *[valid?]*:
+   <Ar>البداية ← *إدخال المعرّف وكلمة المرور (Enter ID and password)* ← نقطة قرار *[valid?]*:</Ar>
    - `[no]` → *Show error* → back to *Enter ID and password* (a loop);
+     <Ar>`[no]` ← *عرض الخطأ (Show error)* ← العودة إلى *Enter ID and password* (حلقة تكرار)؛</Ar>
    - `[yes]` → *Select course*.
+     <Ar>`[yes]` ← *اختيار مقرر (Select course)*.</Ar>
 2. *Check prerequisites and seats* → decision:
+   <Ar>*التحقق من المتطلبات السابقة والمقاعد (Check prerequisites and seats)* ← نقطة قرار:</Ar>
    - `[fail]` → *Show reason* → decision *[choose another?]*:
+     <Ar>`[fail]` ← *عرض السبب (Show reason)* ← نقطة قرار *[choose another?]*:</Ar>
      - `[yes]` → back to *Select course*;
+       <Ar>`[yes]` ← العودة إلى *Select course*؛</Ar>
      - `[no]` → End.
+       <Ar>`[no]` ← النهاية.</Ar>
    - `[pass]` → *Register student* → **fork**.
+     <Ar>`[pass]` ← *تسجيل الطالب (Register student)* ← **تفرّع (fork)**.</Ar>
 3. After the fork:
+   <Ar>بعد التفرّع:</Ar>
    - *Send confirmation email* ∥ *Update class list* → **join** → End.
+     <Ar>*إرسال بريد التأكيد (Send confirmation email)* ∥ *تحديث قائمة الفصل (Update class list)* ← **التقاء (join)** ← النهاية.</Ar>
 
 </Solution>
 
 </Exercise>
 
-<Exercise title="ATM withdrawal with swimlanes" level="hard">
+<Exercise title="ATM withdrawal with swimlanes" titleAr="سحب النقود من الصراف الآلي باستخدام حارات السباحة" level="hard">
 
 Add swimlanes for **Customer**, **ATM** and **Bank** to an activity diagram for withdrawing cash. Which activities go in which lane?
+
+<Ar>أضف حارات سباحة (swimlanes) لكلٍّ من **العميل (Customer)** و**الصراف (ATM)** و**البنك (Bank)** إلى مخطط نشاط لسحب النقود. أي الأنشطة يوضع في أي حارة؟</Ar>
 
 <Solution>
 
 - **Customer**: insert card, enter PIN, enter amount, take cash and card.
+  <Ar>**العميل (Customer)**: إدخال البطاقة، وإدخال الرقم السري (PIN)، وإدخال المبلغ، وأخذ النقود والبطاقة.</Ar>
 - **ATM**: read card, request PIN, show menu, dispense cash, print receipt (fork: dispense ∥ print, then join), eject card.
+  <Ar>**الصراف (ATM)**: قراءة البطاقة، وطلب الرقم السري، وعرض القائمة، وصرف النقود، وطباعة الإيصال (تفرّع fork: الصرف ∥ الطباعة، ثم التقاء join)، وإخراج البطاقة.</Ar>
 - **Bank**: validate PIN (decision: valid/invalid, with three tries), check balance and daily limit (decision: sufficient/insufficient), debit account.
+  <Ar>**البنك (Bank)**: التحقق من الرقم السري (نقطة قرار: صحيح/غير صحيح، مع ثلاث محاولات)، والتحقق من الرصيد والحد اليومي (نقطة قرار: كافٍ/غير كافٍ)، والخصم من الحساب.</Ar>
 
 Transitions cross lanes, e.g. *enter PIN* (Customer) → *validate PIN* (Bank) → *show menu* (ATM).
+
+<Ar>تعبر الانتقالات (transitions) بين الحارات، مثل *enter PIN* (العميل) ← *validate PIN* (البنك) ← *show menu* (الصراف).</Ar>
 
 </Solution>
 
@@ -163,27 +223,39 @@ Transitions cross lanes, e.g. *enter PIN* (Customer) → *validate PIN* (Bank) �
   questions={[
     {
       q: "Which symbol splits one flow into concurrent flows?",
+      qAr: "أي رمز يقسم تدفقًا واحدًا إلى تدفقات متزامنة؟",
       options: ["Decision diamond", "Fork bar", "End node", "Note"],
+      optionsAr: ["معيّن القرار", "قضيب التفرّع (Fork)", "عقدة النهاية", "الملاحظة"],
       answer: 1,
-      explain: "A fork splits; a join recombines the concurrent flows."
+      explain: "A fork splits; a join recombines the concurrent flows.",
+      explainAr: "التفرّع يقسم التدفق، والالتقاء (join) يعيد دمج التدفقات المتزامنة."
     },
     {
       q: "In the login diagram, how is 'try again' modelled?",
+      qAr: "في مخطط تسجيل الدخول، كيف نُمذِجت «المحاولة مجددًا»؟",
       options: ["A fork", "A decision whose 'No' branch flows back to the input activity", "A second start node", "A note"],
+      optionsAr: ["تفرّع (fork)", "نقطة قرار يعود فرعها «No» إلى نشاط الإدخال", "عقدة بداية ثانية", "ملاحظة"],
       answer: 1,
-      explain: "Loops are decisions with a branch back to an earlier activity."
+      explain: "Loops are decisions with a branch back to an earlier activity.",
+      explainAr: "حلقات التكرار نقاط قرار لها فرع يعود إلى نشاط سابق."
     },
     {
       q: "Each 'if' in an algorithm usually becomes…",
+      qAr: "كل «if» في الخوارزمية يصبح عادةً…",
       options: ["An activity", "A decision node with guards", "A swimlane", "An end node"],
+      optionsAr: ["نشاطًا", "نقطة قرار بشروط حراسة (guards)", "حارة سباحة", "عقدة نهاية"],
       answer: 1,
-      explain: "Conditions become decisions; steps become activities."
+      explain: "Conditions become decisions; steps become activities.",
+      explainAr: "الشروط تصبح نقاط قرار، والخطوات تصبح أنشطة."
     },
     {
       q: "A thick bar with several incoming flows and one outgoing flow is…",
+      qAr: "القضيب السميك الذي تدخله عدة تدفقات ويخرج منه تدفق واحد هو…",
       options: ["A fork", "A join (synchronization bar)", "A merge diamond", "A start node"],
+      optionsAr: ["تفرّع (fork)", "التقاء (join)، أي قضيب المزامنة", "معيّن الدمج (merge)", "عقدة بداية"],
       answer: 1,
-      explain: "It waits for all concurrent flows to finish."
+      explain: "It waits for all concurrent flows to finish.",
+      explainAr: "ينتظر حتى تنتهي جميع التدفقات المتزامنة."
     }
   ]}
 />

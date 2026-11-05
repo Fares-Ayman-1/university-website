@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import type { Collection } from "@/lib/content";
 import styles from "./mdx.module.css";
+import { ArLine } from "./Arabic";
 
 type Manifest = Record<string, { width: number; height: number }>;
 
@@ -22,12 +23,14 @@ export function SlideFigure({
   page,
   source = 0,
   caption,
+  captionAr,
   alt,
   context,
 }: {
   page: number;
   source?: number;
   caption?: string;
+  captionAr?: string;
   alt?: string;
   context: { subject: string; collection: Collection; slug: string };
 }) {
@@ -58,7 +61,10 @@ export function SlideFigure({
       />
       <figcaption>
         <span className={styles.figureTag}>Slide {page}</span>
-        {caption}
+        <span className={styles.figureText}>
+          {caption}
+          <ArLine>{captionAr}</ArLine>
+        </span>
       </figcaption>
     </figure>
   );

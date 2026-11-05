@@ -1,7 +1,9 @@
 ---
 number: 1
 title: Command-Line Skills
+titleAr: "مهارات سطر الأوامر"
 summary: First steps in Bash. Covers the prompt, basic commands (whoami, uname, pwd, echo, which), shell variables and PATH, globbing with *, ? and [ ], the three kinds of quotes and command substitution, chaining commands with ;, && and ||, and reusing commands from history.
+summaryAr: "الخطوات الأولى في Bash. يتناول المحث (prompt)، والأوامر الأساسية مثل whoami و uname و pwd و echo و which، ومتغيرات الصدفة (shell variables) و PATH، والتوسيع بالأنماط (globbing) باستخدام * و ? و [ ]، والأنواع الثلاثة لعلامات الاقتباس وتعويض الأوامر (command substitution)، وربط الأوامر بـ ; و && و ||، وإعادة استخدام الأوامر من السجل (history)."
 kind: practical
 topics: [CLI and terminal, The prompt, whoami / uname / pwd, Shell variables and PATH, Globbing, Quoting, Command substitution, ; && ||, History]
 duration: 60 min hands-on
@@ -17,16 +19,25 @@ bookRefs:
 <Objectives>
 
 - Read the **prompt** and run basic commands with **options** and **arguments**.
+  <Ar>قراءة **المحث (prompt)** وتشغيل الأوامر الأساسية مع **الخيارات (options)** و**الوسائط (arguments)**.</Ar>
 - Use **shell variables** and understand **PATH** and `which`.
+  <Ar>استخدام **متغيرات الصدفة (shell variables)** وفهم **PATH** والأمر `which`.</Ar>
 - Match file names with **glob** characters: `*`, `?`, `[ ]` and `[! ]`.
+  <Ar>مطابقة أسماء الملفات باستخدام رموز **التوسيع (glob)**: `*` و `?` و `[ ]` و `[! ]`.</Ar>
 - Use **double**, **single** and **back** quotes, the backslash and `$( )` correctly.
+  <Ar>استخدام علامات الاقتباس **المزدوجة** و**المفردة** و**الخلفية (back quotes)** والشرطة المائلة العكسية (backslash) و `$( )` استخدامًا صحيحًا.</Ar>
 - Chain commands with `;`, `&&` and `||`, and reuse commands from **history**.
+  <Ar>ربط الأوامر بـ `;` و `&&` و `||`، وإعادة استخدام الأوامر من **السجل (history)**.</Ar>
 
 </Objectives>
 
 ## The terminal and the prompt
 
+<Ar>الطرفية والمحث</Ar>
+
 In a **CLI** everything is done by typing commands. The **terminal** passes what you type to the **shell**, which interprets it for the OS.
+
+<Ar>في **واجهة سطر الأوامر (CLI)** يتم كل شيء بكتابة الأوامر. تمرّر **الطرفية (terminal)** ما تكتبه إلى **الصدفة (shell)**، التي تفسّره لنظام التشغيل.</Ar>
 
 ```text
 sysadmin@localhost:~$
@@ -34,7 +45,11 @@ sysadmin@localhost:~$
 
 The prompt shows the **user** (`sysadmin`), the **host name** (`localhost`), the **current directory** (`~` is shorthand for your **home** directory) and `$` for a regular user (`#` for root).
 
+<Ar>يعرض المحث (prompt) **المستخدم** (`sysadmin`)، و**اسم المضيف (host name)** (`localhost`)، و**المجلد الحالي** (`~` اختصار **لمجلدك الرئيسي (home)**)، و `$` للمستخدم العادي (و `#` للمستخدم root).</Ar>
+
 A command has the form `command [options] [arguments]`. Options start with `-` (short, `-l`) or `--` (long, `--all`), and short options can be combined: `ls -l -a` is the same as `ls -la`.
+
+<Ar>يأخذ الأمر الصيغة `command [options] [arguments]`. تبدأ الخيارات (options) بـ `-` (القصيرة، مثل `-l`) أو بـ `--` (الطويلة، مثل `--all`)، ويمكن دمج الخيارات القصيرة: `ls -l -a` يكافئ `ls -la`.</Ar>
 
 ```bash title="Terminal"
 whoami          # sysadmin            — the current user
@@ -46,7 +61,11 @@ pwd             # /home/sysadmin      — print working directory
 
 ## Shell variables
 
+<Ar>متغيرات الصدفة</Ar>
+
 Shell variables store data used by the shell, by programs and by you. Read a variable with `$`:
+
+<Ar>تخزّن متغيرات الصدفة (shell variables) بيانات تستخدمها الصدفة والبرامج وأنت أيضًا. اقرأ قيمة المتغير باستخدام `$`:</Ar>
 
 ```bash title="Terminal"
 echo Hello World          # Hello World
@@ -59,28 +78,36 @@ echo "I study $course"         # I study Operating Systems
 export course                  # make it an environment variable for child programs
 ```
 
-<Definition term="PATH">
+<Definition term="PATH" termAr="المتغير PATH">
   A colon-separated list of directories. When you type a command, the shell searches them <strong>in order</strong> and runs the first executable with that name. If none matches, you get "command not found".
+
+  <Ar>قائمة من المجلدات (directories) مفصولة بنقطتين رأسيتين. عندما تكتب أمرًا، تبحث الصدفة (shell) فيها <strong>بالترتيب</strong> وتشغّل أول ملف تنفيذي يحمل هذا الاسم. وإن لم يطابق أيٌّ منها، تظهر لك الرسالة «command not found».</Ar>
 </Definition>
 
 ## Globbing (wildcards)
 
+<Ar>التوسيع بالأنماط (الرموز البديلة)</Ar>
+
 **Glob characters** match file names by pattern. Globbing is a **shell** feature: the shell **expands** the pattern into the matching names *before* the command runs, so it works with **any** command. `echo` is a handy way to see the expansion.
+
+<Ar>**رموز التوسيع (Glob characters)** تطابق أسماء الملفات وفق نمط (pattern). والتوسيع بالأنماط (globbing) ميزة في **الصدفة (shell)**: إذ **توسّع** الصدفة النمط إلى الأسماء المطابقة *قبل* تشغيل الأمر، ولذلك يعمل مع **أي** أمر. والأمر `echo` طريقة مفيدة لرؤية ناتج التوسيع.</Ar>
 
 Assume a directory containing: `Desktop Documents Downloads Music notes.txt Pictures Public report1.txt report2.txt reportA.txt Templates todo.md Videos`.
 
-| Pattern | Matches | Result |
+<Ar>افترض مجلدًا يحتوي على: `Desktop Documents Downloads Music notes.txt Pictures Public report1.txt report2.txt reportA.txt Templates todo.md Videos`.</Ar>
+
+| Pattern <Ar>النمط</Ar> | Matches <Ar>يطابق</Ar> | Result <Ar>النتيجة</Ar> |
 |---|---|---|
-| `*` | Zero or more characters | everything |
-| `D*` | Starts with D | `Desktop Documents Downloads` |
-| `*s` | Ends with s | `Documents Downloads Pictures Templates Videos` |
-| `??????` | Exactly 6 characters | `Public Videos` |
-| `D????????` | D + exactly 8 more characters | `Documents Downloads` |
-| `report?.txt` | One character in the `?` slot | `report1.txt report2.txt reportA.txt` |
-| `[DP]*` | First character is D **or** P | `Desktop Documents Downloads Pictures Public` |
-| `[!DP]*` | First character is **not** D or P | `Music notes.txt report1.txt report2.txt reportA.txt Templates todo.md Videos` |
-| `report[0-9].txt` | A **range** of characters | `report1.txt report2.txt` |
-| `?????*s` | At least 6 characters and ending in s | `Documents Downloads Pictures Templates Videos` |
+| `*` | Zero or more characters <Ar>صفر أو أكثر من الأحرف</Ar> | everything <Ar>كل شيء</Ar> |
+| `D*` | Starts with D <Ar>يبدأ بالحرف D</Ar> | `Desktop Documents Downloads` |
+| `*s` | Ends with s <Ar>ينتهي بالحرف s</Ar> | `Documents Downloads Pictures Templates Videos` |
+| `??????` | Exactly 6 characters <Ar>6 أحرف بالضبط</Ar> | `Public Videos` |
+| `D????????` | D + exactly 8 more characters <Ar>الحرف D يليه 8 أحرف أخرى بالضبط</Ar> | `Documents Downloads` |
+| `report?.txt` | One character in the `?` slot <Ar>حرف واحد في موضع `?`</Ar> | `report1.txt report2.txt reportA.txt` |
+| `[DP]*` | First character is D **or** P <Ar>الحرف الأول D **أو** P</Ar> | `Desktop Documents Downloads Pictures Public` |
+| `[!DP]*` | First character is **not** D or P <Ar>الحرف الأول **ليس** D ولا P</Ar> | `Music notes.txt report1.txt report2.txt reportA.txt Templates todo.md Videos` |
+| `report[0-9].txt` | A **range** of characters <Ar>**نطاق (range)** من الأحرف</Ar> | `report1.txt report2.txt` |
+| `?????*s` | At least 6 characters and ending in s <Ar>6 أحرف على الأقل وينتهي بالحرف s</Ar> | `Documents Downloads Pictures Templates Videos` |
 
 ```bash title="Terminal"
 echo /etc/*.conf        # every .conf file in /etc
@@ -89,15 +116,19 @@ ls -d /etc/[a-c]*       # -d: list the names, not the contents of matching direc
 
 If nothing matches, Bash passes the pattern through **unchanged** (`echo Z*` prints `Z*`).
 
+<Ar>إذا لم يطابق النمط أي شيء، يمرّره Bash **دون تغيير** (`echo Z*` يطبع `Z*`).</Ar>
+
 ## Quoting
 
-| Quotes | Effect |
+<Ar>الاقتباس</Ar>
+
+| Quotes <Ar>علامات الاقتباس</Ar> | Effect <Ar>الأثر</Ar> |
 |---|---|
-| **Double** `" "` | Stop **globbing** and word splitting, but **allow** `$variables` and command substitution |
-| **Single** `' '` | Stop **everything**: the text is literal |
-| **Back** `` ` ` `` | **Command substitution**: run the command and insert its output |
-| `$( )` | Modern, nestable command substitution, the same as back quotes |
-| Backslash `\` | Escape the **next single** character |
+| **Double** `" "` <Ar>**المزدوجة**</Ar> | Stop **globbing** and word splitting, but **allow** `$variables` and command substitution <Ar>تُوقف **التوسيع بالأنماط (globbing)** وتقسيم الكلمات (word splitting)، لكنها **تسمح** بـ `$variables` وتعويض الأوامر (command substitution)</Ar> |
+| **Single** `' '` <Ar>**المفردة**</Ar> | Stop **everything**: the text is literal <Ar>تُوقف **كل شيء**: النص يُؤخذ حرفيًا (literal)</Ar> |
+| **Back** `` ` ` `` <Ar>**الخلفية**</Ar> | **Command substitution**: run the command and insert its output <Ar>**تعويض الأوامر (Command substitution)**: تشغيل الأمر وإدراج مخرجاته</Ar> |
+| `$( )` | Modern, nestable command substitution, the same as back quotes <Ar>تعويض أوامر حديث يمكن تداخله (nestable)، ويعادل علامات الاقتباس الخلفية</Ar> |
+| Backslash `\` <Ar>الشرطة المائلة العكسية (Backslash)</Ar> | Escape the **next single** character <Ar>تهريب (escape) **الحرف الواحد التالي** فقط</Ar> |
 
 ```bash title="Terminal"
 echo "The glob * stays literal, but my home is $HOME"
@@ -116,11 +147,13 @@ echo The service costs \$5 and uses \`backquotes\`
 
 ## Control statements: running several commands
 
-| Separator | Behaviour |
+<Ar>عبارات التحكم: تشغيل عدة أوامر</Ar>
+
+| Separator <Ar>الفاصل</Ar> | Behaviour <Ar>السلوك</Ar> |
 |---|---|
-| `cmd1 ; cmd2` | Run both, **one after another**, **independently** of success or failure |
-| `cmd1 && cmd2` | Run cmd2 **only if** cmd1 **succeeds** (exit status 0) |
-| `cmd1 \|\| cmd2` | Run cmd2 **only if** cmd1 **fails** (non-zero exit status) |
+| `cmd1 ; cmd2` | Run both, **one after another**, **independently** of success or failure <Ar>تشغيل الأمرين **واحدًا تلو الآخر**، **بغض النظر** عن النجاح أو الفشل</Ar> |
+| `cmd1 && cmd2` | Run cmd2 **only if** cmd1 **succeeds** (exit status 0) <Ar>تشغيل `cmd2` **فقط إذا** **نجح** `cmd1` (حالة الخروج 0)</Ar> |
+| `cmd1 \|\| cmd2` | Run cmd2 **only if** cmd1 **fails** (non-zero exit status) <Ar>تشغيل `cmd2` **فقط إذا** **فشل** `cmd1` (حالة خروج غير صفرية)</Ar> |
 
 ```bash title="Terminal"
 echo Hello ; false ; echo Goodbye        # Hello, (failure ignored), Goodbye
@@ -134,50 +167,69 @@ ls /etc/hosts || echo failed             # /etc/hosts only
 mkdir backup && cp notes.txt backup/ || echo "could not back up"
 ```
 
-<Callout type="tip" title="Exit status">
+<Callout type="tip" title="Exit status" titleAr="حالة الخروج">
   Every command returns an <strong>exit status</strong>: 0 means success and anything else means failure. See the last one with <code>echo $?</code>. <code>true</code> always succeeds and <code>false</code> always fails, which is handy for testing.
+
+  <Ar>يُرجع كل أمر <strong>حالة خروج (exit status)</strong>: القيمة 0 تعني النجاح وأي قيمة أخرى تعني الفشل. اعرض آخر حالة خروج باستخدام `echo $?`. الأمر <code>true</code> ينجح دائمًا و <code>false</code> يفشل دائمًا، وهذا مفيد في الاختبار.</Ar>
 </Callout>
 
 ## Command history
 
+<Ar>سجل الأوامر</Ar>
+
 Bash remembers what you type, so you don't have to retype it:
 
-| Action | How |
+<Ar>يتذكر Bash ما تكتبه، فلا تحتاج إلى إعادة كتابته:</Ar>
+
+| Action <Ar>الإجراء</Ar> | How <Ar>الطريقة</Ar> |
 |---|---|
-| Previous / next command | **↑** / **↓** arrow keys; edit with ←, →, Home, End |
-| Show recent commands | `history` (all) or `history 5` (last five) |
-| Re-run command number n | `!n`, e.g. `!42` |
-| Re-run the last command | `!!` |
-| Re-run the last command starting with "ls" | `!ls` |
-| Search the history | **Ctrl + R**, then type part of the command |
+| Previous / next command <Ar>الأمر السابق / التالي</Ar> | **↑** / **↓** arrow keys; edit with ←, →, Home, End <Ar>مفتاحا الأسهم **↑** / **↓**، وللتعديل استخدم ← و → و Home و End</Ar> |
+| Show recent commands <Ar>عرض الأوامر الأخيرة</Ar> | `history` (all) or `history 5` (last five) <Ar>`history` (الكل) أو `history 5` (آخر خمسة)</Ar> |
+| Re-run command number n <Ar>إعادة تشغيل الأمر رقم n</Ar> | `!n`, e.g. `!42` <Ar>`!n`، مثل `!42`</Ar> |
+| Re-run the last command <Ar>إعادة تشغيل آخر أمر</Ar> | `!!` |
+| Re-run the last command starting with "ls" <Ar>إعادة تشغيل آخر أمر يبدأ بـ «ls»</Ar> | `!ls` |
+| Search the history <Ar>البحث في السجل (history)</Ar> | **Ctrl + R**, then type part of the command <Ar>**Ctrl + R**، ثم اكتب جزءًا من الأمر</Ar> |
 
 <Takeaways>
 
 - Commands are `command [options] [arguments]`; read the prompt for user, host and directory.
+  <Ar>صيغة الأوامر هي `command [options] [arguments]`، واقرأ المحث (prompt) لتعرف المستخدم والمضيف (host) والمجلد.</Ar>
 - `$VAR` reads a variable; **PATH** decides where commands are found (`which` shows the match).
+  <Ar>`$VAR` يقرأ قيمة متغير، و **PATH** يحدد أين يُبحث عن الأوامر (و `which` يعرض الملف المطابق).</Ar>
 - Globs (`*`, `?`, `[ ]`, `[! ]`) are expanded **by the shell** before the command runs.
+  <Ar>رموز التوسيع (globs) (`*` و `?` و `[ ]` و `[! ]`) تُوسَّع **بواسطة الصدفة (shell)** قبل تشغيل الأمر.</Ar>
 - `"..."` allows `$` expansion, `'...'` is fully literal, and `` `...` `` or `$(...)` substitutes output.
+  <Ar>`"..."` تسمح بتوسيع `$`، و `'...'` حرفية تمامًا، و `` `...` `` أو `$(...)` تعوّض بالمخرجات.</Ar>
 - `;` always continues, `&&` continues on success, `||` continues on failure. Use **↑**, `history` and `!n` to reuse commands.
+  <Ar>`;` يكمل دائمًا، و `&&` يكمل عند النجاح، و `||` يكمل عند الفشل. استخدم **↑** و `history` و `!n` لإعادة استخدام الأوامر.</Ar>
 
 </Takeaways>
 
 ## Practice
 
-<Exercise title="Predict the expansion" level="easy">
+<Ar>تدريب</Ar>
+
+<Exercise title="Predict the expansion" titleAr="توقّع ناتج التوسيع" level="easy">
 
 In the example directory, what does each print? (a) `echo *.txt` (b) `echo [!r]*.txt` (c) `echo "*.txt"` (d) `echo ?????`
+
+<Ar>في المجلد المثال، ماذا يطبع كل أمر مما يلي؟ (أ) `echo *.txt` (ب) `echo [!r]*.txt` (ج) `echo "*.txt"` (د) `echo ?????`</Ar>
 
 <Solution>
 
 (a) `notes.txt report1.txt report2.txt reportA.txt`. (b) `notes.txt`, the only .txt file whose first letter isn't r. (c) `*.txt`, because double quotes disable globbing. (d) `Music`, the only five-character name.
 
+<Ar>(أ) `notes.txt report1.txt report2.txt reportA.txt`. (ب) `notes.txt`، وهو الملف الوحيد بامتداد `.txt` الذي لا يبدأ بالحرف r. (ج) `*.txt`، لأن علامات الاقتباس المزدوجة تعطّل التوسيع بالأنماط (globbing). (د) `Music`، وهو الاسم الوحيد المكوّن من خمسة أحرف.</Ar>
+
 </Solution>
 
 </Exercise>
 
-<Exercise title="Make it conditional" level="medium">
+<Exercise title="Make it conditional" titleAr="اجعله مشروطًا" level="medium">
 
 Write one line that creates a directory `lab1`, enters it, and prints `ready` only if both steps worked. Otherwise it should print `setup failed`.
+
+<Ar>اكتب سطرًا واحدًا ينشئ المجلد `lab1` ويدخل إليه، ويطبع `ready` فقط إذا نجحت الخطوتان، وإلا فيجب أن يطبع `setup failed`.</Ar>
 
 <Solution>
 
@@ -187,6 +239,8 @@ mkdir lab1 && cd lab1 && echo ready || echo "setup failed"
 
 If either `mkdir` or `cd` fails, the `&&` chain stops and `||` runs the failure message.
 
+<Ar>إذا فشل `mkdir` أو `cd`، تتوقف سلسلة `&&` ويشغّل `||` رسالة الفشل.</Ar>
+
 </Solution>
 
 </Exercise>
@@ -195,39 +249,57 @@ If either `mkdir` or `cd` fails, the `&&` chain stops and `||` runs the failure 
   questions={[
     {
       q: "Which command prints the current working directory?",
+      qAr: "أي أمر يطبع مجلد العمل الحالي؟",
       options: ["cwd", "pwd", "dir", "whereami"],
+      optionsAr: ["cwd", "pwd", "dir", "whereami"],
       answer: 1,
-      explain: "pwd = print working directory."
+      explain: "pwd = print working directory.",
+      explainAr: "الاسم pwd اختصار لعبارة print working directory، أي اطبع مجلد العمل الحالي."
     },
     {
       q: "Who expands the pattern in ls *.txt?",
+      qAr: "مَن يوسّع النمط في هذا الأمر؟",
       options: ["The ls command", "The shell", "The kernel", "The terminal"],
+      optionsAr: ["الأمر ls", "الصدفة", "النواة", "الطرفية"],
       answer: 1,
-      explain: "Globbing is a shell feature; ls receives the already-expanded names."
+      explain: "Globbing is a shell feature; ls receives the already-expanded names.",
+      explainAr: "التوسيع بالأنماط ميزة في الصدفة، والأمر ls يستقبل الأسماء بعد توسيعها."
     },
     {
       q: "Which pattern matches names that are exactly three characters long?",
+      qAr: "أي نمط يطابق الأسماء المكوّنة من ثلاثة أحرف بالضبط؟",
       options: ["*3", "???", "[3]", "*?*"],
+      optionsAr: ["*3", "???", "[3]", "*?*"],
       answer: 1,
-      explain: "Each ? matches exactly one character."
+      explain: "Each ? matches exactly one character.",
+      explainAr: "كل ? يطابق حرفًا واحدًا بالضبط."
     },
     {
       q: "What does echo '$HOME' print?",
+      qAr: "ماذا يطبع هذا الأمر؟",
       options: ["/home/sysadmin", "$HOME", "HOME", "An empty line"],
+      optionsAr: ["/home/sysadmin", "$HOME", "HOME", "سطرًا فارغًا"],
       answer: 1,
-      explain: "Single quotes prevent all expansion."
+      explain: "Single quotes prevent all expansion.",
+      explainAr: "علامات الاقتباس المفردة تمنع أي توسيع."
     },
     {
       q: "In cmd1 || cmd2, when does cmd2 run?",
+      qAr: "متى يُنفَّذ cmd2 في هذا التركيب؟",
       options: ["Always", "Only if cmd1 succeeds", "Only if cmd1 fails", "Never"],
+      optionsAr: ["دائمًا", "فقط إذا نجح cmd1", "فقط إذا فشل cmd1", "أبدًا"],
       answer: 2,
-      explain: "|| runs the right side when the left side fails."
+      explain: "|| runs the right side when the left side fails.",
+      explainAr: "يشغّل || الأمر الذي على يمينه عندما يفشل الأمر الذي على يساره."
     },
     {
       q: "Which re-runs history entry number 12?",
+      qAr: "أيّها يعيد تشغيل الأمر رقم 12 في السجل؟",
       options: ["history 12", "!12", "!!12", "run 12"],
+      optionsAr: ["history 12", "!12", "!!12", "run 12"],
       answer: 1,
-      explain: "!n runs history entry n; history 12 shows the last 12 entries."
+      explain: "!n runs history entry n; history 12 shows the last 12 entries.",
+      explainAr: "!n يشغّل الأمر رقم n في السجل، بينما history 12 يعرض آخر 12 أمرًا."
     }
   ]}
 />

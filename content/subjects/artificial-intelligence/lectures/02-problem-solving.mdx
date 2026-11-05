@@ -1,7 +1,9 @@
 ---
 number: 2
 title: Problem Solving and Search
+titleAr: "حل المسائل والبحث"
 summary: How a goal-based agent turns a task into a well-defined search problem (initial state, actions, goal test and path cost), the four problem types, and classic example formulations.
+summaryAr: "كيف يحوّل الوكيل القائم على الهدف (goal-based agent) مهمةً ما إلى مسألة بحث محددة جيدًا (الحالة الابتدائية، والأفعال، واختبار الهدف، وتكلفة المسار)، والأنواع الأربعة للمسائل، وأمثلة كلاسيكية على صياغة المسائل."
 topics: [Problem-solving agents, Problem types, Problem formulation, State spaces, Example problems]
 duration: 40 min study
 sources:
@@ -19,22 +21,34 @@ bookRefs:
 <Objectives>
 
 - Explain how a **problem-solving agent** works: formulate a goal, formulate a problem, search, then execute.
+  <Ar>شرح طريقة عمل **وكيل حل المسائل (problem-solving agent)**: صياغة الهدف، ثم صياغة المسألة، ثم البحث، ثم التنفيذ.</Ar>
 - Distinguish **single-state**, **conformant**, **contingency** and **exploration** problems.
+  <Ar>التمييز بين مسائل **الحالة الواحدة (single-state)** والمسائل **المتوافقة (conformant)** ومسائل **الطوارئ (contingency)** ومسائل **الاستكشاف (exploration)**.</Ar>
 - Formulate a problem with its four components: **initial state, successor function, goal test, path cost**.
+  <Ar>صياغة المسألة بمكوناتها الأربعة: **الحالة الابتدائية (initial state)، ودالة الحالات التالية (successor function)، واختبار الهدف (goal test)، وتكلفة المسار (path cost)**.</Ar>
 - Abstract a real-world task into a state space and formulate the vacuum world, the 8-puzzle and robotic assembly.
+  <Ar>تجريد مهمة من العالم الحقيقي إلى فضاء حالات (state space)، وصياغة عالم المكنسة ولغز الثمانية (8-puzzle) والتجميع الروبوتي.</Ar>
 
 </Objectives>
 
 ## Problem-solving agents
 
+<Ar>وكلاء حل المسائل</Ar>
+
 A problem-solving agent is a restricted kind of **goal-based agent**. It does not react percept by percept. It thinks ahead: it finds a whole sequence of actions that reaches the goal, then carries that sequence out.
+
+<Ar>وكيل حل المسائل (problem-solving agent) نوع مقيَّد من **الوكيل القائم على الهدف (goal-based agent)**. فهو لا يستجيب لكل إدراك على حدة، بل يفكر مسبقًا: يجد تسلسلًا كاملًا من الأفعال يصل إلى الهدف، ثم ينفّذ ذلك التسلسل.</Ar>
 
 <Steps>
 
 1. **Formulate a goal** from the current situation, e.g. "be in Bucharest".
+   <Ar>**صياغة الهدف** انطلاقًا من الوضع الحالي، مثل «الوصول إلى بوخارست (Bucharest)».</Ar>
 2. **Formulate the problem**: decide which states and actions to consider.
+   <Ar>**صياغة المسألة**: تحديد الحالات والأفعال التي ستؤخذ في الحسبان.</Ar>
 3. **Search** for a sequence of actions that reaches the goal.
+   <Ar>**البحث** عن تسلسل من الأفعال يصل إلى الهدف.</Ar>
 4. **Execute** the solution, one action at a time.
+   <Ar>**تنفيذ** الحل، فعلًا واحدًا في كل مرة.</Ar>
 
 </Steps>
 
@@ -57,14 +71,24 @@ function SIMPLE-PROBLEM-SOLVING-AGENT(percept) returns an action
 
 Notice that the agent ignores its percepts while it executes `seq`. This is called **open-loop** execution. It is safe only when the environment is fully observable and deterministic, so nothing unexpected can happen.
 
+<Ar>لاحظ أن الوكيل يتجاهل إدراكاته أثناء تنفيذ `seq`، وهذا ما يُسمى التنفيذ **بالحلقة المفتوحة (open-loop)**. ولا يكون آمنًا إلا عندما تكون البيئة قابلة للملاحظة كليًا وحتمية، بحيث لا يمكن أن يحدث شيء غير متوقع.</Ar>
+
 ### Example: holiday in Romania
+
+<Ar>مثال: عطلة في رومانيا</Ar>
 
 You are on holiday in **Arad**, and your flight leaves tomorrow from **Bucharest**.
 
+<Ar>أنت في عطلة في **أراد (Arad)**، ورحلتك الجوية تغادر غدًا من **بوخارست (Bucharest)**.</Ar>
+
 - **Goal**: be in Bucharest.
+  <Ar>**الهدف**: الوصول إلى بوخارست.</Ar>
 - **States**: the cities you could be in.
+  <Ar>**الحالات**: المدن التي يمكن أن تكون فيها.</Ar>
 - **Actions**: drive between neighbouring cities.
+  <Ar>**الأفعال**: القيادة بين المدن المتجاورة.</Ar>
 - **Solution**: a sequence of cities, for example Arad → Sibiu → Fagaras → Bucharest.
+  <Ar>**الحل**: تسلسل من المدن، مثل `Arad → Sibiu → Fagaras → Bucharest`.</Ar>
 
 <WeightedGraph
   height={420}
@@ -78,56 +102,80 @@ You are on holiday in **Arad**, and your flight leaves tomorrow from **Bucharest
 
 ## Problem types
 
+<Ar>أنواع المسائل</Ar>
+
 How hard a problem is depends on what the agent knows about the world and its actions.
 
-| Environment | Problem type | What a solution looks like |
+<Ar>تتوقف صعوبة المسألة على ما يعرفه الوكيل عن العالم وعن أفعاله.</Ar>
+
+| Environment <Ar>البيئة</Ar> | Problem type <Ar>نوع المسألة</Ar> | What a solution looks like <Ar>شكل الحل</Ar> |
 |---|---|---|
-| Deterministic, fully observable | **Single-state** | The agent knows exactly which state it is in, so a solution is a fixed **sequence** of actions. |
-| Non-observable (sensorless) | **Conformant** | The agent may not know where it is; it reasons about **sets of states**. The solution (if any) is still a sequence that works from every possible state. |
-| Nondeterministic and/or partially observable | **Contingency** | Percepts bring new information during execution, so the solution is a **contingent plan** (a policy with branches). Search and execution are often interleaved. |
-| Unknown state space | **Exploration** (online) | The agent must act to discover which states and actions even exist. |
+| Deterministic, fully observable <Ar>حتمية، وقابلة للملاحظة كليًا</Ar> | **Single-state** <Ar>**الحالة الواحدة**</Ar> | The agent knows exactly which state it is in, so a solution is a fixed **sequence** of actions. <Ar>يعرف الوكيل بالضبط الحالة التي هو فيها، لذا فالحل **تسلسل** ثابت من الأفعال.</Ar> |
+| Non-observable (sensorless) <Ar>غير قابلة للملاحظة (عديمة المستشعرات sensorless)</Ar> | **Conformant** <Ar>**متوافقة**</Ar> | The agent may not know where it is; it reasons about **sets of states**. The solution (if any) is still a sequence that works from every possible state. <Ar>قد لا يعرف الوكيل أين هو، فيستدل على **مجموعات من الحالات**. ويظل الحل (إن وُجد) تسلسلًا ينجح انطلاقًا من كل حالة ممكنة.</Ar> |
+| Nondeterministic and/or partially observable <Ar>غير حتمية و/أو قابلة للملاحظة جزئيًا</Ar> | **Contingency** <Ar>**طوارئ**</Ar> | Percepts bring new information during execution, so the solution is a **contingent plan** (a policy with branches). Search and execution are often interleaved. <Ar>تأتي الإدراكات بمعلومات جديدة أثناء التنفيذ، لذا فالحل **خطة طوارئ (contingent plan)** (أي سياسة (policy) ذات تفرعات). وكثيرًا ما يتداخل البحث والتنفيذ.</Ar> |
+| Unknown state space <Ar>فضاء حالات مجهول</Ar> | **Exploration** (online) <Ar>**استكشاف** (آني، online)</Ar> | The agent must act to discover which states and actions even exist. <Ar>يجب على الوكيل أن يتصرف ليكتشف ما هي الحالات والأفعال الموجودة أصلًا.</Ar> |
 
 ### The vacuum world, four ways
 
+<Ar>عالم المكنسة بأربع طرق</Ar>
+
 The vacuum world with two squares has **8 states**: 2 robot positions × 2 dirt statuses for A × 2 for B.
 
-<SlideFigure page={10} caption="The eight states of the two-square vacuum world. In state 5 the robot is in A, A is clean and B is dirty." />
+<Ar>لعالم المكنسة ذي المربعين **8 حالات**: موضعان للروبوت × حالتان للاتساخ في A × حالتان في B.</Ar>
+
+<SlideFigure page={10} caption="The eight states of the two-square vacuum world. In state 5 the robot is in A, A is clean and B is dirty." captionAr="الحالات الثماني لعالم المكنسة ذي المربعين. في الحالة 5 يكون الروبوت في A، و A نظيف و B متسخ." />
 
 <Grid cols={2}>
-  <Card title="Single-state" tag="start in #5">
+  <Card title="Single-state" titleAr="الحالة الواحدة" tag="start in #5">
     The agent knows it is in state 5, so the solution is <code>[Right, Suck]</code>.
+
+    <Ar>يعرف الوكيل أنه في الحالة 5، لذا فالحل هو <code>[Right, Suck]</code>.</Ar>
   </Card>
-  <Card title="Conformant" tag="start anywhere">
+  <Card title="Conformant" titleAr="المتوافقة" tag="start anywhere">
     The start is any of the 8 states. <code>Right</code> always leads to one of the states 2, 4, 6 or 8. The solution is <code>[Right, Suck, Left, Suck]</code>, which works from every start.
+
+    <Ar>قد تكون البداية أيًّا من الحالات الثماني. يؤدي <code>Right</code> دائمًا إلى إحدى الحالات 2 أو 4 أو 6 أو 8. والحل هو <code>[Right, Suck, Left, Suck]</code>، وهو ينجح من أي بداية.</Ar>
   </Card>
-  <Card title="Contingency" tag="Murphy's law">
+  <Card title="Contingency" titleAr="الطوارئ" tag="Murphy's law">
     <code>Suck</code> can sometimes dirty a clean carpet, and the agent senses only its own square. The solution needs a branch: <code>[Right, if dirt then Suck]</code>.
+
+    <Ar>قد يؤدي <code>Suck</code> أحيانًا إلى اتساخ سجادة نظيفة، ولا يستشعر الوكيل إلا مربعه فقط. ويحتاج الحل إلى تفرّع: <code>[Right, if dirt then Suck]</code>.</Ar>
   </Card>
-  <Card title="Exploration" tag="online">
+  <Card title="Exploration" titleAr="الاستكشاف" tag="online">
     The agent does not know the layout or what its actions do, so it must experiment to build its own map.
+
+    <Ar>لا يعرف الوكيل تخطيط المكان ولا ما تفعله أفعاله، لذا عليه أن يجرّب ليبني خريطته الخاصة.</Ar>
   </Card>
 </Grid>
 
 ## Formulating a single-state problem
 
-<Definition term="Problem">
+<Ar>صياغة مسألة الحالة الواحدة</Ar>
+
+<Definition term="Problem" termAr="المسألة">
   A problem is defined by four items: an <strong>initial state</strong>, a <strong>successor function</strong>, a <strong>goal test</strong> and a <strong>path cost</strong>.
+
+  <Ar>تُعرَّف المسألة بأربعة عناصر: <strong>الحالة الابتدائية (initial state)</strong>، و<strong>دالة الحالات التالية (successor function)</strong>، و<strong>اختبار الهدف (goal test)</strong>، و<strong>تكلفة المسار (path cost)</strong>.</Ar>
 </Definition>
 
-| Component | Meaning | Romania example |
+| Component <Ar>المكوّن</Ar> | Meaning <Ar>المعنى</Ar> | Romania example <Ar>مثال رومانيا</Ar> |
 |---|---|---|
-| **Initial state** | Where the agent starts | `In(Arad)` |
-| **Successor function** $S(x)$ | The set of action–state pairs reachable from $x$ | $S(\text{Arad}) = \{\langle \text{Arad} \rightarrow \text{Zerind}, \text{Zerind} \rangle, \dots\}$ |
-| **Goal test** | Explicit (a specific state) or implicit (a property) | $x = $ `In(Bucharest)`; or implicit, like `NoDirt(x)` |
-| **Path cost** | Additive cost of a path; each step cost $c(x, a, y) \ge 0$ | Sum of kilometres driven |
+| **Initial state** <Ar>**الحالة الابتدائية**</Ar> | Where the agent starts <Ar>المكان الذي يبدأ منه الوكيل</Ar> | `In(Arad)` |
+| **Successor function** $S(x)$ <Ar>**دالة الحالات التالية** $S(x)$</Ar> | The set of action–state pairs reachable from $x$ <Ar>مجموعة أزواج (فعل، حالة) التي يمكن الوصول إليها من $x$</Ar> | $S(\text{Arad}) = \{\langle \text{Arad} \rightarrow \text{Zerind}, \text{Zerind} \rangle, \dots\}$ |
+| **Goal test** <Ar>**اختبار الهدف**</Ar> | Explicit (a specific state) or implicit (a property) <Ar>صريح (حالة محددة) أو ضمني (خاصية)</Ar> | $x = $ `In(Bucharest)`; or implicit, like `NoDirt(x)` <Ar>$x =$ `In(Bucharest)`؛ أو ضمني، مثل `NoDirt(x)`</Ar> |
+| **Path cost** <Ar>**تكلفة المسار**</Ar> | Additive cost of a path; each step cost $c(x, a, y) \ge 0$ <Ar>تكلفة جمعية للمسار؛ وتكون تكلفة كل خطوة $c(x, a, y) \ge 0$</Ar> | Sum of kilometres driven <Ar>مجموع الكيلومترات المقطوعة</Ar> |
 
 A **solution** is a sequence of actions that leads from the initial state to a goal state. An **optimal solution** has the lowest path cost of all solutions.
+
+<Ar>**الحل (solution)** تسلسل من الأفعال يقود من الحالة الابتدائية إلى حالة هدف. و**الحل الأمثل (optimal solution)** هو الحل صاحب أقل تكلفة مسار بين جميع الحلول.</Ar>
 
 $$
 g(\text{path}) = \sum_{i} c(x_i, a_i, x_{i+1}), \qquad c(x, a, y) \ge 0
 $$
 
 Here is the same formulation in Python, and it is the shape the lab code uses:
+
+<Ar>إليك الصياغة نفسها بلغة Python، وهي الشكل الذي تستخدمه شيفرة السكشن:</Ar>
 
 ```python title="romania_problem.py"
 ROADS = {
@@ -159,107 +207,153 @@ print(problem.successors("Arad"))
 
 ## Selecting a state space
 
+<Ar>اختيار فضاء الحالات</Ar>
+
 The real world is far too complex to search directly, so the state space must be **abstracted**:
 
-- An **abstract state** stands for a set of real states. "In Arad" ignores the weather, the radio station and your exact position in town.
-- An **abstract action** stands for a complex combination of real actions. "Arad → Zerind" covers all routes, detours and rest stops.
-- An **abstract solution** corresponds to a set of real paths that are solutions in the real world.
+<Ar>العالم الحقيقي أعقد بكثير من أن نبحث فيه مباشرةً، لذا يجب **تجريد (abstract)** فضاء الحالات:</Ar>
 
-<Callout type="tip" title="What makes a good abstraction">
+- An **abstract state** stands for a set of real states. "In Arad" ignores the weather, the radio station and your exact position in town.
+  <Ar>**الحالة المجردة (abstract state)** تمثل مجموعة من الحالات الحقيقية؛ فالحالة «في أراد» تتجاهل الطقس ومحطة الراديو وموقعك الدقيق في المدينة.</Ar>
+- An **abstract action** stands for a complex combination of real actions. "Arad → Zerind" covers all routes, detours and rest stops.
+  <Ar>**الفعل المجرد (abstract action)** يمثل تركيبة معقدة من الأفعال الحقيقية؛ فالفعل `Arad → Zerind` يشمل جميع الطرق والتحويلات ومحطات الاستراحة.</Ar>
+- An **abstract solution** corresponds to a set of real paths that are solutions in the real world.
+  <Ar>**الحل المجرد (abstract solution)** يقابل مجموعة من المسارات الحقيقية التي تُعدّ حلولًا في العالم الحقيقي.</Ar>
+
+<Callout type="tip" title="What makes a good abstraction" titleAr="ما الذي يجعل التجريد جيدًا">
   It must be <strong>valid</strong>: any real state "in Arad" must be able to reach some real state "in Zerind". It must also be <strong>useful</strong>: each abstract action should be easier to carry out than the original problem.
+
+  <Ar>يجب أن يكون <strong>صالحًا (valid)</strong>: أي أن كل حالة حقيقية «في أراد» يجب أن تتمكن من الوصول إلى حالة حقيقية ما «في زيرند». ويجب أن يكون أيضًا <strong>مفيدًا (useful)</strong>: أي أن تنفيذ كل فعل مجرد يجب أن يكون أسهل من المسألة الأصلية.</Ar>
 </Callout>
 
 ## Example problems
 
+<Ar>أمثلة على المسائل</Ar>
+
 ### The vacuum world
 
-<SlideFigure page={17} caption="The vacuum-world state space. L = Left, R = Right, S = Suck." />
+<Ar>عالم المكنسة</Ar>
 
-| | Formulation |
+<SlideFigure page={17} caption="The vacuum-world state space. L = Left, R = Right, S = Suck." captionAr="فضاء حالات عالم المكنسة. L = Left، و R = Right، و S = Suck." />
+
+| | Formulation <Ar>الصياغة</Ar> |
 |---|---|
-| **States** | Robot location and dirt status of each square (ignore dirt amounts): $2 \times 2^2 = 8$ states |
-| **Actions** | `Left`, `Right`, `Suck`, `NoOp` |
-| **Goal test** | No dirt in any square |
-| **Path cost** | 1 per action (0 for `NoOp`) |
+| **States** <Ar>**الحالات**</Ar> | Robot location and dirt status of each square (ignore dirt amounts): $2 \times 2^2 = 8$ states <Ar>موقع الروبوت وحالة الاتساخ لكل مربع (مع تجاهل كمية الأوساخ): $2 \times 2^2 = 8$ حالات</Ar> |
+| **Actions** <Ar>**الأفعال**</Ar> | `Left`, `Right`, `Suck`, `NoOp` |
+| **Goal test** <Ar>**اختبار الهدف**</Ar> | No dirt in any square <Ar>لا أوساخ في أي مربع</Ar> |
+| **Path cost** <Ar>**تكلفة المسار**</Ar> | 1 per action (0 for `NoOp`) <Ar>1 لكل فعل (و 0 للفعل `NoOp`)</Ar> |
 
 ### The 8-puzzle
 
-<SlideFigure page={22} caption="Slide tiles into the blank until the board matches the goal state." />
+<Ar>لغز الثمانية (8-puzzle)</Ar>
 
-| | Formulation |
+<SlideFigure page={22} caption="Slide tiles into the blank until the board matches the goal state." captionAr="حرّك القطع إلى الخانة الفارغة حتى تطابق اللوحةُ الحالةَ الهدف." />
+
+| | Formulation <Ar>الصياغة</Ar> |
 |---|---|
-| **States** | The location of each tile and the blank (ignore intermediate positions) |
-| **Actions** | Move the **blank** left, right, up or down (ignore unjamming etc.) |
-| **Goal test** | The state equals the given goal configuration |
-| **Path cost** | 1 per move |
+| **States** <Ar>**الحالات**</Ar> | The location of each tile and the blank (ignore intermediate positions) <Ar>موقع كل قطعة والخانة الفارغة (مع تجاهل المواضع الوسيطة)</Ar> |
+| **Actions** <Ar>**الأفعال**</Ar> | Move the **blank** left, right, up or down (ignore unjamming etc.) <Ar>تحريك **الخانة الفارغة** يسارًا أو يمينًا أو أعلى أو أسفل (مع تجاهل فكّ القطع العالقة وما شابه)</Ar> |
+| **Goal test** <Ar>**اختبار الهدف**</Ar> | The state equals the given goal configuration <Ar>تساوي الحالةُ تهيئةَ الهدف المعطاة</Ar> |
+| **Path cost** <Ar>**تكلفة المسار**</Ar> | 1 per move <Ar>1 لكل حركة</Ar> |
 
 The 8-puzzle has $9!/2 = 181{,}440$ reachable states. Finding the optimal solution for the general $n$-puzzle family is **NP-hard**, which is why it is a classic test bed for search algorithms.
 
-<Callout type="note" title="Why move the blank?">
+<Ar>للغز الثمانية $9!/2 = 181{,}440$ حالة يمكن الوصول إليها. وإيجاد الحل الأمثل لعائلة الألغاز العامة `n-puzzle` مسألة **NP-hard**، ولهذا فهو ميدان اختبار كلاسيكي لخوارزميات البحث.</Ar>
+
+<Callout type="note" title="Why move the blank?" titleAr="لماذا نحرّك الخانة الفارغة؟">
   Describing the actions as moves of the single blank gives just 4 possible actions. Describing them as moves of each tile would give up to 8 tiles × 4 directions, most of them illegal.
+
+  <Ar>وصف الأفعال بأنها حركات للخانة الفارغة الوحيدة يعطي 4 أفعال ممكنة فقط. أما وصفها بأنها حركات لكل قطعة فقد يعطي ما يصل إلى 8 قطع × 4 اتجاهات، ومعظمها غير مسموح به.</Ar>
 </Callout>
 
 ### Robotic assembly
 
-<SlideFigure page={23} caption="A robot arm assembling an object: a continuous problem." />
+<Ar>التجميع الروبوتي</Ar>
 
-| | Formulation |
+<SlideFigure page={23} caption="A robot arm assembling an object: a continuous problem." captionAr="ذراع روبوتية تجمّع جسمًا: مسألة متصلة (continuous)." />
+
+| | Formulation <Ar>الصياغة</Ar> |
 |---|---|
-| **States** | Real-valued coordinates of the robot's joint angles, plus the parts of the object being assembled |
-| **Actions** | Continuous motions of the robot joints |
-| **Goal test** | Complete assembly (without the robot included in it!) |
-| **Path cost** | Time to execute |
+| **States** <Ar>**الحالات**</Ar> | Real-valued coordinates of the robot's joint angles, plus the parts of the object being assembled <Ar>إحداثيات ذات قيم حقيقية لزوايا مفاصل الروبوت، بالإضافة إلى أجزاء الجسم الذي يجري تجميعه</Ar> |
+| **Actions** <Ar>**الأفعال**</Ar> | Continuous motions of the robot joints <Ar>حركات متصلة لمفاصل الروبوت</Ar> |
+| **Goal test** <Ar>**اختبار الهدف**</Ar> | Complete assembly (without the robot included in it!) <Ar>اكتمال التجميع (دون أن يكون الروبوت نفسه جزءًا منه!)</Ar> |
+| **Path cost** <Ar>**تكلفة المسار**</Ar> | Time to execute <Ar>زمن التنفيذ</Ar> |
 
 Unlike the previous examples, this state space is **continuous**, so it has to be discretised or handled with specialised planning methods.
+
+<Ar>على عكس الأمثلة السابقة، فضاء الحالات هذا **متصل (continuous)**، لذا يجب تقطيعه إلى قيم منفصلة (discretised) أو التعامل معه بأساليب تخطيط متخصصة.</Ar>
 
 <Takeaways>
 
 - A problem-solving agent formulates a **goal**, then a **problem**, **searches** for a solution and **executes** it.
+  <Ar>يصوغ وكيل حل المسائل **هدفًا**، ثم **مسألة**، ثم **يبحث** عن حل و**ينفّذه**.</Ar>
 - Problems are **single-state**, **conformant**, **contingency** or **exploration** problems, depending on observability and determinism.
+  <Ar>تكون المسائل مسائل **حالة واحدة** أو **متوافقة** أو **طوارئ** أو **استكشاف**، بحسب قابلية الملاحظة والحتمية.</Ar>
 - A problem = **initial state + successor function + goal test + path cost**; a solution is an action sequence that reaches a goal.
+  <Ar>المسألة = **الحالة الابتدائية + دالة الحالات التالية + اختبار الهدف + تكلفة المسار**؛ والحل تسلسل أفعال يصل إلى هدف.</Ar>
 - Good formulations **abstract away** irrelevant detail while keeping every abstract action realisable.
+  <Ar>الصياغات الجيدة **تُجرِّد** التفاصيل غير ذات الصلة مع إبقاء كل فعل مجرد قابلًا للتحقيق.</Ar>
 
 </Takeaways>
 
 ## Practice
 
-<Exercise title="Formulate the water-jug problem" level="medium">
+<Ar>تدريب</Ar>
+
+<Exercise title="Formulate the water-jug problem" titleAr="صُغ مسألة إبريقَي الماء" level="medium">
 
 You have a 4-litre jug and a 3-litre jug, no markings, and a tap. The goal is exactly 2 litres in the 4-litre jug. Give the states, initial state, actions, goal test and path cost.
+
+<Ar>لديك إبريق سعته 4 لترات وإبريق سعته 3 لترات، دون علامات قياس، وصنبور ماء. والهدف هو الحصول على 2 لتر بالضبط في إبريق الـ4 لترات. حدِّد الحالات، والحالة الابتدائية، والأفعال، واختبار الهدف، وتكلفة المسار.</Ar>
 
 <Solution>
 
 - **States**: pairs $(x, y)$ with $x \in \{0..4\}$ litres in the big jug and $y \in \{0..3\}$ in the small jug.
+  <Ar>**الحالات**: أزواج $(x, y)$ حيث $x \in \{0..4\}$ عدد اللترات في الإبريق الكبير و $y \in \{0..3\}$ في الإبريق الصغير.</Ar>
 - **Initial state**: $(0, 0)$.
+  <Ar>**الحالة الابتدائية**: $(0, 0)$.</Ar>
 - **Actions**: fill either jug, empty either jug, pour one jug into the other until the source is empty or the target is full.
+  <Ar>**الأفعال**: ملء أيٍّ من الإبريقين، أو تفريغ أيٍّ منهما، أو صبّ أحدهما في الآخر حتى يفرغ المصدر أو يمتلئ الهدف.</Ar>
 - **Goal test**: $x = 2$ (any $y$).
+  <Ar>**اختبار الهدف**: $x = 2$ (بأي قيمة لـ $y$).</Ar>
 - **Path cost**: 1 per action.
+  <Ar>**تكلفة المسار**: 1 لكل فعل.</Ar>
 
 One solution: (0,0) → (0,3) → (3,0) → (3,3) → (4,2) → (0,2) → (2,0).
+
+<Ar>أحد الحلول: `(0,0) → (0,3) → (3,0) → (3,3) → (4,2) → (0,2) → (2,0)`.</Ar>
 
 </Solution>
 
 </Exercise>
 
-<Exercise title="Count the states" level="easy">
+<Exercise title="Count the states" titleAr="احسب عدد الحالات" level="easy">
 
 How many states does the vacuum world have if there are **n** squares in a row instead of 2?
+
+<Ar>كم عدد حالات عالم المكنسة إذا كان هناك **n** من المربعات في صف واحد بدلًا من 2؟</Ar>
 
 <Solution>
 
 The robot can be in any of the $n$ squares, and each square is independently dirty or clean: $n \cdot 2^n$ states. For $n = 2$ that gives $2 \cdot 4 = 8$, matching the lecture.
 
+<Ar>يمكن أن يكون الروبوت في أي من المربعات الـ $n$، وكل مربع متسخ أو نظيف بشكل مستقل: أي $n \cdot 2^n$ حالة. وعندما $n = 2$ يعطي ذلك $2 \cdot 4 = 8$، وهو ما يطابق المحاضرة.</Ar>
+
 </Solution>
 
 </Exercise>
 
-<Exercise title="Which problem type?" level="easy">
+<Exercise title="Which problem type?" titleAr="ما نوع المسألة؟" level="easy">
 
 A robot vacuum has **no sensors at all** but knows exactly what its actions do. Which problem type is this, and what does a solution look like?
+
+<Ar>مكنسة روبوتية **ليس لها أي مستشعرات على الإطلاق** لكنها تعرف بالضبط ما تفعله أفعالها. ما نوع هذه المسألة، وكيف يبدو الحل؟</Ar>
 
 <Solution>
 
 It is a **conformant** (sensorless) problem. The agent reasons about the set of states it might be in, and the solution is one fixed action sequence that reaches a goal from every state in that set, for example `[Right, Suck, Left, Suck]`.
+
+<Ar>إنها مسألة **متوافقة (conformant)** (عديمة المستشعرات). يستدل الوكيل على مجموعة الحالات التي قد يكون فيها، والحل تسلسل أفعال واحد ثابت يصل إلى هدف من كل حالة في تلك المجموعة، مثل `[Right, Suck, Left, Suck]`.</Ar>
 
 </Solution>
 
@@ -269,39 +363,57 @@ It is a **conformant** (sensorless) problem. The agent reasons about the set of 
   questions={[
     {
       q: "Which of these is NOT one of the four components of a problem formulation?",
+      qAr: "أيٌّ مما يلي ليس من المكونات الأربعة لصياغة المسألة؟",
       options: ["Initial state", "Successor function", "Heuristic function", "Path cost"],
+      optionsAr: ["الحالة الابتدائية", "دالة الحالات التالية", "الدالة الاستدلالية", "تكلفة المسار"],
       answer: 2,
-      explain: "A problem is the initial state, successor function, goal test and path cost. Heuristics belong to informed search, not to the problem definition."
+      explain: "A problem is the initial state, successor function, goal test and path cost. Heuristics belong to informed search, not to the problem definition.",
+      explainAr: "المسألة هي الحالة الابتدائية ودالة الحالات التالية واختبار الهدف وتكلفة المسار. أما الدوال الاستدلالية (heuristics) فتنتمي إلى البحث المُوجَّه، لا إلى تعريف المسألة."
     },
     {
       q: "The agent cannot observe anything but knows the effects of its actions. This is a…",
+      qAr: "لا يستطيع الوكيل ملاحظة أي شيء لكنه يعرف آثار أفعاله. هذه…",
       options: ["Single-state problem", "Conformant problem", "Contingency problem", "Exploration problem"],
+      optionsAr: ["مسألة حالة واحدة", "مسألة متوافقة", "مسألة طوارئ", "مسألة استكشاف"],
       answer: 1,
-      explain: "Without observations the agent reasons over sets of states and needs one sequence that works for all of them."
+      explain: "Without observations the agent reasons over sets of states and needs one sequence that works for all of them.",
+      explainAr: "من دون ملاحظات يستدل الوكيل على مجموعات من الحالات، ويحتاج إلى تسلسل واحد ينجح معها جميعًا."
     },
     {
       q: "In the vacuum world, starting in state #5 (single-state), the solution is…",
+      qAr: "في عالم المكنسة، بدءًا من الحالة رقم 5 (مسألة حالة واحدة)، يكون الحل…",
       options: ["[Suck]", "[Right, Suck]", "[Right, Suck, Left, Suck]", "[Left, Suck]"],
+      optionsAr: ["[Suck]", "[Right, Suck]", "[Right, Suck, Left, Suck]", "[Left, Suck]"],
       answer: 1,
-      explain: "In state 5 the robot is in A, A is clean and B is dirty, so it moves right and sucks."
+      explain: "In state 5 the robot is in A, A is clean and B is dirty, so it moves right and sucks.",
+      explainAr: "في الحالة 5 يكون الروبوت في A، و A نظيف و B متسخ، لذا يتحرك يمينًا ثم ينظّف."
     },
     {
       q: "In the 8-puzzle formulation, the actions are best described as…",
+      qAr: "في صياغة لغز الثمانية، أفضل وصف للأفعال هو…",
       options: ["Moving any tile to any square", "Moving the blank left, right, up or down", "Swapping two adjacent tiles", "Rotating the board"],
+      optionsAr: ["تحريك أي قطعة إلى أي خانة", "تحريك الخانة الفارغة يسارًا أو يمينًا أو أعلى أو أسفل", "تبديل قطعتين متجاورتين", "تدوير اللوحة"],
       answer: 1,
-      explain: "Moving the single blank gives at most 4 actions, which keeps the formulation small."
+      explain: "Moving the single blank gives at most 4 actions, which keeps the formulation small.",
+      explainAr: "تحريك الخانة الفارغة الوحيدة يعطي 4 أفعال على الأكثر، مما يُبقي الصياغة صغيرة."
     },
     {
       q: "Step costs in a problem formulation are assumed to be…",
+      qAr: "يُفترض أن تكون تكاليف الخطوات في صياغة المسألة…",
       options: ["Negative", "Exactly 1", "≥ 0", "Random"],
+      optionsAr: ["سالبة", "تساوي 1 بالضبط", "≥ 0", "عشوائية"],
       answer: 2,
-      explain: "c(x, a, y) ≥ 0 so that path costs never decrease as a path gets longer."
+      explain: "c(x, a, y) ≥ 0 so that path costs never decrease as a path gets longer.",
+      explainAr: "يُشترط ألا تقل تكلفة أي خطوة c عن 0، حتى لا تتناقص تكلفة المسار أبدًا كلما طال المسار."
     },
     {
       q: "Why must the state space be abstracted?",
+      qAr: "لماذا يجب تجريد فضاء الحالات؟",
       options: ["To make the agent faster at driving", "Because the real world is too complex to search directly", "Because computers cannot store cities", "To make the problem nondeterministic"],
+      optionsAr: ["لجعل الوكيل أسرع في القيادة", "لأن العالم الحقيقي أعقد من أن نبحث فيه مباشرةً", "لأن الحواسيب لا تستطيع تخزين المدن", "لجعل المسألة غير حتمية"],
       answer: 1,
-      explain: "Abstraction removes irrelevant detail so the remaining state space is small enough to explore."
+      explain: "Abstraction removes irrelevant detail so the remaining state space is small enough to explore.",
+      explainAr: "يزيل التجريد التفاصيل غير ذات الصلة بحيث يصبح فضاء الحالات المتبقي صغيرًا بما يكفي لاستكشافه."
     }
   ]}
 />

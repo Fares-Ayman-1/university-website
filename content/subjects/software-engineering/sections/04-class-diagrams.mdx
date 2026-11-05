@@ -1,7 +1,9 @@
 ---
 number: 4
 title: Class Diagrams
+titleAr: "مخططات الأصناف"
 summary: Drawing class diagrams in practice. Covers the three compartments, attribute and operation syntax with visibility and default values, the six relationships (association with multiplicity and role names, aggregation, composition, generalization, dependency and realization), and a full worked example that turns the researcher-database requirements into classes, attributes, operations and multiplicities, then into Java.
+summaryAr: "رسم مخططات الأصناف (class diagrams) عمليًا: الأقسام الثلاثة للصنف، وصيغة السمات والعمليات مع مستوى الظهور (visibility) والقيم الافتراضية، والعلاقات الست (الارتباط مع التعددية وأسماء الأدوار، والتجميع، والتركيب، والتعميم، والاعتمادية، والتحقيق)، ومثال محلول كامل يحوّل متطلبات قاعدة بيانات الباحثين إلى أصناف وسمات وعمليات وتعدديات، ثم إلى شيفرة Java."
 topics: [Class compartments, Attribute syntax, Operation syntax, Visibility, Association, Multiplicity and role names, Aggregation vs composition, Generalization, Dependency, Realization, Derived attributes, From requirements to classes]
 duration: 55 min hands-on
 kind: practical
@@ -22,17 +24,25 @@ bookRefs:
 <Objectives>
 
 - Write **attributes** and **operations** with visibility, types and default values.
+  <Ar>كتابة **السمات (attributes)** و**العمليات (operations)** مع مستوى الظهور (visibility) والأنواع والقيم الافتراضية.</Ar>
 - Choose the right **relationship**: association, aggregation, composition, generalization, dependency or realization.
+  <Ar>اختيار **العلاقة** المناسبة: الارتباط (association)، أو التجميع (aggregation)، أو التركيب (composition)، أو التعميم (generalization)، أو الاعتمادية (dependency)، أو التحقيق (realization).</Ar>
 - Add **multiplicities** and **role names** to associations.
+  <Ar>إضافة **التعدديات (multiplicities)** و**أسماء الأدوار (role names)** إلى الارتباطات.</Ar>
 - Turn a **requirements text** into a class diagram, and the diagram into code.
+  <Ar>تحويل **نص المتطلبات** إلى مخطط أصناف (class diagram)، وتحويل المخطط إلى شيفرة.</Ar>
 
 </Objectives>
 
 ## Classes
 
+<Ar>الأصناف</Ar>
+
 A **class** describes a set of objects with similar attributes, operations, relationships and behaviour. It is drawn as a rectangle with **three compartments**: the **name**, the **attributes** (data) and the **operations** (methods).
 
-<SlideFigure page={17} caption="The Shape class: +origin is public, #width: int is protected, and -height: int = 10 is private with an initial value." />
+<Ar>يصف **الصنف (class)** مجموعة من الكائنات (objects) لها سمات وعمليات وعلاقات وسلوك متشابهة. ويُرسم على هيئة مستطيل من **ثلاثة أقسام (compartments)**: **الاسم**، و**السمات (attributes)** (البيانات)، و**العمليات (operations)** (الدوال العضو methods).</Ar>
+
+<SlideFigure page={17} caption="The Shape class: +origin is public, #width: int is protected, and -height: int = 10 is private with an initial value." captionAr="الصنف Shape: السمة origin عامة (+)، والسمة width من النوع int محمية (#)، والسمة height من النوع int خاصة (-) ولها القيمة الابتدائية 10." />
 
 ```text title="Syntax"
 attribute:  visibility name : type = initialValue        e.g.  -height : int = 10
@@ -41,74 +51,109 @@ operation:  visibility name(param : type = default) : returnType
 visibility: + public    # protected    - private    (~ package)
 ```
 
-<SlideFigure page={18} caption="Operations of Drawing::Shape: +move(), #resize(): boolean, -display(c1: boolean = true): boolean." />
+<SlideFigure page={18} caption="Operations of Drawing::Shape: +move(), #resize(): boolean, -display(c1: boolean = true): boolean." captionAr="عمليات الصنف Drawing::Shape: العملية move() عامة (+)، والعملية resize() محمية (#) وتُرجع boolean، والعملية display خاصة (-) وتأخذ المعامل c1 من النوع boolean بقيمة افتراضية true وتُرجع boolean." />
 
 Attribute and operation names start with a **lowercase** letter. Class names start with an **uppercase** letter and are singular nouns.
 
+<Ar>تبدأ أسماء السمات والعمليات **بحرف صغير (lowercase)**. أما أسماء الأصناف فتبدأ **بحرف كبير (uppercase)** وتكون أسماءً مفردة.</Ar>
+
 ## Relationships
 
-<SlideFigure page={19} caption="The six kinds of relationship between classes." />
+<Ar>العلاقات</Ar>
 
-| Relationship | Notation | Read as | Example |
+<SlideFigure page={19} caption="The six kinds of relationship between classes." captionAr="الأنواع الستة للعلاقات بين الأصناف." />
+
+| Relationship <Ar>العلاقة</Ar> | Notation <Ar>الترميز</Ar> | Read as <Ar>تُقرأ</Ar> | Example <Ar>مثال</Ar> |
 |---|---|---|---|
-| **Association** | Solid line, with optional name, arrow, multiplicities and role names | "is connected to" | Student — Instructor |
-| **Aggregation** | Hollow diamond at the **whole** | "has", where the parts can live alone | Class ◇— Student |
-| **Composition** | Filled diamond at the **whole** | "is made of", where the parts die with the whole | House ◆— Room |
-| **Generalization** | Hollow triangle at the **parent** | "is a" | Student ▷ Person |
-| **Dependency** | Dashed arrow | "uses" (temporarily) | Accounting System ⇢ Receipt |
-| **Realization** | Dashed line with a hollow triangle | "implements" | ArrayList ⇢▷ List |
+| **Association** <Ar>**الارتباط (Association)**</Ar> | Solid line, with optional name, arrow, multiplicities and role names <Ar>خط متصل، مع اسم وسهم وتعدديات وأسماء أدوار اختيارية</Ar> | "is connected to" <Ar>«مرتبط بـ»</Ar> | Student — Instructor <Ar>الطالب (Student) — المدرّس (Instructor)</Ar> |
+| **Aggregation** <Ar>**التجميع (Aggregation)**</Ar> | Hollow diamond at the **whole** <Ar>معيّن مفرغ عند طرف **الكل**</Ar> | "has", where the parts can live alone <Ar>«يملك»، حيث يمكن للأجزاء أن توجد وحدها</Ar> | Class ◇— Student <Ar>الفصل (Class) يضم الطلاب (Student)</Ar> |
+| **Composition** <Ar>**التركيب (Composition)**</Ar> | Filled diamond at the **whole** <Ar>معيّن مصمت عند طرف **الكل**</Ar> | "is made of", where the parts die with the whole <Ar>«يتكوّن من»، حيث تفنى الأجزاء بفناء الكل</Ar> | House ◆— Room <Ar>المنزل (House) يتكوّن من الغرف (Room)</Ar> |
+| **Generalization** <Ar>**التعميم (Generalization)**</Ar> | Hollow triangle at the **parent** <Ar>مثلث مفرغ عند طرف **الأب**</Ar> | "is a" <Ar>«هو نوع من»</Ar> | Student ▷ Person <Ar>الطالب (Student) هو شخص (Person)</Ar> |
+| **Dependency** <Ar>**الاعتمادية (Dependency)**</Ar> | Dashed arrow <Ar>سهم متقطع</Ar> | "uses" (temporarily) <Ar>«يستخدم» (مؤقتًا)</Ar> | Accounting System ⇢ Receipt <Ar>نظام المحاسبة (Accounting System) يستخدم الإيصال (Receipt)</Ar> |
+| **Realization** <Ar>**التحقيق (Realization)**</Ar> | Dashed line with a hollow triangle <Ar>خط متقطع بمثلث مفرغ</Ar> | "implements" <Ar>«ينفّذ (implements)»</Ar> | ArrayList ⇢▷ List <Ar>الصنف ArrayList ينفّذ الواجهة (interface) List</Ar> |
 
 ### Association, multiplicity and role names
 
+<Ar>الارتباط والتعددية وأسماء الأدوار</Ar>
+
 When two classes need to communicate, there must be an **association** between them. An arrow shows the navigation direction; arrows at both ends (or none) mean a **bidirectional** association.
 
-<SlideFigure page={21} caption="Every Instructor has one or more Students; with role names, an Instructor 'teaches' Students and a Student 'learns from' Instructors." />
+<Ar>عندما يحتاج صنفان إلى التواصل، يجب أن يكون بينهما **ارتباط (association)**. ويوضّح السهم اتجاه التنقّل (navigation)؛ أما وجود سهمين عند الطرفين (أو عدم وجود أي سهم) فيعني ارتباطًا **ثنائي الاتجاه (bidirectional)**.</Ar>
+
+<SlideFigure page={21} caption="Every Instructor has one or more Students; with role names, an Instructor 'teaches' Students and a Student 'learns from' Instructors." captionAr="لكل مدرّس (Instructor) طالب (Student) واحد أو أكثر؛ وباستخدام أسماء الأدوار، فإن المدرّس «يُدرِّس (teaches)» الطلاب، والطالب «يتعلّم من (learns from)» المدرّسين." />
 
 Read a multiplicity from the **far** end: in `Student 1..* ——— 1..* Instructor`, *one* instructor has **1..\*** students, and *one* student has **1..\*** instructors.
 
+<Ar>تُقرأ التعددية (multiplicity) من الطرف **البعيد**: ففي `Student 1..* ——— 1..* Instructor` يكون لمدرّس *واحد* **`1..*`** من الطلاب، ولطالب *واحد* **`1..*`** من المدرّسين.</Ar>
+
 ### Aggregation vs. composition
+
+<Ar>التجميع مقابل التركيب</Ar>
 
 Both are special **associations** where one object "owns" another. The difference is whether the part can **exist independently**:
 
-| | Aggregation | Composition |
+<Ar>كلاهما **ارتباط (association)** خاص يكون فيه كائن «مالكًا» لكائن آخر. والفرق هو ما إذا كان الجزء يستطيع **أن يوجد مستقلًا**:</Ar>
+
+| | Aggregation <Ar>التجميع (Aggregation)</Ar> | Composition <Ar>التركيب (Composition)</Ar> |
 |---|---|---|
-| Part without the whole? | **Yes**. Delete the *Class* and the *Students* still exist | **No**. Delete the *House* and its *Rooms* are gone |
-| Diamond | Hollow ◇ | Filled ◆ |
+| Part without the whole? <Ar>هل يوجد الجزء دون الكل؟</Ar> | **Yes**. Delete the *Class* and the *Students* still exist <Ar>**نعم**. احذف *الفصل (Class)* ويبقى *الطلاب (Students)* موجودين</Ar> | **No**. Delete the *House* and its *Rooms* are gone <Ar>**لا**. احذف *المنزل (House)* فتزول *غرفه (Rooms)*</Ar> |
+| Diamond <Ar>المعيّن</Ar> | Hollow ◇ <Ar>مفرغ ◇</Ar> | Filled ◆ <Ar>مصمت ◆</Ar> |
 
-<SlideFigure page={23} caption="Composition: a Person is composed of a Head, Hands and Legs; a coffee table of a table top and legs." />
+<SlideFigure page={23} caption="Composition: a Person is composed of a Head, Hands and Legs; a coffee table of a table top and legs." captionAr="التركيب: يتكوّن الشخص (Person) من رأس (Head) ويدين (Hands) وساقين (Legs)؛ وتتكوّن طاولة القهوة من سطح الطاولة والأرجل." />
 
-<SlideFigure page={24} caption="Aggregation: a Car aggregates an Engine and Wheels (which an engine inspection can also refer to)." />
+<SlideFigure page={24} caption="Aggregation: a Car aggregates an Engine and Wheels (which an engine inspection can also refer to)." captionAr="التجميع: تجمع السيارة (Car) محركًا (Engine) وعجلات (Wheels)، ويمكن أن يشير إليها فحص المحرك أيضًا." />
 
 ### Generalization and dependency
 
+<Ar>التعميم والاعتمادية</Ar>
+
 **Generalization** (inheritance): a class with no parent is a **root** class, one with no children is a **leaf** class, and a class can have **single** or **multiple** inheritance. A **dependency** means one class **uses** another, e.g. as a parameter or a local variable, without keeping a permanent link.
 
-<SlideFigure page={26} caption="Dependency: the Accounting System uses Receipt (dashed arrow)." />
+<Ar>**التعميم (Generalization)** (أي الوراثة inheritance): الصنف الذي ليس له أب هو صنف **جذر (root)**، والصنف الذي ليس له أبناء هو صنف **ورقة (leaf)**، ويمكن أن تكون للصنف وراثة **مفردة (single)** أو **متعددة (multiple)**. أما **الاعتمادية (dependency)** فتعني أن صنفًا **يستخدم** صنفًا آخر، مثلًا كمعامل (parameter) أو كمتغير محلي، دون الاحتفاظ برابط دائم.</Ar>
+
+<SlideFigure page={26} caption="Dependency: the Accounting System uses Receipt (dashed arrow)." captionAr="الاعتمادية: نظام المحاسبة (Accounting System) يستخدم الإيصال (Receipt)، ويُرسم ذلك بسهم متقطع." />
 
 ## Worked example: the researcher database
 
+<Ar>مثال محلول: قاعدة بيانات الباحثين</Ar>
+
 > Researchers are placed into a database maintained by the state of Georgia. Information of interest includes **researcher name, title, position, date began current position, number of years at current position**; **university name, location, enrollment**; and **research interests**. Researchers are associated with **one institution**, and each researcher can have **up to five** research interests. **More than one researcher** can have the same interest, and the system tracks the **ranking of the best researchers** for each interest. The system should be able to insert new researchers, universities and interests; produce the **number of researchers at each university**, **contact information** for researchers, and **interests with no associated researchers**; and **change researcher rankings**.
+<Ar>يُدرَج الباحثون في قاعدة بيانات تديرها ولاية جورجيا (Georgia). وتشمل المعلومات المطلوبة **اسم الباحث، ولقبه، ومنصبه، وتاريخ بدء منصبه الحالي، وعدد سنواته في المنصب الحالي**؛ و**اسم الجامعة، وموقعها، وعدد طلابها المقيدين (enrollment)**؛ و**الاهتمامات البحثية**. ويرتبط الباحثون **بمؤسسة واحدة**، ويمكن أن يكون لكل باحث **ما يصل إلى خمسة** اهتمامات بحثية. ويمكن أن يشترك **أكثر من باحث** في الاهتمام نفسه، ويتتبّع النظام **ترتيب أفضل الباحثين** في كل اهتمام. ويجب أن يكون النظام قادرًا على إدخال باحثين وجامعات واهتمامات جديدة؛ وإنتاج **عدد الباحثين في كل جامعة**، و**معلومات الاتصال** بالباحثين، و**الاهتمامات التي لا يرتبط بها أي باحث**؛ و**تغيير ترتيب الباحثين**.</Ar>
 
 <Steps>
 
 1. **Nouns become classes**: *Institution*, *Researcher*, *Research Interest*.
+   <Ar>**الأسماء تصبح أصنافًا**: *Institution* (المؤسسة)، و *Researcher* (الباحث)، و *Research Interest* (الاهتمام البحثي).</Ar>
 2. **Facts about each noun become attributes**:
+   <Ar>**الحقائق المتعلقة بكل اسم تصبح سمات (attributes)**:</Ar>
    - Institution: name, location, enrollment.
+     <Ar>المؤسسة (Institution): الاسم، والموقع، وعدد الطلاب المقيدين (enrollment).</Ar>
    - Researcher: name, title, position, date of current position, and **/years at current position**. The leading **/** marks a **derived** attribute, computed from the date.
+     <Ar>الباحث (Researcher): الاسم، واللقب، والمنصب، وتاريخ المنصب الحالي، و **`/years at current position`** (عدد السنوات في المنصب الحالي). والرمز **`/`** في بداية الاسم يدل على سمة **مشتقة (derived)** تُحسب من التاريخ.</Ar>
    - Interest: description, top researcher.
+     <Ar>الاهتمام (Interest): الوصف، وأفضل باحث.</Ar>
 3. **"The system should produce/change…" becomes operations on the class that owns the data**:
+   <Ar>**عبارة «يجب أن ينتج النظام/يغيّر…» تصبح عمليات (operations) على الصنف الذي يملك البيانات**:</Ar>
    - `numberOfResearchers()` on Institution;
+     <Ar>`numberOfResearchers()` على الصنف Institution؛</Ar>
    - `produceContactInfo()` on Researcher;
+     <Ar>`produceContactInfo()` على الصنف Researcher؛</Ar>
    - `findNoAssociatedResearcher()` and `changeResearcherRanking()` on Interest.
+     <Ar>`findNoAssociatedResearcher()` و `changeResearcherRanking()` على الصنف Interest.</Ar>
 4. **Relationships and multiplicities come from the quantity words**:
+   <Ar>**العلاقات والتعدديات تُستخرج من كلمات الكمية**:</Ar>
    - "associated with **one** institution": Institution **1** — **1..\*** Researcher;
+     <Ar>«يرتبط **بمؤسسة واحدة**»: Institution **`1`** — **`1..*`** Researcher؛</Ar>
    - "**up to five** interests" and "**more than one** researcher can share an interest": Researcher **1..\*** — **1..5** Research Interest.
+     <Ar>«**ما يصل إلى خمسة** اهتمامات» و«يمكن أن يشترك **أكثر من باحث** في اهتمام واحد»: Researcher **`1..*`** — **`1..5`** Research Interest.</Ar>
 
 </Steps>
 
-<SlideFigure page={18} source={1} caption="The solution: Institution 1 —associated— 1..* Researcher 1..* —has— 1..5 Research Interests, with their attributes and operations." />
+<SlideFigure page={18} source={1} caption="The solution: Institution 1 —associated— 1..* Researcher 1..* —has— 1..5 Research Interests, with their attributes and operations." captionAr="الحل: ترتبط (associated) المؤسسة (Institution) الواحدة بباحث (Researcher) واحد أو أكثر، ولكل باحث (has) من اهتمام بحثي واحد إلى خمسة اهتمامات (Research Interests)، ويشترك في كل اهتمام باحث واحد أو أكثر، مع سماتها وعملياتها." />
 
 The diagram maps directly to code:
+
+<Ar>يتحوّل المخطط إلى شيفرة مباشرةً:</Ar>
 
 ```java title="Researchers.java"
 import java.time.LocalDate;
@@ -155,49 +200,71 @@ class ResearchInterest {
 }
 ```
 
-<Callout type="note" title="Multiplicities become code constraints">
+<Callout type="note" title="Multiplicities become code constraints" titleAr="التعدديات تصبح قيودًا في الشيفرة">
   <code>1..5</code> isn't only a label: <code>addInterest</code> enforces the upper bound. A lower bound such as <code>1..*</code> means a researcher must have at least one interest, which the application should check when saving.
+
+  <Ar>التعددية <code>1..5</code> ليست مجرد تسمية: فالدالة <code>addInterest</code> تفرض الحد الأعلى. أما الحد الأدنى في تعددية مثل <code>1..*</code> فيعني أن الباحث يجب أن يكون له اهتمام واحد على الأقل، وهو ما ينبغي للتطبيق التحقق منه عند الحفظ.</Ar>
 </Callout>
 
 <Takeaways>
 
 - A class has **name, attributes and operations**, with visibility `+ # - ~`, types and default values.
+  <Ar>للصنف **اسم وسمات وعمليات**، مع مستوى ظهور (visibility) `+ # - ~`، وأنواع، وقيم افتراضية.</Ar>
 - Use **association** to connect classes, with **multiplicities** read from the far end and optional **role names**.
+  <Ar>استخدم **الارتباط (association)** لربط الأصناف، مع **تعدديات (multiplicities)** تُقرأ من الطرف البعيد، و**أسماء أدوار (role names)** اختيارية.</Ar>
 - **Aggregation** ◇: the part can live alone. **Composition** ◆: the part dies with the whole. **Generalization** ▷: is-a. **Dependency** ⇢: uses.
+  <Ar>**التجميع (Aggregation)** ◇: يمكن للجزء أن يوجد وحده. **التركيب (Composition)** ◆: يفنى الجزء بفناء الكل. **التعميم (Generalization)** ▷: علاقة «هو نوع من (is-a)». **الاعتمادية (Dependency)** ⇢: علاقة «يستخدم».</Ar>
 - From requirements: **nouns become classes**, their **facts become attributes**, **"the system should…" becomes operations**, and **quantity words become multiplicities**.
+  <Ar>من المتطلبات: **الأسماء تصبح أصنافًا**، و**حقائقها تصبح سمات**، و**عبارة «يجب أن يقوم النظام بـ…» تصبح عمليات**، و**كلمات الكمية تصبح تعدديات**.</Ar>
 
 </Takeaways>
 
 ## Practice
 
-<Exercise title="Online shop" level="medium">
+<Ar>تدريب</Ar>
+
+<Exercise title="Online shop" titleAr="متجر إلكتروني" level="medium">
 
 A customer places orders. Each order has one or more order lines, and each line refers to exactly one product with a quantity. An order line can't exist without its order. Products exist independently and appear in many lines. Customers are either regular or premium (premium customers get a discount). Draw the class diagram as a list of classes, attributes and relationships.
+
+<Ar>يقدّم العميل طلبات شراء. ولكل طلب سطر طلب (order line) واحد أو أكثر، ويشير كل سطر إلى منتج واحد بالضبط مع كمية. ولا يمكن أن يوجد سطر الطلب دون طلبه. أما المنتجات فتوجد مستقلة وتظهر في أسطر كثيرة. والعملاء إما عاديون (regular) أو مميزون (premium) (ويحصل العملاء المميزون على خصم). ارسم مخطط الأصناف على هيئة قائمة بالأصناف والسمات والعلاقات.</Ar>
 
 <Solution>
 
 - **Customer** (name, email) 1 —places— 0..\* **Order** (orderId, date; `total()`).
+  <Ar>**العميل (Customer)** (name و email) `1` —يقدّم (places)— `0..*` **الطلب (Order)** (orderId و date؛ والعملية `total()`).</Ar>
 - **Order** ◆—1..\* **OrderLine** (quantity; `subtotal()`). This is **composition**: lines die with their order.
+  <Ar>**الطلب (Order)** ◆— `1..*` **سطر الطلب (OrderLine)** (quantity؛ والعملية `subtotal()`). وهذا **تركيب (composition)**: فالأسطر تفنى بفناء طلبها.</Ar>
 - **OrderLine** 0..\* —refers to— 1 **Product** (name, price). This is a plain **association**, because products exist independently.
+  <Ar>**سطر الطلب (OrderLine)** `0..*` —يشير إلى (refers to)— `1` **المنتج (Product)** (name و price). وهذا **ارتباط (association)** عادي، لأن المنتجات توجد مستقلة.</Ar>
 - **RegularCustomer** and **PremiumCustomer** (discountRate) **generalize** to **Customer** (hollow triangle at Customer).
+  <Ar>الصنفان **RegularCustomer** و **PremiumCustomer** (discountRate) **يُعمَّمان (generalize)** إلى **Customer** (مثلث مفرغ عند Customer).</Ar>
 
 </Solution>
 
 </Exercise>
 
-<Exercise title="Name the relationship" level="easy">
+<Exercise title="Name the relationship" titleAr="سمِّ العلاقة" level="easy">
 
 1. A *Library* and its *Books* (books can be moved to another library).
+   <Ar>*مكتبة (Library)* و *كتبها (Books)* (يمكن نقل الكتب إلى مكتبة أخرى).</Ar>
 2. A *Document* and its *Pages*.
+   <Ar>*مستند (Document)* و *صفحاته (Pages)*.</Ar>
 3. A *ReportGenerator* that receives a *Printer* as a method parameter.
+   <Ar>*ReportGenerator* (مولّد التقارير) الذي يستقبل *Printer* (الطابعة) كمعامل (parameter) في إحدى دوالّه.</Ar>
 4. A *Manager* and an *Employee* (every manager is an employee).
+   <Ar>*مدير (Manager)* و *موظف (Employee)* (كل مدير هو موظف).</Ar>
 
 <Solution>
 
 1. Aggregation (hollow diamond at Library).
+   <Ar>تجميع (Aggregation) (معيّن مفرغ عند Library).</Ar>
 2. Composition (filled diamond at Document).
+   <Ar>تركيب (Composition) (معيّن مصمت عند Document).</Ar>
 3. Dependency (dashed arrow from ReportGenerator to Printer).
+   <Ar>اعتمادية (Dependency) (سهم متقطع من ReportGenerator إلى Printer).</Ar>
 4. Generalization (Manager ▷ Employee).
+   <Ar>تعميم (Generalization) (`Manager ▷ Employee`).</Ar>
 
 </Solution>
 
@@ -207,33 +274,48 @@ A customer places orders. Each order has one or more order lines, and each line 
   questions={[
     {
       q: "'-height : int = 10' declares…",
+      qAr: "التصريح «-height:int=10» يعرّف…",
       options: ["A public attribute", "A private int attribute with initial value 10", "A protected operation", "A static constant"],
+      optionsAr: ["سمة عامة (public)", "سمة خاصة (private) من النوع int قيمتها الابتدائية 10", "عملية محمية (protected)", "ثابتًا ساكنًا (static)"],
       answer: 1,
-      explain: "- is private, int is the type, and = 10 is the initial value."
+      explain: "- is private, int is the type, and = 10 is the initial value.",
+      explainAr: "الرمز - يعني خاص (private)، و int هو النوع، و «= 10» هي القيمة الابتدائية."
     },
     {
       q: "Deleting a House deletes its Rooms. Which relationship is this?",
+      qAr: "حذف المنزل (House) يحذف غرفه (Rooms). ما هذه العلاقة؟",
       options: ["Association", "Aggregation", "Composition", "Dependency"],
+      optionsAr: ["الارتباط", "التجميع", "التركيب", "الاعتمادية"],
       answer: 2,
-      explain: "The parts can't exist without the whole: composition (filled diamond)."
+      explain: "The parts can't exist without the whole: composition (filled diamond).",
+      explainAr: "لا يمكن للأجزاء أن توجد دون الكل: إنه التركيب (معيّن مصمت)."
     },
     {
       q: "'Each researcher can have up to five interests' gives which multiplicity at the Interest end?",
+      qAr: "عبارة «يمكن أن يكون لكل باحث ما يصل إلى خمسة اهتمامات» تعطي أي تعددية عند طرف Interest؟",
       options: ["5", "0..5 or 1..5", "*", "1"],
+      optionsAr: ["5", "من 0 إلى 5، أو من 1 إلى 5", "*", "1"],
       answer: 1,
-      explain: "'Up to five' means an upper bound of 5 (the slide uses 1..5)."
+      explain: "'Up to five' means an upper bound of 5 (the slide uses 1..5).",
+      explainAr: "«ما يصل إلى خمسة» تعني حدًا أعلى قدره 5 (والشريحة تستخدم التعددية من 1 إلى 5)."
     },
     {
       q: "What does a leading '/' on an attribute mean (e.g. /Years Curr. Inst.)?",
+      qAr: "ماذا تعني الشرطة المائلة «/» في بداية اسم السمة، مثل /Years Curr. Inst؟",
       options: ["Private", "Static", "Derived: computed from other data", "Optional"],
+      optionsAr: ["خاصة (private)", "ساكنة (static)", "مشتقة (derived): تُحسب من بيانات أخرى", "اختيارية"],
       answer: 2,
-      explain: "Derived attributes are calculated, e.g. years from the start date."
+      explain: "Derived attributes are calculated, e.g. years from the start date.",
+      explainAr: "السمات المشتقة تُحسب حسابًا، مثل عدد السنوات انطلاقًا من تاريخ البدء."
     },
     {
       q: "A dashed arrow from AccountingSystem to Receipt means…",
+      qAr: "السهم المتقطع من AccountingSystem إلى Receipt يعني…",
       options: ["Inheritance", "Composition", "Dependency: AccountingSystem uses Receipt", "Realization"],
+      optionsAr: ["الوراثة", "التركيب", "الاعتمادية: الصنف AccountingSystem يستخدم Receipt", "التحقيق"],
       answer: 2,
-      explain: "A dependency is a temporary 'uses' relationship."
+      explain: "A dependency is a temporary 'uses' relationship.",
+      explainAr: "الاعتمادية علاقة «يستخدم» مؤقتة."
     }
   ]}
 />

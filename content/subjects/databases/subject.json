@@ -1,18 +1,28 @@
 {
   "title": "Databases I",
+  "titleAr": "قواعد البيانات 1",
   "shortTitle": "Databases",
   "code": "DB I",
   "order": 3,
   "materialsDir": "DataBase",
   "level": "Fundamentals of Database Systems",
   "tagline": "How data is modeled, stored, protected and queried, from ER diagrams to SQL and normalization.",
+  "taglineAr": "كيف تُنمذَج البيانات وتُخزَّن وتُحمى ويُستعلَم عنها، من مخططات الكيان والعلاقة (ER) إلى SQL والتطبيع.",
   "description": "This course covers the fundamentals of database systems. It explains why databases replaced traditional file processing, how a DBMS is organized (data models, schemas and the three-schema architecture), and how the relational model represents data and enforces integrity. You will design databases with ER and EER diagrams, reason about queries with relational algebra, and refine designs with functional dependencies and normalization. The sections are hands-on: they teach SQL on Oracle's HR sample schema, from basic SELECT statements to functions, grouping and joins.",
+  "descriptionAr": "يغطي هذا المقرر أساسيات أنظمة قواعد البيانات. فهو يشرح لماذا حلّت قواعد البيانات محل المعالجة التقليدية للملفات، وكيف يُنظَّم نظام إدارة قواعد البيانات (DBMS) (نماذج البيانات، والمخططات، ومعمارية المستويات الثلاثة)، وكيف يمثّل النموذج العلائقي البيانات ويفرض سلامتها. ستصمم قواعد بيانات باستخدام مخططات ER و EER، وتستدل على الاستعلامات باستخدام الجبر العلائقي، وتحسّن التصاميم باستخدام الاعتمادات الوظيفية والتطبيع. أما السكاشن فعملية: تُدرِّس لغة SQL على مخطط HR النموذجي من Oracle، بدءًا من عبارات SELECT الأساسية وصولًا إلى الدوال والتجميع والربط (joins).",
   "objectives": [
     "Understand the basic concepts of database systems, their purpose, and the architecture of a DBMS.",
     "Learn the main data models, focusing on the relational model, its advantages and its limitations.",
     "Protect data through security and integrity constraints so that it stays accurate and consistent.",
     "Use SQL for database construction (DDL) and data manipulation (DML).",
     "Apply normalization techniques to design efficient, redundancy-free relational schemas."
+  ],
+  "objectivesAr": [
+    "فهم المفاهيم الأساسية لأنظمة قواعد البيانات، والغرض منها، ومعمارية نظام إدارة قواعد البيانات (DBMS).",
+    "تعلّم نماذج البيانات الرئيسية، مع التركيز على النموذج العلائقي ومزاياه وقيوده.",
+    "حماية البيانات من خلال قيود الأمان والسلامة حتى تبقى دقيقة ومتسقة.",
+    "استخدام SQL لبناء قواعد البيانات (DDL) ومعالجة البيانات (DML).",
+    "تطبيق تقنيات التطبيع لتصميم مخططات علائقية فعّالة خالية من التكرار."
   ],
   "topics": [
     "Databases and database users",

@@ -1,12 +1,15 @@
 {
   "title": "Artificial Intelligence",
+  "titleAr": "الذكاء الاصطناعي",
   "shortTitle": "AI",
   "code": "AI301",
   "order": 1,
   "materialsDir": "Artificial Intelligence",
   "level": "Level 3 · 2026/2027",
   "tagline": "How intelligent agents perceive, reason and search their way to a goal.",
+  "taglineAr": "كيف تُدرك الوكلاء الأذكياء (intelligent agents) بيئتها، وتستدل، وتبحث عن طريقها إلى الهدف.",
   "description": "This course introduces the traditional and modern foundations of artificial intelligence. It starts from what it means for a machine to act rationally, models problems as states and actions, and builds up the search algorithms that agents use to find solutions, from blind search through informed and adversarial search, before moving on to knowledge representation, optimization, expert systems and machine learning. Lectures cover the theory; sections (labs) implement it in Python.",
+  "descriptionAr": "يقدّم هذا المقرر الأسس التقليدية والحديثة للذكاء الاصطناعي (Artificial Intelligence). فهو يبدأ بمعنى أن تتصرف الآلة بعقلانية، ثم يصوغ المسائل على شكل حالات (states) وأفعال (actions)، ويبني خوارزميات البحث التي تستخدمها الوكلاء (agents) لإيجاد الحلول، بدءًا من البحث الأعمى، مرورًا بالبحث المُوجَّه (informed search) والبحث التنافسي (adversarial search)، قبل الانتقال إلى تمثيل المعرفة، والتحسين (optimization)، والأنظمة الخبيرة (expert systems)، وتعلم الآلة (machine learning). تغطي المحاضرات الجانب النظري، بينما تنفّذه السكاشن (Sections) بلغة Python.",
   "instructors": ["Assoc. Prof. Sara Sweidan", "Dr. Esraa Abdalla", "Eng. Yousef Elbaroudy & the AI lab team (sections)"],
   "objectives": [
     "Understand different AI problem-solving and search techniques.",
@@ -14,6 +17,13 @@
     "Implement basic AI algorithms for reasoning, decision-making and problem solving.",
     "Analyze intelligent agents and their architectures in different environments.",
     "Evaluate the performance, limitations and applicability of different AI techniques."
+  ],
+  "objectivesAr": [
+    "فهم تقنيات حل المسائل والبحث المختلفة في الذكاء الاصطناعي (AI).",
+    "تطبيق أساليب تمثيل المعرفة (knowledge representation) لنمذجة مسائل الذكاء الاصطناعي وحلها.",
+    "تنفيذ خوارزميات الذكاء الاصطناعي الأساسية للاستدلال واتخاذ القرار وحل المسائل.",
+    "تحليل الوكلاء الأذكياء (intelligent agents) ومعمارياتهم في بيئات مختلفة.",
+    "تقييم أداء تقنيات الذكاء الاصطناعي المختلفة وحدودها ومدى قابليتها للتطبيق."
   ],
   "topics": [
     "Introduction to AI",
@@ -30,10 +40,10 @@
     "Planning"
   ],
   "grading": [
-    { "label": "Assignments, attendance, midterm", "weight": 30 },
-    { "label": "Practical exam", "weight": 10 },
-    { "label": "Oral exam", "weight": 10 },
-    { "label": "Final exam", "weight": 50 }
+    { "label": "Assignments, attendance, midterm", "labelAr": "التكليفات، والحضور، وامتحان منتصف الفصل", "weight": 30 },
+    { "label": "Practical exam", "labelAr": "الامتحان العملي", "weight": 10 },
+    { "label": "Oral exam", "labelAr": "الامتحان الشفهي", "weight": 10 },
+    { "label": "Final exam", "labelAr": "الامتحان النهائي", "weight": 50 }
   ],
   "books": [
     {

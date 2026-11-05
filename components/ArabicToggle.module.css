@@ -1,0 +1,40 @@
+.toggle {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--heading);
+  font-family: var(--font-arabic);
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    border-color var(--dur-micro) ease,
+    background-color var(--dur-micro) ease,
+    color var(--dur-micro) ease,
+    transform var(--dur-micro) ease;
+}
+
+.toggle:hover {
+  border-color: var(--gold);
+}
+
+.toggle:active {
+  transform: scale(0.94);
+}
+
+/* Pressed = Arabic shown: filled gold, like an active chip. */
+.toggle[aria-pressed="true"] {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--navy, #112251);
+}
+
+.toggle span {
+  /* The letter sits slightly high in most Arabic faces; nudge it to the optical centre. */
+  transform: translateY(1px);
+}

@@ -1,7 +1,9 @@
 ---
 number: 3
 title: Entity–Relationship (ER) Modeling
+titleAr: "نمذجة الكيان والعلاقة (ER)"
 summary: Conceptual design with the ER model. Covers entities, the kinds of attributes, keys, relationships and their cardinality and participation constraints, weak entities, recursive and higher-degree relationships, and how to read and draw ER diagrams, step by step for the COMPANY database.
+summaryAr: "التصميم المفاهيمي باستخدام نموذج الكيان والعلاقة (ER model): الكيانات، وأنواع السمات، والمفاتيح، والعلاقات وقيود نسبة التعدد (cardinality) والمشاركة (participation) الخاصة بها، والكيانات الضعيفة، والعلاقات الذاتية (recursive) والعلاقات ذات الدرجة الأعلى، وكيفية قراءة مخططات ER ورسمها، خطوة بخطوة لقاعدة بيانات COMPANY."
 topics: [Database design process, Entities and attributes, Keys, Relationship types, Cardinality and participation, Weak entities, ER notation, UML]
 duration: 60 min study
 sources:
@@ -19,190 +21,285 @@ bookRefs:
 <Objectives>
 
 - Place **conceptual design** within the overall database design process.
+  <Ar>تحديد موقع **التصميم المفاهيمي (conceptual design)** ضمن عملية تصميم قاعدة البيانات الشاملة.</Ar>
 - Identify **entities**, **attributes** (simple, composite, multivalued, derived) and **key attributes**.
+  <Ar>التعرّف على **الكيانات (entities)** و**السمات (attributes)** (البسيطة والمركبة ومتعددة القيم والمشتقة) و**السمات المفتاحية (key attributes)**.</Ar>
 - Model **relationships** with their **degree**, **cardinality ratio** and **participation** constraints, including the **(min, max)** notation.
+  <Ar>نمذجة **العلاقات (relationships)** مع **درجتها (degree)** وقيود **نسبة التعدد (cardinality ratio)** و**المشاركة (participation)**، بما في ذلك ترميز **(min, max)**.</Ar>
 - Recognize **weak entity types**, **recursive** relationships, **relationship attributes** and **n-ary** relationships.
+  <Ar>التعرّف على **أنواع الكيانات الضعيفة (weak entity types)** والعلاقات **الذاتية (recursive)** و**سمات العلاقات** والعلاقات **متعددة الأطراف (n-ary)**.</Ar>
 - Read and draw a complete **ER diagram**, and relate it to a **UML class diagram**.
+  <Ar>قراءة **مخطط كيان وعلاقة (ER diagram)** كامل ورسمه، وربطه **بمخطط الأصناف في UML (UML class diagram)**.</Ar>
 
 </Objectives>
 
 ## Where ER modeling fits
 
+<Ar>موقع نمذجة الكيان والعلاقة</Ar>
+
 Database work has two parallel activities: **database design** (the schema) and **application design** (the programs). The ER model is the tool for the **conceptual design** step.
 
-<SlideFigure page={5} caption="The database design process: requirements, then conceptual design (ER), logical design (data-model mapping), then physical design." />
+<Ar>يتضمن العمل على قواعد البيانات نشاطين متوازيين: **تصميم قاعدة البيانات (database design)** (المخطط) و**تصميم التطبيقات (application design)** (البرامج). ونموذج الكيان والعلاقة (ER) هو أداة خطوة **التصميم المفاهيمي (conceptual design)**.</Ar>
+
+<SlideFigure page={5} caption="The database design process: requirements, then conceptual design (ER), logical design (data-model mapping), then physical design." captionAr="عملية تصميم قاعدة البيانات: المتطلبات، ثم التصميم المفاهيمي (ER)، ثم التصميم المنطقي (التحويل إلى نموذج البيانات)، ثم التصميم الفيزيائي." />
 
 <Steps>
 
 1. **Requirements collection and analysis**: interview users, gather data and functional requirements.
+   <Ar>**جمع المتطلبات وتحليلها (Requirements collection and analysis)**: مقابلة المستخدمين، وجمع متطلبات البيانات والمتطلبات الوظيفية.</Ar>
 2. **Conceptual design**: a high-level, DBMS-independent schema, here an **ER diagram**.
+   <Ar>**التصميم المفاهيمي (Conceptual design)**: مخطط عالي المستوى مستقل عن نظام إدارة قواعد البيانات، وهو هنا **مخطط كيان وعلاقة (ER diagram)**.</Ar>
 3. **Logical design (data-model mapping)**: turn the ER schema into, say, **relations**.
+   <Ar>**التصميم المنطقي (Logical design)** (التحويل إلى نموذج البيانات data-model mapping): تحويل مخطط ER إلى **علاقات (relations)** مثلًا.</Ar>
 4. **Physical design**: choose storage structures and indexes for a specific DBMS.
+   <Ar>**التصميم الفيزيائي (Physical design)**: اختيار بُنى التخزين والفهارس لنظام إدارة قواعد بيانات معيّن.</Ar>
 
 </Steps>
 
 ### Running example: the COMPANY database
 
+<Ar>المثال المستمر: قاعدة بيانات COMPANY</Ar>
+
 - The company has **DEPARTMENTs**, each with a name, a number and a **manager** (an employee, with a start date). A department may have several **locations**.
+  <Ar>للشركة **أقسام (DEPARTMENTs)**، لكل منها اسم ورقم و**مدير (manager)** (وهو موظف، مع تاريخ بدء إدارته). وقد يكون للقسم عدة **مواقع (locations)**.</Ar>
 - Each department **controls** several **PROJECTs**, each with a unique name, a unique number and a single location.
+  <Ar>كل قسم **يتحكم (controls)** في عدة **مشروعات (PROJECTs)**، لكل منها اسم فريد ورقم فريد وموقع واحد.</Ar>
 - Each **EMPLOYEE** has an SSN, a name, an address, a salary, a sex and a birth date, **works for** one department, and **works on** several projects for a number of **hours** per week. Each employee has a direct **supervisor**.
+  <Ar>لكل **موظف (EMPLOYEE)** رقم ضمان اجتماعي (SSN) واسم وعنوان وراتب وجنس وتاريخ ميلاد، وهو **يعمل لصالح (works for)** قسم واحد، و**يعمل على (works on)** عدة مشروعات لعدد من **الساعات (hours)** في الأسبوع. ولكل موظف **مشرف (supervisor)** مباشر.</Ar>
 - An employee may have **DEPENDENTs**, each with a name, sex, birth date and relationship to the employee.
+  <Ar>قد يكون للموظف **معالون (DEPENDENTs)**، لكل منهم اسم وجنس وتاريخ ميلاد وصلة قرابة بالموظف.</Ar>
 
 ## Entities and attributes
 
-<Definition term="Entity and attribute">
+<Ar>الكيانات والسمات</Ar>
+
+<Definition term="Entity and attribute" termAr="الكيان والسمة">
   An <strong>entity</strong> is a specific thing in the mini-world (the employee John Smith, the Research department). <strong>Attributes</strong> are the properties that describe it (Name, SSN, Address…), and every entity has a <strong>value</strong> for each attribute.
+
+  <Ar><strong>الكيان (entity)</strong> شيء محدد في العالم المصغَّر (الموظف John Smith، وقسم Research). و<strong>السمات (Attributes)</strong> هي الخصائص التي تصفه (Name و SSN و Address…)، ولكل كيان <strong>قيمة</strong> لكل سمة.</Ar>
 </Definition>
 
-| Attribute type | Meaning | Example | ER symbol |
+| Attribute type <Ar>نوع السمة</Ar> | Meaning <Ar>المعنى</Ar> | Example <Ar>مثال</Ar> | ER symbol <Ar>رمز ER</Ar> |
 |---|---|---|---|
-| **Simple** (atomic) | Single indivisible value | `SSN`, `Sex` | Oval |
-| **Composite** | Made of components, possibly nested | `Name(First, Middle, Last)`, `Address(Street(Number, Street, Apt), City, State, Zip)` | Oval with child ovals |
-| **Multivalued** | Several values for one entity | `Color` of a car, `{PreviousDegrees}`, a department's `Locations` | **Double** oval |
-| **Derived** | Computed from other data | `Age` from `BirthDate`, `Number_of_employees` | **Dashed** oval |
-| **Key** | Unique for each entity | `SSN` | **Underlined** name |
+| **Simple** (atomic) <Ar>**البسيطة** (الذرّية)</Ar> | Single indivisible value <Ar>قيمة واحدة غير قابلة للتجزئة</Ar> | `SSN`, `Sex` | Oval <Ar>شكل بيضاوي</Ar> |
+| **Composite** <Ar>**المركبة**</Ar> | Made of components, possibly nested <Ar>تتكون من مكوّنات، قد تكون متداخلة</Ar> | `Name(First, Middle, Last)`, `Address(Street(Number, Street, Apt), City, State, Zip)` | Oval with child ovals <Ar>شكل بيضاوي تتفرع منه أشكال بيضاوية</Ar> |
+| **Multivalued** <Ar>**متعددة القيم**</Ar> | Several values for one entity <Ar>عدة قيم للكيان الواحد</Ar> | `Color` of a car, `{PreviousDegrees}`, a department's `Locations` <Ar>`Color` للسيارة، و `{PreviousDegrees}`، و `Locations` للقسم</Ar> | **Double** oval <Ar>شكل بيضاوي **مزدوج**</Ar> |
+| **Derived** <Ar>**المشتقة**</Ar> | Computed from other data <Ar>تُحسب من بيانات أخرى</Ar> | `Age` from `BirthDate`, `Number_of_employees` <Ar>`Age` من `BirthDate`، و `Number_of_employees`</Ar> | **Dashed** oval <Ar>شكل بيضاوي **متقطع**</Ar> |
+| **Key** <Ar>**المفتاحية**</Ar> | Unique for each entity <Ar>فريدة لكل كيان</Ar> | `SSN` | **Underlined** name <Ar>اسم **مسطَّر تحته**</Ar> |
 
 Composite and multivalued attributes can nest. For example, `{PreviousDegrees(College, Year, Degree, Field)}` is a **composite multivalued** attribute.
 
-<SlideFigure page={11} caption="A hierarchy of composite attributes: Address is made of Street_address, City, State and Zip." />
+<Ar>يمكن أن تتداخل السمات المركبة ومتعددة القيم؛ فمثلًا `{PreviousDegrees(College, Year, Degree, Field)}` سمة **مركبة متعددة القيم (composite multivalued)**.</Ar>
+
+<SlideFigure page={11} caption="A hierarchy of composite attributes: Address is made of Street_address, City, State and Zip." captionAr="تسلسل هرمي للسمات المركبة: تتكون Address من Street_address و City و State و Zip." />
 
 ### Entity types, entity sets and keys
 
-- An **entity type** groups entities with the same attributes (`EMPLOYEE`, `PROJECT`) and is drawn as a **rectangle**.
-- The **entity set** is the collection of entities of that type currently stored. The same name refers to both.
-- A **key attribute** has a unique value for every entity. A key may be **composite**, and an entity type may have **several** keys.
+<Ar>أنواع الكيانات ومجموعات الكيانات والمفاتيح</Ar>
 
-<SlideFigure page={15} caption="CAR has two keys, Vehicle_id and the composite Registration(Number, State), and a multivalued Color." />
+- An **entity type** groups entities with the same attributes (`EMPLOYEE`, `PROJECT`) and is drawn as a **rectangle**.
+  <Ar>**نوع الكيان (entity type)** يجمع الكيانات ذات السمات نفسها (`EMPLOYEE` و `PROJECT`)، ويُرسم على هيئة **مستطيل**.</Ar>
+- The **entity set** is the collection of entities of that type currently stored. The same name refers to both.
+  <Ar>**مجموعة الكيانات (entity set)** هي مجموعة كيانات ذلك النوع المخزنة حاليًا، ويُستخدم الاسم نفسه للدلالة على الاثنين.</Ar>
+- A **key attribute** has a unique value for every entity. A key may be **composite**, and an entity type may have **several** keys.
+  <Ar>**السمة المفتاحية (key attribute)** لها قيمة فريدة لكل كيان. وقد يكون المفتاح **مركبًا**، وقد يكون لنوع الكيان **عدة** مفاتيح.</Ar>
+
+<SlideFigure page={15} caption="CAR has two keys, Vehicle_id and the composite Registration(Number, State), and a multivalued Color." captionAr="للكيان CAR مفتاحان: Vehicle_id والمفتاح المركب Registration(Number, State)، وله سمة متعددة القيم هي Color." />
 
 ## Relationships
 
-<Definition term="Relationship type">
+<Ar>العلاقات</Ar>
+
+<Definition term="Relationship type" termAr="نوع العلاقة">
   A <strong>relationship</strong> relates two or more entities with a specific meaning ("John Smith <em>works on</em> ProductX"). A <strong>relationship type</strong> such as <code>WORKS_ON</code> groups relationships of the same kind and is drawn as a <strong>diamond</strong>. Its <strong>relationship set</strong> is the current set of instances.
+
+  <Ar><strong>العلاقة (relationship)</strong> تربط بين كيانين أو أكثر بمعنى محدد («John Smith <em>يعمل على</em> ProductX»). و<strong>نوع العلاقة (relationship type)</strong> مثل <code>WORKS_ON</code> يجمع العلاقات من النوع نفسه، ويُرسم على هيئة <strong>معيّن (diamond)</strong>. و<strong>مجموعة العلاقة (relationship set)</strong> هي المجموعة الحالية من نسخها.</Ar>
 </Definition>
 
 The **degree** of a relationship type is the number of participating entity types: **binary** (2), **ternary** (3), **n-ary**.
 
-<SlideFigure page={22} caption="Instances of the M:N WORKS_ON relationship: an employee works on several projects, and a project has several employees." />
+<Ar>**درجة (degree)** نوع العلاقة هي عدد أنواع الكيانات المشاركة فيها: **ثنائية (binary)** (2)، و**ثلاثية (ternary)** (3)، و**متعددة الأطراف (n-ary)**.</Ar>
+
+<SlideFigure page={22} caption="Instances of the M:N WORKS_ON relationship: an employee works on several projects, and a project has several employees." captionAr="نسخ من العلاقة WORKS_ON من نوع M:N: يعمل الموظف على عدة مشروعات، وللمشروع عدة موظفين." />
 
 Refining the COMPANY design turns some "attributes" into relationships (a department's manager becomes `MANAGES`). This gives six binary relationship types:
 
-| Relationship | Between | Cardinality | Notes |
-|---|---|---|---|
-| `WORKS_FOR` | EMPLOYEE – DEPARTMENT | N : 1 | Every employee works for exactly one department |
-| `MANAGES` | EMPLOYEE – DEPARTMENT | 1 : 1 | Has the attribute `Start_date` |
-| `CONTROLS` | DEPARTMENT – PROJECT | 1 : N | |
-| `WORKS_ON` | EMPLOYEE – PROJECT | M : N | Has the attribute `Hours` |
-| `SUPERVISION` | EMPLOYEE – EMPLOYEE | 1 : N | **Recursive**: supervisor and supervisee roles |
-| `DEPENDENTS_OF` | EMPLOYEE – DEPENDENT | 1 : N | **Identifying** relationship of a weak entity |
+<Ar>يؤدي تحسين تصميم COMPANY إلى تحويل بعض «السمات» إلى علاقات (فمدير القسم يصبح العلاقة `MANAGES`)، فنحصل على ستة أنواع من العلاقات الثنائية:</Ar>
 
-<SlideFigure page={26} caption="The complete COMPANY ER diagram." />
+| Relationship <Ar>العلاقة</Ar> | Between <Ar>بين</Ar> | Cardinality <Ar>نسبة التعدد</Ar> | Notes <Ar>ملاحظات</Ar> |
+|---|---|---|---|
+| `WORKS_FOR` | EMPLOYEE – DEPARTMENT <Ar>بين EMPLOYEE و DEPARTMENT</Ar> | N : 1 | Every employee works for exactly one department <Ar>كل موظف يعمل لصالح قسم واحد بالضبط</Ar> |
+| `MANAGES` | EMPLOYEE – DEPARTMENT <Ar>بين EMPLOYEE و DEPARTMENT</Ar> | 1 : 1 | Has the attribute `Start_date` <Ar>لها السمة `Start_date`</Ar> |
+| `CONTROLS` | DEPARTMENT – PROJECT <Ar>بين DEPARTMENT و PROJECT</Ar> | 1 : N | |
+| `WORKS_ON` | EMPLOYEE – PROJECT <Ar>بين EMPLOYEE و PROJECT</Ar> | M : N | Has the attribute `Hours` <Ar>لها السمة `Hours`</Ar> |
+| `SUPERVISION` | EMPLOYEE – EMPLOYEE <Ar>بين EMPLOYEE و EMPLOYEE</Ar> | 1 : N | **Recursive**: supervisor and supervisee roles <Ar>**ذاتية (Recursive)**: بدورَي المشرف (supervisor) والخاضع للإشراف (supervisee)</Ar> |
+| `DEPENDENTS_OF` | EMPLOYEE – DEPENDENT <Ar>بين EMPLOYEE و DEPENDENT</Ar> | 1 : N | **Identifying** relationship of a weak entity <Ar>العلاقة **المُعرِّفة (Identifying)** لكيان ضعيف</Ar> |
+
+<SlideFigure page={26} caption="The complete COMPANY ER diagram." captionAr="مخطط الكيان والعلاقة (ER) الكامل لقاعدة بيانات COMPANY." />
 
 ### Structural constraints
 
+<Ar>القيود الهيكلية</Ar>
+
 <Grid cols={2}>
-  <Card title="Cardinality ratio" tag="maximum">
+  <Card title="Cardinality ratio" titleAr="نسبة التعدد" tag="maximum">
     How many relationship instances an entity can take part in: <strong>1:1</strong>, <strong>1:N / N:1</strong> or <strong>M:N</strong>. It is written as 1, N, M on the edges.
+
+    <Ar>عدد نسخ العلاقة التي يمكن أن يشارك فيها الكيان: <strong>1:1</strong> أو <strong>1:N / N:1</strong> أو <strong>M:N</strong>. وتُكتب على هيئة 1 و N و M على الحواف.</Ar>
   </Card>
-  <Card title="Participation" tag="minimum">
+  <Card title="Participation" titleAr="المشاركة" tag="minimum">
     <strong>Total</strong> (every entity must participate, i.e. existence dependency) is drawn with a <strong>double line</strong>. <strong>Partial</strong> (optional) is drawn with a single line.
+
+    <Ar>المشاركة <strong>الكلية (Total)</strong> (يجب أن يشارك كل كيان، أي اعتماد في الوجود existence dependency) تُرسم <strong>بخط مزدوج</strong>. أما المشاركة <strong>الجزئية (Partial)</strong> (الاختيارية) فتُرسم بخط مفرد.</Ar>
   </Card>
 </Grid>
 
 Every employee must work for a department, so EMPLOYEE has **total** participation in `WORKS_FOR`. Not every employee manages a department, so EMPLOYEE has **partial** participation in `MANAGES`.
 
+<Ar>يجب أن يعمل كل موظف لصالح قسم، لذا فمشاركة EMPLOYEE في `WORKS_FOR` **كلية (total)**. وليس كل موظف يدير قسمًا، لذا فمشاركة EMPLOYEE في `MANAGES` **جزئية (partial)**.</Ar>
+
 ### The (min, max) notation
+
+<Ar>ترميز (min, max)</Ar>
 
 Each participation of entity type $E$ in relationship $R$ gets a pair $(\min, \max)$ with $0 \le \min \le \max$ and $\max \ge 1$: each entity of $E$ takes part in **at least min and at most max** instances of $R$. The default is $(0, n)$, meaning no constraint.
 
-<Callout type="warning" title="Read it the other way round">
+<Ar>تُعطى كل مشاركة لنوع الكيان $E$ في العلاقة $R$ زوجًا $(\min, \max)$ حيث $0 \le \min \le \max$ و $\max \ge 1$: فكل كيان من $E$ يشارك في **min على الأقل و max على الأكثر** من نسخ $R$. والقيمة الافتراضية $(0, n)$، أي لا يوجد قيد.</Ar>
+
+<Callout type="warning" title="Read it the other way round" titleAr="اقرأها في الاتجاه المعاكس">
   The (min, max) pair is written next to the entity it describes, and it says how many times <em>that</em> entity participates. That is the <strong>opposite side</strong> from where 1/N cardinality labels go. A department has exactly one manager, so DEPARTMENT is (1,1) in MANAGES. An employee manages at most one department, so EMPLOYEE is (0,1).
+
+  <Ar>يُكتب الزوج (min, max) بجوار الكيان الذي يصفه، ويبيّن عدد المرات التي يشارك فيها <em>ذلك</em> الكيان. وهذا هو <strong>الجانب المعاكس</strong> للجانب الذي تُكتب فيه تسميات نسبة التعدد 1/N. فللقسم مدير واحد بالضبط، لذا يكون لـ DEPARTMENT الزوج (1,1) في MANAGES. ويدير الموظف قسمًا واحدًا على الأكثر، لذا يكون لـ EMPLOYEE الزوج (0,1).</Ar>
 </Callout>
 
-<SlideFigure page={41} caption="The COMPANY schema with (min, max) constraints." />
+<SlideFigure page={41} caption="The COMPANY schema with (min, max) constraints." captionAr="مخطط COMPANY مع قيود (min, max)." />
 
 ### Recursive relationships and roles
 
+<Ar>العلاقات الذاتية والأدوار</Ar>
+
 In `SUPERVISION` the **same** entity type, EMPLOYEE, participates **twice**, in two **roles**: *supervisor* and *supervisee*. Role names on the edges are essential to tell the two participations apart.
+
+<Ar>في `SUPERVISION` يشارك نوع الكيان **نفسه**، EMPLOYEE، **مرتين** بدورين **(roles)**: *المشرف (supervisor)* و*الخاضع للإشراف (supervisee)*. وأسماء الأدوار على الحواف ضرورية للتمييز بين المشاركتين.</Ar>
 
 ### Attributes of relationships
 
+<Ar>سمات العلاقات</Ar>
+
 A relationship can have its own attributes. `Hours` in `WORKS_ON` depends on the **pair** (employee, project), not on either one alone. Relationship attributes are typical of **M:N** relationships. In a **1:N** relationship they can be moved to the entity on the N side; `Start_date` of `MANAGES` (1:1) could move to either side.
+
+<Ar>يمكن أن تكون للعلاقة سماتها الخاصة؛ فالسمة `Hours` في `WORKS_ON` تعتمد على **الزوج** (الموظف، المشروع)، لا على أيٍّ منهما وحده. وسمات العلاقات نمطية في العلاقات من نوع **M:N**. أما في العلاقة من نوع **1:N** فيمكن نقلها إلى الكيان في جهة N، ويمكن نقل السمة `Start_date` الخاصة بالعلاقة `MANAGES` (من نوع 1:1) إلى أي من الجانبين.</Ar>
 
 ### Weak entity types
 
-<Definition term="Weak entity type">
+<Ar>أنواع الكيانات الضعيفة</Ar>
+
+<Definition term="Weak entity type" termAr="نوع الكيان الضعيف">
   An entity type with <strong>no key of its own</strong>. It is identified by a <strong>partial key</strong> plus the entity it is related to in its <strong>owner</strong> (identifying) entity type, through an <strong>identifying relationship</strong> in which it has <strong>total</strong> participation.
+
+  <Ar>نوع كيان <strong>ليس له مفتاح خاص به</strong>. ويُحدَّد بواسطة <strong>مفتاح جزئي (partial key)</strong> مضافًا إليه الكيان المرتبط به من نوع الكيان <strong>المالك (owner)</strong> (المُعرِّف)، عبر <strong>علاقة مُعرِّفة (identifying relationship)</strong> تكون مشاركته فيها <strong>كلية</strong>.</Ar>
 </Definition>
 
 A `DEPENDENT` is identified by its `Name` (partial key, drawn with a **dashed underline**) **and** the employee it belongs to. Two employees can each have a dependent called "Alice". Weak entities and identifying relationships are drawn with **double** rectangles and **double** diamonds.
 
+<Ar>يُحدَّد `DEPENDENT` بواسطة `Name` الخاص به (المفتاح الجزئي، ويُرسم **بخط متقطع تحته**) **و**الموظف الذي ينتمي إليه؛ فقد يكون لكلٍّ من موظفَين اثنين معالٌ اسمه «Alice». وتُرسم الكيانات الضعيفة والعلاقات المُعرِّفة **بمستطيلات مزدوجة** و**معيّنات مزدوجة**.</Ar>
+
 ### Higher-degree relationships
+
+<Ar>العلاقات ذات الدرجة الأعلى</Ar>
 
 A **ternary** relationship such as `SUPPLY(SUPPLIER, PART, PROJECT)` records *which supplier supplies which part to which project*. This is **not** equivalent to three binary relationships (SUPPLIES, CAN_SUPPLY, USES), which carry different information. Keep both if both meanings are needed. A binary relationship that can always be **derived** from a ternary one is redundant.
 
+<Ar>العلاقة **الثلاثية (ternary)** مثل `SUPPLY(SUPPLIER, PART, PROJECT)` تسجّل *أي مورّد يورّد أي قطعة لأي مشروع*. وهي **لا** تكافئ ثلاث علاقات ثنائية (SUPPLIES و CAN_SUPPLY و USES)، إذ تحمل تلك العلاقات معلومات مختلفة. احتفظ بالاثنين إذا احتجت إلى المعنيين معًا. والعلاقة الثنائية التي يمكن **اشتقاقها** دائمًا من علاقة ثلاثية علاقة زائدة (redundant).</Ar>
+
 ## ER notation and UML
 
-<SlideFigure page={43} caption="Summary of ER diagram notation." />
+<Ar>ترميز ER و UML</Ar>
 
-| Symbol | Meaning |
+<SlideFigure page={43} caption="Summary of ER diagram notation." captionAr="ملخص ترميز مخطط الكيان والعلاقة (ER)." />
+
+| Symbol <Ar>الرمز</Ar> | Meaning <Ar>المعنى</Ar> |
 |---|---|
-| Rectangle / **double** rectangle | Entity type / **weak** entity type |
-| Diamond / **double** diamond | Relationship type / **identifying** relationship |
-| Oval, **underlined** | Attribute / **key** attribute |
-| **Double** oval / **dashed** oval | Multivalued / derived attribute |
-| Single / **double** line | Partial / **total** participation |
-| 1, N, M on edges | Cardinality ratio |
+| Rectangle / **double** rectangle <Ar>مستطيل / مستطيل **مزدوج**</Ar> | Entity type / **weak** entity type <Ar>نوع كيان / نوع كيان **ضعيف**</Ar> |
+| Diamond / **double** diamond <Ar>معيّن / معيّن **مزدوج**</Ar> | Relationship type / **identifying** relationship <Ar>نوع علاقة / علاقة **مُعرِّفة**</Ar> |
+| Oval, **underlined** <Ar>شكل بيضاوي، **مسطَّر تحته**</Ar> | Attribute / **key** attribute <Ar>سمة / سمة **مفتاحية**</Ar> |
+| **Double** oval / **dashed** oval <Ar>شكل بيضاوي **مزدوج** / شكل بيضاوي **متقطع**</Ar> | Multivalued / derived attribute <Ar>سمة متعددة القيم / سمة مشتقة</Ar> |
+| Single / **double** line <Ar>خط مفرد / خط **مزدوج**</Ar> | Partial / **total** participation <Ar>مشاركة جزئية / مشاركة **كلية**</Ar> |
+| 1, N, M on edges <Ar>1 و N و M على الحواف</Ar> | Cardinality ratio <Ar>نسبة التعدد</Ar> |
 
 **UML class diagrams** show the same concepts the object-oriented way: a **class** box with name, attributes and operations; **associations** with **multiplicities** such as `1..1`, `0..*`; association classes for relationship attributes; and **qualified associations** for weak entities. Tools such as ERwin, ER/Studio and Oracle Designer draw both notations.
 
-<SlideFigure page={45} caption="The COMPANY schema as a UML class diagram." />
+<Ar>تعرض **مخططات الأصناف في UML (UML class diagrams)** المفاهيم نفسها بالأسلوب الكائني: صندوق **الصنف (class)** باسمه وسماته وعملياته؛ و**الارتباطات (associations)** مع **التعدديات (multiplicities)** مثل `1..1` و `0..*`؛ وأصناف الارتباط (association classes) لسمات العلاقات؛ و**الارتباطات المؤهَّلة (qualified associations)** للكيانات الضعيفة. وترسم أدوات مثل ERwin و ER/Studio و Oracle Designer كلا الترميزين.</Ar>
+
+<SlideFigure page={45} caption="The COMPANY schema as a UML class diagram." captionAr="مخطط COMPANY على هيئة مخطط أصناف في UML." />
 
 <Takeaways>
 
 - ER modeling is the **conceptual design** step. Its three main concepts are **entities**, **attributes** and **relationships**.
+  <Ar>نمذجة الكيان والعلاقة هي خطوة **التصميم المفاهيمي**، ومفاهيمها الرئيسية الثلاثة هي **الكيانات** و**السمات** و**العلاقات**.</Ar>
 - Attributes can be **simple / composite**, **single / multivalued**, **stored / derived**; **keys** are underlined.
+  <Ar>قد تكون السمات **بسيطة / مركبة**، و**أحادية القيمة / متعددة القيم**، و**مخزنة / مشتقة**؛ و**المفاتيح** يُسطَّر تحتها.</Ar>
 - Relationships have a **degree**, a **cardinality ratio** (1:1, 1:N, M:N) and **participation** (total = double line, partial = single line), or equivalently **(min, max)** pairs.
+  <Ar>للعلاقات **درجة (degree)**، و**نسبة تعدد (cardinality ratio)** (1:1 و 1:N و M:N)، و**مشاركة (participation)** (الكلية = خط مزدوج، والجزئية = خط مفرد)، أو ما يكافئ ذلك من أزواج **(min, max)**.</Ar>
 - **Weak** entities depend on an owner through an **identifying** relationship and have only a **partial key**.
+  <Ar>الكيانات **الضعيفة** تعتمد على كيان مالك عبر علاقة **مُعرِّفة**، وليس لها إلا **مفتاح جزئي**.</Ar>
 - **Recursive** relationships need **role names**, and **n-ary** relationships are not interchangeable with binary ones.
+  <Ar>العلاقات **الذاتية (recursive)** تحتاج إلى **أسماء أدوار**، والعلاقات **متعددة الأطراف (n-ary)** لا يمكن استبدال علاقات ثنائية بها.</Ar>
 
 </Takeaways>
 
 ## Practice
 
-<Exercise title="Model a library" level="medium">
+<Ar>تدريب</Ar>
+
+<Exercise title="Model a library" titleAr="نمذجة مكتبة" level="medium">
 
 A library has BOOKs (ISBN, Title, a set of Authors, Year) and copies of each book (copy number, shelf). MEMBERs (MemberID, Name, Phone) borrow copies; each loan records a borrow date and a due date. Identify entity types, keys, weak entities and relationships with cardinality and participation.
+
+<Ar>في مكتبة كتب BOOKs (ISBN، والعنوان Title، ومجموعة من المؤلفين Authors، والسنة Year) ونسخ من كل كتاب (رقم النسخة، والرف). ويستعير الأعضاء MEMBERs (MemberID و Name و Phone) النسخ، وتُسجَّل لكل إعارة تاريخ الاستعارة وتاريخ الاستحقاق. حدّد أنواع الكيانات والمفاتيح والكيانات الضعيفة والعلاقات مع نسبة التعدد والمشاركة.</Ar>
 
 <Solution>
 
 - `BOOK(ISBN, Title, {Authors}, Year)`: key `ISBN`; `Authors` is **multivalued**.
+  <Ar>`BOOK(ISBN, Title, {Authors}, Year)`: المفتاح `ISBN`، و `Authors` سمة **متعددة القيم**.</Ar>
 - `COPY(CopyNo, Shelf)`: a **weak** entity with partial key `CopyNo`, owned by BOOK through the identifying relationship `HAS_COPY` (BOOK 1 : N COPY, COPY total).
+  <Ar>`COPY(CopyNo, Shelf)`: كيان **ضعيف** مفتاحه الجزئي `CopyNo`، ومالكه BOOK عبر العلاقة المُعرِّفة `HAS_COPY` (BOOK 1 : N COPY، ومشاركة COPY كلية).</Ar>
 - `MEMBER(MemberID, Name, Phone)`: key `MemberID`.
+  <Ar>`MEMBER(MemberID, Name, Phone)`: المفتاح `MemberID`.</Ar>
 - `BORROWS` between MEMBER and COPY, with attributes `BorrowDate` and `DueDate`. If you keep loan history, a copy can be borrowed many times, so it is **M:N**. If you keep only current loans, it is **1:N** (member 1, copy N), and both participations are **partial**.
+  <Ar>العلاقة `BORROWS` بين MEMBER و COPY، ولها السمتان `BorrowDate` و `DueDate`. إذا احتفظت بسجل الإعارات السابقة، فقد تُستعار النسخة مرات كثيرة، فتكون العلاقة **M:N**. وإذا احتفظت بالإعارات الحالية فقط، فهي **1:N** (العضو 1، والنسخة N)، وكلتا المشاركتين **جزئية**.</Ar>
 
 </Solution>
 
 </Exercise>
 
-<Exercise title="Read the constraints" level="easy">
+<Exercise title="Read the constraints" titleAr="اقرأ القيود" level="easy">
 
 In the COMPANY diagram, EMPLOYEE has (1,1) in WORKS_FOR and DEPARTMENT has (4,N). What does each pair say?
+
+<Ar>في مخطط COMPANY، لـ EMPLOYEE الزوج (1,1) في WORKS_FOR، ولـ DEPARTMENT الزوج (4,N). ماذا يعني كل زوج؟</Ar>
 
 <Solution>
 
 Every employee works for **exactly one** department (min 1, max 1). Every department has **at least four** employees and no upper limit.
 
+<Ar>يعمل كل موظف لصالح قسم **واحد بالضبط** (min 1 و max 1). ولكل قسم **أربعة موظفين على الأقل** ولا حدّ أعلى لعددهم.</Ar>
+
 </Solution>
 
 </Exercise>
 
-<Exercise title="Why weak?" level="easy">
+<Exercise title="Why weak?" titleAr="لماذا هو ضعيف؟" level="easy">
 
 Why is DEPENDENT a weak entity type and not a regular one with key `Name`?
+
+<Ar>لماذا يُعد DEPENDENT نوع كيان ضعيفًا، وليس نوعًا عاديًا مفتاحه `Name`؟</Ar>
 
 <Solution>
 
 `Name` is not unique across the company, since different employees may have dependents with the same name. A dependent is only uniquely identified by **(owner's SSN, Name)**. It also can't exist without its employee, so it has **total participation** in `DEPENDENTS_OF`.
+
+<Ar>`Name` ليس فريدًا على مستوى الشركة، إذ قد يكون لموظفين مختلفين معالون بالاسم نفسه. ولا يُحدَّد المعال بشكل فريد إلا بالزوج **(SSN المالك، Name)**. كما أنه لا يمكن أن يوجد دون موظفه، لذا فإن **مشاركته كلية (total participation)** في `DEPENDENTS_OF`.</Ar>
 
 </Solution>
 
@@ -212,45 +309,66 @@ Why is DEPENDENT a weak entity type and not a regular one with key `Name`?
   questions={[
     {
       q: "Which ER symbol represents a multivalued attribute?",
+      qAr: "أي رمز في ER يمثل سمة متعددة القيم؟",
       options: ["Dashed oval", "Double oval", "Underlined oval", "Double rectangle"],
+      optionsAr: ["شكل بيضاوي متقطع", "شكل بيضاوي مزدوج", "شكل بيضاوي مسطَّر تحته", "مستطيل مزدوج"],
       answer: 1,
-      explain: "Double oval = multivalued; dashed = derived; underlined = key."
+      explain: "Double oval = multivalued; dashed = derived; underlined = key.",
+      explainAr: "البيضاوي المزدوج = متعددة القيم، والمتقطع = مشتقة، والمسطَّر تحته = مفتاح."
     },
     {
       q: "Name(First, Middle, Last) is an example of a…",
+      qAr: "السمة Name(First, Middle, Last) مثال على…",
       options: ["Multivalued attribute", "Derived attribute", "Composite attribute", "Key attribute"],
+      optionsAr: ["سمة متعددة القيم", "سمة مشتقة", "سمة مركبة", "سمة مفتاحية"],
       answer: 2,
-      explain: "It is made of meaningful components."
+      explain: "It is made of meaningful components.",
+      explainAr: "فهي تتكون من مكوّنات ذات معنى."
     },
     {
       q: "WORKS_ON between EMPLOYEE and PROJECT has which cardinality ratio?",
+      qAr: "ما نسبة التعدد للعلاقة WORKS_ON بين EMPLOYEE و PROJECT؟",
       options: ["1:1", "1:N", "N:1", "M:N"],
+      optionsAr: ["1:1", "1:N", "N:1", "M:N"],
       answer: 3,
-      explain: "An employee works on many projects and a project has many employees."
+      explain: "An employee works on many projects and a project has many employees.",
+      explainAr: "يعمل الموظف على مشروعات كثيرة، وللمشروع موظفون كثيرون."
     },
     {
       q: "Total participation is drawn as…",
+      qAr: "تُرسم المشاركة الكلية على هيئة…",
       options: ["A dashed line", "A double line", "An arrow", "A thick diamond"],
+      optionsAr: ["خط متقطع", "خط مزدوج", "سهم", "معيّن سميك"],
       answer: 1,
-      explain: "A double line means every entity must participate (existence dependency)."
+      explain: "A double line means every entity must participate (existence dependency).",
+      explainAr: "الخط المزدوج يعني أن كل كيان يجب أن يشارك (اعتماد في الوجود)."
     },
     {
       q: "A weak entity type is identified by…",
+      qAr: "يُحدَّد نوع الكيان الضعيف بواسطة…",
       options: ["Its primary key alone", "A partial key plus its owner entity", "A foreign key only", "Any attribute"],
+      optionsAr: ["مفتاحه الأساسي وحده", "مفتاح جزئي مع الكيان المالك له", "مفتاح أجنبي فقط", "أي سمة"],
       answer: 1,
-      explain: "It has no key of its own and is identified through the identifying relationship."
+      explain: "It has no key of its own and is identified through the identifying relationship.",
+      explainAr: "ليس له مفتاح خاص به، ويُحدَّد عبر العلاقة المُعرِّفة."
     },
     {
       q: "SUPERVISION, where EMPLOYEE participates as both supervisor and supervisee, is a…",
+      qAr: "العلاقة SUPERVISION، التي يشارك فيها EMPLOYEE بوصفه مشرفًا وخاضعًا للإشراف معًا، هي…",
       options: ["Ternary relationship", "Recursive relationship", "Weak relationship", "Derived relationship"],
+      optionsAr: ["علاقة ثلاثية", "علاقة ذاتية", "علاقة ضعيفة", "علاقة مشتقة"],
       answer: 1,
-      explain: "The same entity type participates twice in different roles."
+      explain: "The same entity type participates twice in different roles.",
+      explainAr: "يشارك نوع الكيان نفسه مرتين بدورين مختلفين."
     },
     {
       q: "Hours per week in WORKS_ON is best modeled as…",
+      qAr: "أفضل طريقة لنمذجة عدد الساعات الأسبوعية في WORKS_ON هي جعلها…",
       options: ["An attribute of EMPLOYEE", "An attribute of PROJECT", "An attribute of the relationship", "A separate entity"],
+      optionsAr: ["سمة للكيان EMPLOYEE", "سمة للكيان PROJECT", "سمة للعلاقة", "كيانًا مستقلًا"],
       answer: 2,
-      explain: "Its value depends on the (employee, project) pair."
+      explain: "Its value depends on the (employee, project) pair.",
+      explainAr: "تعتمد قيمتها على الزوج (الموظف، المشروع)."
     }
   ]}
 />

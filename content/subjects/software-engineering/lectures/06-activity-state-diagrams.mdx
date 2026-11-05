@@ -1,7 +1,9 @@
 ---
 number: 6
 title: "System Modelling II: Activity and State Diagrams"
+titleAr: "نمذجة النظام (2): مخططات النشاط ومخططات الحالة"
 summary: Two behavioural UML models. Activity diagrams cover activities and transitions, start and end nodes, decisions, guards and merges, fork and join bars, swimlanes, multiple initial and final nodes, and flow-final nodes, with the hot-drink, library-lending and exam examples. State machine diagrams cover event-driven modelling, states with entry/do/exit activities, and transitions with event [guard] / activity, with the lecture-hall, fax, PC and elevator examples.
+summaryAr: "نموذجان سلوكيان (behavioural) من نماذج UML. تغطي مخططات النشاط (activity diagrams) الأنشطة والانتقالات، وعقدتي البداية والنهاية، ونقاط القرار وشروط الحراسة (guards) ونقاط الدمج، وأشرطة التفرّع والالتقاء (fork and join)، وحارات السباحة (swimlanes)، والعقد الابتدائية والنهائية المتعددة، وعقد نهاية المسار (flow final)، مع أمثلة المشروب الساخن وإعارة كتب المكتبة والامتحان. وتغطي مخططات آلة الحالات (state machine diagrams) النمذجة المدفوعة بالأحداث (event-driven)، والحالات بأنشطة entry/do/exit، والانتقالات بالصيغة event [guard] / activity، مع أمثلة قاعة المحاضرات والفاكس والحاسوب الشخصي والمصعد."
 topics: [Activity diagram, Start and end nodes, Decision and merge, Guards, Fork and join, Swimlanes, Multiple initial nodes, Flow final node, Event-driven models, State diagram, Entry / do / exit, Transitions, Event and guard]
 duration: 55 min study
 sources:
@@ -21,104 +23,147 @@ bookRefs:
 <Objectives>
 
 - Draw an **activity diagram** with activities, transitions, decisions and guards, merges, and fork and join bars.
+  <Ar>رسم **مخطط النشاط (activity diagram)** بما فيه من أنشطة وانتقالات (transitions) ونقاط قرار (decisions) وشروط حراسة (guards) ونقاط دمج (merges) وأشرطة التفرّع والالتقاء (fork and join).</Ar>
 - Use **swimlanes** to show which role is responsible for each activity.
+  <Ar>استخدام **حارات السباحة (swimlanes)** لتوضيح الدور المسؤول عن كل نشاط.</Ar>
 - Use **multiple initial nodes**, **multiple final nodes** and the **flow final** node correctly.
+  <Ar>استخدام **العقد الابتدائية المتعددة (multiple initial nodes)** و**العقد النهائية المتعددة (multiple final nodes)** و**عقدة نهاية المسار (flow final)** استخدامًا صحيحًا.</Ar>
 - Explain **event-driven modelling**, and draw a **state diagram** with entry/do/exit activities and transitions labelled *event [guard] / activity*.
+  <Ar>شرح **النمذجة المدفوعة بالأحداث (event-driven modelling)**، ورسم **مخطط الحالة (state diagram)** بأنشطة `entry/do/exit` وانتقالات مُعنونة بالصيغة `event [guard] / activity`.</Ar>
 
 </Objectives>
 
 ## Activity diagrams
 
+<Ar>مخططات النشاط</Ar>
+
 An activity diagram gives a simplified, **step-by-step view of what happens during a process** (the process perspective). It is much like a **flowchart**: it shows the activities, their **order**, the **decision points**, and which activities can run **in parallel**. It can also show **who** is responsible for each activity. An activity can be done by a person or a computer.
 
-<SlideFigure page={6} caption="Activity diagram symbols: activity, start node, end node, transition, synchronization bar, decision, merge, guard and swimlane." />
+<Ar>يقدّم مخطط النشاط (activity diagram) عرضًا مبسّطًا **خطوةً بخطوة لما يحدث أثناء عملية ما** (منظور العملية). وهو يشبه كثيرًا **المخطط الانسيابي (flowchart)**: إذ يعرض الأنشطة و**ترتيبها** و**نقاط القرار (decision points)**، والأنشطة التي يمكن تنفيذها **بالتوازي**. ويمكنه أيضًا أن يوضّح **مَن** المسؤول عن كل نشاط. وقد يؤدي النشاطَ شخصٌ أو حاسوب.</Ar>
 
-| Element | Notation | Meaning |
+<SlideFigure page={6} caption="Activity diagram symbols: activity, start node, end node, transition, synchronization bar, decision, merge, guard and swimlane." captionAr="رموز مخطط النشاط: النشاط، وعقدة البداية، وعقدة النهاية، والانتقال، وشريط التزامن (synchronization bar)، ونقطة القرار، والدمج، وشرط الحراسة، وحارة السباحة." />
+
+| Element <Ar>العنصر</Ar> | Notation <Ar>الرمز</Ar> | Meaning <Ar>المعنى</Ar> |
 |---|---|---|
-| **Activity** | Rounded rectangle | A task or business process step |
-| **Start node** | Filled circle | Where the process begins |
-| **End node** | Bull's-eye (filled circle in a ring) | Where the process ends; there may be more than one |
-| **Transition** | Arrow | Completing one activity triggers the next |
-| **Decision** | Diamond with one incoming and several outgoing flows | Chooses one path; each outgoing flow has a **guard** in `[brackets]` |
-| **Merge** | Diamond with several incoming flows and one outgoing | Joins alternative, mutually exclusive paths |
-| **Fork** | Thick bar with one incoming and several outgoing flows | Splits into **concurrent** paths |
-| **Join** | Thick bar with several incoming flows and one outgoing | Waits for **all** concurrent paths to finish |
-| **Swimlane** | Vertical partition labelled with a role | Groups the activities done by one role |
-| **Note** | Folded-corner rectangle, dashed line | A comment on an element |
+| **Activity** <Ar>**النشاط (Activity)**</Ar> | Rounded rectangle <Ar>مستطيل بزوايا مستديرة</Ar> | A task or business process step <Ar>مهمة أو خطوة في عملية عمل (business process)</Ar> |
+| **Start node** <Ar>**عقدة البداية (Start node)**</Ar> | Filled circle <Ar>دائرة مُصمَتة</Ar> | Where the process begins <Ar>حيث تبدأ العملية</Ar> |
+| **End node** <Ar>**عقدة النهاية (End node)**</Ar> | Bull's-eye (filled circle in a ring) <Ar>عين الثور (دائرة مُصمَتة داخل حلقة)</Ar> | Where the process ends; there may be more than one <Ar>حيث تنتهي العملية؛ وقد يوجد أكثر من عقدة نهاية</Ar> |
+| **Transition** <Ar>**الانتقال (Transition)**</Ar> | Arrow <Ar>سهم</Ar> | Completing one activity triggers the next <Ar>إتمام نشاط ما يُطلق النشاط التالي</Ar> |
+| **Decision** <Ar>**نقطة القرار (Decision)**</Ar> | Diamond with one incoming and several outgoing flows <Ar>معيّن له تدفق داخل واحد وعدة تدفقات خارجة</Ar> | Chooses one path; each outgoing flow has a **guard** in `[brackets]` <Ar>يختار مسارًا واحدًا؛ ولكل تدفق خارج **شرط حراسة (guard)** بين قوسين مربعين `[brackets]`</Ar> |
+| **Merge** <Ar>**الدمج (Merge)**</Ar> | Diamond with several incoming flows and one outgoing <Ar>معيّن له عدة تدفقات داخلة وتدفق خارج واحد</Ar> | Joins alternative, mutually exclusive paths <Ar>يجمع المسارات البديلة المتنافية فيما بينها</Ar> |
+| **Fork** <Ar>**التفرّع (Fork)**</Ar> | Thick bar with one incoming and several outgoing flows <Ar>شريط سميك له تدفق داخل واحد وعدة تدفقات خارجة</Ar> | Splits into **concurrent** paths <Ar>يتفرّع إلى مسارات **متزامنة (concurrent)**</Ar> |
+| **Join** <Ar>**الالتقاء (Join)**</Ar> | Thick bar with several incoming flows and one outgoing <Ar>شريط سميك له عدة تدفقات داخلة وتدفق خارج واحد</Ar> | Waits for **all** concurrent paths to finish <Ar>ينتظر انتهاء **جميع** المسارات المتزامنة</Ar> |
+| **Swimlane** <Ar>**حارة السباحة (Swimlane)**</Ar> | Vertical partition labelled with a role <Ar>قسم رأسي مُعنون باسم دور</Ar> | Groups the activities done by one role <Ar>يجمع الأنشطة التي يؤديها دور واحد</Ar> |
+| **Note** <Ar>**الملاحظة (Note)**</Ar> | Folded-corner rectangle, dashed line <Ar>مستطيل بزاوية مطوية، وخط متقطع</Ar> | A comment on an element <Ar>تعليق على عنصر ما</Ar> |
 
-<Callout type="warning" title="Guards must cover every case">
+<Callout type="warning" title="Guards must cover every case" titleAr="يجب أن تغطي شروط الحراسة كل الحالات">
   Exactly <strong>one</strong> guard on the flows leaving a decision must be true whenever the decision is reached. Use complementary guards such as <code>[clean]</code> and <code>[dirty]</code>, or <code>[else]</code>.
+
+  <Ar>يجب أن يكون شرط حراسة <strong>واحد</strong> فقط من شروط التدفقات الخارجة من نقطة القرار صحيحًا كلما وُصل إلى تلك النقطة. استخدم شروطًا متكاملة مثل <code>[clean]</code> و<code>[dirty]</code>، أو <code>[else]</code>.</Ar>
 </Callout>
 
 ### Example: making a hot drink
 
+<Ar>مثال: تحضير مشروب ساخن</Ar>
+
 To make instant coffee you **fill the kettle** and **boil the water**. **At the same time** you get a cup and add coffee. When both strands are done, you pour the water and add milk.
 
-<SlideFigure page={10} caption="Making coffee: a fork lets 'fill kettle → boil water' and 'get cup → add coffee' run in parallel; a join waits for both before 'pour water'." />
+<Ar>لتحضير القهوة سريعة الذوبان **تملأ الغلاية** ثم **تغلي الماء**. و**في الوقت نفسه** تُحضر كوبًا وتضع فيه القهوة. وعندما ينتهي المساران كلاهما، تصبّ الماء وتضيف الحليب.</Ar>
+
+<SlideFigure page={10} caption="Making coffee: a fork lets 'fill kettle → boil water' and 'get cup → add coffee' run in parallel; a join waits for both before 'pour water'." captionAr="تحضير القهوة: يسمح التفرّع (fork) بتنفيذ «ملء الغلاية ← غلي الماء» و«إحضار الكوب ← إضافة القهوة» بالتوازي، ثم ينتظر الالتقاء (join) انتهاء كليهما قبل «صبّ الماء»." />
 
 Now add a check: if the cup is dirty, wash it first.
 
-<SlideFigure page={12} caption="A decision with guards [dirty] / [clean] and a merge that brings the two alternative flows back together." />
+<Ar>أضف الآن فحصًا: إذا كان الكوب متسخًا، فاغسله أولًا.</Ar>
+
+<SlideFigure page={12} caption="A decision with guards [dirty] / [clean] and a merge that brings the two alternative flows back together." captionAr="نقطة قرار بشرطي الحراسة [dirty] / [clean]، ونقطة دمج (merge) تجمع التدفقين البديلين معًا من جديد." />
 
 ### Swimlanes: borrowing a library book
 
+<Ar>حارات السباحة: استعارة كتاب من المكتبة</Ar>
+
 When a workflow involves several **roles**, divide the diagram into **swimlanes**, one per role. Transitions may cross lanes, and the diagram shows where each role interacts with the process.
 
-<SlideFigure page={15} caption="Borrowing a book: the member's lane (find book, wait in queue, take books) and the library system's lane (record loan, issue the copy, prepare for the next member)." />
+<Ar>عندما يتضمن سير العمل (workflow) عدة **أدوار (roles)**، قسّم المخطط إلى **حارات سباحة (swimlanes)**، حارة لكل دور. ويمكن للانتقالات أن تعبر بين الحارات، ويوضّح المخطط المواضع التي يتفاعل فيها كل دور مع العملية.</Ar>
 
-<SlideFigure page={20} caption="Assessing students by exam, with swimlanes for Professor, Assistant and Student, and a «datastore» for registrations." />
+<SlideFigure page={15} caption="Borrowing a book: the member's lane (find book, wait in queue, take books) and the library system's lane (record loan, issue the copy, prepare for the next member)." captionAr="استعارة كتاب: حارة العضو (البحث عن الكتاب، والانتظار في الطابور، وأخذ الكتب) وحارة نظام المكتبة (تسجيل الإعارة، وتسليم النسخة، والاستعداد للعضو التالي)." />
+
+<SlideFigure page={20} caption="Assessing students by exam, with swimlanes for Professor, Assistant and Student, and a «datastore» for registrations." captionAr="تقييم الطلاب بالامتحان، مع حارات سباحة للأستاذ (Professor) والمساعد (Assistant) والطالب (Student)، ومخزن بيانات «datastore» للتسجيلات." />
 
 ### Initial, final and flow-final nodes
 
-| Situation | What it means |
+<Ar>العقد الابتدائية والنهائية وعقدة نهاية المسار</Ar>
+
+| Situation <Ar>الموقف</Ar> | What it means <Ar>المعنى</Ar> |
 |---|---|
-| **Multiple initial nodes** | Several paths **start concurrently** when the activity starts, e.g. the lecturer's path and the students' path in *Conduct lecture*, which merge at *Write exam* |
-| **Multiple activity final nodes** | The **first** one reached **ends the whole activity**, e.g. course participation ends if the assignment fails **or** the exam is written |
-| **Flow final node** (circle with an X) | Ends **only that path**; other concurrent paths keep running |
+| **Multiple initial nodes** <Ar>**عقد ابتدائية متعددة (Multiple initial nodes)**</Ar> | Several paths **start concurrently** when the activity starts, e.g. the lecturer's path and the students' path in *Conduct lecture*, which merge at *Write exam* <Ar>عدة مسارات **تبدأ بالتزامن** عند بدء النشاط، مثل مسار المحاضر ومسار الطلاب في النشاط *Conduct lecture* (إلقاء المحاضرة)، اللذين يلتقيان عند *Write exam* (كتابة الامتحان)</Ar> |
+| **Multiple activity final nodes** <Ar>**عقد نهاية نشاط متعددة (Multiple activity final nodes)**</Ar> | The **first** one reached **ends the whole activity**, e.g. course participation ends if the assignment fails **or** the exam is written <Ar>**أول** عقدة يُوصَل إليها **تُنهي النشاط بأكمله**، مثل انتهاء المشاركة في المقرر إذا رسب الطالب في التكليف (assignment) **أو** أدّى الامتحان</Ar> |
+| **Flow final node** (circle with an X) <Ar>**عقدة نهاية المسار (Flow final node)** (دائرة بداخلها علامة X)</Ar> | Ends **only that path**; other concurrent paths keep running <Ar>تُنهي **ذلك المسار فقط**؛ وتستمر المسارات المتزامنة الأخرى في العمل</Ar> |
 
-<SlideFigure page={22} caption="Two activity final nodes: failing the assignment ends the whole activity immediately." />
+<SlideFigure page={22} caption="Two activity final nodes: failing the assignment ends the whole activity immediately." captionAr="عقدتا نهاية نشاط: الرسوب في التكليف يُنهي النشاط بأكمله فورًا." />
 
-<SlideFigure page={23} caption="A flow final node ends only the failed-assignment path; attending lectures continues." />
+<SlideFigure page={23} caption="A flow final node ends only the failed-assignment path; attending lectures continues." captionAr="عقدة نهاية المسار (flow final) تُنهي مسار الرسوب في التكليف فقط؛ ويستمر حضور المحاضرات." />
 
 ## State diagrams
 
+<Ar>مخططات الحالة</Ar>
+
 ### Event-driven models
+
+<Ar>النماذج المدفوعة بالأحداث</Ar>
 
 **Event-driven modelling** shows how a system **responds to external and internal events**. The system has a **finite number of states**, and events (stimuli) cause **transitions** between them. UML models this with **state machine diagrams** (statecharts).
 
-<Callout type="note" title="State vs. activity diagrams">
+<Ar>تُظهر **النمذجة المدفوعة بالأحداث (Event-driven modelling)** كيف **يستجيب النظام للأحداث الخارجية والداخلية**. فللنظام **عدد محدود من الحالات (states)**، وتتسبب الأحداث (أي المحفّزات) في **انتقالات (transitions)** بينها. وتنمذج UML ذلك باستخدام **مخططات آلة الحالات (state machine diagrams)** (statecharts).</Ar>
+
+<Callout type="note" title="State vs. activity diagrams" titleAr="مخططات الحالة مقابل مخططات النشاط">
   A state diagram shows how a <strong>single object</strong> changes state over time in response to events. It does <strong>not</strong> show the flow of data, or the sequence of activities across many objects.
+
+  <Ar>يوضّح مخطط الحالة كيف يغيّر <strong>كائن واحد (single object)</strong> حالته بمرور الوقت استجابةً للأحداث. وهو <strong>لا</strong> يعرض تدفق البيانات، ولا تسلسل الأنشطة عبر كائنات متعددة.</Ar>
 </Callout>
 
-<SlideFigure page={27} caption="A lecture hall: free → (lecture start) → occupied → (release) → free." />
+<SlideFigure page={27} caption="A lecture hall: free → (lecture start) → occupied → (release) → free." captionAr="قاعة محاضرات: شاغرة ← (بدء المحاضرة) ← مشغولة ← (الإخلاء) ← شاغرة." />
 
-<SlideFigure page={28} caption="State diagram elements: state, transition, initial state, final state, terminate node, decision, parallelization and synchronization nodes." />
+<SlideFigure page={28} caption="State diagram elements: state, transition, initial state, final state, terminate node, decision, parallelization and synchronization nodes." captionAr="عناصر مخطط الحالة: الحالة، والانتقال، والحالة الابتدائية، والحالة النهائية، وعقدة الإنهاء (terminate node)، ونقطة القرار، وعقدتا التوازي (parallelization) والتزامن (synchronization)." />
 
 ### States and their internal activities
 
+<Ar>الحالات وأنشطتها الداخلية</Ar>
+
 A **state** is a rounded rectangle with the state's name. It can have a second compartment with internal activities:
 
-| Label | When it runs |
-|---|---|
-| `entry / …` | On **entering** the state |
-| `do / …` | **While** in the state |
-| `exit / …` | On **leaving** the state |
+<Ar>تُرسم **الحالة (state)** على شكل مستطيل بزوايا مستديرة يحمل اسم الحالة، ويمكن أن تكون لها حجرة ثانية تضم الأنشطة الداخلية:</Ar>
 
-<SlideFigure page={31} caption="Fax machine: Faxing (entry/key in remote fax number, do/add datestamp, do/dial phone number, exit/complete transmission…) and Idle (entry/fax complete, do/show Date and Time)." />
+| Label <Ar>التسمية</Ar> | When it runs <Ar>متى يُنفَّذ</Ar> |
+|---|---|
+| `entry / …` | On **entering** the state <Ar>عند **الدخول** إلى الحالة</Ar> |
+| `do / …` | **While** in the state <Ar>**طوال** البقاء في الحالة</Ar> |
+| `exit / …` | On **leaving** the state <Ar>عند **مغادرة** الحالة</Ar> |
+
+<SlideFigure page={31} caption="Fax machine: Faxing (entry/key in remote fax number, do/add datestamp, do/dial phone number, exit/complete transmission…) and Idle (entry/fax complete, do/show Date and Time)." captionAr="جهاز الفاكس: حالة الإرسال Faxing، وفيها عند الدخول (entry) إدخال رقم الفاكس البعيد، وأثناء الحالة (do) إضافة ختم التاريخ وطلب رقم الهاتف، وعند الخروج (exit) إتمام الإرسال…؛ وحالة الخمول Idle، وفيها عند الدخول اكتمال الفاكس، وأثناء الحالة عرض التاريخ والوقت." />
 
 ### Transitions
 
+<Ar>الانتقالات</Ar>
+
 A transition is labelled **`event [guard] / activity`**:
 
+<Ar>يُعنوَن الانتقال (transition) بالصيغة **`event [guard] / activity`**:</Ar>
+
 - the **event** (trigger) fires the transition;
+  <Ar>**الحدث (event)**، أي المُطلِق (trigger)، يُطلق الانتقال؛</Ar>
 - the **guard** (condition) must be true for it to happen;
+  <Ar>**شرط الحراسة (guard)**، أي الشرط، يجب أن يكون صحيحًا كي يحدث الانتقال؛</Ar>
 - the **activity** runs as the transition happens.
+  <Ar>**النشاط (activity)** يُنفَّذ أثناء حدوث الانتقال.</Ar>
 
-<SlideFigure page={33} caption="A PC: Turn PC on → Initializing (do/Bootup) → Working → Shut down → Shutting Down; Working ⇄ Screensaving on [Timeout] and on a keystroke or mouse movement." />
+<SlideFigure page={33} caption="A PC: Turn PC on → Initializing (do/Bootup) → Working → Shut down → Shutting Down; Working ⇄ Screensaving on [Timeout] and on a keystroke or mouse movement." captionAr="حاسوب شخصي: تشغيل الحاسوب ← الحالة Initializing (do/Bootup) ← الحالة Working ← إيقاف التشغيل ← الحالة Shutting Down؛ وتتبادل الحالتان Working و Screensaving عند [Timeout] وعند ضغطة مفتاح أو حركة الفأرة." />
 
-<SlideFigure page={34} caption="An elevator car: from Idle, a floor selection goes to Moving Up or Moving Down depending on the guard; on reaching the selected floor it goes to Stopping." />
+<SlideFigure page={34} caption="An elevator car: from Idle, a floor selection goes to Moving Up or Moving Down depending on the guard; on reaching the selected floor it goes to Stopping." captionAr="عربة المصعد: من الحالة Idle يؤدي اختيار طابق إلى الانتقال إلى Moving Up أو Moving Down بحسب شرط الحراسة؛ وعند الوصول إلى الطابق المختار تنتقل إلى Stopping." />
 
 A state machine maps directly to code: a state variable plus the allowed transitions.
+
+<Ar>تتحول آلة الحالات (state machine) إلى شيفرة مباشرةً: متغير للحالة بالإضافة إلى الانتقالات المسموح بها.</Ar>
 
 ```python title="pc_state.py: the PC state diagram as code"
 from enum import Enum, auto
@@ -155,46 +200,71 @@ for e in ["boot complete", "timeout", "mouse movement", "shut down"]:
 <Takeaways>
 
 - **Activity diagrams** are flowcharts of a process: activities, transitions, **decisions with guards**, **merges**, **fork/join** for concurrency, and **swimlanes** for roles.
+  <Ar>**مخططات النشاط (Activity diagrams)** مخططات انسيابية لعملية ما: أنشطة وانتقالات، و**نقاط قرار بشروط حراسة (guards)**، و**نقاط دمج (merges)**، و**التفرّع والالتقاء (fork/join)** للتزامن، و**حارات السباحة (swimlanes)** للأدوار.</Ar>
 - Several **activity final** nodes: the first one reached ends everything. A **flow final** node ends only its own path.
+  <Ar>عند وجود عدة عقد **نهاية نشاط (activity final)**: أول عقدة يُوصَل إليها تُنهي كل شيء. أما عقدة **نهاية المسار (flow final)** فتُنهي مسارها فقط.</Ar>
 - **State diagrams** model how **one object** reacts to **events**: states with `entry/do/exit` activities, and transitions labelled `event [guard] / activity`.
+  <Ar>**مخططات الحالة (State diagrams)** تنمذج كيف يتفاعل **كائن واحد** مع **الأحداث (events)**: حالات بأنشطة `entry/do/exit`، وانتقالات مُعنونة بالصيغة `event [guard] / activity`.</Ar>
 
 </Takeaways>
 
 ## Practice
 
-<Exercise title="ATM withdrawal activity diagram" level="medium">
+<Ar>تدريب</Ar>
+
+<Exercise title="ATM withdrawal activity diagram" titleAr="مخطط نشاط لسحب النقود من الصراف الآلي" level="medium">
 
 Describe an activity diagram for withdrawing cash: insert card, enter PIN, and if the PIN is wrong show an error and end. Otherwise enter the amount. If the balance is insufficient, show a message; otherwise dispense the cash **and at the same time** print a receipt, then eject the card.
+
+<Ar>صِف مخطط نشاط لسحب النقود: أدخِل البطاقة، ثم أدخِل الرقم السري (PIN)، فإذا كان الرقم السري خاطئًا فاعرض رسالة خطأ وانتهِ. وإلا فأدخِل المبلغ. فإذا كان الرصيد غير كافٍ فاعرض رسالة؛ وإلا فاصرف النقود **وفي الوقت نفسه** اطبع إيصالًا، ثم أخرِج البطاقة.</Ar>
 
 <Solution>
 
 1. Start → *Insert card* → *Enter PIN* → **decision**:
+   <Ar>البداية ← *إدخال البطاقة* ← *إدخال الرقم السري* ← **نقطة قرار (decision)**:</Ar>
    - `[PIN wrong]` → *Show error* → end;
+     <Ar>`[PIN wrong]` ← *عرض رسالة خطأ* ← النهاية؛</Ar>
    - `[PIN correct]` → *Enter amount* → **decision**.
+     <Ar>`[PIN correct]` ← *إدخال المبلغ* ← **نقطة قرار**.</Ar>
 2. At the second decision:
+   <Ar>عند نقطة القرار الثانية:</Ar>
    - `[insufficient balance]` → *Show message*;
+     <Ar>`[insufficient balance]` ← *عرض رسالة*؛</Ar>
    - `[sufficient]` → **fork** → *Dispense cash* ∥ *Print receipt* → **join**.
+     <Ar>`[sufficient]` ← **تفرّع (fork)** ← *صرف النقود* ∥ *طباعة الإيصال* ← **التقاء (join)**.</Ar>
 3. The *Show message* path and the join's outgoing flow meet at a **merge** → *Eject card* → end.
+   <Ar>يلتقي مسار *عرض رسالة* والتدفق الخارج من الالتقاء عند **نقطة دمج (merge)** ← *إخراج البطاقة* ← النهاية.</Ar>
 
 With swimlanes, use **Customer** (insert, enter PIN and amount, take cash) and **ATM** (validate, dispense, print, eject).
+
+<Ar>وعند استخدام حارات السباحة (swimlanes)، استخدم حارة **Customer** (العميل) لإدخال البطاقة وإدخال الرقم السري والمبلغ وأخذ النقود، وحارة **ATM** (الصراف الآلي) للتحقق والصرف والطباعة وإخراج البطاقة.</Ar>
 
 </Solution>
 
 </Exercise>
 
-<Exercise title="Order state diagram" level="medium">
+<Exercise title="Order state diagram" titleAr="مخطط حالة لطلب شراء" level="medium">
 
 An online order is *Pending* until paid. Then it is *Paid*. When the warehouse ships it, it is *Shipped*, and on delivery it is *Delivered* (final). A pending or paid order can be cancelled, moving to *Cancelled* (final), but a paid order can only be cancelled if it hasn't been packed. List the transitions as `event [guard] / activity`.
+
+<Ar>يكون الطلب الإلكتروني في الحالة *Pending* (قيد الانتظار) حتى يُدفع ثمنه، ثم يصبح *Paid* (مدفوعًا). وعندما يشحنه المستودع يصبح *Shipped* (مشحونًا)، وعند التسليم يصبح *Delivered* (مُسلَّمًا، وهي حالة نهائية). ويمكن إلغاء الطلب قيد الانتظار أو المدفوع فينتقل إلى *Cancelled* (ملغى، وهي حالة نهائية)، لكن الطلب المدفوع لا يمكن إلغاؤه إلا إذا لم يُغلَّف بعد. اكتب الانتقالات بالصيغة `event [guard] / activity`.</Ar>
 
 <Solution>
 
 - initial → **Pending**
+  <Ar>من الحالة الابتدائية إلى **Pending**</Ar>
 - Pending → **Paid**: `pay / send receipt`
+  <Ar>من Pending إلى **Paid**: `pay / send receipt`</Ar>
 - Paid → **Shipped**: `ship / notify customer`
+  <Ar>من Paid إلى **Shipped**: `ship / notify customer`</Ar>
 - Shipped → **Delivered**: `deliver`
+  <Ar>من Shipped إلى **Delivered**: `deliver`</Ar>
 - Pending → **Cancelled**: `cancel`
+  <Ar>من Pending إلى **Cancelled**: `cancel`</Ar>
 - Paid → **Cancelled**: `cancel [not packed] / refund`
+  <Ar>من Paid إلى **Cancelled**: `cancel [not packed] / refund`</Ar>
 - Delivered and Cancelled → final state.
+  <Ar>من Delivered و Cancelled إلى الحالة النهائية.</Ar>
 
 </Solution>
 
@@ -204,39 +274,57 @@ An online order is *Pending* until paid. Then it is *Paid*. When the warehouse s
   questions={[
     {
       q: "Which element lets two activities run in parallel?",
+      qAr: "أي عنصر يسمح بتنفيذ نشاطين بالتوازي؟",
       options: ["Decision diamond", "Merge diamond", "Fork (synchronization bar)", "Guard"],
+      optionsAr: ["معيّن القرار", "معيّن الدمج", "التفرّع (شريط التزامن)", "شرط الحراسة"],
       answer: 2,
-      explain: "A fork splits into concurrent flows; a join waits for all of them."
+      explain: "A fork splits into concurrent flows; a join waits for all of them.",
+      explainAr: "التفرّع (fork) يقسم التدفق إلى تدفقات متزامنة، والالتقاء (join) ينتظرها جميعًا."
     },
     {
       q: "What do swimlanes show?",
+      qAr: "ماذا توضّح حارات السباحة (swimlanes)؟",
       options: ["The order of states", "Which role is responsible for each activity", "Class attributes", "Message types"],
+      optionsAr: ["ترتيب الحالات", "الدور المسؤول عن كل نشاط", "سمات الصنف", "أنواع الرسائل"],
       answer: 1,
-      explain: "Each lane groups the activities of one role."
+      explain: "Each lane groups the activities of one role.",
+      explainAr: "كل حارة تجمع أنشطة دور واحد."
     },
     {
       q: "A diagram has two activity final nodes. What happens when one is reached?",
+      qAr: "مخطط فيه عقدتا نهاية نشاط. ماذا يحدث عند الوصول إلى إحداهما؟",
       options: ["Only that path ends", "The entire activity ends", "The other final node is reached too", "Nothing; final nodes are notes"],
+      optionsAr: ["ينتهي ذلك المسار فقط", "ينتهي النشاط بأكمله", "يُوصَل إلى العقدة النهائية الأخرى أيضًا", "لا شيء؛ فالعقد النهائية مجرد ملاحظات"],
       answer: 1,
-      explain: "The first activity final node reached ends everything. Use a flow final to end a single path."
+      explain: "The first activity final node reached ends everything. Use a flow final to end a single path.",
+      explainAr: "أول عقدة نهاية نشاط يُوصَل إليها تُنهي كل شيء. استخدم عقدة نهاية المسار (flow final) لإنهاء مسار واحد."
     },
     {
       q: "In 'e1 [g1] / A1' on a transition, g1 is the…",
+      qAr: "في التسمية «e1 [g1] / A1» على انتقال ما، يمثّل g1…",
       options: ["Event", "Guard condition", "Activity", "Target state"],
+      optionsAr: ["الحدث", "شرط الحراسة", "النشاط", "الحالة الهدف"],
       answer: 1,
-      explain: "event [guard] / activity."
+      explain: "event [guard] / activity.",
+      explainAr: "الصيغة هي event [guard] / activity، أي الحدث ثم شرط الحراسة ثم النشاط."
     },
     {
       q: "A state diagram represents…",
+      qAr: "يمثّل مخطط الحالة…",
       options: ["The flow of data in a system", "How a single object changes state in response to events", "The classes of a system", "Interactions between many objects over time"],
+      optionsAr: ["تدفق البيانات في النظام", "كيف يغيّر كائن واحد حالته استجابةً للأحداث", "أصناف النظام", "التفاعلات بين كائنات متعددة بمرور الوقت"],
       answer: 1,
-      explain: "It doesn't show data flow; it is event-driven behaviour of one object."
+      explain: "It doesn't show data flow; it is event-driven behaviour of one object.",
+      explainAr: "لا يعرض تدفق البيانات؛ بل يعرض السلوك المدفوع بالأحداث لكائن واحد."
     },
     {
       q: "'do / show Date and Time' inside a state runs…",
+      qAr: "النشاط «do / show Date and Time» داخل حالة ما يُنفَّذ…",
       options: ["On entering the state", "While the object is in the state", "On leaving the state", "Only once at start-up"],
+      optionsAr: ["عند الدخول إلى الحالة", "طوال وجود الكائن في الحالة", "عند مغادرة الحالة", "مرة واحدة فقط عند بدء التشغيل"],
       answer: 1,
-      explain: "entry = on entering, do = while in the state, exit = on leaving."
+      explain: "entry = on entering, do = while in the state, exit = on leaving.",
+      explainAr: "entry عند الدخول، و do طوال البقاء في الحالة، و exit عند المغادرة."
     }
   ]}
 />

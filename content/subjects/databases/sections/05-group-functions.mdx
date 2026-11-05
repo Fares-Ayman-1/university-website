@@ -1,7 +1,9 @@
 ---
 number: 5
 title: Reporting Aggregated Data Using the Group Functions
+titleAr: "عرض البيانات المُجمَّعة باستخدام دوال التجميع"
 summary: Summarize many rows into one. Covers AVG, SUM, MIN, MAX and COUNT, DISTINCT inside group functions, how NULLs are ignored (and NVL to include them), GROUP BY on one or more columns, filtering groups with HAVING, the rules that make grouped queries legal, and nesting group functions.
+summaryAr: "تلخيص صفوف كثيرة في صف واحد: الدوال AVG و SUM و MIN و MAX و COUNT، واستخدام DISTINCT داخل دوال التجميع، وكيف تُتجاهَل القيم الفارغة NULL (واستخدام NVL لتضمينها)، والتجميع باستخدام GROUP BY على عمود واحد أو أكثر، وتصفية المجموعات باستخدام HAVING، والقواعد التي تجعل الاستعلامات المُجمَّعة صحيحة، وتداخل دوال التجميع."
 kind: lab
 topics: [Group functions, COUNT(*) vs COUNT(expr), DISTINCT, NULLs and NVL, GROUP BY, Multi-column grouping, HAVING, Nesting group functions]
 duration: 50 min hands-on
@@ -17,25 +19,34 @@ bookRefs:
 <Objectives>
 
 - Use the group functions `AVG`, `SUM`, `MIN`, `MAX`, `COUNT` (and `STDDEV`, `VARIANCE`).
+  <Ar>استخدام دوال التجميع (group functions) `AVG` و`SUM` و`MIN` و`MAX` و`COUNT` (و`STDDEV` و`VARIANCE`).</Ar>
 - Explain `COUNT(*)` vs `COUNT(expr)` vs `COUNT(DISTINCT expr)`, and how group functions treat **NULL**.
+  <Ar>شرح الفرق بين `COUNT(*)` و`COUNT(expr)` و`COUNT(DISTINCT expr)`، وكيف تتعامل دوال التجميع مع **NULL**.</Ar>
 - Divide rows into groups with **GROUP BY**, on one or several columns.
+  <Ar>تقسيم الصفوف إلى مجموعات باستخدام **GROUP BY**، على عمود واحد أو عدة أعمدة.</Ar>
 - Restrict groups with **HAVING**, and know why `WHERE` can't do it.
+  <Ar>تقييد المجموعات باستخدام **HAVING**، ومعرفة لماذا لا تستطيع `WHERE` فعل ذلك.</Ar>
 - Nest group functions, e.g. `MAX(AVG(salary))`.
+  <Ar>تداخل دوال التجميع (nesting)، مثل `MAX(AVG(salary))`.</Ar>
 
 </Objectives>
 
 ## What group functions do
 
+<Ar>ما الذي تفعله دوال التجميع</Ar>
+
 Group functions operate on **sets of rows** and return **one result per group**. Without `GROUP BY`, the whole table (after `WHERE`) is a single group.
 
-| Function | Returns | Data types |
+<Ar>تعمل دوال التجميع (group functions) على **مجموعات من الصفوف** وتُعيد **نتيجة واحدة لكل مجموعة**. ودون `GROUP BY`، يكون الجدول كله (بعد تطبيق `WHERE`) مجموعة واحدة.</Ar>
+
+| Function <Ar>الدالة</Ar> | Returns <Ar>تُعيد</Ar> | Data types <Ar>أنواع البيانات</Ar> |
 |---|---|---|
-| `AVG([DISTINCT] n)` | Average | Numeric |
-| `SUM([DISTINCT] n)` | Total | Numeric |
-| `MIN(expr)` / `MAX(expr)` | Smallest / largest value | Numeric, **character**, **date** |
-| `COUNT(*)` | Number of rows | Any |
-| `COUNT([DISTINCT] expr)` | Number of **non-null** values | Any |
-| `STDDEV(n)` / `VARIANCE(n)` | Standard deviation / variance | Numeric |
+| `AVG([DISTINCT] n)` | Average <Ar>المتوسط</Ar> | Numeric <Ar>رقمية</Ar> |
+| `SUM([DISTINCT] n)` | Total <Ar>المجموع</Ar> | Numeric <Ar>رقمية</Ar> |
+| `MIN(expr)` / `MAX(expr)` | Smallest / largest value <Ar>أصغر / أكبر قيمة</Ar> | Numeric, **character**, **date** <Ar>رقمية، **نصية**، **تاريخ**</Ar> |
+| `COUNT(*)` | Number of rows <Ar>عدد الصفوف</Ar> | Any <Ar>أي نوع</Ar> |
+| `COUNT([DISTINCT] expr)` | Number of **non-null** values <Ar>عدد القيم **غير الفارغة (non-null)**</Ar> | Any <Ar>أي نوع</Ar> |
+| `STDDEV(n)` / `VARIANCE(n)` | Standard deviation / variance <Ar>الانحراف المعياري / التباين</Ar> | Numeric <Ar>رقمية</Ar> |
 
 ```sql
 SELECT AVG(salary), MAX(salary), MIN(salary), SUM(salary)
@@ -49,6 +60,8 @@ FROM   employees;                   -- earliest and latest hire dates
 
 ### COUNT, DISTINCT and NULL
 
+<Ar>الدالة COUNT والكلمة DISTINCT والقيمة NULL</Ar>
+
 ```sql
 SELECT COUNT(*)              FROM employees WHERE department_id = 50;   -- 5 rows
 SELECT COUNT(commission_pct) FROM employees WHERE department_id = 80;   -- 3 non-null values
@@ -57,18 +70,26 @@ SELECT COUNT(DISTINCT department_id) FROM employees;                   -- 7 depa
 
 The last query returns 7, not 8, because Grant's NULL department isn't a value. **Group functions ignore NULLs** (except `COUNT(*)`):
 
+<Ar>يُعيد الاستعلام الأخير 7 وليس 8، لأن القسم الفارغ (NULL) الخاص بـ Grant ليس قيمة. **تتجاهل دوال التجميع القيم الفارغة (NULLs)** (باستثناء `COUNT(*)`):</Ar>
+
 ```sql
 SELECT AVG(commission_pct)          FROM employees;   -- .2125   (= .85 / 4 commission earners)
 SELECT AVG(NVL(commission_pct, 0))  FROM employees;   -- .0425   (= .85 / 20 employees)
 ```
 
-<Callout type="warning" title="Which average do you want?">
+<Callout type="warning" title="Which average do you want?" titleAr="أي متوسط تريد؟">
   <code>AVG(commission_pct)</code> is the average <em>among people who have a commission</em>. To average over <em>all</em> employees, turn NULLs into 0 with <code>NVL</code> first.
+
+  <Ar><code>AVG(commission_pct)</code> هو المتوسط <em>بين الأشخاص الذين لديهم عمولة</em>. ولحساب المتوسط على <em>كل</em> الموظفين، حوِّل القيم الفارغة (NULLs) إلى 0 باستخدام <code>NVL</code> أولًا.</Ar>
 </Callout>
 
 ## GROUP BY
 
+<Ar>عبارة GROUP BY</Ar>
+
 `GROUP BY` divides the rows into groups that share the same values, and the group functions are then computed **per group**.
+
+<Ar>تقسّم `GROUP BY` الصفوف إلى مجموعات تشترك في القيم نفسها، ثم تُحسب دوال التجميع **لكل مجموعة**.</Ar>
 
 ```sql title="syntax"
 SELECT   column, group_function(column)
@@ -85,7 +106,8 @@ FROM     employees
 GROUP BY department_id;
 ```
 
-| DEPARTMENT_ID | AVG(SALARY) |
+{/* data-table */}
+| DEPARTMENT_ID <Ar>رقم القسم</Ar> | AVG(SALARY) <Ar>متوسط الراتب</Ar> |
 |---|---|
 | 10 | 4400 |
 | 20 | 9500 |
@@ -98,7 +120,11 @@ GROUP BY department_id;
 
 NULL forms its **own group** (Grant). The `GROUP BY` column **doesn't have to appear** in the SELECT list (`SELECT AVG(salary) … GROUP BY department_id` is legal), though the output is harder to read.
 
+<Ar>تُكوِّن NULL **مجموعة خاصة بها** (Grant). ولا **يُشترط ظهور** عمود `GROUP BY` في قائمة `SELECT` (فالجملة `SELECT AVG(salary) … GROUP BY department_id` صحيحة)، وإن كانت المخرجات أصعب في القراءة.</Ar>
+
 ### Grouping by several columns
+
+<Ar>التجميع حسب عدة أعمدة</Ar>
 
 ```sql
 SELECT   department_id, job_id, SUM(salary)
@@ -108,7 +134,8 @@ GROUP BY department_id, job_id
 ORDER BY department_id;
 ```
 
-| DEPT | JOB_ID | SUM(SALARY) |
+{/* data-table */}
+| DEPT <Ar>القسم</Ar> | JOB_ID <Ar>رمز الوظيفة</Ar> | SUM(SALARY) <Ar>مجموع الرواتب</Ar> |
 |---|---|---|
 | 50 | ST_CLERK | 11700 |
 | 50 | ST_MAN | 5800 |
@@ -122,8 +149,12 @@ ORDER BY department_id;
 
 ### Illegal grouped queries
 
-<Callout type="warning" title="The golden rule">
+<Ar>الاستعلامات المُجمَّعة غير الصحيحة</Ar>
+
+<Callout type="warning" title="The golden rule" titleAr="القاعدة الذهبية">
   Every column or expression in the SELECT list that is <strong>not</strong> inside a group function <strong>must</strong> appear in GROUP BY.
+
+  <Ar>كل عمود أو تعبير في قائمة <code>SELECT</code> <strong>ليس</strong> داخل دالة تجميع <strong>يجب</strong> أن يظهر في <code>GROUP BY</code>.</Ar>
 </Callout>
 
 ```sql
@@ -137,7 +168,11 @@ FROM   employees GROUP BY department_id;
 
 ## HAVING: restricting groups
 
+<Ar>HAVING: تقييد المجموعات</Ar>
+
 `WHERE` filters **rows before** grouping, and it **can't** contain group functions:
+
+<Ar>تُصفّي `WHERE` **الصفوف قبل** التجميع، و**لا يمكن** أن تحتوي على دوال تجميع:</Ar>
 
 ```sql
 SELECT department_id, AVG(salary) FROM employees
@@ -146,6 +181,8 @@ GROUP BY department_id;
 ```
 
 `HAVING` filters **groups after** grouping. Oracle (1) groups the rows, (2) applies the group functions, (3) keeps the groups that satisfy `HAVING`.
+
+<Ar>تُصفّي `HAVING` **المجموعات بعد** التجميع؛ إذ يقوم Oracle بـ (1) تجميع الصفوف، ثم (2) تطبيق دوال التجميع، ثم (3) إبقاء المجموعات التي تحقق شرط `HAVING`.</Ar>
 
 ```sql
 SELECT   department_id, MAX(salary)
@@ -163,16 +200,20 @@ ORDER BY SUM(salary);
 -- IT_PROG 19200 · AD_PRES 24000 · AD_VP 34000
 ```
 
-| Clause | Runs | Filters |
+| Clause <Ar>العبارة</Ar> | Runs <Ar>وقت التنفيذ</Ar> | Filters <Ar>ما تُصفّيه</Ar> |
 |---|---|---|
-| `WHERE` | Before grouping | Individual **rows**; no group functions |
-| `GROUP BY` | | Forms the groups |
-| `HAVING` | After grouping | Whole **groups**; group functions allowed |
-| `ORDER BY` | Last | Sorts the final result |
+| `WHERE` | Before grouping <Ar>قبل التجميع</Ar> | Individual **rows**; no group functions <Ar>**الصفوف** الفردية؛ دون دوال تجميع</Ar> |
+| `GROUP BY` | | Forms the groups <Ar>تُكوِّن المجموعات</Ar> |
+| `HAVING` | After grouping <Ar>بعد التجميع</Ar> | Whole **groups**; group functions allowed <Ar>**المجموعات** كاملة؛ ويُسمح بدوال التجميع</Ar> |
+| `ORDER BY` | Last <Ar>في النهاية</Ar> | Sorts the final result <Ar>ترتّب النتيجة النهائية</Ar> |
 
 ## Nesting group functions
 
+<Ar>تداخل دوال التجميع</Ar>
+
 Group functions can be nested **two levels** deep, and then a `GROUP BY` is required:
+
+<Ar>يمكن أن تتداخل دوال التجميع حتى عمق **مستويين**، وعندها تكون `GROUP BY` إلزامية:</Ar>
 
 ```sql
 SELECT   MAX(AVG(salary))
@@ -183,18 +224,27 @@ GROUP BY department_id;       -- 19333.33  (department 90)
 <Takeaways>
 
 - Group functions return **one value per group**. `MIN`/`MAX` also work on text and dates.
+  <Ar>تُعيد دوال التجميع **قيمة واحدة لكل مجموعة**. وتعمل `MIN`/`MAX` أيضًا على النصوص والتواريخ.</Ar>
 - `COUNT(*)` counts rows, `COUNT(expr)` counts **non-null** values, and `DISTINCT` counts unique values.
+  <Ar>تَعُدّ `COUNT(*)` الصفوف، وتَعُدّ `COUNT(expr)` القيم **غير الفارغة (non-null)**، وتَعُدّ `DISTINCT` القيم الفريدة.</Ar>
 - Group functions **ignore NULLs**; use `NVL` to include them.
+  <Ar>تتجاهل دوال التجميع **القيم الفارغة (NULLs)**؛ استخدم `NVL` لتضمينها.</Ar>
 - Non-aggregated SELECT columns **must** be in `GROUP BY`; NULL forms its own group.
+  <Ar>أعمدة `SELECT` غير المُجمَّعة **يجب** أن تكون في `GROUP BY`؛ وتُكوِّن NULL مجموعة خاصة بها.</Ar>
 - `WHERE` filters rows **before** grouping; `HAVING` filters groups **after** it.
+  <Ar>تُصفّي `WHERE` الصفوف **قبل** التجميع، وتُصفّي `HAVING` المجموعات **بعده**.</Ar>
 
 </Takeaways>
 
 ## Practice
 
-<Exercise title="Department statistics" level="easy">
+<Ar>تدريب</Ar>
+
+<Exercise title="Department statistics" titleAr="إحصاءات الأقسام" level="easy">
 
 For each department, show the number of employees and the average salary rounded to the nearest whole number, for departments with **more than two** employees. Sort by average salary, highest first.
+
+<Ar>لكل قسم، اعرض عدد الموظفين ومتوسط الراتب مُقرَّبًا إلى أقرب عدد صحيح، للأقسام التي بها **أكثر من موظفَين اثنين**. رتّب النتائج حسب متوسط الراتب، الأعلى أولًا.</Ar>
 
 <Solution>
 
@@ -211,13 +261,17 @@ ORDER BY 3 DESC;
 
 </Exercise>
 
-<Exercise title="Spot the mistake" level="medium">
+<Exercise title="Spot the mistake" titleAr="اكتشف الخطأ" level="medium">
 
 Fix this query: `SELECT job_id, AVG(salary) FROM employees WHERE AVG(salary) > 10000;`
+
+<Ar>أصلح هذا الاستعلام: `SELECT job_id, AVG(salary) FROM employees WHERE AVG(salary) > 10000;`</Ar>
 
 <Solution>
 
 There are two problems. A group function can't appear in WHERE, and `job_id` isn't grouped.
+
+<Ar>هناك مشكلتان: لا يمكن أن تظهر دالة تجميع في `WHERE`، والعمود `job_id` غير مُجمَّع.</Ar>
 
 ```sql
 SELECT   job_id, AVG(salary)
@@ -231,13 +285,17 @@ HAVING   AVG(salary) > 10000;
 
 </Exercise>
 
-<Exercise title="Guidelines quiz from the slides" level="easy">
+<Exercise title="Guidelines quiz from the slides" titleAr="اختبار الإرشادات من الشرائح" level="easy">
 
 True or false: (1) you can't use a column alias in GROUP BY; (2) the GROUP BY column must be in SELECT; (3) WHERE can exclude rows before grouping; (4) GROUP BY guarantees the order of the result.
+
+<Ar>صواب أم خطأ: (1) لا يمكنك استخدام الاسم المستعار للعمود في `GROUP BY`؛ (2) يجب أن يكون عمود `GROUP BY` في `SELECT`؛ (3) يمكن لـ `WHERE` استبعاد صفوف قبل التجميع؛ (4) تضمن `GROUP BY` ترتيب النتيجة.</Ar>
 
 <Solution>
 
 (1) **True** in Oracle 11g, because GROUP BY is evaluated before the SELECT list. (2) **False**. (3) **True**. (4) **False**: use ORDER BY whenever you need a specific order.
+
+<Ar>(1) **صواب** في Oracle 11g، لأن `GROUP BY` تُقيَّم قبل قائمة `SELECT`. (2) **خطأ**. (3) **صواب**. (4) **خطأ**: استخدم `ORDER BY` كلما احتجت إلى ترتيب معيّن.</Ar>
 
 </Solution>
 
@@ -247,39 +305,57 @@ True or false: (1) you can't use a column alias in GROUP BY; (2) the GROUP BY co
   questions={[
     {
       q: "COUNT(commission_pct) counts…",
+      qAr: "تَعُدّ COUNT(commission_pct)…",
       options: ["All rows", "Rows where commission_pct is not NULL", "Distinct commissions", "NULL commissions"],
+      optionsAr: ["كل الصفوف", "الصفوف التي لا تكون فيها commission_pct فارغة", "العمولات المختلفة (DISTINCT)", "العمولات الفارغة (NULL)"],
       answer: 1,
-      explain: "COUNT(expr) ignores NULLs; COUNT(*) counts every row."
+      explain: "COUNT(expr) ignores NULLs; COUNT(*) counts every row.",
+      explainAr: "تتجاهل COUNT(expr) القيم الفارغة، بينما تَعُدّ COUNT(*) كل الصفوف."
     },
     {
       q: "AVG(commission_pct) on the sample (4 earners, total .85) returns…",
+      qAr: "تُعيد AVG(commission_pct) على العينة (4 حاصلين على عمولة، مجموعها 0.85)…",
       options: [".0425", ".2125", ".85", "NULL"],
+      optionsAr: [".0425", ".2125", ".85", "NULL"],
       answer: 1,
-      explain: "NULLs are ignored, so it's .85 / 4."
+      explain: "NULLs are ignored, so it's .85 / 4.",
+      explainAr: "تُتجاهَل القيم الفارغة، لذا فالناتج هو 0.85 مقسومًا على 4."
     },
     {
       q: "Which clause filters groups?",
+      qAr: "أي عبارة تُصفّي المجموعات؟",
       options: ["WHERE", "HAVING", "ORDER BY", "DISTINCT"],
+      optionsAr: ["WHERE", "HAVING", "ORDER BY", "DISTINCT"],
       answer: 1,
-      explain: "HAVING is evaluated after grouping and allows group functions."
+      explain: "HAVING is evaluated after grouping and allows group functions.",
+      explainAr: "تُقيَّم HAVING بعد التجميع وتسمح بدوال التجميع."
     },
     {
       q: "SELECT department_id, COUNT(*) FROM employees; fails because…",
+      qAr: "تفشل جملة SELECT التي تختار department_id و COUNT(*) من الجدول employees لأن…",
       options: ["COUNT(*) is invalid", "department_id isn't in a GROUP BY", "There is no WHERE clause", "DISTINCT is missing"],
+      optionsAr: ["الدالة COUNT(*) غير صالحة", "العمود department_id ليس في GROUP BY", "لا توجد عبارة WHERE", "الكلمة DISTINCT مفقودة"],
       answer: 1,
-      explain: "Non-aggregated SELECT columns must appear in GROUP BY."
+      explain: "Non-aggregated SELECT columns must appear in GROUP BY.",
+      explainAr: "يجب أن تظهر أعمدة SELECT غير المُجمَّعة في GROUP BY."
     },
     {
       q: "Which group functions work on DATE columns?",
+      qAr: "أي دوال التجميع تعمل على أعمدة DATE؟",
       options: ["AVG and SUM", "MIN and MAX", "STDDEV", "None"],
+      optionsAr: ["الدالتان AVG و SUM", "الدالتان MIN و MAX", "STDDEV", "لا شيء منها"],
       answer: 1,
-      explain: "MIN/MAX (and COUNT) work on any type; AVG/SUM need numbers."
+      explain: "MIN/MAX (and COUNT) work on any type; AVG/SUM need numbers.",
+      explainAr: "تعمل MIN/MAX (و COUNT) على أي نوع، بينما تحتاج AVG/SUM إلى أرقام."
     },
     {
       q: "How deep can group functions be nested?",
+      qAr: "إلى أي عمق يمكن أن تتداخل دوال التجميع؟",
       options: ["One level", "Two levels", "Unlimited", "They can't be nested"],
+      optionsAr: ["مستوى واحد", "مستويان", "بلا حدود", "لا يمكن أن تتداخل"],
       answer: 1,
-      explain: "e.g. MAX(AVG(salary)) with GROUP BY."
+      explain: "e.g. MAX(AVG(salary)) with GROUP BY.",
+      explainAr: "مثل MAX(AVG(salary)) مع GROUP BY."
     }
   ]}
 />

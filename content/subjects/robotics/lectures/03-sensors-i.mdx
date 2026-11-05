@@ -1,7 +1,9 @@
 ---
 number: 3
 title: "Sensors for Robotic Systems I: Switches, Proximity and Light"
+titleAr: "مستشعرات الأنظمة الروبوتية 1: المفاتيح والتقارب والضوء"
 summary: What a sensor is and how its signal is processed, followed by the contact and short-range sensors of industrial robotics (limit switches, inductive and capacitive proximity switches, photoelectric switches, light-dependent resistors and potentiometers) and when to choose each.
+summaryAr: "ما المستشعر (sensor) وكيف تُعالَج إشارته، ثم مستشعرات التلامس والمدى القصير في الروبوتات الصناعية (المفاتيح الحدّية، ومفاتيح التقارب الحثّية والسعوية، والمفاتيح الكهروضوئية، والمقاومات الضوئية، ومقاييس الجهد) ومتى يُختار كلٌّ منها."
 topics: [Sensor basics, Ohm's law, Limit switches, Proximity switches, Photoelectric switches, Light sensors, Potentiometers]
 duration: 50 min study
 sources:
@@ -17,46 +19,63 @@ bookRefs:
 <Objectives>
 
 - Define a **sensor**, list the main physical quantities robots sense, and describe the levels of signal processing.
+  <Ar>تعريف **المستشعر (sensor)**، وسرد أهم الكميات الفيزيائية التي تستشعرها الروبوتات، ووصف مستويات معالجة الإشارة.</Ar>
 - Use **Ohm's law** and the **voltage divider** to read resistive sensors.
+  <Ar>استخدام **قانون أوم (Ohm's law)** و**مقسِّم الجهد (voltage divider)** لقراءة المستشعرات المقاومية.</Ar>
 - Explain how **limit switches** and **inductive**, **capacitive** and **magnetic** proximity switches work, and compare them.
+  <Ar>شرح طريقة عمل **المفاتيح الحدّية (limit switches)** ومفاتيح التقارب (proximity switches) **الحثّية (inductive)** و**السعوية (capacitive)** و**المغناطيسية**، والمقارنة بينها.</Ar>
 - Distinguish **through-beam**, **retro-reflective** and **diffuse** photoelectric switches, and **light-on** vs. **dark-on** operation.
+  <Ar>التمييز بين المفاتيح الكهروضوئية (photoelectric) من نوع **الشعاع المباشر (through-beam)** و**العاكس الارتدادي (retro-reflective)** و**الانعكاس المنتشر (diffuse)**، وبين التشغيل **بالضوء (light-on)** والتشغيل **بالظلام (dark-on)**.</Ar>
 - Use **LDRs** and **potentiometers** as simple analog sensors.
+  <Ar>استخدام **المقاومات الضوئية (LDRs)** و**مقاييس الجهد (potentiometers)** مستشعراتٍ تناظرية بسيطة.</Ar>
 
 </Objectives>
 
 ## What is a sensor?
 
-<Definition term="Sensor">
+<Ar>ما المستشعر؟</Ar>
+
+<Definition term="Sensor" termAr="المستشعر (Sensor)">
   An input device that provides a <strong>usable output</strong> in response to a <strong>specified physical input</strong>. A thermocouple, for example, turns a temperature difference into an electrical voltage.
+
+  <Ar>جهاز إدخال يقدّم <strong>خرجًا قابلًا للاستخدام</strong> استجابةً <strong>لدخل فيزيائي محدد</strong>. فالمزدوجة الحرارية (thermocouple) مثلًا تحوّل فرق درجات الحرارة إلى جهد كهربائي.</Ar>
 </Definition>
 
 Every robot faces the same question: *given the sensor readings, what was the world like?* Sensors range from **simple** (a bump switch) to **complex** (a skin of thousands of touch points).
 
-| Quantity | Typical sensors |
+<Ar>يواجه كل روبوت السؤال نفسه: *بمعلومية قراءات المستشعرات، كيف كان العالم؟* وتتدرج المستشعرات من **البسيطة** (مفتاح اصطدام) إلى **المعقدة** (جلد من آلاف نقاط اللمس).</Ar>
+
+| Quantity <Ar>الكمية</Ar> | Typical sensors <Ar>المستشعرات النموذجية</Ar> |
 |---|---|
-| Contact | Switches, bumpers |
-| Distance | Ultrasound (sonar), radar, infrared, laser |
-| Light level | Photocells, cameras |
-| Sound level | Microphones |
-| Strain / force | Strain gauges |
-| Rotation | Encoders, potentiometers |
-| Smell | Chemical sensors |
-| Temperature | Thermal sensors, infrared |
-| Inclination | Inclinometers, gyroscopes |
-| Pressure / altitude | Pressure gauges, altimeters |
+| Contact <Ar>التلامس</Ar> | Switches, bumpers <Ar>المفاتيح، والمصدّات (bumpers)</Ar> |
+| Distance <Ar>المسافة</Ar> | Ultrasound (sonar), radar, infrared, laser <Ar>الموجات فوق الصوتية (السونار)، والرادار، والأشعة تحت الحمراء، والليزر</Ar> |
+| Light level <Ar>شدة الضوء</Ar> | Photocells, cameras <Ar>الخلايا الضوئية (photocells)، والكاميرات</Ar> |
+| Sound level <Ar>شدة الصوت</Ar> | Microphones <Ar>الميكروفونات</Ar> |
+| Strain / force <Ar>الانفعال / القوة</Ar> | Strain gauges <Ar>مقاييس الانفعال (strain gauges)</Ar> |
+| Rotation <Ar>الدوران</Ar> | Encoders, potentiometers <Ar>المُرمِّزات (encoders)، ومقاييس الجهد (potentiometers)</Ar> |
+| Smell <Ar>الرائحة</Ar> | Chemical sensors <Ar>المستشعرات الكيميائية</Ar> |
+| Temperature <Ar>درجة الحرارة</Ar> | Thermal sensors, infrared <Ar>المستشعرات الحرارية، والأشعة تحت الحمراء</Ar> |
+| Inclination <Ar>الميل</Ar> | Inclinometers, gyroscopes <Ar>مقاييس الميل (inclinometers)، والجيروسكوبات (gyroscopes)</Ar> |
+| Pressure / altitude <Ar>الضغط / الارتفاع</Ar> | Pressure gauges, altimeters <Ar>مقاييس الضغط، ومقاييس الارتفاع (altimeters)</Ar> |
 
 ### Levels of processing
 
-| Sensor | Raw output | Processing needed |
+<Ar>مستويات المعالجة</Ar>
+
+| Sensor <Ar>المستشعر</Ar> | Raw output <Ar>الخرج الخام</Ar> | Processing needed <Ar>المعالجة المطلوبة</Ar> |
 |---|---|---|
-| Switch | Open = 0 V, closed = 5 V | Almost none: one bit |
-| Digital scale | A number | Calibration |
-| Microphone | A waveform | Filtering, frequency analysis |
-| Camera | Millions of pixel values | Heavy: computer vision to extract meaning |
+| Switch <Ar>المفتاح</Ar> | Open = 0 V, closed = 5 V <Ar>مفتوح = 0 V، مغلق = 5 V</Ar> | Almost none: one bit <Ar>شبه معدومة: بِت واحد</Ar> |
+| Digital scale <Ar>الميزان الرقمي</Ar> | A number <Ar>رقم</Ar> | Calibration <Ar>المعايرة (calibration)</Ar> |
+| Microphone <Ar>الميكروفون</Ar> | A waveform <Ar>شكل موجي (waveform)</Ar> | Filtering, frequency analysis <Ar>الترشيح (filtering)، وتحليل الترددات</Ar> |
+| Camera <Ar>الكاميرا</Ar> | Millions of pixel values <Ar>ملايين من قيم البكسلات</Ar> | Heavy: computer vision to extract meaning <Ar>كبيرة: رؤية حاسوبية (computer vision) لاستخلاص المعنى</Ar> |
 
 ### Ohm's law and the voltage divider
 
+<Ar>قانون أوم ومقسِّم الجهد</Ar>
+
 Most simple sensors change a **resistance**, and the controller measures a **voltage**:
+
+<Ar>تغيّر معظم المستشعرات البسيطة **مقاومةً (resistance)**، بينما يقيس المتحكِّم (controller) **جهدًا (voltage)**:</Ar>
 
 $$
 V = I\,R \qquad\qquad V_{\text{out}} = V_{\text{in}} \cdot \frac{R_2}{R_1 + R_2}
@@ -64,105 +83,165 @@ $$
 
 If $R_2$ is the sensor (an LDR, say) and $R_1$ a fixed resistor, a change in $R_2$ changes $V_{\text{out}}$, which the robot reads with an analog-to-digital converter.
 
+<Ar>إذا كانت $R_2$ هي المستشعر (مقاومة ضوئية LDR مثلًا) و $R_1$ مقاومة ثابتة، فإن أي تغيّر في $R_2$ يغيّر $V_{\text{out}}$، الذي يقرؤه الروبوت بمحوِّل تناظري-رقمي (analog-to-digital converter).</Ar>
+
 ## Mechanical switches and limit switches
+
+<Ar>المفاتيح الميكانيكية والمفاتيح الحدّية</Ar>
 
 A **mechanical switch** produces an **on/off** signal when a mechanical input opens or closes its contacts. For example, it can detect whether a workpiece is on a machining table: open = absent, closed = present. In industry, logic 1 is typically **24 V DC** and logic 0 is **0 V**.
 
+<Ar>يُنتج **المفتاح الميكانيكي (mechanical switch)** إشارة **تشغيل/إيقاف (on/off)** عندما يفتح دخلٌ ميكانيكي نقاط تلامسه أو يغلقها. فمثلًا، يمكنه اكتشاف ما إذا كانت قطعة العمل موجودة على طاولة التشغيل الآلي: مفتوح = غير موجودة، مغلق = موجودة. وفي الصناعة يكون المنطق 1 عادةً **24 V DC** والمنطق 0 هو **0 V**.</Ar>
+
 A **limit switch** detects the **presence or passage of a moving part**. It is actuated by a **lever**, a **roller** or a **cam**.
 
-<SlideFigure page={9} caption="Limit switches actuated by (a) a lever, (b) a roller and (c) a cam." />
+<Ar>يكتشف **المفتاح الحدّي (limit switch)** **وجود جزء متحرك أو مروره**. ويُشغَّل بواسطة **ذراع رافعة (lever)** أو **بكرة (roller)** أو **حدبة (cam)**.</Ar>
+
+<SlideFigure page={9} caption="Limit switches actuated by (a) a lever, (b) a roller and (c) a cam." captionAr="مفاتيح حدّية تُشغَّل بواسطة (a) ذراع رافعة، و(b) بكرة، و(c) حدبة." />
 
 Limit switches differ mainly in their **actuator head**: push plunger, roller plunger, roller-lever plunger, fork type, adjustable roller arm, adjustable rod or spring rod. The head transmits the external force to the changeover mechanism.
 
-<Callout type="tip" title="Why use them">
+<Ar>تختلف المفاتيح الحدّية أساسًا في **رأس التشغيل (actuator head)**: مكبس دفع (push plunger)، أو مكبس ببكرة، أو مكبس بذراع وبكرة، أو النوع الشوكي (fork)، أو ذراع بكرة قابلة للضبط، أو قضيب قابل للضبط، أو قضيب نابضي (spring rod). وينقل الرأس القوة الخارجية إلى آلية التبديل (changeover mechanism).</Ar>
+
+<Callout type="tip" title="Why use them" titleAr="لماذا نستخدمها">
   Limit switches are <strong>cheaper</strong> than proximity or photoelectric switches and come in a <strong>wide range of sizes</strong>. The cost is that they need physical contact and have moving parts that wear out.
+
+  <Ar>المفاتيح الحدّية <strong>أرخص</strong> من مفاتيح التقارب أو المفاتيح الكهروضوئية، وتتوفر <strong>بمجموعة واسعة من الأحجام</strong>. والثمن هو أنها تحتاج إلى تلامس فعلي، وفيها أجزاء متحركة تبلى مع الوقت.</Ar>
 </Callout>
 
 ## Proximity switches
 
+<Ar>مفاتيح التقارب</Ar>
+
 Proximity switches detect an object **without touching it**. There are three operating principles:
 
-| Type | Principle | Detects | Typical range |
+<Ar>تكتشف مفاتيح التقارب (proximity switches) الجسم **دون أن تلمسه**. وهناك ثلاثة مبادئ للعمل:</Ar>
+
+| Type <Ar>النوع</Ar> | Principle <Ar>المبدأ</Ar> | Detects <Ar>يكتشف</Ar> | Typical range <Ar>المدى النموذجي</Ar> |
 |---|---|---|---|
-| **Inductive** | Change in magnetic **inductance** | **Ferrous metal** only | ≈ 2–15 mm |
-| **Capacitive** | Change in **capacitance** | Metal **and non-metal** (plastic, wood, liquids, grain) | ≈ 4–60 mm |
-| **Magnetic** | Change in magnetic flux | Magnets | Depends on the magnet |
+| **Inductive** <Ar>**حثّي (Inductive)**</Ar> | Change in magnetic **inductance** <Ar>تغيّر **المحاثّة (inductance)** المغناطيسية</Ar> | **Ferrous metal** only <Ar>**المعادن الحديدية** فقط</Ar> | ≈ 2–15 mm <Ar>≈ 2–15 مم</Ar> |
+| **Capacitive** <Ar>**سعوي (Capacitive)**</Ar> | Change in **capacitance** <Ar>تغيّر **السعة (capacitance)**</Ar> | Metal **and non-metal** (plastic, wood, liquids, grain) <Ar>المعادن **وغير المعادن** (البلاستيك، والخشب، والسوائل، والحبوب)</Ar> | ≈ 4–60 mm <Ar>≈ 4–60 مم</Ar> |
+| **Magnetic** <Ar>**مغناطيسي**</Ar> | Change in magnetic flux <Ar>تغيّر التدفق المغناطيسي (magnetic flux)</Ar> | Magnets <Ar>المغناطيسات</Ar> | Depends on the magnet <Ar>يعتمد على المغناطيس</Ar> |
 
 In general, proximity switches detect objects at about **0.5–20 mm**. The inductive and capacitive types are the most widely used in industry.
 
+<Ar>وبوجه عام، تكتشف مفاتيح التقارب الأجسام على مسافة **0.5–20 مم** تقريبًا. والنوعان الحثّي والسعوي هما الأكثر استخدامًا في الصناعة.</Ar>
+
 ### Inductive proximity switch
+
+<Ar>مفتاح التقارب الحثّي</Ar>
 
 A coil is wound around a ferrous core. When a ferrous object comes near one end of the core, the effective amount of metal in the magnetic circuit changes, and so the coil's **inductance** changes. A resonant (LC oscillator) circuit detects the change. A Schmitt trigger and an amplifier then switch a transistor output, giving an **on/off** device.
 
-<SlideFigure page={22} caption="Inside an inductive proximity sensor: LC oscillator, Schmitt trigger and output amplifier." />
+<Ar>يُلَفّ ملفٌّ حول قلب حديدي. وعندما يقترب جسم حديدي من أحد طرفي القلب، تتغير الكمية الفعالة من المعدن في الدائرة المغناطيسية، ومن ثَمّ تتغير **محاثّة (inductance)** الملف. وتكتشف دائرةٌ رنينية (مذبذب LC) هذا التغيّر. ثم يقوم قادح شميت (Schmitt trigger) ومضخِّمٌ بتبديل خرج الترانزستور، فنحصل على جهاز **تشغيل/إيقاف (on/off)**.</Ar>
+
+<SlideFigure page={22} caption="Inside an inductive proximity sensor: LC oscillator, Schmitt trigger and output amplifier." captionAr="داخل مستشعر التقارب الحثّي: مذبذب LC، وقادح شميت، ومضخِّم الخرج." />
 
 ### Capacitive proximity switch
 
+<Ar>مفتاح التقارب السعوي</Ar>
+
 The sensor face is **one plate of a capacitor**. For a **metal** target, the object is the other plate: the closer it is, the smaller the gap and the higher the capacitance. For a **non-metal** target, the plates are the sensor and earth, and the object acts as the **dielectric**, changing the capacitance as it enters the field. Either way the change triggers an electronic switch.
+
+<Ar>وجه المستشعر هو **أحد لوحَي مكثِّف (capacitor)**. فإذا كان الهدف **معدنيًا**، يكون الجسم هو اللوح الآخر: فكلما اقترب صغرت الفجوة وزادت السعة (capacitance). أما إذا كان الهدف **غير معدني**، فاللوحان هما المستشعر والأرض، ويعمل الجسم **عازلًا (dielectric)** يغيّر السعة عند دخوله المجال. وفي كلتا الحالتين يؤدي التغيّر إلى تشغيل مفتاح إلكتروني.</Ar>
 
 $$
 C = \varepsilon \frac{A}{d}
 $$
 
-<SlideFigure page={19} caption="Inside a capacitive proximity sensor: electrodes, RC oscillator, Schmitt trigger and amplifier." />
+<SlideFigure page={19} caption="Inside a capacitive proximity sensor: electrodes, RC oscillator, Schmitt trigger and amplifier." captionAr="داخل مستشعر التقارب السعوي: الأقطاب الكهربائية، ومذبذب RC، وقادح شميت، والمضخِّم." />
 
 ### Form and wiring
 
+<Ar>الشكل والتوصيل</Ar>
+
 Proximity switches come in **cylindrical**, **rectangular** and **slot** shapes. They can run on **AC or DC** and are wired in **two-wire** (in series with the load) or **three-wire** (separate supply) connections. The load may be a relay coil, a control circuit or a **PLC digital input**.
 
-<Callout type="example" title="Advantages over limit switches">
+<Ar>تأتي مفاتيح التقارب بأشكال **أسطوانية** و**مستطيلة** و**مشقوقة (slot)**. ويمكن تشغيلها بالتيار **المتردد أو المستمر (AC أو DC)**، وتُوصَّل بطريقة **السلكين** (على التوالي مع الحِمل) أو **الأسلاك الثلاثة** (بتغذية منفصلة). وقد يكون الحِمل ملف مرحِّل (relay)، أو دائرة تحكم، أو **دخلًا رقميًا في PLC**.</Ar>
+
+<Callout type="example" title="Advantages over limit switches" titleAr="مزاياها مقارنةً بالمفاتيح الحدّية">
 
 - Long electrical life, because nothing moves.
+  <Ar>عمر كهربائي طويل، لعدم وجود أجزاء متحركة.</Ar>
 - Durable under vibration, fast motion and toxic environments.
+  <Ar>تتحمّل الاهتزاز والحركة السريعة والبيئات السامة.</Ar>
 - Work on DC or AC.
+  <Ar>تعمل بالتيار المستمر (DC) أو المتردد (AC).</Ar>
 - Respond well to fast-approaching objects and high switching frequencies.
+  <Ar>تستجيب جيدًا للأجسام التي تقترب بسرعة ولترددات التبديل العالية.</Ar>
 
 </Callout>
 
-<SlideFigure page={27} caption="Typical applications: position control, counting pulses from a rotating shaft, counting objects, detecting faulty parts and controlling fill levels." />
+<SlideFigure page={27} caption="Typical applications: position control, counting pulses from a rotating shaft, counting objects, detecting faulty parts and controlling fill levels." captionAr="تطبيقات نموذجية: التحكم في الموضع، وعدّ النبضات من عمود دوّار، وعدّ الأجسام، واكتشاف القطع المعيبة، والتحكم في مستويات التعبئة." />
 
 ## Photoelectric switches
 
+<Ar>المفاتيح الكهروضوئية</Ar>
+
 **Photoelectric switches** (photocells) are solid-state sensors that detect objects at **long range**, from under 10 cm up to about **15 m**. An emitter sends a visible or infrared light beam to a receiver, and the object either **interrupts** or **reflects** the beam.
 
+<Ar>**المفاتيح الكهروضوئية (Photoelectric switches)** (الخلايا الضوئية) مستشعرات من الحالة الصلبة (solid-state) تكتشف الأجسام على **مدى بعيد**، من أقل من 10 سم حتى نحو **15 م**. يرسل المُرسِل (emitter) شعاعًا ضوئيًا مرئيًا أو تحت أحمر إلى المُستقبِل (receiver)، فإما أن **يقطع** الجسمُ الشعاعَ أو **يعكسه**.</Ar>
+
 <Grid cols={3}>
-  <Card title="Through-beam" tag="longest range">
+  <Card title="Through-beam" titleAr="الشعاع المباشر (Through-beam)" tag="longest range">
     The emitter and receiver are <strong>separate units facing each other</strong>; the object <strong>breaks the beam</strong>. This gives the longest sensing distance but needs careful alignment and wiring at both ends. Break-beam sensors are found in garage doors and lift doors.
+
+    <Ar>المُرسِل والمُستقبِل <strong>وحدتان منفصلتان متقابلتان</strong>، والجسم <strong>يقطع الشعاع</strong>. ويعطي ذلك أطول مسافة استشعار، لكنه يحتاج إلى محاذاة دقيقة وتوصيل أسلاك عند الطرفين. وتوجد مستشعرات قطع الشعاع (break-beam) في أبواب المرائب وأبواب المصاعد.</Ar>
   </Card>
-  <Card title="Retro-reflective" tag="one housing">
+  <Card title="Retro-reflective" titleAr="العاكس الارتدادي (Retro-reflective)" tag="one housing">
     The emitter and receiver share <strong>one housing</strong>; a <strong>reflector</strong> (corner-cube prisms or a mirror) sends the beam back. The object breaks the returning beam.
+
+    <Ar>يشترك المُرسِل والمُستقبِل في <strong>غلاف واحد</strong>، ويعيد <strong>عاكسٌ (reflector)</strong> (منشورات ركنية مكعبة أو مرآة) الشعاعَ. ويقطع الجسم الشعاع العائد.</Ar>
   </Card>
-  <Card title="Diffuse-reflective" tag="direct reflection">
+  <Card title="Diffuse-reflective" titleAr="الانعكاس المنتشر (Diffuse-reflective)" tag="direct reflection">
     One housing, no reflector: the beam normally <strong>does not return</strong>. When an object enters, its surface <strong>scatters</strong> some light back to the receiver.
+
+    <Ar>غلاف واحد بلا عاكس: الشعاع في الحالة العادية <strong>لا يعود</strong>. وعندما يدخل جسمٌ، <strong>يبعثر</strong> سطحه بعض الضوء عائدًا إلى المُستقبِل.</Ar>
   </Card>
 </Grid>
 
-<SlideFigure page={30} caption="A through-beam photoelectric switch: separate emitter and receiver." />
+<SlideFigure page={30} caption="A through-beam photoelectric switch: separate emitter and receiver." captionAr="مفتاح كهروضوئي بالشعاع المباشر: مُرسِل ومُستقبِل منفصلان." />
 
-<SlideFigure page={36} caption="A diffuse-reflective switch: the object itself reflects the light." />
+<SlideFigure page={36} caption="A diffuse-reflective switch: the object itself reflects the light." captionAr="مفتاح بالانعكاس المنتشر: الجسم نفسه يعكس الضوء." />
 
 ### Light-on vs. dark-on
 
-| Mode | Output is energised when… |
+<Ar>التشغيل بالضوء مقابل التشغيل بالظلام</Ar>
+
+| Mode <Ar>الوضع</Ar> | Output is energised when… <Ar>يُنشَّط الخرج عندما…</Ar> |
 |---|---|
-| **Light-on** | Light **reaches** the receiver |
-| **Dark-on** | The beam is **interrupted**, so the receiver is "in the dark" |
+| **Light-on** <Ar>**التشغيل بالضوء (Light-on)**</Ar> | Light **reaches** the receiver <Ar>**يصل** الضوء إلى المُستقبِل</Ar> |
+| **Dark-on** <Ar>**التشغيل بالظلام (Dark-on)**</Ar> | The beam is **interrupted**, so the receiver is "in the dark" <Ar>**يُقطَع** الشعاع، فيصبح المُستقبِل «في الظلام»</Ar> |
 
 For a through-beam or retro-reflective switch, "object present" means **dark**. For a diffuse switch, "object present" means **light**, because the object reflects the beam back.
 
-<SlideFigure page={38} caption="Light-on and dark-on operation for each photoelectric type." />
+<Ar>في مفتاح الشعاع المباشر (through-beam) أو العاكس الارتدادي (retro-reflective)، تعني حالة «الجسم موجود» **الظلام**. أما في مفتاح الانعكاس المنتشر (diffuse) فتعني «الجسم موجود» **الضوء**، لأن الجسم يعكس الشعاع عائدًا.</Ar>
+
+<SlideFigure page={38} caption="Light-on and dark-on operation for each photoelectric type." captionAr="التشغيل بالضوء والتشغيل بالظلام لكل نوع من الأنواع الكهروضوئية." />
 
 ### Reflective opto-sensors
 
+<Ar>المستشعرات الضوئية العاكسة</Ar>
+
 A small **LED emitter** and a **photodiode or phototransistor** detector sit side by side. Uses include object presence and distance detection, **line following** (markers or tape), wall and boundary tracking, and **shaft encoding**. Their readings depend on **surface colour, texture and ambient light**, so they need **calibration**.
+
+<Ar>يوضع **مُرسِل LED** صغير وكاشف من نوع **الثنائي الضوئي (photodiode) أو الترانزستور الضوئي (phototransistor)** جنبًا إلى جنب. ومن استخداماتها اكتشاف وجود الأجسام ومسافتها، و**تتبّع الخطوط (line following)** (العلامات أو الشريط اللاصق)، وتتبّع الجدران والحدود، و**ترميز دوران العمود (shaft encoding)**. وتعتمد قراءاتها على **لون السطح وملمسه والضوء المحيط**، لذا تحتاج إلى **معايرة (calibration)**.</Ar>
 
 ## Light sensors (LDR)
 
+<Ar>المستشعرات الضوئية (LDR)</Ar>
+
 A **light-dependent resistor** (photocell) is a variable resistor: **brighter light gives lower resistance; darker gives higher resistance**. Shielding, position and direction of the photocell matter a lot. Put in a voltage divider, it gives an analog voltage the controller can read.
+
+<Ar>**المقاومة المعتمدة على الضوء (light-dependent resistor)** (الخلية الضوئية) مقاومة متغيرة: **الضوء الأشد يعطي مقاومة أقل، والظلام يعطي مقاومة أعلى**. ولتدريع الخلية الضوئية وموضعها واتجاهها أهمية كبيرة. وعند وضعها في مقسِّم جهد (voltage divider)، تعطي جهدًا تناظريًا يستطيع المتحكِّم قراءته.</Ar>
 
 ## Potentiometers
 
+<Ar>مقاييس الجهد</Ar>
+
 A **potentiometer** ("pot") is a resistor with a sliding wiper, like a stereo's volume knob. Fixed across a supply voltage, the wiper voltage is **proportional to the shaft angle** (rotary pot) or slider position (linear pot). This makes it a cheap absolute position sensor, and it is what sits inside a hobby **servo motor**.
+
+<Ar>**مقياس الجهد (potentiometer)** («pot») مقاومة ذات ماسحة منزلقة (wiper)، مثل مقبض التحكم في الصوت في جهاز الاستريو. وعند توصيله بين طرفَي جهد تغذية، يكون جهد الماسحة **متناسبًا مع زاوية العمود** (في مقياس الجهد الدوّار) أو مع موضع المنزلق (في مقياس الجهد الخطي). وهذا يجعله مستشعر موضع مطلق رخيصًا، وهو ما يوجد داخل **محرك السيرفو (servo motor)** المستخدم في الهوايات.</Ar>
 
 $$
 V_{\text{wiper}} = V_{\text{supply}} \cdot \frac{\theta}{\theta_{\max}}
@@ -193,50 +272,72 @@ void loop() {
 
 ## Application: the GuideCane
 
+<Ar>تطبيق: العصا المرشدة GuideCane</Ar>
+
 The **GuideCane** is a robotic guide for blind and visually impaired people. A wheeled base at the end of a cane carries a ring of ultrasonic sensors. When it detects an obstacle it steers itself around it, and the user feels the change of direction through the handle and follows. It is a good example of sensing, deciding and acting combined in a single assistive device.
+
+<Ar>**GuideCane** مرشد روبوتي للمكفوفين وضعاف البصر. تحمل قاعدةٌ ذات عجلات في طرف العصا حلقةً من المستشعرات فوق الصوتية (ultrasonic). وعندما تكتشف عائقًا توجّه نفسها للالتفاف حوله، فيشعر المستخدم بتغيّر الاتجاه عبر المقبض ويتبعه. وهو مثال جيد على اجتماع الاستشعار واتخاذ القرار والتصرّف في جهاز مساعد واحد.</Ar>
 
 <Takeaways>
 
 - A sensor turns a physical input into a usable (usually electrical) output; processing ranges from one bit to computer vision.
+  <Ar>يحوّل المستشعر (sensor) الدخل الفيزيائي إلى خرج قابل للاستخدام (كهربائي عادةً)؛ وتتدرج المعالجة من بِت واحد إلى الرؤية الحاسوبية.</Ar>
 - **Limit switches** are cheap and contact-based; **proximity switches** are contactless and durable. **Inductive** ones detect ferrous metal only (2–15 mm); **capacitive** ones detect anything (4–60 mm).
+  <Ar>**المفاتيح الحدّية (limit switches)** رخيصة وتعتمد على التلامس، و**مفاتيح التقارب (proximity switches)** لا تحتاج إلى تلامس ومتينة. فالمفاتيح **الحثّية** لا تكتشف إلا المعادن الحديدية (2–15 مم)، والمفاتيح **السعوية** تكتشف أي شيء (4–60 مم).</Ar>
 - **Photoelectric** switches work at long range in three variants: **through-beam**, **retro-reflective** and **diffuse**. Each can run in **light-on** or **dark-on** mode.
+  <Ar>تعمل المفاتيح **الكهروضوئية (photoelectric)** على مدى بعيد بثلاثة أنواع: **الشعاع المباشر** و**العاكس الارتدادي** و**الانعكاس المنتشر**. ويمكن تشغيل كلٍّ منها في وضع **التشغيل بالضوء (light-on)** أو **التشغيل بالظلام (dark-on)**.</Ar>
 - **LDRs** and **potentiometers** change resistance; read them through a **voltage divider**.
+  <Ar>تغيّر **المقاومات الضوئية (LDRs)** و**مقاييس الجهد (potentiometers)** مقاومتها؛ اقرأها عبر **مقسِّم جهد (voltage divider)**.</Ar>
 
 </Takeaways>
 
 ## Practice
 
-<Exercise title="Choose the sensor" level="easy">
+<Ar>تدريب</Ar>
+
+<Exercise title="Choose the sensor" titleAr="اختر المستشعر" level="easy">
 
 Pick a sensor for each task: (a) detect plastic bottles on a conveyor 30 mm away, (b) detect steel bolts 5 mm from the sensor in an oily, vibrating machine, (c) detect boxes crossing a 6 m wide loading door.
+
+<Ar>اختر مستشعرًا لكل مهمة: (a) اكتشاف زجاجات بلاستيكية على سير ناقل (conveyor) على بُعد 30 مم، (b) اكتشاف مسامير فولاذية على بُعد 5 مم من المستشعر في آلة مليئة بالزيت وتهتز، (c) اكتشاف صناديق تعبر باب تحميل عرضه 6 م.</Ar>
 
 <Solution>
 
 (a) **Capacitive** proximity switch, because it detects non-metal objects at up to about 60 mm. (b) **Inductive** proximity switch: steel, short range, and robust to oil and vibration. (c) **Through-beam** photoelectric switch, which has the longest range.
 
+<Ar>(a) مفتاح تقارب **سعوي (capacitive)**، لأنه يكتشف الأجسام غير المعدنية حتى نحو 60 مم. (b) مفتاح تقارب **حثّي (inductive)**: فالهدف فولاذ، والمدى قصير، وهو متين أمام الزيت والاهتزاز. (c) مفتاح كهروضوئي **بالشعاع المباشر (through-beam)**، فهو صاحب أطول مدى.</Ar>
+
 </Solution>
 
 </Exercise>
 
-<Exercise title="Voltage divider with an LDR" level="medium">
+<Exercise title="Voltage divider with an LDR" titleAr="مقسِّم الجهد مع مقاومة ضوئية (LDR)" level="medium">
 
 An LDR ($R_2$) is in series with a fixed $R_1 = 10\,\text{k}\Omega$ across 5 V. The LDR is $1\,\text{k}\Omega$ in bright light and $100\,\text{k}\Omega$ in the dark. What output voltage do you read in each case?
+
+<Ar>مقاومة ضوئية LDR ($R_2$) موصولة على التوالي مع مقاومة ثابتة $R_1 = 10\,\text{k}\Omega$ عبر جهد 5 V. تبلغ مقاومة LDR قيمة $1\,\text{k}\Omega$ في الضوء الساطع و $100\,\text{k}\Omega$ في الظلام. ما جهد الخرج الذي تقرؤه في كل حالة؟</Ar>
 
 <Solution>
 
 Bright: $5 \cdot \frac{1}{10 + 1} \approx 0.45$ V. Dark: $5 \cdot \frac{100}{10 + 100} \approx 4.55$ V. The output rises as it gets darker. Swap $R_1$ and the LDR if you want the opposite behaviour.
 
+<Ar>في الضوء الساطع: $5 \cdot \frac{1}{10 + 1} \approx 0.45$ V. وفي الظلام: $5 \cdot \frac{100}{10 + 100} \approx 4.55$ V. يرتفع الخرج كلما ازداد الظلام. بدّل بين $R_1$ و LDR إذا أردت السلوك المعاكس.</Ar>
+
 </Solution>
 
 </Exercise>
 
-<Exercise title="Light-on or dark-on?" level="medium">
+<Exercise title="Light-on or dark-on?" titleAr="بالضوء أم بالظلام؟" level="medium">
 
 A retro-reflective switch should turn a conveyor **off** when a box is present. Which mode drives the "stop" output directly?
+
+<Ar>يجب أن **يُوقف** مفتاحٌ عاكس ارتدادي (retro-reflective) سيرًا ناقلًا عند وجود صندوق. أي وضع يشغّل خرج «التوقف» مباشرةً؟</Ar>
 
 <Solution>
 
 When a box is present it blocks the beam, so the receiver is dark. The stop output should be energised in **dark-on** mode.
+
+<Ar>عند وجود صندوق فإنه يحجب الشعاع، فيصبح المُستقبِل في الظلام. لذا يجب تنشيط خرج التوقف في وضع **التشغيل بالظلام (dark-on)**.</Ar>
 
 </Solution>
 
@@ -246,39 +347,57 @@ When a box is present it blocks the beam, so the receiver is dark. The stop outp
   questions={[
     {
       q: "Which proximity switch can detect a plastic part?",
+      qAr: "أي مفتاح تقارب يستطيع اكتشاف قطعة بلاستيكية؟",
       options: ["Inductive", "Capacitive", "Magnetic", "None of them"],
+      optionsAr: ["الحثّي", "السعوي", "المغناطيسي", "لا شيء منها"],
       answer: 1,
-      explain: "A non-metal object changes the dielectric between the plates, so a capacitive switch detects it."
+      explain: "A non-metal object changes the dielectric between the plates, so a capacitive switch detects it.",
+      explainAr: "الجسم غير المعدني يغيّر العازل (dielectric) بين اللوحين، فيكتشفه المفتاح السعوي."
     },
     {
       q: "The typical sensing range of an inductive proximity switch is about…",
+      qAr: "يبلغ مدى الاستشعار النموذجي لمفتاح التقارب الحثّي نحو…",
       options: ["2–15 mm", "4–60 mm", "10 cm–15 m", "1–5 m"],
+      optionsAr: ["2–15 mm", "4–60 mm", "10 cm–15 m", "1–5 m"],
       answer: 0,
-      explain: "Inductive switches are short-range devices for ferrous targets."
+      explain: "Inductive switches are short-range devices for ferrous targets.",
+      explainAr: "المفاتيح الحثّية أجهزة قصيرة المدى للأهداف الحديدية."
     },
     {
       q: "Which photoelectric type has the emitter and receiver in separate housings facing each other?",
+      qAr: "في أي نوع كهروضوئي يكون المُرسِل والمُستقبِل في غلافين منفصلين متقابلين؟",
       options: ["Retro-reflective", "Diffuse-reflective", "Through-beam", "Reflective opto-sensor"],
+      optionsAr: ["العاكس الارتدادي", "الانعكاس المنتشر", "الشعاع المباشر", "المستشعر الضوئي العاكس"],
       answer: 2,
-      explain: "Through-beam units face each other and give the longest sensing distance."
+      explain: "Through-beam units face each other and give the longest sensing distance.",
+      explainAr: "وحدتا الشعاع المباشر متقابلتان وتعطيان أطول مسافة استشعار."
     },
     {
       q: "In dark-on operation the output is energised when…",
+      qAr: "في التشغيل بالظلام (dark-on) يُنشَّط الخرج عندما…",
       options: ["Light reaches the receiver", "The beam is interrupted", "The emitter is off", "Ambient light is low"],
+      optionsAr: ["يصل الضوء إلى المُستقبِل", "يُقطَع الشعاع", "يكون المُرسِل مطفأً", "يكون الضوء المحيط منخفضًا"],
       answer: 1,
-      explain: "Dark-on means the switch acts when the receiver is in the dark, i.e. the beam is broken."
+      explain: "Dark-on means the switch acts when the receiver is in the dark, i.e. the beam is broken.",
+      explainAr: "التشغيل بالظلام يعني أن المفتاح يعمل عندما يكون المُستقبِل في الظلام، أي عندما يُقطَع الشعاع."
     },
     {
       q: "An LDR's resistance in bright light is…",
+      qAr: "مقاومة LDR في الضوء الساطع…",
       options: ["High", "Low", "Zero", "Unchanged"],
+      optionsAr: ["عالية", "منخفضة", "صفر", "لا تتغير"],
       answer: 1,
-      explain: "More light means more charge carriers, so resistance drops."
+      explain: "More light means more charge carriers, so resistance drops.",
+      explainAr: "مزيد من الضوء يعني مزيدًا من حاملات الشحنة، فتنخفض المقاومة."
     },
     {
       q: "Which is NOT an advantage of proximity switches over limit switches?",
+      qAr: "أيٌّ مما يلي ليس من مزايا مفاتيح التقارب مقارنةً بالمفاتيح الحدّية؟",
       options: ["No moving parts", "Long electrical life", "Lower purchase price", "Tolerance of vibration"],
+      optionsAr: ["عدم وجود أجزاء متحركة", "عمر كهربائي طويل", "سعر شراء أقل", "تحمّل الاهتزاز"],
       answer: 2,
-      explain: "Limit switches are the cheaper option; proximity switches win on durability."
+      explain: "Limit switches are the cheaper option; proximity switches win on durability.",
+      explainAr: "المفاتيح الحدّية هي الخيار الأرخص، بينما تتفوق مفاتيح التقارب في المتانة."
     }
   ]}
 />

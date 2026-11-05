@@ -1,7 +1,9 @@
 ---
 number: 3
 title: Using Single-Row Functions to Customize Output
+titleAr: "استخدام دوال الصف الواحد لتخصيص المخرجات"
 summary: Functions that run once per row. Covers case-conversion and character-manipulation functions, ROUND, TRUNC and MOD for numbers, how Oracle stores dates and the RR format, date arithmetic with SYSDATE, and the date functions MONTHS_BETWEEN, ADD_MONTHS, NEXT_DAY, LAST_DAY, ROUND and TRUNC.
+summaryAr: "دوال تعمل مرة واحدة لكل صف: دوال تحويل حالة الأحرف ودوال معالجة الأحرف، والدوال ROUND و TRUNC و MOD للأرقام، وكيف يخزّن Oracle التواريخ وتنسيق RR، والعمليات الحسابية على التواريخ باستخدام SYSDATE، ودوال التاريخ MONTHS_BETWEEN و ADD_MONTHS و NEXT_DAY و LAST_DAY و ROUND و TRUNC."
 kind: lab
 topics: [Single-row vs multiple-row functions, Case conversion, Character manipulation, ROUND / TRUNC / MOD, DUAL, RR date format, SYSDATE and date arithmetic, Date functions]
 duration: 55 min hands-on
@@ -17,21 +19,32 @@ bookRefs:
 <Objectives>
 
 - Distinguish **single-row** from **multiple-row** (group) functions.
+  <Ar>التمييز بين دوال **الصف الواحد (single-row)** ودوال **الصفوف المتعددة (multiple-row)** (دوال التجميع).</Ar>
 - Use **character** functions: `LOWER`, `UPPER`, `INITCAP`, `CONCAT`, `SUBSTR`, `LENGTH`, `INSTR`, `LPAD`/`RPAD`, `TRIM`, `REPLACE`.
+  <Ar>استخدام الدوال **النصية (character)**: `LOWER`، `UPPER`، `INITCAP`، `CONCAT`، `SUBSTR`، `LENGTH`، `INSTR`، `LPAD`/`RPAD`، `TRIM`، `REPLACE`.</Ar>
 - Use **number** functions `ROUND`, `TRUNC` and `MOD`, and the `DUAL` table.
+  <Ar>استخدام الدوال **العددية (number)** `ROUND` و`TRUNC` و`MOD`، والجدول `DUAL`.</Ar>
 - Explain Oracle's **date storage** and the **RR** format, and do **date arithmetic** with `SYSDATE`.
+  <Ar>شرح طريقة **تخزين التواريخ** في Oracle وتنسيق **RR**، وإجراء **العمليات الحسابية على التواريخ (date arithmetic)** باستخدام `SYSDATE`.</Ar>
 - Use the **date functions** `MONTHS_BETWEEN`, `ADD_MONTHS`, `NEXT_DAY`, `LAST_DAY`, `ROUND` and `TRUNC`.
+  <Ar>استخدام **دوال التاريخ (date functions)** `MONTHS_BETWEEN` و`ADD_MONTHS` و`NEXT_DAY` و`LAST_DAY` و`ROUND` و`TRUNC`.</Ar>
 
 </Objectives>
 
 ## Two kinds of SQL functions
 
+<Ar>نوعان من دوال SQL</Ar>
+
 <Grid cols={2}>
-  <Card title="Single-row functions" tag="this lab">
+  <Card title="Single-row functions" titleAr="دوال الصف الواحد" tag="this lab">
     Return <strong>one result per row</strong>. They manipulate data items, take one or more arguments (columns or expressions), can change the data type, and can be <strong>nested</strong>. They can be used in SELECT, WHERE and ORDER BY.
+
+    <Ar>تُعيد <strong>نتيجة واحدة لكل صف</strong>. وهي تعالج عناصر البيانات، وتأخذ وسيطًا (argument) واحدًا أو أكثر (أعمدة أو تعبيرات)، ويمكن أن تُغيّر نوع البيانات، ويمكن أن تكون <strong>متداخلة (nested)</strong>. ويمكن استخدامها في <code>SELECT</code> و<code>WHERE</code> و<code>ORDER BY</code>.</Ar>
   </Card>
-  <Card title="Multiple-row (group) functions" tag="Section 5">
+  <Card title="Multiple-row (group) functions" titleAr="دوال الصفوف المتعددة (دوال التجميع)" tag="Section 5">
     Return <strong>one result per set of rows</strong>, for example <code>AVG</code>, <code>COUNT</code>, <code>MAX</code>.
+
+    <Ar>تُعيد <strong>نتيجة واحدة لكل مجموعة من الصفوف</strong>، مثل <code>AVG</code> و<code>COUNT</code> و<code>MAX</code>.</Ar>
   </Card>
 </Grid>
 
@@ -41,17 +54,25 @@ function_name [(arg1, arg2, ...)]
 
 Single-row functions come in several families: **character**, **number**, **date**, plus conversion and general functions.
 
+<Ar>تنقسم دوال الصف الواحد إلى عدة عائلات: الدوال **النصية (character)** و**العددية (number)** و**دوال التاريخ (date)**، إضافةً إلى دوال التحويل (conversion) والدوال العامة (general).</Ar>
+
 ## Character functions
+
+<Ar>الدوال النصية</Ar>
 
 ### Case conversion
 
-| Function | Result |
+<Ar>تحويل حالة الأحرف</Ar>
+
+| Function <Ar>الدالة</Ar> | Result <Ar>النتيجة</Ar> |
 |---|---|
 | `LOWER('SQL Course')` | `sql course` |
 | `UPPER('SQL Course')` | `SQL COURSE` |
 | `INITCAP('SQL Course')` | `Sql Course` |
 
 Because string comparisons are case-sensitive, convert the column before comparing:
+
+<Ar>بما أن مقارنات النصوص حساسة لحالة الأحرف، حوِّل العمود قبل المقارنة:</Ar>
 
 ```sql
 SELECT employee_id, last_name, department_id
@@ -65,16 +86,18 @@ WHERE  LOWER(last_name) = 'higgins';     -- 205 Higgins 110
 
 ### Character manipulation
 
-| Function | Result | What it does |
+<Ar>معالجة الأحرف</Ar>
+
+| Function <Ar>الدالة</Ar> | Result <Ar>النتيجة</Ar> | What it does <Ar>ما تفعله</Ar> |
 |---|---|---|
-| `CONCAT('Hello', 'World')` | `HelloWorld` | Joins exactly **two** strings |
-| `SUBSTR('HelloWorld', 1, 5)` | `Hello` | Substring from position 1, length 5 |
-| `LENGTH('HelloWorld')` | `10` | Number of characters |
-| `INSTR('HelloWorld', 'W')` | `6` | Position of the first match (0 if none) |
-| `LPAD(salary, 10, '*')` | `*****24000` | Left-pad to width 10 |
-| `RPAD(salary, 10, '*')` | `24000*****` | Right-pad to width 10 |
-| `REPLACE('JACK and JUE', 'J', 'BL')` | `BLACK and BLUE` | Replace every occurrence |
-| `TRIM('H' FROM 'HelloWorld')` | `elloWorld` | Remove leading and trailing characters |
+| `CONCAT('Hello', 'World')` | `HelloWorld` | Joins exactly **two** strings <Ar>تدمج سلسلتين نصيتين **اثنتين** فقط</Ar> |
+| `SUBSTR('HelloWorld', 1, 5)` | `Hello` | Substring from position 1, length 5 <Ar>جزء من النص (substring) يبدأ من الموضع 1 بطول 5</Ar> |
+| `LENGTH('HelloWorld')` | `10` | Number of characters <Ar>عدد الأحرف</Ar> |
+| `INSTR('HelloWorld', 'W')` | `6` | Position of the first match (0 if none) <Ar>موضع أول تطابق (0 إن لم يوجد)</Ar> |
+| `LPAD(salary, 10, '*')` | `*****24000` | Left-pad to width 10 <Ar>الحشو من اليسار (left-pad) حتى عرض 10</Ar> |
+| `RPAD(salary, 10, '*')` | `24000*****` | Right-pad to width 10 <Ar>الحشو من اليمين (right-pad) حتى عرض 10</Ar> |
+| `REPLACE('JACK and JUE', 'J', 'BL')` | `BLACK and BLUE` | Replace every occurrence <Ar>استبدال كل تكرار</Ar> |
+| `TRIM('H' FROM 'HelloWorld')` | `elloWorld` | Remove leading and trailing characters <Ar>إزالة الأحرف من البداية والنهاية</Ar> |
 
 ```sql
 SELECT employee_id, CONCAT(first_name, last_name) NAME, job_id,
@@ -83,7 +106,8 @@ FROM   employees
 WHERE  SUBSTR(job_id, 4) = 'REP';        -- from the 4th character: SA_REP, MK_REP
 ```
 
-| EMPLOYEE_ID | NAME | JOB_ID | LENGTH(LAST_NAME) | Contains 'a'? |
+{/* data-table */}
+| EMPLOYEE_ID <Ar>رقم الموظف</Ar> | NAME <Ar>الاسم</Ar> | JOB_ID <Ar>رمز الوظيفة</Ar> | LENGTH(LAST_NAME) <Ar>طول الاسم الأخير</Ar> | Contains 'a'? <Ar>يحتوي على «a»؟</Ar> |
 |---|---|---|---|---|
 | 174 | EllenAbel | SA_REP | 4 | 0 |
 | 176 | JonathonTaylor | SA_REP | 6 | 2 |
@@ -92,15 +116,21 @@ WHERE  SUBSTR(job_id, 4) = 'REP';        -- from the 4th character: SA_REP, MK_R
 
 `INSTR('Abel', 'a')` is **0** because the search is case-sensitive.
 
+<Ar>نتيجة `INSTR('Abel', 'a')` هي **0** لأن البحث حساس لحالة الأحرف.</Ar>
+
 ## Number functions
 
-| Function | Result | Meaning |
+<Ar>الدوال العددية</Ar>
+
+| Function <Ar>الدالة</Ar> | Result <Ar>النتيجة</Ar> | Meaning <Ar>المعنى</Ar> |
 |---|---|---|
-| `ROUND(45.926, 2)` | `45.93` | Round to 2 decimal places |
-| `TRUNC(45.926, 2)` | `45.92` | Cut off after 2 decimal places |
-| `MOD(1600, 300)` | `100` | Remainder of 1600 / 300 |
+| `ROUND(45.926, 2)` | `45.93` | Round to 2 decimal places <Ar>التقريب إلى منزلتين عشريتين</Ar> |
+| `TRUNC(45.926, 2)` | `45.92` | Cut off after 2 decimal places <Ar>الاقتطاع بعد منزلتين عشريتين</Ar> |
+| `MOD(1600, 300)` | `100` | Remainder of 1600 / 300 <Ar>باقي قسمة `1600 / 300`</Ar> |
 
 The second argument can be **0** (the default for TRUNC) or **negative**, which rounds to the left of the decimal point:
+
+<Ar>يمكن أن يكون الوسيط (argument) الثاني **0** (وهو الافتراضي في `TRUNC`) أو **سالبًا**، وعندها يكون التقريب إلى يسار العلامة العشرية:</Ar>
 
 ```sql
 SELECT ROUND(45.923, 2), ROUND(45.923, 0), ROUND(45.923, -1)
@@ -110,8 +140,10 @@ SELECT TRUNC(45.923, 2), TRUNC(45.923), TRUNC(45.923, -1)
 FROM   DUAL;                        -- 45.92   45   40
 ```
 
-<Definition term="DUAL">
+<Definition term="DUAL" termAr="الجدول DUAL">
   A one-row, one-column dummy table owned by SYS. Use it to evaluate functions and expressions that don't need a real table.
+
+  <Ar>جدول وهمي (dummy table) من صف واحد وعمود واحد يملكه المستخدم SYS. استخدمه لتقييم الدوال والتعبيرات التي لا تحتاج إلى جدول حقيقي.</Ar>
 </Definition>
 
 ```sql
@@ -123,13 +155,22 @@ WHERE  job_id = 'SA_REP';
 
 ## Working with dates
 
+<Ar>التعامل مع التواريخ</Ar>
+
 Oracle stores dates in an internal **numeric** format holding century, year, month, day, hours, minutes and seconds. The default **display** format is `DD-MON-RR`, e.g. `17-JUN-03`.
+
+<Ar>يخزّن Oracle التواريخ بتنسيق داخلي **رقمي** يحمل القرن والسنة والشهر واليوم والساعات والدقائق والثواني. وتنسيق **العرض** الافتراضي هو `DD-MON-RR`، مثل `17-JUN-03`.</Ar>
 
 ### The RR date format
 
+<Ar>تنسيق التاريخ RR</Ar>
+
 With a two-digit year, **RR** chooses the century according to the current year. Unlike **YY**, it doesn't simply use the current century.
 
-| Current year | Two-digit year given | RR result | YY result |
+<Ar>عند إعطاء سنة من رقمين، يختار التنسيق **RR** القرن بناءً على السنة الحالية. وعلى عكس **YY**، لا يكتفي باستخدام القرن الحالي.</Ar>
+
+{/* data-table */}
+| Current year <Ar>السنة الحالية</Ar> | Two-digit year given <Ar>السنة المُعطاة برقمين</Ar> | RR result <Ar>نتيجة RR</Ar> | YY result <Ar>نتيجة YY</Ar> |
 |---|---|---|---|
 | 1995 | 27-OCT-**95** | 1995 | 1995 |
 | 1995 | 27-OCT-**17** | **2017** | 1917 |
@@ -138,16 +179,22 @@ With a two-digit year, **RR** chooses the century according to the current year.
 
 **The rule:** if the given year is 0–49 and the current year's last two digits are 0–49, use the **current** century. A given 50–99 in a current 0–49 year means the **previous** century. A given 0–49 in a current 50–99 year means the **next** century.
 
+<Ar>**القاعدة:** إذا كانت السنة المُعطاة بين 0 و 49 وكان آخر رقمين من السنة الحالية بين 0 و 49، يُستخدم القرن **الحالي**. وإذا كانت السنة المُعطاة بين 50 و 99 والسنة الحالية بين 0 و 49، فالمقصود القرن **السابق**. وإذا كانت السنة المُعطاة بين 0 و 49 والسنة الحالية بين 50 و 99، فالمقصود القرن **التالي**.</Ar>
+
 ### SYSDATE and date arithmetic
+
+<Ar>SYSDATE والعمليات الحسابية على التواريخ</Ar>
 
 `SYSDATE` returns the current database date and time: `SELECT SYSDATE FROM dual;`
 
-| Operation | Result |
+<Ar>تُعيد `SYSDATE` التاريخ والوقت الحاليين لقاعدة البيانات: `SELECT SYSDATE FROM dual;`</Ar>
+
+| Operation <Ar>العملية</Ar> | Result <Ar>النتيجة</Ar> |
 |---|---|
-| date + number | Date (adds days) |
-| date − number | Date (subtracts days) |
-| date − date | **Number of days** between them |
-| date + number/24 | Adds hours |
+| date + number <Ar>تاريخ + رقم</Ar> | Date (adds days) <Ar>تاريخ (يضيف أيامًا)</Ar> |
+| date − number <Ar>تاريخ − رقم</Ar> | Date (subtracts days) <Ar>تاريخ (يطرح أيامًا)</Ar> |
+| date − date <Ar>تاريخ − تاريخ</Ar> | **Number of days** between them <Ar>**عدد الأيام** بينهما</Ar> |
+| date + number/24 <Ar>تاريخ + رقم/24</Ar> | Adds hours <Ar>يضيف ساعات</Ar> |
 
 ```sql
 SELECT last_name, (SYSDATE - hire_date)/7 AS weeks
@@ -157,19 +204,23 @@ WHERE  department_id = 90;            -- weeks each executive has been employed
 
 ### Date functions
 
-| Function | Result |
+<Ar>دوال التاريخ</Ar>
+
+| Function <Ar>الدالة</Ar> | Result <Ar>النتيجة</Ar> |
 |---|---|
 | `MONTHS_BETWEEN('01-SEP-95', '11-JAN-94')` | `19.6774194` |
-| `ADD_MONTHS('31-JAN-96', 1)` | `'29-FEB-96'` (1996 is a leap year) |
-| `NEXT_DAY('01-SEP-95', 'FRIDAY')` | `'08-SEP-95'` (the next Friday *after* the date) |
+| `ADD_MONTHS('31-JAN-96', 1)` | `'29-FEB-96'` (1996 is a leap year) <Ar>`'29-FEB-96'` (لأن 1996 سنة كبيسة)</Ar> |
+| `NEXT_DAY('01-SEP-95', 'FRIDAY')` | `'08-SEP-95'` (the next Friday *after* the date) <Ar>`'08-SEP-95'` (يوم الجمعة التالي *بعد* التاريخ)</Ar> |
 | `LAST_DAY('01-FEB-95')` | `'28-FEB-95'` |
 
 `ROUND` and `TRUNC` work on dates too. Assuming `SYSDATE = '25-JUL-03'`:
 
-| Function | Result |
+<Ar>تعمل `ROUND` و`TRUNC` على التواريخ أيضًا. بافتراض أن `SYSDATE = '25-JUL-03'`:</Ar>
+
+| Function <Ar>الدالة</Ar> | Result <Ar>النتيجة</Ar> |
 |---|---|
-| `ROUND(SYSDATE, 'MONTH')` | `01-AUG-03` (the 25th is past mid-month) |
-| `ROUND(SYSDATE, 'YEAR')` | `01-JAN-04` (July is past mid-year) |
+| `ROUND(SYSDATE, 'MONTH')` | `01-AUG-03` (the 25th is past mid-month) <Ar>`01-AUG-03` (يوم 25 يقع بعد منتصف الشهر)</Ar> |
+| `ROUND(SYSDATE, 'YEAR')` | `01-JAN-04` (July is past mid-year) <Ar>`01-JAN-04` (شهر يوليو يقع بعد منتصف السنة)</Ar> |
 | `TRUNC(SYSDATE, 'MONTH')` | `01-JUL-03` |
 | `TRUNC(SYSDATE, 'YEAR')` | `01-JAN-03` |
 
@@ -183,25 +234,36 @@ FROM   employees
 WHERE  MONTHS_BETWEEN(SYSDATE, hire_date) < 150;
 ```
 
-<Callout type="tip" title="Bonus from Lesson 4: NVL">
+<Callout type="tip" title="Bonus from Lesson 4: NVL" titleAr="إضافة من الدرس 4: NVL">
   <code>NVL(expr, replacement)</code> returns <code>replacement</code> when <code>expr</code> is NULL. For example, <code>12*salary*NVL(commission_pct, 0)</code> gives 0 instead of NULL for employees without a commission. You'll need it with group functions in Section 5.
+
+  <Ar>تُعيد <code>NVL(expr, replacement)</code> القيمة <code>replacement</code> عندما تكون <code>expr</code> فارغة (NULL). فمثلًا، يعطي <code>12*salary*NVL(commission_pct, 0)</code> القيمة 0 بدلًا من NULL للموظفين الذين ليس لهم عمولة. ستحتاج إليها مع دوال التجميع في السكشن 5.</Ar>
 </Callout>
 
 <Takeaways>
 
 - Single-row functions return **one value per row**, can be **nested**, and work in SELECT, WHERE and ORDER BY.
+  <Ar>تُعيد دوال الصف الواحد **قيمة واحدة لكل صف**، ويمكن أن تكون **متداخلة (nested)**، وتعمل في `SELECT` و`WHERE` و`ORDER BY`.</Ar>
 - Use `LOWER`/`UPPER` for **case-insensitive** comparisons; `SUBSTR`, `INSTR`, `LENGTH`, `LPAD`, `REPLACE` and `TRIM` reshape text.
+  <Ar>استخدم `LOWER`/`UPPER` لإجراء مقارنات **لا تتأثر بحالة الأحرف (case-insensitive)**؛ وتعيد `SUBSTR` و`INSTR` و`LENGTH` و`LPAD` و`REPLACE` و`TRIM` تشكيل النصوص.</Ar>
 - `ROUND` rounds, `TRUNC` cuts and `MOD` gives remainders; negative precision works left of the decimal point. Test them on `DUAL`.
+  <Ar>تُقرِّب `ROUND`، وتقتطع `TRUNC`، وتعطي `MOD` باقي القسمة؛ والدقة السالبة تعمل على يسار العلامة العشرية. جرّبها على `DUAL`.</Ar>
 - Dates are numbers inside: date ± n gives a date, and date − date gives days. **RR** picks the sensible century.
+  <Ar>التواريخ أرقام في داخلها: التاريخ ± n يعطي تاريخًا، والتاريخ − التاريخ يعطي أيامًا. ويختار التنسيق **RR** القرن المنطقي.</Ar>
 - `MONTHS_BETWEEN`, `ADD_MONTHS`, `NEXT_DAY`, `LAST_DAY`, `ROUND` and `TRUNC` handle calendar logic.
+  <Ar>تتولى `MONTHS_BETWEEN` و`ADD_MONTHS` و`NEXT_DAY` و`LAST_DAY` و`ROUND` و`TRUNC` منطق التقويم.</Ar>
 
 </Takeaways>
 
 ## Practice
 
-<Exercise title="Format names" level="easy">
+<Ar>تدريب</Ar>
+
+<Exercise title="Format names" titleAr="تنسيق الأسماء" level="easy">
 
 Show each employee's last name with only the first letter capitalized, and the length of the name, for employees whose last name starts with **J, A or M**. Sort by last name.
+
+<Ar>اعرض الاسم الأخير لكل موظف بحيث يكون الحرف الأول فقط كبيرًا، مع طول الاسم، للموظفين الذين يبدأ اسمهم الأخير بالحرف **J أو A أو M**. رتّب النتائج حسب الاسم الأخير.</Ar>
 
 <Solution>
 
@@ -217,9 +279,11 @@ ORDER BY last_name;
 
 </Exercise>
 
-<Exercise title="Salary bars" level="medium">
+<Exercise title="Salary bars" titleAr="أشرطة الرواتب" level="medium">
 
 Show each last name with a "bar" of asterisks, one `*` per thousand of salary, highest salary first.
+
+<Ar>اعرض كل اسم أخير مع «شريط» من النجوم، نجمة `*` واحدة لكل ألف من الراتب، مع عرض الراتب الأعلى أولًا.</Ar>
 
 <Solution>
 
@@ -232,17 +296,23 @@ ORDER BY salary DESC;
 
 `TRUNC(salary/1000)` gives the number of thousands. `RPAD` pads a single space with `*` up to that width plus one, so King (24000) gets 24 stars and Vargas (2500) gets 2.
 
+<Ar>تعطي `TRUNC(salary/1000)` عدد الآلاف. وتحشو `RPAD` مسافة واحدة بالرمز `*` حتى يصل العرض إلى ذلك العدد زائد واحد، لذا يحصل King (24000) على 24 نجمة، ويحصل Vargas (2500) على نجمتين.</Ar>
+
 </Solution>
 
 </Exercise>
 
-<Exercise title="Predict the dates" level="easy">
+<Exercise title="Predict the dates" titleAr="توقّع التواريخ" level="easy">
 
 Evaluate: (a) `ADD_MONTHS('31-JAN-95', 1)` (b) `ROUND(TO_DATE('15-JUL-03'), 'MONTH')` (c) `TRUNC(81.769, 1)`
+
+<Ar>احسب قيمة: (أ) `ADD_MONTHS('31-JAN-95', 1)` (ب) `ROUND(TO_DATE('15-JUL-03'), 'MONTH')` (ج) `TRUNC(81.769, 1)`</Ar>
 
 <Solution>
 
 (a) `28-FEB-95`: 1995 isn't a leap year, so the last day of the month is used. (b) `01-JUL-03`: `ROUND(…, 'MONTH')` rounds **up only from the 16th**, so the 15th rounds down. (c) `81.7`.
+
+<Ar>(أ) `28-FEB-95`: لأن 1995 ليست سنة كبيسة، فيُستخدم آخر يوم في الشهر. (ب) `01-JUL-03`: لأن `ROUND(…, 'MONTH')` تُقرِّب **للأعلى بدءًا من يوم 16 فقط**، لذا يُقرَّب يوم 15 للأسفل. (ج) `81.7`.</Ar>
 
 </Solution>
 
@@ -252,45 +322,66 @@ Evaluate: (a) `ADD_MONTHS('31-JAN-95', 1)` (b) `ROUND(TO_DATE('15-JUL-03'), 'MON
   questions={[
     {
       q: "Which statement about single-row functions is FALSE?",
+      qAr: "أي عبارة عن دوال الصف الواحد خاطئة؟",
       options: ["They can be nested", "They act on each row returned", "They return one result per set of rows", "They accept columns or expressions as arguments"],
+      optionsAr: ["يمكن أن تكون متداخلة", "تعمل على كل صف مُعاد", "تُعيد نتيجة واحدة لكل مجموعة من الصفوف", "تقبل الأعمدة أو التعبيرات وسائطَ لها"],
       answer: 2,
-      explain: "One result per set of rows describes group (multiple-row) functions."
+      explain: "One result per set of rows describes group (multiple-row) functions.",
+      explainAr: "«نتيجة واحدة لكل مجموعة من الصفوف» وصفٌ لدوال التجميع (دوال الصفوف المتعددة)."
     },
     {
       q: "What does INSTR('HelloWorld', 'W') return?",
+      qAr: "ماذا تُعيد الدالة INSTR عند البحث عن «W» في «HelloWorld»؟",
       options: ["5", "6", "W", "0"],
+      optionsAr: ["5", "6", "W", "0"],
       answer: 1,
-      explain: "W is the 6th character."
+      explain: "W is the 6th character.",
+      explainAr: "الحرف W هو الحرف السادس."
     },
     {
       q: "What does ROUND(45.923, -1) return?",
+      qAr: "ماذا تُعيد الدالة ROUND للعدد 45.923 عندما يكون الوسيط الثاني سالب 1؟",
       options: ["45.9", "46", "50", "40"],
+      optionsAr: ["45.9", "46", "50", "40"],
       answer: 2,
-      explain: "Negative precision rounds to the tens: 45.923 becomes 50."
+      explain: "Negative precision rounds to the tens: 45.923 becomes 50.",
+      explainAr: "الدقة السالبة تُقرِّب إلى العشرات: 45.923 تصبح 50."
     },
     {
       q: "What does TRUNC(45.923) return?",
+      qAr: "ماذا تُعيد TRUNC(45.923)؟",
       options: ["45", "46", "45.9", "40"],
+      optionsAr: ["45", "46", "45.9", "40"],
       answer: 0,
-      explain: "With no second argument, TRUNC cuts all decimals."
+      explain: "With no second argument, TRUNC cuts all decimals.",
+      explainAr: "دون وسيط ثانٍ، تقتطع TRUNC كل المنازل العشرية."
     },
     {
       q: "Subtracting two dates gives…",
+      qAr: "طرح تاريخين يعطي…",
       options: ["A date", "The number of days between them", "Months between them", "An error"],
+      optionsAr: ["تاريخًا", "عدد الأيام بينهما", "عدد الأشهر بينهما", "خطأ"],
       answer: 1,
-      explain: "date − date = days (possibly fractional)."
+      explain: "date − date = days (possibly fractional).",
+      explainAr: "تاريخ − تاريخ = أيام (وقد تكون كسرية)."
     },
     {
       q: "In the year 2001, how is '27-OCT-95' interpreted with the RR format?",
+      qAr: "في عام 2001، كيف تُفسَّر السنة 95 في التاريخ «27 أكتوبر 95» باستخدام التنسيق RR؟",
       options: ["2095", "1995", "1895", "Error"],
+      optionsAr: ["2095", "1995", "1895", "خطأ"],
       answer: 1,
-      explain: "A 50–99 year given in a 0–49 current year goes to the previous century."
+      explain: "A 50–99 year given in a 0–49 current year goes to the previous century.",
+      explainAr: "السنة المُعطاة بين 50 و 99 في سنة حالية بين 0 و 49 تُنسب إلى القرن السابق."
     },
     {
       q: "What is LAST_DAY('01-FEB-96')?",
+      qAr: "ما قيمة LAST_DAY('01-FEB-96')؟",
       options: ["28-FEB-96", "29-FEB-96", "01-MAR-96", "31-JAN-96"],
+      optionsAr: ["28-FEB-96", "29-FEB-96", "01-MAR-96", "31-JAN-96"],
       answer: 1,
-      explain: "1996 is a leap year, so February has 29 days."
+      explain: "1996 is a leap year, so February has 29 days.",
+      explainAr: "1996 سنة كبيسة، لذا يحتوي فبراير على 29 يومًا."
     }
   ]}
 />

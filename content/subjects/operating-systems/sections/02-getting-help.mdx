@@ -1,7 +1,9 @@
 ---
 number: 2
 title: Getting Help and Finding Files
+titleAr: "الحصول على المساعدة والبحث عن الملفات"
 summary: How to help yourself on Linux. Covers reading and searching man pages, man sections, finding commands by keyword with man -k and apropos, whatis, info pages, the --help option and /usr/share/doc, then locating files with locate and commands with whereis.
+summaryAr: "كيف تساعد نفسك في لينكس (Linux): قراءة صفحات الدليل (man pages) والبحث داخلها، وأقسام الدليل، والبحث عن الأوامر بالكلمة المفتاحية باستخدام man -k و apropos، والأمر whatis، وصفحات info، والخيار --help والمجلد /usr/share/doc، ثم العثور على الملفات باستخدام locate وعلى الأوامر باستخدام whereis."
 kind: practical
 topics: [man pages, Navigating man, Man sections, man -k / apropos, whatis, info, --help, /usr/share/doc, locate, whereis]
 duration: 45 min hands-on
@@ -17,60 +19,79 @@ bookRefs:
 <Objectives>
 
 - Read and **navigate** a man page, and **search** inside it.
+  <Ar>قراءة صفحة الدليل (man page) و**التنقل** فيها و**البحث** داخلها.</Ar>
 - Use **man sections** and pick a specific one.
+  <Ar>استخدام **أقسام الدليل (man sections)** واختيار قسم محدد منها.</Ar>
 - Find commands by **keyword** with `man -k` / `apropos`, and summarize them with `whatis`.
+  <Ar>البحث عن الأوامر **بالكلمة المفتاحية (keyword)** باستخدام `man -k` / `apropos`، وعرض وصف مختصر لها باستخدام `whatis`.</Ar>
 - Use **info** pages, the `--help` option and `/usr/share/doc`.
+  <Ar>استخدام صفحات **info** والخيار `--help` والمجلد `/usr/share/doc`.</Ar>
 - Find files with `locate` and commands with `whereis`.
+  <Ar>العثور على الملفات باستخدام `locate` وعلى الأوامر باستخدام `whereis`.</Ar>
 
 </Objectives>
 
 When you're stuck or forget how a command works, Linux has several built-in help systems besides internet searches. Knowing them makes you much faster.
 
+<Ar>عندما تتعثر أو تنسى طريقة عمل أمر ما، يوفّر لينكس (Linux) عدة أنظمة مساعدة مدمجة إلى جانب البحث على الإنترنت، ومعرفتك بها تجعلك أسرع بكثير.</Ar>
+
 ## Man pages
 
+<Ar>صفحات الدليل (Man pages)</Ar>
+
 `man` shows the **manual page** for a command:
+
+<Ar>يعرض الأمر `man` **صفحة الدليل (manual page)** الخاصة بأمر ما:</Ar>
 
 ```bash title="Terminal"
 man ls
 ```
 
-| Section of a man page | Contents |
+| Section of a man page <Ar>قسم صفحة الدليل</Ar> | Contents <Ar>المحتوى</Ar> |
 |---|---|
-| **NAME** | The command and a one-line description |
-| **SYNOPSIS** | How to call it: `ls [OPTION]... [FILE]...`. Square brackets mean optional, and `...` means repeatable |
-| **DESCRIPTION** | What it does, with every option explained |
-| **AUTHOR / REPORTING BUGS / COPYRIGHT** | Who wrote it and where to report problems |
-| **SEE ALSO** | Related commands and pages |
+| **NAME** <Ar>الاسم</Ar> | The command and a one-line description <Ar>اسم الأمر ووصف من سطر واحد</Ar> |
+| **SYNOPSIS** <Ar>الصيغة</Ar> | How to call it: `ls [OPTION]... [FILE]...`. Square brackets mean optional, and `...` means repeatable <Ar>طريقة استدعائه: `ls [OPTION]... [FILE]...`. الأقواس المربعة تعني أن الجزء اختياري، و`...` تعني أنه قابل للتكرار</Ar> |
+| **DESCRIPTION** <Ar>الوصف</Ar> | What it does, with every option explained <Ar>ما يفعله الأمر، مع شرح كل خيار</Ar> |
+| **AUTHOR / REPORTING BUGS / COPYRIGHT** <Ar>المؤلف / الإبلاغ عن الأخطاء / حقوق النشر</Ar> | Who wrote it and where to report problems <Ar>من كتبه وأين تُبلِّغ عن المشكلات</Ar> |
+| **SEE ALSO** <Ar>انظر أيضًا</Ar> | Related commands and pages <Ar>أوامر وصفحات ذات صلة</Ar> |
 
 ### Moving around
 
-| Key | Action |
+<Ar>التنقل داخل الصفحة</Ar>
+
+| Key <Ar>المفتاح</Ar> | Action <Ar>الإجراء</Ar> |
 |---|---|
-| **Space** / **b** | Next / previous page |
-| **↓** / **↑** or **Enter** | Down / up one line |
-| **/**`pattern` | Search **forward** (case-insensitive by default) |
-| **?**`pattern` | Search **backward** |
-| **n** / **N** | Next / previous match |
-| **g** / **G** | Go to the start / end |
-| **h** | Help on these keys |
-| **q** | Quit |
+| **Space** / **b** <Ar>**المسافة (Space)** / **b**</Ar> | Next / previous page <Ar>الصفحة التالية / السابقة</Ar> |
+| **↓** / **↑** or **Enter** <Ar>**↓** / **↑** أو **Enter**</Ar> | Down / up one line <Ar>سطر واحد للأسفل / للأعلى</Ar> |
+| **/**`pattern` | Search **forward** (case-insensitive by default) <Ar>البحث **للأمام** (لا يميّز بين الأحرف الكبيرة والصغيرة افتراضيًا)</Ar> |
+| **?**`pattern` | Search **backward** <Ar>البحث **للخلف**</Ar> |
+| **n** / **N** | Next / previous match <Ar>النتيجة المطابقة التالية / السابقة</Ar> |
+| **g** / **G** | Go to the start / end <Ar>الانتقال إلى البداية / النهاية</Ar> |
+| **h** | Help on these keys <Ar>مساعدة حول هذه المفاتيح</Ar> |
+| **q** | Quit <Ar>الخروج</Ar> |
 
 ### Sections
 
+<Ar>أقسام الدليل</Ar>
+
 There are often **several man pages with the same name**, in different **sections**:
 
-| Section | Contents |
+<Ar>كثيرًا ما توجد **عدة صفحات دليل بالاسم نفسه** في **أقسام (sections)** مختلفة:</Ar>
+
+| Section <Ar>القسم</Ar> | Contents <Ar>المحتوى</Ar> |
 |---|---|
-| 1 | User commands |
-| 2 | System calls |
-| 3 | Library functions |
-| 4 | Special files (devices) |
-| **5** | **File formats** (e.g. `/etc/passwd`) |
-| 6 | Games |
-| 7 | Miscellaneous |
-| **8** | **System administration commands** |
+| 1 | User commands <Ar>أوامر المستخدم</Ar> |
+| 2 | System calls <Ar>استدعاءات النظام (System calls)</Ar> |
+| 3 | Library functions <Ar>دوال المكتبات (Library functions)</Ar> |
+| 4 | Special files (devices) <Ar>الملفات الخاصة (الأجهزة)</Ar> |
+| **5** | **File formats** (e.g. `/etc/passwd`) <Ar>**صيغ الملفات (File formats)** (مثل `/etc/passwd`)</Ar> |
+| 6 | Games <Ar>الألعاب</Ar> |
+| 7 | Miscellaneous <Ar>متفرقات</Ar> |
+| **8** | **System administration commands** <Ar>**أوامر إدارة النظام (System administration)**</Ar> |
 
 `man passwd` shows the **first** matching section: section 1, the `passwd` command that changes your password. To read about the `/etc/passwd` **file** instead:
+
+<Ar>يعرض `man passwd` **أول** قسم مطابق، وهو القسم 1: الأمر `passwd` الذي يغيّر كلمة مرورك. ولقراءة شرح **الملف** `/etc/passwd` بدلًا منه:</Ar>
 
 ```bash title="Terminal"
 man 5 passwd        # the file format of /etc/passwd
@@ -83,7 +104,11 @@ whatis passwd       # same as man -f
 
 ### Searching by keyword
 
+<Ar>البحث بالكلمة المفتاحية</Ar>
+
 If you don't remember the command's name, search the **descriptions** of all pages:
+
+<Ar>إذا لم تتذكر اسم الأمر، فابحث في **أوصاف** جميع الصفحات:</Ar>
 
 ```bash title="Terminal"
 man -k password     # every page whose name or description mentions "password"
@@ -93,11 +118,17 @@ apropos -s 1 copy   # only section-1 user commands about copying
 
 <Callout type="tip">
   <code>man -k</code> often returns a <em>huge</em> list. Pipe it through <code>grep</code> to narrow it down, e.g. <code>apropos user | grep -i add</code>, or filter by section with <code>-s</code>.
+
+  <Ar>كثيرًا ما يُرجع <code>man -k</code> قائمة <em>ضخمة</em>. مرّر ناتجه عبر <code>grep</code> لتضييق النتائج، مثل <code>apropos user | grep -i add</code>، أو صفِّها حسب القسم باستخدام <code>-s</code>.</Ar>
 </Callout>
 
 ## Info pages
 
+<Ar>صفحات info</Ar>
+
 Some programs, especially GNU tools, also have **info pages**. They are often easier for beginners because they read like **lessons** with links between nodes, while man pages are pure reference documentation.
+
+<Ar>لبعض البرامج، خاصة أدوات GNU، **صفحات info** أيضًا. وهي غالبًا أسهل على المبتدئين لأنها تُقرأ مثل **الدروس** مع روابط بين أجزائها (nodes)، بينما صفحات الدليل توثيق مرجعي بحت.</Ar>
 
 ```bash title="Terminal"
 info ls
@@ -105,9 +136,15 @@ info ls
 
 Type **h** for the movement commands and **l** to go back, then **Space** / **Backspace** to page, **n** / **p** for the next and previous node, **Enter** to follow a link, and **q** to quit.
 
+<Ar>اكتب **h** لعرض أوامر التنقل و**l** للرجوع، ثم **Space** / **Backspace** للتقليب بين الصفحات، و**n** / **p** للجزء (node) التالي والسابق، و**Enter** لفتح رابط، و**q** للخروج.</Ar>
+
 ## The --help option and /usr/share/doc
 
+<Ar>الخيار `--help` والمجلد `/usr/share/doc`</Ar>
+
 Most commands print a short usage summary with `--help`. It's ideal for a quick reminder:
+
+<Ar>تطبع معظم الأوامر ملخصًا قصيرًا لطريقة الاستخدام مع `--help`، وهو مثالي للتذكير السريع:</Ar>
 
 ```bash title="Terminal"
 ls --help | head -20
@@ -116,11 +153,19 @@ cp --help | grep -- -r       # what does cp -r do?
 
 Some packages ship extra documentation (READMEs, examples, changelogs) in **`/usr/share/doc/<package>/`**. Man and info pages usually cover everything, but administrators sometimes need these deeper documents.
 
+<Ar>تأتي بعض الحزم (packages) بتوثيق إضافي (ملفات README وأمثلة وسجلات التغييرات) في **`/usr/share/doc/<package>/`**. عادةً ما تغطي صفحات man و info كل شيء، لكن مديري الأنظمة يحتاجون أحيانًا إلى هذه الوثائق الأعمق.</Ar>
+
 ## Finding files and commands
+
+<Ar>العثور على الملفات والأوامر</Ar>
 
 ### locate
 
+<Ar>الأمر locate</Ar>
+
 `locate` searches a **database** of file paths, so it is extremely fast:
+
+<Ar>يبحث `locate` في **قاعدة بيانات (database)** لمسارات الملفات، ولذلك فهو سريع جدًا:</Ar>
 
 ```bash title="Terminal"
 locate crontab                 # every path containing "crontab" anywhere
@@ -129,13 +174,19 @@ locate -c crontab              # just count the matches
 sudo updatedb                  # refresh the database (it is updated daily)
 ```
 
-<Callout type="warning" title="locate can be out of date">
+<Callout type="warning" title="locate can be out of date" titleAr="قد تكون نتائج locate قديمة">
   It only knows about files that existed when the database was last updated. A file you created a minute ago won't appear until <code>updatedb</code> runs. Use <code>find</code> for a live search of the filesystem.
+
+  <Ar>لا يعرف إلا الملفات التي كانت موجودة عند آخر تحديث لقاعدة البيانات، فالملف الذي أنشأته قبل دقيقة لن يظهر حتى يُشغَّل <code>updatedb</code>. استخدم <code>find</code> للبحث المباشر في نظام الملفات.</Ar>
 </Callout>
 
 ### whereis
 
+<Ar>الأمر whereis</Ar>
+
 `whereis` finds a **command's binary, source and man pages**, and nothing else:
+
+<Ar>يعثر `whereis` على **الملف التنفيذي (binary) للأمر وشيفرته المصدرية وصفحات دليله** فقط، ولا شيء غير ذلك:</Ar>
 
 ```bash title="Terminal"
 whereis passwd
@@ -144,43 +195,59 @@ whereis passwd
 
 Files ending in `.gz` are **compressed man pages**. There are two because `passwd` has pages in sections 1 and 5.
 
-| Tool | Finds | Speed | Current? |
+<Ar>الملفات المنتهية بـ `.gz` هي **صفحات دليل مضغوطة**، وهناك اثنتان لأن للأمر `passwd` صفحات في القسمين 1 و 5.</Ar>
+
+| Tool <Ar>الأداة</Ar> | Finds <Ar>تعثر على</Ar> | Speed <Ar>السرعة</Ar> | Current? <Ar>محدَّثة؟</Ar> |
 |---|---|---|---|
-| `which` | The executable that will run (searches **PATH**) | Instant | Yes |
-| `whereis` | Binary, source and man pages of a **command** | Instant | Yes |
-| `locate` | **Any file** by name, from a database | Very fast | Since the last `updatedb` |
-| `find` | Any file by name, size, date, type…, searched live | Slower | Yes |
+| `which` | The executable that will run (searches **PATH**) <Ar>الملف التنفيذي الذي سيُشغَّل (تبحث في **PATH**)</Ar> | Instant <Ar>فورية</Ar> | Yes <Ar>نعم</Ar> |
+| `whereis` | Binary, source and man pages of a **command** <Ar>الملف التنفيذي والشيفرة المصدرية وصفحات الدليل الخاصة **بأمر**</Ar> | Instant <Ar>فورية</Ar> | Yes <Ar>نعم</Ar> |
+| `locate` | **Any file** by name, from a database <Ar>**أي ملف** بالاسم، من قاعدة بيانات</Ar> | Very fast <Ar>سريعة جدًا</Ar> | Since the last `updatedb` <Ar>منذ آخر تشغيل لـ `updatedb`</Ar> |
+| `find` | Any file by name, size, date, type…, searched live <Ar>أي ملف بالاسم أو الحجم أو التاريخ أو النوع…، ببحث مباشر</Ar> | Slower <Ar>أبطأ</Ar> | Yes <Ar>نعم</Ar> |
 
 <Takeaways>
 
 - `man command` is the reference manual. Navigate with Space, b, /, n and q; it shows section 1 unless you ask for another.
+  <Ar>`man command` هو الدليل المرجعي. تنقّل فيه باستخدام Space و b و / و n و q، وهو يعرض القسم 1 ما لم تطلب قسمًا آخر.</Ar>
 - `man -f` = `whatis` (which sections exist), and `man -k` = `apropos` (search by keyword).
+  <Ar>`man -f` = `whatis` (ما الأقسام الموجودة)، و `man -k` = `apropos` (البحث بالكلمة المفتاحية).</Ar>
 - `info` pages read like tutorials; `--help` gives a quick summary; `/usr/share/doc` holds extra documents.
+  <Ar>صفحات `info` تُقرأ مثل الدروس التعليمية، و `--help` يعطي ملخصًا سريعًا، و `/usr/share/doc` يحتوي على وثائق إضافية.</Ar>
 - `locate` finds any file by name from a database (refresh it with `updatedb`); `whereis` finds a command's files.
+  <Ar>`locate` يعثر على أي ملف بالاسم من قاعدة بيانات (حدِّثها باستخدام `updatedb`)، و `whereis` يعثر على ملفات أمر معيّن.</Ar>
 
 </Takeaways>
 
 ## Practice
 
-<Exercise title="Which section?" level="easy">
+<Ar>تدريب</Ar>
+
+<Exercise title="Which section?" titleAr="أي قسم؟" level="easy">
 
 You want documentation for the `/etc/shadow` **file format**, not a command. Which command shows it?
+
+<Ar>تريد توثيق **صيغة الملف** `/etc/shadow`، لا توثيق أمر. ما الأمر الذي يعرضه؟</Ar>
 
 <Solution>
 
 `man 5 shadow`. Section 5 covers file formats. `whatis shadow` lists the sections that exist.
 
+<Ar>`man 5 shadow`. القسم 5 يغطي صيغ الملفات، و `whatis shadow` يعرض الأقسام الموجودة.</Ar>
+
 </Solution>
 
 </Exercise>
 
-<Exercise title="Find the right tool" level="medium">
+<Exercise title="Find the right tool" titleAr="اعثر على الأداة المناسبة" level="medium">
 
 You can't remember the command that **copies files over SSH**. How do you find it without the internet?
+
+<Ar>لا تتذكر الأمر الذي **ينسخ الملفات عبر SSH**. كيف تعثر عليه دون الإنترنت؟</Ar>
 
 <Solution>
 
 Search by keyword: `apropos copy | grep -i ssh` (or `man -k "secure copy"`). It points you to **scp** (and `sftp`). Then read `man scp` or `scp --help`.
+
+<Ar>ابحث بالكلمة المفتاحية: `apropos copy | grep -i ssh` (أو `man -k "secure copy"`). سيدلّك على **scp** (و `sftp`). ثم اقرأ `man scp` أو `scp --help`.</Ar>
 
 </Solution>
 
@@ -190,33 +257,48 @@ Search by keyword: `apropos copy | grep -i ssh` (or `man -k "secure copy"`). It 
   questions={[
     {
       q: "Inside a man page, how do you search forward for 'recursive'?",
+      qAr: "داخل صفحة الدليل، كيف تبحث للأمام عن كلمة «recursive»؟",
       options: [":recursive", "/recursive", "?recursive", "find recursive"],
+      optionsAr: [":recursive", "/recursive", "?recursive", "find recursive"],
       answer: 1,
-      explain: "/ searches forward, ? searches backward, n repeats."
+      explain: "/ searches forward, ? searches backward, n repeats.",
+      explainAr: "الرمز / يبحث للأمام، و ? يبحث للخلف، و n يكرر البحث."
     },
     {
       q: "Which command is equivalent to man -k?",
+      qAr: "أي أمر يكافئ man -k؟",
       options: ["whatis", "apropos", "info", "whereis"],
+      optionsAr: ["whatis", "apropos", "info", "whereis"],
       answer: 1,
-      explain: "apropos searches page names and descriptions by keyword."
+      explain: "apropos searches page names and descriptions by keyword.",
+      explainAr: "يبحث apropos في أسماء الصفحات وأوصافها بالكلمة المفتاحية."
     },
     {
       q: "Man section 8 contains…",
+      qAr: "يحتوي القسم 8 من الدليل على…",
       options: ["Games", "Library functions", "System administration commands", "File formats"],
+      optionsAr: ["الألعاب", "دوال المكتبات", "أوامر إدارة النظام", "صيغ الملفات"],
       answer: 2,
-      explain: "Section 1 is user commands, 5 is file formats, 8 is admin commands."
+      explain: "Section 1 is user commands, 5 is file formats, 8 is admin commands.",
+      explainAr: "القسم 1 لأوامر المستخدم، و5 لصيغ الملفات، و8 لأوامر الإدارة."
     },
     {
       q: "Why might locate miss a file you just created?",
+      qAr: "لماذا قد لا يجد locate ملفًا أنشأته للتو؟",
       options: ["It only searches /usr", "Its database hasn't been updated yet", "It is case-sensitive", "It needs root"],
+      optionsAr: ["لأنه يبحث في /usr فقط", "لأن قاعدة بياناته لم تُحدَّث بعد", "لأنه يميّز بين الأحرف الكبيرة والصغيرة", "لأنه يحتاج صلاحيات root"],
       answer: 1,
-      explain: "Run updatedb, or use find for a live search."
+      explain: "Run updatedb, or use find for a live search.",
+      explainAr: "شغّل updatedb، أو استخدم find للبحث المباشر."
     },
     {
       q: "What does whereis search for?",
+      qAr: "عن ماذا يبحث whereis؟",
       options: ["Any file", "Binary, source and man pages of a command", "Running processes", "Text inside files"],
+      optionsAr: ["أي ملف", "الملف التنفيذي والشيفرة المصدرية وصفحات الدليل لأمر ما", "العمليات قيد التشغيل", "النصوص داخل الملفات"],
       answer: 1,
-      explain: "It is limited to command-related files."
+      explain: "It is limited to command-related files.",
+      explainAr: "يقتصر بحثه على الملفات المتعلقة بالأوامر."
     }
   ]}
 />

@@ -1,7 +1,9 @@
 ---
 number: 1
 title: Introduction to Software Engineering and UML
+titleAr: "مقدمة في هندسة البرمجيات ولغة UML"
 summary: Why programming alone isn't enough, the common problems in software projects, what software engineering is and its goals, the five stages of software development, the insulin-pump case study, why we model with UML and the main UML diagrams, plus how a lab project is documented (problem definition, SRS, DFD, test table).
+summaryAr: "لماذا لا تكفي البرمجة وحدها، والمشكلات الشائعة في مشروعات البرمجيات، وما هندسة البرمجيات (Software Engineering) وما أهدافها، والمراحل الخمس لتطوير البرمجيات، ودراسة حالة مضخة الإنسولين، ولماذا ننمذج باستخدام UML وأهم مخططاتها، إضافةً إلى طريقة توثيق مشروع السكشن (تعريف المشكلة، ووثيقة SRS، ومخطط DFD، وجدول الاختبار)."
 topics: [Software is everywhere, Common project problems, Definition of SE, Goals of SE, Development stages, Insulin pump case study, Why UML, UML diagram types, Lab project structure]
 duration: 40 min
 kind: concept
@@ -25,157 +27,240 @@ bookRefs:
 <Objectives>
 
 - Explain why **programming is not enough** and list the common problems in software projects.
+  <Ar>شرح لماذا **لا تكفي البرمجة وحدها**، وسرد المشكلات الشائعة في مشروعات البرمجيات.</Ar>
 - Define **software engineering** and its goals: **on time, reliable, complete**.
+  <Ar>تعريف **هندسة البرمجيات (Software Engineering)** وأهدافها: أن تكون البرمجيات **في الموعد، وموثوقة، ومكتملة**.</Ar>
 - Name the five **stages** of software development.
+  <Ar>تسمية **المراحل** الخمس لتطوير البرمجيات.</Ar>
 - Explain **why we model** with UML, and recognize the main diagram types.
+  <Ar>شرح **لماذا ننمذج** باستخدام UML، والتعرّف على أنواع المخططات الرئيسية.</Ar>
 - Know the structure of a **lab project report**.
+  <Ar>معرفة هيكل **تقرير مشروع السكشن (lab project report)**.</Ar>
 
 </Objectives>
 
 ## Software is everywhere
 
+<Ar>البرمجيات في كل مكان</Ar>
+
 Software has a huge impact on every part of society: aircraft and buses, search engines, phones and music players, banks and hospitals. The economies of all developed nations depend on it, and more and more systems are **software-controlled**.
+
+<Ar>للبرمجيات أثر هائل في كل جوانب المجتمع: الطائرات والحافلات، ومحركات البحث، والهواتف ومشغّلات الموسيقى، والبنوك والمستشفيات. وتعتمد عليها اقتصادات جميع الدول المتقدمة، ويتزايد باستمرار عدد الأنظمة **التي تتحكم فيها البرمجيات (software-controlled)**.</Ar>
 
 Software **costs** often dominate the cost of a computer system: the software on a PC often costs more than the hardware. Software also costs **more to maintain than to develop**. For long-lived systems, maintenance may cost several times the development.
 
+<Ar>كثيرًا ما تطغى **تكاليف** البرمجيات على تكلفة النظام الحاسوبي: فالبرمجيات على الحاسوب الشخصي غالبًا ما تكلّف أكثر من العتاد (hardware). كما أن **صيانة البرمجيات تكلّف أكثر من تطويرها**. وفي الأنظمة طويلة العمر قد تبلغ تكلفة الصيانة أضعاف تكلفة التطوير.</Ar>
+
 ## Why projects go wrong
 
-<SlideFigure page={9} caption="How the customer explained it, how each role understood it, and what the customer really needed." />
+<Ar>لماذا تفشل المشروعات</Ar>
+
+<SlideFigure page={9} caption="How the customer explained it, how each role understood it, and what the customer really needed." captionAr="كيف شرح العميل ما يريده، وكيف فهمه كل دور، وما الذي كان العميل يحتاجه فعلًا." />
 
 Common problems:
 
-- the final software **doesn't fulfil the customer's needs**;
-- it is **hard to extend**: adding a feature later is "mission impossible";
-- **bad documentation**;
-- **bad quality**: frequent errors, hard to use;
-- **more time and cost** than expected.
+<Ar>المشكلات الشائعة:</Ar>
 
-<Callout type="note" title="Programming is NOT enough">
+- the final software **doesn't fulfil the customer's needs**;
+  <Ar>البرمجيات النهائية **لا تلبّي احتياجات العميل**؛</Ar>
+- it is **hard to extend**: adding a feature later is "mission impossible";
+  <Ar>**يصعب توسيعها**: فإضافة ميزة لاحقًا تصبح «مهمة مستحيلة»؛</Ar>
+- **bad documentation**;
+  <Ar>**توثيق سيئ**؛</Ar>
+- **bad quality**: frequent errors, hard to use;
+  <Ar>**جودة سيئة**: أخطاء متكررة وصعوبة في الاستخدام؛</Ar>
+- **more time and cost** than expected.
+  <Ar>**وقت وتكلفة أكبر** مما كان متوقعًا.</Ar>
+
+<Callout type="note" title="Programming is NOT enough" titleAr="البرمجة وحدها لا تكفي">
   "It is not enough to do your best: you must know what to do, and <strong>then</strong> do your best." (W. Edwards Deming). Software engineering is how you find out <em>what</em> to do.
+
+  <Ar>«لا يكفي أن تبذل قصارى جهدك: يجب أن تعرف ما الذي عليك فعله، <strong>ثم</strong> تبذل قصارى جهدك.» (W. Edwards Deming). وهندسة البرمجيات هي الطريقة التي تكتشف بها <em>ما</em> الذي عليك فعله.</Ar>
 </Callout>
 
 ## What is software engineering?
 
-<Definition term="Software engineering (IEEE)">
+<Ar>ما هندسة البرمجيات؟</Ar>
+
+<Definition term="Software engineering (IEEE)" termAr="هندسة البرمجيات (IEEE)">
   The application of a <strong>systematic, disciplined, quantifiable</strong> approach to the development, operation and maintenance of software, and the study of these approaches: the application of engineering to software.
+
+  <Ar>تطبيق منهج <strong>منظَّم ومنضبط وقابل للقياس الكمّي</strong> على تطوير البرمجيات وتشغيلها وصيانتها، ودراسة هذه المناهج: أي تطبيق الهندسة على البرمجيات.</Ar>
 </Definition>
 
 In short, it is the study and application of methods for developing **quality software that fulfils the customer's needs**. The goal is software that is:
 
-| Goal | Meaning |
+<Ar>باختصار، هي دراسة وتطبيق أساليب تطوير **برمجيات عالية الجودة تلبّي احتياجات العميل**. والهدف برمجيات تكون:</Ar>
+
+| Goal <Ar>الهدف</Ar> | Meaning <Ar>المعنى</Ar> |
 |---|---|
-| **On time** | Delivered on the agreed date |
-| **Reliable** | It doesn't crash |
-| **Complete** | It meets the customer's needs and is well documented |
+| **On time** <Ar>**في الموعد**</Ar> | Delivered on the agreed date <Ar>تُسلَّم في التاريخ المتفق عليه</Ar> |
+| **Reliable** <Ar>**موثوقة**</Ar> | It doesn't crash <Ar>لا تتعطل</Ar> |
+| **Complete** <Ar>**مكتملة**</Ar> | It meets the customer's needs and is well documented <Ar>تلبّي احتياجات العميل وموثَّقة توثيقًا جيدًا</Ar> |
 
 **Software** includes the programs **and** their documentation: requirements, design models and user manuals. Products are **generic** (sold to many customers, e.g. Excel or Word) or **bespoke/custom** (built for one customer to their specification).
 
+<Ar>تشمل **البرمجيات** البرامج **وكذلك** توثيقها: المتطلبات، ونماذج التصميم، وأدلة المستخدم. والمنتجات إما **عامة (generic)** (تُباع لعملاء كثيرين، مثل Excel أو Word) وإما **مخصَّصة (bespoke/custom)** (تُبنى لعميل واحد وفق مواصفاته).</Ar>
+
 ## Stages of software development
 
-<SlideFigure page={15} caption="The five stages: requirements analysis, design, implementation, testing, maintenance." />
+<Ar>مراحل تطوير البرمجيات</Ar>
+
+<SlideFigure page={15} caption="The five stages: requirements analysis, design, implementation, testing, maintenance." captionAr="المراحل الخمس: تحليل المتطلبات، والتصميم، والتنفيذ، والاختبار، والصيانة." />
 
 <Steps>
 
 1. **Requirements analysis**: find out what the client wants the software to do.
+   <Ar>**تحليل المتطلبات (Requirements analysis)**: معرفة ما يريد العميل أن تفعله البرمجيات.</Ar>
 2. **Design**: plan the software solution.
+   <Ar>**التصميم (Design)**: تخطيط الحل البرمجي.</Ar>
 3. **Implementation**: write the code.
+   <Ar>**التنفيذ (Implementation)**: كتابة الشيفرة.</Ar>
 4. **Testing**: run the application trying to find bugs.
+   <Ar>**الاختبار (Testing)**: تشغيل التطبيق في محاولة لاكتشاف الأخطاء (bugs).</Ar>
 5. **Maintenance**: any activity that changes an existing software product.
+   <Ar>**الصيانة (Maintenance)**: أي نشاط يغيّر منتجًا برمجيًا قائمًا.</Ar>
 
 </Steps>
 
 These map onto the four process activities from Lecture 1: **specification** (requirements), **development** (design and implementation), **validation** (testing) and **evolution** (maintenance).
 
+<Ar>وتقابل هذه المراحل أنشطة العملية الأربعة من المحاضرة 1: **التوصيف (specification)** (المتطلبات)، و**التطوير (development)** (التصميم والتنفيذ)، و**التحقق من الصلاحية (validation)** (الاختبار)، و**التطور (evolution)** (الصيانة).</Ar>
+
 ## Case study: an insulin pump
+
+<Ar>دراسة حالة: مضخة الإنسولين</Ar>
 
 An **embedded, safety-critical** system used throughout the course:
 
-<SlideFigure page={22} caption="The insulin pump collects blood-sugar data from a sensor, calculates the dose from the rate of change, and signals a micro-pump to deliver it." />
+<Ar>نظام **مدمج (embedded) وحرج من حيث السلامة (safety-critical)** نستخدمه على امتداد المقرر:</Ar>
 
-<SlideFigure page={23} caption="The pump's hardware: needle assembly, sensor, pump, controller, clock, alarm, two displays and a power supply." />
+<SlideFigure page={22} caption="The insulin pump collects blood-sugar data from a sensor, calculates the dose from the rate of change, and signals a micro-pump to deliver it." captionAr="تجمع مضخة الإنسولين بيانات سكر الدم من مستشعر، وتحسب الجرعة من معدل التغير، وترسل إشارة إلى مضخة دقيقة لضخّها." />
+
+<SlideFigure page={23} caption="The pump's hardware: needle assembly, sensor, pump, controller, clock, alarm, two displays and a power supply." captionAr="عتاد المضخة: مجموعة الإبرة، والمستشعر، والمضخة، والمتحكِّم، والساعة، والإنذار، وشاشتا عرض، ومصدر للطاقة." />
 
 Wrong software here can **kill**. A dose that is too high or too low is dangerous, so **dependability** (reliability and safety) is the most important attribute.
 
+<Ar>البرمجيات الخاطئة هنا قد **تقتل**. فالجرعة الزائدة جدًا أو الناقصة جدًا خطيرة، ولذلك تكون **الاعتمادية (dependability)** (الموثوقية والسلامة) أهم سمة.</Ar>
+
 ## Why UML?
 
-<Definition term="UML (Unified Modeling Language)">
+<Ar>لماذا UML؟</Ar>
+
+<Definition term="UML (Unified Modeling Language)" termAr="لغة النمذجة الموحَّدة (UML)">
   A standard <strong>graphical language</strong> for visualizing, specifying, constructing and documenting the artifacts of a software-intensive system. It was designed by "the Three Amigos": James Rumbaugh, Ivar Jacobson and Grady Booch.
+
+  <Ar><strong>لغة رسومية</strong> قياسية لتصوير نواتج (artifacts) النظام الذي تغلب عليه البرمجيات، وتوصيفها، وبنائها، وتوثيقها. وقد صمّمها «الأصدقاء الثلاثة (the Three Amigos)»: James Rumbaugh و Ivar Jacobson و Grady Booch.</Ar>
 </Definition>
 
 UML is **independent of any programming language** and combines several diagramming methods. We need it to:
 
+<Ar>لغة UML **مستقلة عن أي لغة برمجة**، وتجمع عدة أساليب لرسم المخططات. ونحتاج إليها من أجل:</Ar>
+
 - develop **efficient, correct designs**, especially object-oriented ones;
+  <Ar>تطوير **تصميمات فعّالة وصحيحة**، خاصةً التصميمات كائنية التوجه (object-oriented)؛</Ar>
 - **communicate** clearly with stakeholders: developers, customers…;
+  <Ar>**التواصل** بوضوح مع أصحاب المصلحة (stakeholders): المطورين، والعملاء…؛</Ar>
 - see the **big picture** of the project.
+  <Ar>رؤية **الصورة الكاملة** للمشروع.</Ar>
 
-| Diagram | Shows | Section |
+| Diagram <Ar>المخطط</Ar> | Shows <Ar>يوضّح</Ar> | Section <Ar>السكشن</Ar> |
 |---|---|---|
-| **Use case** | What actors can do with the system | 2 |
-| **Activity** | The step-by-step flow of a process | 3 |
-| **Class** | The classes, their attributes and operations, and their relationships | 4 |
-| **Sequence** | Messages between objects over time | 5 |
-| **State** | How one object changes state in response to events | 6 |
-| **DFD** (not UML) | How data moves between processes, stores and external entities | 7 |
+| **Use case** <Ar>**حالات الاستخدام (Use case)**</Ar> | What actors can do with the system <Ar>ما يستطيع الفاعلون (actors) فعله بالنظام</Ar> | 2 |
+| **Activity** <Ar>**النشاط (Activity)**</Ar> | The step-by-step flow of a process <Ar>تدفق العملية خطوة بخطوة</Ar> | 3 |
+| **Class** <Ar>**الأصناف (Class)**</Ar> | The classes, their attributes and operations, and their relationships <Ar>الأصناف (classes) وسماتها وعملياتها، والعلاقات بينها</Ar> | 4 |
+| **Sequence** <Ar>**التتابع (Sequence)**</Ar> | Messages between objects over time <Ar>الرسائل المتبادلة بين الكائنات (objects) عبر الزمن</Ar> | 5 |
+| **State** <Ar>**الحالة (State)**</Ar> | How one object changes state in response to events <Ar>كيف يغيّر كائن واحد حالته استجابةً للأحداث (events)</Ar> | 6 |
+| **DFD** (not UML) <Ar>**مخطط تدفق البيانات (DFD)** (ليس من UML)</Ar> | How data moves between processes, stores and external entities <Ar>كيف تنتقل البيانات بين العمليات (processes) ومخازن البيانات (data stores) والكيانات الخارجية (external entities)</Ar> | 7 |
 
-<SlideFigure page={10} source={2} caption="A use case diagram for a dinner-ordering system: Customer and Restaurant actors around Provide Menu, Order a Meal and Deliver Meal." />
+<SlideFigure page={10} source={2} caption="A use case diagram for a dinner-ordering system: Customer and Restaurant actors around Provide Menu, Order a Meal and Deliver Meal." captionAr="مخطط حالات استخدام لنظام طلب العشاء: الفاعلان Customer و Restaurant حول حالات الاستخدام Provide Menu و Order a Meal و Deliver Meal." />
 
-<SlideFigure page={13} source={2} caption="An activity diagram for ordering a meal: choose a menu item, decide, then pay." />
+<SlideFigure page={13} source={2} caption="An activity diagram for ordering a meal: choose a menu item, decide, then pay." captionAr="مخطط نشاط لطلب وجبة: اختيار صنف من القائمة، ثم اتخاذ القرار، ثم الدفع." />
 
 ## The lab project
 
+<Ar>مشروع السكشن</Ar>
+
 The lab grade is a **project** (15 % lab work and 10 % final oral). The lab manual gives five worked examples: library management, automated banking, airline reservation, employee management and hospital management. Each follows the same structure, which your project report can follow too:
+
+<Ar>درجة السكشن عبارة عن **مشروع** (15 % لأعمال السكشن و10 % للامتحان الشفهي النهائي). ويقدّم دليل السكشن (lab manual) خمسة أمثلة محلولة: إدارة مكتبة، ونظام مصرفي آلي، وحجز تذاكر الطيران، وإدارة الموظفين، وإدارة مستشفى. ويتبع كل منها الهيكل نفسه، ويمكن لتقرير مشروعك أن يتبعه أيضًا:</Ar>
 
 <Steps>
 
 1. **Problem definition**: what the system must do, in a few numbered points.
+   <Ar>**تعريف المشكلة (Problem definition)**: ما يجب أن يفعله النظام، في بضع نقاط مرقّمة.</Ar>
 2. **SRS** (IEEE 830): purpose, scope, definitions, overall description (product perspective, interfaces, product functions, user characteristics, constraints) and specific requirements (database requirements, front-end and back-end descriptions, data structures).
+   <Ar>**وثيقة توصيف المتطلبات (SRS)** (IEEE 830): الغرض، والنطاق، والتعريفات، والوصف العام (منظور المنتج، والواجهات، ووظائف المنتج، وخصائص المستخدمين، والقيود)، والمتطلبات التفصيلية (متطلبات قاعدة البيانات، ووصف الواجهة الأمامية (front-end) والواجهة الخلفية (back-end)، وهياكل البيانات).</Ar>
 3. **Models**: a **data flow diagram** (or an ER diagram), plus the UML diagrams from these sections.
+   <Ar>**النماذج (Models)**: **مخطط تدفق البيانات (data flow diagram)** (أو مخطط الكيان والعلاقة ER)، إضافةً إلى مخططات UML الواردة في هذه السكاشن.</Ar>
 4. **Testing**: a table of *form · input · expected output · actual output · status*.
+   <Ar>**الاختبار (Testing)**: جدول من *النموذج (form) · المدخلات · المخرجات المتوقعة · المخرجات الفعلية · الحالة*.</Ar>
 
 </Steps>
 
-<SlideFigure page={9} source={3} caption="The library system's test table: each form with its input, expected and actual output, and pass/fail status." />
+<SlideFigure page={9} source={3} caption="The library system's test table: each form with its input, expected and actual output, and pass/fail status." captionAr="جدول اختبار نظام المكتبة: كل نموذج (form) مع مدخلاته، ومخرجاته المتوقعة والفعلية، وحالة النجاح أو الإخفاق." />
 
 <Takeaways>
 
 - Software is everywhere, and costs more to **maintain** than to build. Programming alone doesn't prevent failed projects.
+  <Ar>البرمجيات في كل مكان، و**صيانتها** تكلّف أكثر من بنائها. والبرمجة وحدها لا تمنع فشل المشروعات.</Ar>
 - Software engineering is a **systematic, disciplined, quantifiable** approach. Its goals are software that is **on time, reliable and complete**.
+  <Ar>هندسة البرمجيات منهج **منظَّم ومنضبط وقابل للقياس الكمّي**، وهدفها برمجيات تكون **في الموعد وموثوقة ومكتملة**.</Ar>
 - The stages are **requirements → design → implementation → testing → maintenance**.
+  <Ar>المراحل هي **المتطلبات ← التصميم ← التنفيذ ← الاختبار ← الصيانة**.</Ar>
 - **UML** is a standard visual language for modelling; we use the use case, activity, class, sequence and state diagrams, plus DFDs.
+  <Ar>**UML** لغة مرئية قياسية للنمذجة؛ ونستخدم منها مخططات حالات الاستخدام والنشاط والأصناف والتتابع والحالة، إضافةً إلى مخططات تدفق البيانات (DFD).</Ar>
 
 </Takeaways>
 
 ## Practice
 
-<Exercise title="Spot the stage" level="easy">
+<Ar>تدريب</Ar>
+
+<Exercise title="Spot the stage" titleAr="حدِّد المرحلة" level="easy">
 
 Which development stage is each activity?
 
+<Ar>إلى أي مرحلة من مراحل التطوير ينتمي كل نشاط؟</Ar>
+
 1. Interviewing the librarian about how books are lent.
+   <Ar>مقابلة أمين المكتبة لمعرفة طريقة إعارة الكتب.</Ar>
 2. Drawing the class diagram of the library system.
+   <Ar>رسم مخطط الأصناف (class diagram) لنظام المكتبة.</Ar>
 3. Fixing a bug reported six months after delivery.
+   <Ar>إصلاح خلل (bug) أُبلغ عنه بعد ستة أشهر من التسليم.</Ar>
 4. Running the system with an expired library card to see what happens.
+   <Ar>تشغيل النظام ببطاقة مكتبة منتهية الصلاحية لمعرفة ما يحدث.</Ar>
 
 <Solution>
 
 1. Requirements analysis.
+   <Ar>تحليل المتطلبات.</Ar>
 2. Design.
+   <Ar>التصميم.</Ar>
 3. Maintenance.
+   <Ar>الصيانة.</Ar>
 4. Testing.
+   <Ar>الاختبار.</Ar>
 
 </Solution>
 
 </Exercise>
 
-<Exercise title="Start your project" level="medium">
+<Exercise title="Start your project" titleAr="ابدأ مشروعك" level="medium">
 
 Write a three-point **problem definition** for a *student registration system*, in the style of the lab manual.
+
+<Ar>اكتب **تعريفًا للمشكلة (problem definition)** من ثلاث نقاط *لنظام تسجيل الطلاب*، على نمط دليل السكشن.</Ar>
 
 <Solution>
 
 1. A student logs in with a student ID and password, and the system validates them.
+   <Ar>يسجّل الطالب الدخول برقمه الجامعي (student ID) وكلمة المرور، ويتحقق النظام من صحتهما.</Ar>
 2. The student can view the courses offered this semester and register for courses, up to a maximum credit-hour limit; the system checks prerequisites and timetable clashes.
+   <Ar>يستطيع الطالب عرض المقررات المطروحة هذا الفصل الدراسي والتسجيل فيها حتى حد أقصى من الساعات المعتمدة؛ ويتحقق النظام من المتطلبات السابقة (prerequisites) ومن تعارضات الجدول الدراسي.</Ar>
 3. An administrator can add, update and delete courses, and view the students registered in each course.
+   <Ar>يستطيع مدير النظام إضافة المقررات وتحديثها وحذفها، وعرض الطلاب المسجلين في كل مقرر.</Ar>
 
 </Solution>
 
@@ -185,33 +270,48 @@ Write a three-point **problem definition** for a *student registration system*, 
   questions={[
     {
       q: "Which is NOT one of the goals of software engineering listed in the section?",
+      qAr: "أيٌّ مما يلي ليس من أهداف هندسة البرمجيات المذكورة في السكشن؟",
       options: ["On time", "Reliable", "Complete", "Written in Java"],
+      optionsAr: ["في الموعد", "موثوقة", "مكتملة", "مكتوبة بلغة Java"],
       answer: 3,
-      explain: "SE aims for software that is on time, reliable and complete, in any language."
+      explain: "SE aims for software that is on time, reliable and complete, in any language.",
+      explainAr: "تهدف هندسة البرمجيات إلى برمجيات تكون في الموعد وموثوقة ومكتملة، بأي لغة كُتبت."
     },
     {
       q: "'Any activity that changes an existing software product' is…",
+      qAr: "«أي نشاط يغيّر منتجًا برمجيًا قائمًا» هو…",
       options: ["Design", "Implementation", "Testing", "Maintenance"],
+      optionsAr: ["التصميم", "التنفيذ", "الاختبار", "الصيانة"],
       answer: 3,
-      explain: "Maintenance, i.e. evolution."
+      explain: "Maintenance, i.e. evolution.",
+      explainAr: "الصيانة، أي التطور (evolution)."
     },
     {
       q: "Who designed UML?",
+      qAr: "من صمّم لغة UML؟",
       options: ["Dijkstra, Knuth and Hoare", "Rumbaugh, Jacobson and Booch", "Sommerville and Pressman", "Beck, Fowler and Martin"],
+      optionsAr: ["Dijkstra, Knuth and Hoare", "Rumbaugh, Jacobson and Booch", "Sommerville and Pressman", "Beck, Fowler and Martin"],
       answer: 1,
-      explain: "The 'Three Amigos'."
+      explain: "The 'Three Amigos'.",
+      explainAr: "«الأصدقاء الثلاثة (Three Amigos)»."
     },
     {
       q: "For long-lived systems, which usually costs more?",
+      qAr: "في الأنظمة طويلة العمر، أيها يكلّف أكثر عادةً؟",
       options: ["Development", "Maintenance", "Hardware", "Documentation only"],
+      optionsAr: ["التطوير", "الصيانة", "العتاد", "التوثيق فقط"],
       answer: 1,
-      explain: "Maintenance can cost several times the development."
+      explain: "Maintenance can cost several times the development.",
+      explainAr: "قد تبلغ تكلفة الصيانة أضعاف تكلفة التطوير."
     },
     {
       q: "Which UML diagram shows what actors can do with a system?",
+      qAr: "أي مخطط من مخططات UML يوضّح ما يستطيع الفاعلون فعله بالنظام؟",
       options: ["Class diagram", "Use case diagram", "State diagram", "Sequence diagram"],
+      optionsAr: ["مخطط الأصناف", "مخطط حالات الاستخدام", "مخطط الحالة", "مخطط التتابع"],
       answer: 1,
-      explain: "Use case diagrams capture the system's functions from the user's perspective."
+      explain: "Use case diagrams capture the system's functions from the user's perspective.",
+      explainAr: "تلتقط مخططات حالات الاستخدام وظائف النظام من منظور المستخدم."
     }
   ]}
 />

@@ -230,3 +230,26 @@
     align-items: flex-start;
   }
 }
+
+/* ---------- Arabic lines ---------- */
+.promptText {
+  flex: 1;
+  min-width: 0;
+}
+
+.title :global(.ar) {
+  font-family: var(--font-arabic);
+  font-size: 0.8em;
+  color: var(--gold);
+  margin-top: 2px;
+}
+
+.optionText :global(.ar) {
+  font-weight: 400;
+  margin-top: 2px;
+  opacity: 0.88;
+}
+
+.feedback :global(.ar) {
+  margin-top: 6px;
+}

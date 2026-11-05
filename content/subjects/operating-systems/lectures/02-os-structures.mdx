@@ -1,7 +1,9 @@
 ---
 number: 2
 title: "Operating-System Structures: Services and System Calls"
+titleAr: "بنى نظام التشغيل: الخدمات واستدعاءات النظام"
 summary: What an OS offers programs and users, and how programs ask for it. Covers OS services, command-line, GUI and touch interfaces, system calls and APIs (POSIX, Win32), how a system call is dispatched and how parameters are passed, the six types of system calls, system services and daemons, linkers and loaders, and why applications are OS-specific.
+summaryAr: "ما الذي يقدّمه نظام التشغيل للبرامج والمستخدمين، وكيف تطلبه البرامج. يتناول خدمات نظام التشغيل، وواجهات سطر الأوامر والواجهات الرسومية واللمسية، واستدعاءات النظام (system calls) وواجهات البرمجة (APIs) مثل POSIX و Win32، وكيف يُوجَّه استدعاء النظام (dispatch) وكيف تُمرَّر المعاملات (parameters)، والأنواع الستة لاستدعاءات النظام، وخدمات النظام والبرامج الخفية (daemons)، والرابطات والمحمِّلات (linkers and loaders)، ولماذا ترتبط التطبيقات بنظام تشغيل محدد."
 topics: [OS services, CLI / GUI / touch, System calls, APIs and libc, System-call dispatch, Parameter passing, Types of system calls, System programs, Linkers and loaders]
 duration: 50 min study
 sources:
@@ -22,56 +24,80 @@ bookRefs:
 <Objectives>
 
 - Identify the **services** an OS provides to users and to the system itself.
+  <Ar>تحديد **الخدمات (services)** التي يقدّمها نظام التشغيل للمستخدمين وللنظام نفسه.</Ar>
 - Compare **CLI**, **GUI** and **touch** interfaces.
+  <Ar>المقارنة بين واجهات **سطر الأوامر (CLI)** و**الرسومية (GUI)** و**اللمسية (touch)**.</Ar>
 - Explain **system calls**, the **API** layer above them, and how a call reaches the kernel.
+  <Ar>شرح **استدعاءات النظام (system calls)**، وطبقة **واجهة البرمجة (API)** التي فوقها، وكيف يصل الاستدعاء إلى النواة (kernel).</Ar>
 - Describe three ways to **pass parameters** to a system call, and the six **types** of system calls.
+  <Ar>وصف ثلاث طرق **لتمرير المعاملات (pass parameters)** إلى استدعاء النظام، و**الأنواع** الستة لاستدعاءات النظام.</Ar>
 - Explain **system programs**, **linkers and loaders**, and why applications are **OS-specific**.
+  <Ar>شرح **برامج النظام (system programs)**، و**الرابطات والمحمِّلات (linkers and loaders)**، ولماذا تكون التطبيقات **خاصة بنظام تشغيل معيّن (OS-specific)**.</Ar>
 
 </Objectives>
 
 ## Operating-system services
 
-<SlideFigure page={4} caption="User interfaces on top, the system-call layer, then the services, all above the hardware." />
+<Ar>خدمات نظام التشغيل</Ar>
+
+<SlideFigure page={4} caption="User interfaces on top, the system-call layer, then the services, all above the hardware." captionAr="واجهات المستخدم في الأعلى، ثم طبقة استدعاءات النظام، ثم الخدمات، وكلها فوق العتاد." />
 
 <Grid cols={2}>
-  <Card title="Helpful to the user" tag="convenience">
+  <Card title="Helpful to the user" titleAr="خدمات مفيدة للمستخدم" tag="convenience">
     <ul>
-      <li><strong>User interface</strong>: CLI, GUI, touch, batch</li>
-      <li><strong>Program execution</strong>: load, run and end programs, normally or with an error</li>
-      <li><strong>I/O operations</strong>: programs can't drive devices directly</li>
-      <li><strong>File-system manipulation</strong>: create, delete, search, list, permissions</li>
-      <li><strong>Communications</strong>: shared memory or message passing, locally or over a network</li>
-      <li><strong>Error detection</strong>: in the CPU, memory, devices and programs, with debugging facilities</li>
+      <li><strong>User interface</strong>: CLI, GUI, touch, batch<Ar><strong>واجهة المستخدم</strong>: سطر الأوامر (CLI)، والواجهة الرسومية (GUI)، واللمس، والمعالجة الدُفعية (batch)</Ar></li>
+
+      <li><strong>Program execution</strong>: load, run and end programs, normally or with an error<Ar><strong>تنفيذ البرامج</strong>: تحميل البرامج وتشغيلها وإنهاؤها، إنهاءً طبيعيًا أو بسبب خطأ</Ar></li>
+
+      <li><strong>I/O operations</strong>: programs can't drive devices directly<Ar><strong>عمليات الإدخال/الإخراج (I/O)</strong>: لا تستطيع البرامج التحكم في الأجهزة مباشرةً</Ar></li>
+
+      <li><strong>File-system manipulation</strong>: create, delete, search, list, permissions<Ar><strong>معالجة نظام الملفات</strong>: الإنشاء، والحذف، والبحث، والعرض، والصلاحيات (permissions)</Ar></li>
+
+      <li><strong>Communications</strong>: shared memory or message passing, locally or over a network<Ar><strong>الاتصالات</strong>: عبر الذاكرة المشتركة (shared memory) أو تمرير الرسائل (message passing)، محليًا أو عبر شبكة</Ar></li>
+
+      <li><strong>Error detection</strong>: in the CPU, memory, devices and programs, with debugging facilities<Ar><strong>اكتشاف الأخطاء</strong>: في المعالج والذاكرة والأجهزة والبرامج، مع أدوات لتصحيح الأخطاء (debugging)</Ar></li>
     </ul>
   </Card>
-  <Card title="Efficient operation of the system" tag="sharing">
+  <Card title="Efficient operation of the system" titleAr="التشغيل الكفء للنظام" tag="sharing">
     <ul>
-      <li><strong>Resource allocation</strong>: CPU cycles, memory, storage and devices among concurrent jobs</li>
-      <li><strong>Logging / accounting</strong>: who uses how much of what</li>
-      <li><strong>Protection and security</strong>: control all access to resources, authenticate users, defend against outsiders</li>
+      <li><strong>Resource allocation</strong>: CPU cycles, memory, storage and devices among concurrent jobs<Ar><strong>تخصيص الموارد</strong>: توزيع دورات المعالج والذاكرة والتخزين والأجهزة بين المهام المتزامنة</Ar></li>
+
+      <li><strong>Logging / accounting</strong>: who uses how much of what<Ar><strong>التسجيل / المحاسبة (Logging / accounting)</strong>: مَن يستخدم كم من أي مورد</Ar></li>
+
+      <li><strong>Protection and security</strong>: control all access to resources, authenticate users, defend against outsiders<Ar><strong>الحماية والأمان</strong>: التحكم في كل وصول إلى الموارد، والتحقق من هوية المستخدمين (authentication)، والدفاع ضد الدخلاء</Ar></li>
     </ul>
   </Card>
 </Grid>
 
 ## User interfaces
 
-| Interface | How it works | Examples |
+<Ar>واجهات المستخدم</Ar>
+
+| Interface <Ar>الواجهة</Ar> | How it works <Ar>طريقة العمل</Ar> | Examples <Ar>أمثلة</Ar> |
 |---|---|---|
-| **Command-line interpreter (CLI)** | Fetches a command and runs it. Commands are either **built in** or just **names of programs**, so new features don't require changing the shell. Several flavours exist, called **shells** | bash, Bourne shell, C shell, PowerShell |
-| **GUI** | Desktop metaphor with mouse, keyboard, icons and folders; invented at **Xerox PARC** | Windows, macOS Aqua, GNOME, KDE |
-| **Touchscreen** | Gestures, a virtual keyboard, voice commands | iOS, Android |
+| **Command-line interpreter (CLI)** <Ar>**مفسِّر سطر الأوامر (CLI)**</Ar> | Fetches a command and runs it. Commands are either **built in** or just **names of programs**, so new features don't require changing the shell. Several flavours exist, called **shells** <Ar>يجلب الأمر وينفّذه. والأوامر إما **مدمجة (built in)** فيه أو مجرد **أسماء برامج**، ولذلك لا تتطلب الميزات الجديدة تعديل الصدفة (shell). وتوجد منه عدة أنواع تُسمّى **الصدفات (shells)**</Ar> | bash, Bourne shell, C shell, PowerShell <Ar>مثل bash و Bourne shell و C shell و PowerShell</Ar> |
+| **GUI** <Ar>**الواجهة الرسومية (GUI)**</Ar> | Desktop metaphor with mouse, keyboard, icons and folders; invented at **Xerox PARC** <Ar>تحاكي سطح المكتب (desktop metaphor) باستخدام الفأرة ولوحة المفاتيح والأيقونات والمجلدات، وقد اختُرعت في **Xerox PARC**</Ar> | Windows, macOS Aqua, GNOME, KDE <Ar>مثل Windows و macOS Aqua و GNOME و KDE</Ar> |
+| **Touchscreen** <Ar>**الشاشة اللمسية (Touchscreen)**</Ar> | Gestures, a virtual keyboard, voice commands <Ar>الإيماءات، ولوحة مفاتيح افتراضية، والأوامر الصوتية</Ar> | iOS, Android <Ar>مثل iOS و Android</Ar> |
 
 Most systems offer **both** a CLI and a GUI. Power users and administrators prefer the CLI because it is fast and **scriptable**.
 
+<Ar>توفّر معظم الأنظمة **كلًّا من** سطر الأوامر (CLI) والواجهة الرسومية (GUI). ويفضّل المستخدمون المتقدمون ومديرو الأنظمة سطر الأوامر لأنه سريع و**قابل للأتمتة بالسكربتات (scriptable)**.</Ar>
+
 ## System calls
 
-<Definition term="System call">
+<Ar>استدعاءات النظام</Ar>
+
+<Definition term="System call" termAr="استدعاء النظام">
   The <strong>programming interface to the services provided by the OS</strong>. System calls are usually written in C or C++, and assembly for the lowest-level parts. Programs normally use them through a higher-level <strong>API</strong>, not directly.
+
+  <Ar><strong>الواجهة البرمجية للخدمات التي يقدّمها نظام التشغيل</strong>. تُكتب استدعاءات النظام (system calls) عادةً بلغة C أو C++، وبلغة التجميع (assembly) للأجزاء الأدنى مستوى. وتستخدمها البرامج عادةً عبر <strong>واجهة برمجة (API)</strong> عالية المستوى، لا مباشرةً.</Ar>
 </Definition>
 
 Even copying one file to another needs **many** system calls: acquire the file names, open the input, create the output, then loop reading and writing, handle errors, close both files and terminate.
 
-<SlideFigure page={14} caption="The system-call sequence to copy one file to another." />
+<Ar>حتى نسخ ملف إلى آخر يحتاج إلى **الكثير** من استدعاءات النظام: الحصول على أسماء الملفات، وفتح ملف الإدخال، وإنشاء ملف الإخراج، ثم التكرار في حلقة للقراءة والكتابة، ومعالجة الأخطاء، وإغلاق الملفين، والإنهاء.</Ar>
+
+<SlideFigure page={14} caption="The system-call sequence to copy one file to another." captionAr="تسلسل استدعاءات النظام لنسخ ملف إلى آخر." />
 
 ```c title="copy.c — the same idea in POSIX C"
 #include <fcntl.h>
@@ -93,98 +119,141 @@ int main(int argc, char *argv[]) {
 
 ### APIs
 
+<Ar>واجهات البرمجة (APIs)</Ar>
+
 The three most common APIs are **Win32** (Windows), **POSIX** (UNIX, Linux, macOS) and the **Java API** (JVM). For example, `ssize_t read(int fd, void *buf, size_t count)` returns the number of bytes read, or $-1$ on error.
+
+<Ar>أشهر ثلاث واجهات برمجة (APIs) هي **Win32** (ويندوز)، و**POSIX** (UNIX و Linux و macOS)، و**Java API** (JVM). فمثلًا، `ssize_t read(int fd, void *buf, size_t count)` تُرجع عدد البايتات المقروءة، أو `-1` عند حدوث خطأ.</Ar>
 
 Why use an API rather than raw system calls?
 
+<Ar>لماذا نستخدم واجهة برمجة (API) بدلًا من استدعاءات النظام المباشرة؟</Ar>
+
 - **Portability**: a program written against POSIX compiles on any POSIX system.
+  <Ar>**قابلية النقل (Portability)**: البرنامج المكتوب وفق POSIX يُترجَم على أي نظام يدعم POSIX.</Ar>
 - **Simplicity**: the actual system calls are often more detailed and harder to use.
+  <Ar>**البساطة**: استدعاءات النظام الفعلية غالبًا ما تكون أكثر تفصيلًا وأصعب استخدامًا.</Ar>
 
 The **C standard library** is part of the API. `printf()` formats the text in user mode, then calls the `write()` system call.
 
+<Ar>**مكتبة C القياسية (C standard library)** جزء من واجهة البرمجة. فالدالة `printf()` تنسّق النص في وضع المستخدم، ثم تستدعي استدعاء النظام `write()`.</Ar>
+
 ### How a system call is dispatched
 
-<SlideFigure page={18} caption="The application calls open() in user mode; the system-call interface traps into the kernel, looks up the call number and runs the implementation." />
+<Ar>كيف يُوجَّه استدعاء النظام</Ar>
+
+<SlideFigure page={18} caption="The application calls open() in user mode; the system-call interface traps into the kernel, looks up the call number and runs the implementation." captionAr="يستدعي التطبيق open() في وضع المستخدم، فتنتقل واجهة استدعاءات النظام إلى النواة عبر مصيدة، وتبحث عن رقم الاستدعاء وتشغّل تنفيذه." />
 
 <Steps>
 
 1. Each system call has a **number**.
+   <Ar>لكل استدعاء نظام **رقم**.</Ar>
 2. The **system-call interface** keeps a **table** indexed by these numbers.
+   <Ar>تحتفظ **واجهة استدعاءات النظام (system-call interface)** **بجدول** مفهرس بهذه الأرقام.</Ar>
 3. The library puts the number (and parameters) in place and executes a **trap**, switching to kernel mode.
+   <Ar>تضع المكتبة الرقم (والمعاملات) في مكانه وتنفّذ **مصيدة (trap)**، فتنتقل إلى وضع النواة.</Ar>
 4. The kernel runs the handler and returns the **status** and any return values.
+   <Ar>تشغّل النواة المعالِج (handler) وتُرجع **الحالة (status)** وأي قيم مُرجعة.</Ar>
 
 </Steps>
 
 The caller needs to know **nothing** about the implementation, only the API and what the OS will do. The run-time library hides the details.
 
+<Ar>لا يحتاج المستدعي إلى معرفة **أي شيء** عن التنفيذ (implementation)، بل يكفيه أن يعرف واجهة البرمجة وما سيفعله نظام التشغيل. وتُخفي مكتبة وقت التشغيل (run-time library) التفاصيل.</Ar>
+
 ### Passing parameters
 
-| Method | How |
+<Ar>تمرير المعاملات</Ar>
+
+| Method <Ar>الطريقة</Ar> | How <Ar>الكيفية</Ar> |
 |---|---|
-| **Registers** | Simplest, but there may be more parameters than registers |
-| **Block / table in memory** | Store the parameters in memory and pass the block's **address** in a register. Used by Linux and Solaris |
-| **Stack** | The program **pushes** the parameters and the OS **pops** them |
+| **Registers** <Ar>**المسجلات (Registers)**</Ar> | Simplest, but there may be more parameters than registers <Ar>الأبسط، لكن قد تكون المعاملات أكثر من المسجلات</Ar> |
+| **Block / table in memory** <Ar>**كتلة / جدول في الذاكرة**</Ar> | Store the parameters in memory and pass the block's **address** in a register. Used by Linux and Solaris <Ar>تُخزَّن المعاملات في الذاكرة ويُمرَّر **عنوان** الكتلة في مسجل. وتستخدمها Linux و Solaris</Ar> |
+| **Stack** <Ar>**المكدس (Stack)**</Ar> | The program **pushes** the parameters and the OS **pops** them <Ar>**يدفع (pushes)** البرنامج المعاملات إلى المكدس، و**يسحبها (pops)** نظام التشغيل منه</Ar> |
 
 The block and stack methods don't limit the number or length of parameters.
 
-<SlideFigure page={20} caption="Parameter passing via a table: the address X is passed in a register for system call 13." />
+<Ar>طريقتا الكتلة والمكدس لا تقيّدان عدد المعاملات أو طولها.</Ar>
+
+<SlideFigure page={20} caption="Parameter passing via a table: the address X is passed in a register for system call 13." captionAr="تمرير المعاملات عبر جدول: يُمرَّر العنوان X في مسجل لاستدعاء النظام رقم 13." />
 
 ## Types of system calls
 
-| Type | Examples |
-|---|---|
-| **Process control** | create/terminate process, end, abort, load, execute, get/set attributes, wait for time or event, signal event, allocate/free memory, dump memory on error, **locks** for shared data |
-| **File management** | create, delete, open, close, read, write, reposition, get/set attributes |
-| **Device management** | request, release, read, write, reposition, get/set attributes, attach/detach devices |
-| **Information maintenance** | get/set time or date, get/set system data, get/set process, file or device attributes |
-| **Communications** | create/delete connections, send/receive messages (message passing), create and map **shared memory** |
-| **Protection** | get/set permissions, allow/deny user access |
+<Ar>أنواع استدعاءات النظام</Ar>
 
-| Category | Windows | UNIX |
+| Type <Ar>النوع</Ar> | Examples <Ar>أمثلة</Ar> |
+|---|---|
+| **Process control** <Ar>**التحكم في العمليات (Process control)**</Ar> | create/terminate process, end, abort, load, execute, get/set attributes, wait for time or event, signal event, allocate/free memory, dump memory on error, **locks** for shared data <Ar>إنشاء العملية/إنهاؤها، والإنهاء، والإجهاض (abort)، والتحميل، والتنفيذ، وقراءة الخصائص/ضبطها، وانتظار وقت أو حدث، والإشارة إلى حدث، وتخصيص الذاكرة/تحريرها، وتفريغ الذاكرة (dump) عند الخطأ، و**الأقفال (locks)** للبيانات المشتركة</Ar> |
+| **File management** <Ar>**إدارة الملفات**</Ar> | create, delete, open, close, read, write, reposition, get/set attributes <Ar>الإنشاء، والحذف، والفتح، والإغلاق، والقراءة، والكتابة، وتغيير الموضع (reposition)، وقراءة الخصائص/ضبطها</Ar> |
+| **Device management** <Ar>**إدارة الأجهزة**</Ar> | request, release, read, write, reposition, get/set attributes, attach/detach devices <Ar>طلب الجهاز، وتحريره، والقراءة، والكتابة، وتغيير الموضع، وقراءة الخصائص/ضبطها، وتوصيل الأجهزة/فصلها</Ar> |
+| **Information maintenance** <Ar>**صيانة المعلومات (Information maintenance)**</Ar> | get/set time or date, get/set system data, get/set process, file or device attributes <Ar>قراءة الوقت أو التاريخ/ضبطه، وقراءة بيانات النظام/ضبطها، وقراءة خصائص العمليات أو الملفات أو الأجهزة/ضبطها</Ar> |
+| **Communications** <Ar>**الاتصالات**</Ar> | create/delete connections, send/receive messages (message passing), create and map **shared memory** <Ar>إنشاء الاتصالات/حذفها، وإرسال الرسائل/استقبالها (تمرير الرسائل (message passing))، وإنشاء **الذاكرة المشتركة (shared memory)** وربطها (map)</Ar> |
+| **Protection** <Ar>**الحماية**</Ar> | get/set permissions, allow/deny user access <Ar>قراءة الصلاحيات/ضبطها، والسماح بوصول المستخدم/منعه</Ar> |
+
+| Category <Ar>الفئة</Ar> | Windows <Ar>ويندوز (Windows)</Ar> | UNIX <Ar>يونكس (UNIX)</Ar> |
 |---|---|---|
-| Process control | `CreateProcess()` `ExitProcess()` `WaitForSingleObject()` | `fork()` `exit()` `wait()` |
-| File management | `CreateFile()` `ReadFile()` `WriteFile()` `CloseHandle()` | `open()` `read()` `write()` `close()` |
-| Device management | `SetConsoleMode()` `ReadConsole()` `WriteConsole()` | `ioctl()` `read()` `write()` |
-| Information | `GetCurrentProcessID()` `SetTimer()` `Sleep()` | `getpid()` `alarm()` `sleep()` |
-| Communications | `CreatePipe()` `CreateFileMapping()` `MapViewOfFile()` | `pipe()` `shm_open()` `mmap()` |
-| Protection | `SetFileSecurity()` `InitializeSecurityDescriptor()` `SetSecurityDescriptorGroup()` | `chmod()` `umask()` `chown()` |
+| Process control <Ar>التحكم في العمليات</Ar> | `CreateProcess()` `ExitProcess()` `WaitForSingleObject()` | `fork()` `exit()` `wait()` |
+| File management <Ar>إدارة الملفات</Ar> | `CreateFile()` `ReadFile()` `WriteFile()` `CloseHandle()` | `open()` `read()` `write()` `close()` |
+| Device management <Ar>إدارة الأجهزة</Ar> | `SetConsoleMode()` `ReadConsole()` `WriteConsole()` | `ioctl()` `read()` `write()` |
+| Information <Ar>المعلومات</Ar> | `GetCurrentProcessID()` `SetTimer()` `Sleep()` | `getpid()` `alarm()` `sleep()` |
+| Communications <Ar>الاتصالات</Ar> | `CreatePipe()` `CreateFileMapping()` `MapViewOfFile()` | `pipe()` `shm_open()` `mmap()` |
+| Protection <Ar>الحماية</Ar> | `SetFileSecurity()` `InitializeSecurityDescriptor()` `SetSecurityDescriptorGroup()` | `chmod()` `umask()` `chown()` |
 
 ### Two extremes: Arduino and FreeBSD
 
+<Ar>طرفان متقابلان: Arduino و FreeBSD</Ar>
+
 <Grid cols={2}>
-  <Card title="Arduino" tag="single-tasking">
+  <Card title="Arduino" titleAr="لوحة Arduino" tag="single-tasking">
     No operating system. A <strong>boot loader</strong> loads one program (a "sketch") from flash, and it runs alone in a single memory space.
+
+    <Ar>لا يوجد نظام تشغيل. يحمّل <strong>محمِّل الإقلاع (boot loader)</strong> برنامجًا واحدًا (يُسمّى «sketch») من ذاكرة الفلاش (flash)، ويعمل هذا البرنامج وحده في حيّز ذاكرة واحد.</Ar>
   </Card>
-  <Card title="FreeBSD" tag="multitasking UNIX">
+  <Card title="FreeBSD" titleAr="نظام FreeBSD" tag="multitasking UNIX">
     After login the user's <strong>shell</strong> runs. For each command it calls <code>fork()</code> to create a process and <code>exec()</code> to load the program, then <strong>waits</strong> (or continues, for background jobs). Exit code 0 means success; above 0 is an error.
+
+    <Ar>بعد تسجيل الدخول تعمل <strong>صدفة (shell)</strong> المستخدم. ولكل أمر تستدعي <code>fork()</code> لإنشاء عملية و <code>exec()</code> لتحميل البرنامج، ثم <strong>تنتظر</strong> (أو تواصل، في حالة المهام الخلفية (background jobs)). ورمز الخروج (exit code) 0 يعني النجاح، وما فوق 0 يعني خطأ.</Ar>
   </Card>
 </Grid>
 
 ## System programs (system services)
 
+<Ar>برامج النظام (خدمات النظام)</Ar>
+
 Most users see the OS through **system programs**, not raw system calls. Some are thin interfaces to system calls; others are complex.
 
-| Category | Examples |
+<Ar>يرى معظم المستخدمين نظام التشغيل من خلال **برامج النظام (system programs)**، لا من خلال استدعاءات النظام المباشرة. بعضها مجرد واجهات رقيقة لاستدعاءات النظام، وبعضها الآخر معقّد.</Ar>
+
+| Category <Ar>الفئة</Ar> | Examples <Ar>أمثلة</Ar> |
 |---|---|
-| **File management** | create, delete, copy, rename, print, list files and directories |
-| **Status information** | date, time, free memory and disk, number of users; logging and performance; the **registry** |
-| **File modification** | text editors, search and transform tools |
-| **Programming-language support** | compilers, assemblers, debuggers, interpreters |
-| **Program loading and execution** | loaders, linkage editors, debuggers |
-| **Communications** | virtual connections between processes, users and systems: chat, web, email, remote login, file transfer |
-| **Background services** | launched at boot, often running until shutdown: disk checking, scheduling, logging, printing. Called **services**, **subsystems** or **daemons**, and they run in **user** context |
+| **File management** <Ar>**إدارة الملفات**</Ar> | create, delete, copy, rename, print, list files and directories <Ar>إنشاء الملفات والمجلدات وحذفها ونسخها وإعادة تسميتها وطباعتها وعرضها</Ar> |
+| **Status information** <Ar>**معلومات الحالة**</Ar> | date, time, free memory and disk, number of users; logging and performance; the **registry** <Ar>التاريخ، والوقت، والذاكرة والمساحة الحرة على القرص، وعدد المستخدمين، والتسجيل (logging) والأداء، و**سجل النظام (registry)**</Ar> |
+| **File modification** <Ar>**تعديل الملفات**</Ar> | text editors, search and transform tools <Ar>محررات النصوص، وأدوات البحث والتحويل</Ar> |
+| **Programming-language support** <Ar>**دعم لغات البرمجة**</Ar> | compilers, assemblers, debuggers, interpreters <Ar>المترجمات (compilers)، والمجمِّعات (assemblers)، ومصححات الأخطاء (debuggers)، والمفسِّرات (interpreters)</Ar> |
+| **Program loading and execution** <Ar>**تحميل البرامج وتنفيذها**</Ar> | loaders, linkage editors, debuggers <Ar>المحمِّلات (loaders)، ومحررات الربط (linkage editors)، ومصححات الأخطاء</Ar> |
+| **Communications** <Ar>**الاتصالات**</Ar> | virtual connections between processes, users and systems: chat, web, email, remote login, file transfer <Ar>اتصالات افتراضية بين العمليات والمستخدمين والأنظمة: المحادثة، والويب، والبريد الإلكتروني، وتسجيل الدخول عن بُعد، ونقل الملفات</Ar> |
+| **Background services** <Ar>**الخدمات الخلفية**</Ar> | launched at boot, often running until shutdown: disk checking, scheduling, logging, printing. Called **services**, **subsystems** or **daemons**, and they run in **user** context <Ar>تبدأ عند الإقلاع، وغالبًا ما تعمل حتى إيقاف التشغيل: فحص الأقراص، والجدولة، والتسجيل، والطباعة. وتُسمّى **خدمات (services)** أو **أنظمة فرعية (subsystems)** أو **برامج خفية (daemons)**، وتعمل في سياق **المستخدم**</Ar> |
 
 **Application programs** (browsers, office suites, games) are not part of the OS.
 
+<Ar>**البرامج التطبيقية (Application programs)** (المتصفحات، والحزم المكتبية، والألعاب) ليست جزءًا من نظام التشغيل.</Ar>
+
 ## Linkers and loaders
 
-<SlideFigure page={33} caption="main.c → compiler → main.o (relocatable) → linker (+ libraries) → main (executable) → loader → program in memory." />
+<Ar>الرابطات والمحمِّلات</Ar>
+
+<SlideFigure page={33} caption="main.c → compiler → main.o (relocatable) → linker (+ libraries) → main (executable) → loader → program in memory." captionAr="main.c ← المترجم ← الملف القابل لإعادة التوطين main.o ← الرابط مع المكتبات ← الملف التنفيذي main ← المحمِّل ← البرنامج في الذاكرة." />
 
 - The **compiler** turns source into **relocatable object files** that can be loaded at any address.
+  <Ar>يحوّل **المترجم (compiler)** الشيفرة المصدرية إلى **ملفات كائنية قابلة لإعادة التوطين (relocatable object files)** يمكن تحميلها في أي عنوان.</Ar>
 - The **linker** combines object files and **libraries** into one **executable**.
+  <Ar>يجمع **الرابط (linker)** الملفات الكائنية و**المكتبات (libraries)** في **ملف تنفيذي (executable)** واحد.</Ar>
 - The **loader** brings the executable into memory; **relocation** assigns final addresses.
+  <Ar>يُحضر **المحمِّل (loader)** الملف التنفيذي إلى الذاكرة، و**إعادة التوطين (relocation)** تُسند العناوين النهائية.</Ar>
 - **Dynamically linked libraries** (Windows DLLs, Linux `.so` files) are loaded only when needed and shared between programs.
+  <Ar>**المكتبات المرتبطة ديناميكيًا (Dynamically linked libraries)** (ملفات DLL في ويندوز، وملفات `.so` في لينكس) لا تُحمَّل إلا عند الحاجة، وتتشاركها البرامج.</Ar>
 - Executables use standard formats: **ELF** on UNIX and Linux, **PE** on Windows, **Mach-O** on macOS.
+  <Ar>تستخدم الملفات التنفيذية صيغًا قياسية: **ELF** في UNIX و Linux، و**PE** في Windows، و**Mach-O** في macOS.</Ar>
 
 ```bash title="Terminal"
 gcc -c main.c          # compile  → main.o
@@ -195,45 +264,69 @@ strace ./main          # Linux: list every system call the program makes
 
 ### Why applications are OS-specific
 
+<Ar>لماذا ترتبط التطبيقات بنظام تشغيل محدد</Ar>
+
 Each OS has its own **system calls**, binary **formats** and instruction sets. A program compiled for one OS usually won't run on another unless it is:
 
+<Ar>لكل نظام تشغيل **استدعاءات نظام** خاصة به، و**صيغ** ثنائية (binary formats)، ومجموعات تعليمات (instruction sets). والبرنامج المترجَم لنظام تشغيل ما لا يعمل عادةً على نظام آخر إلا إذا كان:</Ar>
+
 - written in an **interpreted** language (Python, Ruby) with an interpreter on each OS,
+  <Ar>مكتوبًا بلغة **مفسَّرة (interpreted)** (Python و Ruby) مع وجود مفسِّر على كل نظام تشغيل،</Ar>
 - run on a **virtual machine** (Java's JVM),
+  <Ar>يعمل على **آلة افتراضية (virtual machine)** (مثل JVM في Java)،</Ar>
 - written in a standard language or API (POSIX) and **recompiled** for each OS.
+  <Ar>مكتوبًا بلغة أو واجهة برمجة قياسية (POSIX) و**يُعاد ترجمته (recompiled)** لكل نظام تشغيل.</Ar>
 
 At the lowest level, the **ABI** (application binary interface) fixes how binaries interact with a given OS and CPU architecture.
+
+<Ar>وعلى المستوى الأدنى، تحدّد **الواجهة الثنائية للتطبيقات (ABI)** كيفية تفاعل الملفات الثنائية مع نظام تشغيل معيّن ومعمارية معالج معيّنة.</Ar>
 
 <Takeaways>
 
 - OS services serve **users** (UI, execution, I/O, files, communication, errors) and the **system** (allocation, accounting, protection).
+  <Ar>تخدم خدمات نظام التشغيل **المستخدمين** (الواجهة، والتنفيذ، والإدخال/الإخراج، والملفات، والاتصال، والأخطاء) و**النظام** (التخصيص، والمحاسبة، والحماية).</Ar>
 - Programs request services through **system calls**, usually via an **API** such as POSIX, Win32 or Java.
+  <Ar>تطلب البرامج الخدمات عبر **استدعاءات النظام (system calls)**، وعادةً من خلال **واجهة برمجة (API)** مثل POSIX أو Win32 أو Java.</Ar>
 - A system call is a **numbered** entry in a kernel table, reached by a **trap**; parameters go in registers, a memory block or the stack.
+  <Ar>استدعاء النظام مُدخل **مرقَّم** في جدول داخل النواة، يُوصَل إليه عبر **مصيدة (trap)**، وتُمرَّر المعاملات في المسجلات أو في كتلة ذاكرة أو عبر المكدس.</Ar>
 - The six types are process control, files, devices, information, communications and protection.
+  <Ar>الأنواع الستة هي: التحكم في العمليات، والملفات، والأجهزة، والمعلومات، والاتصالات، والحماية.</Ar>
 - The **linker** builds executables, the **loader** runs them, and binaries are tied to an OS's system calls and ABI.
+  <Ar>**الرابط (linker)** يبني الملفات التنفيذية، و**المحمِّل (loader)** يشغّلها، والملفات الثنائية مرتبطة باستدعاءات النظام والواجهة الثنائية (ABI) لنظام تشغيل معيّن.</Ar>
 
 </Takeaways>
 
 ## Practice
 
-<Exercise title="Count the system calls" level="easy">
+<Ar>تدريب</Ar>
+
+<Exercise title="Count the system calls" titleAr="عُدّ استدعاءات النظام" level="easy">
 
 In `copy.c` above, copying a 10 KB file with a 4 KB buffer: how many `read()` and `write()` calls happen?
+
+<Ar>في البرنامج `copy.c` أعلاه، عند نسخ ملف حجمه 10 KB باستخدام مخزن مؤقت (buffer) حجمه 4 KB: كم استدعاءً لـ `read()` و `write()` يحدث؟</Ar>
 
 <Solution>
 
 `read()` returns 4096, 4096, 2048 and then **0** (end of file): **4 reads**. Each non-empty read is followed by a write: **3 writes**. Add 2 `open()` and 2 `close()` calls, plus the exit.
 
+<Ar>تُرجع `read()` القيم 4096 و 4096 و 2048 ثم **0** (نهاية الملف): أي **4 عمليات قراءة**. وتلي كل قراءة غير فارغة عملية كتابة: أي **3 عمليات كتابة**. أضف إليها استدعاءين لـ `open()` واستدعاءين لـ `close()`، إضافةً إلى الخروج (exit).</Ar>
+
 </Solution>
 
 </Exercise>
 
-<Exercise title="Library call or system call?" level="medium">
+<Exercise title="Library call or system call?" titleAr="استدعاء مكتبة أم استدعاء نظام؟" level="medium">
 
 Which of these always involve a trap into the kernel? `printf()`, `strlen()`, `malloc()`, `write()`, `fork()`.
+
+<Ar>أيٌّ مما يلي يتضمن دائمًا مصيدة (trap) إلى النواة؟ `printf()` و `strlen()` و `malloc()` و `write()` و `fork()`.</Ar>
 
 <Solution>
 
 `write()` and `fork()` **are** system calls. `strlen()` is pure user-space code. `printf()` formats in user space and **eventually** calls `write()`; it is buffered, so not every call traps. `malloc()` usually serves requests from memory it already has, and only sometimes calls `brk()` or `mmap()` to get more from the kernel.
+
+<Ar>`write()` و `fork()` **هما** استدعاءا نظام. و `strlen()` شيفرة تعمل بالكامل في فضاء المستخدم (user space). أما `printf()` فتنسّق النص في فضاء المستخدم ثم تستدعي `write()` **في النهاية**، وهي تستخدم التخزين المؤقت (buffering)، لذا لا يؤدي كل استدعاء لها إلى مصيدة. و `malloc()` تلبّي الطلبات عادةً من ذاكرة متوفرة لديها مسبقًا، ولا تستدعي `brk()` أو `mmap()` للحصول على المزيد من النواة إلا أحيانًا.</Ar>
 
 </Solution>
 
@@ -243,39 +336,57 @@ Which of these always involve a trap into the kernel? `printf()`, `strlen()`, `m
   questions={[
     {
       q: "Which is the most common API on UNIX, Linux and macOS?",
+      qAr: "ما واجهة البرمجة الأكثر شيوعًا في UNIX و Linux و macOS؟",
       options: ["Win32", "POSIX", "Java API", ".NET"],
+      optionsAr: ["Win32", "POSIX", "Java API", ".NET"],
       answer: 1,
-      explain: "POSIX is the API for virtually all UNIX-like systems."
+      explain: "POSIX is the API for virtually all UNIX-like systems.",
+      explainAr: "واجهة POSIX هي واجهة البرمجة لجميع الأنظمة الشبيهة بـ UNIX تقريبًا."
     },
     {
       q: "How does the system-call interface find the right kernel routine?",
+      qAr: "كيف تعثر واجهة استدعاءات النظام على الروتين الصحيح في النواة؟",
       options: ["By the function's name", "Through a table indexed by system-call number", "By scanning the kernel", "Through the GUI"],
+      optionsAr: ["باسم الدالة", "عبر جدول مفهرس برقم استدعاء النظام", "بمسح النواة", "عبر الواجهة الرسومية"],
       answer: 1,
-      explain: "Each system call is numbered; the number indexes a table of handlers."
+      explain: "Each system call is numbered; the number indexes a table of handlers.",
+      explainAr: "لكل استدعاء نظام رقم، وهذا الرقم فهرس في جدول المعالِجات (handlers)."
     },
     {
       q: "Linux and Solaris pass system-call parameters mainly by…",
+      qAr: "تمرّر Linux و Solaris معاملات استدعاء النظام أساسًا عبر…",
       options: ["Registers only", "A block in memory whose address is passed in a register", "Environment variables", "Files"],
+      optionsAr: ["المسجلات فقط", "كتلة في الذاكرة يُمرَّر عنوانها في مسجل", "متغيرات البيئة", "الملفات"],
       answer: 1,
-      explain: "The block method has no limit on parameter count."
+      explain: "The block method has no limit on parameter count.",
+      explainAr: "طريقة الكتلة لا حدّ فيها لعدد المعاملات."
     },
     {
       q: "fork(), exit() and wait() belong to which type of system call?",
+      qAr: "إلى أي نوع من استدعاءات النظام تنتمي fork() و exit() و wait()؟",
       options: ["File management", "Process control", "Device management", "Protection"],
+      optionsAr: ["إدارة الملفات", "التحكم في العمليات", "إدارة الأجهزة", "الحماية"],
       answer: 1,
-      explain: "They create, end and synchronize processes."
+      explain: "They create, end and synchronize processes.",
+      explainAr: "فهي تنشئ العمليات وتنهيها وتزامنها."
     },
     {
       q: "Background services that run from boot to shutdown are called…",
+      qAr: "الخدمات الخلفية التي تعمل من الإقلاع حتى إيقاف التشغيل تُسمّى…",
       options: ["Daemons", "Kernels", "Traps", "Loaders"],
+      optionsAr: ["البرامج الخفية (Daemons)", "الأنوية", "المصائد", "المحمِّلات"],
       answer: 0,
-      explain: "Daemons (services/subsystems) run in user context."
+      explain: "Daemons (services/subsystems) run in user context.",
+      explainAr: "تعمل البرامج الخفية (أي الخدمات أو الأنظمة الفرعية) في سياق المستخدم."
     },
     {
       q: "Which program combines object files and libraries into an executable?",
+      qAr: "أي برنامج يجمع الملفات الكائنية والمكتبات في ملف تنفيذي؟",
       options: ["Compiler", "Linker", "Loader", "Shell"],
+      optionsAr: ["المترجم", "الرابط", "المحمِّل", "الصدفة"],
       answer: 1,
-      explain: "The loader later brings the executable into memory."
+      explain: "The loader later brings the executable into memory.",
+      explainAr: "أما المحمِّل فيُحضر الملف التنفيذي إلى الذاكرة لاحقًا."
     }
   ]}
 />

@@ -1,7 +1,9 @@
 ---
 number: 2
 title: Restricting and Sorting Data
+titleAr: "تقييد البيانات وترتيبها"
 summary: Filter rows with WHERE using comparison operators, BETWEEN, IN, LIKE patterns and IS NULL; combine conditions with AND, OR and NOT; understand operator precedence; and sort results with ORDER BY. Every example is shown with its output on the HR sample.
+summaryAr: "تصفية الصفوف باستخدام WHERE مع مؤثرات المقارنة و BETWEEN و IN وأنماط LIKE و IS NULL؛ ودمج الشروط باستخدام AND و OR و NOT؛ وفهم أولوية المؤثرات؛ وترتيب النتائج باستخدام ORDER BY. كل مثال معروض مع مخرجاته على عينة HR."
 kind: lab
 topics: [WHERE clause, Comparison operators, BETWEEN, IN, LIKE and wildcards, IS NULL, AND / OR / NOT, Precedence, ORDER BY]
 duration: 50 min hands-on
@@ -20,9 +22,13 @@ bookRefs:
 <Objectives>
 
 - Limit the rows a query returns with the **WHERE** clause.
+  <Ar>تقييد الصفوف التي يُعيدها الاستعلام باستخدام عبارة **WHERE** (clause).</Ar>
 - Use **comparison** conditions: `=`, `<>`, `<`, `<=`, `>`, `>=`, `BETWEEN … AND …`, `IN`, `LIKE`, `IS NULL`.
+  <Ar>استخدام شروط **المقارنة (comparison)**: `=`، `<>`، `<`، `<=`، `>`، `>=`، `BETWEEN … AND …`، `IN`، `LIKE`، `IS NULL`.</Ar>
 - Combine conditions with **AND**, **OR** and **NOT**, and apply the **rules of precedence**.
+  <Ar>دمج الشروط باستخدام **AND** و**OR** و**NOT**، وتطبيق **قواعد الأولوية (rules of precedence)**.</Ar>
 - Sort results with **ORDER BY**: ascending or descending, by alias, by position, and by several columns.
+  <Ar>ترتيب النتائج باستخدام **ORDER BY**: تصاعديًا أو تنازليًا، وحسب الاسم المستعار (alias)، وحسب الموضع، وحسب عدة أعمدة.</Ar>
 
 </Objectives>
 
@@ -35,7 +41,11 @@ FROM     table
 
 ## The WHERE clause
 
+<Ar>عبارة WHERE</Ar>
+
 `WHERE` comes right after `FROM` and keeps only the rows for which the condition is **true**. This is relational **selection** ($\sigma$).
+
+<Ar>تأتي `WHERE` مباشرةً بعد `FROM`، وتُبقي فقط الصفوف التي يكون الشرط لها **صحيحًا (true)**. وهذا هو **الاختيار (selection)** في الجبر العلائقي (σ).</Ar>
 
 ```sql
 SELECT employee_id, last_name, job_id, department_id
@@ -44,12 +54,16 @@ WHERE  department_id = 90;
 -- 100 King AD_PRES 90 · 101 Kochhar AD_VP 90 · 102 De Haan AD_VP 90
 ```
 
-<Callout type="warning" title="Strings and dates">
+<Callout type="warning" title="Strings and dates" titleAr="النصوص والتواريخ">
 
 - Character and date values go in **single quotes**.
+  <Ar>تُكتب القيم النصية وقيم التاريخ بين **علامتي اقتباس مفردتين (single quotes)**.</Ar>
 - Character values are **case-sensitive**: `'Whalen'` matches, `'WHALEN'` doesn't.
+  <Ar>القيم النصية **حساسة لحالة الأحرف (case-sensitive)**: `'Whalen'` تطابق، أما `'WHALEN'` فلا.</Ar>
 - Dates are **format-sensitive**. The default display format is `DD-MON-RR`, e.g. `'17-JUN-03'`.
+  <Ar>التواريخ **حساسة للتنسيق (format-sensitive)**. وتنسيق العرض الافتراضي هو `DD-MON-RR`، مثل `'17-JUN-03'`.</Ar>
 - You can't use a **column alias** in `WHERE`, because WHERE is evaluated before the SELECT list.
+  <Ar>لا يمكنك استخدام **الاسم المستعار للعمود (column alias)** في `WHERE`، لأن `WHERE` تُقيَّم قبل قائمة `SELECT`.</Ar>
 
 </Callout>
 
@@ -61,14 +75,16 @@ WHERE  last_name = 'Whalen';
 
 ## Comparison operators
 
-| Operator | Meaning |
+<Ar>مؤثرات المقارنة</Ar>
+
+| Operator <Ar>المؤثر</Ar> | Meaning <Ar>المعنى</Ar> |
 |---|---|
-| `=` `>` `>=` `<` `<=` | Equal, greater, greater or equal, less, less or equal |
-| `<>` (also `!=`) | Not equal |
-| `BETWEEN a AND b` | Between two values, **inclusive** |
-| `IN (list)` | Matches any value in a list |
-| `LIKE` | Matches a character pattern |
-| `IS NULL` | Is a NULL value |
+| `=` `>` `>=` `<` `<=` | Equal, greater, greater or equal, less, less or equal <Ar>يساوي، أكبر من، أكبر من أو يساوي، أصغر من، أصغر من أو يساوي</Ar> |
+| `<>` (also `!=`) <Ar>`<>` (وأيضًا `!=`)</Ar> | Not equal <Ar>لا يساوي</Ar> |
+| `BETWEEN a AND b` | Between two values, **inclusive** <Ar>بين قيمتين، **شاملًا الحدّين (inclusive)**</Ar> |
+| `IN (list)` | Matches any value in a list <Ar>يطابق أي قيمة في قائمة</Ar> |
+| `LIKE` | Matches a character pattern <Ar>يطابق نمطًا من الأحرف (pattern)</Ar> |
+| `IS NULL` | Is a NULL value <Ar>القيمة فارغة (NULL)</Ar> |
 
 ```sql
 SELECT last_name, salary FROM employees WHERE salary <= 3000;
@@ -76,6 +92,8 @@ SELECT last_name, salary FROM employees WHERE salary <= 3000;
 ```
 
 ### BETWEEN: ranges (inclusive)
+
+<Ar>BETWEEN: النطاقات (شاملة الحدّين)</Ar>
 
 ```sql
 SELECT last_name, salary
@@ -86,7 +104,11 @@ WHERE  salary BETWEEN 2500 AND 3500;     -- lower limit first!
 
 `BETWEEN 3500 AND 2500` returns **no rows**: it means `salary >= 3500 AND salary <= 2500`.
 
+<Ar>لا تُعيد `BETWEEN 3500 AND 2500` **أي صفوف**، لأنها تعني `salary >= 3500 AND salary <= 2500`.</Ar>
+
 ### IN: membership in a list
+
+<Ar>IN: الانتماء إلى قائمة</Ar>
 
 ```sql
 SELECT employee_id, last_name, salary, manager_id
@@ -94,7 +116,8 @@ FROM   employees
 WHERE  manager_id IN (100, 101, 201);
 ```
 
-| EMPLOYEE_ID | LAST_NAME | SALARY | MANAGER_ID |
+{/* data-table */}
+| EMPLOYEE_ID <Ar>رقم الموظف</Ar> | LAST_NAME <Ar>الاسم الأخير</Ar> | SALARY <Ar>الراتب</Ar> | MANAGER_ID <Ar>رقم المدير</Ar> |
 |---|---|---|---|
 | 101 | Kochhar | 17000 | 100 |
 | 102 | De Haan | 17000 | 100 |
@@ -107,10 +130,12 @@ WHERE  manager_id IN (100, 101, 201);
 
 ### LIKE: pattern matching
 
-| Wildcard | Matches |
+<Ar>LIKE: مطابقة الأنماط</Ar>
+
+| Wildcard <Ar>الرمز البديل (wildcard)</Ar> | Matches <Ar>يطابق</Ar> |
 |---|---|
-| `%` | Zero or more characters |
-| `_` | Exactly one character |
+| `%` | Zero or more characters <Ar>صفر حرف أو أكثر</Ar> |
+| `_` | Exactly one character <Ar>حرفًا واحدًا بالضبط</Ar> |
 
 ```sql
 SELECT first_name FROM employees WHERE first_name LIKE 'S%';
@@ -122,9 +147,15 @@ SELECT last_name FROM employees WHERE last_name LIKE '_o%';   -- second letter i
 
 To search for a literal `%` or `_`, use **ESCAPE**: `WHERE job_id LIKE '%SA\_%' ESCAPE '\'`.
 
+<Ar>للبحث عن الرمز `%` أو `_` بمعناه الحرفي، استخدم **ESCAPE**: `WHERE job_id LIKE '%SA\_%' ESCAPE '\'`.</Ar>
+
 ### IS NULL
 
+<Ar>الشرط IS NULL</Ar>
+
 `= NULL` is **never true**, because NULL compares as unknown. Always test with `IS NULL` / `IS NOT NULL`.
+
+<Ar>الشرط `= NULL` **لا يكون صحيحًا أبدًا**، لأن نتيجة مقارنة NULL تكون «غير معروفة» (unknown). اختبر دائمًا باستخدام `IS NULL` / `IS NOT NULL`.</Ar>
 
 ```sql
 SELECT last_name, manager_id FROM employees WHERE manager_id IS NULL;
@@ -133,11 +164,13 @@ SELECT last_name, manager_id FROM employees WHERE manager_id IS NULL;
 
 ## Logical operators
 
-| Operator | Returns TRUE if… |
+<Ar>المؤثرات المنطقية</Ar>
+
+| Operator <Ar>المؤثر</Ar> | Returns TRUE if… <Ar>يُعيد TRUE إذا…</Ar> |
 |---|---|
-| `AND` | **Both** conditions are true |
-| `OR` | **Either** condition is true |
-| `NOT` | The condition is false (`NOT IN`, `NOT BETWEEN`, `NOT LIKE`, `IS NOT NULL`) |
+| `AND` | **Both** conditions are true <Ar>كان الشرطان **كلاهما** صحيحين</Ar> |
+| `OR` | **Either** condition is true <Ar>كان **أيٌّ من** الشرطين صحيحًا</Ar> |
+| `NOT` | The condition is false (`NOT IN`, `NOT BETWEEN`, `NOT LIKE`, `IS NOT NULL`) <Ar>كان الشرط خاطئًا (`NOT IN`، `NOT BETWEEN`، `NOT LIKE`، `IS NOT NULL`)</Ar> |
 
 ```sql
 SELECT employee_id, last_name, job_id, salary
@@ -149,6 +182,8 @@ AND    job_id LIKE '%MAN%';
 
 With `OR` instead of `AND`, the same query returns **8** rows: everyone earning at least 10,000 (King, Kochhar, De Haan, Zlotkey, Abel, Hartstein, Higgins) plus Mourgos, a manager earning 5,800.
 
+<Ar>باستخدام `OR` بدلًا من `AND`، يُعيد الاستعلام نفسه **8** صفوف: كل من يكسب 10,000 على الأقل (King و Kochhar و De Haan و Zlotkey و Abel و Hartstein و Higgins)، إضافةً إلى Mourgos، وهو مدير يكسب 5,800.</Ar>
+
 ```sql
 SELECT last_name, job_id
 FROM   employees
@@ -157,19 +192,23 @@ WHERE  job_id NOT IN ('IT_PROG', 'ST_CLERK', 'SA_REP');   -- 10 rows
 
 ## Rules of precedence
 
-| Order | Operators |
+<Ar>قواعد الأولوية</Ar>
+
+| Order <Ar>الترتيب</Ar> | Operators <Ar>المؤثرات</Ar> |
 |---|---|
-| 1 | Arithmetic |
-| 2 | Concatenation `\|\|` |
-| 3 | Comparison conditions |
+| 1 | Arithmetic <Ar>المؤثرات الحسابية</Ar> |
+| 2 | Concatenation `\|\|` <Ar>الدمج (Concatenation) `\|\|`</Ar> |
+| 3 | Comparison conditions <Ar>شروط المقارنة</Ar> |
 | 4 | `IS [NOT] NULL`, `LIKE`, `[NOT] IN` |
 | 5 | `[NOT] BETWEEN` |
-| 6 | Not equal to |
+| 6 | Not equal to <Ar>لا يساوي</Ar> |
 | 7 | `NOT` |
 | 8 | **`AND`** |
 | 9 | **`OR`** |
 
 **AND binds tighter than OR**, so parentheses change the meaning:
+
+<Ar>**ترتبط `AND` بقوة أكبر من `OR`**، لذا تُغيّر الأقواس المعنى:</Ar>
 
 ```sql
 -- (1) means: SA_REP  OR  (AD_PRES AND salary > 15000)
@@ -185,7 +224,11 @@ WHERE  (job_id = 'SA_REP' OR job_id = 'AD_PRES') AND salary > 15000;
 
 ## Sorting with ORDER BY
 
+<Ar>الترتيب باستخدام ORDER BY</Ar>
+
 `ORDER BY` is **always the last clause**. Rows are sorted ascending (`ASC`, the default) or descending (`DESC`).
+
+<Ar>تكون `ORDER BY` **دائمًا آخر عبارة (clause)**. وتُرتَّب الصفوف تصاعديًا (`ASC`، وهو الافتراضي) أو تنازليًا (`DESC`).</Ar>
 
 ```sql
 SELECT last_name, job_id, department_id, hire_date
@@ -196,6 +239,8 @@ ORDER BY hire_date DESC;                -- newest first
 ```
 
 You can sort by a **column alias** (ORDER BY runs after SELECT), by **column position**, or by **several columns**:
+
+<Ar>يمكنك الترتيب حسب **الاسم المستعار للعمود (column alias)** (لأن `ORDER BY` تُنفَّذ بعد `SELECT`)، أو حسب **موضع العمود**، أو حسب **عدة أعمدة**:</Ar>
 
 ```sql
 SELECT employee_id, last_name, salary*12 annsal
@@ -211,7 +256,8 @@ FROM   employees
 ORDER BY department_id, salary DESC;    -- by department, then highest salary first
 ```
 
-| LAST_NAME | DEPARTMENT_ID | SALARY |
+{/* data-table */}
+| LAST_NAME <Ar>الاسم الأخير</Ar> | DEPARTMENT_ID <Ar>رقم القسم</Ar> | SALARY <Ar>الراتب</Ar> |
 |---|---|---|
 | Whalen | 10 | 4400 |
 | Hartstein | 20 | 13000 |
@@ -221,24 +267,34 @@ ORDER BY department_id, salary DESC;    -- by department, then highest salary fi
 | … | … | … |
 | Grant | (null) | 7000 |
 
-<Callout type="note" title="Where do NULLs go?">
+<Callout type="note" title="Where do NULLs go?" titleAr="أين تذهب القيم الفارغة (NULL)؟">
   Oracle sorts NULLs **last** in ascending order and **first** in descending order. That's why Grant, who has no department, is at the bottom. Override it with `NULLS FIRST` or `NULLS LAST`. Other databases (SQLite, MySQL) put NULLs first in ascending order.
+
+  <Ar>يضع Oracle القيم الفارغة (NULLs) **في النهاية** عند الترتيب التصاعدي و**في البداية** عند الترتيب التنازلي، ولهذا يظهر Grant، الذي ليس له قسم، في الأسفل. ويمكنك تغيير ذلك باستخدام `NULLS FIRST` أو `NULLS LAST`. أما قواعد البيانات الأخرى (SQLite و MySQL) فتضع القيم الفارغة أولًا عند الترتيب التصاعدي.</Ar>
 </Callout>
 
 <Takeaways>
 
 - `WHERE` filters rows; strings and dates are quoted, strings are case-sensitive, and aliases are not allowed in WHERE.
+  <Ar>تُصفّي `WHERE` الصفوف؛ وتُكتب النصوص والتواريخ بين علامتي اقتباس، والنصوص حساسة لحالة الأحرف، ولا يُسمح بالأسماء المستعارة في `WHERE`.</Ar>
 - `BETWEEN` is inclusive (lower limit first), `IN` tests a list, `LIKE` uses `%` and `_`, and NULL needs `IS NULL`.
+  <Ar>`BETWEEN` شاملة للحدّين (والحد الأدنى أولًا)، و`IN` تختبر قائمة، و`LIKE` تستخدم `%` و`_`، والقيمة NULL تحتاج إلى `IS NULL`.</Ar>
 - **AND before OR**: use parentheses whenever you mix them.
+  <Ar>**`AND` قبل `OR`**: استخدم الأقواس كلما جمعت بينهما.</Ar>
 - `ORDER BY` comes last; it sorts ASC by default and accepts aliases, positions and several columns.
+  <Ar>تأتي `ORDER BY` في النهاية؛ وهي ترتب تصاعديًا (`ASC`) افتراضيًا، وتقبل الأسماء المستعارة والمواضع وعدة أعمدة.</Ar>
 
 </Takeaways>
 
 ## Practice
 
-<Exercise title="Range and pattern" level="easy">
+<Ar>تدريب</Ar>
+
+<Exercise title="Range and pattern" titleAr="النطاق والنمط" level="easy">
 
 List the last name and salary of employees who earn **between 5,000 and 12,000** and whose last name contains an **"a"**, highest salary first.
+
+<Ar>اعرض الاسم الأخير والراتب للموظفين الذين يكسبون **بين 5,000 و 12,000** ويحتوي اسمهم الأخير على الحرف **«a»**، مع عرض الراتب الأعلى أولًا.</Ar>
 
 <Solution>
 
@@ -252,25 +308,33 @@ ORDER BY salary DESC;
 
 On the sample: Taylor 8600 · Grant 7000 · Fay 6000. "Abel" starts with a capital A, and LIKE is case-sensitive in Oracle, so it doesn't match. Use `LOWER(last_name) LIKE '%a%'` (Section 3) to ignore case.
 
+<Ar>على العينة: Taylor 8600 · Grant 7000 · Fay 6000. يبدأ «Abel» بحرف A كبير، و`LIKE` حساسة لحالة الأحرف في Oracle، لذا لا يطابق. استخدم `LOWER(last_name) LIKE '%a%'` (السكشن 3) لتجاهل حالة الأحرف.</Ar>
+
 </Solution>
 
 </Exercise>
 
-<Exercise title="Fix the logic" level="medium">
+<Exercise title="Fix the logic" titleAr="أصلح المنطق" level="medium">
 
 "Show sales representatives and the president who earn more than 15,000." A student wrote query (1) above and got four rows. Why, and what's the fix?
+
+<Ar>«اعرض مندوبي المبيعات والرئيس الذين يكسبون أكثر من 15,000». كتب طالب الاستعلام (1) السابق وحصل على أربعة صفوف. لماذا، وما الإصلاح؟</Ar>
 
 <Solution>
 
 `AND` is evaluated before `OR`, so the salary condition only applies to `AD_PRES`, and all sales reps come back regardless of salary. Put the ORs in parentheses: `WHERE (job_id = 'SA_REP' OR job_id = 'AD_PRES') AND salary > 15000`. That returns only King.
 
+<Ar>تُقيَّم `AND` قبل `OR`، لذا ينطبق شرط الراتب على `AD_PRES` فقط، ويعود كل مندوبي المبيعات بغض النظر عن رواتبهم. ضع شرطي `OR` بين أقواس: `WHERE (job_id = 'SA_REP' OR job_id = 'AD_PRES') AND salary > 15000`. وهذا يُعيد King فقط.</Ar>
+
 </Solution>
 
 </Exercise>
 
-<Exercise title="Commission earners" level="easy">
+<Exercise title="Commission earners" titleAr="الحاصلون على عمولة" level="easy">
 
 List the last name, salary and commission of everyone who **earns a commission**, sorted by salary and then commission, both descending.
+
+<Ar>اعرض الاسم الأخير والراتب والعمولة لكل من **يحصل على عمولة**، مرتبين حسب الراتب ثم العمولة، وكلاهما تنازليًا.</Ar>
 
 <Solution>
 
@@ -290,39 +354,57 @@ ORDER BY 2 DESC, 3 DESC;
   questions={[
     {
       q: "Which are valid WHERE operators? (choose the best answer)",
+      qAr: "ما مؤثرات WHERE الصحيحة؟ (اختر أفضل إجابة)",
       options: [">=, IS NULL, <>", "!==, IS LIKE", "IN BETWEEN", "=>"],
+      optionsAr: [">=, IS NULL, <>", "!==, IS LIKE", "IN BETWEEN", "=>"],
       answer: 0,
-      explain: "!==, IS LIKE and IN BETWEEN don't exist in SQL."
+      explain: "!==, IS LIKE and IN BETWEEN don't exist in SQL.",
+      explainAr: "المؤثر المكوّن من علامة تعجب تليها علامتا يساوي، والمؤثران IS LIKE و IN BETWEEN، كلها غير موجودة في SQL."
     },
     {
       q: "WHERE salary BETWEEN 2500 AND 3500 includes a salary of exactly 3500?",
+      qAr: "هل يشمل الشرط WHERE salary BETWEEN 2500 AND 3500 راتبًا قيمته 3500 بالضبط؟",
       options: ["Yes", "No"],
+      optionsAr: ["نعم", "لا"],
       answer: 0,
-      explain: "BETWEEN is inclusive at both ends."
+      explain: "BETWEEN is inclusive at both ends.",
+      explainAr: "BETWEEN شاملة للحدّين كليهما."
     },
     {
       q: "Which pattern matches last names whose SECOND letter is 'o'?",
+      qAr: "أي نمط يطابق الأسماء الأخيرة التي يكون حرفها الثاني «o»؟",
       options: ["'%o%'", "'_o%'", "'o_%'", "'%_o'"],
+      optionsAr: ["'%o%'", "'_o%'", "'o_%'", "'%_o'"],
       answer: 1,
-      explain: "_ matches exactly one character, then 'o', then anything."
+      explain: "_ matches exactly one character, then 'o', then anything.",
+      explainAr: "الرمز _ يطابق حرفًا واحدًا بالضبط، ثم «o»، ثم أي شيء."
     },
     {
       q: "How do you find employees with no manager?",
+      qAr: "كيف تعثر على الموظفين الذين ليس لهم مدير؟",
       options: ["manager_id = NULL", "manager_id IS NULL", "manager_id = 0", "manager_id = ''"],
+      optionsAr: ["manager_id = NULL", "manager_id IS NULL", "manager_id = 0", "manager_id = ''"],
       answer: 1,
-      explain: "Comparisons with NULL are unknown; use IS NULL."
+      explain: "Comparisons with NULL are unknown; use IS NULL.",
+      explainAr: "نتيجة المقارنات مع NULL غير معروفة (unknown)؛ استخدم IS NULL."
     },
     {
       q: "In 'A OR B AND C', which is evaluated first?",
+      qAr: "في التعبير «A OR B AND C»، أيهما يُقيَّم أولًا؟",
       options: ["A OR B", "B AND C", "Left to right", "It's ambiguous"],
+      optionsAr: ["A OR B", "B AND C", "من اليسار إلى اليمين", "التعبير غامض"],
       answer: 1,
-      explain: "AND has higher precedence than OR."
+      explain: "AND has higher precedence than OR.",
+      explainAr: "أولوية AND أعلى من أولوية OR."
     },
     {
       q: "Where can a column alias be used?",
+      qAr: "أين يمكن استخدام الاسم المستعار للعمود؟",
       options: ["WHERE", "ORDER BY", "FROM", "Nowhere"],
+      optionsAr: ["WHERE", "ORDER BY", "FROM", "لا يمكن استخدامه في أي مكان"],
       answer: 1,
-      explain: "ORDER BY runs after the SELECT list; WHERE runs before it."
+      explain: "ORDER BY runs after the SELECT list; WHERE runs before it.",
+      explainAr: "تُنفَّذ ORDER BY بعد قائمة SELECT، بينما تُنفَّذ WHERE قبلها."
     }
   ]}
 />

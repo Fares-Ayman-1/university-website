@@ -11,6 +11,7 @@ import {
   itemHref,
   type ResourceItem,
 } from "@/lib/content";
+import { ArLine, ArText } from "@/components/mdx/Arabic";
 import styles from "./overview.module.css";
 
 type Props = { params: Promise<{ subject: string }> };
@@ -33,8 +34,12 @@ function TrackCard({ subject, items, collection }: { subject: string; items: Res
         <div>
           <h2 id={`${collection}-track`} className={styles.trackTitle}>
             {meta.label}
+            <ArLine>{meta.labelAr}</ArLine>
           </h2>
-          <p className={styles.trackMeta}>{meta.description}</p>
+          <p className={styles.trackMeta}>
+            {meta.description}
+            <ArLine>{meta.descriptionAr}</ArLine>
+          </p>
         </div>
       </header>
       {items.length > 0 ? (
@@ -45,7 +50,10 @@ function TrackCard({ subject, items, collection }: { subject: string; items: Res
                 <span className={styles.trackNum}>
                   {meta.badge} {formatNumber(item.data.number)}
                 </span>
-                <span className={styles.trackItemTitle}>{item.data.title}</span>
+                <span className={styles.trackItemTitle}>
+                  {item.data.title}
+                  <ArLine>{item.data.titleAr}</ArLine>
+                </span>
               </Link>
             </li>
           ))}
@@ -81,14 +89,21 @@ export default async function SubjectOverviewPage({ params }: Props) {
           <section aria-labelledby="about">
             <h2 id="about" className={styles.h2}>
               About this subject
+              <ArLine>عن المادة</ArLine>
             </h2>
             <p className={styles.description}>{subject.description}</p>
+            {subject.descriptionAr ? (
+              <p className={`${styles.description} ${styles.descriptionAr} ar`} lang="ar" dir="rtl">
+                <ArText>{subject.descriptionAr}</ArText>
+              </p>
+            ) : null}
           </section>
 
           {subject.objectives.length > 0 ? (
             <section aria-labelledby="objectives">
               <h2 id="objectives" className={styles.h2}>
                 Course objectives
+                <ArLine>أهداف المقرر</ArLine>
               </h2>
               <ol className={styles.objectives}>
                 {subject.objectives.map((objective, i) => (
@@ -96,7 +111,10 @@ export default async function SubjectOverviewPage({ params }: Props) {
                     <span className={styles.ghost} aria-hidden="true">
                       {i + 1}
                     </span>
-                    {objective}
+                    <span>
+                      {objective}
+                      <ArLine>{subject.objectivesAr[i]}</ArLine>
+                    </span>
                   </li>
                 ))}
               </ol>
@@ -107,6 +125,7 @@ export default async function SubjectOverviewPage({ params }: Props) {
             <section aria-labelledby="topics">
               <h2 id="topics" className={styles.h2}>
                 Course topics
+                <ArLine>موضوعات المقرر</ArLine>
               </h2>
               <ul className={styles.topics}>
                 {subject.topics.map((topic) => (
@@ -122,12 +141,16 @@ export default async function SubjectOverviewPage({ params }: Props) {
             <section className={styles.panel} aria-labelledby="grading">
               <h2 id="grading" className={styles.panelTitle}>
                 Grading
+                <ArLine>توزيع الدرجات</ArLine>
               </h2>
               <ul className={styles.grading}>
                 {subject.grading.map((part) => (
                   <li key={part.label}>
                     <div className={styles.gradeRow}>
-                      <span>{part.label}</span>
+                      <span>
+                        {part.label}
+                        <ArLine>{part.labelAr}</ArLine>
+                      </span>
                       <strong>{part.weight}%</strong>
                     </div>
                     <span className={styles.bar}>
@@ -143,6 +166,7 @@ export default async function SubjectOverviewPage({ params }: Props) {
             <section className={styles.panel} aria-labelledby="instructors">
               <h2 id="instructors" className={styles.panelTitle}>
                 Teaching staff
+                <ArLine>فريق التدريس</ArLine>
               </h2>
               <ul className={styles.people}>
                 {subject.instructors.map((person) => (
@@ -158,6 +182,7 @@ export default async function SubjectOverviewPage({ params }: Props) {
             <section className={styles.panel} aria-labelledby="books">
               <h2 id="books" className={styles.panelTitle}>
                 Reference books
+                <ArLine>المراجع</ArLine>
               </h2>
               <ul className={styles.books}>
                 {subject.books.map((book) => {

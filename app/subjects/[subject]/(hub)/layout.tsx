@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getLectures, getSections, getSubject } from "@/lib/content";
 import { SubjectTabs } from "@/components/SubjectTabs";
+import { ArText } from "@/components/mdx/Arabic";
 import styles from "./hub.module.css";
 
 export default async function SubjectHubLayout({
@@ -25,9 +26,24 @@ export default async function SubjectHubLayout({
           <h1 className={`${styles.title} rise`} style={{ "--i": 1 } as React.CSSProperties}>
             {subject.title}
           </h1>
+          {subject.titleAr ? (
+            <p className={`${styles.titleAr} ar rise`} lang="ar" dir="rtl" style={{ "--i": 1 } as React.CSSProperties}>
+              <ArText>{subject.titleAr}</ArText>
+            </p>
+          ) : null}
           <p className={`${styles.tagline} rise`} style={{ "--i": 2 } as React.CSSProperties}>
             {subject.tagline}
           </p>
+          {subject.taglineAr ? (
+            <p
+              className={`${styles.tagline} ${styles.taglineAr} ar rise`}
+              lang="ar"
+              dir="rtl"
+              style={{ "--i": 2 } as React.CSSProperties}
+            >
+              <ArText>{subject.taglineAr}</ArText>
+            </p>
+          ) : null}
         </div>
       </section>
       <SubjectTabs

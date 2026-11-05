@@ -1,7 +1,9 @@
 ---
 number: 1
 title: Databases and Database Users
+titleAr: "قواعد البيانات ومستخدموها"
 summary: Why databases replaced traditional file processing, what a DBMS does, the characteristics and advantages of the database approach, who uses databases, how data models evolved, and what happens inside a DBMS when a query or a transaction runs.
+summaryAr: "لماذا حلّت قواعد البيانات محل المعالجة التقليدية للملفات (file processing)، وما الذي يفعله نظام إدارة قواعد البيانات (DBMS)، وخصائص منهج قواعد البيانات ومزاياه، ومن يستخدم قواعد البيانات، وكيف تطورت نماذج البيانات، وما الذي يحدث داخل نظام إدارة قواعد البيانات عند تنفيذ استعلام (query) أو معاملة (transaction)."
 topics: [Data vs information, File processing problems, DBMS, Database approach, Database users, Evolution of data models, Transactions and ACID]
 duration: 50 min study
 sources:
@@ -22,203 +24,311 @@ bookRefs:
 <Objectives>
 
 - Distinguish **data**, **information** and **metadata**, and define a **database**, a **DBMS** and a **database system**.
+  <Ar>التمييز بين **البيانات (data)** و**المعلومات (information)** و**البيانات الوصفية (metadata)**، وتعريف **قاعدة البيانات (database)** و**نظام إدارة قواعد البيانات (DBMS)** و**نظام قاعدة البيانات (database system)**.</Ar>
 - Explain the problems of **traditional file processing** and how the **database approach** solves them.
+  <Ar>شرح مشكلات **المعالجة التقليدية للملفات (traditional file processing)** وكيف يحلها **منهج قواعد البيانات (database approach)**.</Ar>
 - Describe the **main characteristics** of the database approach and the **people** who work with databases.
+  <Ar>وصف **الخصائص الرئيسية** لمنهج قواعد البيانات و**الأشخاص** الذين يعملون مع قواعد البيانات.</Ar>
 - Trace the **evolution of data models**, from flat files to relational, object and semi-structured data.
+  <Ar>تتبّع **تطور نماذج البيانات (data models)**، من الملفات المسطحة (flat files) إلى البيانات العلائقية (relational) والكائنية (object) وشبه المهيكلة (semi-structured).</Ar>
 - Explain how a DBMS processes **queries** and **transactions**, including **ACID**, locking and deadlocks.
+  <Ar>شرح كيف يعالج نظام إدارة قواعد البيانات (DBMS) **الاستعلامات (queries)** و**المعاملات (transactions)**، بما في ذلك خصائص **ACID** والقفل (locking) والجمود (deadlocks).</Ar>
 
 </Objectives>
 
 ## Basic concepts
 
-<Definition term="Data vs. information">
+<Ar>المفاهيم الأساسية</Ar>
+
+<Definition term="Data vs. information" termAr="البيانات مقابل المعلومات">
   <strong>Data</strong> are facts about objects and events that can be recorded and stored: text, numbers, images, sound, video. <strong>Information</strong> is data that has been <strong>processed</strong> (put in context or summarized) so that it is useful for decision making.
+
+  <Ar><strong>البيانات (Data)</strong> حقائق عن الأشياء والأحداث يمكن تسجيلها وتخزينها: نصوص وأرقام وصور وأصوات وفيديو. أما <strong>المعلومات (Information)</strong> فهي بيانات <strong>عولِجت</strong> (وُضعت في سياق أو لُخِّصت) بحيث تصبح مفيدة في اتخاذ القرار.</Ar>
 </Definition>
 
-<SlideFigure page={6} caption="The same student facts become information when shown in context (a class roster) or summarized (charts)." />
+<SlideFigure page={6} caption="The same student facts become information when shown in context (a class roster) or summarized (charts)." captionAr="حقائق الطلاب نفسها تصبح معلومات عند عرضها في سياق (كشف أسماء الفصل) أو عند تلخيصها (رسوم بيانية)." />
 
-<Definition term="Metadata">
+<Definition term="Metadata" termAr="البيانات الوصفية">
   <strong>Data that describes data</strong>: data types, field sizes, allowed values and documentation. A DBMS keeps it in its <strong>catalog</strong> (data dictionary).
+
+  <Ar><strong>بيانات تصف البيانات</strong>: أنواع البيانات، وأحجام الحقول، والقيم المسموح بها، والتوثيق. ويحتفظ بها نظام إدارة قواعد البيانات (DBMS) في <strong>الكتالوج (catalog)</strong> الخاص به (قاموس البيانات data dictionary).</Ar>
 </Definition>
 
-| Term | Meaning |
+| Term <Ar>المصطلح</Ar> | Meaning <Ar>المعنى</Ar> |
 |---|---|
-| **Mini-world** | The part of the real world the database describes, e.g. student grades and transcripts at a university |
-| **Database** | An organized collection of **logically related** data: entities and the relationships between them |
-| **DBMS** | Software that makes it easy to **create and maintain** a computerized database |
-| **Database system** | The database **plus** the DBMS software (and often the applications) |
+| **Mini-world** <Ar>**العالم المصغَّر**</Ar> | The part of the real world the database describes, e.g. student grades and transcripts at a university <Ar>جزء العالم الحقيقي الذي تصفه قاعدة البيانات، مثل درجات الطلاب وكشوف درجاتهم في جامعة</Ar> |
+| **Database** <Ar>**قاعدة البيانات**</Ar> | An organized collection of **logically related** data: entities and the relationships between them <Ar>مجموعة منظمة من البيانات **المترابطة منطقيًا**: الكيانات (entities) والعلاقات (relationships) بينها</Ar> |
+| **DBMS** <Ar>**نظام إدارة قواعد البيانات**</Ar> | Software that makes it easy to **create and maintain** a computerized database <Ar>برمجيات تسهّل **إنشاء وصيانة** قاعدة بيانات محوسبة</Ar> |
+| **Database system** <Ar>**نظام قاعدة البيانات**</Ar> | The database **plus** the DBMS software (and often the applications) <Ar>قاعدة البيانات **مضافًا إليها** برمجيات نظام إدارة قواعد البيانات (وغالبًا التطبيقات أيضًا)</Ar> |
 
 In a university database, the **entities** are students, professors, courses and classrooms. The **relationships** are which students take which courses, who teaches which course, and where each course meets.
 
-<SlideFigure page={6} source={1} caption="A simplified database system environment: programs and queries go through the DBMS, which uses the stored metadata to access the stored data." />
+<Ar>في قاعدة بيانات جامعة، تكون **الكيانات (entities)** هي الطلاب والأساتذة والمقررات وقاعات الدراسة، وتكون **العلاقات (relationships)** هي: أي الطلاب يدرسون أي المقررات، ومن يدرّس كل مقرر، وأين يُعقد كل مقرر.</Ar>
+
+<SlideFigure page={6} source={1} caption="A simplified database system environment: programs and queries go through the DBMS, which uses the stored metadata to access the stored data." captionAr="بيئة مبسطة لنظام قاعدة البيانات: تمر البرامج والاستعلامات عبر نظام إدارة قواعد البيانات (DBMS)، الذي يستخدم البيانات الوصفية المخزنة للوصول إلى البيانات المخزنة." />
 
 ### What a DBMS does
+
+<Ar>ما الذي يفعله نظام إدارة قواعد البيانات</Ar>
 
 <Steps>
 
 1. **Define** the database: data types, structures and constraints.
+   <Ar>**تعريف** قاعدة البيانات: أنواع البيانات والبُنى والقيود (constraints).</Ar>
 2. **Construct** (load) the initial contents onto secondary storage.
+   <Ar>**إنشاء** (تحميل) المحتوى الأولي على وسائط التخزين الثانوية (secondary storage).</Ar>
 3. **Manipulate** it: retrieve (queries, reports) and modify (insert, delete, update).
+   <Ar>**معالجتها (Manipulate)**: الاسترجاع (الاستعلامات والتقارير) والتعديل (الإدراج والحذف والتحديث).</Ar>
 4. **Share** it among many concurrent users and programs while keeping it consistent.
+   <Ar>**مشاركتها** بين كثير من المستخدمين والبرامج المتزامنين مع الحفاظ على اتساقها.</Ar>
 5. **Protect** it (security, backup and recovery) and **maintain** it as requirements change.
+   <Ar>**حمايتها** (الأمان والنسخ الاحتياطي والاسترداد) و**صيانتها** مع تغيّر المتطلبات.</Ar>
 
 </Steps>
 
 ## Why not just use files?
 
+<Ar>لماذا لا نكتفي باستخدام الملفات؟</Ar>
+
 Before DBMSs, every department wrote its own programs over its own files.
 
-<SlideFigure page={11} caption="Three file-processing systems at Pine Valley Furniture. The customer master file is duplicated in two departments." />
+<Ar>قبل ظهور أنظمة إدارة قواعد البيانات (DBMSs)، كان كل قسم يكتب برامجه الخاصة التي تعمل على ملفاته الخاصة.</Ar>
+
+<SlideFigure page={11} caption="Three file-processing systems at Pine Valley Furniture. The customer master file is duplicated in two departments." captionAr="ثلاثة أنظمة لمعالجة الملفات في شركة Pine Valley Furniture، وملف العملاء الرئيسي مكرر في قسمين." />
 
 <Grid cols={2}>
-  <Card title="Program–data dependence" tag="problem">
+  <Card title="Program–data dependence" titleAr="اعتماد البرامج على البيانات" tag="problem">
     Each program contains the file's metadata and its own read/insert/update/delete routines. Change the file format and every program must change.
+
+    <Ar>يحتوي كل برنامج على البيانات الوصفية (metadata) للملف وعلى إجراءاته الخاصة للقراءة والإدراج والتحديث والحذف، فإذا تغيّرت صيغة الملف وجب تغيير كل البرامج.</Ar>
   </Card>
-  <Card title="Duplication of data" tag="problem">
+  <Card title="Duplication of data" titleAr="تكرار البيانات" tag="problem">
     The same data is stored in several files. This wastes space and, worse, causes <strong>inconsistencies</strong> when one copy is updated and another is not, which damages <strong>integrity</strong>.
+
+    <Ar>تُخزَّن البيانات نفسها في عدة ملفات، وهذا يهدر المساحة، والأسوأ أنه يسبب <strong>عدم الاتساق (inconsistencies)</strong> عندما تُحدَّث نسخة ولا تُحدَّث أخرى، مما يضر <strong>بسلامة البيانات (integrity)</strong>.</Ar>
   </Card>
-  <Card title="Limited data sharing" tag="problem">
+  <Card title="Limited data sharing" titleAr="محدودية مشاركة البيانات" tag="problem">
     There is no central control: each application owns its files in non-standard formats.
+
+    <Ar>لا توجد سيطرة مركزية: فكل تطبيق يمتلك ملفاته بصيغ غير قياسية.</Ar>
   </Card>
-  <Card title="Long development and heavy maintenance" tag="problem">
+  <Card title="Long development and heavy maintenance" titleAr="تطوير طويل وصيانة مرهقة" tag="problem">
     Programmers design their own formats for every new application, and maintenance can eat up to 80% of the IS budget.
+
+    <Ar>يصمم المبرمجون صيغهم الخاصة لكل تطبيق جديد، وقد تستهلك الصيانة ما يصل إلى 80% من ميزانية نظم المعلومات (IS).</Ar>
   </Card>
 </Grid>
 
 ### Why not let the operating system manage the data?
 
+<Ar>لماذا لا نترك نظام التشغيل يدير البيانات؟</Ar>
+
 An OS is a file manager, but it is a poor database manager:
 
+<Ar>نظام التشغيل (OS) مدير ملفات، لكنه مدير ضعيف لقواعد البيانات:</Ar>
+
 - It loads a **whole file** into memory even when you need one record.
+  <Ar>يحمّل **الملف كاملًا** إلى الذاكرة حتى عندما تحتاج إلى سجل (record) واحد فقط.</Ar>
 - Security is just a **password per file**, which is too coarse to give different users different parts of the data.
+  <Ar>الأمان مجرد **كلمة مرور لكل ملف**، وهذا أعمّ من أن يسمح بإعطاء مستخدمين مختلفين أجزاءً مختلفة من البيانات.</Ar>
 - Every new question about the data needs a **new program**.
+  <Ar>كل سؤال جديد عن البيانات يحتاج إلى **برنامج جديد**.</Ar>
 
 A DBMS treats a file as a collection of **pages of records** rather than a string of characters, and it replaces "a program per question" with a **query language: SQL**.
 
+<Ar>يتعامل نظام إدارة قواعد البيانات (DBMS) مع الملف على أنه مجموعة من **صفحات السجلات (pages of records)** لا سلسلة من الحروف، ويستبدل بمبدأ «برنامج لكل سؤال» **لغةَ استعلام (query language) هي SQL**.</Ar>
+
 ## The database approach
+
+<Ar>منهج قواعد البيانات</Ar>
 
 **Solution:** a **central repository of shared data**, managed by a controlling agent (the **DBMS**) and stored in a standard form.
 
+<Ar>**الحل:** **مستودع مركزي للبيانات المشتركة (central repository)** يديره وكيل متحكم (هو **نظام إدارة قواعد البيانات DBMS**)، وتُخزَّن فيه البيانات بصيغة قياسية.</Ar>
+
 ### Main characteristics
 
-| Characteristic | Meaning |
-|---|---|
-| **Self-describing** | The DBMS **catalog** stores the structure, types and constraints (metadata), so one DBMS can serve many different databases |
-| **Program–data independence** | Storage structures can change without changing the programs that use them |
-| **Data abstraction** | A **data model** hides storage details and shows a conceptual view |
-| **Multiple views** | Each user can see a different **view** containing only the data they need |
-| **Sharing and multi-user transactions** | Many users read and update at the same time; **concurrency control** and **recovery** keep every transaction correct (OLTP) |
+<Ar>الخصائص الرئيسية</Ar>
 
-<SlideFigure page={13} source={1} caption="A simplified catalog: the database describes its own relations and columns." />
+| Characteristic <Ar>الخاصية</Ar> | Meaning <Ar>المعنى</Ar> |
+|---|---|
+| **Self-describing** <Ar>**الوصف الذاتي**</Ar> | The DBMS **catalog** stores the structure, types and constraints (metadata), so one DBMS can serve many different databases <Ar>يخزّن **كتالوج (catalog)** نظام إدارة قواعد البيانات البنية والأنواع والقيود (البيانات الوصفية)، ولذلك يستطيع نظام واحد أن يخدم قواعد بيانات كثيرة مختلفة</Ar> |
+| **Program–data independence** <Ar>**استقلال البرامج عن البيانات**</Ar> | Storage structures can change without changing the programs that use them <Ar>يمكن تغيير بُنى التخزين دون تغيير البرامج التي تستخدمها</Ar> |
+| **Data abstraction** <Ar>**تجريد البيانات**</Ar> | A **data model** hides storage details and shows a conceptual view <Ar>يُخفي **نموذج البيانات (data model)** تفاصيل التخزين ويعرض رؤية مفاهيمية (conceptual view)</Ar> |
+| **Multiple views** <Ar>**العروض المتعددة**</Ar> | Each user can see a different **view** containing only the data they need <Ar>يمكن لكل مستخدم أن يرى **عرضًا (view)** مختلفًا لا يحتوي إلا على البيانات التي يحتاجها</Ar> |
+| **Sharing and multi-user transactions** <Ar>**المشاركة والمعاملات متعددة المستخدمين**</Ar> | Many users read and update at the same time; **concurrency control** and **recovery** keep every transaction correct (OLTP) <Ar>يقرأ مستخدمون كثيرون ويحدّثون في الوقت نفسه، ويحافظ **التحكم في التزامن (concurrency control)** و**الاسترداد (recovery)** على صحة كل معاملة (OLTP)</Ar> |
+
+<SlideFigure page={13} source={1} caption="A simplified catalog: the database describes its own relations and columns." captionAr="كتالوج مبسط: قاعدة البيانات تصف علاقاتها (relations) وأعمدتها بنفسها." />
 
 ### Advantages
 
+<Ar>المزايا</Ar>
+
 <Grid cols={2}>
-  <Card title="Less redundancy, more sharing">Data is stored once and shared, and different users get different views.</Card>
-  <Card title="Quality and standards">Constraints and validation rules improve data quality, and all access goes through the same standard interface.</Card>
-  <Card title="Security and recovery">Unauthorized access is restricted, and backup, recovery and concurrency control are built in.</Card>
-  <Card title="Productivity">Indexes speed up queries, SQL removes the need for custom programs, and new applications are developed faster.</Card>
+  <Card title="Less redundancy, more sharing" titleAr="تكرار أقل ومشاركة أكثر">Data is stored once and shared, and different users get different views.<Ar>تُخزَّن البيانات مرة واحدة وتُشارَك، ويحصل المستخدمون المختلفون على عروض (views) مختلفة.</Ar></Card>
+
+  <Card title="Quality and standards" titleAr="الجودة والمعايير">Constraints and validation rules improve data quality, and all access goes through the same standard interface.<Ar>تُحسّن القيود (constraints) وقواعد التحقق جودة البيانات، ويمر كل وصول إليها عبر الواجهة القياسية نفسها.</Ar></Card>
+
+  <Card title="Security and recovery" titleAr="الأمان والاسترداد">Unauthorized access is restricted, and backup, recovery and concurrency control are built in.<Ar>يُقيَّد الوصول غير المصرّح به، والنسخ الاحتياطي والاسترداد والتحكم في التزامن (concurrency control) مدمجة في النظام.</Ar></Card>
+
+  <Card title="Productivity" titleAr="الإنتاجية">Indexes speed up queries, SQL removes the need for custom programs, and new applications are developed faster.<Ar>تسرّع الفهارس (indexes) الاستعلامات، وتُغني لغة SQL عن البرامج المخصصة، وتُطوَّر التطبيقات الجديدة بسرعة أكبر.</Ar></Card>
 </Grid>
 
 The approach also brings **flexibility** (the structure can evolve), **current information** for online systems such as airline reservations, and **economies of scale**.
 
+<Ar>ويوفّر هذا المنهج أيضًا **المرونة (flexibility)** (إذ يمكن للبنية أن تتطور)، و**المعلومات المحدَّثة** للأنظمة المتصلة (online) مثل حجوزات الطيران، و**وفورات الحجم (economies of scale)**.</Ar>
+
 ### Challenges a DBMS must meet
+
+<Ar>التحديات التي يجب أن يواجهها نظام إدارة قواعد البيانات</Ar>
 
 Organizational databases can hold **terabytes** of data and serve **many simultaneous users**. The DBMS must be **fast**, must preserve **integrity** after every operation, and must be **secure**, giving each user group exactly the data its permissions allow.
 
+<Ar>قد تحتوي قواعد بيانات المؤسسات على **تيرابايتات (terabytes)** من البيانات وتخدم **عددًا كبيرًا من المستخدمين في وقت واحد**. ويجب أن يكون نظام إدارة قواعد البيانات **سريعًا**، وأن يحافظ على **السلامة (integrity)** بعد كل عملية، وأن يكون **آمنًا**، فيعطي كل مجموعة من المستخدمين البيانات التي تسمح بها صلاحياتها بالضبط.</Ar>
+
 ### When not to use a DBMS
 
-<Callout type="warning" title="A DBMS has costs">
+<Ar>متى لا نستخدم نظام إدارة قواعد البيانات</Ar>
+
+<Callout type="warning" title="A DBMS has costs" titleAr="لنظام إدارة قواعد البيانات تكاليف">
 
 - High initial investment, possibly extra hardware.
+  <Ar>استثمار أولي مرتفع، وربما عتاد (hardware) إضافي.</Ar>
 - Overhead for generality, security, concurrency control, recovery and integrity.
+  <Ar>عبء إضافي (overhead) لتحقيق العمومية والأمان والتحكم في التزامن والاسترداد والسلامة.</Ar>
 
 A DBMS may be **unnecessary** for a simple, well-defined application that won't change, for a single user, or when **hard real-time** requirements can't tolerate its overhead. It may be **insufficient** when the data is too complex to model, or when users need special operations the DBMS doesn't support.
+
+<Ar>قد يكون نظام إدارة قواعد البيانات **غير ضروري** لتطبيق بسيط ومحدد جيدًا لن يتغير، أو لمستخدم واحد، أو عندما لا تحتمل متطلبات **الزمن الحقيقي الصارم (hard real-time)** العبء الإضافي الذي يسببه. وقد يكون **غير كافٍ** عندما تكون البيانات أعقد من أن تُنمذَج، أو عندما يحتاج المستخدمون إلى عمليات خاصة لا يدعمها النظام.</Ar>
 
 </Callout>
 
 ## Database users
 
+<Ar>مستخدمو قواعد البيانات</Ar>
+
 <Grid cols={2}>
-  <Card title="Database administrator (DBA)" tag="actor on the scene">
+  <Card title="Database administrator (DBA)" titleAr="مدير قاعدة البيانات (DBA)" tag="actor on the scene">
     Authorizes access, coordinates and monitors use, acquires resources, tunes performance, and ensures availability and recovery.
+
+    <Ar>يمنح صلاحيات الوصول، وينسّق الاستخدام ويراقبه، ويوفّر الموارد، ويضبط الأداء، ويضمن توافر النظام وإمكانية استرداده.</Ar>
   </Card>
-  <Card title="Database designers" tag="actor on the scene">
+  <Card title="Database designers" titleAr="مصممو قواعد البيانات" tag="actor on the scene">
     Decide the content, structure, constraints and transactions, and talk to users to understand their needs.
+
+    <Ar>يحددون المحتوى والبنية والقيود والمعاملات، ويتحاورون مع المستخدمين لفهم احتياجاتهم.</Ar>
   </Card>
-  <Card title="Application programmers" tag="actor on the scene">
+  <Card title="Application programmers" titleAr="مبرمجو التطبيقات" tag="actor on the scene">
     Write and test the programs and "canned transactions" that end users run.
+
+    <Ar>يكتبون البرامج و«المعاملات الجاهزة (canned transactions)» التي يشغّلها المستخدمون النهائيون ويختبرونها.</Ar>
   </Card>
-  <Card title="DBMS designers and tool developers" tag="worker behind the scene">
+  <Card title="DBMS designers and tool developers" titleAr="مصممو أنظمة إدارة قواعد البيانات ومطوّرو الأدوات" tag="worker behind the scene">
     Build the DBMS software itself, plus tools. Operators and maintenance staff also work behind the scene.
+
+    <Ar>يبنون برمجيات نظام إدارة قواعد البيانات نفسها، إضافة إلى الأدوات. ويعمل المشغّلون وموظفو الصيانة أيضًا خلف الكواليس.</Ar>
   </Card>
 </Grid>
 
 **End users** come in four kinds:
 
-| Kind | Description | Example |
+<Ar>**المستخدمون النهائيون (End users)** أربعة أنواع:</Ar>
+
+| Kind <Ar>النوع</Ar> | Description <Ar>الوصف</Ar> | Example <Ar>مثال</Ar> |
 |---|---|---|
-| **Casual** | Access the database occasionally, with different needs each time | A manager running an ad-hoc query |
-| **Naïve / parametric** | The largest group; use predefined **canned transactions** | A bank teller, a reservation clerk |
-| **Sophisticated** | Know the system well and use advanced tools | Analysts, scientists, engineers |
-| **Stand-alone** | Maintain personal databases with packaged software | Someone using a tax program |
+| **Casual** <Ar>**العَرَضي**</Ar> | Access the database occasionally, with different needs each time <Ar>يصل إلى قاعدة البيانات من حين لآخر، باحتياجات مختلفة في كل مرة</Ar> | A manager running an ad-hoc query <Ar>مدير يشغّل استعلامًا مخصصًا (ad-hoc query)</Ar> |
+| **Naïve / parametric** <Ar>**المبتدئ / البارامتري (parametric)**</Ar> | The largest group; use predefined **canned transactions** <Ar>أكبر فئة، ويستخدمون **معاملات جاهزة (canned transactions)** معرَّفة مسبقًا</Ar> | A bank teller, a reservation clerk <Ar>صرّاف بنك، موظف حجوزات</Ar> |
+| **Sophisticated** <Ar>**المتمرّس**</Ar> | Know the system well and use advanced tools <Ar>يعرفون النظام جيدًا ويستخدمون أدوات متقدمة</Ar> | Analysts, scientists, engineers <Ar>المحللون والعلماء والمهندسون</Ar> |
+| **Stand-alone** <Ar>**المستقل**</Ar> | Maintain personal databases with packaged software <Ar>يديرون قواعد بيانات شخصية باستخدام برمجيات جاهزة</Ar> | Someone using a tax program <Ar>شخص يستخدم برنامجًا لحساب الضرائب</Ar> |
 
 ## Applications and the evolution of data models
 
+<Ar>التطبيقات وتطور نماذج البيانات</Ar>
+
 Databases are everywhere: enterprise information (sales, accounting, HR), banking and finance, universities and airlines. Newer applications include multimedia, GIS, data warehouses and real-time databases. This course focuses on **traditional** numeric and textual databases.
 
-<SlideFigure page={22} caption="Evolution of database systems from the 1960s to the 2000s." />
+<Ar>قواعد البيانات في كل مكان: معلومات المؤسسات (المبيعات والمحاسبة والموارد البشرية)، والبنوك والتمويل، والجامعات وشركات الطيران. وتشمل التطبيقات الأحدث الوسائط المتعددة (multimedia)، ونظم المعلومات الجغرافية (GIS)، ومستودعات البيانات (data warehouses)، وقواعد بيانات الزمن الحقيقي (real-time). ويركّز هذا المقرر على قواعد البيانات **التقليدية** الرقمية والنصية.</Ar>
 
-| Era | Model | Idea |
+<SlideFigure page={22} caption="Evolution of database systems from the 1960s to the 2000s." captionAr="تطور أنظمة قواعد البيانات من ستينيات القرن العشرين حتى العقد الأول من القرن الحادي والعشرين." />
+
+| Era <Ar>الحقبة</Ar> | Model <Ar>النموذج</Ar> | Idea <Ar>الفكرة</Ar> |
 |---|---|---|
-| 1960s | **Flat files** | One big table per file; lots of duplication |
-| 1960s–70s | **Hierarchical / network** | Records linked by parent–child trees or general graphs; navigation by pointers |
-| 1970s–80s | **Relational** | Data in **tables** (relations); Codd, 1970; SQL. Still dominant |
-| 1990s | **Object-oriented / object-relational** | Objects with attributes and methods; relational DBMSs adopt object features |
-| 2000s | **Semi-structured (XML)**, **RDF** | Items of the same type may have different attributes; RDF publishes linked data for the Semantic Web and knowledge graphs |
+| 1960s | **Flat files** <Ar>**الملفات المسطحة**</Ar> | One big table per file; lots of duplication <Ar>جدول كبير واحد لكل ملف، مع تكرار كثير</Ar> |
+| 1960s–70s | **Hierarchical / network** <Ar>**الهرمي / الشبكي**</Ar> | Records linked by parent–child trees or general graphs; navigation by pointers <Ar>سجلات مرتبطة بأشجار أب–ابن (parent–child) أو بمخططات بيانية عامة (graphs)، والتنقل يتم عبر المؤشرات (pointers)</Ar> |
+| 1970s–80s | **Relational** <Ar>**العلائقي**</Ar> | Data in **tables** (relations); Codd, 1970; SQL. Still dominant <Ar>البيانات في **جداول** (علاقات relations)؛ قدّمه Codd عام 1970؛ لغة SQL. وما زال هو السائد</Ar> |
+| 1990s | **Object-oriented / object-relational** <Ar>**الكائني / الكائني العلائقي**</Ar> | Objects with attributes and methods; relational DBMSs adopt object features <Ar>كائنات (objects) لها سمات ودوال (methods)، وتتبنى أنظمة إدارة قواعد البيانات العلائقية خصائص كائنية</Ar> |
+| 2000s | **Semi-structured (XML)**, **RDF** <Ar>**شبه المهيكل (XML)**، و**RDF**</Ar> | Items of the same type may have different attributes; RDF publishes linked data for the Semantic Web and knowledge graphs <Ar>قد تكون لعناصر النوع نفسه سمات مختلفة، وتنشر RDF البيانات المترابطة (linked data) للويب الدلالي (Semantic Web) ولرسوم المعرفة البيانية (knowledge graphs)</Ar> |
 
 A **data model** is a set of concepts for describing data that hides low-level storage details. The **ER model** is a widely used *semantic* (conceptual) model, and the **relational model** is the model most DBMSs implement (Oracle, IBM DB2, MySQL…). Both are covered in the next lectures.
 
+<Ar>**نموذج البيانات (data model)** مجموعة من المفاهيم لوصف البيانات تُخفي تفاصيل التخزين منخفضة المستوى. و**نموذج الكيان والعلاقة (ER model)** نموذج *دلالي* (مفاهيمي) واسع الاستخدام، أما **النموذج العلائقي (relational model)** فهو النموذج الذي تنفّذه معظم أنظمة إدارة قواعد البيانات (Oracle و IBM DB2 و MySQL…). وسنتناول كليهما في المحاضرات التالية.</Ar>
+
 ## Inside a DBMS
 
-<SlideFigure page={39} caption="Structure of a DBMS. Single boxes are components, double boxes are in-memory data structures." />
+<Ar>داخل نظام إدارة قواعد البيانات</Ar>
+
+<SlideFigure page={39} caption="Structure of a DBMS. Single boxes are components, double boxes are in-memory data structures." captionAr="بنية نظام إدارة قواعد البيانات: المربعات المفردة مكوّنات، والمربعات المزدوجة هياكل بيانات في الذاكرة." />
 
 Commands come from **two sources**:
 
+<Ar>تأتي الأوامر من **مصدرين**:</Ar>
+
 - **DDL commands** come from the DBA. They change the **schema** and need special authority. A DDL processor parses them, and the execution engine updates the **metadata**.
+  <Ar>**أوامر لغة تعريف البيانات (DDL)** تأتي من مدير قاعدة البيانات (DBA)، وهي تغيّر **المخطط (schema)** وتحتاج إلى صلاحية خاصة. يحلّلها معالج DDL، ويحدّث محرك التنفيذ (execution engine) **البيانات الوصفية**.</Ar>
 - **DML commands** come from users and programs. They don't change the schema; they **query** or **modify** the content.
+  <Ar>**أوامر لغة معالجة البيانات (DML)** تأتي من المستخدمين والبرامج، ولا تغيّر المخطط، بل **تستعلم** عن المحتوى أو **تعدّله**.</Ar>
 
 ### Query answering
+
+<Ar>الإجابة عن الاستعلامات</Ar>
 
 <Steps>
 
 1. **Query compiler**: parses and **optimizes** the query into a **query plan**.
+   <Ar>**مترجم الاستعلامات (Query compiler)**: يحلّل الاستعلام و**يحسّنه (optimizes)** ليحوّله إلى **خطة استعلام (query plan)**.</Ar>
 2. **Execution engine**: runs the plan, asking the **index/file/record manager** for the data it needs.
+   <Ar>**محرك التنفيذ (Execution engine)**: ينفّذ الخطة، ويطلب البيانات التي يحتاجها من **مدير الفهارس والملفات والسجلات (index/file/record manager)**.</Ar>
 3. **Buffer manager**: keeps disk blocks in page-sized memory **buffers**.
+   <Ar>**مدير المخازن المؤقتة (Buffer manager)**: يحتفظ بكتل القرص (disk blocks) في **مخازن مؤقتة (buffers)** في الذاكرة بحجم الصفحة.</Ar>
 4. **Storage manager / disk controller**: moves blocks between disk and memory.
+   <Ar>**مدير التخزين / متحكم القرص (Storage manager / disk controller)**: ينقل الكتل بين القرص والذاكرة.</Ar>
 
 </Steps>
 
 Along the way the components use five kinds of information: **data**, **metadata**, the **log**, **statistics** and **indexes**.
 
+<Ar>وفي أثناء ذلك تستخدم المكوّنات خمسة أنواع من المعلومات: **البيانات**، و**البيانات الوصفية (metadata)**، و**السجل (log)**، و**الإحصاءات (statistics)**، و**الفهارس (indexes)**.</Ar>
+
 ### Transaction processing
 
-<Definition term="Transaction">
+<Ar>معالجة المعاملات</Ar>
+
+<Definition term="Transaction" termAr="المعاملة">
   A group of one or more database operations that forms a single unit of work. It must execute <strong>atomically</strong> and in apparent <strong>isolation</strong> from other transactions.
+
+  <Ar>مجموعة من عملية واحدة أو أكثر على قاعدة البيانات تشكّل وحدة عمل واحدة، ويجب أن تُنفَّذ <strong>بصورة ذرّية (atomically)</strong> وفي <strong>عزلة (isolation)</strong> ظاهرية عن المعاملات الأخرى.</Ar>
 </Definition>
 
 <Grid cols={2}>
-  <Card title="Atomicity" tag="A">Either all operations happen or none do. Debiting A and crediting B succeed together or fail together.</Card>
-  <Card title="Consistency" tag="C">The database stays valid. The sum of balances of A and B is preserved.</Card>
-  <Card title="Isolation" tag="I">Concurrent transactions don't interfere; each behaves as if it ran alone.</Card>
-  <Card title="Durability" tag="D">Once committed, changes survive crashes.</Card>
+  <Card title="Atomicity" titleAr="الذرّية" tag="A">Either all operations happen or none do. Debiting A and crediting B succeed together or fail together.<Ar>إما أن تُنفَّذ كل العمليات أو لا يُنفَّذ أي منها؛ فالخصم من A والإيداع في B ينجحان معًا أو يفشلان معًا.</Ar></Card>
+
+  <Card title="Consistency" titleAr="الاتساق" tag="C">The database stays valid. The sum of balances of A and B is preserved.<Ar>تبقى قاعدة البيانات في حالة صحيحة؛ فمجموع رصيدَي A و B يبقى محفوظًا.</Ar></Card>
+
+  <Card title="Isolation" titleAr="العزل" tag="I">Concurrent transactions don't interfere; each behaves as if it ran alone.<Ar>لا تتداخل المعاملات المتزامنة، فكل منها يتصرف كأنه يُنفَّذ وحده.</Ar></Card>
+
+  <Card title="Durability" titleAr="الديمومة" tag="D">Once committed, changes survive crashes.<Ar>بمجرد تأكيد المعاملة (commit)، تبقى التغييرات حتى لو تعطّل النظام.</Ar></Card>
 </Grid>
 
 The **transaction manager** provides these properties with three mechanisms:
 
+<Ar>يوفّر **مدير المعاملات (transaction manager)** هذه الخصائص عبر ثلاث آليات:</Ar>
+
 - **Logging**: every change is written to a log on disk, so the **recovery manager** can restore a consistent state after a crash.
+  <Ar>**التسجيل (Logging)**: يُكتب كل تغيير في سجل (log) على القرص، ليتمكن **مدير الاسترداد (recovery manager)** من استعادة حالة متسقة بعد أي تعطّل.</Ar>
 - **Concurrency control**: a scheduler grants **locks** (kept in a main-memory lock table). A transaction that locks an item reserves it, and others wait.
+  <Ar>**التحكم في التزامن (Concurrency control)**: يمنح المُجدوِل (scheduler) **الأقفال (locks)** (المحفوظة في جدول أقفال في الذاكرة الرئيسية). والمعاملة التي تقفل عنصرًا تحجزه، فتنتظر المعاملات الأخرى.</Ar>
 - **Deadlock resolution**: when transactions wait for each other forever, the DBMS picks a **victim** and **rolls it back**. A good victim is the one with the least progress, the cheapest rollback or the fewest resources.
+  <Ar>**حل الجمود (Deadlock resolution)**: عندما تنتظر المعاملات بعضها بعضًا إلى الأبد، يختار نظام إدارة قواعد البيانات **ضحية (victim)** و**يتراجع عنها (rolls it back)**. والضحية الجيدة هي المعاملة الأقل تقدمًا، أو الأرخص تراجعًا، أو الأقل استهلاكًا للموارد.</Ar>
 
 ```sql title="funds_transfer.sql"
 -- One transaction: both updates happen, or neither does (atomicity)
@@ -228,19 +338,25 @@ COMMIT;   -- durability: from here on the transfer survives a crash
 -- On any error before COMMIT:  ROLLBACK;
 ```
 
-<Callout type="example" title="A deadlock">
+<Callout type="example" title="A deadlock" titleAr="مثال على الجمود">
   T1 transfers A → B and locks <strong>A</strong>. At the same time T2 transfers B → A and locks <strong>B</strong>. Now T1 waits for B and T2 waits for A, so neither can continue. The DBMS aborts the transaction that has done less work (say T2), releasing its locks. T1 finishes and commits, and T2 restarts later.
+
+  <Ar>تحوّل المعاملة T1 من A إلى B وتقفل <strong>A</strong>، وفي الوقت نفسه تحوّل T2 من B إلى A وتقفل <strong>B</strong>. الآن تنتظر T1 الحساب B وتنتظر T2 الحساب A، فلا تستطيع أي منهما المتابعة. يُلغي نظام إدارة قواعد البيانات المعاملة التي أنجزت عملًا أقل (ولتكن T2) فيحرّر أقفالها، فتكتمل T1 وتُؤكَّد (commit)، ثم يُعاد تشغيل T2 لاحقًا.</Ar>
 </Callout>
 
 ## Accessing a database from programs
 
+<Ar>الوصول إلى قاعدة البيانات من البرامج</Ar>
+
 SQL is **declarative**: it says *what* data you want, not *how* to get it. It can't read user input, draw screens or talk to the network, so applications are written in a **host language** that sends SQL to the DBMS.
 
-| Approach | How it works | Examples |
+<Ar>لغة SQL **تصريحية (declarative)**: تحدد *ما* البيانات التي تريدها، لا *كيف* تحصل عليها. ولا تستطيع قراءة مدخلات المستخدم أو رسم الشاشات أو التواصل عبر الشبكة، لذلك تُكتب التطبيقات بـ**لغة مضيفة (host language)** ترسل عبارات SQL إلى نظام إدارة قواعد البيانات.</Ar>
+
+| Approach <Ar>المنهج</Ar> | How it works <Ar>طريقة العمل</Ar> | Examples <Ar>أمثلة</Ar> |
 |---|---|---|
-| **Procedure-call API** | A library of functions sends SQL strings and fetches results | ODBC (C/C++), JDBC (Java), Python DB-API |
-| **Embedded SQL** | SQL is written inside the host program, and a **precompiler** turns it into API calls | `EXEC SQL …` in C, SQLJ in Java |
-| **Database programming language** | A procedural language built around SQL | Oracle **PL/SQL** |
+| **Procedure-call API** <Ar>**واجهة برمجة باستدعاء الإجراءات (API)**</Ar> | A library of functions sends SQL strings and fetches results <Ar>مكتبة من الدوال ترسل نصوص SQL وتجلب النتائج</Ar> | ODBC (C/C++), JDBC (Java), Python DB-API <Ar>ODBC (بلغة C/C++)، و JDBC (بلغة Java)، و Python DB-API</Ar> |
+| **Embedded SQL** <Ar>**لغة SQL المضمَّنة (Embedded SQL)**</Ar> | SQL is written inside the host program, and a **precompiler** turns it into API calls <Ar>تُكتب عبارات SQL داخل البرنامج المضيف، ويحوّلها **مترجم أولي (precompiler)** إلى استدعاءات API</Ar> | `EXEC SQL …` in C, SQLJ in Java <Ar>`EXEC SQL …` في لغة C، و SQLJ في لغة Java</Ar> |
+| **Database programming language** <Ar>**لغة برمجة قواعد البيانات**</Ar> | A procedural language built around SQL <Ar>لغة إجرائية (procedural) مبنية حول SQL</Ar> | Oracle **PL/SQL** <Ar>لغة **PL/SQL** من Oracle</Ar> |
 
 ```python title="api_approach.py"
 import sqlite3  # Python's DB-API: the procedure-call approach
@@ -254,49 +370,70 @@ conn.close()
 <Takeaways>
 
 - **Information** is processed data; **metadata** describes data and lives in the DBMS **catalog**.
+  <Ar>**المعلومات** بيانات معالَجة، و**البيانات الوصفية (metadata)** تصف البيانات وتوجد في **كتالوج (catalog)** نظام إدارة قواعد البيانات.</Ar>
 - File processing suffers from **program–data dependence**, **redundancy**, **inconsistency** and **poor sharing**; the database approach centralizes data under a DBMS.
+  <Ar>تعاني معالجة الملفات من **اعتماد البرامج على البيانات**، و**التكرار (redundancy)**، و**عدم الاتساق**، و**ضعف المشاركة**؛ أما منهج قواعد البيانات فيجمع البيانات مركزيًا تحت إدارة نظام DBMS.</Ar>
 - Key characteristics: **self-describing**, **program–data independence**, **abstraction**, **multiple views** and **concurrent transactions**.
+  <Ar>الخصائص الأساسية: **الوصف الذاتي (self-describing)**، و**استقلال البرامج عن البيانات**، و**التجريد (abstraction)**، و**العروض المتعددة**، و**المعاملات المتزامنة**.</Ar>
 - Users range from the **DBA** and **designers** to **end users** (casual, parametric, sophisticated, stand-alone).
+  <Ar>يتدرّج المستخدمون من **مدير قاعدة البيانات (DBA)** و**المصممين** إلى **المستخدمين النهائيين** (العَرَضي، والبارامتري، والمتمرّس، والمستقل).</Ar>
 - A DBMS answers queries through a compiler, an execution engine and a buffer manager, and guarantees **ACID** with logging, locking and deadlock resolution.
+  <Ar>يجيب نظام إدارة قواعد البيانات عن الاستعلامات عبر مترجم (compiler) ومحرك تنفيذ ومدير مخازن مؤقتة (buffer manager)، ويضمن خصائص **ACID** عبر التسجيل والقفل وحل الجمود.</Ar>
 
 </Takeaways>
 
 ## Practice
 
-<Exercise title="File processing or database?" level="easy">
+<Ar>تدريب</Ar>
+
+<Exercise title="File processing or database?" titleAr="معالجة الملفات أم قاعدة البيانات؟" level="easy">
 
 A university keeps a student's address in the registrar's file, the library's file and the housing office's file. A student moves and tells only the registrar. Name the problems this causes and how a database avoids them.
+
+<Ar>تحتفظ جامعة بعنوان الطالب في ملف شؤون الطلاب (registrar)، وملف المكتبة، وملف مكتب السكن. ينتقل طالب إلى عنوان جديد ولا يُبلغ إلا شؤون الطلاب. سمِّ المشكلات التي يسببها ذلك، وكيف تتجنبها قاعدة البيانات.</Ar>
 
 <Solution>
 
 - **Redundancy**: the address is stored three times.
+  <Ar>**التكرار (Redundancy)**: العنوان مخزَّن ثلاث مرات.</Ar>
 - **Inconsistency**: the library and housing files now hold an old address, so the data loses **integrity**.
+  <Ar>**عدم الاتساق (Inconsistency)**: يحتوي ملفا المكتبة والسكن الآن على عنوان قديم، فتفقد البيانات **سلامتها (integrity)**.</Ar>
 
 With a database the address is stored **once** and each office sees it through its own **view**, so a single update is immediately visible to everyone.
+
+<Ar>مع قاعدة البيانات يُخزَّن العنوان **مرة واحدة**، ويراه كل مكتب من خلال **العرض (view)** الخاص به، فيظهر أي تحديث واحد للجميع فورًا.</Ar>
 
 </Solution>
 
 </Exercise>
 
-<Exercise title="Which user is it?" level="easy">
+<Exercise title="Which user is it?" titleAr="أي مستخدم هذا؟" level="easy">
 
 Classify: (a) a bank teller entering deposits through a fixed screen; (b) a data scientist writing complex analytical queries; (c) the person who sets access permissions and tunes indexes; (d) a programmer at Oracle working on the query optimizer.
+
+<Ar>صنِّف: (a) صرّاف بنك يُدخل الإيداعات من خلال شاشة ثابتة؛ (b) عالم بيانات يكتب استعلامات تحليلية معقدة؛ (c) الشخص الذي يضبط صلاحيات الوصول ويحسّن الفهارس؛ (d) مبرمج في Oracle يعمل على مُحسِّن الاستعلامات (query optimizer).</Ar>
 
 <Solution>
 
 (a) **Naïve/parametric** end user. (b) **Sophisticated** end user. (c) **DBA**. (d) **DBMS designer/implementer**, a worker behind the scene.
 
+<Ar>(a) مستخدم نهائي **مبتدئ/بارامتري (parametric)**. (b) مستخدم نهائي **متمرّس (sophisticated)**. (c) **مدير قاعدة البيانات (DBA)**. (d) **مصمم/مطوّر نظام إدارة قواعد البيانات**، وهو من العاملين خلف الكواليس.</Ar>
+
 </Solution>
 
 </Exercise>
 
-<Exercise title="ACID in a transfer" level="medium">
+<Exercise title="ACID in a transfer" titleAr="خصائص ACID في عملية تحويل" level="medium">
 
 During a transfer of 500 from account A to account B, the server crashes after the debit but before the credit. Which ACID property is at risk, and how does the DBMS restore it?
+
+<Ar>في أثناء تحويل 500 من الحساب A إلى الحساب B، تعطّل الخادم بعد الخصم وقبل الإيداع. أي خصائص ACID مهددة، وكيف يستعيدها نظام إدارة قواعد البيانات؟</Ar>
 
 <Solution>
 
 **Atomicity**, and therefore **consistency**, because the total balance would drop by 500. The transaction hadn't committed, so on restart the **recovery manager** reads the **log** and **undoes** the debit, rolling back the whole transaction. Had it committed, **durability** would require redoing it instead.
+
+<Ar>**الذرّية (Atomicity)**، ومن ثَمّ **الاتساق (consistency)**، لأن مجموع الأرصدة سينخفض بمقدار 500. لم تكن المعاملة قد أُكِّدت (commit)، لذلك عند إعادة التشغيل يقرأ **مدير الاسترداد (recovery manager)** **السجل (log)** و**يتراجع** عن الخصم، فيُلغي المعاملة بأكملها. ولو كانت قد أُكِّدت، لاقتضت **الديمومة (durability)** إعادة تنفيذها بدلًا من ذلك.</Ar>
 
 </Solution>
 
@@ -306,45 +443,66 @@ During a transfer of 500 from account A to account B, the server crashes after t
   questions={[
     {
       q: "Metadata is…",
+      qAr: "البيانات الوصفية (Metadata) هي…",
       options: ["Data processed for decision making", "Data that describes data", "Data stored in many files", "Encrypted data"],
+      optionsAr: ["بيانات معالَجة لاتخاذ القرار", "بيانات تصف البيانات", "بيانات مخزنة في ملفات كثيرة", "بيانات مشفّرة"],
       answer: 1,
-      explain: "Metadata (types, sizes, constraints) describes the data and is stored in the DBMS catalog."
+      explain: "Metadata (types, sizes, constraints) describes the data and is stored in the DBMS catalog.",
+      explainAr: "البيانات الوصفية (الأنواع والأحجام والقيود) تصف البيانات وتُخزَّن في كتالوج نظام إدارة قواعد البيانات."
     },
     {
       q: "Which is NOT a disadvantage of traditional file processing?",
+      qAr: "أيٌّ مما يلي ليس من عيوب المعالجة التقليدية للملفات؟",
       options: ["Program–data dependence", "Data redundancy", "Program–data independence", "Limited data sharing"],
+      optionsAr: ["اعتماد البرامج على البيانات", "تكرار البيانات", "استقلال البرامج عن البيانات", "محدودية مشاركة البيانات"],
       answer: 2,
-      explain: "Program–data independence is an advantage of the database approach."
+      explain: "Program–data independence is an advantage of the database approach.",
+      explainAr: "استقلال البرامج عن البيانات ميزة من مزايا منهج قواعد البيانات."
     },
     {
       q: "The 'self-describing' nature of a database system means…",
+      qAr: "تعني خاصية «الوصف الذاتي» لنظام قاعدة البيانات أن…",
       options: ["Users document their own queries", "The DBMS catalog stores the database's structure and constraints", "Tables have descriptive names", "Data is stored as text"],
+      optionsAr: ["المستخدمين يوثّقون استعلاماتهم بأنفسهم", "كتالوج نظام إدارة قواعد البيانات يخزّن بنية قاعدة البيانات وقيودها", "للجداول أسماء وصفية", "البيانات تُخزَّن على هيئة نص"],
       answer: 1,
-      explain: "Because metadata is stored with the database, one DBMS can work with many different databases."
+      explain: "Because metadata is stored with the database, one DBMS can work with many different databases.",
+      explainAr: "لأن البيانات الوصفية تُخزَّن مع قاعدة البيانات، يستطيع نظام واحد لإدارة قواعد البيانات أن يعمل مع قواعد بيانات كثيرة مختلفة."
     },
     {
       q: "A reservation clerk who uses predefined screens all day is a…",
+      qAr: "موظف الحجوزات الذي يستخدم شاشات معرَّفة مسبقًا طوال اليوم هو…",
       options: ["Casual user", "Naïve/parametric user", "Sophisticated user", "Stand-alone user"],
+      optionsAr: ["مستخدم عَرَضي", "مستخدم مبتدئ/بارامتري", "مستخدم متمرّس", "مستخدم مستقل"],
       answer: 1,
-      explain: "Parametric users run canned transactions repeatedly."
+      explain: "Parametric users run canned transactions repeatedly.",
+      explainAr: "المستخدمون البارامتريون يشغّلون المعاملات الجاهزة مرارًا وتكرارًا."
     },
     {
       q: "Which data model organizes data into tables of rows and columns?",
+      qAr: "أي نموذج بيانات ينظّم البيانات في جداول من صفوف وأعمدة؟",
       options: ["Hierarchical", "Network", "Relational", "RDF"],
+      optionsAr: ["الهرمي", "الشبكي", "العلائقي", "RDF"],
       answer: 2,
-      explain: "The relational model (Codd, 1970) uses relations, i.e. tables."
+      explain: "The relational model (Codd, 1970) uses relations, i.e. tables.",
+      explainAr: "النموذج العلائقي (Codd، 1970) يستخدم العلاقات (relations)، أي الجداول."
     },
     {
       q: "Which DBMS component turns a query into a query plan?",
+      qAr: "أي مكوّن في نظام إدارة قواعد البيانات يحوّل الاستعلام إلى خطة استعلام؟",
       options: ["Buffer manager", "Query compiler", "Disk controller", "Log manager"],
+      optionsAr: ["مدير المخازن المؤقتة", "مترجم الاستعلامات", "متحكم القرص", "مدير السجل"],
       answer: 1,
-      explain: "The query compiler parses and optimizes the query into a plan for the execution engine."
+      explain: "The query compiler parses and optimizes the query into a plan for the execution engine.",
+      explainAr: "يحلّل مترجم الاستعلامات الاستعلام ويحسّنه ليحوّله إلى خطة ينفّذها محرك التنفيذ."
     },
     {
       q: "How does a DBMS usually break a deadlock?",
+      qAr: "كيف يكسر نظام إدارة قواعد البيانات الجمود (deadlock) عادةً؟",
       options: ["It reboots the server", "It rolls back a victim transaction", "It deletes the locked data", "It waits forever"],
+      optionsAr: ["يعيد تشغيل الخادم", "يتراجع عن معاملة ضحية", "يحذف البيانات المقفلة", "ينتظر إلى الأبد"],
       answer: 1,
-      explain: "Aborting one transaction releases its locks so the others can continue."
+      explain: "Aborting one transaction releases its locks so the others can continue.",
+      explainAr: "إلغاء معاملة واحدة يحرّر أقفالها، فتتمكن المعاملات الأخرى من المتابعة."
     }
   ]}
 />

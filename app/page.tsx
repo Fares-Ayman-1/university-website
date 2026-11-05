@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight, BookOpen, FlaskConical } from "lucide-react";
 import { getFullLogos } from "@/lib/brand";
 import { getLectures, getSections, getSubjects } from "@/lib/content";
+import { ArLine } from "@/components/mdx/Arabic";
 import styles from "./page.module.css";
 
 export default function HomePage() {
@@ -80,8 +81,12 @@ export default function HomePage() {
                 <Link href={`/subjects/${subject.slug}/`} className={styles.cardLink}>
                   {subject.title}
                 </Link>
+                <ArLine>{subject.titleAr}</ArLine>
               </h3>
-              <p className={styles.tagline}>{subject.tagline}</p>
+              <p className={styles.tagline}>
+                {subject.tagline}
+                <ArLine>{subject.taglineAr}</ArLine>
+              </p>
 
               <div className={styles.counts}>
                 <Link

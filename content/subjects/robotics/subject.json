@@ -1,12 +1,15 @@
 {
   "title": "Robotics",
+  "titleAr": "علم الروبوتات",
   "shortTitle": "Robotics",
   "code": "ROB",
   "order": 2,
   "materialsDir": "Robotics",
   "level": "Level 3 · 2026/2027",
   "tagline": "From the anatomy of an industrial arm to the sensors and software that bring it to life.",
+  "taglineAr": "من بنية الذراع الصناعية إلى المستشعرات (sensors) والبرمجيات (software) التي تبث فيها الحياة.",
   "description": "Robotics combines mechanics, electronics, control, computer science and mathematics on a single machine. The lectures build the vocabulary of the robot as a system (definitions, classification, manipulator anatomy, degrees of freedom, joints, reference frames and workspaces), then cover the sensors a robot uses to perceive itself and its surroundings, followed by actuation and kinematics. The sections are practical: they use ROS 2 and Python to build the software side of a robot.",
+  "descriptionAr": "يجمع علم الروبوتات (Robotics) بين الميكانيكا والإلكترونيات والتحكم وعلوم الحاسب والرياضيات في آلة واحدة. تبني المحاضرات مفردات الروبوت بوصفه نظامًا متكاملًا (التعريفات، والتصنيف، وبنية الذراع الآلية (manipulator)، ودرجات الحرية (DOF)، والمفاصل، والأطر المرجعية، ومساحات العمل)، ثم تتناول المستشعرات التي يستخدمها الروبوت لإدراك نفسه وما يحيط به، يليها التشغيل (actuation) وعلم الحركة (kinematics). أما السكاشن (Sections) فهي عملية: تستخدم ROS 2 و Python لبناء الجانب البرمجي من الروبوت.",
   "instructors": ["Dr. Mahmoud Abdelaal"],
   "objectives": [
     "Explain what a robot is and place a machine within the standard classification schemes.",
@@ -14,6 +17,13 @@
     "Count degrees of freedom, name joint types and describe the standard robot configurations and their workspaces.",
     "Select contact, proximity, optical and range sensors for a task, with reasons.",
     "Build ROS 2 nodes in Python that communicate through topics and custom interfaces."
+  ],
+  "objectivesAr": [
+    "شرح ماهية الروبوت، وتحديد موقع أي آلة ضمن مخططات التصنيف القياسية.",
+    "تحديد الأنظمة الفرعية للذراع الآلية الصناعية (manipulator) وكيف تتبادل المعلومات والطاقة.",
+    "عدّ درجات الحرية (DOF)، وتسمية أنواع المفاصل، ووصف تهيئات الروبوتات القياسية ومساحات عملها.",
+    "اختيار مستشعرات التلامس والتقارب والمستشعرات الضوئية ومستشعرات المدى المناسبة لمهمة ما، مع ذكر الأسباب.",
+    "بناء عقد (nodes) في ROS 2 بلغة Python تتواصل عبر المواضيع (topics) والواجهات المخصصة (custom interfaces)."
   ],
   "topics": [
     "Introduction and history of robotics",

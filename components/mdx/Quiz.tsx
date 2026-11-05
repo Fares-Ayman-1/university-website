@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Check, RotateCcw, Trophy, X } from "lucide-react";
+import { ArLine } from "./Arabic";
 import styles from "./Quiz.module.css";
 
 export type QuizQuestion = {
@@ -10,9 +11,21 @@ export type QuizQuestion = {
   /** Index of the correct option */
   answer: number;
   explain?: string;
+  /** Arabic translations, shown under the English (optionsAr matches options by index) */
+  qAr?: string;
+  optionsAr?: string[];
+  explainAr?: string;
 };
 
-export function Quiz({ title = "Check your understanding", questions }: { title?: string; questions: QuizQuestion[] }) {
+export function Quiz({
+  title = "Check your understanding",
+  titleAr = "اختبر فهمك",
+  questions,
+}: {
+  title?: string;
+  titleAr?: string;
+  questions: QuizQuestion[];
+}) {
   const [picked, setPicked] = useState<(number | null)[]>(() => questions.map(() => null));
   const answered = picked.filter((p) => p !== null).length;
   const score = picked.reduce<number>((sum, p, i) => sum + (p === questions[i].answer ? 1 : 0), 0);
@@ -31,7 +44,10 @@ export function Quiz({ title = "Check your understanding", questions }: { title?
       <header className={styles.head}>
         <div>
           <p className="kicker">Quiz</p>
-          <p className={styles.title}>{title}</p>
+          <p className={styles.title}>
+            {title}
+            <ArLine>{titleAr}</ArLine>
+          </p>
         </div>
         <p className={styles.progress} aria-live="polite">
           {answered}/{questions.length} answered
@@ -46,7 +62,10 @@ export function Quiz({ title = "Check your understanding", questions }: { title?
             <li key={qi} className={styles.question}>
               <p className={styles.prompt}>
                 <span className={styles.qnum}>{qi + 1}</span>
-                {question.q}
+                <span className={styles.promptText}>
+                  {question.q}
+                  <ArLine>{question.qAr}</ArLine>
+                </span>
               </p>
               <div className={styles.options} role="group" aria-label={`Question ${qi + 1} options`}>
                 {question.options.map((option, oi) => {
@@ -69,7 +88,10 @@ export function Quiz({ title = "Check your understanding", questions }: { title?
                       onClick={() => choose(qi, oi)}
                     >
                       <span className={styles.letter}>{String.fromCharCode(65 + oi)}</span>
-                      <span className={styles.optionText}>{option}</span>
+                      <span className={styles.optionText}>
+                        {option}
+                        {question.optionsAr?.[oi] !== option ? <ArLine>{question.optionsAr?.[oi]}</ArLine> : null}
+                      </span>
                       {state === "correct" ? <Check className={styles.mark} aria-label="Correct answer" /> : null}
                       {state === "wrong" ? <X className={styles.mark} aria-label="Your answer, incorrect" /> : null}
                     </button>
@@ -80,6 +102,7 @@ export function Quiz({ title = "Check your understanding", questions }: { title?
                 <p className={styles.feedback} data-correct={choice === question.answer}>
                   <strong>{choice === question.answer ? "Correct." : "Not quite."}</strong>{" "}
                   {question.explain}
+                  <ArLine>{question.explainAr}</ArLine>
                 </p>
               ) : null}
             </li>

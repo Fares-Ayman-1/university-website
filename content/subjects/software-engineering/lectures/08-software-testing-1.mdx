@@ -1,7 +1,9 @@
 ---
 number: 8
 title: "Software Testing I: Testing Basics and Cyclomatic Complexity"
+titleAr: "اختبار البرمجيات (1): أساسيات الاختبار والتعقيد الدوري"
 summary: What software testing is and who should do it, verification vs. validation, the three testing stages (development, release, user) and the development levels (unit, integration, system). Then unit-testing considerations (interfaces, computation and comparison errors), white-box vs. black-box testing, and the first half of basis path testing (drawing control flow graphs and computing cyclomatic complexity three ways, including graphs with several exits).
+summaryAr: "ما اختبار البرمجيات ومَن ينبغي أن يقوم به، والتحقق (verification) مقابل التحقق من الصلاحية (validation)، ومراحل الاختبار الثلاث (التطوير، والإصدار، والمستخدم) ومستويات اختبار التطوير (الوحدة، والتكامل، والنظام). ثم اعتبارات اختبار الوحدة (unit testing): الواجهات، وأخطاء الحساب والمقارنة، واختبار الصندوق الأبيض (white-box) مقابل الصندوق الأسود (black-box)، والنصف الأول من اختبار المسار الأساسي (basis path testing): رسم مخططات تدفق التحكم (CFG) وحساب التعقيد الدوري (cyclomatic complexity) بثلاث طرق، بما في ذلك المخططات ذات المخارج المتعددة."
 topics: [Purpose of testing, Verification vs validation, Testing stages, Unit testing, Interface testing, Common computation errors, White-box vs black-box, Basis path testing, Control flow graph, Regions and predicate nodes, Cyclomatic complexity]
 duration: 55 min study
 sources:
@@ -19,107 +21,155 @@ bookRefs:
 <Objectives>
 
 - State the **goals** of testing and who should test.
+  <Ar>بيان **أهداف** الاختبار ومَن ينبغي أن يقوم به.</Ar>
 - Distinguish **verification** from **validation**, and **static** from **dynamic** testing.
+  <Ar>التمييز بين **التحقق (verification)** و**التحقق من الصلاحية (validation)**، وبين الاختبار **الساكن (static)** والاختبار **الديناميكي (dynamic)**.</Ar>
 - Name the three **testing stages** and the three **levels** of development testing.
+  <Ar>تسمية **مراحل الاختبار** الثلاث و**المستويات** الثلاثة لاختبار التطوير.</Ar>
 - List what **unit testing** must check, and contrast **white-box** with **black-box** testing.
+  <Ar>سرد ما يجب أن يتحقق منه **اختبار الوحدة (unit testing)**، والمقارنة بين اختبار **الصندوق الأبيض (white-box)** واختبار **الصندوق الأسود (black-box)**.</Ar>
 - Draw a **control flow graph** and compute **cyclomatic complexity** with all three formulas.
+  <Ar>رسم **مخطط تدفق التحكم (control flow graph)** وحساب **التعقيد الدوري (cyclomatic complexity)** بالصيغ الثلاث جميعها.</Ar>
 
 </Objectives>
 
 ## What is testing?
 
-<Definition term="Software testing">
+<Ar>ما الاختبار؟</Ar>
+
+<Definition term="Software testing" termAr="اختبار البرمجيات">
   Executing a program with the <strong>intent of finding errors</strong>, to check the completeness, correctness and quality of the software.
+
+  <Ar>تنفيذ البرنامج <strong>بقصد العثور على الأخطاء</strong>، للتحقق من اكتمال البرمجيات وصحتها وجودتها.</Ar>
 </Definition>
 
 Testing has two goals:
 
+<Ar>للاختبار هدفان:</Ar>
+
 1. **Show** the developer and the customer that the software **meets its requirements** (validation testing).
+   <Ar>**إثبات** أن البرمجيات **تفي بمتطلباتها** للمطوّر وللعميل، وهو اختبار التحقق من الصلاحية (validation testing).</Ar>
 2. **Discover** situations where the software behaves **incorrectly**, undesirably, or against its specification (defect testing).
+   <Ar>**اكتشاف** المواقف التي تتصرف فيها البرمجيات **بشكل غير صحيح** أو غير مرغوب فيه أو مخالف لتوصيفها، وهو اختبار العيوب (defect testing).</Ar>
 
 ### Who should test?
 
+<Ar>مَن ينبغي أن يختبر؟</Ar>
+
 Testing is most effective when it is done by an **independent third party**, not the people who wrote the code.
 
-<SlideFigure page={6} caption="Verification ('are we building the product right?') vs. validation ('are we building the right product?')." />
+<Ar>يكون الاختبار أكثر فاعلية عندما يقوم به **طرف ثالث مستقل**، لا الأشخاص الذين كتبوا الشيفرة.</Ar>
 
-| Verification | Validation |
+<SlideFigure page={6} caption="Verification ('are we building the product right?') vs. validation ('are we building the right product?')." captionAr="التحقق (verification): «هل نبني المنتج بالطريقة الصحيحة؟» مقابل التحقق من الصلاحية (validation): «هل نبني المنتج الصحيح؟»." />
+
+| Verification <Ar>التحقق (Verification)</Ar> | Validation <Ar>التحقق من الصلاحية (Validation)</Ar> |
 |---|---|
-| "Are we building the product **right**?" | "Are we building the **right product**?" |
-| **During** development | **After** development, before release |
-| Checks documents written by people | Executes the program on a computer |
-| Process-oriented | Product-oriented |
-| No code execution: **static testing** | Code execution: **dynamic testing** |
+| "Are we building the product **right**?" <Ar>«هل نبني المنتج **بالطريقة الصحيحة**؟»</Ar> | "Are we building the **right product**?" <Ar>«هل نبني **المنتج الصحيح**؟»</Ar> |
+| **During** development <Ar>**أثناء** التطوير</Ar> | **After** development, before release <Ar>**بعد** التطوير، وقبل الإصدار</Ar> |
+| Checks documents written by people <Ar>يفحص الوثائق التي كتبها الأشخاص</Ar> | Executes the program on a computer <Ar>يُنفِّذ البرنامج على الحاسوب</Ar> |
+| Process-oriented <Ar>موجَّه نحو العملية</Ar> | Product-oriented <Ar>موجَّه نحو المنتج</Ar> |
+| No code execution: **static testing** <Ar>دون تنفيذ للشيفرة: **اختبار ساكن (static testing)**</Ar> | Code execution: **dynamic testing** <Ar>بتنفيذ الشيفرة: **اختبار ديناميكي (dynamic testing)**</Ar> |
 
 ## Testing stages
 
-<SlideFigure page={9} caption="The three stages of testing; development testing has three levels: unit, integration and system." />
+<Ar>مراحل الاختبار</Ar>
 
-| Stage | Who | Purpose |
+<SlideFigure page={9} caption="The three stages of testing; development testing has three levels: unit, integration and system." captionAr="مراحل الاختبار الثلاث؛ ولاختبار التطوير ثلاثة مستويات: الوحدة (unit)، والتكامل (integration)، والنظام (system)." />
+
+| Stage <Ar>المرحلة</Ar> | Who <Ar>مَن يقوم به</Ar> | Purpose <Ar>الغرض</Ar> |
 |---|---|---|
-| **Development testing** | Designers and programmers | Find bugs and defects **during development**, at three levels: **unit → integration → system** |
-| **Release testing** | A **separate** testing team | Check that a complete version meets the stakeholders' **requirements** before release |
-| **User testing** | Users or potential users, in **their own environment** | Decide whether the system is acceptable (for products, maybe an internal marketing group) |
+| **Development testing** <Ar>**اختبار التطوير (Development testing)**</Ar> | Designers and programmers <Ar>المصممون والمبرمجون</Ar> | Find bugs and defects **during development**, at three levels: **unit → integration → system** <Ar>العثور على الأخطاء والعيوب **أثناء التطوير**، على ثلاثة مستويات: **الوحدة ← التكامل ← النظام**</Ar> |
+| **Release testing** <Ar>**اختبار الإصدار (Release testing)**</Ar> | A **separate** testing team <Ar>فريق اختبار **منفصل**</Ar> | Check that a complete version meets the stakeholders' **requirements** before release <Ar>التحقق من أن نسخة كاملة تفي بـ**متطلبات** أصحاب المصلحة (stakeholders) قبل الإصدار</Ar> |
+| **User testing** <Ar>**اختبار المستخدم (User testing)**</Ar> | Users or potential users, in **their own environment** <Ar>المستخدمون أو المستخدمون المحتملون، في **بيئتهم الخاصة**</Ar> | Decide whether the system is acceptable (for products, maybe an internal marketing group) <Ar>تقرير ما إذا كان النظام مقبولًا (وفي حالة المنتجات، قد تقوم بذلك مجموعة تسويق داخلية)</Ar> |
 
 This lecture covers **unit testing**; the next one covers the other levels and stages.
 
+<Ar>تتناول هذه المحاضرة **اختبار الوحدة (unit testing)**؛ وتتناول المحاضرة التالية بقية المستويات والمراحل.</Ar>
+
 ## Unit testing
+
+<Ar>اختبار الوحدة</Ar>
 
 **Unit testing** tests **individual program units or object classes**, focusing on the functionality of objects and methods.
 
+<Ar>يختبر **اختبار الوحدة (Unit testing)** **وحدات البرنامج المنفردة أو أصناف الكائنات (object classes)**، مع التركيز على وظائف الكائنات والدوال الأعضاء (methods).</Ar>
+
 ### Interface testing comes first
+
+<Ar>اختبار الواجهة يأتي أولًا</Ar>
 
 Before any other test, check that data flows **correctly into and out of** the unit:
 
-- **Input validation**: are the inputs received correctly?
-- **Output validation**: does the output have the expected format?
-- **Error handling**: are errors returned properly for invalid inputs?
+<Ar>قبل أي اختبار آخر، تحقّق من أن البيانات تتدفق **إلى الوحدة ومنها بشكل صحيح**:</Ar>
 
-<Callout type="example" title="A login module">
+- **Input validation**: are the inputs received correctly?
+  <Ar>**التحقق من المدخلات (Input validation)**: هل تُستقبَل المدخلات بشكل صحيح؟</Ar>
+- **Output validation**: does the output have the expected format?
+  <Ar>**التحقق من المخرجات (Output validation)**: هل للمخرجات الصيغة المتوقعة؟</Ar>
+- **Error handling**: are errors returned properly for invalid inputs?
+  <Ar>**معالجة الأخطاء (Error handling)**: هل تُعاد الأخطاء بشكل سليم عند المدخلات غير الصالحة؟</Ar>
+
+<Callout type="example" title="A login module" titleAr="وحدة تسجيل الدخول">
   Input: a username and password. Output: a success or error message. Interface tests check that both fields arrive intact, that invalid input returns a proper error, and that the output format matches what callers expect.
+
+  <Ar>المدخلات: اسم مستخدم وكلمة مرور. المخرجات: رسالة نجاح أو رسالة خطأ. تتحقق اختبارات الواجهة من وصول الحقلين سليمين، ومن أن المدخلات غير الصالحة تُعيد خطأً مناسبًا، ومن أن صيغة المخرجات تطابق ما تتوقعه الجهات المستدعية.</Ar>
 </Callout>
 
 ### Errors to look for
 
-| Category | Typical errors |
+<Ar>الأخطاء التي يجب البحث عنها</Ar>
+
+| Category <Ar>الفئة</Ar> | Typical errors <Ar>الأخطاء الشائعة</Ar> |
 |---|---|
-| **Computation** | Wrong arithmetic **precedence**; incorrect **initialization**; wrong symbolic representation of an expression; **boundary conditions** |
-| **Comparison** (control flow often changes after one) | Comparing **different data types**; wrong **logical operators** or precedence; **improper loop termination**, or a loop variable modified inside the loop |
+| **Computation** <Ar>**الحساب (Computation)**</Ar> | Wrong arithmetic **precedence**; incorrect **initialization**; wrong symbolic representation of an expression; **boundary conditions** <Ar>خطأ في **أسبقية (precedence)** العمليات الحسابية؛ و**تهيئة (initialization)** غير صحيحة؛ وتمثيل رمزي خاطئ لتعبير ما؛ و**الشروط الحدّية (boundary conditions)**</Ar> |
+| **Comparison** (control flow often changes after one) <Ar>**المقارنة (Comparison)** (كثيرًا ما يتغير تدفق التحكم بعدها)</Ar> | Comparing **different data types**; wrong **logical operators** or precedence; **improper loop termination**, or a loop variable modified inside the loop <Ar>مقارنة **أنواع بيانات مختلفة**؛ و**عوامل منطقية (logical operators)** أو أسبقية خاطئة؛ و**إنهاء غير سليم للحلقة**، أو تعديل متغير الحلقة داخلها</Ar> |
 
 ## White-box vs. black-box testing
 
-| White-box (glass-box) | Black-box |
+<Ar>اختبار الصندوق الأبيض مقابل اختبار الصندوق الأسود</Ar>
+
+| White-box (glass-box) <Ar>الصندوق الأبيض (White-box)، أو الزجاجي (glass-box)</Ar> | Black-box <Ar>الصندوق الأسود (Black-box)</Ar> |
 |---|---|
-| **Full knowledge** of the code | **Zero knowledge** of the code |
-| Testing **as a developer** | Testing **as a user** |
-| Checks that the **implementation details** are correct | Checks that each **customer requirement** is handled correctly |
-| Example: **basis path testing** | Example: requirements-based and scenario tests |
+| **Full knowledge** of the code <Ar>**معرفة كاملة** بالشيفرة</Ar> | **Zero knowledge** of the code <Ar>**لا معرفة** بالشيفرة إطلاقًا</Ar> |
+| Testing **as a developer** <Ar>الاختبار **من منظور المطوّر**</Ar> | Testing **as a user** <Ar>الاختبار **من منظور المستخدم**</Ar> |
+| Checks that the **implementation details** are correct <Ar>يتحقق من صحة **تفاصيل التنفيذ (implementation)**</Ar> | Checks that each **customer requirement** is handled correctly <Ar>يتحقق من أن كل **متطلب للعميل** يُعالَج بشكل صحيح</Ar> |
+| Example: **basis path testing** <Ar>مثال: **اختبار المسار الأساسي (basis path testing)**</Ar> | Example: requirements-based and scenario tests <Ar>مثال: الاختبارات المبنية على المتطلبات واختبارات السيناريو</Ar> |
 
 ## Basis path testing
 
+<Ar>اختبار المسار الأساسي</Ar>
+
 **Basis path testing** is a **white-box** technique based on the program's **control structure**. Its test cases exercise every **independent path**, so that **every statement runs at least once** and every condition is tested both **true and false**. It has four steps:
+
+<Ar>**اختبار المسار الأساسي (Basis path testing)** تقنية من تقنيات **الصندوق الأبيض (white-box)** تعتمد على **بنية التحكم (control structure)** في البرنامج. وتغطي حالات الاختبار (test cases) فيه كل **مسار مستقل (independent path)**، بحيث **تُنفَّذ كل تعليمة مرة واحدة على الأقل** ويُختبر كل شرط في حالتي **الصحة والخطأ**. وله أربع خطوات:</Ar>
 
 <Steps>
 
 1. Construct the **control flow graph (CFG)**.
+   <Ar>إنشاء **مخطط تدفق التحكم (CFG)**.</Ar>
 2. Compute the **cyclomatic complexity** $V(G)$ of the graph.
+   <Ar>حساب **التعقيد الدوري (cyclomatic complexity)** `V(G)` للمخطط.</Ar>
 3. Identify the **independent paths** (the basis set).
+   <Ar>تحديد **المسارات المستقلة (independent paths)**، أي المجموعة الأساسية (basis set).</Ar>
 4. Design **test cases** that force each independent path.
+   <Ar>تصميم **حالات اختبار (test cases)** تُجبر التنفيذ على سلوك كل مسار مستقل.</Ar>
 
 </Steps>
 
 ### Step 1: the control flow graph
 
-<SlideFigure page={16} caption="Flow-graph notation for sequence, if, while, do-while and case." />
+<Ar>الخطوة 1: مخطط تدفق التحكم</Ar>
 
-| Term | Meaning |
+<SlideFigure page={16} caption="Flow-graph notation for sequence, if, while, do-while and case." captionAr="رموز مخطط التدفق للتسلسل (sequence) و if و while و do-while و case." />
+
+| Term <Ar>المصطلح</Ar> | Meaning <Ar>المعنى</Ar> |
 |---|---|
-| **Node** (circle) | One or more procedural statements. A run of statements plus a decision can map into one node |
-| **Edge** (arrow) | A flow of control |
-| **Predicate node** | A node containing a **condition**, with **two or more** outgoing edges |
-| **Region** | An area bounded by edges and nodes. **The area outside the graph counts as a region** |
+| **Node** (circle) <Ar>**العقدة (Node)** (دائرة)</Ar> | One or more procedural statements. A run of statements plus a decision can map into one node <Ar>تعليمة إجرائية واحدة أو أكثر. ويمكن تمثيل سلسلة من التعليمات مع قرار في عقدة واحدة</Ar> |
+| **Edge** (arrow) <Ar>**الحافة (Edge)** (سهم)</Ar> | A flow of control <Ar>تدفق للتحكم</Ar> |
+| **Predicate node** <Ar>**عقدة الشرط (Predicate node)**</Ar> | A node containing a **condition**, with **two or more** outgoing edges <Ar>عقدة تحتوي على **شرط**، ولها حافتان خارجتان **أو أكثر**</Ar> |
+| **Region** <Ar>**المنطقة (Region)**</Ar> | An area bounded by edges and nodes. **The area outside the graph counts as a region** <Ar>مساحة تحدّها الحواف والعقد. **والمساحة خارج المخطط تُحسب منطقةً**</Ar> |
 
-<SlideFigure page={19} caption="A sequence becomes a straight line of nodes; an if/else becomes a predicate node with two branches that rejoin, enclosing one region." />
+<SlideFigure page={19} caption="A sequence becomes a straight line of nodes; an if/else becomes a predicate node with two branches that rejoin, enclosing one region." captionAr="يصبح التسلسل خطًا مستقيمًا من العقد؛ وتصبح if/else عقدة شرط لها فرعان يلتقيان من جديد، فيحيطان بمنطقة واحدة." />
 
 ```c title="A while loop and its flow graph"
 void fun() {
@@ -133,11 +183,15 @@ void fun() {
 // Edges: 1→2, 2→3, 3→2, 2→4, 4→5   →   E = 5, N = 5
 ```
 
-<SlideFigure page={21} caption="The flow graph of f1(x, y): while (x != y) { if (x > y) x = x - y; else y = y - x; } return x;" />
+<SlideFigure page={21} caption="The flow graph of f1(x, y): while (x != y) { if (x > y) x = x - y; else y = y - x; } return x;" captionAr="مخطط التدفق للدالة f1(x, y): تتكرر الحلقة ما دام x لا يساوي y؛ فإذا كان x أكبر من y يُطرح y من x، وإلا يُطرح x من y؛ ثم تُرجع الدالة x." />
 
 ### Step 2: cyclomatic complexity
 
+<Ar>الخطوة 2: التعقيد الدوري</Ar>
+
 **Cyclomatic complexity** is a software metric that measures a program's **logical complexity**. It gives the **number of independent paths** in the basis set, which is an **upper bound on the number of tests** needed. There are three ways to compute it:
+
+<Ar>**التعقيد الدوري (Cyclomatic complexity)** مقياس برمجي (software metric) يقيس **التعقيد المنطقي** للبرنامج. وهو يعطي **عدد المسارات المستقلة** في المجموعة الأساسية (basis set)، وهو **حد أعلى لعدد الاختبارات** المطلوبة. وتوجد ثلاث طرق لحسابه:</Ar>
 
 $$
 V(G) = R \qquad V(G) = E - N + 2 \qquad V(G) = P + 1
@@ -145,37 +199,53 @@ $$
 
 where $R$ is the number of **regions**, $E$ the **edges**, $N$ the **nodes** and $P$ the **predicate nodes**.
 
-| Graph | Regions | $E - N + 2$ | $P + 1$ | $V(G)$ |
+<Ar>حيث `R` عدد **المناطق (regions)**، و`E` عدد **الحواف (edges)**، و`N` عدد **العقد (nodes)**، و`P` عدد **عقد الشرط (predicate nodes)**.</Ar>
+
+| Graph <Ar>المخطط</Ar> | Regions <Ar>المناطق</Ar> | $E - N + 2$ | $P + 1$ | $V(G)$ |
 |---|---|---|---|---|
-| `fun()` (while loop) | 2 | 5 − 5 + 2 = **2** | 1 + 1 = **2** | **2** |
-| `f1(x, y)` (while + if) | 3 | 7 − 6 + 2 = **3** | 2 + 1 = **3** | **3** |
+| `fun()` (while loop) <Ar>`fun()` (حلقة `while`)</Ar> | 2 | 5 − 5 + 2 = **2** | 1 + 1 = **2** | **2** |
+| `f1(x, y)` (while + if) <Ar>`f1(x, y)` (حلقة `while` مع `if`)</Ar> | 3 | 7 − 6 + 2 = **3** | 2 + 1 = **3** | **3** |
 
-<SlideFigure page={30} caption="A larger graph: 4 regions; 11 edges − 9 nodes + 2 = 4; 3 predicate nodes + 1 = 4." />
+<SlideFigure page={30} caption="A larger graph: 4 regions; 11 edges − 9 nodes + 2 = 4; 3 predicate nodes + 1 = 4." captionAr="مخطط أكبر: 4 مناطق؛ و11 حافة ناقص 9 عقد زائد 2 يساوي 4؛ و3 عقد شرط زائد 1 يساوي 4." />
 
-<Callout type="warning" title="Graphs with several exits">
+<Callout type="warning" title="Graphs with several exits" titleAr="المخططات ذات المخارج المتعددة">
   The three formulas agree only for well-structured code: a <strong>planar graph with one exit node</strong>. When the code has <strong>several exits</strong> (several <code>return</code>, <code>break</code> or <code>exit()</code> calls), use <strong>only the predicate formula</strong> <code>V(G) = P + 1</code>.
+
+  <Ar>لا تتفق الصيغ الثلاث إلا في الشيفرة جيدة البنية: أي <strong>مخطط مستوٍ (planar graph) له عقدة خروج واحدة</strong>. وعندما يكون للشيفرة <strong>عدة مخارج</strong> (عدة استدعاءات لـ <code>return</code> أو <code>break</code> أو <code>exit()</code>)، استخدم <strong>صيغة عقد الشرط فقط</strong> <code>V(G) = P + 1</code>.</Ar>
 </Callout>
 
-<SlideFigure page={28} caption="Two exits (nodes 4 and 5): regions and E − N + 2 both give 2, but P + 1 = 2 + 1 = 3 is the correct value." />
+<SlideFigure page={28} caption="Two exits (nodes 4 and 5): regions and E − N + 2 both give 2, but P + 1 = 2 + 1 = 3 is the correct value." captionAr="مخرجان (العقدتان 4 و5): تعطي المناطق والصيغة E-N+2 كلتاهما القيمة 2، لكن P+1=2+1=3 هي القيمة الصحيحة." />
 
 Components with a **high** $V(G)$ are **high risk** for errors and should be tested more thoroughly.
+
+<Ar>المكوّنات (components) ذات قيمة `V(G)` **المرتفعة** تكون **عالية الخطورة** من حيث الأخطاء، وينبغي اختبارها بعناية أكبر.</Ar>
 
 <Takeaways>
 
 - Testing shows that software **meets its requirements** and **finds defects**. It works best when done by an **independent** party.
+  <Ar>يُظهر الاختبار أن البرمجيات **تفي بمتطلباتها** و**يكشف العيوب (defects)**. ويكون في أفضل حالاته عندما يقوم به طرف **مستقل**.</Ar>
 - **Verification** (built right, static, during development) vs. **validation** (right product, dynamic, before release).
+  <Ar>**التحقق (Verification)** (بناء المنتج بالطريقة الصحيحة، ساكن، أثناء التطوير) مقابل **التحقق من الصلاحية (validation)** (المنتج الصحيح، ديناميكي، قبل الإصدار).</Ar>
 - The stages are **development** (unit → integration → system), **release** and **user** testing.
+  <Ar>المراحل هي اختبار **التطوير** (الوحدة ← التكامل ← النظام)، واختبار **الإصدار (release)**، واختبار **المستخدم**.</Ar>
 - Unit tests check **interfaces** first, then **computation** and **comparison** errors.
+  <Ar>تفحص اختبارات الوحدة **الواجهات (interfaces)** أولًا، ثم أخطاء **الحساب** و**المقارنة**.</Ar>
 - **Basis path testing** (white-box): CFG → $V(G)$ → independent paths → test cases.
+  <Ar>**اختبار المسار الأساسي (Basis path testing)** (صندوق أبيض): مخطط CFG ← `V(G)` ← المسارات المستقلة ← حالات الاختبار.</Ar>
 - $V(G) = R = E - N + 2 = P + 1$. With **several exits**, trust only $P + 1$.
+  <Ar>`V(G) = R = E - N + 2 = P + 1`. ومع **وجود عدة مخارج** لا تعتمد إلا على `P + 1`.</Ar>
 
 </Takeaways>
 
 ## Practice
 
-<Exercise title="Draw and measure" level="medium">
+<Ar>تدريب</Ar>
+
+<Exercise title="Draw and measure" titleAr="ارسم واحسب" level="medium">
 
 Draw the flow graph of this function and compute $V(G)$ three ways:
+
+<Ar>ارسم مخطط التدفق لهذه الدالة واحسب `V(G)` بثلاث طرق:</Ar>
 
 ```c
 int sign(int n) {
@@ -192,23 +262,33 @@ int sign(int n) {
 
 The edges are 1→2, 1→3, 3→4, 3→5, 2→5, 4→5, so **E = 6** and **N = 5**.
 
+<Ar>الحواف هي `1→2` و`1→3` و`3→4` و`3→5` و`2→5` و`4→5`، إذن **`E = 6`** و**`N = 5`**.</Ar>
+
 - $E - N + 2 = 6 - 5 + 2 = 3$.
 - There are two predicate nodes (1 and 3), so $P + 1 = 3$.
+  <Ar>توجد عقدتا شرط (1 و3)، إذن `P + 1 = 3`.</Ar>
 - There are 3 regions: two enclosed, plus the outside. So $V(G) = 3$.
+  <Ar>توجد 3 مناطق: منطقتان مغلقتان، بالإضافة إلى المنطقة الخارجية. إذن `V(G) = 3`.</Ar>
 
 You need at most **3** tests, e.g. `n = 5`, `n = -5` and `n = 0`.
+
+<Ar>تحتاج إلى **3** اختبارات على الأكثر، مثل `n = 5` و`n = -5` و`n = 0`.</Ar>
 
 </Solution>
 
 </Exercise>
 
-<Exercise title="Verification or validation?" level="easy">
+<Exercise title="Verification or validation?" titleAr="تحقق أم تحقق من الصلاحية؟" level="easy">
 
 Classify each activity: (a) a review of the design document; (b) beta users running the app; (c) checking the code against the coding standard; (d) running the acceptance tests with customer data.
+
+<Ar>صنّف كل نشاط: (أ) مراجعة وثيقة التصميم؛ (ب) مستخدمو النسخة التجريبية (beta) يشغّلون التطبيق؛ (ج) فحص الشيفرة مقابل معيار كتابة الشيفرة؛ (د) تشغيل اختبارات القبول (acceptance tests) ببيانات العميل.</Ar>
 
 <Solution>
 
 (a) Verification (static). (b) Validation (dynamic). (c) Verification (static). (d) Validation (dynamic).
+
+<Ar>(أ) تحقق (verification) ساكن. (ب) تحقق من الصلاحية (validation) ديناميكي. (ج) تحقق ساكن. (د) تحقق من الصلاحية ديناميكي.</Ar>
 
 </Solution>
 
@@ -218,39 +298,57 @@ Classify each activity: (a) a review of the design document; (b) beta users runn
   questions={[
     {
       q: "'Are we building the right product?' describes…",
+      qAr: "السؤال «هل نبني المنتج الصحيح؟» يصف…",
       options: ["Verification", "Validation", "Unit testing", "Refactoring"],
+      optionsAr: ["التحقق (verification)", "التحقق من الصلاحية (validation)", "اختبار الوحدة", "إعادة الهيكلة (refactoring)"],
       answer: 1,
-      explain: "Validation is product-oriented and dynamic; verification asks 'are we building the product right?'"
+      explain: "Validation is product-oriented and dynamic; verification asks 'are we building the product right?'",
+      explainAr: "التحقق من الصلاحية موجَّه نحو المنتج وديناميكي؛ أما التحقق فيسأل «هل نبني المنتج بالطريقة الصحيحة؟»"
     },
     {
       q: "Which testing stage is done by a separate team on a complete version before release?",
+      qAr: "أي مرحلة اختبار يقوم بها فريق منفصل على نسخة كاملة قبل الإصدار؟",
       options: ["Development testing", "Release testing", "User testing", "Unit testing"],
+      optionsAr: ["اختبار التطوير", "اختبار الإصدار", "اختبار المستخدم", "اختبار الوحدة"],
       answer: 1,
-      explain: "Release testing checks that the system meets the stakeholders' requirements."
+      explain: "Release testing checks that the system meets the stakeholders' requirements.",
+      explainAr: "يتحقق اختبار الإصدار من أن النظام يفي بمتطلبات أصحاب المصلحة."
     },
     {
       q: "A flow graph has 9 edges and 7 nodes and one exit. Its cyclomatic complexity is…",
+      qAr: "مخطط تدفق له 9 حواف و7 عقد ومخرج واحد. تعقيده الدوري هو…",
       options: ["2", "3", "4", "16"],
+      optionsAr: ["2", "3", "4", "16"],
       answer: 2,
-      explain: "V(G) = E − N + 2 = 9 − 7 + 2 = 4."
+      explain: "V(G) = E − N + 2 = 9 − 7 + 2 = 4.",
+      explainAr: "بتطبيق الصيغة: V(G)=E-N+2=9-7+2=4."
     },
     {
       q: "Cyclomatic complexity gives…",
+      qAr: "يعطي التعقيد الدوري…",
       options: ["The number of lines of code", "An upper bound on the number of tests in the basis set", "The number of classes", "The execution time"],
+      optionsAr: ["عدد أسطر الشيفرة", "حدًا أعلى لعدد الاختبارات في المجموعة الأساسية", "عدد الأصناف", "زمن التنفيذ"],
       answer: 1,
-      explain: "It equals the number of independent paths."
+      explain: "It equals the number of independent paths.",
+      explainAr: "يساوي عدد المسارات المستقلة."
     },
     {
       q: "For code with several exit points, which formula should you use?",
+      qAr: "في الشيفرة ذات نقاط الخروج المتعددة، أي صيغة ينبغي أن تستخدم؟",
       options: ["V(G) = R", "V(G) = E − N + 2", "V(G) = P + 1", "Any of them"],
+      optionsAr: ["V(G) = R", "V(G) = E − N + 2", "V(G) = P + 1", "أيٌّ منها"],
       answer: 2,
-      explain: "Only the predicate formula is reliable when the graph has several exits."
+      explain: "Only the predicate formula is reliable when the graph has several exits.",
+      explainAr: "صيغة عقد الشرط وحدها هي الموثوقة عندما يكون للمخطط عدة مخارج."
     },
     {
       q: "White-box testing is testing…",
+      qAr: "اختبار الصندوق الأبيض هو الاختبار…",
       options: ["As a user with zero knowledge of the code", "As a developer with full knowledge of the code", "Only the user interface", "Only by customers"],
+      optionsAr: ["من منظور المستخدم دون أي معرفة بالشيفرة", "من منظور المطوّر مع معرفة كاملة بالشيفرة", "لواجهة المستخدم فقط", "من قِبل العملاء فقط"],
       answer: 1,
-      explain: "Black-box testing is the zero-knowledge, user view."
+      explain: "Black-box testing is the zero-knowledge, user view.",
+      explainAr: "اختبار الصندوق الأسود هو منظور المستخدم الذي لا يعرف شيئًا عن الشيفرة."
     }
   ]}
 />

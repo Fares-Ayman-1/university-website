@@ -1,7 +1,9 @@
 ---
 number: 3
 title: Agile Software Development
+titleAr: "التطوير الرشيق للبرمجيات"
 summary: Why agile methods exist, the Agile Manifesto's four values and the key agile principles, then the two main methods. Extreme Programming covers its release cycle, user stories, practices, refactoring, test-first development and pair programming. Scrum covers its three phases, the sprint cycle, the product backlog, daily scrums and the Scrum master.
+summaryAr: "لماذا وُجدت الأساليب الرشيقة (agile)، والقيم الأربع للبيان الرشيق (Agile Manifesto) والمبادئ الرشيقة الرئيسية، ثم الأسلوبان الرئيسيان. تتناول البرمجة القصوى (XP) دورة الإصدار فيها، وقصص المستخدم (user stories)، وممارساتها، وإعادة الهيكلة (refactoring)، والتطوير بالاختبار أولًا (test-first)، والبرمجة الثنائية (pair programming). ويتناول Scrum مراحله الثلاث، ودورة السبرنت (sprint)، وقائمة أعمال المنتج (product backlog)، واجتماعات Scrum اليومية، ودور Scrum master."
 topics: [Problems with plan-driven development, Agile Manifesto, Agile principles, Extreme Programming, User stories, Refactoring, Test-first development, Pair programming, Scrum, Sprint cycle, Product backlog, Scrum master]
 duration: 50 min study
 sources:
@@ -19,61 +21,92 @@ bookRefs:
 <Objectives>
 
 - Explain **why** agile methods were created and state the **four values** of the Agile Manifesto.
+  <Ar>شرح **سبب** ظهور الأساليب الرشيقة (agile)، وذكر **القيم الأربع** للبيان الرشيق (Agile Manifesto).</Ar>
 - Describe the five **key agile principles**.
+  <Ar>وصف **المبادئ الرشيقة الرئيسية (key agile principles)** الخمسة.</Ar>
 - Explain the XP **release cycle**, **user stories**, **refactoring**, **test-first development** and **pair programming**.
+  <Ar>شرح **دورة الإصدار (release cycle)** في XP، و**قصص المستخدم (user stories)**، و**إعادة الهيكلة (refactoring)**، و**التطوير بالاختبار أولًا (test-first development)**، و**البرمجة الثنائية (pair programming)**.</Ar>
 - Describe Scrum's **three phases**, the **sprint cycle**, the **product backlog** and the role of the **Scrum master**.
+  <Ar>وصف **المراحل الثلاث** في Scrum، و**دورة السبرنت (sprint cycle)**، و**قائمة أعمال المنتج (product backlog)**، ودور **Scrum master**.</Ar>
 
 </Objectives>
 
 ## Why agile?
 
-<SlideFigure page={2} caption="The classic tree-swing cartoon: what the customer explained, what each role understood or built, and what the customer really needed." />
+<Ar>لماذا الأساليب الرشيقة؟</Ar>
+
+<SlideFigure page={2} caption="The classic tree-swing cartoon: what the customer explained, what each role understood or built, and what the customer really needed." captionAr="رسم الأرجوحة على الشجرة الشهير: ما شرحه العميل، وما فهمه أو بناه كل دور، وما كان العميل يحتاجه فعلًا." />
 
 - Customers often **don't know exactly what they want**, and not every requirement can be found at the start.
+  <Ar>كثيرًا ما **لا يعرف العملاء بالضبط ما يريدون**، ولا يمكن اكتشاف كل المتطلبات في البداية.</Ar>
 - Requirements and business priorities **change** throughout the project.
+  <Ar>المتطلبات وأولويات العمل **تتغير** طوال المشروع.</Ar>
 - In plan-driven methods, change means **costly rework**, feedback comes **late**, and long cycles delay business value.
+  <Ar>في الأساليب الموجَّهة بالخطة (plan-driven)، يعني التغيير **إعادة عمل مكلفة**، وتأتي الملاحظات **متأخرة**، وتؤخر الدورات الطويلة تحقيق القيمة للعمل.</Ar>
 - **Rapid development and delivery** is now a basic requirement.
+  <Ar>أصبح **التطوير والتسليم السريعان** الآن متطلبًا أساسيًا.</Ar>
 
 Agile methods weren't created because plan-driven methods are "bad". They were created because software development is **unpredictable**, and they adapt to continuous change.
 
+<Ar>لم تُبتكر الأساليب الرشيقة لأن الأساليب الموجَّهة بالخطة «سيئة»، بل لأن تطوير البرمجيات **غير قابل للتنبؤ**، وهي تتكيف مع التغيير المستمر.</Ar>
+
 ## The Agile Manifesto
 
-<SlideFigure page={5} caption="The Agile Manifesto's four value pairs." />
+<Ar>البيان الرشيق</Ar>
 
-| We value… | …over |
+<SlideFigure page={5} caption="The Agile Manifesto's four value pairs." captionAr="أزواج القيم الأربعة في البيان الرشيق (Agile Manifesto)." />
+
+| We value… <Ar>نُقدِّر…</Ar> | …over <Ar>…أكثر من</Ar> |
 |---|---|
-| **Individuals and interactions** | Processes and tools |
-| **Working software** | Comprehensive documentation |
-| **Customer collaboration** | Contract negotiation |
-| **Responding to change** | Following a plan |
+| **Individuals and interactions** <Ar>**الأفراد والتفاعلات**</Ar> | Processes and tools <Ar>العمليات والأدوات</Ar> |
+| **Working software** <Ar>**البرمجيات العاملة**</Ar> | Comprehensive documentation <Ar>التوثيق الشامل</Ar> |
+| **Customer collaboration** <Ar>**التعاون مع العميل**</Ar> | Contract negotiation <Ar>التفاوض على العقود</Ar> |
+| **Responding to change** <Ar>**الاستجابة للتغيير**</Ar> | Following a plan <Ar>اتباع خطة</Ar> |
 
 The items on the right still have value, but the items on the left are valued **more**.
 
+<Ar>العناصر الموجودة على اليمين لا تزال لها قيمة، لكن العناصر الموجودة على اليسار تُقدَّر **أكثر**.</Ar>
+
 ## Key agile principles
 
-| Principle | Meaning |
+<Ar>المبادئ الرشيقة الرئيسية</Ar>
+
+| Principle <Ar>المبدأ</Ar> | Meaning <Ar>المعنى</Ar> |
 |---|---|
-| **Customer involvement** | Customers are closely involved throughout development |
-| **Incremental delivery** | The software is developed in increments, following the customer's priorities |
-| **People, not process** | The team uses its own skills and chooses how to work |
-| **Embrace change** | Expect requirements to change, and design the system to accommodate it |
-| **Maintain simplicity** | Keep both the software and the process simple |
+| **Customer involvement** <Ar>**مشاركة العميل (Customer involvement)**</Ar> | Customers are closely involved throughout development <Ar>يشارك العملاء عن قرب طوال مدة التطوير</Ar> |
+| **Incremental delivery** <Ar>**التسليم التزايدي (Incremental delivery)**</Ar> | The software is developed in increments, following the customer's priorities <Ar>تُطوَّر البرمجيات على زيادات (increments) وفق أولويات العميل</Ar> |
+| **People, not process** <Ar>**الأشخاص لا العملية (People, not process)**</Ar> | The team uses its own skills and chooses how to work <Ar>يستخدم الفريق مهاراته الخاصة ويختار طريقة عمله</Ar> |
+| **Embrace change** <Ar>**تقبُّل التغيير (Embrace change)**</Ar> | Expect requirements to change, and design the system to accommodate it <Ar>توقّع أن تتغير المتطلبات، وصمّم النظام بحيث يستوعب ذلك</Ar> |
+| **Maintain simplicity** <Ar>**الحفاظ على البساطة (Maintain simplicity)**</Ar> | Keep both the software and the process simple <Ar>أبقِ البرمجيات والعملية كلتيهما بسيطتين</Ar> |
 
 The best-known agile methods are **Extreme Programming (XP)**, **Scrum** and **Kanban**.
 
+<Ar>أشهر الأساليب الرشيقة هي **البرمجة القصوى (XP)** و**Scrum** و**Kanban**.</Ar>
+
 ## Extreme Programming (XP)
+
+<Ar>البرمجة القصوى (XP)</Ar>
 
 XP, from the late 1990s, takes an **extreme** approach to iterative development:
 
-- new versions may be **built several times a day**,
-- increments are **delivered to customers every 2 weeks**,
-- **all tests run on every build**, and a build is accepted only if they all pass.
+<Ar>تتبنى البرمجة القصوى (XP)، التي ظهرت في أواخر التسعينيات، نهجًا **متطرفًا** في التطوير التكراري (iterative development):</Ar>
 
-<SlideFigure page={11} caption="The XP release cycle: select user stories → break them into tasks → plan the release → develop, integrate and test → release → evaluate." />
+- new versions may be **built several times a day**,
+  <Ar>قد **تُبنى نسخ جديدة عدة مرات في اليوم**،</Ar>
+- increments are **delivered to customers every 2 weeks**,
+  <Ar>**تُسلَّم الزيادات (increments) إلى العملاء كل أسبوعين**،</Ar>
+- **all tests run on every build**, and a build is accepted only if they all pass.
+  <Ar>**تُشغَّل جميع الاختبارات مع كل بناء (build)**، ولا يُقبل البناء إلا إذا نجحت كلها.</Ar>
+
+<SlideFigure page={11} caption="The XP release cycle: select user stories → break them into tasks → plan the release → develop, integrate and test → release → evaluate." captionAr="دورة الإصدار في XP: اختيار قصص المستخدم ← تقسيمها إلى مهام ← تخطيط الإصدار ← التطوير والدمج والاختبار ← الإصدار ← التقييم." />
 
 ### User stories
 
+<Ar>قصص المستخدم</Ar>
+
 A **user story** is a feature the customer wants, small enough to deliver. Stories are written on **cards** in this format:
+
+<Ar>**قصة المستخدم (user story)** ميزة يريدها العميل، صغيرة بما يكفي لتسليمها. وتُكتب القصص على **بطاقات** بهذه الصيغة:</Ar>
 
 ```text title="Story card"
 As a  <type of user>
@@ -88,33 +121,51 @@ So that prescriptions are checked against safe dose ranges
 
 In XP the **customer is part of the team** and decides the requirements. The team breaks each story into **tasks**, which are the basis of the effort and cost estimates. The customer then **chooses the stories** for the next release by priority. The main weakness of user stories is **completeness**: it is hard to know whether enough stories cover all the essential requirements.
 
+<Ar>في XP يكون **العميل جزءًا من الفريق** ويحدد المتطلبات. ويقسّم الفريق كل قصة إلى **مهام (tasks)** تكون أساس تقديرات الجهد والتكلفة. ثم **يختار العميل القصص** للإصدار التالي حسب الأولوية. ونقطة الضعف الرئيسية في قصص المستخدم هي **الاكتمال (completeness)**: إذ يصعب معرفة ما إذا كانت القصص كافية لتغطية جميع المتطلبات الأساسية.</Ar>
+
 ### XP practices
 
-<SlideFigure page={14} caption="XP practices: whole team, planning, small releases, customer tests, metaphor, simple design, test-driven development, refactoring, pair programming, collective ownership, continuous integration, coding standard and a sustainable pace." />
+<Ar>ممارسات XP</Ar>
+
+<SlideFigure page={14} caption="XP practices: whole team, planning, small releases, customer tests, metaphor, simple design, test-driven development, refactoring, pair programming, collective ownership, continuous integration, coding standard and a sustainable pace." captionAr="ممارسات XP: الفريق الكامل، والتخطيط، والإصدارات الصغيرة، واختبارات العميل، والاستعارة (metaphor)، والتصميم البسيط، والتطوير المدفوع بالاختبارات (TDD)، وإعادة الهيكلة، والبرمجة الثنائية، والملكية الجماعية، والتكامل المستمر، ومعيار كتابة الشيفرة، والإيقاع المستدام." />
 
 XP supports each agile principle:
 
-| Principle | XP practice |
+<Ar>تدعم XP كل مبدأ من المبادئ الرشيقة:</Ar>
+
+| Principle <Ar>المبدأ</Ar> | XP practice <Ar>ممارسة XP</Ar> |
 |---|---|
-| Incremental delivery | Small, frequent releases based on customer stories |
-| Customer involvement | A customer representative in the team defines the acceptance tests |
-| People, not process | Pair programming, **collective ownership** of the code, a **sustainable pace** without excessive overtime |
-| Embrace change | Regular releases, test-first development, refactoring, **continuous integration** |
-| Maintain simplicity | Constant refactoring and **simple designs** that don't anticipate future changes |
+| Incremental delivery <Ar>التسليم التزايدي</Ar> | Small, frequent releases based on customer stories <Ar>إصدارات صغيرة ومتكررة مبنية على قصص العميل</Ar> |
+| Customer involvement <Ar>مشاركة العميل</Ar> | A customer representative in the team defines the acceptance tests <Ar>ممثل للعميل ضمن الفريق يحدد اختبارات القبول (acceptance tests)</Ar> |
+| People, not process <Ar>الأشخاص لا العملية</Ar> | Pair programming, **collective ownership** of the code, a **sustainable pace** without excessive overtime <Ar>البرمجة الثنائية (pair programming)، و**الملكية الجماعية (collective ownership)** للشيفرة، و**إيقاع مستدام (sustainable pace)** دون عمل إضافي مفرط</Ar> |
+| Embrace change <Ar>تقبُّل التغيير</Ar> | Regular releases, test-first development, refactoring, **continuous integration** <Ar>إصدارات منتظمة، والتطوير بالاختبار أولًا (test-first)، وإعادة الهيكلة (refactoring)، و**التكامل المستمر (continuous integration)**</Ar> |
+| Maintain simplicity <Ar>الحفاظ على البساطة</Ar> | Constant refactoring and **simple designs** that don't anticipate future changes <Ar>إعادة هيكلة مستمرة و**تصميمات بسيطة** لا تحاول توقّع التغييرات المستقبلية</Ar> |
 
 ### Refactoring
 
+<Ar>إعادة الهيكلة</Ar>
+
 Incremental development tends to **degrade the structure**: developers patch problems as they arise, which leads to duplicated code, inappropriate reuse, and harder and harder changes. XP's answer is to refactor **constantly**.
 
-<Definition term="Refactoring">
+<Ar>يميل التطوير التزايدي إلى **تدهور البنية**: إذ يرقّع المطورون المشكلات فور ظهورها، مما يؤدي إلى تكرار الشيفرة، وإعادة استخدام غير ملائمة، وتغييرات تزداد صعوبة باستمرار. وجواب XP هو إعادة الهيكلة (refactoring) **باستمرار**.</Ar>
+
+<Definition term="Refactoring" termAr="إعادة الهيكلة">
   Improving the <strong>internal structure</strong> of existing code <strong>without changing its external behaviour</strong>.
+
+  <Ar>تحسين <strong>البنية الداخلية</strong> لشيفرة موجودة <strong>دون تغيير سلوكها الخارجي</strong>.</Ar>
 </Definition>
 
 Examples include reorganizing a class hierarchy to remove duplicate code, tidying up and renaming attributes and methods, and replacing similar code with calls to library methods. Refactored code is easier to understand, so it needs less documentation.
 
+<Ar>من أمثلتها إعادة تنظيم هرمية الأصناف (class hierarchy) لإزالة الشيفرة المكررة، وترتيب السمات (attributes) والدوال العضو (methods) وإعادة تسميتها، واستبدال الشيفرة المتشابهة باستدعاءات لدوال المكتبات. والشيفرة المُعاد هيكلتها أسهل فهمًا، لذا تحتاج إلى توثيق أقل.</Ar>
+
 ### Test-first development
 
+<Ar>التطوير بالاختبار أولًا</Ar>
+
 In XP, tests are written **before** the code, and they are **automated**. Development can't move on until all tests pass. Writing the test first defines the **interface** and the expected **behaviour**, forces ambiguities in the specification to be resolved early, and avoids **test lag**, where testing falls behind implementation. The customer helps write the **acceptance tests**.
+
+<Ar>في XP تُكتب الاختبارات **قبل** الشيفرة، وتكون **مؤتمتة**. ولا يمكن أن يتقدم التطوير حتى تنجح جميع الاختبارات. وكتابة الاختبار أولًا تحدد **الواجهة (interface)** و**السلوك** المتوقع، وتفرض حل الغموض في التوصيف مبكرًا، وتتجنب **تأخر الاختبار (test lag)**، أي تخلّف الاختبار عن التنفيذ. ويساعد العميل في كتابة **اختبارات القبول (acceptance tests)**.</Ar>
 
 ```python title="test_dose.py: a test written before the code (Mentcare dose check)"
 from mentcare.prescribing import check_dose  # doesn't exist yet: the test comes first
@@ -134,97 +185,152 @@ def test_frequency_pushes_daily_total_too_high():
 
 ### Pair programming
 
+<Ar>البرمجة الثنائية</Ar>
+
 **Two people work together at one computer**. Pairs change dynamically, so everyone works with everyone.
 
+<Ar>**يعمل شخصان معًا على حاسوب واحد**. وتتغير الأزواج ديناميكيًا، فيعمل الجميع مع الجميع.</Ar>
+
 <Grid cols={2}>
-  <Card title="Review" tag="quality">
+  <Card title="Review" titleAr="المراجعة" tag="quality">
     An informal, continuous code review: every line is seen by at least two people. It is much cheaper than formal inspections.
+
+    <Ar>مراجعة شيفرة غير رسمية ومستمرة: كل سطر يراه شخصان على الأقل. وهي أرخص بكثير من عمليات الفحص الرسمية (formal inspections).</Ar>
   </Card>
-  <Card title="Idea sharing" tag="knowledge">
+  <Card title="Idea sharing" titleAr="تبادل الأفكار" tag="knowledge">
     Knowledge spreads across the team, and there are fewer false starts.
+
+    <Ar>تنتشر المعرفة في أرجاء الفريق، وتقل البدايات الخاطئة.</Ar>
   </Card>
-  <Card title="Responsibility" tag="ownership">
+  <Card title="Responsibility" titleAr="المسؤولية" tag="ownership">
     Collective ownership: the team as a whole, not an individual, is responsible for the code.
+
+    <Ar>الملكية الجماعية (Collective ownership): الفريق ككل، لا فرد بعينه، هو المسؤول عن الشيفرة.</Ar>
   </Card>
-  <Card title="Dynamicity" tag="refactoring">
+  <Card title="Dynamicity" titleAr="الديناميكية" tag="refactoring">
     Changing pairs encourage refactoring, because everyone benefits from the improved code at once.
+
+    <Ar>يشجّع تغيير الأزواج على إعادة الهيكلة (refactoring)، لأن الجميع يستفيد من الشيفرة المحسَّنة فورًا.</Ar>
   </Card>
 </Grid>
 
 Studies suggest a pair is about as productive as two people working separately, and the code is of higher quality.
 
+<Ar>تشير الدراسات إلى أن إنتاجية الزوج تقارب إنتاجية شخصين يعملان منفصلين، مع جودة أعلى للشيفرة.</Ar>
+
 ## Scrum
+
+<Ar>منهجية Scrum</Ar>
 
 Scrum is a general agile method that focuses on **managing iterative development**, not on technical practices. It doesn't prescribe pair programming or test-first development, so it is often combined with XP, which supplies the engineering practices while Scrum supplies the management framework.
 
-<SlideFigure page={25} caption="The Scrum process: outline planning and architectural design, then repeated sprint cycles (assess → select → develop → review), then project closure." />
+<Ar>Scrum أسلوب رشيق عام يركّز على **إدارة التطوير التكراري**، لا على الممارسات التقنية. فهو لا يفرض البرمجة الثنائية ولا التطوير بالاختبار أولًا، لذا كثيرًا ما يُدمج مع XP، التي توفر الممارسات الهندسية بينما يوفر Scrum إطار الإدارة.</Ar>
+
+<SlideFigure page={25} caption="The Scrum process: outline planning and architectural design, then repeated sprint cycles (assess → select → develop → review), then project closure." captionAr="عملية Scrum: التخطيط المبدئي والتصميم المعماري، ثم دورات سبرنت متكررة (التقييم ← الاختيار ← التطوير ← المراجعة)، ثم إغلاق المشروع." />
 
 **Three phases:**
 
+<Ar>**ثلاث مراحل:**</Ar>
+
 1. **Outline planning**: set the general objectives and design the software architecture.
+   <Ar>**التخطيط المبدئي (Outline planning)**: تحديد الأهداف العامة وتصميم معمارية البرمجيات.</Ar>
 2. **Sprint cycles**: each sprint develops an increment of the system.
+   <Ar>**دورات السبرنت (Sprint cycles)**: يطوّر كل سبرنت زيادة (increment) من النظام.</Ar>
 3. **Project closure**: wrap up, complete the documentation (help frames, user manuals), and assess the lessons learned.
+   <Ar>**إغلاق المشروع (Project closure)**: إنهاء العمل، واستكمال التوثيق (إطارات المساعدة وأدلة المستخدم)، وتقييم الدروس المستفادة.</Ar>
 
 ### The sprint cycle
+
+<Ar>دورة السبرنت</Ar>
 
 <Steps>
 
 1. **Length**: sprints are **fixed length, normally 2–4 weeks**, matching one release iteration.
+   <Ar>**المدة**: السبرنتات **ثابتة المدة، وعادةً من 2 إلى 4 أسابيع**، وتقابل دورة إصدار واحدة.</Ar>
 2. **Assess**: planning starts from the **product backlog**, the list of work to be done. Priorities and risks are reviewed, and the customer can add new requirements.
+   <Ar>**التقييم (Assess)**: يبدأ التخطيط من **قائمة أعمال المنتج (product backlog)**، وهي قائمة العمل المطلوب إنجازه. وتُراجَع الأولويات والمخاطر، ويمكن للعميل إضافة متطلبات جديدة.</Ar>
 3. **Select**: the whole team works with the customer to choose the features for this sprint.
+   <Ar>**الاختيار (Select)**: يعمل الفريق بأكمله مع العميل لاختيار ميزات هذا السبرنت.</Ar>
 4. **Develop**: the team organizes itself. Short **daily scrums** review progress and re-prioritize. The team is shielded from the outside, with all communication going through the **Scrum master**.
+   <Ar>**التطوير (Develop)**: ينظّم الفريق نفسه بنفسه. وتراجع **اجتماعات Scrum اليومية (daily scrums)** القصيرة التقدم وتعيد ترتيب الأولويات. ويُعزل الفريق عن الخارج، إذ يمر كل التواصل عبر **Scrum master**.</Ar>
 5. **Review**: the work is reviewed and shown to stakeholders, then the next sprint begins.
+   <Ar>**المراجعة (Review)**: يُراجَع العمل ويُعرض على أصحاب المصلحة (stakeholders)، ثم يبدأ السبرنت التالي.</Ar>
 
 </Steps>
 
 ### The Scrum master
 
+<Ar>دور Scrum master</Ar>
+
 The whole team is empowered to make decisions, so Scrum deliberately avoids the term "project manager". The **Scrum master** is a **facilitator** who:
 
+<Ar>يُمنح الفريق بأكمله صلاحية اتخاذ القرارات، لذا يتجنب Scrum عمدًا مصطلح «مدير المشروع». و**Scrum master** هو **مُيسِّر (facilitator)**:</Ar>
+
 - arranges the daily meetings,
+  <Ar>ينظّم الاجتماعات اليومية،</Ar>
 - tracks the backlog of work to be done,
+  <Ar>يتابع قائمة الأعمال (backlog) المطلوب إنجازها،</Ar>
 - records decisions,
+  <Ar>يسجّل القرارات،</Ar>
 - measures progress against the backlog, and
+  <Ar>يقيس التقدم مقارنةً بقائمة الأعمال، و</Ar>
 - communicates with customers and management outside the team, **protecting the team from distractions**.
+  <Ar>يتواصل مع العملاء والإدارة خارج الفريق، **ليحمي الفريق من المشتتات**.</Ar>
 
 A **Scrum board**, a whiteboard of sprint-backlog notes, lets everyone see at a glance what others are doing.
 
-| | XP | Scrum |
+<Ar>تتيح **لوحة Scrum (Scrum board)**، وهي سبورة بيضاء عليها ملاحظات قائمة أعمال السبرنت (sprint backlog)، للجميع أن يروا بنظرة سريعة ما يفعله الآخرون.</Ar>
+
+| | XP <Ar>البرمجة القصوى</Ar> | Scrum <Ar>منهجية Scrum</Ar> |
 |---|---|---|
-| **Focus** | Engineering practices (how to write the code) | Project management (how to organize iterations) |
-| **Iteration** | Releases about every 2 weeks; builds several times a day | Sprints of 2–4 weeks |
-| **Requirements** | Story cards | Product backlog |
+| **Focus** <Ar>**التركيز**</Ar> | Engineering practices (how to write the code) <Ar>الممارسات الهندسية (كيف تُكتب الشيفرة)</Ar> | Project management (how to organize iterations) <Ar>إدارة المشروع (كيف تُنظَّم الدورات التكرارية)</Ar> |
+| **Iteration** <Ar>**الدورة التكرارية**</Ar> | Releases about every 2 weeks; builds several times a day <Ar>إصدارات كل أسبوعين تقريبًا، وبناء عدة مرات في اليوم</Ar> | Sprints of 2–4 weeks <Ar>سبرنتات مدتها من 2 إلى 4 أسابيع</Ar> |
+| **Requirements** <Ar>**المتطلبات**</Ar> | Story cards <Ar>بطاقات القصص (Story cards)</Ar> | Product backlog <Ar>قائمة أعمال المنتج (Product backlog)</Ar> |
 
 <Takeaways>
 
 - Agile values **individuals, working software, collaboration and responding to change**.
+  <Ar>تُقدِّر الأساليب الرشيقة **الأفراد، والبرمجيات العاملة، والتعاون، والاستجابة للتغيير**.</Ar>
 - Its principles are **customer involvement, incremental delivery, people not process, embrace change and maintain simplicity**.
+  <Ar>ومبادئها هي **مشاركة العميل، والتسليم التزايدي، والأشخاص لا العملية، وتقبُّل التغيير، والحفاظ على البساطة**.</Ar>
 - **XP**: user stories → tasks; frequent releases; **refactoring**, **test-first development** and **pair programming**.
+  <Ar>**البرمجة القصوى (XP)**: قصص المستخدم ← المهام؛ وإصدارات متكررة؛ و**إعادة الهيكلة**، و**التطوير بالاختبار أولًا**، و**البرمجة الثنائية**.</Ar>
 - **Scrum**: planning → **sprints** of 2–4 weeks from the **product backlog** → closure, facilitated by the **Scrum master**.
+  <Ar>**منهجية Scrum**: التخطيط ← **سبرنتات** مدتها من 2 إلى 4 أسابيع انطلاقًا من **قائمة أعمال المنتج** ← الإغلاق، بتيسير من **Scrum master**.</Ar>
 
 </Takeaways>
 
 ## Practice
 
-<Exercise title="Write a user story" level="easy">
+<Ar>تدريب</Ar>
+
+<Exercise title="Write a user story" titleAr="اكتب قصة مستخدم" level="easy">
 
 Write a user story for an online bookstore feature that lets customers track their orders.
+
+<Ar>اكتب قصة مستخدم (user story) لميزة في متجر كتب إلكتروني تتيح للعملاء تتبّع طلباتهم.</Ar>
 
 <Solution>
 
 *As a* customer *I want* to see the status of my order (paid, shipped, delivered) *so that* I know when my books will arrive. The team would then break it into tasks, such as "add a status field to orders", "build an order-status page" and "send an email when the status changes".
 
+<Ar>*بصفتي* عميلًا *أريد* أن أرى حالة طلبي (مدفوع، تم شحنه، تم تسليمه) *حتى* أعرف متى ستصل كتبي. ثم يقسّم الفريق القصة إلى مهام، مثل «إضافة حقل للحالة إلى الطلبات»، و«بناء صفحة لحالة الطلب»، و«إرسال بريد إلكتروني عند تغيّر الحالة».</Ar>
+
 </Solution>
 
 </Exercise>
 
-<Exercise title="Why refactor?" level="medium">
+<Exercise title="Why refactor?" titleAr="لماذا نعيد الهيكلة؟" level="medium">
 
 Why does incremental development degrade code over time, and how does XP address it?
+
+<Ar>لماذا يؤدي التطوير التزايدي إلى تدهور الشيفرة مع مرور الوقت، وكيف تعالج XP ذلك؟</Ar>
 
 <Solution>
 
 Each increment is added by solving problems as they arise, with workarounds, duplicated code and inappropriate reuse, so the structure deteriorates and every change gets harder. XP addresses this with **constant refactoring**: improving the internal structure without changing behaviour whenever code can be improved. Pair programming and collective ownership make the team support it, and automated tests make it safe.
+
+<Ar>تُضاف كل زيادة بحل المشكلات فور ظهورها، باستخدام حلول التفافية (workarounds) وشيفرة مكررة وإعادة استخدام غير ملائمة، فتتدهور البنية ويصبح كل تغيير أصعب. وتعالج XP ذلك عبر **إعادة الهيكلة المستمرة (constant refactoring)**: أي تحسين البنية الداخلية دون تغيير السلوك كلما أمكن تحسين الشيفرة. وتجعل البرمجة الثنائية والملكية الجماعية الفريق داعمًا لها، وتجعلها الاختبارات المؤتمتة آمنة.</Ar>
 
 </Solution>
 
@@ -234,39 +340,57 @@ Each increment is added by solving problems as they arise, with workarounds, dup
   questions={[
     {
       q: "What is the primary focus of Scrum?",
+      qAr: "ما التركيز الأساسي لمنهجية Scrum؟",
       options: ["Specific programming techniques", "Managing and coordinating iterative development", "Detailed architecture design", "Testing after development"],
+      optionsAr: ["تقنيات برمجة محددة", "إدارة التطوير التكراري وتنسيقه", "تصميم معماري تفصيلي", "الاختبار بعد التطوير"],
       answer: 1,
-      explain: "Scrum is a management framework; XP provides the engineering practices."
+      explain: "Scrum is a management framework; XP provides the engineering practices.",
+      explainAr: "منهجية Scrum إطار للإدارة، بينما توفر XP الممارسات الهندسية."
     },
     {
       q: "Which XP practice improves internal structure while keeping external behaviour unchanged?",
+      qAr: "أي ممارسة في XP تحسّن البنية الداخلية مع إبقاء السلوك الخارجي دون تغيير؟",
       options: ["Continuous integration", "Refactoring", "Pair programming", "Incremental planning"],
+      optionsAr: ["التكامل المستمر", "إعادة الهيكلة", "البرمجة الثنائية", "التخطيط التزايدي"],
       answer: 1,
-      explain: "That is the definition of refactoring."
+      explain: "That is the definition of refactoring.",
+      explainAr: "هذا هو تعريف إعادة الهيكلة (refactoring)."
     },
     {
       q: "How are user requirements represented in XP?",
+      qAr: "كيف تُمثَّل متطلبات المستخدم في XP؟",
       options: ["Story cards", "Gantt charts", "Class diagrams", "Architecture documents"],
+      optionsAr: ["بطاقات القصص", "مخططات Gantt", "مخططات الأصناف", "وثائق المعمارية"],
       answer: 0,
-      explain: "User stories are written on cards and broken down into tasks."
+      explain: "User stories are written on cards and broken down into tasks.",
+      explainAr: "تُكتب قصص المستخدم على بطاقات وتُقسَّم إلى مهام."
     },
     {
       q: "Which Scrum artifact is the prioritized list of work for the product?",
+      qAr: "أي عنصر من عناصر Scrum يمثل قائمة عمل المنتج المرتبة حسب الأولوية؟",
       options: ["Sprint review", "Product backlog", "Scrum board", "Release plan"],
+      optionsAr: ["مراجعة السبرنت", "قائمة أعمال المنتج", "لوحة Scrum", "خطة الإصدار"],
       answer: 1,
-      explain: "The product backlog is the starting point for planning each sprint."
+      explain: "The product backlog is the starting point for planning each sprint.",
+      explainAr: "قائمة أعمال المنتج (product backlog) هي نقطة الانطلاق لتخطيط كل سبرنت."
     },
     {
       q: "What is the typical length of a Scrum sprint?",
+      qAr: "ما المدة المعتادة للسبرنت في Scrum؟",
       options: ["One day", "Two to four weeks", "Two to four months", "Six months"],
+      optionsAr: ["يوم واحد", "من أسبوعين إلى أربعة أسابيع", "من شهرين إلى أربعة أشهر", "ستة أشهر"],
       answer: 1,
-      explain: "Sprints are fixed length, normally 2–4 weeks."
+      explain: "Sprints are fixed length, normally 2–4 weeks.",
+      explainAr: "السبرنتات ثابتة المدة، وعادةً من 2 إلى 4 أسابيع."
     },
     {
       q: "Which is NOT a value of the Agile Manifesto?",
+      qAr: "أيٌّ مما يلي ليس من قيم البيان الرشيق (Agile Manifesto)؟",
       options: ["Working software over comprehensive documentation", "Customer collaboration over contract negotiation", "Following a plan over responding to change", "Individuals and interactions over processes and tools"],
+      optionsAr: ["البرمجيات العاملة أكثر من التوثيق الشامل", "التعاون مع العميل أكثر من التفاوض على العقود", "اتباع خطة أكثر من الاستجابة للتغيير", "الأفراد والتفاعلات أكثر من العمليات والأدوات"],
       answer: 2,
-      explain: "It is the reverse: responding to change over following a plan."
+      explain: "It is the reverse: responding to change over following a plan.",
+      explainAr: "العكس هو الصحيح: الاستجابة للتغيير أكثر من اتباع خطة."
     }
   ]}
 />

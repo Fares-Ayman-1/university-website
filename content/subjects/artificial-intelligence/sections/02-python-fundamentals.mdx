@@ -1,7 +1,9 @@
 ---
 number: 2
 title: Python Fundamentals for AI
+titleAr: "أساسيات Python للذكاء الاصطناعي"
 summary: Everything the search labs rely on, from variables, casting and operators through lists, tuples, dicts, sets, comprehensions, control flow and functions to classes, inheritance and polymorphism, with the gotchas that trip students up.
+summaryAr: "كل ما تعتمد عليه سكاشن البحث، بدءًا من المتغيرات والتحويل بين الأنواع (casting) والعوامل، مرورًا بالقوائم والصفوف والقواميس والمجموعات والصياغات المختصرة (comprehensions) وبنى التحكم والدوال، وصولًا إلى الأصناف والوراثة وتعدد الأشكال، مع الأخطاء الشائعة التي يقع فيها الطلاب."
 kind: lab
 topics: [Variables and casting, Lists and slicing, Dicts and sets, Comprehensions, Functions, Classes and OOP]
 duration: 60 min hands-on
@@ -15,21 +17,33 @@ sources:
 <Objectives>
 
 - Declare variables, read input and **cast** between `int`, `float`, `str` and `bool`.
+  <Ar>تعريف المتغيرات، وقراءة المدخلات، و**التحويل (cast)** بين `int` و `float` و `str` و `bool`.</Ar>
 - Use **lists, tuples, dictionaries and sets**, including slicing and the difference between mutable and immutable types.
+  <Ar>استخدام **القوائم (lists) والصفوف (tuples) والقواميس (dictionaries) والمجموعات (sets)**، بما في ذلك التقطيع (slicing) والفرق بين الأنواع القابلة للتعديل (mutable) وغير القابلة للتعديل (immutable).</Ar>
 - Write **comprehensions**, conditionals, loops and functions, and know what gets passed **by reference**.
+  <Ar>كتابة **الصياغات المختصرة (comprehensions)** والجمل الشرطية والحلقات والدوال، ومعرفة ما يُمرَّر **بالمرجع (by reference)**.</Ar>
 - Build **classes** with attributes, private members, inheritance and polymorphism. The graph-search labs are written this way.
+  <Ar>بناء **الأصناف (classes)** بسماتها (attributes) وأعضائها الخاصة (private members) والوراثة (inheritance) وتعدد الأشكال (polymorphism). وسكاشن البحث في الرسوم البيانية مكتوبة بهذه الطريقة.</Ar>
 
 </Objectives>
 
-<Callout type="tip" title="Run the notebook alongside this page">
+<Callout type="tip" title="Run the notebook alongside this page" titleAr="شغّل الدفتر (notebook) إلى جانب هذه الصفحة">
   The original Jupyter notebook is linked under <strong>Source material</strong> at the bottom. Run a cell with <code>Ctrl + Enter</code>, or with <code>Shift + Enter</code> to also move to the next cell.
+
+  <Ar>رابط دفتر Jupyter الأصلي موجود تحت <strong>Source material</strong> (المواد المصدرية) في أسفل الصفحة. شغّل الخلية بالضغط على <code>Ctrl + Enter</code>، أو بالضغط على <code>Shift + Enter</code> لتنتقل أيضًا إلى الخلية التالية.</Ar>
 </Callout>
 
 ## Why Python?
 
+<Ar>لماذا Python؟</Ar>
+
 Python is a high-level, **interpreted** language created by Guido van Rossum (1991). It is known for its **simplicity and readability**, and you can express ideas in far fewer lines than in C++ or Java. It is dynamically typed, so the interpreter works out a variable's type from the value you assign. Its huge ecosystem (NumPy, pandas, scikit-learn, PyTorch) is why it is the default language of AI.
 
+<Ar>Python لغة عالية المستوى **مُفسَّرة (interpreted)** أنشأها Guido van Rossum عام 1991. وتشتهر بـ**البساطة وسهولة القراءة**، ويمكنك التعبير بها عن الأفكار بأسطر أقل بكثير مما في C++ أو Java. وهي ديناميكية الأنواع (dynamically typed)، أي أن المفسِّر يستنتج نوع المتغير من القيمة التي تُسندها إليه. ونظامها البيئي الضخم (NumPy و pandas و scikit-learn و PyTorch) هو سبب كونها اللغة الافتراضية للذكاء الاصطناعي.</Ar>
+
 ## Printing, comments and variables
+
+<Ar>الطباعة والتعليقات والمتغيرات</Ar>
 
 ```python
 print("Hello World")
@@ -50,9 +64,15 @@ print(x + y)           # 10.2
 
 **Naming rules**: names may contain letters, digits and underscores, but cannot start with a digit or contain `-`. So `3var = 23` and `my-name = "..."` are both `SyntaxError`s. Names are case-sensitive and must not be keywords like `class` or `for`.
 
+<Ar>**قواعد التسمية**: يمكن أن تحتوي الأسماء على حروف وأرقام وشرطات سفلية (underscores)، لكن لا يمكن أن تبدأ برقم أو أن تحتوي على `-`. لذلك فإن كلًّا من `3var = 23` و `my-name = "..."` يسبب `SyntaxError`. والأسماء حساسة لحالة الأحرف (case-sensitive)، ويجب ألا تكون كلمات محجوزة (keywords) مثل `class` أو `for`.</Ar>
+
 ## Input and casting
 
+<Ar>المدخلات والتحويل بين الأنواع</Ar>
+
 `input()` **always returns a string**. Cast it before doing arithmetic:
+
+<Ar>الدالة `input()` **تُرجع دائمًا سلسلة نصية (string)**، لذا حوّلها إلى النوع المناسب (cast) قبل إجراء العمليات الحسابية:</Ar>
 
 ```python
 z = input("Enter a number: ")      # '42'  (str)
@@ -67,13 +87,15 @@ int("yousef")                      # ValueError: not a base-10 number
 
 ## Operators and math functions
 
-| Operator | Meaning | Example | Result |
+<Ar>العوامل والدوال الرياضية</Ar>
+
+| Operator <Ar>العامل</Ar> | Meaning <Ar>المعنى</Ar> | Example <Ar>مثال</Ar> | Result <Ar>الناتج</Ar> |
 |---|---|---|---|
-| `+ - *` | add, subtract, multiply | `120 * 32` | `3840` |
-| `/` | true division (always float) | `23 / 11` | `2.0909…` |
-| `//` | integer (floor) division | `23 // 11` | `2` |
-| `%` | remainder (modulus) | `10 % 3` | `1` |
-| `**` | power | `1.01 ** 22` | `1.2447…` |
+| `+ - *` | add, subtract, multiply <Ar>الجمع، والطرح، والضرب</Ar> | `120 * 32` | `3840` |
+| `/` | true division (always float) <Ar>القسمة الحقيقية (الناتج `float` دائمًا)</Ar> | `23 / 11` | `2.0909…` |
+| `//` | integer (floor) division <Ar>القسمة الصحيحة (floor)</Ar> | `23 // 11` | `2` |
+| `%` | remainder (modulus) <Ar>باقي القسمة (modulus)</Ar> | `10 % 3` | `1` |
+| `**` | power <Ar>الأُس</Ar> | `1.01 ** 22` | `1.2447…` |
 
 ```python
 from math import ceil, floor, sqrt, cos, log, log10
@@ -85,13 +107,21 @@ print(sqrt(16), cos(0), log10(1000))          # 4.0 1.0 3.0
 
 <Callout type="warning">
   Trigonometric functions use <strong>radians</strong>: <code>cos(30)</code> is the cosine of 30 radians, not 30°. Use <code>cos(radians(30))</code> for degrees.
+
+  <Ar>تستخدم الدوال المثلثية <strong>الراديان (radians)</strong>: فـ <code>cos(30)</code> هو جيب تمام 30 راديان، لا 30°. استخدم <code>cos(radians(30))</code> للدرجات.</Ar>
 </Callout>
 
 ## Iterables: lists and tuples
 
+<Ar>الكائنات القابلة للتكرار: القوائم والصفوف</Ar>
+
 An **iterable** is any object that can hand you its elements one at a time, which is what lets you loop over it. An **iterator** is the stream itself; `reversed()` and `map()` return iterators, so cast them with `list()` to see their contents.
 
+<Ar>**الكائن القابل للتكرار (iterable)** هو أي كائن يستطيع أن يعطيك عناصره واحدًا تلو الآخر، وهذا ما يتيح لك المرور عليه بحلقة. أما **المُكرِّر (iterator)** فهو تدفق العناصر نفسه؛ فالدالتان `reversed()` و `map()` تُرجعان مُكرِّرات، لذا حوّلها باستخدام `list()` لترى محتواها.</Ar>
+
 ### Lists: ordered, mutable and heterogeneous
+
+<Ar>القوائم: مرتبة، وقابلة للتعديل، وغير متجانسة</Ar>
 
 ```python
 lst = [1, 3.25, "Yousef", [10, 11, 12]]  # mixed types are allowed
@@ -109,7 +139,11 @@ a, b, c = map(int, "3 4 5".split())      # unpacking + casting in one line
 
 ### Slicing: `list[start : end : step]`
 
+<Ar>التقطيع (Slicing): `list[start : end : step]`</Ar>
+
 `start` is included and `end` is excluded. A negative `step` walks backwards.
+
+<Ar>يُضمَّن `start` ويُستبعد `end`، والقيمة السالبة لـ `step` تجعل التقطيع يسير إلى الخلف.</Ar>
 
 ```python
 lst = [9, 4, 2, 1]
@@ -122,6 +156,8 @@ print(lst[::-1])     # [1, 2, 4, 9] — a reversed copy
 
 ### Copies versus references
 
+<Ar>النسخ مقابل المراجع</Ar>
+
 ```python
 a = [1, 2, 3]
 b = a          # same list, two names
@@ -131,6 +167,8 @@ print(b, c)    # [99, 2, 3] [1, 2, 3]
 ```
 
 ### Useful list operations
+
+<Ar>عمليات مفيدة على القوائم</Ar>
 
 ```python
 lst = [1, 1, 2, 2, 3]
@@ -145,6 +183,8 @@ print([0] * 3, lst + [7])  # repetition and concatenation
 
 ### Tuples: immutable sequences
 
+<Ar>الصفوف (Tuples): تسلسلات غير قابلة للتعديل</Ar>
+
 ```python
 t = (1, 2, 3, 4)
 t[1] = 9                 # TypeError: tuples are immutable
@@ -155,6 +195,8 @@ print(tricky)            # (1, 6.25, [2, 2, 3])
 ```
 
 ## Strings, dictionaries and sets
+
+<Ar>السلاسل النصية والقواميس والمجموعات</Ar>
 
 ```python
 course = "Artificial Intelligence"
@@ -173,9 +215,15 @@ print(unique)                    # {1, 2, 3, 5} — sets drop duplicates
 
 Dictionaries are hash maps with **fast key lookup**. That is exactly how the search labs store graphs: `{node: [neighbours]}`.
 
+<Ar>القواميس جداول تجزئة (hash maps) تتميز بـ**البحث السريع بالمفتاح**، وهذه بالضبط طريقة تخزين الرسوم البيانية في سكاشن البحث: `{node: [neighbours]}`.</Ar>
+
 ## Comprehensions
 
+<Ar>الصياغات المختصرة (Comprehensions)</Ar>
+
 A comprehension builds a collection in one readable line:
+
+<Ar>تبني الصياغة المختصرة (comprehension) مجموعةً من العناصر في سطر واحد سهل القراءة:</Ar>
 
 ```python
 squares = [x ** 2 for x in range(1, 9)]
@@ -186,11 +234,17 @@ as_tuple = tuple(x for x in range(1, 9))  # a generator cast to a tuple
 
 <Callout type="note">
   There is no "tuple comprehension": <code>(x for x in …)</code> is a <strong>generator</strong>. Wrapping it in <code>tuple()</code> consumes it.
+
+  <Ar>لا يوجد ما يُسمى «الصياغة المختصرة للصفوف (tuple comprehension)»: فالتعبير <code>(x for x in …)</code> هو <strong>مولِّد (generator)</strong>، وتغليفه بـ <code>tuple()</code> يستهلكه.</Ar>
 </Callout>
 
 ## Control flow
 
+<Ar>بنى التحكم</Ar>
+
 Python uses **indentation** to define blocks, so a missing indent is an `IndentationError`. Use `pass` for an intentionally empty block.
+
+<Ar>تستخدم Python **الإزاحة (indentation)** لتحديد الكتل البرمجية، لذا فإن غياب الإزاحة يسبب `IndentationError`. استخدم `pass` للكتلة الفارغة عن قصد.</Ar>
 
 ```python
 grade = 76
@@ -217,6 +271,8 @@ for i, value in enumerate(["BFS", "DFS", "UCS"]):
 
 ## Functions
 
+<Ar>الدوال</Ar>
+
 ```python
 def total(x, y, z=0):          # z has a default value
     return x + y + z
@@ -231,15 +287,23 @@ modify(nums, n)
 print(nums, n)                 # [10, 5, 3, 11] 25
 ```
 
-<Callout type="warning" title="Mutable arguments">
+<Callout type="warning" title="Mutable arguments" titleAr="الوسائط القابلة للتعديل">
   Lists, dicts and other mutable objects are passed <strong>by reference</strong>: a function can change them. Immutable values (numbers, strings, tuples) behave as if passed by value. Pass <code>lst.copy()</code> when you want to protect the original.
+
+  <Ar>تُمرَّر القوائم والقواميس وغيرها من الكائنات القابلة للتعديل <strong>بالمرجع (by reference)</strong>: أي أن الدالة تستطيع تغييرها. أما القيم غير القابلة للتعديل (الأرقام، والسلاسل النصية، والصفوف) فتتصرف كأنها مُرِّرت بالقيمة (by value). مرّر <code>lst.copy()</code> عندما تريد حماية الأصل.</Ar>
 </Callout>
 
 Python has **no function overloading**. Defining a second function with the same name simply replaces the first one.
 
+<Ar>لا يوجد في Python **تحميل زائد للدوال (function overloading)**؛ فتعريف دالة ثانية بالاسم نفسه يستبدل الأولى ببساطة.</Ar>
+
 ## Classes and object-oriented programming
 
+<Ar>الأصناف والبرمجة كائنية التوجه</Ar>
+
 A **class** is a blueprint; an **object** is an instance of it. **Attributes** store data and **methods** define behaviour. `__init__` is the constructor and `self` refers to the current object.
+
+<Ar>**الصنف (class)** مخطط أولي، و**الكائن (object)** نسخة منه. **السمات (attributes)** تخزّن البيانات، و**الدوال العضو (methods)** تحدد السلوك. والدالة `__init__` هي الباني (constructor)، و `self` يشير إلى الكائن الحالي.</Ar>
 
 ```python
 class Dog:
@@ -258,6 +322,8 @@ print(buddy._Dog__age)               # 2 — "private" is only a naming conventi
 ```
 
 ### Encapsulation, inheritance and polymorphism
+
+<Ar>التغليف والوراثة وتعدد الأشكال</Ar>
 
 ```python
 class BankAccount:
@@ -289,21 +355,32 @@ for vehicle in (Car("Ford", "Mustang"), Boat("Ibiza", "Touring 20")):
 
 With **multiple inheritance**, Python follows the **Method Resolution Order (MRO)**: parents are searched left to right, so `class Child(Parent1, Parent2)` takes `Parent1`'s version first. Check it with `Child.__mro__`.
 
+<Ar>مع **الوراثة المتعددة (multiple inheritance)** تتبع Python **ترتيب تحليل الدوال العضو (Method Resolution Order)** أو MRO: إذ يُبحث في الأصناف الأم من اليسار إلى اليمين، لذا فإن `class Child(Parent1, Parent2)` يأخذ نسخة `Parent1` أولًا. تحقق من ذلك باستخدام `Child.__mro__`.</Ar>
+
 <Takeaways>
 
 - `input()` returns a string, so **cast** before doing arithmetic.
+  <Ar>تُرجع `input()` سلسلة نصية، لذا **حوّلها** إلى النوع المناسب قبل إجراء العمليات الحسابية.</Ar>
 - Lists are **mutable**, tuples are **immutable** (but can contain mutable objects), dicts map keys to values and sets remove duplicates.
+  <Ar>القوائم **قابلة للتعديل**، والصفوف **غير قابلة للتعديل** (لكن يمكن أن تحتوي على كائنات قابلة للتعديل)، والقواميس تربط المفاتيح بالقيم، والمجموعات تحذف التكرارات.</Ar>
 - Slicing is `[start : end : step]` with `end` excluded; `[:]` makes a shallow copy.
+  <Ar>صيغة التقطيع هي `[start : end : step]` مع استبعاد `end`، و `[:]` تُنشئ نسخة سطحية (shallow copy).</Ar>
 - Mutable arguments are shared with the caller, so copy them to avoid side effects.
+  <Ar>الوسائط القابلة للتعديل مشتركة مع الجهة المستدعية، لذا انسخها لتجنب الآثار الجانبية (side effects).</Ar>
 - Classes bundle data and behaviour; inheritance plus overriding gives **polymorphism**.
+  <Ar>تجمع الأصناف بين البيانات والسلوك، والوراثة مع إعادة التعريف (overriding) تعطي **تعدد الأشكال (polymorphism)**.</Ar>
 
 </Takeaways>
 
 ## Practice
 
-<Exercise title="Adjacency list from edges" level="easy">
+<Ar>تدريب</Ar>
+
+<Exercise title="Adjacency list from edges" titleAr="قائمة التجاور من الحواف" level="easy">
 
 Given `edges = [("A", "B"), ("A", "C"), ("B", "D")]`, build an **undirected** adjacency list as a dictionary using a loop.
+
+<Ar>بمعلومية `edges = [("A", "B"), ("A", "C"), ("B", "D")]`، ابنِ قائمة تجاور (adjacency list) **غير موجَّهة** على شكل قاموس باستخدام حلقة.</Ar>
 
 <Solution>
 
@@ -320,9 +397,11 @@ print(graph)  # {'A': ['B', 'C'], 'B': ['A', 'D'], 'C': ['A'], 'D': ['B']}
 
 </Exercise>
 
-<Exercise title="Predict the output" level="medium">
+<Exercise title="Predict the output" titleAr="توقّع المخرجات" level="medium">
 
 What does this print, and why?
+
+<Ar>ماذا يطبع هذا الكود، ولماذا؟</Ar>
 
 ```python
 def add_item(item, bag=[]):
@@ -337,13 +416,17 @@ print(add_item("y"))
 
 It prints `['x']` and then `['x', 'y']`. The default list is created **once**, when the function is defined, and then reused by every call. The fix is `def add_item(item, bag=None): bag = [] if bag is None else bag`.
 
+<Ar>يطبع `['x']` ثم `['x', 'y']`. فالقائمة الافتراضية تُنشأ **مرة واحدة** عند تعريف الدالة، ثم يُعاد استخدامها في كل استدعاء. والإصلاح هو `def add_item(item, bag=None): bag = [] if bag is None else bag`.</Ar>
+
 </Solution>
 
 </Exercise>
 
-<Exercise title="A tiny class" level="medium">
+<Exercise title="A tiny class" titleAr="صنف صغير" level="medium">
 
 Write a `Stack` class with `push`, `pop`, `peek` and `is_empty`. You will use it for DFS in the next lab.
+
+<Ar>اكتب صنفًا باسم `Stack` يحتوي على `push` و `pop` و `peek` و `is_empty`. ستستخدمه في DFS في السكشن القادم.</Ar>
 
 <Solution>
 
@@ -369,39 +452,57 @@ class Stack:
   questions={[
     {
       q: "What is type(input('Enter: ')) when the user types 42?",
+      qAr: "ما ناتج الدالة type عند تطبيقها على ما تُرجعه input() إذا كتب المستخدم 42؟",
       options: ["int", "float", "str", "bool"],
+      optionsAr: ["int", "float", "str", "bool"],
       answer: 2,
-      explain: "input() always returns a string; cast it with int() first."
+      explain: "input() always returns a string; cast it with int() first.",
+      explainAr: "تُرجع input() دائمًا سلسلة نصية؛ لذا حوّلها أولًا باستخدام int()."
     },
     {
       q: "What does [9, 4, 2, 1][-1:0:-1] evaluate to?",
+      qAr: "ما ناتج تقييم التعبير البرمجي أعلاه (تقطيع القائمة بخطوة سالبة)؟",
       options: ["[1, 2, 4, 9]", "[1, 2, 4]", "[]", "[9, 4, 2]"],
+      optionsAr: ["[1, 2, 4, 9]", "[1, 2, 4]", "[]", "[9, 4, 2]"],
       answer: 1,
-      explain: "It starts at the last element and walks backwards, stopping before index 0."
+      explain: "It starts at the last element and walks backwards, stopping before index 0.",
+      explainAr: "يبدأ من العنصر الأخير ويسير إلى الخلف، ويتوقف قبل الفهرس 0."
     },
     {
       q: "t = (1, [2, 3]); t[1][0] = 9 — what happens?",
+      qAr: "ماذا يحدث عند إسناد القيمة 9 إلى t[1][0] حيث t صف (tuple) يحتوي على قائمة؟",
       options: ["TypeError", "t becomes (1, [9, 3])", "t becomes (9, [2, 3])", "SyntaxError"],
+      optionsAr: ["TypeError", "تتغير القائمة داخل t فيصبح أول عناصرها 9", "يصبح أول عنصر في t هو 9", "SyntaxError"],
       answer: 1,
-      explain: "The tuple is immutable, but the list inside it is mutable and can change."
+      explain: "The tuple is immutable, but the list inside it is mutable and can change.",
+      explainAr: "الصف (tuple) غير قابل للتعديل، لكن القائمة بداخله قابلة للتعديل ويمكن أن تتغير."
     },
     {
       q: "Which collection automatically removes duplicates?",
+      qAr: "أي مجموعة بيانات تحذف التكرارات تلقائيًا؟",
       options: ["list", "tuple", "set", "dict values"],
+      optionsAr: ["list", "tuple", "set", "قيم dict"],
       answer: 2,
-      explain: "A set stores each element once."
+      explain: "A set stores each element once.",
+      explainAr: "تخزّن المجموعة (set) كل عنصر مرة واحدة فقط."
     },
     {
       q: "Defining two functions with the same name in Python…",
+      qAr: "تعريف دالتين بالاسم نفسه في Python…",
       options: ["Overloads them by parameter count", "Raises an error", "Keeps only the last definition", "Keeps only the first definition"],
+      optionsAr: ["يحمّلهما تحميلًا زائدًا حسب عدد المعاملات", "يسبب خطأ", "يحتفظ بالتعريف الأخير فقط", "يحتفظ بالتعريف الأول فقط"],
       answer: 2,
-      explain: "Python has no overloading; the second def rebinds the name."
+      explain: "Python has no overloading; the second def rebinds the name.",
+      explainAr: "لا يوجد تحميل زائد (overloading) في Python؛ فتعريف def الثاني يعيد ربط الاسم."
     },
     {
       q: "buddy.species = 'Wolf' when species is a class variable…",
+      qAr: "عند إسناد القيمة Wolf إلى buddy.species بينما species متغير صنف (class variable)…",
       options: ["Changes species for all Dog objects", "Creates an instance attribute on buddy only", "Raises AttributeError", "Deletes the class variable"],
+      optionsAr: ["يغيّر species لجميع كائنات Dog", "يُنشئ سمة نسخة (instance attribute) على buddy فقط", "يسبب AttributeError", "يحذف متغير الصنف"],
       answer: 1,
-      explain: "Assigning through an instance creates a new instance attribute that shadows the class variable."
+      explain: "Assigning through an instance creates a new instance attribute that shadows the class variable.",
+      explainAr: "الإسناد عبر نسخة من الصنف يُنشئ سمة نسخة جديدة تحجب متغير الصنف."
     }
   ]}
 />

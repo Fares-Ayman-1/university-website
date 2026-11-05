@@ -1,7 +1,9 @@
 ---
 number: 3
 title: Processes
+titleAr: "العمليات"
 summary: The process is the unit of work in an OS. Covers its memory layout, the five states, the PCB and context switching, scheduling queues, creating processes with fork/exec/wait, termination (zombies and orphans), and interprocess communication by shared memory (bounded buffer, race conditions) and message passing (direct and indirect, blocking and buffering), plus pipes, sockets and RPC.
+summaryAr: "العملية (process) هي وحدة العمل في نظام التشغيل. يتناول تخطيطها في الذاكرة، وحالاتها الخمس، وكتلة التحكم بالعملية (PCB) وتبديل السياق (context switching)، وطوابير الجدولة، وإنشاء العمليات باستخدام fork/exec/wait، وإنهاءها (العمليات الزومبي واليتيمة)، والاتصال بين العمليات (IPC) عبر الذاكرة المشتركة (المخزن المؤقت المحدود وحالات السباق) وعبر تمرير الرسائل (المباشر وغير المباشر، والحاجب والتخزين المؤقت)، إضافةً إلى الأنابيب (pipes) والمقابس (sockets) و RPC."
 topics: [Process concept, Memory layout, Process states, PCB, Context switch, Scheduling queues, fork / exec / wait, Termination, Shared memory, Race conditions, Message passing, Pipes and sockets]
 duration: 70 min study
 sources:
@@ -26,95 +28,145 @@ bookRefs:
 <Objectives>
 
 - Describe the parts of a **process** and its **memory layout**.
+  <Ar>وصف أجزاء **العملية (process)** و**تخطيطها في الذاكرة (memory layout)**.</Ar>
 - Trace the **five process states** and explain the **PCB** and **context switch**.
+  <Ar>تتبّع **حالات العملية الخمس** وشرح **كتلة التحكم بالعملية (PCB)** و**تبديل السياق (context switch)**.</Ar>
 - Explain **scheduling queues** and how the scheduler moves processes between them.
+  <Ar>شرح **طوابير الجدولة (scheduling queues)** وكيف ينقل المُجدوِل (scheduler) العمليات بينها.</Ar>
 - Create and terminate processes with **fork()**, **exec()**, **wait()** and **exit()**, and explain **zombies** and **orphans**.
+  <Ar>إنشاء العمليات وإنهاؤها باستخدام **fork()** و**exec()** و**wait()** و**exit()**، وشرح **العمليات الزومبي (zombies)** و**العمليات اليتيمة (orphans)**.</Ar>
 - Compare **shared-memory** and **message-passing** IPC, recognize a **race condition**, and describe **pipes**, **sockets** and **RPC**.
+  <Ar>المقارنة بين الاتصال بين العمليات (IPC) عبر **الذاكرة المشتركة (shared memory)** وعبر **تمرير الرسائل (message passing)**، والتعرّف على **حالة السباق (race condition)**، ووصف **الأنابيب (pipes)** و**المقابس (sockets)** و**RPC**.</Ar>
 
 </Objectives>
 
 ## The process concept
 
-<Definition term="Process">
+<Ar>مفهوم العملية</Ar>
+
+<Definition term="Process" termAr="العملية">
   A <strong>program in execution</strong>. A program is a <strong>passive</strong> file on disk; it becomes an <strong>active</strong> process when it is loaded into memory. One program can run as several processes, e.g. several users running the same editor.
+
+  <Ar><strong>برنامج قيد التنفيذ</strong>. البرنامج ملف <strong>خامل (passive)</strong> على القرص، ويصبح عملية <strong>نشطة (active)</strong> عندما يُحمَّل في الذاكرة. ويمكن أن يعمل برنامج واحد في صورة عدة عمليات، مثل عدة مستخدمين يشغّلون المحرر نفسه.</Ar>
 </Definition>
 
-<SlideFigure page={6} caption="A process in memory: text, data, heap (grows up) and stack (grows down)." />
+<SlideFigure page={6} caption="A process in memory: text, data, heap (grows up) and stack (grows down)." captionAr="عملية في الذاكرة: النص (text)، والبيانات (data)، والكومة (heap) التي تنمو للأعلى، والمكدس (stack) الذي ينمو للأسفل." />
 
-| Section | Contents |
+| Section <Ar>القسم</Ar> | Contents <Ar>المحتوى</Ar> |
 |---|---|
-| **Text** | The executable code |
-| **Data** | Global (and static) variables: initialized and uninitialized |
-| **Heap** | Memory allocated dynamically at run time (`malloc`), growing upward |
-| **Stack** | Temporary data for each function call: parameters, return address, local variables, growing downward |
+| **Text** <Ar>**النص (Text)**</Ar> | The executable code <Ar>الشيفرة التنفيذية</Ar> |
+| **Data** <Ar>**البيانات (Data)**</Ar> | Global (and static) variables: initialized and uninitialized <Ar>المتغيرات العامة (global)، والساكنة (static) أيضًا: المُهيَّأة منها وغير المُهيَّأة</Ar> |
+| **Heap** <Ar>**الكومة (Heap)**</Ar> | Memory allocated dynamically at run time (`malloc`), growing upward <Ar>ذاكرة تُخصَّص ديناميكيًا في وقت التشغيل (`malloc`)، وتنمو للأعلى</Ar> |
+| **Stack** <Ar>**المكدس (Stack)**</Ar> | Temporary data for each function call: parameters, return address, local variables, growing downward <Ar>بيانات مؤقتة لكل استدعاء دالة: المعاملات، وعنوان الرجوع، والمتغيرات المحلية، وينمو للأسفل</Ar> |
 
 A process also has its **current activity**: the **program counter** and **registers**.
 
+<Ar>وللعملية أيضًا **نشاطها الحالي**: **عدّاد البرنامج (program counter)** و**المسجلات (registers)**.</Ar>
+
 ## Process states
 
-| State | Meaning |
-|---|---|
-| **New** | Being created |
-| **Ready** | Waiting to be assigned to a CPU |
-| **Running** | Instructions are executing |
-| **Waiting** | Waiting for an event, such as I/O completion or a signal |
-| **Terminated** | Finished execution |
+<Ar>حالات العملية</Ar>
 
-<SlideFigure page={9} caption="new → (admitted) → ready ⇄ running (scheduler dispatch / interrupt) → waiting (I/O or event wait) → ready (completion); running → terminated (exit)." />
+| State <Ar>الحالة</Ar> | Meaning <Ar>المعنى</Ar> |
+|---|---|
+| **New** <Ar>**جديدة (New)**</Ar> | Being created <Ar>قيد الإنشاء</Ar> |
+| **Ready** <Ar>**جاهزة (Ready)**</Ar> | Waiting to be assigned to a CPU <Ar>تنتظر أن يُسند إليها معالج</Ar> |
+| **Running** <Ar>**قيد التشغيل (Running)**</Ar> | Instructions are executing <Ar>تعليماتها قيد التنفيذ</Ar> |
+| **Waiting** <Ar>**منتظرة (Waiting)**</Ar> | Waiting for an event, such as I/O completion or a signal <Ar>تنتظر حدثًا، مثل اكتمال عملية إدخال/إخراج أو وصول إشارة (signal)</Ar> |
+| **Terminated** <Ar>**منتهية (Terminated)**</Ar> | Finished execution <Ar>انتهى تنفيذها</Ar> |
+
+<SlideFigure page={9} caption="new → (admitted) → ready ⇄ running (scheduler dispatch / interrupt) → waiting (I/O or event wait) → ready (completion); running → terminated (exit)." captionAr="جديدة ← (القبول) ← جاهزة ⇄ قيد التشغيل (إيفاد المُجدوِل / مقاطعة) ← منتظرة (انتظار إدخال/إخراج أو حدث) ← جاهزة (الاكتمال)؛ وقيد التشغيل ← منتهية (الخروج)." />
 
 Only **one process per core** can be *running* at a time; many can be *ready* or *waiting*.
 
+<Ar>لا يمكن أن تكون في حالة *التشغيل* إلا **عملية واحدة لكل نواة معالج (core)** في الوقت نفسه، بينما يمكن أن تكون عمليات كثيرة *جاهزة* أو *منتظرة*.</Ar>
+
 ## Process control block (PCB)
 
-<SlideFigure page={10} caption="The PCB, also called the task control block." />
+<Ar>كتلة التحكم بالعملية (PCB)</Ar>
+
+<SlideFigure page={10} caption="The PCB, also called the task control block." captionAr="كتلة التحكم بالعملية (PCB)، وتُسمّى أيضًا كتلة التحكم بالمهمة (task control block)." />
 
 The **PCB** holds everything the OS needs to know about a process:
 
+<Ar>تحتوي **كتلة التحكم بالعملية (PCB)** على كل ما يحتاج نظام التشغيل إلى معرفته عن العملية:</Ar>
+
 - **process state**, **process number (pid)**, **program counter** and **CPU registers**,
+  <Ar>**حالة العملية**، و**رقم العملية (pid)**، و**عدّاد البرنامج (program counter)**، و**مسجلات المعالج (CPU registers)**،</Ar>
 - **CPU-scheduling information**: priority and queue pointers,
+  <Ar>**معلومات جدولة المعالج (CPU-scheduling information)**: الأولوية ومؤشرات الطوابير،</Ar>
 - **memory-management information**,
+  <Ar>**معلومات إدارة الذاكرة**،</Ar>
 - **accounting information**: CPU time used, time limits,
+  <Ar>**المعلومات المحاسبية (accounting information)**: زمن المعالج المستخدم، والحدود الزمنية،</Ar>
 - **I/O status**: allocated devices and open files.
+  <Ar>**حالة الإدخال/الإخراج (I/O status)**: الأجهزة المخصّصة والملفات المفتوحة.</Ar>
 
 In Linux the PCB is the C structure `task_struct`, with fields such as `pid`, `state`, `time_slice`, `parent`, `children`, `files` and `mm`.
 
+<Ar>في لينكس (Linux)، كتلة التحكم بالعملية هي بنية (structure) بلغة C اسمها `task_struct`، وفيها حقول مثل `pid` و `state` و `time_slice` و `parent` و `children` و `files` و `mm`.</Ar>
+
 ### Context switch
+
+<Ar>تبديل السياق</Ar>
 
 When the CPU switches from one process to another, the kernel **saves** the old process's state in its PCB and **loads** the new one's. This is a **context switch**. It is **pure overhead**: no useful work happens while switching, and it takes longer the more complex the OS and PCB are. Some CPUs provide several register sets to speed it up.
 
-<SlideFigure page={14} caption="Context switch: save state into PCB₀, reload state from PCB₁, and back again." />
+<Ar>عندما ينتقل المعالج من عملية إلى أخرى، **تحفظ** النواة (kernel) حالة العملية القديمة في كتلة التحكم الخاصة بها (PCB) و**تحمّل** حالة العملية الجديدة. وهذا هو **تبديل السياق (context switch)**. وهو **عبء خالص (pure overhead)**: لا يُنجَز أي عمل مفيد أثناء التبديل، ويستغرق وقتًا أطول كلما زاد تعقيد نظام التشغيل وكتلة التحكم بالعملية. وتوفّر بعض المعالجات عدة مجموعات من المسجلات لتسريعه.</Ar>
+
+<SlideFigure page={14} caption="Context switch: save state into PCB₀, reload state from PCB₁, and back again." captionAr="تبديل السياق: حفظ الحالة في كتلة التحكم للعملية 0، وإعادة تحميل الحالة من كتلة التحكم للعملية 1، ثم العكس." />
 
 ## Process scheduling
 
+<Ar>جدولة العمليات</Ar>
+
 The **process scheduler** picks which ready process runs next on a core, aiming to maximize CPU use and switch processes quickly. The **degree of multiprogramming** is the number of processes in memory.
 
-- The **ready queue** holds processes in memory that are ready to run.
-- **Wait queues** hold processes waiting for an event, such as I/O.
-- Processes **migrate** between queues during their lifetime.
+<Ar>يختار **مُجدوِل العمليات (process scheduler)** العملية الجاهزة التي ستعمل تاليًا على نواة المعالج (core)، بهدف تعظيم استخدام المعالج والتبديل بين العمليات بسرعة. و**درجة البرمجة المتعددة (degree of multiprogramming)** هي عدد العمليات الموجودة في الذاكرة.</Ar>
 
-<SlideFigure page={17} caption="Queueing diagram: from the ready queue to the CPU, then back via I/O wait, time-slice expiry, child creation or interrupt waits." />
+- The **ready queue** holds processes in memory that are ready to run.
+  <Ar>يضم **طابور الجاهزية (ready queue)** العمليات الموجودة في الذاكرة والجاهزة للتشغيل.</Ar>
+- **Wait queues** hold processes waiting for an event, such as I/O.
+  <Ar>تضم **طوابير الانتظار (Wait queues)** العمليات التي تنتظر حدثًا، مثل الإدخال/الإخراج (I/O).</Ar>
+- Processes **migrate** between queues during their lifetime.
+  <Ar>**تنتقل** العمليات بين الطوابير خلال فترة حياتها.</Ar>
+
+<SlideFigure page={17} caption="Queueing diagram: from the ready queue to the CPU, then back via I/O wait, time-slice expiry, child creation or interrupt waits." captionAr="مخطط الطوابير: من طابور الجاهزية إلى المعالج، ثم العودة عبر انتظار الإدخال/الإخراج، أو انتهاء الشريحة الزمنية، أو إنشاء عملية ابن، أو انتظار مقاطعة." />
 
 Processes are often described as **I/O-bound** (many short CPU bursts) or **CPU-bound** (few long bursts). Early iOS ran only **one foreground** process; Android allows background **services**.
 
+<Ar>كثيرًا ما توصف العمليات بأنها **مقيّدة بالإدخال/الإخراج (I/O-bound)** (دفعات معالجة (CPU bursts) قصيرة وكثيرة) أو **مقيّدة بالمعالج (CPU-bound)** (دفعات طويلة وقليلة). وكانت الإصدارات الأولى من iOS تشغّل عملية **واحدة فقط في الواجهة (foreground)**، بينما يسمح Android **بخدمات (services)** تعمل في الخلفية.</Ar>
+
 ## Operations on processes
+
+<Ar>العمليات التي تُجرى على العمليات</Ar>
 
 ### Process creation
 
+<Ar>إنشاء العمليات</Ar>
+
 A **parent** creates **children**, which create others, forming a **process tree**. Each process has a **pid**. In Linux, `systemd` (pid 1) is the root.
 
-<SlideFigure page={22} caption="A tree of processes in Linux, rooted at systemd (pid 1)." />
+<Ar>تُنشئ **العملية الأم (parent)** **عمليات أبناء (children)**، وهذه تُنشئ عمليات أخرى، فتتكوّن **شجرة عمليات (process tree)**. ولكل عملية **معرّف (pid)**. وفي لينكس، العملية `systemd` (pid 1) هي الجذر.</Ar>
 
-| Option | Choices |
+<SlideFigure page={22} caption="A tree of processes in Linux, rooted at systemd (pid 1)." captionAr="شجرة عمليات في لينكس جذرها systemd (pid 1)." />
+
+| Option <Ar>الخيار</Ar> | Choices <Ar>البدائل</Ar> |
 |---|---|
-| **Resource sharing** | Parent and children share all resources, a subset, or nothing |
-| **Execution** | Parent and children run concurrently, or the parent **waits** for the children |
-| **Address space** | The child is a **duplicate** of the parent, or has a **new program** loaded into it |
+| **Resource sharing** <Ar>**مشاركة الموارد**</Ar> | Parent and children share all resources, a subset, or nothing <Ar>تتشارك العملية الأم والأبناء جميع الموارد، أو جزءًا منها، أو لا شيء</Ar> |
+| **Execution** <Ar>**التنفيذ**</Ar> | Parent and children run concurrently, or the parent **waits** for the children <Ar>تعمل العملية الأم والأبناء بالتزامن، أو **تنتظر** العملية الأم أبناءها</Ar> |
+| **Address space** <Ar>**فضاء العناوين (Address space)**</Ar> | The child is a **duplicate** of the parent, or has a **new program** loaded into it <Ar>العملية الابن **نسخة مطابقة** للأم، أو يُحمَّل فيها **برنامج جديد**</Ar> |
 
 In UNIX:
 
+<Ar>في UNIX:</Ar>
+
 - `fork()` creates a new process that is a **copy** of the parent. It returns **0 in the child** and the **child's pid in the parent**, or a negative value on error.
+  <Ar>`fork()` تُنشئ عملية جديدة هي **نسخة** من العملية الأم. وتُرجع **0 في العملية الابن** و**معرّف الابن (pid) في العملية الأم**، أو قيمة سالبة عند الخطأ.</Ar>
 - `exec()` **replaces** the process's memory with a new program.
+  <Ar>`exec()` **تستبدل** ذاكرة العملية ببرنامج جديد.</Ar>
 - `wait()` makes the parent wait for a child to finish.
+  <Ar>`wait()` تجعل العملية الأم تنتظر انتهاء أحد أبنائها.</Ar>
 
 ```c title="fork_exec.c"
 #include <stdio.h>
@@ -140,31 +192,50 @@ int main(void) {
 
 Windows does the same with **`CreateProcess()`**, which creates the process **and** loads a program in one call, followed by `WaitForSingleObject()`.
 
+<Ar>ويفعل ويندوز (Windows) الشيء نفسه باستخدام **`CreateProcess()`**، التي تُنشئ العملية **و**تحمّل فيها برنامجًا باستدعاء واحد، ويليها `WaitForSingleObject()`.</Ar>
+
 ### Process termination
 
-- A process ends with `exit()`, which returns a **status** to the parent through `wait()`. The OS reclaims its resources.
-- A parent can terminate a child with `abort()` (or `kill`), because the child exceeded its resources, its task is no longer needed, or the parent is exiting.
-- In **cascading termination**, some OSes kill all descendants when a parent ends.
+<Ar>إنهاء العمليات</Ar>
 
-| Situation | Name |
+- A process ends with `exit()`, which returns a **status** to the parent through `wait()`. The OS reclaims its resources.
+  <Ar>تنتهي العملية باستدعاء `exit()`، الذي يُرجع **حالة (status)** إلى العملية الأم عبر `wait()`. ويستعيد نظام التشغيل مواردها.</Ar>
+- A parent can terminate a child with `abort()` (or `kill`), because the child exceeded its resources, its task is no longer needed, or the parent is exiting.
+  <Ar>يمكن للعملية الأم إنهاء عملية ابن باستخدام `abort()` (أو `kill`)، لأن الابن تجاوز الموارد المخصّصة له، أو لأن مهمته لم تعد مطلوبة، أو لأن العملية الأم نفسها في طور الخروج.</Ar>
+- In **cascading termination**, some OSes kill all descendants when a parent ends.
+  <Ar>في **الإنهاء المتتالي (cascading termination)**، تُنهي بعض أنظمة التشغيل جميع العمليات المنحدرة من عملية أم عند انتهائها.</Ar>
+
+| Situation <Ar>الموقف</Ar> | Name <Ar>الاسم</Ar> |
 |---|---|
-| The child has terminated but the parent hasn't called `wait()` yet, so its PCB entry lingers | **Zombie** |
-| The parent terminated without calling `wait()`. In Linux, `init`/`systemd` adopts the child and reaps it | **Orphan** |
+| The child has terminated but the parent hasn't called `wait()` yet, so its PCB entry lingers <Ar>انتهت العملية الابن لكن العملية الأم لم تستدعِ `wait()` بعد، فيبقى مُدخلها في كتل التحكم (PCB)</Ar> | **Zombie** <Ar>**زومبي (Zombie)**</Ar> |
+| The parent terminated without calling `wait()`. In Linux, `init`/`systemd` adopts the child and reaps it <Ar>انتهت العملية الأم دون استدعاء `wait()`. وفي لينكس تتبنّى `init`/`systemd` العملية الابن وتحصدها (reap)</Ar> | **Orphan** <Ar>**يتيمة (Orphan)**</Ar> |
 
 Mobile OSes kill processes to reclaim memory. **Android**'s importance hierarchy, from most to least important, is foreground, visible, service, background, empty. **Chrome** runs each site in its own **renderer process** (plus a browser process and plugin processes), so one bad page can't crash the whole browser.
 
+<Ar>تُنهي أنظمة تشغيل الأجهزة المحمولة العمليات لاستعادة الذاكرة. وهرم الأهمية في **Android**، من الأهم إلى الأقل أهمية، هو: الواجهة (foreground)، والمرئية (visible)، والخدمة (service)، والخلفية (background)، والفارغة (empty). ويشغّل **Chrome** كل موقع في **عملية عرض (renderer process)** خاصة به (إضافةً إلى عملية للمتصفح وعمليات للإضافات (plugins))، فلا تستطيع صفحة سيئة واحدة أن تُسقط المتصفح بأكمله.</Ar>
+
 ## Interprocess communication (IPC)
+
+<Ar>الاتصال بين العمليات (IPC)</Ar>
 
 **Independent** processes can't affect each other; **cooperating** processes can. The reasons to cooperate are information **sharing**, computation **speed-up**, **modularity** and **convenience**.
 
-<SlideFigure page={30} caption="The two IPC models: (a) shared memory, (b) message passing through the kernel." />
+<Ar>العمليات **المستقلة (Independent)** لا يمكن أن يؤثر بعضها في بعض، أما العمليات **المتعاونة (cooperating)** فيمكنها ذلك. وأسباب التعاون هي **مشاركة** المعلومات، و**تسريع** الحساب، و**النمطية (modularity)**، و**الملاءمة (convenience)**.</Ar>
+
+<SlideFigure page={30} caption="The two IPC models: (a) shared memory, (b) message passing through the kernel." captionAr="نموذجا الاتصال بين العمليات: (a) الذاكرة المشتركة، و (b) تمرير الرسائل عبر النواة." />
 
 ### Shared memory and the producer–consumer problem
 
+<Ar>الذاكرة المشتركة ومسألة المنتِج والمستهلِك</Ar>
+
 Processes share a memory region, and the **processes themselves**, not the OS, control the communication, so they must **synchronize**. The classic example is a **producer** filling a buffer that a **consumer** empties:
 
+<Ar>تتشارك العمليات منطقة من الذاكرة، و**العمليات نفسها**، لا نظام التشغيل، هي التي تتحكم في الاتصال، ولذلك يجب أن **تتزامن (synchronize)**. والمثال الكلاسيكي هو **منتِج (producer)** يملأ مخزنًا مؤقتًا (buffer) يفرغه **مستهلِك (consumer)**:</Ar>
+
 - **Unbounded buffer**: the producer never waits; the consumer waits when the buffer is empty.
+  <Ar>**المخزن المؤقت غير المحدود (Unbounded buffer)**: لا ينتظر المنتِج أبدًا، وينتظر المستهلِك عندما يكون المخزن فارغًا.</Ar>
 - **Bounded buffer**: the producer waits when the buffer is full, and the consumer waits when it is empty.
+  <Ar>**المخزن المؤقت المحدود (Bounded buffer)**: ينتظر المنتِج عندما يكون المخزن ممتلئًا، وينتظر المستهلِك عندما يكون فارغًا.</Ar>
 
 ```c title="bounded_buffer.c"
 #define BUFFER_SIZE 10
@@ -192,9 +263,15 @@ while (true) {
 
 This solution is correct but holds at most **BUFFER_SIZE − 1** items, because a full buffer and an empty buffer would otherwise look the same.
 
+<Ar>هذا الحل صحيح، لكنه لا يتسع لأكثر من **`BUFFER_SIZE − 1`** عنصر، لأن المخزن الممتلئ والمخزن الفارغ سيبدوان متطابقين بخلاف ذلك.</Ar>
+
 ### Race conditions
 
+<Ar>حالات السباق</Ar>
+
 To use all the slots, add a shared `counter` that the producer increments and the consumer decrements. But `counter++` and `counter--` are each **three machine instructions**:
+
+<Ar>لاستخدام جميع الخانات، أضف متغيرًا مشتركًا `counter` يزيده المنتِج وينقصه المستهلِك. لكن كلًّا من `counter++` و `counter--` يتكون من **ثلاث تعليمات آلة (machine instructions)**:</Ar>
 
 ```text title="counter = 5 initially"
 T0: producer  register1 = counter          {register1 = 5}
@@ -205,39 +282,56 @@ T4: producer  counter = register1          {counter = 6}
 T5: consumer  counter = register2          {counter = 4}   ← should be 5!
 ```
 
-<Definition term="Race condition">
+<Definition term="Race condition" termAr="حالة السباق">
   The outcome depends on the <strong>order</strong> in which concurrent processes access shared data. Preventing it requires <strong>synchronization</strong>, covered in Chapter 6.
+
+  <Ar>تعتمد النتيجة على <strong>الترتيب</strong> الذي تصل به العمليات المتزامنة إلى البيانات المشتركة. ومنعها يتطلب <strong>التزامن (synchronization)</strong>، الذي يُشرح في الفصل 6.</Ar>
 </Definition>
 
 ### Message passing
 
+<Ar>تمرير الرسائل</Ar>
+
 Processes communicate **without shared variables** using `send(message)` and `receive(message)`, with fixed- or variable-size messages, over a **communication link**.
 
+<Ar>تتواصل العمليات **دون متغيرات مشتركة** باستخدام `send(message)` و `receive(message)`، برسائل ثابتة الحجم أو متغيرة الحجم، عبر **وصلة اتصال (communication link)**.</Ar>
+
 <Grid cols={2}>
-  <Card title="Direct communication" tag="name the process">
+  <Card title="Direct communication" titleAr="الاتصال المباشر" tag="name the process">
     <code>send(P, msg)</code> and <code>receive(Q, msg)</code>. The link is set up automatically, belongs to exactly one pair, and there is exactly one link per pair.
+
+    <Ar><code>send(P, msg)</code> و <code>receive(Q, msg)</code>. تُنشأ الوصلة تلقائيًا، وتخص زوجًا واحدًا فقط من العمليات، وتوجد وصلة واحدة بالضبط لكل زوج.</Ar>
   </Card>
-  <Card title="Indirect communication" tag="mailboxes / ports">
+  <Card title="Indirect communication" titleAr="الاتصال غير المباشر" tag="mailboxes / ports">
     <code>send(A, msg)</code> and <code>receive(A, msg)</code> through mailbox A. A link can be shared by many processes, and a pair can share several mailboxes. If P1 sends and P2 and P3 both receive, the system must decide who gets the message.
+
+    <Ar><code>send(A, msg)</code> و <code>receive(A, msg)</code> عبر صندوق البريد (mailbox) A. يمكن أن تتشارك عمليات كثيرة وصلة واحدة، ويمكن لزوج من العمليات أن يتشارك عدة صناديق بريد. وإذا أرسلت P1 واستقبلت كلٌّ من P2 و P3، فيجب على النظام أن يقرر أيّهما يحصل على الرسالة.</Ar>
   </Card>
 </Grid>
 
-| Synchronization | Behaviour |
+| Synchronization <Ar>التزامن</Ar> | Behaviour <Ar>السلوك</Ar> |
 |---|---|
-| **Blocking send** (synchronous) | The sender waits until the message is received |
-| **Blocking receive** | The receiver waits until a message is available |
-| **Non-blocking send** (asynchronous) | Send and continue |
-| **Non-blocking receive** | Get a valid message or NULL |
+| **Blocking send** (synchronous) <Ar>**الإرسال الحاجب (Blocking send)** (متزامن)</Ar> | The sender waits until the message is received <Ar>ينتظر المرسِل حتى تُستقبَل الرسالة</Ar> |
+| **Blocking receive** <Ar>**الاستقبال الحاجب (Blocking receive)**</Ar> | The receiver waits until a message is available <Ar>ينتظر المستقبِل حتى تتوفر رسالة</Ar> |
+| **Non-blocking send** (asynchronous) <Ar>**الإرسال غير الحاجب (Non-blocking send)** (غير متزامن)</Ar> | Send and continue <Ar>يرسل ويواصل</Ar> |
+| **Non-blocking receive** <Ar>**الاستقبال غير الحاجب (Non-blocking receive)**</Ar> | Get a valid message or NULL <Ar>يحصل على رسالة صالحة أو على `NULL`</Ar> |
 
 When both sides block, it is a **rendezvous**. A link's queue has **zero capacity** (the sender waits; a rendezvous), **bounded capacity** (the sender waits if it is full) or **unbounded capacity** (the sender never waits).
 
+<Ar>عندما يُحجَب الطرفان كلاهما، يُسمّى ذلك **موعدًا (rendezvous)**. ويكون طابور الوصلة إما **بسعة صفرية (zero capacity)** (ينتظر المرسِل، أي موعد)، أو **بسعة محدودة (bounded capacity)** (ينتظر المرسِل إذا امتلأ الطابور)، أو **بسعة غير محدودة (unbounded capacity)** (لا ينتظر المرسِل أبدًا).</Ar>
+
 ### Pipes, sockets and RPC
 
-- **Ordinary pipes** are **unidirectional**, connect a **parent and child**, and are called *anonymous pipes* on Windows. **Named pipes** (FIFOs) are bidirectional and need no parent–child relationship.
-- A **socket** is an endpoint, **IP address + port**, e.g. `161.25.19.8:1625`. Ports below 1024 are well-known (HTTP is 80). Sockets come as TCP, UDP or multicast.
-- **RPC** (remote procedure call) makes a network call look local. A client **stub** **marshals** the parameters, and a server stub unpacks them. A machine-independent representation such as **XDR** handles big- vs little-endian differences.
+<Ar>الأنابيب والمقابس و RPC</Ar>
 
-<SlideFigure page={61} caption="An ordinary pipe: the parent writes to fd[1] and the child reads from fd[0]." />
+- **Ordinary pipes** are **unidirectional**, connect a **parent and child**, and are called *anonymous pipes* on Windows. **Named pipes** (FIFOs) are bidirectional and need no parent–child relationship.
+  <Ar>**الأنابيب العادية (Ordinary pipes)** **أحادية الاتجاه (unidirectional)**، وتربط **عملية أمًّا بعملية ابن**، وتُسمّى *الأنابيب المجهولة (anonymous pipes)* في ويندوز. أما **الأنابيب المسمّاة (Named pipes)** (FIFOs) فثنائية الاتجاه ولا تحتاج إلى علاقة أم وابن.</Ar>
+- A **socket** is an endpoint, **IP address + port**, e.g. `161.25.19.8:1625`. Ports below 1024 are well-known (HTTP is 80). Sockets come as TCP, UDP or multicast.
+  <Ar>**المقبس (socket)** نقطة طرفية (endpoint) تتكون من **عنوان IP + منفذ (port)**، مثل `161.25.19.8:1625`. والمنافذ التي تقل عن 1024 منافذ معروفة (well-known) (فمنفذ HTTP هو 80). وتأتي المقابس بأنواع TCP و UDP والبث المتعدد (multicast).</Ar>
+- **RPC** (remote procedure call) makes a network call look local. A client **stub** **marshals** the parameters, and a server stub unpacks them. A machine-independent representation such as **XDR** handles big- vs little-endian differences.
+  <Ar>يجعل **RPC** (استدعاء الإجراء البعيد (remote procedure call)) الاستدعاء عبر الشبكة يبدو محليًا. يقوم **النائب (stub)** في جهة العميل **بتحزيم (marshals)** المعاملات، ويفكّها النائب في جهة الخادم. ويتعامل تمثيل مستقل عن الآلة مثل **XDR** مع الاختلاف بين ترتيب البايتات big-endian و little-endian.</Ar>
+
+<SlideFigure page={61} caption="An ordinary pipe: the parent writes to fd[1] and the child reads from fd[0]." captionAr="أنبوب عادي: تكتب العملية الأم إلى fd[1] وتقرأ العملية الابن من fd[0]." />
 
 ```c title="pipe.c"
 int fd[2];
@@ -255,18 +349,27 @@ if (fork() == 0) {              /* child: reader */
 <Takeaways>
 
 - A process is a **program in execution**: text, data, heap, stack, plus PC and registers.
+  <Ar>العملية **برنامج قيد التنفيذ**: النص، والبيانات، والكومة (heap)، والمكدس، إضافةً إلى عدّاد البرنامج (PC) والمسجلات.</Ar>
 - States: **new → ready ⇄ running → waiting → ready … → terminated**. The **PCB** stores everything needed to resume a process.
+  <Ar>الحالات: **جديدة ← جاهزة ⇄ قيد التشغيل ← منتظرة ← جاهزة … ← منتهية**. وتخزّن **كتلة التحكم بالعملية (PCB)** كل ما يلزم لاستئناف العملية.</Ar>
 - A **context switch** saves one PCB and loads another, and is pure overhead.
+  <Ar>**تبديل السياق (context switch)** يحفظ كتلة تحكم ويحمّل أخرى، وهو عبء خالص.</Ar>
 - `fork()` copies (returning 0 to the child), `exec()` replaces, `wait()` synchronizes. A **zombie** is waiting to be reaped; an **orphan** is adopted by init.
+  <Ar>`fork()` تنسخ (وتُرجع 0 للابن)، و `exec()` تستبدل، و `wait()` تزامن. و**الزومبي (zombie)** عملية تنتظر أن تُحصَد، و**اليتيمة (orphan)** تتبنّاها `init`.</Ar>
 - IPC uses **shared memory** (fast, but needs synchronization to avoid **race conditions**) or **message passing** (direct or indirect, blocking or not, with buffering).
+  <Ar>يستخدم الاتصال بين العمليات (IPC) **الذاكرة المشتركة (shared memory)** (سريعة، لكنها تحتاج إلى التزامن لتجنب **حالات السباق (race conditions)**) أو **تمرير الرسائل (message passing)** (مباشر أو غير مباشر، حاجب أو غير حاجب، مع التخزين المؤقت (buffering)).</Ar>
 
 </Takeaways>
 
 ## Practice
 
-<Exercise title="How many processes?" level="medium">
+<Ar>تدريب</Ar>
+
+<Exercise title="How many processes?" titleAr="كم عدد العمليات؟" level="medium">
 
 How many processes exist after this code runs, including the original?
+
+<Ar>كم عدد العمليات الموجودة بعد تشغيل هذه الشيفرة، بما في ذلك العملية الأصلية؟</Ar>
 
 ```c
 int main(void) {
@@ -281,11 +384,13 @@ int main(void) {
 
 Each `fork()` doubles the number of processes: $2^3 = 8$ processes in total, of which **7** are new.
 
+<Ar>كل استدعاء لـ `fork()` يضاعف عدد العمليات: `2³ = 8` عمليات إجمالًا، منها **7** عمليات جديدة.</Ar>
+
 </Solution>
 
 </Exercise>
 
-<Exercise title="What does it print?" level="medium">
+<Exercise title="What does it print?" titleAr="ماذا يطبع؟" level="medium">
 
 ```c
 int value = 5;
@@ -305,17 +410,23 @@ int main(void) {
 
 `PARENT: value = 5`. The child has its **own copy** of the address space, so changing `value` in the child doesn't affect the parent's copy.
 
+<Ar>`PARENT: value = 5`. فللعملية الابن **نسختها الخاصة** من فضاء العناوين (address space)، ولذلك فإن تغيير `value` في الابن لا يؤثر في نسخة العملية الأم.</Ar>
+
 </Solution>
 
 </Exercise>
 
-<Exercise title="Name the state" level="easy">
+<Exercise title="Name the state" titleAr="سمِّ الحالة" level="easy">
 
 Which transition happens when (a) a running process requests disk I/O, (b) the timer interrupt fires, (c) the disk I/O completes?
+
+<Ar>أي انتقال يحدث عندما: (أ) تطلب عملية قيد التشغيل إدخالًا/إخراجًا من القرص، (ب) تنطلق مقاطعة المؤقِّت (timer)، (ج) يكتمل الإدخال/الإخراج من القرص؟</Ar>
 
 <Solution>
 
 (a) running → **waiting**. (b) running → **ready** (preempted). (c) waiting → **ready**.
+
+<Ar>(أ) قيد التشغيل ← **منتظرة**. (ب) قيد التشغيل ← **جاهزة** (بعد استباقها (preempted)). (ج) منتظرة ← **جاهزة**.</Ar>
 
 </Solution>
 
@@ -325,45 +436,66 @@ Which transition happens when (a) a running process requests disk I/O, (b) the t
   questions={[
     {
       q: "Which part of a process's memory grows downward and holds function-call frames?",
+      qAr: "أي جزء من ذاكرة العملية ينمو للأسفل ويحتفظ بإطارات استدعاء الدوال؟",
       options: ["Text", "Data", "Heap", "Stack"],
+      optionsAr: ["النص", "البيانات", "الكومة", "المكدس"],
       answer: 3,
-      explain: "The stack holds parameters, return addresses and local variables."
+      explain: "The stack holds parameters, return addresses and local variables.",
+      explainAr: "يحتفظ المكدس بالمعاملات وعناوين الرجوع والمتغيرات المحلية."
     },
     {
       q: "A process waiting for the CPU is in which state?",
+      qAr: "العملية التي تنتظر المعالج في أي حالة تكون؟",
       options: ["Waiting", "Ready", "New", "Running"],
+      optionsAr: ["منتظرة", "جاهزة", "جديدة", "قيد التشغيل"],
       answer: 1,
-      explain: "Waiting means waiting for an event such as I/O; ready means waiting for the CPU."
+      explain: "Waiting means waiting for an event such as I/O; ready means waiting for the CPU.",
+      explainAr: "حالة «منتظرة» تعني انتظار حدث مثل الإدخال/الإخراج، أما «جاهزة» فتعني انتظار المعالج."
     },
     {
       q: "What does fork() return in the child process?",
+      qAr: "ماذا تُرجع fork() في العملية الابن؟",
       options: ["The parent's pid", "The child's pid", "0", "-1"],
+      optionsAr: ["معرّف العملية الأم (pid)", "معرّف العملية الابن (pid)", "0", "-1"],
       answer: 2,
-      explain: "The parent receives the child's pid; the child receives 0."
+      explain: "The parent receives the child's pid; the child receives 0.",
+      explainAr: "تتلقى العملية الأم معرّف الابن، ويتلقى الابن القيمة 0."
     },
     {
       q: "A context switch is…",
+      qAr: "تبديل السياق هو…",
       options: ["Useful work done by the process", "Pure overhead while the kernel swaps PCBs", "A type of interrupt vector", "A system call"],
+      optionsAr: ["عمل مفيد تؤديه العملية", "عبء خالص أثناء تبديل النواة لكتل التحكم (PCBs)", "نوع من متجهات المقاطعات", "استدعاء نظام"],
       answer: 1,
-      explain: "No user work happens during the switch."
+      explain: "No user work happens during the switch.",
+      explainAr: "لا يُنجَز أي عمل للمستخدم أثناء التبديل."
     },
     {
       q: "A terminated process whose parent hasn't called wait() yet is a…",
+      qAr: "العملية المنتهية التي لم تستدعِ عمليتها الأم wait() بعد هي عملية…",
       options: ["Orphan", "Zombie", "Daemon", "Thread"],
+      optionsAr: ["يتيمة", "زومبي", "خفية (daemon)", "خيط"],
       answer: 1,
-      explain: "Its exit status is kept until the parent collects it."
+      explain: "Its exit status is kept until the parent collects it.",
+      explainAr: "تُحفظ حالة خروجها حتى تجمعها العملية الأم."
     },
     {
       q: "Why do counter++ and counter-- cause a race condition?",
+      qAr: "لماذا يسبّب counter++ و counter-- حالة سباق؟",
       options: ["They are system calls", "Each is several machine instructions that can interleave", "counter is in the heap", "The buffer is too small"],
+      optionsAr: ["لأنهما استدعاءا نظام", "لأن كلًّا منهما عدة تعليمات آلة يمكن أن تتداخل", "لأن counter موجود في الكومة", "لأن المخزن المؤقت صغير جدًا"],
       answer: 1,
-      explain: "Interleaved load/modify/store sequences lose updates."
+      explain: "Interleaved load/modify/store sequences lose updates.",
+      explainAr: "تداخل تسلسلات التحميل/التعديل/التخزين يؤدي إلى ضياع التحديثات."
     },
     {
       q: "Ordinary (anonymous) pipes are…",
+      qAr: "الأنابيب العادية (المجهولة) هي…",
       options: ["Bidirectional and network-capable", "Unidirectional and require a parent–child relationship", "The same as sockets", "Only available on Windows"],
+      optionsAr: ["ثنائية الاتجاه وتعمل عبر الشبكة", "أحادية الاتجاه وتتطلب علاقة أم وابن", "هي نفسها المقابس", "متاحة في ويندوز فقط"],
       answer: 1,
-      explain: "Named pipes remove both restrictions."
+      explain: "Named pipes remove both restrictions.",
+      explainAr: "الأنابيب المسمّاة تُزيل كلا القيدين."
     }
   ]}
 />

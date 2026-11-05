@@ -1,7 +1,9 @@
 ---
 number: 1
 title: "ROS 2 with Python: Nodes and Topics"
+titleAr: "ROS 2 مع Python: العقد والمواضيع"
 summary: "A hands-on path through ROS 2 in Python: create a workspace and package, write and run a node with a timer, connect nodes through typed topics, inspect, record and replay traffic, define a custom message, and close a feedback loop in Turtlesim."
+summaryAr: "مسار عملي في ROS 2 باستخدام Python: إنشاء مساحة عمل (workspace) وحزمة (package)، وكتابة عقدة (node) بمؤقِّت (timer) وتشغيلها، وربط العقد عبر مواضيع (topics) محددة الأنواع، وفحص حركة البيانات وتسجيلها وإعادة تشغيلها، وتعريف رسالة مخصصة، وإغلاق حلقة تغذية راجعة في Turtlesim."
 kind: practical
 topics: [Workspaces, Packages, Nodes, Timers and callbacks, Topics, Publishers and subscribers, Bags, Custom interfaces, Turtlesim]
 duration: 2 h hands-on
@@ -21,22 +23,35 @@ bookRefs:
 <Objectives>
 
 - Create a ROS 2 **workspace** and a Python **package**, then **build, source and run** a node.
+  <Ar>إنشاء **مساحة عمل (workspace)** في ROS 2 و**حزمة (package)** بلغة Python، ثم **بناء العقدة (node) وتحميل بيئتها (source) وتشغيلها**.</Ar>
 - Write a node class with a **timer callback** and explain what `rclpy.spin()` does.
+  <Ar>كتابة صنف (class) لعقدة يحتوي على **دالة استدعاء للمؤقِّت (timer callback)**، وشرح ما يفعله `rclpy.spin()`.</Ar>
 - Connect nodes with a **publisher** and a **subscriber** on a typed **topic**, and inspect them from the terminal.
+  <Ar>ربط العقد عبر **ناشر (publisher)** و**مشترك (subscriber)** على **موضوع (topic)** محدد النوع، وفحصهما من الطرفية (terminal).</Ar>
 - **Record and replay** topic data with bags.
+  <Ar>**تسجيل** بيانات المواضيع **وإعادة تشغيلها** باستخدام ملفات bag.</Ar>
 - Define and use a **custom message**, and build a **feedback controller** for Turtlesim.
+  <Ar>تعريف **رسالة مخصصة (custom message)** واستخدامها، وبناء **متحكِّم بالتغذية الراجعة (feedback controller)** لـ Turtlesim.</Ar>
 
 </Objectives>
 
-<Callout type="note" title="Before you start">
+<Callout type="note" title="Before you start" titleAr="قبل أن تبدأ">
   You need ROS 2 installed (the examples use the <strong>Lyrical</strong> distribution in <code>/opt/ros/lyrical</code>; swap in your own distribution name), the <code>colcon</code> build tool, Python classes (see AI Section 2) and basic terminal skills.
+
+  <Ar>تحتاج إلى تثبيت ROS 2 (تستخدم الأمثلة التوزيعة (distribution) <strong>Lyrical</strong> في <code>/opt/ros/lyrical</code>؛ ضع اسم توزيعتك بدلًا منها)، وأداة البناء <code>colcon</code>، والأصناف (classes) في Python (انظر السكشن 2 من مقرر الذكاء الاصطناعي)، ومهارات أساسية في استخدام الطرفية (terminal).</Ar>
 </Callout>
 
 ## Part 1 · Workspace, packages and nodes
 
+<Ar>الجزء 1 · مساحة العمل والحزم والعقد</Ar>
+
 ### The workspace
 
+<Ar>مساحة العمل</Ar>
+
 A **workspace** is the directory where you organise and build your ROS 2 packages. Your code goes in `src/`, and you always run `colcon` from the workspace root.
+
+<Ar>**مساحة العمل (workspace)** هي المجلد الذي تنظّم فيه حزم ROS 2 الخاصة بك وتبنيها. يوضع الكود الخاص بك في `src/`، وتشغّل `colcon` دائمًا من جذر مساحة العمل.</Ar>
 
 ```bash title="Terminal"
 source /opt/ros/lyrical/setup.bash   # 1. load ROS 2 itself
@@ -55,6 +70,8 @@ ros2_ws/
 
 **Sourcing** loads an environment into the *current terminal*. Source ROS 2 first, then your workspace, in **every** terminal where you run nodes. To do it automatically, add both lines to `~/.bashrc`.
 
+<Ar>**تحميل البيئة (Sourcing)** يُحمِّل بيئةً في *الطرفية الحالية*. حمّل بيئة ROS 2 أولًا، ثم بيئة مساحة عملك، في **كل** طرفية تشغّل فيها العقد. ولفعل ذلك تلقائيًا، أضف السطرين كليهما إلى `~/.bashrc`.</Ar>
+
 ```bash title="Terminal"
 source /opt/ros/lyrical/setup.bash
 source ~/ros2_ws/install/setup.bash
@@ -62,13 +79,17 @@ source ~/ros2_ws/install/setup.bash
 
 ### Workspace, package and node
 
+<Ar>مساحة العمل والحزمة والعقدة</Ar>
+
 <Grid cols={3}>
-  <Card title="Workspace" tag="build dir">The development and build directory. It can contain several packages.</Card>
-  <Card title="Package" tag="install unit">Groups a related part of the application with its dependencies, e.g. camera, motion planning, hardware control. It can contain several nodes.</Card>
-  <Card title="Node" tag="ROS graph">A participant in the ROS graph with one focused responsibility. Nodes communicate to make the whole application work.</Card>
+  <Card title="Workspace" titleAr="مساحة العمل (Workspace)" tag="build dir">The development and build directory. It can contain several packages.<Ar>مجلد التطوير والبناء. ويمكن أن يحتوي على عدة حزم (packages).</Ar></Card>
+  <Card title="Package" titleAr="الحزمة (Package)" tag="install unit">Groups a related part of the application with its dependencies, e.g. camera, motion planning, hardware control. It can contain several nodes.<Ar>تجمع جزءًا مترابطًا من التطبيق مع اعتمادياته (dependencies)، مثل الكاميرا، أو تخطيط الحركة، أو التحكم في العتاد (hardware). ويمكن أن تحتوي على عدة عقد (nodes).</Ar></Card>
+  <Card title="Node" titleAr="العقدة (Node)" tag="ROS graph">A participant in the ROS graph with one focused responsibility. Nodes communicate to make the whole application work.<Ar>مشارك في رسم ROS البياني (ROS graph) ذو مسؤولية واحدة محددة. وتتواصل العقد فيما بينها ليعمل التطبيق بأكمله.</Ar></Card>
 </Grid>
 
 ### Create a Python package
+
+<Ar>إنشاء حزمة Python</Ar>
 
 ```bash title="Terminal"
 cd ~/ros2_ws/src
@@ -76,8 +97,11 @@ ros2 pkg create my_py_pkg --build-type ament_python --dependencies rclpy
 ```
 
 - `my_py_pkg` is the package name.
+  <Ar>`my_py_pkg` هو اسم الحزمة.</Ar>
 - `ament_python` selects the Python build type.
+  <Ar>`ament_python` يختار نوع البناء الخاص بـ Python.</Ar>
 - `rclpy` is the ROS 2 Python client library.
+  <Ar>`rclpy` هي مكتبة العميل (client library) الخاصة بـ ROS 2 للغة Python.</Ar>
 
 ```text title="~/ros2_ws/src/my_py_pkg"
 my_py_pkg/
@@ -91,6 +115,8 @@ my_py_pkg/
 ```
 
 ### Your first node
+
+<Ar>عقدتك الأولى</Ar>
 
 ```bash title="Terminal"
 cd ~/ros2_ws/src/my_py_pkg/my_py_pkg
@@ -123,7 +149,11 @@ if __name__ == "__main__":
 
 ### Register, build, source, run
 
+<Ar>التسجيل والبناء وتحميل البيئة والتشغيل</Ar>
+
 Add an **entry point** in `setup.py`, inside the existing `entry_points` block:
+
+<Ar>أضف **نقطة دخول (entry point)** في `setup.py`، داخل الكتلة `entry_points` الموجودة:</Ar>
 
 ```python title="setup.py"
 entry_points={
@@ -141,19 +171,23 @@ ros2 run my_py_pkg test_node
 # [INFO] [my_node_name]: Hello World     (Ctrl+C to stop)
 ```
 
-<Callout type="warning" title="Three names, three roles">
+<Callout type="warning" title="Three names, three roles" titleAr="ثلاثة أسماء، وثلاثة أدوار">
 
-| Name | Example | Defined in | Used in |
+| Name <Ar>الاسم</Ar> | Example <Ar>مثال</Ar> | Defined in <Ar>يُعرَّف في</Ar> | Used in <Ar>يُستخدم في</Ar> |
 |---|---|---|---|
-| File | `my_first_node.py` | `my_py_pkg/my_py_pkg/` | `setup.py` entry (without `.py`) |
-| Executable | `test_node` | `setup.py` `console_scripts` | `ros2 run my_py_pkg test_node` |
-| ROS node | `my_node_name` | `super().__init__()` | `ros2 node list`, `rqt_graph` |
+| File <Ar>الملف</Ar> | `my_first_node.py` | `my_py_pkg/my_py_pkg/` | `setup.py` entry (without `.py`) <Ar>مُدخل في `setup.py` (بدون `.py`)</Ar> |
+| Executable <Ar>الملف التنفيذي</Ar> | `test_node` | `setup.py` `console_scripts` | `ros2 run my_py_pkg test_node` |
+| ROS node <Ar>عقدة ROS</Ar> | `my_node_name` | `super().__init__()` | `ros2 node list`, `rqt_graph` |
 
 They *can* all share one name, such as `number_publisher`, but they are still three different things.
+
+<Ar>*يمكن* أن تشترك جميعها في اسم واحد، مثل `number_publisher`، لكنها تظل ثلاثة أشياء مختلفة.</Ar>
 
 </Callout>
 
 ### Timers and callbacks
+
+<Ar>المؤقِّتات ودوال الاستدعاء</Ar>
 
 ```python title="my_first_node.py" {5}
 class MyCustomNode(Node):
@@ -169,11 +203,16 @@ class MyCustomNode(Node):
 
 The constructor **registers** the timer. `spin()` hands control to the **executor**, which runs each callback when it is ready, so you see `Hello 0`, `Hello 1`, `Hello 2` and so on, about once per second.
 
-<Callout type="tip" title="Checkpoint">
+<Ar>**يسجّل** المُنشئ (constructor) المؤقِّت (timer). ويسلّم `spin()` التحكم إلى **المُنفِّذ (executor)**، الذي يشغّل كل دالة استدعاء (callback) عندما تصبح جاهزة، لذا ترى `Hello 0` و `Hello 1` و `Hello 2` وهكذا، بمعدل مرة واحدة في الثانية تقريبًا.</Ar>
+
+<Callout type="tip" title="Checkpoint" titleAr="نقطة مراجعة">
 
 - A period of **0.5 s** means a nominal rate of **2 Hz**.
+  <Ar>الفترة **0.5 s** تعني معدلًا اسميًا قدره **2 Hz**.</Ar>
 - Pass `self.print_hello` **without parentheses**: you hand over the function to call later. With `()` you would call it immediately and pass its return value.
+  <Ar>مرّر `self.print_hello` **بدون أقواس**: فأنت تسلّم الدالة (function) لكي تُستدعى لاحقًا. ومع `()` ستستدعيها فورًا وتمرّر القيمة التي تُرجعها.</Ar>
 - **Without `spin()`** the callbacks are never processed; the program reaches `shutdown()` and exits.
+  <Ar>**بدون `spin()`** لا تُعالَج دوال الاستدعاء (callbacks) أبدًا؛ إذ يصل البرنامج إلى `shutdown()` وينتهي.</Ar>
 
 </Callout>
 
@@ -184,15 +223,24 @@ ros2 node info /my_node_name   # publishers (e.g. /rosout for logs), subscribers
 
 ## Part 2 · Topics
 
-<Definition term="Topic">
+<Ar>الجزء 2 · المواضيع</Ar>
+
+<Definition term="Topic" termAr="الموضوع (Topic)">
   A <strong>named channel</strong> that carries a stream of <strong>typed messages</strong>. Publishers send on it and subscribers receive from it. Both must use the same name and message type.
+
+  <Ar><strong>قناة مُسمّاة</strong> تحمل تدفقًا من <strong>الرسائل محددة النوع (typed messages)</strong>. يرسل الناشرون (publishers) عليها، ويستقبل المشتركون (subscribers) منها. ويجب أن يستخدم الطرفان الاسم نفسه ونوع الرسالة نفسه.</Ar>
 </Definition>
 
 - A topic can have **many publishers and many subscribers**, and a node can use several topics.
+  <Ar>يمكن أن يكون للموضوع (topic) **عدة ناشرين وعدة مشتركين**، ويمكن للعقدة أن تستخدم عدة مواضيع.</Ar>
 - Nodes are **decoupled**: they talk to the topic, never directly to each other. A publisher can exist with no subscribers, and vice versa.
+  <Ar>العقد **منفصلة عن بعضها (decoupled)**: فهي تتواصل مع الموضوع، ولا تتواصل مباشرةً مع بعضها أبدًا. ويمكن أن يوجد ناشر بلا مشتركين، والعكس صحيح.</Ar>
 - Topics suit **streams**: sensor readings, robot state, repeated commands.
+  <Ar>تناسب المواضيعُ **التدفقات (streams)**: قراءات المستشعرات، وحالة الروبوت، والأوامر المتكررة.</Ar>
 
 The **message type is a data contract**:
+
+<Ar>**نوع الرسالة (message type) عقدٌ للبيانات**:</Ar>
 
 ```bash title="Terminal"
 ros2 interface show example_interfaces/msg/Int64
@@ -201,7 +249,11 @@ ros2 interface show example_interfaces/msg/Int64
 
 ### A publisher
 
+<Ar>الناشر</Ar>
+
 Declare the interface dependency in `package.xml`, inside `<package>`:
+
+<Ar>صرّح باعتمادية الواجهة (interface dependency) في `package.xml`، داخل `<package>`:</Ar>
 
 ```xml title="package.xml"
 <depend>example_interfaces</depend>
@@ -242,6 +294,8 @@ if __name__ == "__main__":
 
 ### A subscriber
 
+<Ar>المشترك</Ar>
+
 ```python title="number_counter.py"
 #!/usr/bin/env python3
 import rclpy
@@ -275,6 +329,8 @@ if __name__ == "__main__":
 
 Register both in `setup.py`, rebuild and source, then run each in its own terminal:
 
+<Ar>سجّل العقدتين كلتيهما في `setup.py`، وأعد البناء وحمّل البيئة، ثم شغّل كلًّا منهما في طرفيته الخاصة:</Ar>
+
 ```python title="setup.py → console_scripts"
 "number_publisher = my_py_pkg.number_publisher:main",
 "number_counter = my_py_pkg.number_counter:main",
@@ -287,9 +343,13 @@ ros2 run my_py_pkg number_counter     # Counter: 2, 4, 6, …
 
 Stop only the publisher and the counter stops changing. Restart it, and the running subscriber carries on from its previous sum.
 
-<SlideFigure page={42} caption="One message's journey: timer fires → publish Int64(data=2) → /number → executor runs callback_number → counter updated." />
+<Ar>أوقف الناشر وحده فيتوقف العدّاد عن التغيّر. أعد تشغيله، فيستأنف المشترك الذي ما زال يعمل من مجموعه السابق.</Ar>
+
+<SlideFigure page={42} caption="One message's journey: timer fires → publish Int64(data=2) → /number → executor runs callback_number → counter updated." captionAr="رحلة رسالة واحدة: ينطلق المؤقِّت ← نشر Int64(data=2) ← /number ← يشغّل المُنفِّذ callback_number ← يُحدَّث العدّاد." />
 
 ### Introspection from the terminal
+
+<Ar>الفحص من الطرفية</Ar>
 
 ```bash title="Terminal"
 rqt_graph                                   # Nodes/Topics (all): see the arrows
@@ -299,13 +359,19 @@ ros2 topic echo /number                     # a test subscriber
 ros2 topic pub -r 2.0 /number example_interfaces/msg/Int64 "{data: 7}"   # a test publisher (YAML fields)
 ```
 
-<Callout type="tip" title="Test without writing code">
+<Callout type="tip" title="Test without writing code" titleAr="اختبر دون كتابة كود">
   <code>ros2 topic echo</code> tests a <strong>publisher</strong> without writing a subscriber. <code>ros2 topic pub</code> tests a <strong>subscriber</strong> without writing a publisher: with <code>number_counter</code> running, each message adds 7.
+
+  <Ar>يختبر <code>ros2 topic echo</code> <strong>الناشر</strong> دون كتابة مشترك. ويختبر <code>ros2 topic pub</code> <strong>المشترك</strong> دون كتابة ناشر: فعندما يكون <code>number_counter</code> قيد التشغيل، تضيف كل رسالة 7.</Ar>
 </Callout>
 
 ## Part 3 · Bags: record and replay
 
+<Ar>الجزء 3 · ملفات bag: التسجيل وإعادة التشغيل</Ar>
+
 A **bag** records topic messages **with their timing**, so you can repeat an experiment or develop without live hardware.
+
+<Ar>يسجّل **ملف bag** رسائل المواضيع **مع توقيتاتها**، لذا يمكنك تكرار تجربة ما أو التطوير دون عتاد (hardware) حيّ.</Ar>
 
 ```bash title="Terminal"
 mkdir -p ~/bags && cd ~/bags
@@ -315,11 +381,19 @@ ros2 bag play ~/bags/bag1           # stop the live publisher; playback republis
 
 During playback `number_counter` keeps adding numbers as if they were live, and stops when the bag ends. Start a fresh subscriber if you want the sum to begin at zero.
 
+<Ar>أثناء إعادة التشغيل يواصل `number_counter` جمع الأعداد كما لو كانت حيّة، ويتوقف عند انتهاء ملف bag. شغّل مشتركًا جديدًا إذا أردت أن يبدأ المجموع من الصفر.</Ar>
+
 ## Part 4 · Interfaces
+
+<Ar>الجزء 4 · الواجهات</Ar>
 
 ### Use an existing message first
 
+<Ar>استخدم رسالة موجودة أولًا</Ar>
+
 Describe the data first, then look for an existing type with the right **meaning**: `geometry_msgs/Twist` holds linear and angular velocity, and `sensor_msgs/Image` holds images. The primitive `example_interfaces` types are for learning only.
+
+<Ar>صِف البيانات أولًا، ثم ابحث عن نوع موجود له **المعنى** الصحيح: فالنوع `geometry_msgs/Twist` يحمل السرعة الخطية والزاوية، والنوع `sensor_msgs/Image` يحمل الصور. أما الأنواع البدائية في `example_interfaces` فهي للتعلّم فقط.</Ar>
 
 ```bash title="Terminal"
 ros2 interface show geometry_msgs/msg/Twist
@@ -335,7 +409,11 @@ from geometry_msgs.msg import Twist
 
 ### Define a custom message
 
+<Ar>تعريف رسالة مخصصة</Ar>
+
 Keep custom interfaces in a **dedicated package built with `ament_cmake`**, because the interface generators run through CMake. Your Python nodes stay in their `ament_python` package.
+
+<Ar>احتفظ بالواجهات المخصصة (custom interfaces) في **حزمة مخصصة تُبنى باستخدام `ament_cmake`**، لأن مولِّدات الواجهات تعمل عبر CMake. وتبقى عقد Python الخاصة بك في حزمتها `ament_python`.</Ar>
 
 ```bash title="Terminal"
 cd ~/ros2_ws/src
@@ -377,7 +455,11 @@ ros2 interface show my_robot_interfaces/msg/HardwareStatus
 
 ### Use it from Python
 
+<Ar>استخدامها من Python</Ar>
+
 Add `<depend>my_robot_interfaces</depend>` to `my_py_pkg/package.xml`, then:
+
+<Ar>أضف `<depend>my_robot_interfaces</depend>` إلى `my_py_pkg/package.xml`، ثم:</Ar>
 
 ```python title="hardware_status_publisher.py (excerpt)"
 from my_robot_interfaces.msg import HardwareStatus
@@ -404,19 +486,28 @@ def callback_status(self, msg: HardwareStatus):
 
 ## Part 5 · Challenge: a Turtlesim feedback controller
 
+<Ar>الجزء 5 · تحدٍّ: متحكِّم بالتغذية الراجعة لـ Turtlesim</Ar>
+
 **Goal**: make the turtle drive in circles, faster on the right half of the screen.
+
+<Ar>**الهدف**: اجعل السلحفاة تتحرك في دوائر، وبسرعة أكبر في النصف الأيمن من الشاشة.</Ar>
 
 <Steps>
 
 1. Subscribe to **`/turtle1/pose`** (`turtlesim/msg/Pose`) to read the turtle's `x`.
+   <Ar>اشترك في **`/turtle1/pose`** (`turtlesim/msg/Pose`) لقراءة قيمة `x` للسلحفاة.</Ar>
 2. Publish **`geometry_msgs/msg/Twist`** on **`/turtle1/cmd_vel`**.
+   <Ar>انشر **`geometry_msgs/msg/Twist`** على **`/turtle1/cmd_vel`**.</Ar>
 3. If `x < 5.5`: `linear.x = 1.0` and `angular.z = 1.0`. Otherwise set both to `2.0`.
+   <Ar>إذا كان `x < 5.5`: فاجعل `linear.x = 1.0` و `angular.z = 1.0`. وإلا فاضبط كلتيهما على `2.0`.</Ar>
 
 </Steps>
 
-<Exercise title="Write the controller before reading on" level="medium">
+<Exercise title="Write the controller before reading on" titleAr="اكتب المتحكِّم قبل متابعة القراءة" level="medium">
 
 Create a `turtle_controller` package with a `controller` executable that implements the rules above. Then run `ros2 run turtlesim turtlesim_node` in one terminal and your controller in another.
+
+<Ar>أنشئ حزمة `turtle_controller` تحتوي على ملف تنفيذي `controller` يطبّق القواعد السابقة. ثم شغّل `ros2 run turtlesim turtlesim_node` في طرفية، ومتحكِّمك في طرفية أخرى.</Ar>
 
 <Solution>
 
@@ -462,6 +553,8 @@ if __name__ == "__main__":
 
 Register `"controller = turtle_controller.controller:main",` in `setup.py`, then build, source and run. No timer is needed, because every pose message triggers a new command. Both speeds scale together, so the circle's radius ($v / \omega$) stays the same and only the speed changes.
 
+<Ar>سجّل `"controller = turtle_controller.controller:main",` في `setup.py`، ثم ابنِ وحمّل البيئة وشغّل. لا حاجة إلى مؤقِّت (timer)، لأن كل رسالة موضع (pose) تُطلق أمرًا جديدًا. وتتغير السرعتان معًا بالنسبة نفسها، لذا يبقى نصف قطر الدائرة ($v / \omega$) ثابتًا ولا يتغير إلا مقدار السرعة.</Ar>
+
 </Solution>
 
 </Exercise>
@@ -469,18 +562,27 @@ Register `"controller = turtle_controller.controller:main",` in `setup.py`, then
 <Takeaways>
 
 - **Workspace → packages → nodes.** Edit in `src/`, then **build** with `colcon`, **source** `install/setup.bash`, and **run** with `ros2 run <pkg> <executable>`.
+  <Ar>**مساحة العمل ← الحزم ← العقد.** حرّر الكود في `src/`، ثم **ابنِ** باستخدام `colcon`، و**حمّل البيئة** من `install/setup.bash`، و**شغّل** باستخدام `ros2 run <pkg> <executable>`.</Ar>
 - A node is a class that inherits from `Node`; **`spin()`** lets the executor run its timer and subscription callbacks.
+  <Ar>العقدة (node) صنف (class) يرث من `Node`؛ و **`spin()`** يتيح للمُنفِّذ (executor) تشغيل دوال الاستدعاء الخاصة بمؤقِّتاتها واشتراكاتها.</Ar>
 - **Topics** decouple nodes: publishers and subscribers only need to agree on the **name** and **message type**.
+  <Ar>**المواضيع (Topics)** تفصل العقد عن بعضها: فلا يحتاج الناشرون والمشتركون إلا إلى الاتفاق على **الاسم** و**نوع الرسالة**.</Ar>
 - `ros2 topic echo / pub / info`, `rqt_graph` and **bags** let you inspect, test and replay communication.
+  <Ar>تتيح لك `ros2 topic echo / pub / info` و `rqt_graph` و**ملفات bag** فحص الاتصال واختباره وإعادة تشغيله.</Ar>
 - Custom messages live in an **`ament_cmake` interface package**, and any node can import the generated classes.
+  <Ar>توجد الرسائل المخصصة في **حزمة واجهات من نوع `ament_cmake`**، ويمكن لأي عقدة استيراد الأصناف المولَّدة.</Ar>
 
 </Takeaways>
 
 ## Practice
 
-<Exercise title="Publish the running total" level="medium">
+<Ar>تدريب</Ar>
+
+<Exercise title="Publish the running total" titleAr="انشر المجموع التراكمي" level="medium">
 
 Extend `number_counter` so it also **publishes** its running total on a topic `number_count` (type `Int64`) every time it receives a number.
+
+<Ar>وسّع `number_counter` بحيث **ينشر** أيضًا مجموعه التراكمي على الموضوع `number_count` (من النوع `Int64`) في كل مرة يستقبل فيها عددًا.</Ar>
 
 <Solution>
 
@@ -496,19 +598,26 @@ self.count_publisher_.publish(out)
 
 Check it with `ros2 topic echo /number_count`. The node now both subscribes and publishes.
 
+<Ar>تحقّق منه باستخدام `ros2 topic echo /number_count`. أصبحت العقدة الآن تشترك وتنشر في آنٍ واحد.</Ar>
+
 </Solution>
 
 </Exercise>
 
-<Exercise title="Debug the missing node" level="easy">
+<Exercise title="Debug the missing node" titleAr="تتبّع خلل العقدة المفقودة" level="easy">
 
 You added `number_publisher.py` and ran `ros2 run my_py_pkg number_publisher`, but ROS says *No executable found*. List three likely causes.
+
+<Ar>أضفت `number_publisher.py` وشغّلت `ros2 run my_py_pkg number_publisher`، لكن ROS يقول *No executable found*. اذكر ثلاثة أسباب محتملة.</Ar>
 
 <Solution>
 
 1. The entry point was not added to `console_scripts` in `setup.py`, or it has a typo.
+   <Ar>لم تُضَف نقطة الدخول (entry point) إلى `console_scripts` في `setup.py`، أو فيها خطأ إملائي.</Ar>
 2. The package was not **rebuilt** with `colcon build` after the change.
+   <Ar>لم **يُعَد بناء** الحزمة باستخدام `colcon build` بعد التعديل.</Ar>
 3. The terminal was not **sourced** (`source install/setup.bash`) after building.
+   <Ar>لم **تُحمَّل البيئة** في الطرفية (`source install/setup.bash`) بعد البناء.</Ar>
 
 </Solution>
 
@@ -518,45 +627,66 @@ You added `number_publisher.py` and ran `ros2 run my_py_pkg number_publisher`, b
   questions={[
     {
       q: "Where do you write the source code of your packages?",
+      qAr: "أين تكتب الكود المصدري لحزمك؟",
       options: ["install/", "build/", "src/", "log/"],
+      optionsAr: ["install/", "build/", "src/", "log/"],
       answer: 2,
-      explain: "build/, install/ and log/ are generated by colcon; you only edit src/."
+      explain: "build/, install/ and log/ are generated by colcon; you only edit src/.",
+      explainAr: "المجلدات build/ و install/ و log/ يولّدها colcon، وأنت لا تحرّر إلا src/."
     },
     {
       q: "In create_publisher(Int64, 'number', 10), what does 10 mean?",
+      qAr: "في create_publisher(Int64, 'number', 10)، ماذا يعني الرقم 10؟",
       options: ["Publish 10 times per second", "QoS history depth (queue size)", "The message ID", "Timeout in seconds"],
+      optionsAr: ["النشر 10 مرات في الثانية", "عمق سجل QoS (حجم الطابور)", "معرّف الرسالة", "المهلة بالثواني"],
       answer: 1,
-      explain: "It is the history depth. The publishing rate comes from the timer."
+      explain: "It is the history depth. The publishing rate comes from the timer.",
+      explainAr: "إنه عمق السجل (history depth). أما معدل النشر فيأتي من المؤقِّت."
     },
     {
       q: "What happens if main() never calls rclpy.spin(node)?",
+      qAr: "ماذا يحدث إذا لم تستدعِ main() الدالة rclpy.spin(node) أبدًا؟",
       options: ["Callbacks run in the background anyway", "Callbacks are never processed and the program exits", "ROS raises an error at build time", "The node runs at maximum speed"],
+      optionsAr: ["تعمل دوال الاستدعاء في الخلفية على أي حال", "لا تُعالَج دوال الاستدعاء أبدًا وينتهي البرنامج", "يُطلق ROS خطأً أثناء البناء", "تعمل العقدة بأقصى سرعة"],
       answer: 1,
-      explain: "spin hands control to the executor, which runs ready callbacks. Without it nothing is processed."
+      explain: "spin hands control to the executor, which runs ready callbacks. Without it nothing is processed.",
+      explainAr: "تسلّم spin التحكم إلى المُنفِّذ (executor) الذي يشغّل دوال الاستدعاء الجاهزة، وبدونها لا يُعالَج شيء."
     },
     {
       q: "Which command lets you test a subscriber without writing a publisher?",
+      qAr: "أي أمر يتيح لك اختبار مشترك دون كتابة ناشر؟",
       options: ["ros2 topic echo", "ros2 topic pub", "ros2 node info", "ros2 bag record"],
+      optionsAr: ["ros2 topic echo", "ros2 topic pub", "ros2 node info", "ros2 bag record"],
       answer: 1,
-      explain: "ros2 topic pub publishes test messages from the terminal."
+      explain: "ros2 topic pub publishes test messages from the terminal.",
+      explainAr: "ينشر ros2 topic pub رسائل اختبارية من الطرفية."
     },
     {
       q: "Why is a custom interface package built with ament_cmake?",
+      qAr: "لماذا تُبنى حزمة الواجهات المخصصة باستخدام ament_cmake؟",
       options: ["Python cannot read .msg files", "The rosidl interface generators run through CMake", "ament_python is deprecated", "It makes messages faster"],
+      optionsAr: ["لأن Python لا تستطيع قراءة ملفات .msg", "لأن مولِّدات الواجهات rosidl تعمل عبر CMake", "لأن ament_python متقادمة (deprecated)", "لأنها تجعل الرسائل أسرع"],
       answer: 1,
-      explain: "rosidl_default_generators are CMake-based, so interface packages use ament_cmake."
+      explain: "rosidl_default_generators are CMake-based, so interface packages use ament_cmake.",
+      explainAr: "المولِّدات rosidl_default_generators مبنية على CMake، لذا تستخدم حزم الواجهات ament_cmake."
     },
     {
       q: "Can one node subscribe to Pose and publish Twist?",
+      qAr: "هل يمكن لعقدة واحدة أن تشترك في Pose وتنشر Twist؟",
       options: ["No, a node can have only one endpoint", "Yes, each endpoint has its own type", "Only with two executors", "Only if both use the same topic"],
+      optionsAr: ["لا، فللعقدة طرف اتصال واحد فقط", "نعم، فلكل طرف اتصال نوعه الخاص", "فقط مع مُنفِّذين اثنين", "فقط إذا استخدم كلاهما الموضوع نفسه"],
       answer: 1,
-      explain: "The Turtlesim controller does exactly that: a feedback loop in a single node."
+      explain: "The Turtlesim controller does exactly that: a feedback loop in a single node.",
+      explainAr: "هذا بالضبط ما يفعله متحكِّم Turtlesim: حلقة تغذية راجعة داخل عقدة واحدة."
     },
     {
       q: "Why can a bag replace the live number publisher?",
+      qAr: "لماذا يمكن لملف bag أن يحل محل ناشر الأعداد الحي؟",
       options: ["It edits the subscriber code", "Playback republishes the recorded messages on /number", "It changes the topic type", "It creates a new node called number_publisher"],
+      optionsAr: ["لأنه يعدّل كود المشترك", "لأن إعادة التشغيل تعيد نشر الرسائل المسجّلة على /number", "لأنه يغيّر نوع الموضوع", "لأنه ينشئ عقدة جديدة باسم number_publisher"],
       answer: 1,
-      explain: "The subscriber cannot tell recorded messages from live ones."
+      explain: "The subscriber cannot tell recorded messages from live ones.",
+      explainAr: "لا يستطيع المشترك التمييز بين الرسائل المسجّلة والرسائل الحيّة."
     }
   ]}
 />

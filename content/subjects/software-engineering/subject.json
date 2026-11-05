@@ -1,12 +1,15 @@
 {
   "title": "Software Engineering 1",
+  "titleAr": "هندسة البرمجيات 1",
   "shortTitle": "SWE",
   "code": "CS391",
   "order": 5,
   "materialsDir": "Software Engineering",
   "level": "Level 3 · 2026/2027",
   "tagline": "How professional software is built: processes, requirements, UML models and testing.",
+  "taglineAr": "كيف تُبنى البرمجيات الاحترافية: العمليات (processes)، والمتطلبات (requirements)، ونماذج UML، والاختبار (testing).",
   "description": "Software engineering is the discipline of producing reliable, maintainable software systematically, as a team, within cost and schedule. The lectures follow Sommerville's Software Engineering and the course book: what software engineering is and its ethics, plan-driven and incremental process models, agile methods (XP and Scrum), requirements engineering, system modelling with UML (context, interaction, structural and behavioural models), and software testing from unit tests to release and user testing. The sections are hands-on UML practice: use case, activity, class, sequence and state diagrams, and data-flow diagrams.",
+  "descriptionAr": "هندسة البرمجيات (Software Engineering) هي التخصص الذي يُعنى بإنتاج برمجيات موثوقة وقابلة للصيانة بصورة منهجية، ضمن فريق، وفي حدود التكلفة والجدول الزمني. تتبع المحاضرات كتاب Software Engineering من تأليف Sommerville وكتاب المقرر: ما هندسة البرمجيات وما أخلاقياتها، ونماذج العمليات الموجَّهة بالخطة (plan-driven) والتزايدية (incremental)، والأساليب الرشيقة (agile) ممثلةً في XP و Scrum، وهندسة المتطلبات (requirements engineering)، ونمذجة النظام باستخدام UML (نماذج السياق، والتفاعل، والنماذج الهيكلية، والسلوكية)، واختبار البرمجيات بدءًا من اختبارات الوحدة (unit tests) وصولًا إلى اختبار الإصدار (release) واختبار المستخدم. أما السكاشن (Sections) فهي تدريب عملي على UML: مخططات حالات الاستخدام (use case)، والنشاط (activity)، والأصناف (class)، والتتابع (sequence)، والحالات (state)، ومخططات تدفق البيانات (data-flow diagrams).",
   "instructors": [
     "Dr. Fatma ElSayed",
     "Dr. Ahmed Yousry",
@@ -21,6 +24,14 @@
     "Analyze and design software with UML use case, activity, class, sequence and state diagrams.",
     "Explain software testing principles and design development, release and user tests.",
     "Recognize the professional, ethical and legal responsibilities of software engineers."
+  ],
+  "objectivesAr": [
+    "تحديد المفاهيم والمبادئ الأساسية ونماذج دورة الحياة (life-cycle models) المستخدمة في تطوير أنظمة البرمجيات.",
+    "الاختيار بين العمليات الموجَّهة بالخطة (plan-driven) والعمليات الرشيقة (agile)، وشرح ممارسات XP و Scrum.",
+    "استنباط المتطلبات الوظيفية (functional) وغير الوظيفية (non-functional) وتصنيفها وتوصيفها والتحقق من صلاحيتها.",
+    "تحليل البرمجيات وتصميمها باستخدام مخططات UML: حالات الاستخدام، والنشاط، والأصناف، والتتابع، والحالات.",
+    "شرح مبادئ اختبار البرمجيات، وتصميم اختبارات التطوير والإصدار (release) والمستخدم.",
+    "إدراك المسؤوليات المهنية والأخلاقية والقانونية لمهندسي البرمجيات."
   ],
   "topics": [
     "Software products and attributes",
@@ -37,11 +48,11 @@
     "Data-flow diagrams"
   ],
   "grading": [
-    { "label": "Final written exam", "weight": 50 },
-    { "label": "Midterm", "weight": 15 },
-    { "label": "Lab work (project)", "weight": 15 },
-    { "label": "Quizzes", "weight": 10 },
-    { "label": "Final oral exam (project)", "weight": 10 }
+    { "label": "Final written exam", "labelAr": "الامتحان النهائي التحريري", "weight": 50 },
+    { "label": "Midterm", "labelAr": "امتحان منتصف الفصل", "weight": 15 },
+    { "label": "Lab work (project)", "labelAr": "أعمال المعمل (المشروع)", "weight": 15 },
+    { "label": "Quizzes", "labelAr": "الاختبارات القصيرة", "weight": 10 },
+    { "label": "Final oral exam (project)", "labelAr": "الامتحان الشفهي النهائي (المشروع)", "weight": 10 }
   ],
   "books": [
     {

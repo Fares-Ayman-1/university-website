@@ -1,7 +1,9 @@
 ---
 number: 4
 title: "Threads and Multicore Programming"
+titleAr: "الخيوط والبرمجة متعددة الأنوية"
 summary: Why modern programs use many threads. Covers single- vs multithreaded processes and their benefits, multicore programming challenges, concurrency vs parallelism, data vs task parallelism, Amdahl's law, user vs kernel threads, the many-to-one, one-to-one, many-to-many and two-level models, and creating threads with Pthreads and Java.
+summaryAr: "لماذا تستخدم البرامج الحديثة خيوطًا (threads) كثيرة. يتناول العمليات أحادية الخيط مقابل متعددة الخيوط وفوائدها، وتحديات البرمجة متعددة الأنوية (multicore)، والتزامن في التنفيذ (concurrency) مقابل التوازي (parallelism)، وتوازي البيانات مقابل توازي المهام، وقانون أمدال (Amdahl's law)، وخيوط المستخدم مقابل خيوط النواة، ونماذج متعدد إلى واحد، وواحد إلى واحد، ومتعدد إلى متعدد، وثنائي المستوى، وإنشاء الخيوط باستخدام Pthreads و Java."
 topics: [Threads, Benefits, Multicore challenges, Concurrency vs parallelism, Data and task parallelism, Amdahl's law, User and kernel threads, Multithreading models, Pthreads, Java threads]
 duration: 50 min study
 sources:
@@ -19,71 +21,107 @@ bookRefs:
 <Objectives>
 
 - Explain what a **thread** is, what it shares with its process and what it owns.
+  <Ar>شرح ماهية **الخيط (thread)**، وما يتشاركه مع عمليته وما يملكه وحده.</Ar>
 - List the **benefits** of multithreading and the **challenges** of multicore programming.
+  <Ar>ذكر **فوائد** تعدد الخيوط (multithreading) و**تحديات** البرمجة متعددة الأنوية (multicore).</Ar>
 - Distinguish **concurrency** from **parallelism**, and **data** from **task** parallelism.
+  <Ar>التمييز بين **التزامن في التنفيذ (concurrency)** و**التوازي (parallelism)**، وبين توازي **البيانات** وتوازي **المهام**.</Ar>
 - Compute speed-ups with **Amdahl's law**.
+  <Ar>حساب التسريع (speed-up) باستخدام **قانون أمدال (Amdahl's law)**.</Ar>
 - Compare **user** and **kernel** threads and the **multithreading models**, and create threads with **Pthreads** and **Java**.
+  <Ar>المقارنة بين خيوط **المستخدم** وخيوط **النواة** و**نماذج تعدد الخيوط**، وإنشاء الخيوط باستخدام **Pthreads** و**Java**.</Ar>
 
 </Objectives>
 
 ## Why threads?
 
+<Ar>لماذا الخيوط؟</Ar>
+
 Most modern applications are **multithreaded**. A word processor updates the display, checks spelling and auto-saves at once; a web server handles many requests at once. Creating a **process** is heavy-weight, while creating a **thread** is light-weight. Kernels themselves are multithreaded.
 
-<Definition term="Thread">
+<Ar>معظم التطبيقات الحديثة **متعددة الخيوط (multithreaded)**. فمعالج النصوص يحدّث العرض ويدقق الإملاء ويحفظ تلقائيًا في آنٍ واحد، وخادم الويب يعالج طلبات كثيرة في آنٍ واحد. وإنشاء **عملية (process)** أمر ثقيل، بينما إنشاء **خيط (thread)** أمر خفيف. والأنوية (kernels) نفسها متعددة الخيوط.</Ar>
+
+<Definition term="Thread" termAr="الخيط">
   A basic unit of CPU utilization: a <strong>thread ID</strong>, a <strong>program counter</strong>, a <strong>register set</strong> and a <strong>stack</strong>. Threads of the same process <strong>share</strong> its code, data, open files and other resources.
+
+  <Ar>وحدة أساسية لاستخدام المعالج تتكون من: <strong>معرّف الخيط (thread ID)</strong>، و<strong>عدّاد البرنامج (program counter)</strong>، و<strong>مجموعة المسجلات (register set)</strong>، و<strong>المكدس (stack)</strong>. وخيوط العملية الواحدة <strong>تتشارك</strong> شيفرتها وبياناتها وملفاتها المفتوحة ومواردها الأخرى.</Ar>
 </Definition>
 
-<SlideFigure page={7} caption="A single-threaded vs a multithreaded process: shared code, data and files; separate registers, stack and PC per thread." />
+<SlideFigure page={7} caption="A single-threaded vs a multithreaded process: shared code, data and files; separate registers, stack and PC per thread." captionAr="عملية أحادية الخيط مقابل عملية متعددة الخيوط: الشيفرة والبيانات والملفات مشتركة، ولكل خيط مسجلاته ومكدسه وعدّاد برنامجه (PC) المنفصلة." />
 
-<SlideFigure page={8} caption="A multithreaded server: for each request it creates a thread to service it and goes back to listening." />
+<SlideFigure page={8} caption="A multithreaded server: for each request it creates a thread to service it and goes back to listening." captionAr="خادم متعدد الخيوط: يُنشئ لكل طلب خيطًا لخدمته ثم يعود إلى الاستماع." />
 
 ### Benefits
 
+<Ar>الفوائد</Ar>
+
 <Grid cols={2}>
-  <Card title="Responsiveness">A program can keep running even if part of it is blocked, which matters most for user interfaces.</Card>
-  <Card title="Resource sharing">Threads share the process's memory automatically, which is easier than shared memory or message passing between processes.</Card>
-  <Card title="Economy">Creating and switching threads is much cheaper than creating processes and context-switching between them.</Card>
-  <Card title="Scalability">Threads can run in parallel on multiple cores.</Card>
+  <Card title="Responsiveness" titleAr="سرعة الاستجابة">A program can keep running even if part of it is blocked, which matters most for user interfaces.<Ar>يمكن للبرنامج أن يواصل العمل حتى لو كان جزء منه محجوبًا (blocked)، وهذا أهم ما يكون في واجهات المستخدم.</Ar></Card>
+
+  <Card title="Resource sharing" titleAr="مشاركة الموارد">Threads share the process's memory automatically, which is easier than shared memory or message passing between processes.<Ar>تتشارك الخيوط ذاكرة العملية تلقائيًا، وهذا أسهل من الذاكرة المشتركة (shared memory) أو تمرير الرسائل (message passing) بين العمليات.</Ar></Card>
+
+  <Card title="Economy" titleAr="الاقتصاد في التكلفة">Creating and switching threads is much cheaper than creating processes and context-switching between them.<Ar>إنشاء الخيوط والتبديل بينها أرخص بكثير من إنشاء العمليات وتبديل السياق (context switch) بينها.</Ar></Card>
+
+  <Card title="Scalability" titleAr="قابلية التوسّع">Threads can run in parallel on multiple cores.<Ar>يمكن أن تعمل الخيوط بالتوازي على أنوية متعددة.</Ar></Card>
 </Grid>
 
 ## Multicore programming
 
+<Ar>البرمجة متعددة الأنوية</Ar>
+
 Multicore systems put pressure on programmers. The challenges:
 
-| Challenge | Question to answer |
+<Ar>تفرض الأنظمة متعددة الأنوية (multicore) ضغوطًا على المبرمجين. والتحديات هي:</Ar>
+
+| Challenge <Ar>التحدي</Ar> | Question to answer <Ar>السؤال الذي يجب الإجابة عنه</Ar> |
 |---|---|
-| **Dividing activities** | Which parts of the task are independent and can run concurrently? |
-| **Balance** | Does each part do an equal share of useful work? |
-| **Data splitting** | How is the data divided between cores? |
-| **Data dependency** | Which tasks depend on others' data, and how are they synchronized? |
-| **Testing and debugging** | Many execution orders are possible, so bugs are hard to reproduce |
+| **Dividing activities** <Ar>**تقسيم الأنشطة**</Ar> | Which parts of the task are independent and can run concurrently? <Ar>ما أجزاء المهمة المستقلة التي يمكن تشغيلها بالتزامن؟</Ar> |
+| **Balance** <Ar>**التوازن**</Ar> | Does each part do an equal share of useful work? <Ar>هل يؤدي كل جزء نصيبًا متساويًا من العمل المفيد؟</Ar> |
+| **Data splitting** <Ar>**تقسيم البيانات**</Ar> | How is the data divided between cores? <Ar>كيف تُقسَّم البيانات بين الأنوية؟</Ar> |
+| **Data dependency** <Ar>**اعتمادية البيانات (Data dependency)**</Ar> | Which tasks depend on others' data, and how are they synchronized? <Ar>ما المهام التي تعتمد على بيانات مهام أخرى، وكيف تُزامَن؟</Ar> |
+| **Testing and debugging** <Ar>**الاختبار وتصحيح الأخطاء**</Ar> | Many execution orders are possible, so bugs are hard to reproduce <Ar>هناك ترتيبات تنفيذ كثيرة ممكنة، ولذلك يصعب إعادة إنتاج الأخطاء (bugs)</Ar> |
 
 ### Concurrency vs. parallelism
 
+<Ar>التزامن في التنفيذ مقابل التوازي</Ar>
+
 <Grid cols={2}>
-  <Card title="Concurrency" tag="progress">
+  <Card title="Concurrency" titleAr="التزامن في التنفيذ (Concurrency)" tag="progress">
     More than one task is <strong>making progress</strong>. On a single core, the scheduler interleaves T1, T2, T3, T4 in time.
+
+    <Ar>أكثر من مهمة <strong>تحرز تقدّمًا</strong>. فعلى نواة واحدة، يداخل المُجدوِل (scheduler) بين T1 و T2 و T3 و T4 زمنيًا.</Ar>
   </Card>
-  <Card title="Parallelism" tag="simultaneous">
+  <Card title="Parallelism" titleAr="التوازي (Parallelism)" tag="simultaneous">
     More than one task runs at <strong>the same instant</strong>, which requires several cores.
+
+    <Ar>أكثر من مهمة تعمل في <strong>اللحظة نفسها</strong>، وهذا يتطلب عدة أنوية.</Ar>
   </Card>
 </Grid>
 
-<SlideFigure page={11} caption="Concurrent execution on one core vs parallel execution on two cores." />
+<SlideFigure page={11} caption="Concurrent execution on one core vs parallel execution on two cores." captionAr="التنفيذ المتزامن على نواة واحدة مقابل التنفيذ المتوازي على نواتين." />
 
 Concurrency is possible **without** parallelism, but parallelism needs multiple cores.
 
+<Ar>التزامن في التنفيذ ممكن **دون** توازٍ، لكن التوازي يحتاج إلى أنوية متعددة.</Ar>
+
 ### Data vs. task parallelism
 
-- **Data parallelism**: split the **same data** across cores, with the **same operation** on each part. For example, four cores each sum a quarter of an array.
-- **Task parallelism**: give each core a **different operation**, possibly on the same data. For example, one thread computes the mean while another computes the standard deviation.
+<Ar>توازي البيانات مقابل توازي المهام</Ar>
 
-<SlideFigure page={13} caption="Data parallelism vs task parallelism across four cores." />
+- **Data parallelism**: split the **same data** across cores, with the **same operation** on each part. For example, four cores each sum a quarter of an array.
+  <Ar>**توازي البيانات (Data parallelism)**: تقسيم **البيانات نفسها** على الأنوية، مع تطبيق **العملية نفسها** على كل جزء. فمثلًا، تجمع كل نواة من أربع أنوية ربع مصفوفة.</Ar>
+- **Task parallelism**: give each core a **different operation**, possibly on the same data. For example, one thread computes the mean while another computes the standard deviation.
+  <Ar>**توازي المهام (Task parallelism)**: إعطاء كل نواة **عملية مختلفة**، ربما على البيانات نفسها. فمثلًا، يحسب خيط المتوسط بينما يحسب خيط آخر الانحراف المعياري.</Ar>
+
+<SlideFigure page={13} caption="Data parallelism vs task parallelism across four cores." captionAr="توازي البيانات مقابل توازي المهام على أربع أنوية." />
 
 ## Amdahl's law
 
+<Ar>قانون أمدال</Ar>
+
 If a fraction $S$ of an application is **serial** and the rest can run in parallel on $N$ cores:
+
+<Ar>إذا كان جزء `S` من التطبيق **تسلسليًا (serial)** وكان الباقي قابلًا للتشغيل بالتوازي على `N` من الأنوية:</Ar>
 
 $$
 \text{speedup} \;\le\; \frac{1}{S + \dfrac{1 - S}{N}}
@@ -95,41 +133,57 @@ $$
 
 **Example from the slides:** 75% parallel and 25% serial ($S = 0.25$). Going from 1 to 2 cores gives $\frac{1}{0.25 + 0.75/2} = \frac{1}{0.625} = 1.6\times$. However many cores you add, the speed-up can never exceed $1/0.25 = 4\times$.
 
-<SlideFigure page={15} caption="Speed-up vs number of cores for different serial fractions." />
+<Ar>**مثال من الشرائح:** 75% متوازٍ و 25% تسلسلي (`S = 0.25`). الانتقال من نواة واحدة إلى نواتين يعطي `1 / (0.25 + 0.75/2) = 1 / 0.625 = 1.6×`. ومهما أضفت من أنوية، لا يمكن أن يتجاوز التسريع `1/0.25 = 4×`.</Ar>
 
-<Callout type="tip" title="The lesson">
+<SlideFigure page={15} caption="Speed-up vs number of cores for different serial fractions." captionAr="التسريع مقابل عدد الأنوية لنِسَب تسلسلية مختلفة." />
+
+<Callout type="tip" title="The lesson" titleAr="الدرس المستفاد">
   The **serial portion** has a disproportionate effect. Halving the serial part often helps more than doubling the cores.
+
+  <Ar>**الجزء التسلسلي (serial portion)** له أثر غير متناسب. فتقليص الجزء التسلسلي إلى النصف كثيرًا ما يفيد أكثر من مضاعفة عدد الأنوية.</Ar>
 </Callout>
 
 ## User threads and kernel threads
 
-| | User threads | Kernel threads |
-|---|---|---|
-| Managed by | A **user-level thread library** | The **OS kernel** |
-| Examples | POSIX **Pthreads**, Windows threads, Java threads (APIs) | Virtually all modern OSes: Windows, Linux, macOS, iOS, Android |
-| Switching | Fast, with no kernel involvement | Needs the kernel |
-| Blocking | A blocking call may block the whole process (depending on the model) | Others keep running |
+<Ar>خيوط المستخدم وخيوط النواة</Ar>
 
-<SlideFigure page={17} caption="User threads live in user space and kernel threads in kernel space; a model maps one onto the other." />
+| | User threads <Ar>خيوط المستخدم</Ar> | Kernel threads <Ar>خيوط النواة</Ar> |
+|---|---|---|
+| Managed by <Ar>تُدار بواسطة</Ar> | A **user-level thread library** <Ar>**مكتبة خيوط على مستوى المستخدم (user-level thread library)**</Ar> | The **OS kernel** <Ar>**نواة نظام التشغيل**</Ar> |
+| Examples <Ar>أمثلة</Ar> | POSIX **Pthreads**, Windows threads, Java threads (APIs) <Ar>**Pthreads** في POSIX، وخيوط ويندوز، وخيوط Java (وهي واجهات برمجة (APIs))</Ar> | Virtually all modern OSes: Windows, Linux, macOS, iOS, Android <Ar>جميع أنظمة التشغيل الحديثة تقريبًا: Windows و Linux و macOS و iOS و Android</Ar> |
+| Switching <Ar>التبديل</Ar> | Fast, with no kernel involvement <Ar>سريع، دون تدخّل النواة</Ar> | Needs the kernel <Ar>يحتاج إلى النواة</Ar> |
+| Blocking <Ar>الحجب (Blocking)</Ar> | A blocking call may block the whole process (depending on the model) <Ar>قد يحجب الاستدعاء الحاجب العملية بأكملها (حسب النموذج)</Ar> | Others keep running <Ar>تستمر الخيوط الأخرى في العمل</Ar> |
+
+<SlideFigure page={17} caption="User threads live in user space and kernel threads in kernel space; a model maps one onto the other." captionAr="تعيش خيوط المستخدم في فضاء المستخدم وخيوط النواة في فضاء النواة، ويربط النموذج بعضها ببعض." />
 
 ### Multithreading models
 
-| Model | Mapping | Pros / cons | Used by |
-|---|---|---|---|
-| **Many-to-one** | Many user threads → **one** kernel thread | Efficient, but one blocking call blocks all of them, and they **can't run in parallel** because only one can be in the kernel at a time | Few systems today (Solaris Green Threads) |
-| **One-to-one** | Each user thread → **its own** kernel thread | More concurrency, and threads run in parallel on multicore. Each user thread costs a kernel thread, so the number may be limited | **Windows**, **Linux** |
-| **Many-to-many** | Many user threads → an equal or **smaller** number of kernel threads | The OS creates enough kernel threads, giving flexibility, but it is complex to implement | Windows with ThreadFiber; otherwise uncommon |
-| **Two-level** | Many-to-many, **plus** a user thread can be **bound** to one kernel thread | The flexibility of M:M and the guarantees of 1:1 for chosen threads | |
+<Ar>نماذج تعدد الخيوط</Ar>
 
-<SlideFigure page={20} caption="Many-to-one: all user threads share one kernel thread." />
+| Model <Ar>النموذج</Ar> | Mapping <Ar>الربط</Ar> | Pros / cons <Ar>المزايا / العيوب</Ar> | Used by <Ar>يستخدمه</Ar> |
+|---|---|---|---|
+| **Many-to-one** <Ar>**متعدد إلى واحد (Many-to-one)**</Ar> | Many user threads → **one** kernel thread <Ar>خيوط مستخدم كثيرة ← خيط نواة **واحد**</Ar> | Efficient, but one blocking call blocks all of them, and they **can't run in parallel** because only one can be in the kernel at a time <Ar>كفء، لكن استدعاءً حاجبًا واحدًا يحجبها جميعًا، و**لا يمكنها العمل بالتوازي** لأن خيطًا واحدًا فقط يمكن أن يكون في النواة في وقت واحد</Ar> | Few systems today (Solaris Green Threads) <Ar>أنظمة قليلة اليوم (Solaris Green Threads)</Ar> |
+| **One-to-one** <Ar>**واحد إلى واحد (One-to-one)**</Ar> | Each user thread → **its own** kernel thread <Ar>كل خيط مستخدم ← خيط نواة **خاص به**</Ar> | More concurrency, and threads run in parallel on multicore. Each user thread costs a kernel thread, so the number may be limited <Ar>تزامن أكبر، وتعمل الخيوط بالتوازي على الأنوية المتعددة. لكن كل خيط مستخدم يكلّف خيط نواة، لذا قد يكون عدد الخيوط محدودًا</Ar> | **Windows**, **Linux** <Ar>**ويندوز (Windows)** و **لينكس (Linux)**</Ar> |
+| **Many-to-many** <Ar>**متعدد إلى متعدد (Many-to-many)**</Ar> | Many user threads → an equal or **smaller** number of kernel threads <Ar>خيوط مستخدم كثيرة ← عدد مساوٍ أو **أصغر** من خيوط النواة</Ar> | The OS creates enough kernel threads, giving flexibility, but it is complex to implement <Ar>يُنشئ نظام التشغيل عددًا كافيًا من خيوط النواة، مما يمنح مرونة، لكن تنفيذه معقّد</Ar> | Windows with ThreadFiber; otherwise uncommon <Ar>ويندوز مع ThreadFiber، وهو نادر فيما عدا ذلك</Ar> |
+| **Two-level** <Ar>**ثنائي المستوى (Two-level)**</Ar> | Many-to-many, **plus** a user thread can be **bound** to one kernel thread <Ar>متعدد إلى متعدد، **إضافةً إلى** إمكانية **ربط (bound)** خيط مستخدم بخيط نواة واحد</Ar> | The flexibility of M:M and the guarantees of 1:1 for chosen threads <Ar>مرونة نموذج M:M وضمانات نموذج 1:1 للخيوط المختارة</Ar> | |
+
+<SlideFigure page={20} caption="Many-to-one: all user threads share one kernel thread." captionAr="نموذج متعدد إلى واحد: جميع خيوط المستخدم تتشارك خيط نواة واحدًا." />
 
 ## Thread libraries
 
+<Ar>مكتبات الخيوط</Ar>
+
 A thread library gives programmers an API to create and manage threads. It is implemented either **entirely in user space** or as a **kernel-level** library supported by the OS.
+
+<Ar>توفّر مكتبة الخيوط (thread library) للمبرمجين واجهة برمجة (API) لإنشاء الخيوط وإدارتها. وتُنفَّذ إما **بالكامل في فضاء المستخدم (user space)** أو بوصفها مكتبة **على مستوى النواة (kernel-level)** يدعمها نظام التشغيل.</Ar>
 
 ### Pthreads
 
+<Ar>مكتبة Pthreads</Ar>
+
 **Pthreads** is the POSIX standard (IEEE 1003.1c) API for thread creation and synchronization. It is a **specification**, not an implementation, and is common on UNIX, Linux and macOS.
+
+<Ar>**Pthreads** هي واجهة البرمجة القياسية في POSIX (IEEE 1003.1c) لإنشاء الخيوط ومزامنتها. وهي **توصيف (specification)** وليست تنفيذًا (implementation)، وهي شائعة في UNIX و Linux و macOS.</Ar>
 
 ```c title="sum_pthreads.c"
 #include <pthread.h>
@@ -167,9 +221,15 @@ gcc sum_pthreads.c -o sum -lpthread
 
 To wait for many threads, store their IDs in an array and call `pthread_join` on each one in a loop.
 
+<Ar>لانتظار خيوط كثيرة، خزّن معرّفاتها في مصفوفة واستدعِ `pthread_join` لكل منها داخل حلقة.</Ar>
+
 ### Java threads
 
+<Ar>خيوط Java</Ar>
+
 Java threads are managed by the **JVM**, which usually maps them onto the OS's own thread model. You create one by **extending `Thread`** or, as is standard practice, by **implementing `Runnable`**:
+
+<Ar>تُدار خيوط Java بواسطة **JVM**، التي تربطها عادةً بنموذج الخيوط الخاص بنظام التشغيل. وتُنشئ خيطًا إما **بتوسيع الصنف `Thread`** (extending) أو، كما هو متّبع عادةً، **بتنفيذ الواجهة `Runnable`** (implementing):</Ar>
 
 ```java title="Task.java"
 class Task implements Runnable {
@@ -189,49 +249,70 @@ public class Main {
 
 Calling `run()` directly would just execute the method in the **current** thread; `start()` is what creates the new thread.
 
+<Ar>استدعاء `run()` مباشرةً سينفّذ الدالة في الخيط **الحالي** فقط، أما `start()` فهي التي تُنشئ الخيط الجديد.</Ar>
+
 <Takeaways>
 
 - A thread has its own **ID, PC, registers and stack**, and **shares** code, data and files with its process.
+  <Ar>للخيط **معرّفه وعدّاد برنامجه (PC) ومسجلاته ومكدسه** الخاصة، و**يتشارك** الشيفرة والبيانات والملفات مع عمليته.</Ar>
 - Benefits: **responsiveness, resource sharing, economy, scalability**.
+  <Ar>الفوائد: **سرعة الاستجابة، ومشاركة الموارد، والاقتصاد، وقابلية التوسّع**.</Ar>
 - **Concurrency** means progress; **parallelism** means simultaneous execution. **Data** parallelism splits the data; **task** parallelism splits the work.
+  <Ar>**التزامن في التنفيذ (Concurrency)** يعني إحراز التقدّم، و**التوازي (parallelism)** يعني التنفيذ في اللحظة نفسها. توازي **البيانات** يقسّم البيانات، وتوازي **المهام** يقسّم العمل.</Ar>
 - **Amdahl's law**: speedup ≤ 1 / (S + (1−S)/N), capped at 1/S.
+  <Ar>**قانون أمدال (Amdahl's law)**: `speedup ≤ 1 / (S + (1−S)/N)`، وحدّه الأقصى `1/S`.</Ar>
 - Models: **many-to-one** (no parallelism), **one-to-one** (Windows and Linux), **many-to-many**, **two-level**. APIs: **Pthreads**, Windows threads, **Java threads**.
+  <Ar>النماذج: **متعدد إلى واحد** (لا توازي)، و**واحد إلى واحد** (ويندوز ولينكس)، و**متعدد إلى متعدد**، و**ثنائي المستوى**. وواجهات البرمجة: **Pthreads**، وخيوط ويندوز، و**خيوط Java**.</Ar>
 
 </Takeaways>
 
 ## Practice
 
-<Exercise title="Apply Amdahl's law" level="medium">
+<Ar>تدريب</Ar>
+
+<Exercise title="Apply Amdahl's law" titleAr="طبّق قانون أمدال" level="medium">
 
 An application is 90% parallel. What is the maximum speed-up on 8 cores, and with unlimited cores?
+
+<Ar>تطبيق نسبة التوازي فيه 90%. ما أقصى تسريع على 8 أنوية، ومع عدد غير محدود من الأنوية؟</Ar>
 
 <Solution>
 
 $S = 0.1$. On 8 cores: $\frac{1}{0.1 + 0.9/8} = \frac{1}{0.2125} \approx 4.71\times$. With unlimited cores: $1/0.1 = 10\times$.
 
+<Ar>`S = 0.1`. على 8 أنوية: `1 / (0.1 + 0.9/8) = 1 / 0.2125 ≈ 4.71×`. ومع عدد غير محدود من الأنوية: `1/0.1 = 10×`.</Ar>
+
 </Solution>
 
 </Exercise>
 
-<Exercise title="Which model?" level="easy">
+<Exercise title="Which model?" titleAr="أي نموذج؟" level="easy">
 
 A program creates 50 user-level threads; one of them calls a blocking `read()`. Under which model does the whole program freeze, and why?
+
+<Ar>يُنشئ برنامج 50 خيطًا على مستوى المستخدم، ويستدعي أحدها `read()` الحاجبة. في أي نموذج يتجمّد البرنامج بأكمله، ولماذا؟</Ar>
 
 <Solution>
 
 **Many-to-one.** All 50 user threads share a single kernel thread. When it blocks in the kernel, none of the others can run. Under **one-to-one** only the calling thread blocks.
 
+<Ar>**متعدد إلى واحد (Many-to-one).** تتشارك خيوط المستخدم الخمسون كلها خيط نواة واحدًا، فعندما يُحجَب في النواة لا يمكن لأي من الخيوط الأخرى أن يعمل. أما في نموذج **واحد إلى واحد** فلا يُحجَب إلا الخيط المستدعي.</Ar>
+
 </Solution>
 
 </Exercise>
 
-<Exercise title="What is shared?" level="easy">
+<Exercise title="What is shared?" titleAr="ما المشترك؟" level="easy">
 
 For two threads in the same process, say whether each is **shared** or **private**: global variables, heap memory, stack, register values, open files.
+
+<Ar>لخيطين في العملية نفسها، حدّد هل كل مما يلي **مشترك** أم **خاص**: المتغيرات العامة، وذاكرة الكومة (heap)، والمكدس، وقيم المسجلات، والملفات المفتوحة.</Ar>
 
 <Solution>
 
 Shared: **global variables**, **heap memory**, **open files**. Private: **stack** and **register values**, including the PC.
+
+<Ar>المشتركة: **المتغيرات العامة**، و**ذاكرة الكومة**، و**الملفات المفتوحة**. الخاصة: **المكدس** و**قيم المسجلات**، بما فيها عدّاد البرنامج (PC).</Ar>
 
 </Solution>
 
@@ -241,45 +322,66 @@ Shared: **global variables**, **heap memory**, **open files**. Private: **stack*
   questions={[
     {
       q: "What does each thread have of its own?",
+      qAr: "ما الذي يملكه كل خيط بمفرده؟",
       options: ["Code section", "Open files", "Stack and registers", "Global data"],
+      optionsAr: ["قسم الشيفرة", "الملفات المفتوحة", "المكدس والمسجلات", "البيانات العامة"],
       answer: 2,
-      explain: "Code, data and files are shared by all threads of the process."
+      explain: "Code, data and files are shared by all threads of the process.",
+      explainAr: "الشيفرة والبيانات والملفات مشتركة بين جميع خيوط العملية."
     },
     {
       q: "On a single-core system, multiple threads can achieve…",
+      qAr: "على نظام أحادي النواة، يمكن للخيوط المتعددة أن تحقق…",
       options: ["Parallelism", "Concurrency", "Both", "Neither"],
+      optionsAr: ["التوازي", "التزامن في التنفيذ", "كليهما", "لا شيء منهما"],
       answer: 1,
-      explain: "They interleave and make progress, but never run at the same instant."
+      explain: "They interleave and make progress, but never run at the same instant.",
+      explainAr: "فهي تتداخل وتحرز تقدّمًا، لكنها لا تعمل أبدًا في اللحظة نفسها."
     },
     {
       q: "Summing four quarters of an array on four cores is…",
+      qAr: "جمع أرباع مصفوفة الأربعة على أربع أنوية هو…",
       options: ["Task parallelism", "Data parallelism", "Concurrency only", "Many-to-one threading"],
+      optionsAr: ["توازي المهام", "توازي البيانات", "تزامن في التنفيذ فقط", "خيوط بنموذج متعدد إلى واحد"],
       answer: 1,
-      explain: "The same operation on different subsets of the data."
+      explain: "The same operation on different subsets of the data.",
+      explainAr: "العملية نفسها على مجموعات جزئية مختلفة من البيانات."
     },
     {
       q: "With 25% serial code, what is the maximum possible speed-up?",
+      qAr: "إذا كانت الشيفرة التسلسلية 25%، فما أقصى تسريع ممكن؟",
       options: ["1.6×", "2×", "4×", "Unlimited"],
+      optionsAr: ["1.6×", "2×", "4×", "غير محدود"],
       answer: 2,
-      explain: "Amdahl's law: 1/S = 1/0.25 = 4."
+      explain: "Amdahl's law: 1/S = 1/0.25 = 4.",
+      explainAr: "وفق قانون أمدال: مقلوب الجزء التسلسلي 1/0.25 يساوي 4."
     },
     {
       q: "Which multithreading model do Windows and Linux use?",
+      qAr: "أي نموذج لتعدد الخيوط يستخدمه Windows و Linux؟",
       options: ["Many-to-one", "One-to-one", "Many-to-many", "Two-level"],
+      optionsAr: ["متعدد إلى واحد", "واحد إلى واحد", "متعدد إلى متعدد", "ثنائي المستوى"],
       answer: 1,
-      explain: "Each user thread maps to its own kernel thread."
+      explain: "Each user thread maps to its own kernel thread.",
+      explainAr: "كل خيط مستخدم يُربط بخيط نواة خاص به."
     },
     {
       q: "Which Pthreads call waits for a thread to finish?",
+      qAr: "أي استدعاء في Pthreads ينتظر انتهاء خيط؟",
       options: ["pthread_create", "pthread_exit", "pthread_join", "pthread_attr_init"],
+      optionsAr: ["pthread_create", "pthread_exit", "pthread_join", "pthread_attr_init"],
       answer: 2,
-      explain: "pthread_join blocks until the given thread terminates."
+      explain: "pthread_join blocks until the given thread terminates.",
+      explainAr: "يُحجَب pthread_join حتى ينتهي الخيط المحدد."
     },
     {
       q: "In Java, which method actually starts a new thread?",
+      qAr: "في Java، أي دالة تبدأ خيطًا جديدًا فعلًا؟",
       options: ["run()", "start()", "join()", "new Thread()"],
+      optionsAr: ["run()", "start()", "join()", "new Thread()"],
       answer: 1,
-      explain: "start() creates the thread, which then calls run()."
+      explain: "start() creates the thread, which then calls run().",
+      explainAr: "تُنشئ start() الخيط، الذي يستدعي بعد ذلك run()."
     }
   ]}
 />

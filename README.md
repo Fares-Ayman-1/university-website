@@ -98,6 +98,17 @@ Code blocks support titles and line highlights: ` ```python title="bfs.py" {3,5}
 
 Leave a blank line before and after block components (`<Solution>`, `<Steps>`, …) so MDX doesn't wrap them in a paragraph. Write currency as `\$40`, because a bare `$` starts math.
 
+## Arabic translations
+
+Every page is bilingual: each English block keeps its place and its Arabic translation sits right under it. The «ع» button in the header hides or shows all Arabic (remembered per device in `localStorage` key `quantro-arabic`); the Arabic is always in the HTML.
+
+- **`content/glossary-ar.md`** is the translation guide: style rules, the exact syntax for every kind of block, and the Arabic glossary that keeps terms consistent. `content/subjects/operating-systems/sections/02-getting-help.mdx` is the worked example.
+- In MDX, write `<Ar>…</Ar>` on its own line after a paragraph or heading, on the next line after a list item, or inside a table cell. Props get twins (`titleAr`, `termAr`, `captionAr`), quiz questions get `qAr`, `optionsAr` and `explainAr`, frontmatter gets `titleAr` and `summaryAr`, and `subject.json` gets `titleAr`, `taglineAr`, `descriptionAr`, `objectivesAr` and grading `labelAr`.
+- Inside `<Ar>`, put commands, options and paths in backticks: right-to-left text would move a leading `-` or `/` to the wrong end. Plain strings (props, quiz, frontmatter) are isolated automatically.
+- **`npm run check:arabic [files]`** checks that every paragraph, heading, list item, table cell, prop and quiz field has Arabic, that commands inside Arabic are in backticks, and that the English is unchanged compared with git (`--base <ref>` to compare with another commit).
+
+Arabic uses IBM Plex Sans Arabic (Arabic subset only); English terms inside Arabic keep using Inter.
+
 ## Asset scripts
 
 - `npm run sync` copies lecture and section PDFs and notebooks from `../materials/<subject>/{Lectures,Chapters,Sections}` into `public/materials/`, and logo files from `../brand/` into `public/brand/`. It runs automatically before `npm run dev`. **Reference books are never copied**: pages cite them by chapter and page only.

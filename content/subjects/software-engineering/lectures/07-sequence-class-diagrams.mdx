@@ -1,7 +1,9 @@
 ---
 number: 7
 title: "System Modelling III: Sequence and Class Diagrams"
+titleAr: "نمذجة النظام (3): مخططات التتابع ومخططات الأصناف"
 summary: Interaction and structural models. Sequence diagrams cover lifelines and activation, synchronous and asynchronous messages, replies, self-messages, alt and loop fragments, and system sequence diagrams. Class diagrams cover classes and objects, attributes and operations with visibility, class (static) members, associations with multiplicity and reading direction, aggregation vs. composition, and generalization, each mapped to code.
+summaryAr: "نماذج التفاعل والنماذج الهيكلية. تغطي مخططات التتابع (sequence diagrams) خطوط الحياة (lifelines) والتنشيط (activation)، والرسائل المتزامنة وغير المتزامنة، والردود، والرسائل الذاتية، ومقطعي alt و loop، ومخططات تتابع النظام (SSD). وتغطي مخططات الأصناف (class diagrams) الأصناف والكائنات، والسمات والعمليات مع مستوى الظهور (visibility)، وأعضاء الصنف الساكنة (static)، والارتباطات مع التعددية (multiplicity) واتجاه القراءة، والتجميع (aggregation) مقابل التركيب (composition)، والتعميم (generalization)، مع تحويل كلٍّ منها إلى شيفرة."
 topics: [Interaction models, Sequence diagram, Lifeline, Synchronous and asynchronous messages, Self message, alt and loop fragments, System sequence diagram, Class diagram, Objects, Visibility, Associations, Multiplicity, Aggregation, Composition, Generalization]
 duration: 60 min study
 sources:
@@ -21,62 +23,90 @@ bookRefs:
 <Objectives>
 
 - Explain the three kinds of **interaction** a system has, and how use case and sequence diagrams model them.
+  <Ar>شرح الأنواع الثلاثة من **التفاعل (interaction)** في النظام، وكيف تنمذجها مخططات حالات الاستخدام (use case) ومخططات التتابع (sequence).</Ar>
 - Draw a **sequence diagram** with lifelines, activations, **synchronous** and **asynchronous** messages, replies and self-messages.
+  <Ar>رسم **مخطط التتابع (sequence diagram)** بخطوط الحياة (lifelines) والتنشيطات (activations) والرسائل **المتزامنة (synchronous)** و**غير المتزامنة (asynchronous)** والردود (replies) والرسائل الذاتية (self-messages).</Ar>
 - Use **alt** and **loop** fragments, and draw a **system sequence diagram (SSD)**.
+  <Ar>استخدام مقطعي **alt** و**loop**، ورسم **مخطط تتابع النظام (SSD)**.</Ar>
 - Draw a **class diagram** with attributes, operations and **visibility**, associations with **multiplicity**, **aggregation**, **composition** and **generalization**, and map it to code.
+  <Ar>رسم **مخطط الأصناف (class diagram)** بالسمات (attributes) والعمليات (operations) و**مستوى الظهور (visibility)**، والارتباطات (associations) مع **التعددية (multiplicity)**، و**التجميع (aggregation)** و**التركيب (composition)** و**التعميم (generalization)**، وتحويله إلى شيفرة.</Ar>
 
 </Objectives>
 
 ## Interaction models
 
+<Ar>نماذج التفاعل</Ar>
+
 Every system involves interaction:
 
+<Ar>كل نظام ينطوي على تفاعل:</Ar>
+
 - **User interaction**: inputs and outputs, which help identify user requirements.
+  <Ar>**تفاعل المستخدم (User interaction)**: المدخلات والمخرجات، وهي تساعد على تحديد متطلبات المستخدم.</Ar>
 - **System–system interaction**: this highlights communication problems.
+  <Ar>**التفاعل بين الأنظمة (System–system interaction)**: يُبرز مشكلات الاتصال.</Ar>
 - **Component interaction**: this shows whether a structure can deliver the required performance and dependability.
+  <Ar>**التفاعل بين المكوّنات (Component interaction)**: يوضّح ما إذا كانت بنية ما قادرة على تقديم الأداء والاعتمادية (dependability) المطلوبين.</Ar>
 
 **Use case diagrams** model interactions between the system and **external actors**. **Sequence diagrams** model interactions **between system components** (and may include actors).
 
+<Ar>تنمذج **مخططات حالات الاستخدام (Use case diagrams)** التفاعلات بين النظام و**الفاعلين الخارجيين (external actors)**. أما **مخططات التتابع (Sequence diagrams)** فتنمذج التفاعلات **بين مكوّنات النظام** (وقد تتضمن الفاعلين).</Ar>
+
 ## Sequence diagrams
+
+<Ar>مخططات التتابع</Ar>
 
 A sequence diagram shows the **sequence of interactions** during one flow through a use case. Each use case needs **one or more** sequence diagrams. It shows **which objects** are needed, **which messages** they exchange, **who** starts the flow, and **in what order** the messages are sent.
 
+<Ar>يعرض مخطط التتابع (sequence diagram) **تسلسل التفاعلات** خلال مسار واحد عبر حالة استخدام (use case). وتحتاج كل حالة استخدام إلى مخطط تتابع **واحد أو أكثر**. ويوضّح المخطط **الكائنات** المطلوبة، و**الرسائل** التي تتبادلها، و**مَن** يبدأ المسار، و**بأي ترتيب** تُرسَل الرسائل.</Ar>
+
 ### Lifelines
 
-<SlideFigure page={8} caption="A lifeline: a head rectangle roleName:Class, then a dashed vertical line; the thin rectangle (activation) marks when the object is active." />
+<Ar>خطوط الحياة</Ar>
+
+<SlideFigure page={8} caption="A lifeline: a head rectangle roleName:Class, then a dashed vertical line; the thin rectangle (activation) marks when the object is active." captionAr="خط الحياة (lifeline): مستطيل رأس يحمل roleName:Class، يليه خط رأسي متقطع؛ ويحدّد المستطيل الرفيع، أي التنشيط (activation)، متى يكون الكائن نشطًا." />
 
 - A **lifeline** is a dashed vertical line for an object's lifetime. Its **head** contains `roleName:Class`. Write `role` alone, or `:Class` (keep the colon) when only the class is given.
+  <Ar>**خط الحياة (lifeline)** خط رأسي متقطع يمثّل مدة حياة الكائن. ويحتوي **رأسه** على `roleName:Class`. اكتب `role` وحده، أو اكتب `:Class` (مع الإبقاء على النقطتين) عندما لا يُعطى إلا الصنف.</Ar>
 - An **activation bar** (a thin rectangle) shows when the object is **active**, i.e. executing.
+  <Ar>يوضّح **شريط التنشيط (activation bar)**، وهو مستطيل رفيع، متى يكون الكائن **نشطًا**، أي قيد التنفيذ.</Ar>
 - The diagram is two-dimensional: **time runs top to bottom**, and **objects are laid out left to right**.
+  <Ar>المخطط ثنائي الأبعاد: **يسير الزمن من الأعلى إلى الأسفل**، و**تُرتَّب الكائنات من اليسار إلى اليمين**.</Ar>
 
-<SlideFigure page={10} caption="Objects can be created during the interaction (a message to the new object's head) and destroyed (an X ends the lifeline)." />
+<SlideFigure page={10} caption="Objects can be created during the interaction (a message to the new object's head) and destroyed (an X ends the lifeline)." captionAr="يمكن إنشاء الكائنات أثناء التفاعل (برسالة موجّهة إلى رأس الكائن الجديد) وإتلافها (علامة X تُنهي خط الحياة)." />
 
 ### Messages
 
-| Message | Arrow | Behaviour |
+<Ar>الرسائل</Ar>
+
+| Message <Ar>الرسالة</Ar> | Arrow <Ar>السهم</Ar> | Behaviour <Ar>السلوك</Ar> |
 |---|---|---|
-| **Synchronous** (call) | Solid line, **filled** arrowhead | The sender **waits** for the response before continuing |
-| **Reply** (return) | **Dashed** line, open arrowhead | The response to a synchronous call |
-| **Asynchronous** | Solid line, **open** arrowhead | The sender **continues** straight away |
-| **Self-message** | Arrow looping back to the same lifeline | An object calls one of its own operations |
+| **Synchronous** (call) <Ar>**متزامنة (Synchronous)** (استدعاء)</Ar> | Solid line, **filled** arrowhead <Ar>خط متصل، ورأس سهم **مُصمَت**</Ar> | The sender **waits** for the response before continuing <Ar>**ينتظر** المرسِل الرد قبل أن يتابع</Ar> |
+| **Reply** (return) <Ar>**الرد (Reply)** (الإرجاع)</Ar> | **Dashed** line, open arrowhead <Ar>خط **متقطع**، ورأس سهم مفتوح</Ar> | The response to a synchronous call <Ar>الرد على استدعاء متزامن</Ar> |
+| **Asynchronous** <Ar>**غير متزامنة (Asynchronous)**</Ar> | Solid line, **open** arrowhead <Ar>خط متصل، ورأس سهم **مفتوح**</Ar> | The sender **continues** straight away <Ar>**يتابع** المرسِل فورًا</Ar> |
+| **Self-message** <Ar>**الرسالة الذاتية (Self-message)**</Ar> | Arrow looping back to the same lifeline <Ar>سهم يلتف عائدًا إلى خط الحياة نفسه</Ar> | An object calls one of its own operations <Ar>يستدعي الكائن إحدى عملياته الخاصة</Ar> |
 
-<SlideFigure page={12} caption="Registering for a course: asynchronously (register, and later a separate confirm message) vs. synchronously (register, then wait for the reply 'ok')." />
+<SlideFigure page={12} caption="Registering for a course: asynchronously (register, and later a separate confirm message) vs. synchronously (register, then wait for the reply 'ok')." captionAr="التسجيل في مقرر: بطريقة غير متزامنة (التسجيل، ثم لاحقًا رسالة تأكيد منفصلة) مقابل طريقة متزامنة (التسجيل، ثم انتظار الرد «ok»)." />
 
-<SlideFigure page={14} caption="Login: Student → E-Learning System login(user, pw); the system checks with the Database, receives 'ok', replies login: 'ok'; then the student calls getCourses()." />
+<SlideFigure page={14} caption="Login: Student → E-Learning System login(user, pw); the system checks with the Database, receives 'ok', replies login: 'ok'; then the student calls getCourses()." captionAr="تسجيل الدخول: يرسل الطالب (Student) إلى نظام التعلّم الإلكتروني (E-Learning System) الرسالة login(user, pw)؛ فيتحقق النظام عبر قاعدة البيانات (Database) ويتلقى «ok»، ثم يرد على login بـ «ok»؛ وبعدها يستدعي الطالب getCourses()." />
 
-<SlideFigure page={13} caption="The soda machine: accept(cash, selection) passes from Front to Register to Dispenser; the Register also sends itself a message (a self-call)." />
+<SlideFigure page={13} caption="The soda machine: accept(cash, selection) passes from Front to Register to Dispenser; the Register also sends itself a message (a self-call)." captionAr="آلة المشروبات الغازية: تمر الرسالة accept(cash, selection) من Front إلى Register ثم إلى Dispenser؛ كما يرسل Register رسالة إلى نفسه (استدعاء ذاتي)." />
 
 ### Combined fragments: alternatives and loops
 
+<Ar>المقاطع المركّبة: البدائل والحلقات</Ar>
+
 **Combined fragments** (operators) describe several possible paths in one diagram:
 
-<SlideFigure page={16} caption="alt: if [i > 0] call op1() on b, [else] call op2() on c. loop: repeat op3()." />
+<Ar>تصف **المقاطع المركّبة (Combined fragments)**، أي العوامل (operators)، عدة مسارات ممكنة في مخطط واحد:</Ar>
 
-| Fragment | Meaning | Code equivalent |
+<SlideFigure page={16} caption="alt: if [i > 0] call op1() on b, [else] call op2() on c. loop: repeat op3()." captionAr="المقطع alt: إذا كان i أكبر من 0 يُستدعى op1() على b، وإلا ([else]) يُستدعى op2() على c. المقطع loop: يُكرَّر op3()." />
+
+| Fragment <Ar>المقطع</Ar> | Meaning <Ar>المعنى</Ar> | Code equivalent <Ar>المكافئ في الشيفرة</Ar> |
 |---|---|---|
-| **alt** | Alternative paths; each **operand** has a **guard**, and the operands are separated by dashed lines | `if … else` |
-| **opt** | One optional operand, run only if its guard is true | `if` |
-| **loop** | Repeat the contents while the guard holds | `while` / `for` |
+| **alt** <Ar>**alt** (البدائل)</Ar> | Alternative paths; each **operand** has a **guard**, and the operands are separated by dashed lines <Ar>مسارات بديلة؛ لكل **مُعامَل (operand)** **شرط حراسة (guard)**، وتُفصَل المُعامَلات بخطوط متقطعة</Ar> | `if … else` |
+| **opt** <Ar>**opt** (اختياري)</Ar> | One optional operand, run only if its guard is true <Ar>مُعامَل اختياري واحد، يُنفَّذ فقط إذا كان شرط حراسته صحيحًا</Ar> | `if` |
+| **loop** <Ar>**loop** (حلقة)</Ar> | Repeat the contents while the guard holds <Ar>تكرار المحتوى ما دام شرط الحراسة متحققًا</Ar> | `while` / `for` |
 
 ```java title="The alt and loop fragments as code"
 if (i > 0) {
@@ -91,36 +121,50 @@ while (moreWork) {
 
 ### System sequence diagrams (SSD)
 
+<Ar>مخططات تتابع النظام (SSD)</Ar>
+
 For one use case scenario, an **SSD** shows the **system as a black box**, the **external actors** that interact with it, and the **system events** they generate. It is the bridge between use cases and the design.
 
-<SlideFigure page={18} caption="SSD for buying from a vending machine: the customer generates the system events insert coins() and enter choice(); the system offers choices and dispatches the item and change." />
+<Ar>لسيناريو واحد من سيناريوهات حالة الاستخدام، يعرض **مخطط تتابع النظام (SSD)** **النظامَ كصندوق أسود (black box)**، و**الفاعلين الخارجيين (external actors)** الذين يتفاعلون معه، و**أحداث النظام (system events)** التي يولّدونها. وهو الجسر بين حالات الاستخدام والتصميم.</Ar>
+
+<SlideFigure page={18} caption="SSD for buying from a vending machine: the customer generates the system events insert coins() and enter choice(); the system offers choices and dispatches the item and change." captionAr="مخطط SSD للشراء من آلة بيع: يولّد العميل حدثي النظام insert coins() و enter choice()؛ ويعرض النظام الخيارات ثم يُخرج السلعة والباقي." />
 
 ## Class diagrams
 
+<Ar>مخططات الأصناف</Ar>
+
 Class diagrams show the **classes** of an object-oriented system and the **relationships** between them: the **static structure**. They are the most widely used UML diagram. An OO system is built around **objects**, not functions.
 
-- An **object** represents something in the real world: a patient, a course, a doctor. Objects often appear as **nouns** in the problem description.
-- A **class** describes a set of objects with similar attributes, operations, relationships and behaviour. **Objects are instances of classes**.
+<Ar>تعرض مخططات الأصناف (Class diagrams) **أصناف (classes)** النظام كائني التوجه و**العلاقات** بينها، أي **البنية الساكنة (static structure)**. وهي أكثر مخططات UML استخدامًا. فالنظام كائني التوجه (OO) يُبنى حول **الكائنات (objects)** لا حول الدوال.</Ar>
 
-<SlideFigure page={22} caption="A class has three compartments: name, attributes and operations. An object is shown as underlined name:Class with attribute values." />
+- An **object** represents something in the real world: a patient, a course, a doctor. Objects often appear as **nouns** in the problem description.
+  <Ar>يمثّل **الكائن (object)** شيئًا في العالم الحقيقي: مريضًا، أو مقررًا، أو طبيبًا. وكثيرًا ما تظهر الكائنات في صورة **أسماء (nouns)** في وصف المسألة.</Ar>
+- A **class** describes a set of objects with similar attributes, operations, relationships and behaviour. **Objects are instances of classes**.
+  <Ar>يصف **الصنف (class)** مجموعة من الكائنات المتشابهة في السمات والعمليات والعلاقات والسلوك. و**الكائنات نُسخ (instances) من الأصناف**.</Ar>
+
+<SlideFigure page={22} caption="A class has three compartments: name, attributes and operations. An object is shown as underlined name:Class with attribute values." captionAr="للصنف ثلاث حجرات: الاسم، والسمات، والعمليات. ويُرسم الكائن بالصيغة name:Class مسطَّرًا تحتها، مع قيم سماته." />
 
 ### Attributes, operations and visibility
+
+<Ar>السمات والعمليات ومستوى الظهور</Ar>
 
 ```text title="UML syntax"
 attribute:  visibility name : Type [multiplicity] = initialValue
 operation:  visibility name(direction param : Type, …) : ReturnType
 ```
 
-| Symbol | Visibility | Accessible by |
+| Symbol <Ar>الرمز</Ar> | Visibility <Ar>مستوى الظهور</Ar> | Accessible by <Ar>يمكن الوصول إليه من</Ar> |
 |---|---|---|
-| `+` | **public** | Everybody |
-| `-` | **private** | Only the object itself |
-| `#` | **protected** | The class itself and its subclasses |
-| `~` | package | Classes in the same package |
+| `+` | **public** <Ar>**عام (public)**</Ar> | Everybody <Ar>الجميع</Ar> |
+| `-` | **private** <Ar>**خاص (private)**</Ar> | Only the object itself <Ar>الكائن نفسه فقط</Ar> |
+| `#` | **protected** <Ar>**محمي (protected)**</Ar> | The class itself and its subclasses <Ar>الصنف نفسه وأصنافه الفرعية (subclasses)</Ar> |
+| `~` | package <Ar>الحزمة (package)</Ar> | Classes in the same package <Ar>الأصناف الموجودة في الحزمة نفسها</Ar> |
 
 **Underlined** members are **class members** (static): they belong to the class, not to each object.
 
-<SlideFigure page={24} caption="The Person class: public names, private dob, protected multi-valued address, an underlined (class) variable pNumber and class operation getPNumber()." />
+<Ar>الأعضاء **المسطَّر تحتها** هي **أعضاء الصنف (class members)**، أي الأعضاء الساكنة (static): فهي تنتمي إلى الصنف لا إلى كل كائن.</Ar>
+
+<SlideFigure page={24} caption="The Person class: public names, private dob, protected multi-valued address, an underlined (class) variable pNumber and class operation getPNumber()." captionAr="الصنف Person: أسماء عامة (public)، والسمة dob خاصة (private)، والسمة address محمية (protected) ومتعددة القيم، ومتغير صنف مسطَّر تحته هو pNumber، وعملية صنف هي getPNumber()." />
 
 ```java title="Person.java: the class diagram mapped to code"
 import java.util.Date;
@@ -145,39 +189,47 @@ public class Person {
 
 ### Relationships
 
-| Relationship | Notation | Meaning |
+<Ar>العلاقات</Ar>
+
+| Relationship <Ar>العلاقة</Ar> | Notation <Ar>الرمز</Ar> | Meaning <Ar>المعنى</Ar> |
 |---|---|---|
-| **Association** | Line, with an optional name and reading-direction arrow | Objects of the two classes are connected |
-| **Aggregation** | Line with a **hollow diamond** at the **whole** | A weak "has-a": parts can exist **independently** of the whole |
-| **Composition** | Line with a **filled diamond** at the **whole** | A strong "owns": a part belongs to **one** whole and **lives and dies with it** |
-| **Generalization** | Line with a **hollow triangle** at the parent | Inheritance, an **"is-a"** relationship |
+| **Association** <Ar>**الارتباط (Association)**</Ar> | Line, with an optional name and reading-direction arrow <Ar>خط، مع اسم اختياري وسهم يحدد اتجاه القراءة</Ar> | Objects of the two classes are connected <Ar>كائنات الصنفين مرتبطة ببعضها</Ar> |
+| **Aggregation** <Ar>**التجميع (Aggregation)**</Ar> | Line with a **hollow diamond** at the **whole** <Ar>خط بـ**معيّن مفرغ** عند طرف **الكل**</Ar> | A weak "has-a": parts can exist **independently** of the whole <Ar>علاقة «يملك» (has-a) ضعيفة: يمكن للأجزاء أن توجد **مستقلةً** عن الكل</Ar> |
+| **Composition** <Ar>**التركيب (Composition)**</Ar> | Line with a **filled diamond** at the **whole** <Ar>خط بـ**معيّن مُصمَت** عند طرف **الكل**</Ar> | A strong "owns": a part belongs to **one** whole and **lives and dies with it** <Ar>علاقة «يمتلك» (owns) قوية: ينتمي الجزء إلى كلٍّ **واحد** و**يحيا ويفنى معه**</Ar> |
+| **Generalization** <Ar>**التعميم (Generalization)**</Ar> | Line with a **hollow triangle** at the parent <Ar>خط بـ**مثلث مفرغ** عند الصنف الأب</Ar> | Inheritance, an **"is-a"** relationship <Ar>الوراثة (inheritance)، أي علاقة **«هو نوع من» (is-a)**</Ar> |
 
 ### Associations and multiplicity
 
+<Ar>الارتباطات والتعددية</Ar>
+
 **Multiplicity** is the number of objects that may be associated with **exactly one** object on the other side.
 
-| Multiplicity | Meaning |
-|---|---|
-| `1` | Exactly one |
-| `0..1` | Zero or one |
-| `*` (or `0..*`) | Zero or more |
-| `1..*` | One or more |
-| `1..40` | Between one and 40 |
-| `5` | Exactly five |
+<Ar>**التعددية (Multiplicity)** هي عدد الكائنات التي يمكن أن ترتبط بكائن **واحد بالضبط** في الطرف الآخر.</Ar>
 
-<SlideFigure page={27} caption="Multiplicity: a Lecturer issues * Assignments; Lecturers (1..*) give Lectures (1..*)." />
+| Multiplicity <Ar>التعددية</Ar> | Meaning <Ar>المعنى</Ar> |
+|---|---|
+| `1` | Exactly one <Ar>واحد بالضبط</Ar> |
+| `0..1` | Zero or one <Ar>صفر أو واحد</Ar> |
+| `*` (or `0..*`) <Ar>`*` (أو `0..*`)</Ar> | Zero or more <Ar>صفر أو أكثر</Ar> |
+| `1..*` | One or more <Ar>واحد أو أكثر</Ar> |
+| `1..40` | Between one and 40 <Ar>بين واحد و40</Ar> |
+| `5` | Exactly five <Ar>خمسة بالضبط</Ar> |
+
+<SlideFigure page={27} caption="Multiplicity: a Lecturer issues * Assignments; Lecturers (1..*) give Lectures (1..*)." captionAr="التعددية: يُصدر المحاضر (Lecturer) عددًا غير محدد (*) من التكليفات (Assignments)؛ ويلقي المحاضرون (واحد أو أكثر) المحاضرات (واحدة أو أكثر)." />
 
 ### Aggregation vs. composition
 
-<SlideFigure page={28} caption="Aggregation (hollow diamond at the whole): a LabClass has Students, and a StudyProgram has Courses; the parts exist on their own." />
+<Ar>التجميع مقابل التركيب</Ar>
 
-<SlideFigure page={29} caption="Composition (filled diamond): a coffee table is made of a table top and legs; a Building is composed of LectureHalls, while a hall only aggregates its Beamer." />
+<SlideFigure page={28} caption="Aggregation (hollow diamond at the whole): a LabClass has Students, and a StudyProgram has Courses; the parts exist on their own." captionAr="التجميع (معيّن مفرغ عند طرف الكل): يضم LabClass طلابًا (Students)، ويضم StudyProgram مقررات (Courses)؛ والأجزاء توجد مستقلة بذاتها." />
 
-| | Aggregation | Composition |
+<SlideFigure page={29} caption="Composition (filled diamond): a coffee table is made of a table top and legs; a Building is composed of LectureHalls, while a hall only aggregates its Beamer." captionAr="التركيب (معيّن مُصمَت): تتكون طاولة القهوة من سطح وأرجل؛ ويتركب المبنى (Building) من قاعات محاضرات (LectureHalls)، بينما ترتبط القاعة بجهاز العرض (Beamer) بعلاقة تجميع فقط." />
+
+| | Aggregation <Ar>التجميع</Ar> | Composition <Ar>التركيب</Ar> |
 |---|---|---|
-| Belonging | **Weak**: parts exist independently | **Strong**: parts depend on the whole |
-| Parts shared? | A part may belong to several wholes (the multiplicity at the whole may be more than 1) | A part belongs to **only one** whole (the multiplicity at the whole is **0..1 or 1**) |
-| Lifetime | Independent | The whole **creates and destroys** its parts |
+| Belonging <Ar>الانتماء</Ar> | **Weak**: parts exist independently <Ar>**ضعيف**: الأجزاء توجد مستقلة</Ar> | **Strong**: parts depend on the whole <Ar>**قوي**: الأجزاء تعتمد على الكل</Ar> |
+| Parts shared? <Ar>هل الأجزاء مشتركة؟</Ar> | A part may belong to several wholes (the multiplicity at the whole may be more than 1) <Ar>قد ينتمي الجزء إلى عدة كيانات كلية (قد تكون التعددية عند طرف الكل أكثر من 1)</Ar> | A part belongs to **only one** whole (the multiplicity at the whole is **0..1 or 1**) <Ar>ينتمي الجزء إلى كلٍّ **واحد فقط** (التعددية عند طرف الكل هي **`0..1` أو `1`**)</Ar> |
+| Lifetime <Ar>مدة الحياة</Ar> | Independent <Ar>مستقلة</Ar> | The whole **creates and destroys** its parts <Ar>الكل **يُنشئ أجزاءه ويُتلفها**</Ar> |
 
 ```java title="Composition vs. aggregation in code"
 import java.util.ArrayList;
@@ -207,9 +259,13 @@ class Student { }
 
 ### Generalization
 
+<Ar>التعميم</Ar>
+
 **Generalization** is **inheritance**, the "is-a" relationship. A class with no parent is a **base (root)** class; one with no children is a **leaf** class; one parent means **single** inheritance, and several mean **multiple** inheritance.
 
-<SlideFigure page={30} caption="Student and Employee are Persons; a Manager is an Employee." />
+<Ar>**التعميم (Generalization)** هو **الوراثة (inheritance)**، أي علاقة «هو نوع من» (is-a). والصنف الذي ليس له أب هو صنف **أساسي (base) أو جذري (root)**؛ والصنف الذي ليس له أبناء هو صنف **ورقي (leaf)**؛ ووجود أب واحد يعني وراثة **مفردة (single)**، ووجود عدة آباء يعني وراثة **متعددة (multiple)**.</Ar>
+
+<SlideFigure page={30} caption="Student and Employee are Persons; a Manager is an Employee." captionAr="كلٌّ من Student و Employee هو Person؛ و Manager هو Employee." />
 
 ```java
 class Person { }
@@ -221,55 +277,80 @@ class Manager extends Employee { }   // a Manager is-an Employee is-a Person
 <Takeaways>
 
 - **Sequence diagrams**: lifelines `role:Class` with time running down; **synchronous** messages (filled head, wait for the dashed reply) vs. **asynchronous** ones (open head, no waiting); **alt**/**loop** fragments; **SSDs** treat the system as a black box.
+  <Ar>**مخططات التتابع (Sequence diagrams)**: خطوط حياة `role:Class` والزمن يسير إلى الأسفل؛ ورسائل **متزامنة (synchronous)** (رأس مُصمَت، مع انتظار الرد المتقطع) مقابل رسائل **غير متزامنة (asynchronous)** (رأس مفتوح، بلا انتظار)؛ ومقطعا **alt** و**loop**؛ و**مخططات SSD** تعامل النظام كصندوق أسود.</Ar>
 - **Class diagrams**: name, attributes and operations, with visibility `+ - # ~`; underlined = static.
+  <Ar>**مخططات الأصناف (Class diagrams)**: الاسم والسمات والعمليات، مع مستوى الظهور `+ - # ~`؛ والمسطَّر تحته يعني ساكن (static).</Ar>
 - **Multiplicity** counts the objects linked to **one** object on the other side.
+  <Ar>**التعددية (Multiplicity)** تَعُدّ الكائنات المرتبطة بكائن **واحد** في الطرف الآخر.</Ar>
 - **Aggregation** (hollow diamond) is a weak whole–part; **composition** (filled diamond) means the part lives and dies with one whole; **generalization** (hollow triangle) is "is-a".
+  <Ar>**التجميع (Aggregation)** (معيّن مفرغ) علاقة كل وجزء ضعيفة؛ و**التركيب (composition)** (معيّن مُصمَت) يعني أن الجزء يحيا ويفنى مع كلٍّ واحد؛ و**التعميم (generalization)** (مثلث مفرغ) هو علاقة «هو نوع من» (is-a).</Ar>
 
 </Takeaways>
 
 ## Practice
 
-<Exercise title="Read the multiplicity" level="easy">
+<Ar>تدريب</Ar>
+
+<Exercise title="Read the multiplicity" titleAr="اقرأ التعددية" level="easy">
 
 A class diagram shows `Department 1 ——— 1..* Professor`. What does it mean, read in both directions?
+
+<Ar>يعرض مخطط أصناف الارتباط `Department 1 ——— 1..* Professor`. ما معناه عند قراءته في الاتجاهين؟</Ar>
 
 <Solution>
 
 Each **Department** has **one or more** Professors (the `1..*` sits at the Professor end). Each **Professor** belongs to **exactly one** Department (the `1` sits at the Department end).
 
+<Ar>لكل **قسم (Department)** **واحد أو أكثر** من الأساتذة (Professors)، إذ تقع `1..*` عند طرف Professor. وكل **أستاذ (Professor)** ينتمي إلى قسم **واحد بالضبط**، إذ تقع `1` عند طرف Department.</Ar>
+
 </Solution>
 
 </Exercise>
 
-<Exercise title="Aggregation or composition?" level="medium">
+<Exercise title="Aggregation or composition?" titleAr="تجميع أم تركيب؟" level="medium">
 
 Choose the right relationship for each pair, and say where the diamond goes:
 
+<Ar>اختر العلاقة المناسبة لكل زوج، وحدّد موضع المعيّن:</Ar>
+
 1. A *Car* and its *Engine*, where engines are reused in other cars after a crash.
+   <Ar>*Car* (السيارة) و*Engine* (محركها)، حيث يُعاد استخدام المحركات في سيارات أخرى بعد وقوع حادث.</Ar>
 2. An *Invoice* and its *InvoiceLines*.
+   <Ar>*Invoice* (الفاتورة) و*InvoiceLines* (بنودها).</Ar>
 3. A *Team* and its *Players*.
+   <Ar>*Team* (الفريق) و*Players* (لاعبوه).</Ar>
 
 <Solution>
 
 1. **Aggregation**, with a hollow diamond at Car. The engine exists independently and can move to another car.
+   <Ar>**تجميع (Aggregation)**، مع معيّن مفرغ عند طرف Car. فالمحرك يوجد مستقلًا ويمكن نقله إلى سيارة أخرى.</Ar>
 2. **Composition**, with a filled diamond at Invoice. Lines belong to one invoice and are deleted with it.
+   <Ar>**تركيب (Composition)**، مع معيّن مُصمَت عند طرف Invoice. فالبنود تنتمي إلى فاتورة واحدة وتُحذف معها.</Ar>
 3. **Aggregation**, with a hollow diamond at Team. Players exist without the team and may join others.
+   <Ar>**تجميع (Aggregation)**، مع معيّن مفرغ عند طرف Team. فاللاعبون يوجدون دون الفريق ويمكنهم الانضمام إلى فرق أخرى.</Ar>
 
 </Solution>
 
 </Exercise>
 
-<Exercise title="Sequence diagram for withdrawing cash" level="hard">
+<Exercise title="Sequence diagram for withdrawing cash" titleAr="مخطط تتابع لسحب النقود" level="hard">
 
 Describe a sequence diagram for "withdraw cash" with the lifelines `:Customer`, `:ATM`, `:Bank`. Use synchronous calls with replies, and an **alt** fragment for sufficient or insufficient balance.
+
+<Ar>صِف مخطط تتابع لعملية «سحب النقود» (withdraw cash) بخطوط الحياة `:Customer` و`:ATM` و`:Bank`. استخدم استدعاءات متزامنة (synchronous) مع ردود، ومقطع **alt** لحالتي الرصيد الكافي وغير الكافي.</Ar>
 
 <Solution>
 
 1. `:Customer → :ATM` **withdraw(amount)**, synchronous.
+   <Ar>`:Customer → :ATM` **`withdraw(amount)`**، استدعاء متزامن (synchronous).</Ar>
 2. `:ATM → :Bank` **checkBalance(account, amount)**, synchronous. The Bank replies (dashed) with `ok` or `insufficient`.
+   <Ar>`:ATM → :Bank` **`checkBalance(account, amount)`**، استدعاء متزامن. ويرد Bank (بخط متقطع) بـ `ok` أو `insufficient`.</Ar>
 3. **alt**:
+   <Ar>المقطع **alt**:</Ar>
    - `[ok]`: `:ATM → :Bank` **debit(account, amount)**, with the reply `done`. Then `:ATM` sends itself **dispense(amount)** (a self-message), and `:ATM → :Customer` returns the cash.
+     <Ar>`[ok]`: `:ATM → :Bank` **`debit(account, amount)`**، مع الرد `done`. ثم يرسل `:ATM` إلى نفسه **`dispense(amount)`**، وهي رسالة ذاتية (self-message)، ويُعيد `:ATM → :Customer` النقود.</Ar>
    - `[else]`: `:ATM → :Customer` sends **showMessage("insufficient balance")**.
+     <Ar>`[else]`: يرسل `:ATM → :Customer` الرسالة **`showMessage("insufficient balance")`**.</Ar>
 
 </Solution>
 
@@ -279,39 +360,57 @@ Describe a sequence diagram for "withdraw cash" with the lifelines `:Customer`, 
   questions={[
     {
       q: "In a synchronous message, the sender…",
+      qAr: "في الرسالة المتزامنة (synchronous)، المرسِل…",
       options: ["Continues immediately", "Waits for the response before continuing", "Destroys the receiver", "Sends to itself"],
+      optionsAr: ["يتابع فورًا", "ينتظر الرد قبل أن يتابع", "يُتلف المستقبِل", "يرسل إلى نفسه"],
       answer: 1,
-      explain: "Synchronous: solid line, filled arrowhead, followed by a dashed reply."
+      explain: "Synchronous: solid line, filled arrowhead, followed by a dashed reply.",
+      explainAr: "الرسالة المتزامنة: خط متصل ورأس سهم مُصمَت، ويتبعها رد بخط متقطع."
     },
     {
       q: "Which fragment represents if/else in a sequence diagram?",
+      qAr: "أي مقطع يمثّل if/else في مخطط التتابع؟",
       options: ["loop", "alt", "ref", "par"],
+      optionsAr: ["loop", "alt", "ref", "par"],
       answer: 1,
-      explain: "alt has several operands, each with a guard."
+      explain: "alt has several operands, each with a guard.",
+      explainAr: "للمقطع alt عدة مُعامَلات (operands)، لكلٍّ منها شرط حراسة."
     },
     {
       q: "What does '#' mean before an attribute?",
+      qAr: "ماذا يعني الرمز # قبل السمة؟",
       options: ["Public", "Private", "Protected", "Static"],
+      optionsAr: ["عام (public)", "خاص (private)", "محمي (protected)", "ساكن (static)"],
       answer: 2,
-      explain: "+ public, - private, # protected, ~ package."
+      explain: "+ public, - private, # protected, ~ package.",
+      explainAr: "الرمز + يعني عام (public)، و - يعني خاص (private)، و # يعني محمي (protected)، و ~ يعني الحزمة (package)."
     },
     {
       q: "A part that lives and dies with exactly one whole is modelled by…",
+      qAr: "الجزء الذي يحيا ويفنى مع كلٍّ واحد بالضبط يُنمذَج باستخدام…",
       options: ["Association", "Aggregation", "Composition", "Generalization"],
+      optionsAr: ["الارتباط", "التجميع", "التركيب", "التعميم"],
       answer: 2,
-      explain: "Composition: a filled diamond at the whole."
+      explain: "Composition: a filled diamond at the whole.",
+      explainAr: "التركيب (Composition): معيّن مُصمَت عند طرف الكل."
     },
     {
       q: "The multiplicity '1..*' means…",
+      qAr: "التعددية «multiplicity 1..*» تعني…",
       options: ["Zero or more", "Exactly one", "One or more", "At most one"],
+      optionsAr: ["صفر أو أكثر", "واحد بالضبط", "واحد أو أكثر", "واحد على الأكثر"],
       answer: 2,
-      explain: "* alone means zero or more."
+      explain: "* alone means zero or more.",
+      explainAr: "الرمز * وحده يعني صفرًا أو أكثر."
     },
     {
       q: "An SSD shows the system as…",
+      qAr: "يعرض مخطط SSD النظامَ على أنه…",
       options: ["A set of classes", "A black box receiving system events from actors", "A state machine", "A database schema"],
+      optionsAr: ["مجموعة من الأصناف", "صندوق أسود يتلقى أحداث النظام من الفاعلين", "آلة حالات", "مخطط قاعدة بيانات"],
       answer: 1,
-      explain: "System sequence diagrams show actors, the black-box system and the system events."
+      explain: "System sequence diagrams show actors, the black-box system and the system events.",
+      explainAr: "تعرض مخططات تتابع النظام الفاعلين، والنظام كصندوق أسود، وأحداث النظام."
     }
   ]}
 />

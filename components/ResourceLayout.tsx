@@ -8,6 +8,7 @@ import {
   type ResourceItem,
   type Subject,
 } from "@/lib/content";
+import { ArLine, ArText } from "./mdx/Arabic";
 import { TableOfContents } from "./TableOfContents";
 import styles from "./ResourceLayout.module.css";
 
@@ -58,9 +59,24 @@ export function ResourceLayout({
           <h1 className={`${styles.title} rise`} style={{ "--i": 1 } as React.CSSProperties}>
             {item.data.title}
           </h1>
+          {item.data.titleAr ? (
+            <p className={`${styles.titleAr} ar rise`} lang="ar" dir="rtl" style={{ "--i": 1 } as React.CSSProperties}>
+              <ArText>{item.data.titleAr}</ArText>
+            </p>
+          ) : null}
           <p className={`${styles.summary} rise`} style={{ "--i": 2 } as React.CSSProperties}>
             {item.data.summary}
           </p>
+          {item.data.summaryAr ? (
+            <p
+              className={`${styles.summary} ${styles.summaryAr} ar rise`}
+              lang="ar"
+              dir="rtl"
+              style={{ "--i": 2 } as React.CSSProperties}
+            >
+              <ArText>{item.data.summaryAr}</ArText>
+            </p>
+          ) : null}
           {item.data.topics.length > 0 ? (
             <ul className={`${styles.topics} rise`} style={{ "--i": 3 } as React.CSSProperties} aria-label="Topics">
               {item.data.topics.map((topic) => (
@@ -115,7 +131,10 @@ export function ResourceLayout({
                 <span className={styles.pagerLabel}>
                   <ArrowLeft aria-hidden="true" /> Previous {meta.singular.toLowerCase()}
                 </span>
-                <span className={styles.pagerTitle}>{previous.data.title}</span>
+                <span className={styles.pagerTitle}>
+                  {previous.data.title}
+                  <ArLine>{previous.data.titleAr}</ArLine>
+                </span>
               </Link>
             ) : (
               <Link href={listHref} className={styles.pagerLink}>
@@ -130,7 +149,10 @@ export function ResourceLayout({
                 <span className={styles.pagerLabel}>
                   Next {meta.singular.toLowerCase()} <ArrowRight aria-hidden="true" />
                 </span>
-                <span className={styles.pagerTitle}>{next.data.title}</span>
+                <span className={styles.pagerTitle}>
+                  {next.data.title}
+                  <ArLine>{next.data.titleAr}</ArLine>
+                </span>
               </Link>
             ) : (
               <Link href={listHref} className={`${styles.pagerLink} ${styles.pagerNext}`}>

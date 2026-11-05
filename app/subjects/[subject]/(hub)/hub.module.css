@@ -56,3 +56,16 @@
 .body {
   padding-top: var(--space-5);
 }
+
+/* ---------- Arabic translations ---------- */
+.titleAr {
+  margin-top: 6px;
+  font-size: clamp(1.3rem, 2.8vw, 1.8rem);
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--gold);
+}
+
+.taglineAr {
+  margin-top: 6px;
+}

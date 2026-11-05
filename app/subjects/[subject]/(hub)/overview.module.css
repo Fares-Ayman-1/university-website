@@ -333,3 +333,31 @@
 .usedBy span {
   color: var(--muted);
 }
+
+/* ---------- Arabic translations ---------- */
+.h2 :global(.ar),
+.trackTitle :global(.ar) {
+  font-family: var(--font-arabic);
+  font-size: 0.72em;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.panelTitle :global(.ar) {
+  font-size: 0.85rem;
+  margin-top: 2px;
+}
+
+.descriptionAr {
+  margin-top: 12px;
+  color: color-mix(in srgb, var(--text) 86%, var(--muted));
+}
+
+.trackItemTitle :global(.ar),
+.objectives :global(.ar),
+.gradeRow :global(.ar) {
+  font-weight: 500;
+  font-size: 0.94em;
+  color: var(--muted);
+  margin-top: 2px;
+}

@@ -1,7 +1,9 @@
 ---
 number: 1
 title: "Introduction: What Operating Systems Do"
+titleAr: "مقدمة: ما الذي تفعله أنظمة التشغيل"
 summary: The OS as resource allocator and control program. Covers how a computer system is organized (bus, device controllers, interrupts, DMA), the storage hierarchy and caching, single- and multi-processor architectures, multiprogramming and multitasking, dual-mode protection and the timer, what the OS manages, and the computing environments it runs in.
+summaryAr: "نظام التشغيل بوصفه مُخصِّصًا للموارد (resource allocator) وبرنامجَ تحكم (control program). يتناول كيف يُنظَّم نظام الحاسوب من حيث الناقل (bus) ومتحكمات الأجهزة (device controllers) والمقاطعات (interrupts) والوصول المباشر للذاكرة (DMA)، وهرم التخزين والتخبئة (caching)، ومعماريات المعالج الواحد والمعالجات المتعددة، والبرمجة المتعددة (multiprogramming) وتعدد المهام (multitasking)، والحماية بالوضع المزدوج (dual mode) والمؤقِّت (timer)، وما يديره نظام التشغيل، وبيئات الحوسبة التي يعمل فيها."
 topics: [Role of the OS, Kernel, Interrupts, I/O and DMA, Storage hierarchy and caching, Multiprocessors and multicore, Multiprogramming and multitasking, Dual mode, Resource management, Computing environments]
 duration: 60 min study
 sources:
@@ -23,202 +25,302 @@ bookRefs:
 <Objectives>
 
 - Explain what an **operating system** is from the user's and the system's point of view, and what the **kernel** is.
+  <Ar>شرح ماهية **نظام التشغيل (operating system)** من وجهة نظر المستخدم ووجهة نظر النظام، وما هي **النواة (kernel)**.</Ar>
 - Describe **computer-system organization**: bus, device controllers, drivers, **interrupts** and **DMA**.
+  <Ar>وصف **تنظيم نظام الحاسوب (computer-system organization)**: الناقل (bus)، ومتحكمات الأجهزة (device controllers)، والمشغّلات (drivers)، و**المقاطعات (interrupts)**، و**الوصول المباشر للذاكرة (DMA)**.</Ar>
 - Explain the **storage hierarchy** and **caching**.
+  <Ar>شرح **هرم التخزين (storage hierarchy)** و**التخبئة (caching)**.</Ar>
 - Compare single-processor, **multiprocessor** (SMP, multicore) and **clustered** systems.
+  <Ar>المقارنة بين أنظمة المعالج الواحد، و**الأنظمة متعددة المعالجات (multiprocessor)** (SMP ومتعددة الأنوية)، و**الأنظمة العنقودية (clustered)**.</Ar>
 - Explain **multiprogramming**, **multitasking**, **dual-mode** operation and the **timer**, and list the OS's **management** responsibilities.
+  <Ar>شرح **البرمجة المتعددة (multiprogramming)**، و**تعدد المهام (multitasking)**، والتشغيل **بالوضع المزدوج (dual-mode)**، و**المؤقِّت (timer)**، وذكر مسؤوليات نظام التشغيل في **الإدارة**.</Ar>
 
 </Objectives>
 
 ## What is an operating system?
 
-<Definition term="Operating system">
+<Ar>ما نظام التشغيل؟</Ar>
+
+<Definition term="Operating system" termAr="نظام التشغيل">
   A program that acts as an <strong>intermediary between the user and the computer hardware</strong>. Its goals: execute user programs and make solving problems easier, make the computer <strong>convenient</strong> to use, and use the hardware <strong>efficiently</strong>.
+
+  <Ar>برنامج يعمل <strong>وسيطًا بين المستخدم وعتاد الحاسوب (hardware)</strong>. أهدافه: تنفيذ برامج المستخدم وتسهيل حل المشكلات، وجعل الحاسوب <strong>مريحًا</strong> في الاستخدام، واستخدام العتاد <strong>بكفاءة</strong>.</Ar>
 </Definition>
 
-<SlideFigure page={5} caption="User → application programs → operating system → hardware." />
+<SlideFigure page={5} caption="User → application programs → operating system → hardware." captionAr="المستخدم ← برامج التطبيقات ← نظام التشغيل ← العتاد." />
 
 A computer system has four components:
 
-| Component | Role |
+<Ar>يتكوّن نظام الحاسوب من أربعة مكوّنات:</Ar>
+
+| Component <Ar>المكوّن</Ar> | Role <Ar>الدور</Ar> |
 |---|---|
-| **Hardware** | CPU, memory and I/O devices: the basic computing resources |
-| **Operating system** | Controls and **coordinates** the hardware among applications and users |
-| **Application programs** | Use the resources to solve users' problems: word processors, compilers, browsers, games |
-| **Users** | People, machines, other computers |
+| **Hardware** <Ar>**العتاد (Hardware)**</Ar> | CPU, memory and I/O devices: the basic computing resources <Ar>المعالج (CPU) والذاكرة وأجهزة الإدخال والإخراج (I/O): موارد الحوسبة الأساسية</Ar> |
+| **Operating system** <Ar>**نظام التشغيل**</Ar> | Controls and **coordinates** the hardware among applications and users <Ar>يتحكم في العتاد و**ينسّق** استخدامه بين التطبيقات والمستخدمين</Ar> |
+| **Application programs** <Ar>**برامج التطبيقات**</Ar> | Use the resources to solve users' problems: word processors, compilers, browsers, games <Ar>تستخدم الموارد لحل مشكلات المستخدمين: معالجات النصوص، والمترجمات (compilers)، والمتصفحات، والألعاب</Ar> |
+| **Users** <Ar>**المستخدمون**</Ar> | People, machines, other computers <Ar>الأشخاص، والآلات، والحواسيب الأخرى</Ar> |
 
 What the OS should optimize depends on the point of view. A **user** at a PC wants convenience and performance and doesn't care about utilization. A shared **mainframe** must keep all users happy, so there the OS is a **resource allocator** and a **control program**. Mobile devices optimize for usability and **battery life**, and embedded systems may have almost no user interface at all.
 
-<Callout type="note" title="So what exactly is 'the' operating system?">
+<Ar>ما ينبغي لنظام التشغيل أن يحسّنه يعتمد على وجهة النظر. فـ **المستخدم** الجالس أمام حاسوب شخصي (PC) يريد الراحة والأداء ولا يهتم بمدى استغلال الموارد (utilization). أما **الحاسوب المركزي (mainframe)** المشترك فيجب أن يُرضي جميع المستخدمين، ولذلك يكون نظام التشغيل فيه **مُخصِّصًا للموارد (resource allocator)** و **برنامج تحكم (control program)**. وتُحسِّن الأجهزة المحمولة سهولة الاستخدام و**عمر البطارية**، وقد لا تكون للأنظمة المدمجة (embedded systems) واجهة مستخدم تقريبًا على الإطلاق.</Ar>
+
+<Callout type="note" title="So what exactly is 'the' operating system?" titleAr="إذن ما هو نظام التشغيل بالضبط؟">
   There's no universal definition. "Everything the vendor ships" is a rough approximation. The precise part is the <strong>kernel</strong>, the one program running at all times. Everything else is either a <strong>system program</strong> (ships with the OS but isn't the kernel) or an <strong>application program</strong>. Mobile OSes also include <strong>middleware</strong>: frameworks for databases, graphics and so on.
+
+  <Ar>لا يوجد تعريف عام متفق عليه، وعبارة «كل ما يشحنه المُصنِّع» ليست إلا تقريبًا أوّليًا. أما الجزء المحدد بدقة فهو <strong>النواة (kernel)</strong>، وهي البرنامج الوحيد الذي يعمل طوال الوقت. وكل ما عدا ذلك إما <strong>برنامج نظام (system program)</strong> (يأتي مع نظام التشغيل لكنه ليس النواة) أو <strong>برنامج تطبيقي (application program)</strong>. وتتضمن أنظمة تشغيل الأجهزة المحمولة أيضًا <strong>البرمجيات الوسيطة (middleware)</strong>: أطر عمل (frameworks) لقواعد البيانات والرسوميات وغيرها.</Ar>
 </Callout>
 
 ## Computer-system organization
 
+<Ar>تنظيم نظام الحاسوب</Ar>
+
 One or more **CPUs** and **device controllers** connect through a common **bus** to shared **memory**, and they run concurrently, competing for memory cycles.
 
-<SlideFigure page={11} caption="CPU, disk, USB and graphics controllers sharing the system bus and memory." />
+<Ar>يتصل **معالج (CPU)** واحد أو أكثر و**متحكمات الأجهزة (device controllers)** عبر **ناقل (bus)** مشترك إلى **ذاكرة** مشتركة، وتعمل جميعها بالتزامن (concurrently) متنافسةً على دورات الذاكرة (memory cycles).</Ar>
+
+<SlideFigure page={11} caption="CPU, disk, USB and graphics controllers sharing the system bus and memory." captionAr="المعالج ومتحكمات القرص و USB والرسوميات تتشارك ناقل النظام والذاكرة." />
 
 - Each **device controller** is in charge of one device type and has a **local buffer**.
+  <Ar>كل **متحكِّم جهاز (device controller)** مسؤول عن نوع واحد من الأجهزة، وله **مخزن مؤقت محلي (local buffer)**.</Ar>
 - The OS has a **device driver** for each controller, giving the kernel a uniform interface.
+  <Ar>لنظام التشغيل **مشغّل جهاز (device driver)** لكل متحكِّم، يوفّر للنواة واجهة (interface) موحّدة.</Ar>
 - The CPU moves data between main memory and controller buffers; the device moves data between itself and its buffer.
+  <Ar>ينقل المعالج البيانات بين الذاكرة الرئيسية والمخازن المؤقتة للمتحكمات، بينما ينقل الجهاز البيانات بينه وبين مخزنه المؤقت.</Ar>
 - When it finishes, the controller **interrupts** the CPU.
+  <Ar>عندما ينتهي المتحكِّم من عمله، **يقاطع (interrupts)** المعالج.</Ar>
 
 ### Interrupts
 
-<Definition term="Interrupt">
+<Ar>المقاطعات</Ar>
+
+<Definition term="Interrupt" termAr="المقاطعة">
   A signal that transfers control to an <strong>interrupt service routine</strong>, found through the <strong>interrupt vector</strong> (a table of handler addresses). A <strong>trap / exception</strong> is a software-generated interrupt, caused by an error (divide by zero) or a user request (a system call). The OS is <strong>interrupt-driven</strong>.
+
+  <Ar>إشارة تنقل التحكم إلى <strong>روتين خدمة المقاطعة (interrupt service routine)</strong>، الذي يُعثَر عليه عبر <strong>متجه المقاطعات (interrupt vector)</strong> (جدول بعناوين المعالِجات (handlers)). أما <strong>المصيدة / الاستثناء (trap / exception)</strong> فهي مقاطعة تولّدها البرمجيات، وتنتج عن خطأ (القسمة على صفر) أو عن طلب من المستخدم (استدعاء نظام (system call)). ونظام التشغيل <strong>مدفوع بالمقاطعات (interrupt-driven)</strong>.</Ar>
 </Definition>
 
 <Steps>
 
 1. The device driver tells the controller to start I/O; the CPU goes on with other work.
+   <Ar>يطلب مشغّل الجهاز (device driver) من المتحكِّم بدء عملية الإدخال/الإخراج (I/O)، ويواصل المعالج عملًا آخر.</Ar>
 2. The controller finishes and raises an **interrupt**.
+   <Ar>ينتهي المتحكِّم ويُطلق **مقاطعة (interrupt)**.</Ar>
 3. The CPU **saves the state** (registers, program counter) of what it was doing.
+   <Ar>المعالج **يحفظ الحالة** (المسجلات (registers)، وعدّاد البرنامج (program counter)) لما كان يقوم به.</Ar>
 4. It looks up the interrupt vector and runs the matching **handler**.
+   <Ar>يبحث في متجه المقاطعات (interrupt vector) ويشغّل **المعالِج (handler)** المطابق.</Ar>
 5. It **restores** the state and resumes the interrupted program.
+   <Ar>**يستعيد** الحالة ويستأنف البرنامج الذي قوطع.</Ar>
 
 </Steps>
 
-<SlideFigure page={14} caption="The interrupt-driven I/O cycle." />
+<SlideFigure page={14} caption="The interrupt-driven I/O cycle." captionAr="دورة الإدخال/الإخراج المدفوعة بالمقاطعات." />
 
 There are two styles of I/O. In **synchronous** I/O, control returns to the program only when the I/O completes; the CPU waits and only one request is outstanding. In **asynchronous** I/O, control returns immediately; the program can continue, and the OS tracks requests in a **device-status table**. A program asks for I/O through a **system call**.
 
+<Ar>هناك أسلوبان للإدخال والإخراج (I/O). في الإدخال/الإخراج **المتزامن (synchronous)** لا يعود التحكم إلى البرنامج إلا عند اكتمال العملية، فينتظر المعالج ولا يكون هناك سوى طلب واحد معلّق. أما في الإدخال/الإخراج **غير المتزامن (asynchronous)** فيعود التحكم فورًا، ويمكن للبرنامج أن يواصل، ويتتبّع نظام التشغيل الطلبات في **جدول حالة الأجهزة (device-status table)**. ويطلب البرنامج عمليات الإدخال/الإخراج عبر **استدعاء نظام (system call)**.</Ar>
+
 ### Direct memory access (DMA)
+
+<Ar>الوصول المباشر للذاكرة (DMA)</Ar>
 
 For fast devices, one interrupt per byte would swamp the CPU. With **DMA**, the controller transfers a **whole block** between its buffer and memory **without the CPU**, and raises **one interrupt per block**.
 
-<SlideFigure page={26} caption="A von Neumann computer: the CPU's instruction cycle, data movement, and DMA between device and memory." />
+<Ar>في الأجهزة السريعة، ستُغرق مقاطعةٌ لكل بايت المعالجَ. أما مع **الوصول المباشر للذاكرة (DMA)** فينقل المتحكِّم **كتلة كاملة (block)** بين مخزنه المؤقت والذاكرة **دون تدخّل المعالج**، ويُطلق **مقاطعة واحدة لكل كتلة**.</Ar>
+
+<SlideFigure page={26} caption="A von Neumann computer: the CPU's instruction cycle, data movement, and DMA between device and memory." captionAr="حاسوب فون نيومان (von Neumann): دورة التعليمات في المعالج، وحركة البيانات، والوصول المباشر للذاكرة (DMA) بين الجهاز والذاكرة." />
 
 ## Storage structure
 
+<Ar>بنية التخزين</Ar>
+
 Storage is measured in **bits** and **bytes** (8 bits), with kilo = $2^{10}$, mega = $2^{20}$, giga = $2^{30}$ bytes, and so on.
 
-- **Main memory (RAM, usually DRAM)** is the only large storage the CPU accesses **directly**. It is random-access and **volatile**.
-- **Secondary storage** is large and **nonvolatile**: **HDDs** (platters divided into tracks and sectors) and faster **NVM / SSD** devices.
-- **Tertiary storage** includes optical disks and magnetic tape, used for backup and archives.
+<Ar>يُقاس التخزين **بالبتات (bits)** و**البايتات (bytes)** (البايت = 8 بتات)، حيث الكيلو = 2¹⁰، والميجا = 2²⁰، والجيجا = 2³⁰ بايت، وهكذا.</Ar>
 
-<SlideFigure page={22} caption="The storage-device hierarchy: higher levels are smaller, faster and costlier per byte; volatile above the line." />
+- **Main memory (RAM, usually DRAM)** is the only large storage the CPU accesses **directly**. It is random-access and **volatile**.
+  <Ar>**الذاكرة الرئيسية (RAM، وعادةً DRAM)** هي وسيط التخزين الكبير الوحيد الذي يصل إليه المعالج **مباشرةً**. وهي ذات وصول عشوائي (random-access) و**متطايرة (volatile)**.</Ar>
+- **Secondary storage** is large and **nonvolatile**: **HDDs** (platters divided into tracks and sectors) and faster **NVM / SSD** devices.
+  <Ar>**التخزين الثانوي (Secondary storage)** كبير و**غير متطاير (nonvolatile)**: **الأقراص الصلبة (HDDs)** (أطباق مقسّمة إلى مسارات (tracks) وقطاعات (sectors)) وأجهزة **NVM / SSD** الأسرع.</Ar>
+- **Tertiary storage** includes optical disks and magnetic tape, used for backup and archives.
+  <Ar>**التخزين الثالثي (Tertiary storage)** يشمل الأقراص الضوئية والأشرطة المغناطيسية، ويُستخدم للنسخ الاحتياطي والأرشيفات.</Ar>
+
+<SlideFigure page={22} caption="The storage-device hierarchy: higher levels are smaller, faster and costlier per byte; volatile above the line." captionAr="هرم أجهزة التخزين: المستويات الأعلى أصغر وأسرع وأغلى لكل بايت، والمستويات فوق الخط متطايرة." />
 
 ### Caching
 
-<Definition term="Caching">
+<Ar>التخبئة (Caching)</Ar>
+
+<Definition term="Caching" termAr="التخبئة">
   Copying information that is in use from slower storage into <strong>faster</strong> storage. Check the cache first: on a hit, use it; on a miss, copy the data in and use it there. Caches are smaller than what they cache, so <strong>cache management</strong> (size and replacement policy) is key.
+
+  <Ar>نسخ المعلومات المستخدمة حاليًا من وسيط تخزين أبطأ إلى وسيط تخزين <strong>أسرع</strong>. افحص الذاكرة المخبئية (cache) أولًا: عند الإصابة (hit) استخدمها، وعند الإخفاق (miss) انسخ البيانات إليها واستخدمها من هناك. والذاكرات المخبئية أصغر مما تخبّئه، ولذلك فإن <strong>إدارة الذاكرة المخبئية (cache management)</strong> (الحجم وسياسة الاستبدال (replacement policy)) أمر أساسي.</Ar>
 </Definition>
 
 Main memory is itself a cache for secondary storage. Caching creates a **coherence** problem, because the same datum may exist at several levels. In multitasking systems, every process must see the **most recent** value. Multiprocessors need hardware **cache coherency**, and distributed systems are harder still.
 
+<Ar>الذاكرة الرئيسية نفسها ذاكرة مخبئية (cache) للتخزين الثانوي. وتُنشئ التخبئة مشكلة **الاتساق (coherence)**، لأن القيمة نفسها قد توجد في عدة مستويات. ففي أنظمة تعدد المهام (multitasking) يجب أن ترى كل عملية القيمة **الأحدث**. وتحتاج الأنظمة متعددة المعالجات إلى **اتساق الذاكرة المخبئية (cache coherency)** على مستوى العتاد، والأمر أصعب في الأنظمة الموزعة (distributed systems).</Ar>
+
 ## Computer-system architecture
+
+<Ar>معمارية نظام الحاسوب</Ar>
 
 Most systems have one **general-purpose** processor plus special-purpose ones (disk and keyboard controllers, GPUs). **Multiprocessor** systems (parallel or tightly coupled) offer:
 
+<Ar>لمعظم الأنظمة معالج واحد **عام الغرض (general-purpose)** إلى جانب معالجات خاصة الغرض (متحكمات الأقراص ولوحة المفاتيح، ووحدات معالجة الرسوميات (GPUs)). وتوفّر الأنظمة **متعددة المعالجات (Multiprocessor)** (المتوازية أو المترابطة بإحكام (tightly coupled)) ما يلي:</Ar>
+
 <Grid cols={3}>
-  <Card title="Increased throughput">More work done in less time, though N processors give less than N× speed-up because of overhead.</Card>
-  <Card title="Economy of scale">CPUs share peripherals, storage and power.</Card>
-  <Card title="Increased reliability">Graceful degradation or fault tolerance when one processor fails.</Card>
+  <Card title="Increased throughput" titleAr="زيادة الإنتاجية (throughput)">More work done in less time, though N processors give less than N× speed-up because of overhead.<Ar>إنجاز عمل أكثر في وقت أقل، مع أن N من المعالجات تعطي تسريعًا أقل من N ضعفًا بسبب الحمل الإضافي (overhead).</Ar></Card>
+
+  <Card title="Economy of scale" titleAr="اقتصاديات الحجم">CPUs share peripherals, storage and power.<Ar>تتشارك المعالجات الأجهزة الطرفية والتخزين ومصدر الطاقة.</Ar></Card>
+
+  <Card title="Increased reliability" titleAr="زيادة الاعتمادية">Graceful degradation or fault tolerance when one processor fails.<Ar>التدهور التدريجي (graceful degradation) أو تحمّل الأعطال (fault tolerance) عند تعطّل أحد المعالجات.</Ar></Card>
 </Grid>
 
-| Type | Description |
+| Type <Ar>النوع</Ar> | Description <Ar>الوصف</Ar> |
 |---|---|
-| **Asymmetric** multiprocessing | Each processor has a specific task; a boss processor schedules the workers |
-| **Symmetric (SMP)** | Every processor performs all tasks, each with its own registers and cache, sharing main memory |
-| **Multicore** | Several cores on **one chip**. On-chip communication is faster and uses less power |
-| **NUMA** | Each CPU has local memory on a fast local bus; scales to many CPUs, but remote memory is slower |
-| **Clustered** | Several **systems** working together, often sharing storage over a **SAN**. Asymmetric clusters keep one hot-standby machine; symmetric clusters run applications on all nodes. Also used for **HPC** |
+| **Asymmetric** multiprocessing <Ar>المعالجة المتعددة **غير المتماثلة (Asymmetric)**</Ar> | Each processor has a specific task; a boss processor schedules the workers <Ar>لكل معالج مهمة محددة، ومعالج رئيسي (boss) يجدول المعالجات العاملة (workers)</Ar> |
+| **Symmetric (SMP)** <Ar>**المتماثلة (SMP)**</Ar> | Every processor performs all tasks, each with its own registers and cache, sharing main memory <Ar>كل معالج يؤدي جميع المهام، ولكلٍّ منها مسجلاته (registers) وذاكرته المخبئية (cache) الخاصة، مع مشاركة الذاكرة الرئيسية</Ar> |
+| **Multicore** <Ar>**متعددة الأنوية (Multicore)**</Ar> | Several cores on **one chip**. On-chip communication is faster and uses less power <Ar>عدة أنوية على **شريحة واحدة**. والاتصال داخل الشريحة أسرع ويستهلك طاقة أقل</Ar> |
+| **NUMA** <Ar>**الوصول غير المنتظم للذاكرة (NUMA)**</Ar> | Each CPU has local memory on a fast local bus; scales to many CPUs, but remote memory is slower <Ar>لكل معالج ذاكرة محلية على ناقل محلي سريع، ويتوسّع ليشمل معالجات كثيرة، لكن الذاكرة البعيدة أبطأ</Ar> |
+| **Clustered** <Ar>**العنقودية (Clustered)**</Ar> | Several **systems** working together, often sharing storage over a **SAN**. Asymmetric clusters keep one hot-standby machine; symmetric clusters run applications on all nodes. Also used for **HPC** <Ar>عدة **أنظمة** تعمل معًا، وغالبًا ما تتشارك التخزين عبر **شبكة تخزين (SAN)**. تحتفظ العناقيد غير المتماثلة بآلة احتياطية جاهزة (hot-standby)، بينما تشغّل العناقيد المتماثلة التطبيقات على جميع العقد (nodes). وتُستخدم أيضًا في **الحوسبة عالية الأداء (HPC)**</Ar> |
 
-<SlideFigure page={29} caption="Symmetric multiprocessing: each CPU has its own registers and cache over a shared memory." />
+<SlideFigure page={29} caption="Symmetric multiprocessing: each CPU has its own registers and cache over a shared memory." captionAr="المعالجة المتعددة المتماثلة: لكل معالج مسجلاته وذاكرته المخبئية الخاصة فوق ذاكرة مشتركة." />
 
 ## Operating-system operations
 
+<Ar>عمليات نظام التشغيل</Ar>
+
 ### Multiprogramming and multitasking
 
+<Ar>البرمجة المتعددة وتعدد المهام</Ar>
+
 - **Multiprogramming (batch)**: one job can't keep the CPU and I/O devices busy, so several jobs are kept in memory. When the running job waits (for example for I/O), the OS **switches to another**, and the CPU always has something to do.
+  <Ar>**البرمجة المتعددة (Multiprogramming) (الدُفعية (batch))**: لا تستطيع مهمة (job) واحدة إبقاء المعالج وأجهزة الإدخال/الإخراج مشغولة، لذا تُحفظ عدة مهام في الذاكرة. وعندما تنتظر المهمة الجارية (مثلًا انتظارًا لعملية إدخال/إخراج)، **ينتقل نظام التشغيل إلى مهمة أخرى**، فيجد المعالج دائمًا ما يفعله.</Ar>
 - **Multitasking (time-sharing)**: the CPU switches so frequently that users can **interact** with each running program, with response times under a second. This needs **CPU scheduling**, and **swapping** or **virtual memory** when processes don't fit in memory.
+  <Ar>**تعدد المهام (Multitasking) (مشاركة الوقت (time-sharing))**: يبدّل المعالج بين المهام بسرعة كبيرة تتيح للمستخدمين **التفاعل** مع كل برنامج قيد التشغيل، بزمن استجابة أقل من ثانية. ويتطلب ذلك **جدولة المعالج (CPU scheduling)**، و**التبديل (swapping)** أو **الذاكرة الافتراضية (virtual memory)** عندما لا تتسع الذاكرة للعمليات.</Ar>
 
 ### Dual-mode operation
 
+<Ar>التشغيل بالوضع المزدوج</Ar>
+
 To protect itself and the system, the hardware provides a **mode bit**: **user mode** (1) and **kernel mode** (0). **Privileged instructions** can run only in kernel mode. A **system call** switches to kernel mode, and the return switches back.
 
-<SlideFigure page={37} caption="A user process makes a system call: trap (mode bit = 0), the kernel executes it, return (mode bit = 1)." />
+<Ar>لكي يحمي نظام التشغيل نفسه والنظام، يوفّر العتاد **بت الوضع (mode bit)**: **وضع المستخدم (user mode)** (1) و**وضع النواة (kernel mode)** (0). ولا يمكن تنفيذ **التعليمات المميَّزة (Privileged instructions)** إلا في وضع النواة. ويُحوِّل **استدعاء النظام (system call)** التنفيذ إلى وضع النواة، ويُعيده الرجوع منه إلى وضع المستخدم.</Ar>
+
+<SlideFigure page={37} caption="A user process makes a system call: trap (mode bit = 0), the kernel executes it, return (mode bit = 1)." captionAr="عملية مستخدم تُجري استدعاء نظام: مصيدة (بت الوضع = 0)، ثم تنفّذه النواة، ثم الرجوع (بت الوضع = 1)." />
 
 ### Timer
 
+<Ar>المؤقِّت</Ar>
+
 A **timer** stops a process from hogging the CPU or looping forever. The OS loads a counter (a privileged instruction), the clock decrements it, and at zero it raises an **interrupt**, giving control back to the OS.
+
+<Ar>يمنع **المؤقِّت (timer)** أي عملية من الاستحواذ على المعالج أو الدوران في حلقة لا نهائية. يحمّل نظام التشغيل عدّادًا (counter) (بتعليمة مميَّزة)، وتُنقصه الساعة تدريجيًا، وعند وصوله إلى الصفر يُطلق **مقاطعة (interrupt)** تعيد التحكم إلى نظام التشغيل.</Ar>
 
 ## Resource management
 
-| Area | OS responsibilities |
+<Ar>إدارة الموارد</Ar>
+
+| Area <Ar>المجال</Ar> | OS responsibilities <Ar>مسؤوليات نظام التشغيل</Ar> |
 |---|---|
-| **Process management** | Create and delete processes, suspend and resume them, and provide synchronization, communication and deadlock handling. A **process** is a program in execution: active, while a program is passive |
-| **Memory management** | Track which parts of memory are used and by whom, decide which processes and data to move in and out, allocate and deallocate space |
-| **File-system management** | Abstract storage as **files** in **directories**; create, delete and map files; access control |
-| **Mass-storage management** | Mount and unmount, manage free space, allocate storage, schedule the disk, partition, protect |
-| **Cache management** | Keep the hierarchy coherent |
-| **I/O subsystem** | **Buffering**, **caching**, **spooling**, a general device-driver interface, and drivers for each device |
+| **Process management** <Ar>**إدارة العمليات (Process management)**</Ar> | Create and delete processes, suspend and resume them, and provide synchronization, communication and deadlock handling. A **process** is a program in execution: active, while a program is passive <Ar>إنشاء العمليات وحذفها، وتعليقها واستئنافها، وتوفير آليات التزامن (synchronization) والاتصال ومعالجة الجمود (deadlock). و**العملية (process)** برنامج قيد التنفيذ: فهي نشطة، بينما البرنامج خامل (passive)</Ar> |
+| **Memory management** <Ar>**إدارة الذاكرة**</Ar> | Track which parts of memory are used and by whom, decide which processes and data to move in and out, allocate and deallocate space <Ar>تتبّع أجزاء الذاكرة المستخدمة ومن يستخدمها، وتحديد العمليات والبيانات التي تُنقل إلى الذاكرة أو تُخرج منها، وتخصيص المساحة وتحريرها</Ar> |
+| **File-system management** <Ar>**إدارة نظام الملفات**</Ar> | Abstract storage as **files** in **directories**; create, delete and map files; access control <Ar>تجريد التخزين في صورة **ملفات** داخل **مجلدات (directories)**، وإنشاء الملفات وحذفها وربطها بوسائط التخزين (map)، والتحكم في الوصول</Ar> |
+| **Mass-storage management** <Ar>**إدارة التخزين الكبير (Mass-storage)**</Ar> | Mount and unmount, manage free space, allocate storage, schedule the disk, partition, protect <Ar>التركيب وإلغاء التركيب (mount / unmount)، وإدارة المساحة الحرة، وتخصيص التخزين، وجدولة القرص، والتقسيم (partition)، والحماية</Ar> |
+| **Cache management** <Ar>**إدارة الذاكرة المخبئية**</Ar> | Keep the hierarchy coherent <Ar>الحفاظ على اتساق الهرم</Ar> |
+| **I/O subsystem** <Ar>**نظام الإدخال/الإخراج الفرعي (I/O subsystem)**</Ar> | **Buffering**, **caching**, **spooling**, a general device-driver interface, and drivers for each device <Ar>**التخزين المؤقت (Buffering)**، و**التخبئة (caching)**، و**الصفّ المؤقت للمهام (spooling)**، وواجهة عامة لمشغّلات الأجهزة، ومشغّلات لكل جهاز</Ar> |
 
 **Protection** controls which processes and users can access which resources. **Security** defends against internal and external attacks such as viruses, worms, denial of service and identity theft. Both rely on **user IDs** and **group IDs**, and on **privilege escalation** (e.g. setuid) when needed.
 
+<Ar>تتحكم **الحماية (Protection)** في تحديد أي العمليات والمستخدمين يمكنهم الوصول إلى أي الموارد. ويدافع **الأمان (Security)** ضد الهجمات الداخلية والخارجية مثل الفيروسات، والديدان (worms)، وحجب الخدمة (denial of service)، وسرقة الهوية. ويعتمد كلاهما على **معرّفات المستخدمين (user IDs)** و**معرّفات المجموعات (group IDs)**، وعلى **رفع الصلاحيات (privilege escalation)** (مثل `setuid`) عند الحاجة.</Ar>
+
 ## Kernel data structures and computing environments
+
+<Ar>هياكل بيانات النواة وبيئات الحوسبة</Ar>
 
 Kernels use classic data structures: **linked lists**, **binary search trees** (balanced ones give $O(\log n)$ search), **hash maps** and **bitmaps** (n bits for the status of n items). Linux defines them in `<linux/list.h>`, `<linux/kfifo.h>` and `<linux/rbtree.h>`.
 
-| Environment | Characteristics |
-|---|---|
-| **Traditional** | Stand-alone PCs, increasingly networked, with firewalls even at home |
-| **Mobile** | Smartphones and tablets with GPS and gyroscopes; iOS and Android |
-| **Client–server** | Servers answer client requests (compute server, file server) |
-| **Peer-to-peer** | No distinction between clients and servers; every node can be both |
-| **Virtualization** | A **VMM** runs guest OSes on the host; **emulation** is used when the CPU types differ |
-| **Cloud** | Computing as a service: public, private or hybrid cloud; **SaaS**, **PaaS**, **IaaS** |
-| **Real-time embedded** | The most common computers. Fixed time constraints: work is correct only if done **on time** |
+<Ar>تستخدم الأنوية هياكل بيانات كلاسيكية: **القوائم المترابطة (linked lists)**، و**أشجار البحث الثنائية (binary search trees)** (المتوازنة منها تعطي بحثًا بتعقيد `O(log n)`)، و**جداول التجزئة (hash maps)**، و**خرائط البتات (bitmaps)** (n بت لحالة n عنصر). ويعرّفها لينكس (Linux) في `<linux/list.h>` و `<linux/kfifo.h>` و `<linux/rbtree.h>`.</Ar>
 
-<SlideFigure page={60} caption="Without virtualization (a) and with a virtual machine manager running three guest kernels (b)." />
+| Environment <Ar>البيئة</Ar> | Characteristics <Ar>الخصائص</Ar> |
+|---|---|
+| **Traditional** <Ar>**التقليدية**</Ar> | Stand-alone PCs, increasingly networked, with firewalls even at home <Ar>حواسيب شخصية مستقلة، متصلة بالشبكات بشكل متزايد، مع جدران حماية (firewalls) حتى في المنازل</Ar> |
+| **Mobile** <Ar>**المحمولة**</Ar> | Smartphones and tablets with GPS and gyroscopes; iOS and Android <Ar>الهواتف الذكية والأجهزة اللوحية المزودة بنظام GPS ومستشعرات الجيروسكوب (gyroscopes)، ومنها iOS و Android</Ar> |
+| **Client–server** <Ar>**العميل–الخادم (Client–server)**</Ar> | Servers answer client requests (compute server, file server) <Ar>تجيب الخوادم (servers) عن طلبات العملاء (clients) (خادم حوسبة، خادم ملفات)</Ar> |
+| **Peer-to-peer** <Ar>**الند للند (Peer-to-peer)**</Ar> | No distinction between clients and servers; every node can be both <Ar>لا تمييز بين العملاء والخوادم، فكل عقدة (node) يمكن أن تكون كليهما</Ar> |
+| **Virtualization** <Ar>**المحاكاة الافتراضية (Virtualization)**</Ar> | A **VMM** runs guest OSes on the host; **emulation** is used when the CPU types differ <Ar>يشغّل **مدير الآلات الافتراضية (VMM)** أنظمة تشغيل ضيفة (guest) على المضيف (host)، وتُستخدم **المحاكاة (emulation)** عندما تختلف أنواع المعالجات</Ar> |
+| **Cloud** <Ar>**السحابة (Cloud)**</Ar> | Computing as a service: public, private or hybrid cloud; **SaaS**, **PaaS**, **IaaS** <Ar>الحوسبة كخدمة: سحابة عامة أو خاصة أو هجينة، و **SaaS** و **PaaS** و **IaaS**</Ar> |
+| **Real-time embedded** <Ar>**المدمجة الآنية (Real-time embedded)**</Ar> | The most common computers. Fixed time constraints: work is correct only if done **on time** <Ar>أكثر الحواسيب انتشارًا. لها قيود زمنية ثابتة: لا يكون العمل صحيحًا إلا إذا أُنجز **في الوقت المحدد**</Ar> |
+
+<SlideFigure page={60} caption="Without virtualization (a) and with a virtual machine manager running three guest kernels (b)." captionAr="دون محاكاة افتراضية (a)، ومع مدير آلات افتراضية يشغّل ثلاث أنوية ضيفة (b)." />
 
 **Free and open-source** OSes (GNU/Linux, BSD UNIX) ship their **source code**, unlike closed-source ones. The Free Software Foundation's **GPL** "copyleft" licence requires that modified versions stay free. Reading real kernel source is one of the best ways to learn this subject.
+
+<Ar>أنظمة التشغيل **الحرة ومفتوحة المصدر (Free and open-source)** (GNU/Linux و BSD UNIX) تأتي مع **شيفرتها المصدرية (source code)**، بخلاف الأنظمة مغلقة المصدر. وتشترط رخصة **GPL** من مؤسسة البرمجيات الحرة (Free Software Foundation)، القائمة على مبدأ «الحقوق المتروكة (copyleft)»، أن تبقى النسخ المعدّلة حرة. وقراءة الشيفرة المصدرية لنواة حقيقية من أفضل الطرق لتعلّم هذه المادة.</Ar>
 
 <Takeaways>
 
 - The OS is an **intermediary**, a **resource allocator** and a **control program**; the **kernel** always runs.
+  <Ar>نظام التشغيل **وسيط**، و**مُخصِّص للموارد (resource allocator)**، و**برنامج تحكم (control program)**، و**النواة (kernel)** تعمل دائمًا.</Ar>
 - Devices work concurrently with the CPU and signal completion with **interrupts**; **DMA** moves whole blocks with one interrupt each.
+  <Ar>تعمل الأجهزة بالتزامن مع المعالج وتُعلن انتهاءها عبر **المقاطعات (interrupts)**، و**الوصول المباشر للذاكرة (DMA)** ينقل كتلًا كاملة بمقاطعة واحدة لكل كتلة.</Ar>
 - Storage is a **hierarchy** of speed, cost and volatility, held together by **caching**.
+  <Ar>التخزين **هرم** من حيث السرعة والتكلفة والتطاير (volatility)، تربط مستوياته **التخبئة (caching)**.</Ar>
 - **SMP** and **multicore** share memory; **clusters** share storage over a network.
+  <Ar>أنظمة **SMP** و**متعددة الأنوية (multicore)** تتشارك الذاكرة، و**العناقيد (clusters)** تتشارك التخزين عبر شبكة.</Ar>
 - **Multiprogramming** keeps the CPU busy, **multitasking** keeps users responsive, and **dual mode** plus the **timer** protect the system.
+  <Ar>**البرمجة المتعددة (Multiprogramming)** تُبقي المعالج مشغولًا، و**تعدد المهام (multitasking)** يحافظ على سرعة الاستجابة للمستخدمين، و**الوضع المزدوج (dual mode)** مع **المؤقِّت (timer)** يحميان النظام.</Ar>
 
 </Takeaways>
 
 ## Practice
 
-<Exercise title="Why DMA?" level="medium">
+<Ar>تدريب</Ar>
+
+<Exercise title="Why DMA?" titleAr="لماذا DMA؟" level="medium">
 
 A device transfers data at 1 MB/s in 4 KB blocks. Compare the number of interrupts per second with interrupt-per-byte I/O and with DMA.
+
+<Ar>ينقل جهاز البيانات بمعدل 1 MB/s في كتل حجم كل منها 4 KB. قارن عدد المقاطعات في الثانية بين الإدخال/الإخراج بمقاطعة لكل بايت وبين الوصول المباشر للذاكرة (DMA).</Ar>
 
 <Solution>
 
 Per byte: about $10^6$ interrupts per second, which is a huge CPU overhead. With DMA: $10^6 / 4096 \approx 244$ interrupts per second, one per block. The CPU is free for other work while the controller moves each block.
 
+<Ar>بمقاطعة لكل بايت: نحو 10⁶ مقاطعة في الثانية، وهذا عبء (overhead) هائل على المعالج. ومع DMA: `10⁶ / 4096 ≈ 244` مقاطعة في الثانية، أي مقاطعة واحدة لكل كتلة. ويبقى المعالج متفرغًا لعمل آخر بينما ينقل المتحكِّم كل كتلة.</Ar>
+
 </Solution>
 
 </Exercise>
 
-<Exercise title="Privileged or not?" level="easy">
+<Exercise title="Privileged or not?" titleAr="مميَّزة أم لا؟" level="easy">
 
 Which of these should be **privileged** (kernel mode only)? (a) set the timer (b) read the clock (c) clear memory (d) turn off interrupts (e) issue a trap (f) access an I/O device.
+
+<Ar>أيٌّ مما يلي ينبغي أن يكون **مميَّزًا (privileged)** (في وضع النواة فقط)؟ (أ) ضبط المؤقِّت (ب) قراءة الساعة (ج) مسح الذاكرة (د) تعطيل المقاطعات (هـ) إصدار مصيدة (trap) (و) الوصول إلى جهاز إدخال/إخراج.</Ar>
 
 <Solution>
 
 Privileged: **(a)**, **(c)**, **(d)** and **(f)**. **(b)** reading the clock is harmless, and **(e)** issuing a trap *must* be allowed in user mode, because that is exactly how a program asks the kernel for a service (a system call).
 
+<Ar>المميَّزة: **(أ)** و **(ج)** و **(د)** و **(و)**. أما **(ب)** قراءة الساعة فلا ضرر منها، و **(هـ)** إصدار المصيدة *يجب* أن يُسمح به في وضع المستخدم، لأن هذه بالضبط هي الطريقة التي يطلب بها البرنامج خدمة من النواة (استدعاء النظام (system call)).</Ar>
+
 </Solution>
 
 </Exercise>
 
-<Exercise title="Multiprogramming vs. multitasking" level="easy">
+<Exercise title="Multiprogramming vs. multitasking" titleAr="البرمجة المتعددة مقابل تعدد المهام" level="easy">
 
 What extra problem does time-sharing have to solve that batch multiprogramming doesn't?
+
+<Ar>ما المشكلة الإضافية التي يجب أن تحلّها مشاركة الوقت (time-sharing) ولا تحتاج البرمجة المتعددة الدُفعية (batch) إلى حلّها؟</Ar>
 
 <Solution>
 
 **Response time.** Batch multiprogramming only switches when a job must wait, so it maximizes CPU utilization. Time-sharing must switch **often**, using a **timer** and **CPU scheduling**, so every interactive user gets a response in under a second. It also needs swapping or virtual memory to keep many processes resident.
+
+<Ar>**زمن الاستجابة (Response time).** البرمجة المتعددة الدُفعية لا تبدّل إلا عندما يجب على المهمة أن تنتظر، ولذلك فهي تزيد استغلال المعالج إلى أقصى حد. أما مشاركة الوقت فيجب أن تبدّل **كثيرًا**، مستخدمةً **المؤقِّت (timer)** و**جدولة المعالج (CPU scheduling)**، ليحصل كل مستخدم تفاعلي على استجابة في أقل من ثانية. كما تحتاج إلى التبديل (swapping) أو الذاكرة الافتراضية (virtual memory) لإبقاء عمليات كثيرة مقيمة في الذاكرة.</Ar>
 
 </Solution>
 
@@ -228,45 +330,66 @@ What extra problem does time-sharing have to solve that batch multiprogramming d
   questions={[
     {
       q: "The one program running at all times on the computer is the…",
+      qAr: "البرنامج الوحيد الذي يعمل طوال الوقت على الحاسوب هو…",
       options: ["Shell", "Kernel", "Compiler", "Device driver"],
+      optionsAr: ["الصدفة", "النواة", "المترجم", "مشغّل الجهاز"],
       answer: 1,
-      explain: "Everything else is a system or application program."
+      explain: "Everything else is a system or application program.",
+      explainAr: "كل ما عداها إما برنامج نظام أو برنامج تطبيقي."
     },
     {
       q: "A trap (exception) is…",
+      qAr: "المصيدة (الاستثناء) هي…",
       options: ["A hardware failure", "A software-generated interrupt", "A type of cache", "A disk sector"],
+      optionsAr: ["عطل في العتاد", "مقاطعة تولّدها البرمجيات", "نوع من الذاكرة المخبئية", "قطاع على القرص"],
       answer: 1,
-      explain: "It is caused by an error or a user request such as a system call."
+      explain: "It is caused by an error or a user request such as a system call.",
+      explainAr: "تنتج عن خطأ أو عن طلب من المستخدم مثل استدعاء النظام."
     },
     {
       q: "DMA reduces CPU overhead by…",
+      qAr: "يقلّل DMA العبء على المعالج عن طريق…",
       options: ["Removing the need for device drivers", "Generating one interrupt per block instead of per byte", "Caching the whole disk", "Running in user mode"],
+      optionsAr: ["الاستغناء عن مشغّلات الأجهزة", "توليد مقاطعة واحدة لكل كتلة بدلًا من مقاطعة لكل بايت", "تخبئة القرص بأكمله", "العمل في وضع المستخدم"],
       answer: 1,
-      explain: "The controller transfers whole blocks directly to memory."
+      explain: "The controller transfers whole blocks directly to memory.",
+      explainAr: "ينقل المتحكِّم كتلًا كاملة مباشرةً إلى الذاكرة."
     },
     {
       q: "Which storage can the CPU access directly?",
+      qAr: "أي وسيط تخزين يستطيع المعالج الوصول إليه مباشرةً؟",
       options: ["Hard disk", "SSD", "Main memory (and registers/cache)", "Magnetic tape"],
+      optionsAr: ["القرص الصلب", "SSD", "الذاكرة الرئيسية (والمسجلات/الذاكرة المخبئية)", "الشريط المغناطيسي"],
       answer: 2,
-      explain: "Programs and data must be in main memory to be executed or accessed."
+      explain: "Programs and data must be in main memory to be executed or accessed.",
+      explainAr: "يجب أن تكون البرامج والبيانات في الذاكرة الرئيسية حتى تُنفَّذ أو يُوصَل إليها."
     },
     {
       q: "In SMP, each processor…",
+      qAr: "في SMP، كل معالج…",
       options: ["Has a specific assigned task", "Performs all tasks and has its own registers and cache", "Has its own separate memory and OS", "Is a separate computer"],
+      optionsAr: ["له مهمة محددة مخصّصة له", "يؤدي جميع المهام وله مسجلاته وذاكرته المخبئية الخاصة", "له ذاكرته ونظام تشغيله المنفصلان", "حاسوب مستقل"],
       answer: 1,
-      explain: "Symmetric multiprocessing: peers sharing main memory."
+      explain: "Symmetric multiprocessing: peers sharing main memory.",
+      explainAr: "المعالجة المتعددة المتماثلة: معالجات متكافئة تتشارك الذاكرة الرئيسية."
     },
     {
       q: "When the kernel is executing, the mode bit is…",
+      qAr: "عندما تكون النواة قيد التنفيذ، تكون قيمة بت الوضع…",
       options: ["1 (user)", "0 (kernel)", "Undefined", "2"],
+      optionsAr: ["1 (المستخدم)", "0 (النواة)", "غير معرّفة", "2"],
       answer: 1,
-      explain: "Kernel mode = 0, user mode = 1."
+      explain: "Kernel mode = 0, user mode = 1.",
+      explainAr: "وضع النواة = 0، ووضع المستخدم = 1."
     },
     {
       q: "What prevents a user program from running in an infinite loop forever?",
+      qAr: "ما الذي يمنع برنامج المستخدم من الدوران في حلقة لا نهائية إلى الأبد؟",
       options: ["The cache", "The timer interrupt", "DMA", "The interrupt vector"],
+      optionsAr: ["الذاكرة المخبئية", "مقاطعة المؤقِّت", "DMA", "متجه المقاطعات"],
       answer: 1,
-      explain: "When the timer expires, an interrupt returns control to the OS."
+      explain: "When the timer expires, an interrupt returns control to the OS.",
+      explainAr: "عندما ينتهي وقت المؤقِّت، تعيد مقاطعةٌ التحكم إلى نظام التشغيل."
     }
   ]}
 />

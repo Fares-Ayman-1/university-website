@@ -1,7 +1,9 @@
 ---
 number: 6
 title: State Machine Diagrams
+titleAr: "مخططات آلة الحالات"
 summary: Drawing state machine diagrams in practice. Covers how they differ from the other diagrams, the symbols (start, state, event, composite state, fork, join, final), events and guards, then worked diagrams for a taxi ride, a car agency (from the problem text, with guards), a hotel reservation with event / action labels, a microwave oven with do/exit activities, an ATM and the soda machine, with the hotel diagram implemented in code.
+summaryAr: "رسم مخططات آلة الحالات (state machine diagrams) عمليًا: كيف تختلف عن المخططات الأخرى، والرموز (البداية، والحالة، والحدث، والحالة المركّبة، والتفرّع fork، والالتقاء join، والنهاية)، والأحداث وشروط الحراسة (guards)، ثم مخططات محلولة لرحلة تاكسي، ووكالة سيارات (من نص المسألة، مع شروط الحراسة)، وحجز فندقي بتسميات «حدث / إجراء» (event/action)، وفرن ميكروويف بأنشطة do/exit، وماكينة صراف آلي (ATM)، وآلة المشروبات الغازية، مع تنفيذ مخطط الفندق في الشيفرة (code)."
 topics: [What a state diagram shows, State vs other diagrams, Symbols, Events and transitions, Guards, Event / action labels, Composite states, Fork and join, Car agency, Hotel reservation, Microwave oven, ATM, Soda machine]
 duration: 50 min hands-on
 kind: practical
@@ -24,70 +26,100 @@ bookRefs:
 <Objectives>
 
 - Explain what a state diagram shows and how it differs from the other UML diagrams.
+  <Ar>شرح ما يعرضه مخطط الحالات (state diagram) وكيف يختلف عن مخططات UML الأخرى.</Ar>
 - Use the **symbols**: start, state, transition, composite state, fork, join and final.
+  <Ar>استخدام **الرموز**: البداية، والحالة (state)، والانتقال (transition)، والحالة المركّبة (composite state)، والتفرّع (fork)، والالتقاء (join)، والنهاية (final).</Ar>
 - Label transitions with **events**, **[guards]** and **/ actions**.
+  <Ar>تسمية الانتقالات (transitions) باستخدام **الأحداث (events)** و**شروط الحراسة** (`[guards]`) و**الإجراءات** (`/ actions`).</Ar>
 - Turn a **problem description** into a state diagram, and the diagram into code.
+  <Ar>تحويل **وصف المسألة** إلى مخطط حالات، وتحويل المخطط إلى شيفرة (code).</Ar>
 
 </Objectives>
 
 ## What a state diagram shows
 
+<Ar>ما يعرضه مخطط الحالات</Ar>
+
 A state diagram presents the **states an object can be in**, the **transitions** between them, and where the sequence of state changes **starts and ends**. For example:
 
-- a light switches from *Off* to *On*;
-- a TV changes channel when you press the remote;
-- after some time a washing machine goes from *Washing* to *Rinsing*;
-- a project is *submitted, evaluated, accepted, rejected, monitored, audited, finished, delayed*.
+<Ar>يعرض مخطط الحالات (state diagram) **الحالات التي يمكن أن يكون فيها الكائن**، و**الانتقالات (transitions)** بينها، والموضع الذي **يبدأ وينتهي** عنده تسلسل تغيّرات الحالة. على سبيل المثال:</Ar>
 
-<Callout type="note" title="One object, not many">
+- a light switches from *Off* to *On*;
+  <Ar>يتحول المصباح من *مطفأ (Off)* إلى *مضاء (On)*؛</Ar>
+- a TV changes channel when you press the remote;
+  <Ar>يغيّر التلفاز القناة عندما تضغط على جهاز التحكم عن بُعد؛</Ar>
+- after some time a washing machine goes from *Washing* to *Rinsing*;
+  <Ar>بعد مدة تنتقل الغسالة من *الغسيل (Washing)* إلى *الشطف (Rinsing)*؛</Ar>
+- a project is *submitted, evaluated, accepted, rejected, monitored, audited, finished, delayed*.
+  <Ar>يكون المشروع *مُقدَّمًا، مُقيَّمًا، مقبولًا، مرفوضًا، مُتابَعًا، مُدقَّقًا، منتهيًا، متأخرًا*.</Ar>
+
+<Callout type="note" title="One object, not many" titleAr="كائن واحد لا عدة كائنات">
   The diagrams you've studied so far model a <strong>group</strong> of classes, objects or use cases. A state diagram shows the states of <strong>a single object</strong> (one order, one car, one reservation) over its lifetime.
+
+  <Ar>المخططات التي درستها حتى الآن تنمذج <strong>مجموعة</strong> من الأصناف (classes) أو الكائنات (objects) أو حالات الاستخدام (use cases). أما مخطط الحالات فيعرض حالات <strong>كائن واحد</strong> (طلب واحد، أو سيارة واحدة، أو حجز واحد) طوال مدة حياته.</Ar>
 </Callout>
 
 ## Symbols
 
-<SlideFigure page={4} caption="Start (filled circle), state (rounded rectangle), event (a labelled arrow between states) and a composite state with activities inside." />
+<Ar>الرموز</Ar>
 
-<SlideFigure page={5} caption="Join (several states into one), fork (one state into several concurrent ones) and final state (bull's-eye)." />
+<SlideFigure page={4} caption="Start (filled circle), state (rounded rectangle), event (a labelled arrow between states) and a composite state with activities inside." captionAr="البداية (دائرة مُصمَتة)، والحالة (مستطيل بزوايا مستديرة)، والحدث (سهم عليه تسمية بين الحالات)، وحالة مركّبة (composite state) بداخلها أنشطة." />
 
-| Symbol | Meaning |
+<SlideFigure page={5} caption="Join (several states into one), fork (one state into several concurrent ones) and final state (bull's-eye)." captionAr="الالتقاء (join): عدة حالات في حالة واحدة، والتفرّع (fork): حالة واحدة إلى عدة حالات متزامنة، والحالة النهائية: دائرة مُصمَتة داخل حلقة." />
+
+| Symbol <Ar>الرمز</Ar> | Meaning <Ar>المعنى</Ar> |
 |---|---|
-| ● **Start** | The initial pseudo-state |
-| ▭ **State** | A condition the object is in, named with an adjective or past participle (*Waiting*, *Confirmed*, *Repaired*) |
-| → **Transition** | Labelled `event [guard] / action`: when the **event** happens and the **guard** is true, do the **action** and move |
-| **Composite state** | A state that contains its own internal states or activities |
-| **Fork / join** | Split into concurrent states, or wait for several to finish |
-| ◉ **Final** | The object's life ends |
+| ● **Start** <Ar>● **البداية**</Ar> | The initial pseudo-state <Ar>الحالة الزائفة الابتدائية (initial pseudo-state)</Ar> |
+| ▭ **State** <Ar>▭ **الحالة**</Ar> | A condition the object is in, named with an adjective or past participle (*Waiting*, *Confirmed*, *Repaired*) <Ar>وضع يكون فيه الكائن، ويُسمّى بصفة أو بصيغة اسم المفعول (past participle)، مثل (*Waiting*، *Confirmed*، *Repaired*)</Ar> |
+| → **Transition** <Ar>→ **الانتقال**</Ar> | Labelled `event [guard] / action`: when the **event** happens and the **guard** is true, do the **action** and move <Ar>يُسمّى بالصيغة `event [guard] / action`: عندما يقع **الحدث (event)** ويكون **شرط الحراسة (guard)** صحيحًا، يُنفَّذ **الإجراء (action)** ويتم الانتقال</Ar> |
+| **Composite state** <Ar>**الحالة المركّبة**</Ar> | A state that contains its own internal states or activities <Ar>حالة تحتوي على حالات أو أنشطة داخلية خاصة بها</Ar> |
+| **Fork / join** <Ar>**التفرّع / الالتقاء**</Ar> | Split into concurrent states, or wait for several to finish <Ar>الانقسام إلى حالات متزامنة (concurrent)، أو انتظار انتهاء عدة حالات</Ar> |
+| ◉ **Final** <Ar>◉ **النهاية**</Ar> | The object's life ends <Ar>تنتهي حياة الكائن</Ar> |
 
 ### A first example: the taxi
 
-<SlideFigure page={6} caption="Waiting → (Get_Taxi) → Riding → (Reach_Destination) → final. The events are what trigger the transitions." />
+<Ar>مثال أول: التاكسي</Ar>
+
+<SlideFigure page={6} caption="Waiting → (Get_Taxi) → Riding → (Reach_Destination) → final. The events are what trigger the transitions." captionAr="الانتظار (Waiting) ← (Get_Taxi) ← الركوب (Riding) ← (Reach_Destination) ← النهاية. الأحداث هي ما يُطلِق الانتقالات." />
 
 ## Worked example: the car agency
 
+<Ar>مثال محلول: وكالة السيارات</Ar>
+
 > The customer **enters** the car, then the car's **papers are reviewed**, then the car is **investigated**. If the repair takes **one day**, the car is **queued**; if it takes **more than one day**, it is **stored in the garage**. It moves from the garage to the queue **when the repair day is today**. It moves from the queue to **customer check** after it is **repaired**. If the customer is **not satisfied**, it is queued again; if **satisfied**, it is **released**.
+
+<Ar>**يُدخِل** العميل السيارة، ثم **تُراجَع أوراق** السيارة، ثم **تُفحَص** السيارة. إذا استغرق الإصلاح **يومًا واحدًا**، **توضع السيارة في الطابور (queued)**؛ وإذا استغرق **أكثر من يوم**، **تُخزَّن في المرآب (garage)**. وتنتقل من المرآب إلى الطابور **عندما يحين يوم إصلاحها**. وتنتقل من الطابور إلى **فحص العميل** بعد أن **تُصلَح**. إذا كان العميل **غير راضٍ**، توضع في الطابور مرة أخرى؛ وإذا كان **راضيًا**، **تُسلَّم (released)**.</Ar>
 
 The **verbs** become events, the **"the car is …"** phrases become states, and the **"if …"** phrases become guards:
 
-<SlideFigure page={9} caption="Entered → Reviewed → Car investigated → [num_of_days > 1] Stored in Garage → [repair = 1 day] Queued, or [num_of_days = 1] Queued directly → (Repair) Repaired → (Review) Customer Review → (Satisfied) Released → final; Not satisfied goes back to Queued." />
+<Ar>تصبح **الأفعال** أحداثًا (events)، وتصبح عبارات **«تكون السيارة …»** حالاتٍ (states)، وتصبح عبارات **«إذا …»** شروطَ حراسة (guards):</Ar>
+
+<SlideFigure page={9} caption="Entered → Reviewed → Car investigated → [num_of_days > 1] Stored in Garage → [repair = 1 day] Queued, or [num_of_days = 1] Queued directly → (Repair) Repaired → (Review) Customer Review → (Satisfied) Released → final; Not satisfied goes back to Queued." captionAr="الدخول (Entered) ← المراجعة (Reviewed) ← فحص السيارة (Car investigated) ← [num_of_days>1] التخزين في المرآب (Stored in Garage) ← [repair=1 day] الطابور (Queued)، أو [num_of_days=1] الطابور مباشرةً ← (Repair) تم الإصلاح (Repaired) ← (Review) مراجعة العميل (Customer Review) ← (Satisfied) التسليم (Released) ← النهاية؛ وعدم الرضا (Not satisfied) يعيد السيارة إلى الطابور (Queued)." />
 
 ## Event / action labels: hotel reservation
 
+<Ar>تسميات الحدث / الإجراء (event / action): حجز الفندق</Ar>
+
 A transition label can carry an **action** after the slash: what the system **does** during the transition.
 
-<SlideFigure page={11} caption="Hotel reservation: event above the line, action below, e.g. 'room available / decrement room count'." />
+<Ar>يمكن أن تحمل تسمية الانتقال (transition) **إجراءً (action)** بعد الشرطة المائلة: أي ما **يفعله** النظام أثناء الانتقال.</Ar>
 
-| From | Event / action | To |
+<SlideFigure page={11} caption="Hotel reservation: event above the line, action below, e.g. 'room available / decrement room count'." captionAr="حجز الفندق: الحدث فوق الخط، والإجراء تحته، مثل «توجد غرفة متاحة / إنقاص عدد الغرف»." />
+
+| From <Ar>من</Ar> | Event / action <Ar>الحدث / الإجراء</Ar> | To <Ar>إلى</Ar> |
 |---|---|---|
-| Null | room request / none | Requested |
-| Requested | room available / decrement room count | Confirmed |
-| Requested | no room available / put on list | On waiting list |
-| On waiting list | room available / decrement room count | Confirmed |
-| On waiting list | customer gives up / remove from list | Canceled |
-| Confirmed | customer cancels / increment room count | Canceled |
-| Confirmed | customer moves in / none | Used |
-| Used | customer pays / increment room count | Archived |
+| Null <Ar>لا شيء</Ar> | room request / none <Ar>طلب غرفة / بلا إجراء</Ar> | Requested <Ar>مطلوب</Ar> |
+| Requested <Ar>مطلوب</Ar> | room available / decrement room count <Ar>توجد غرفة متاحة / إنقاص عدد الغرف</Ar> | Confirmed <Ar>مؤكَّد</Ar> |
+| Requested <Ar>مطلوب</Ar> | no room available / put on list <Ar>لا توجد غرفة متاحة / الإضافة إلى القائمة</Ar> | On waiting list <Ar>على قائمة الانتظار</Ar> |
+| On waiting list <Ar>على قائمة الانتظار</Ar> | room available / decrement room count <Ar>توجد غرفة متاحة / إنقاص عدد الغرف</Ar> | Confirmed <Ar>مؤكَّد</Ar> |
+| On waiting list <Ar>على قائمة الانتظار</Ar> | customer gives up / remove from list <Ar>العميل يتراجع / الحذف من القائمة</Ar> | Canceled <Ar>ملغى</Ar> |
+| Confirmed <Ar>مؤكَّد</Ar> | customer cancels / increment room count <Ar>العميل يُلغي / زيادة عدد الغرف</Ar> | Canceled <Ar>ملغى</Ar> |
+| Confirmed <Ar>مؤكَّد</Ar> | customer moves in / none <Ar>العميل ينتقل للإقامة / بلا إجراء</Ar> | Used <Ar>مُستخدَم</Ar> |
+| Used <Ar>مُستخدَم</Ar> | customer pays / increment room count <Ar>العميل يدفع / زيادة عدد الغرف</Ar> | Archived <Ar>مؤرشَف</Ar> |
 
 The table translates almost line by line into code:
+
+<Ar>يتحوّل الجدول إلى شيفرة (code) سطرًا بسطر تقريبًا:</Ar>
 
 ```python title="reservation.py"
 class Hotel:
@@ -142,41 +174,63 @@ print(b.state, "| rooms:", h.rooms)   # Archived | rooms: 1
 
 ## Activities inside states: the microwave oven
 
-<SlideFigure page={12} caption="Microwave: Waiting (do/display time) → Full power (do/set power = 600) or Half power (do/set power = 300) → timer → Set time (do/get time, exit/set time; 'number' loops) → close door → Enabled (do/display 'Ready') → start → Operation (do/operate oven); open door → Disabled (do/display 'Waiting'); cancel returns to Waiting." />
+<Ar>الأنشطة داخل الحالات: فرن الميكروويف</Ar>
+
+<SlideFigure page={12} caption="Microwave: Waiting (do/display time) → Full power (do/set power = 600) or Half power (do/set power = 300) → timer → Set time (do/get time, exit/set time; 'number' loops) → close door → Enabled (do/display 'Ready') → start → Operation (do/operate oven); open door → Disabled (do/display 'Waiting'); cancel returns to Waiting." captionAr="الميكروويف: الانتظار Waiting (do/display time) ← القدرة الكاملة Full power (do/set power=600) أو نصف القدرة Half power (do/set power=300) ← timer ← ضبط الوقت Set time بنشاطَي do/get time و exit/set time، مع حلقة على الحدث number ← close door ← التفعيل Enabled (do/display Ready) ← start ← التشغيل Operation (do/operate oven)؛ والحدث open door يؤدي إلى التعطيل Disabled (do/display Waiting)؛ والحدث cancel يعيد إلى Waiting." />
 
 Notice the **do/** activities (what happens *while* in the state), the **exit/** activity in *Set time*, the **self-transition** on *number*, and **cancel** from the outer frame back to *Waiting*.
 
+<Ar>لاحظ أنشطة **`do/`** (ما يحدث *أثناء* البقاء في الحالة)، ونشاط **`exit/`** في الحالة *Set time*، و**الانتقال الذاتي (self-transition)** على الحدث *number*، والحدث **cancel** من الإطار الخارجي عائدًا إلى *Waiting*.</Ar>
+
 ## More examples
 
-<SlideFigure page={10} caption="ATM: Reading card → Reading PIN → Choosing transaction → Performing transaction (loops back if the customer wants another) → Ejecting card. 'Card not readable' and 'Cancel pressed' jump straight to Ejecting card; too many invalid PINs ends with the card retained." />
+<Ar>أمثلة أخرى</Ar>
 
-<SlideFigure page={22} source={2} caption="The soda machine: Ready → (insert coins) Collecting Money → Accepting Coins (check the amount; alert to insert the correct amount) → (money collected) Selecting Product → (product selected) Dispensing (entry/product selected, do/dispense change, do/dispense product, exit/product dispensed) → Ready." />
+<SlideFigure page={10} caption="ATM: Reading card → Reading PIN → Choosing transaction → Performing transaction (loops back if the customer wants another) → Ejecting card. 'Card not readable' and 'Cancel pressed' jump straight to Ejecting card; too many invalid PINs ends with the card retained." captionAr="ماكينة الصراف الآلي (ATM): قراءة البطاقة (Reading card) ← قراءة الرقم السري (Reading PIN) ← اختيار المعاملة (Choosing transaction) ← تنفيذ المعاملة (Performing transaction)، وتتكرر إذا أراد العميل معاملة أخرى ← إخراج البطاقة (Ejecting card). الحدثان «Card not readable» و«Cancel pressed» ينتقلان مباشرةً إلى إخراج البطاقة؛ وكثرة إدخال أرقام سرية (PINs) غير صحيحة تنتهي باحتجاز البطاقة." />
+
+<SlideFigure page={22} source={2} caption="The soda machine: Ready → (insert coins) Collecting Money → Accepting Coins (check the amount; alert to insert the correct amount) → (money collected) Selecting Product → (product selected) Dispensing (entry/product selected, do/dispense change, do/dispense product, exit/product dispensed) → Ready." captionAr="آلة المشروبات الغازية: الجاهزية Ready ← (insert coins) جمع النقود Collecting Money ← قبول العملات Accepting Coins، مع التحقق من المبلغ والتنبيه إلى إدخال المبلغ الصحيح ← (money collected) اختيار المنتج Selecting Product ← (product selected) الصرف Dispensing بالأنشطة entry/product selected و do/dispense change و do/dispense product و exit/product dispensed ← Ready." />
 
 <Takeaways>
 
 - A state diagram models **one object's** life: its **states**, the **events** that move it, the **guards** that must hold, and the **actions** done on the way.
+  <Ar>ينمذج مخطط الحالات (state diagram) حياة **كائن واحد**: **حالاته (states)**، و**الأحداث (events)** التي تنقله بينها، و**شروط الحراسة (guards)** التي يجب أن تتحقق، و**الإجراءات (actions)** التي تُنفَّذ في أثناء ذلك.</Ar>
 - Label transitions **`event [guard] / action`**, and put **`entry/ do/ exit/`** activities inside states.
+  <Ar>سمِّ الانتقالات بالصيغة **`event [guard] / action`**، وضع أنشطة **`entry/ do/ exit/`** داخل الحالات.</Ar>
 - From a problem text: **"the object is …"** gives states, **verbs/occurrences** give events, and **"if …"** gives guards.
+  <Ar>من نص المسألة: عبارة **«يكون الكائن …»** تعطي الحالات، و**الأفعال/الوقائع** تعطي الأحداث، وعبارة **«إذا …»** تعطي شروط الحراسة.</Ar>
 - Each transition becomes a **method** that checks the current state, does the action and sets the new state.
+  <Ar>يصبح كل انتقال **دالة عضوًا (method)** تتحقق من الحالة الحالية، وتنفّذ الإجراء، وتضبط الحالة الجديدة.</Ar>
 
 </Takeaways>
 
 ## Practice
 
-<Exercise title="Library book copy" level="medium">
+<Ar>تدريب</Ar>
+
+<Exercise title="Library book copy" titleAr="نسخة كتاب في المكتبة" level="medium">
 
 A copy of a book is **Available** when added to the library. When a member borrows it, it becomes **On loan**. When it is returned it is **Available** again, unless it is **damaged**, in which case it goes to **Repair**, then back to Available when fixed. A copy on loan for more than 30 days is **Overdue**; returning it charges a fine. A copy can be **Withdrawn** (final) from Available or Repair. Write the transitions as `event [guard] / action`.
+
+<Ar>تكون نسخة الكتاب **متاحة (Available)** عند إضافتها إلى المكتبة. وعندما يستعيرها عضو تصبح **مُعارة (On loan)**. وعند إرجاعها تعود **متاحة** مرة أخرى، إلا إذا كانت **تالفة (damaged)**، وفي هذه الحالة تذهب إلى **الإصلاح (Repair)**، ثم تعود متاحة بعد إصلاحها. والنسخة المُعارة لأكثر من 30 يومًا تكون **متأخرة (Overdue)**؛ وعند إرجاعها تُفرَض غرامة. ويمكن أن تصبح النسخة **مسحوبة (Withdrawn)** (حالة نهائية) من حالة Available أو Repair. اكتب الانتقالات بالصيغة `event [guard] / action`.</Ar>
 
 <Solution>
 
 - initial → **Available**: `add copy`
+  <Ar>من البداية (initial) إلى **متاحة (Available)**: `add copy`</Ar>
 - Available → **On loan**: `borrow / record loan`
+  <Ar>من متاحة إلى **مُعارة (On loan)**: `borrow / record loan`</Ar>
 - On loan → **Overdue**: `day passes [days on loan > 30]`
+  <Ar>من مُعارة إلى **متأخرة (Overdue)**: `day passes [days on loan > 30]`</Ar>
 - On loan → **Available**: `return [not damaged]`
+  <Ar>من مُعارة إلى **متاحة (Available)**: `return [not damaged]`</Ar>
 - Overdue → **Available**: `return [not damaged] / charge fine`
+  <Ar>من متأخرة إلى **متاحة (Available)**: `return [not damaged] / charge fine`</Ar>
 - On loan or Overdue → **Repair**: `return [damaged]`, with `/ charge fine` from Overdue
+  <Ar>من مُعارة أو متأخرة إلى **الإصلاح (Repair)**: `return [damaged]`، مع `/ charge fine` عند القدوم من متأخرة</Ar>
 - Repair → **Available**: `fixed`
+  <Ar>من الإصلاح إلى **متاحة (Available)**: `fixed`</Ar>
 - Available or Repair → **Withdrawn**: `withdraw`, then → final.
+  <Ar>من متاحة أو الإصلاح إلى **مسحوبة (Withdrawn)**: `withdraw`، ثم إلى النهاية (final).</Ar>
 
 </Solution>
 
@@ -186,33 +240,48 @@ A copy of a book is **Available** when added to the library. When a member borro
   questions={[
     {
       q: "A state diagram shows the states of…",
+      qAr: "يعرض مخطط الحالات حالاتِ…",
       options: ["All the classes in a system", "A single object", "The interactions between objects", "The data flows"],
+      optionsAr: ["كل الأصناف في النظام", "كائن واحد", "التفاعلات بين الكائنات", "تدفقات البيانات"],
       answer: 1,
-      explain: "Other diagrams model groups of classes, objects or use cases."
+      explain: "Other diagrams model groups of classes, objects or use cases.",
+      explainAr: "المخططات الأخرى تنمذج مجموعات من الأصناف أو الكائنات أو حالات الاستخدام."
     },
     {
       q: "In 'room available / decrement room count', the part after the slash is…",
+      qAr: "في التسمية «توجد غرفة متاحة / إنقاص عدد الغرف»، الجزء الواقع بعد الشرطة المائلة هو…",
       options: ["The event", "The guard", "The action done during the transition", "The target state"],
+      optionsAr: ["الحدث", "شرط الحراسة", "الإجراء الذي يُنفَّذ أثناء الانتقال", "الحالة الهدف"],
       answer: 2,
-      explain: "event [guard] / action."
+      explain: "event [guard] / action.",
+      explainAr: "الصيغة هي: الحدث [شرط الحراسة] / الإجراء."
     },
     {
       q: "In the car agency, '[num_of_days > 1]' is…",
+      qAr: "في وكالة السيارات، يكون [num_of_days>1]…",
       options: ["An event", "A guard condition", "A state", "An action"],
+      optionsAr: ["حدثًا", "شرط حراسة", "حالة", "إجراءً"],
       answer: 1,
-      explain: "Guards are boolean conditions in square brackets."
+      explain: "Guards are boolean conditions in square brackets.",
+      explainAr: "شروط الحراسة شروط منطقية (boolean) تُكتب بين أقواس مربعة."
     },
     {
       q: "'do / display time' inside the Waiting state means…",
+      qAr: "النشاط do/display time داخل الحالة Waiting يعني…",
       options: ["Display the time once on entry", "Keep displaying the time while in Waiting", "Display the time when leaving", "A transition to Display"],
+      optionsAr: ["عرض الوقت مرة واحدة عند الدخول", "الاستمرار في عرض الوقت طوال البقاء في Waiting", "عرض الوقت عند المغادرة", "انتقال إلى Display"],
       answer: 1,
-      explain: "do/ activities run while the object is in the state."
+      explain: "do/ activities run while the object is in the state.",
+      explainAr: "أنشطة do/ تعمل طوال وجود الكائن في الحالة."
     },
     {
       q: "Which symbol splits one state into several concurrent states?",
+      qAr: "أي رمز يقسم حالة واحدة إلى عدة حالات متزامنة؟",
       options: ["Join", "Fork", "Final", "Composite state"],
+      optionsAr: ["الالتقاء (Join)", "التفرّع (Fork)", "النهاية (Final)", "الحالة المركّبة (Composite state)"],
       answer: 1,
-      explain: "A fork splits; a join synchronizes."
+      explain: "A fork splits; a join synchronizes.",
+      explainAr: "التفرّع (fork) يقسم، والالتقاء (join) يُزامِن."
     }
   ]}
 />

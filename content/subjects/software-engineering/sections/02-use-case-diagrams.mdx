@@ -1,7 +1,9 @@
 ---
 number: 2
 title: Use Case Diagrams
+titleAr: "مخططات حالات الاستخدام"
 summary: Hands-on use case modelling. Covers the questions that find actors and use cases, the full ATM case study (from the problem statement to a model with «include»), the soda machine (scenarios, then «include» and «extend»), the library, restaurant and clinic examples, and writing a complete use case description with the template (normal flow, alternative flows, exceptions).
+summaryAr: "تطبيق عملي على نمذجة حالات الاستخدام (use case): الأسئلة التي تكشف الفاعلين (actors) وحالات الاستخدام، ودراسة حالة الصراف الآلي ATM كاملة (من وصف المشكلة إلى نموذج يستخدم «include»)، وآلة بيع المشروبات الغازية (السيناريوهات، ثم «include» و«extend»)، وأمثلة المكتبة والمطعم والعيادة، وكتابة وصف كامل لحالة الاستخدام باستخدام القالب (المسار العادي، والمسارات البديلة، والاستثناءات)."
 topics: [Identifying actors, Identifying use cases, ATM case study, Soda machine case study, Scenarios and alternative paths, include and extend in practice, Use case template, Alternative flows and exceptions]
 duration: 60 min hands-on
 kind: practical
@@ -25,95 +27,139 @@ bookRefs:
 <Objectives>
 
 - Find the **actors** and **use cases** of a system from a problem description, using guiding questions.
+  <Ar>استخراج **الفاعلين (actors)** و**حالات الاستخدام (use cases)** لنظام ما من وصف المشكلة، باستخدام أسئلة إرشادية.</Ar>
 - Model a complete system (an **ATM**) with primary and secondary actors and «include».
+  <Ar>نمذجة نظام كامل (**صراف آلي ATM**) بفاعلين أساسيين وثانويين وعلاقة التضمين «include».</Ar>
 - Write the **scenarios** of a use case, including alternative paths.
+  <Ar>كتابة **سيناريوهات (scenarios)** حالة الاستخدام، بما فيها المسارات البديلة.</Ar>
 - Apply «include» and «extend» to remove duplication and add optional behaviour.
+  <Ar>تطبيق علاقتي «include» و«extend» لإزالة التكرار وإضافة سلوك اختياري.</Ar>
 - Fill in a full **use case description**: normal flow, alternative flows and exceptions.
+  <Ar>ملء **وصف حالة الاستخدام (use case description)** كاملًا: المسار العادي، والمسارات البديلة (alternative flows)، والاستثناءات.</Ar>
 
 </Objectives>
 
 ## Use cases and actors
 
+<Ar>حالات الاستخدام والفاعلون</Ar>
+
 A **use case** is a sequence of actions that gives something of **measurable value** to an actor; it is a set of scenarios describing an interaction between a user and the system. An **actor** is a person, organization or external system that plays a role in interactions with the system. **Use cases = user requirements**.
+
+<Ar>**حالة الاستخدام (use case)** تسلسل من الإجراءات يقدّم شيئًا ذا **قيمة قابلة للقياس** لفاعل ما؛ وهي مجموعة من السيناريوهات (scenarios) تصف تفاعلًا بين المستخدم والنظام. و**الفاعل (actor)** شخص أو مؤسسة أو نظام خارجي يؤدي دورًا في التفاعلات مع النظام. **حالات الاستخدام = متطلبات المستخدم**.</Ar>
 
 ### Finding them
 
+<Ar>كيف نستخرجها</Ar>
+
 <Grid cols={2}>
-  <Card title="Questions that find actors" tag="who?">
+  <Card title="Questions that find actors" titleAr="أسئلة تكشف الفاعلين" tag="who?">
     Who uses the main functionality? (<strong>primary</strong>) Who maintains and administers the system? (<strong>secondary</strong>) Which hardware devices does it handle? Which other systems does it interact with? Who is interested in its results?
+
+    <Ar>من يستخدم الوظائف الرئيسية؟ (<strong>فاعل أساسي</strong>) من يصون النظام ويديره؟ (<strong>فاعل ثانوي</strong>) ما أجهزة العتاد (hardware) التي يتعامل معها النظام؟ ما الأنظمة الأخرى التي يتفاعل معها؟ من يهتم بنتائجه؟</Ar>
   </Card>
-  <Card title="Questions that find use cases" tag="what?">
+  <Card title="Questions that find use cases" titleAr="أسئلة تكشف حالات الاستخدام" tag="what?">
     Which functions does each actor need? Does the actor need to <strong>read, create, destroy, modify or store</strong> information? Does the actor need to be <strong>notified</strong> of events in the system?
+
+    <Ar>ما الوظائف التي يحتاجها كل فاعل؟ هل يحتاج الفاعل إلى <strong>قراءة المعلومات أو إنشائها أو إتلافها أو تعديلها أو تخزينها</strong>؟ هل يحتاج الفاعل إلى أن <strong>يُخطَر</strong> بالأحداث التي تقع في النظام؟</Ar>
   </Card>
 </Grid>
 
-<Callout type="tip" title="Start from steps">
+<Callout type="tip" title="Start from steps" titleAr="ابدأ من الخطوات">
   List the steps a user takes to complete a task. For example, to place an order: browse the catalogue and select items → call a sales representative → give shipping information → give payment information → receive a confirmation number. Then group the steps into use cases.
+
+  <Ar>اكتب قائمة بالخطوات التي يتبعها المستخدم لإنجاز مهمة ما. فمثلًا، لتقديم طلب شراء: تصفّح الكتالوج واختيار المنتجات ← الاتصال بمندوب مبيعات ← تقديم معلومات الشحن ← تقديم معلومات الدفع ← استلام رقم تأكيد. ثم اجمع الخطوات في حالات استخدام.</Ar>
 </Callout>
 
 ## Case study: the ATM
 
+<Ar>دراسة حالة: الصراف الآلي (ATM)</Ar>
+
 > A bank has several ATMs connected over a wide area network to a central server. Each ATM has a **card reader**, a **cash dispenser**, a **keyboard/display** and a **receipt printer**. A customer can **withdraw** cash from a checking or savings account, **query** an account's balance, and **transfer** funds between accounts. A transaction starts when the customer inserts a card. The system **validates** the card (expiry date, **PIN**, not lost or stolen); after **three wrong PINs** the card is confiscated. Before a withdrawal, the system checks the funds, the **daily limit** and the cash in the dispenser. A receipt is printed and the card ejected. The customer can **cancel** at any time. An **ATM operator** starts up and shuts down the ATM to **replenish cash** and do maintenance.
+<Ar>لدى بنك عدة أجهزة صراف آلي (ATM) متصلة عبر شبكة واسعة النطاق بخادم (server) مركزي. ولكل صراف **قارئ بطاقات**، و**موزّع نقود**، و**لوحة مفاتيح/شاشة**، و**طابعة إيصالات**. يستطيع العميل **سحب** النقود من حساب جارٍ أو حساب توفير، و**الاستعلام** عن رصيد حساب، و**تحويل** الأموال بين الحسابات. تبدأ المعاملة عندما يُدخل العميل بطاقته. ويتحقق النظام من **صلاحية** البطاقة (تاريخ الانتهاء، و**الرقم السري (PIN)**، وأنها غير مفقودة أو مسروقة)؛ وبعد **ثلاثة أرقام سرية خاطئة** تُصادَر البطاقة. وقبل السحب يتحقق النظام من الرصيد، و**الحد اليومي**، والنقود المتوفرة في الموزّع. ثم يُطبع إيصال وتُخرَج البطاقة. ويستطيع العميل **الإلغاء** في أي وقت. ويقوم **مشغّل الصراف (ATM operator)** بتشغيل الصراف وإيقافه من أجل **تزويده بالنقود** وإجراء الصيانة.</Ar>
 
 Applying the questions:
 
-| | Found |
+<Ar>بتطبيق الأسئلة:</Ar>
+
+| | Found <Ar>ما توصلنا إليه</Ar> |
 |---|---|
-| **Primary actor** | ATM Customer: withdraw funds, query account, transfer funds |
-| **Secondary actor** | Operator: add cash, startup, shutdown |
-| **Common behaviour** | Every customer transaction must **validate the PIN** |
+| **Primary actor** <Ar>**الفاعل الأساسي (Primary actor)**</Ar> | ATM Customer: withdraw funds, query account, transfer funds <Ar>عميل الصراف (ATM Customer): سحب الأموال، والاستعلام عن الحساب، وتحويل الأموال</Ar> |
+| **Secondary actor** <Ar>**الفاعل الثانوي (Secondary actor)**</Ar> | Operator: add cash, startup, shutdown <Ar>المشغّل (Operator): إضافة النقود، والتشغيل، والإيقاف</Ar> |
+| **Common behaviour** <Ar>**السلوك المشترك**</Ar> | Every customer transaction must **validate the PIN** <Ar>يجب أن تتضمن كل معاملة للعميل **التحقق من الرقم السري (PIN)**</Ar> |
 
-<SlideFigure page={15} caption="The ATM use case model: Withdraw Funds, Query Account and Transfer Funds each «include» Validate PIN; the Operator adds cash, starts up and shuts down." />
+<SlideFigure page={15} caption="The ATM use case model: Withdraw Funds, Query Account and Transfer Funds each «include» Validate PIN; the Operator adds cash, starts up and shuts down." captionAr="نموذج حالات الاستخدام للصراف الآلي: كلٌّ من Withdraw Funds و Query Account و Transfer Funds تتضمّن «include» الحالة Validate PIN؛ ويضيف المشغّل (Operator) النقود ويشغّل الصراف ويوقفه." />
 
-<SlideFigure page={14} source={1} caption="The ATM transaction flow step by step: start, card validation, choose a transaction, withdrawal and transfer checks, approval, cancellation, record keeping, operator role." />
+<SlideFigure page={14} source={1} caption="The ATM transaction flow step by step: start, card validation, choose a transaction, withdrawal and transfer checks, approval, cancellation, record keeping, operator role." captionAr="تدفق معاملة الصراف الآلي خطوة بخطوة: البدء، والتحقق من البطاقة، واختيار المعاملة، وفحوص السحب والتحويل، والموافقة، والإلغاء، وحفظ السجلات، ودور المشغّل." />
 
 ## Case study: the soda machine
 
+<Ar>دراسة حالة: آلة بيع المشروبات الغازية</Ar>
+
 ### Scenarios of "Buy soda"
+
+<Ar>سيناريوهات «شراء مشروب غازي (Buy soda)»</Ar>
 
 Each use case is a **collection of scenarios**. For each scenario, record the **initiating actor**, the **preconditions**, the **steps** and the **postconditions**.
 
-| Scenario | Steps | Postcondition |
+<Ar>كل حالة استخدام هي **مجموعة من السيناريوهات (scenarios)**. ولكل سيناريو، سجّل **الفاعل المبادِر (initiating actor)**، و**الشروط المسبقة (preconditions)**، و**الخطوات**، و**الشروط اللاحقة (postconditions)**.</Ar>
+
+| Scenario <Ar>السيناريو</Ar> | Steps <Ar>الخطوات</Ar> | Postcondition <Ar>الشرط اللاحق</Ar> |
 |---|---|---|
-| **1 · Buy soda** (main) | The customer inserts money and makes a selection; the machine has the soda in stock and delivers a cold can | The customer has a soda |
-| **2 · Out of soda** | The machine is out of the selected brand, shows a message and offers the money back; the customer picks another brand or takes the refund | A soda, or the money returned |
-| **3 · Incorrect amount** | If the machine has change, it returns the difference and delivers the soda; otherwise it returns the money and asks for the correct change | A soda and change, or the money returned |
+| **1 · Buy soda** (main) <Ar>**1 · شراء مشروب غازي** (الرئيسي)</Ar> | The customer inserts money and makes a selection; the machine has the soda in stock and delivers a cold can <Ar>يُدخل العميل النقود ويختار مشروبًا؛ والمشروب متوفر في الآلة فتُخرج علبة باردة</Ar> | The customer has a soda <Ar>يحصل العميل على المشروب</Ar> |
+| **2 · Out of soda** <Ar>**2 · نفاد المشروب**</Ar> | The machine is out of the selected brand, shows a message and offers the money back; the customer picks another brand or takes the refund <Ar>نفد الصنف المختار من الآلة، فتعرض رسالة وتعرض إعادة النقود؛ فيختار العميل صنفًا آخر أو يسترد نقوده</Ar> | A soda, or the money returned <Ar>مشروب، أو استرداد النقود</Ar> |
+| **3 · Incorrect amount** <Ar>**3 · مبلغ غير صحيح**</Ar> | If the machine has change, it returns the difference and delivers the soda; otherwise it returns the money and asks for the correct change <Ar>إذا كانت لدى الآلة فكّة، أعادت الفرق وأخرجت المشروب؛ وإلا أعادت النقود وطلبت المبلغ الصحيح</Ar> | A soda and change, or the money returned <Ar>مشروب مع الباقي، أو استرداد النقود</Ar> |
 
 The precondition for all three is a **thirsty customer**.
 
+<Ar>والشرط المسبق للسيناريوهات الثلاثة هو **عميل عطشان**.</Ar>
+
 ### More actors: supplier and collector
 
+<Ar>فاعلون آخرون: المورِّد والمحصِّل</Ar>
+
 - **Restock** (Supplier's representative): unsecure the machine, open the front, fill each compartment, refill the change reserve, close and secure the front.
+  <Ar>**إعادة التعبئة (Restock)** (مندوب المورِّد): فك تأمين الآلة، وفتح الواجهة، وملء كل خانة، وإعادة ملء احتياطي الفكّة، ثم إغلاق الواجهة وتأمينها.</Ar>
 - **Collect** (Collector): unsecure and open the front, remove the money, close and secure.
+  <Ar>**التحصيل (Collect)** (المحصِّل): فك تأمين الواجهة وفتحها، وإخراج النقود، ثم الإغلاق والتأمين.</Ar>
 
 Both share steps, so factor them out with **«include»**: *Expose the inside* (unsecure and open) and *Unexpose the inside* (close and secure).
 
-<SlideFigure page={18} source={3} caption="Restock and Collect both «include» Expose the inside and Unexpose the inside." />
+<Ar>تشترك الحالتان في خطوات، لذا نستخرجها في حالات مستقلة باستخدام **«include»**: *كشف الداخل (Expose the inside)* (فك التأمين والفتح) و *إخفاء الداخل (Unexpose the inside)* (الإغلاق والتأمين).</Ar>
+
+<SlideFigure page={18} source={3} caption="Restock and Collect both «include» Expose the inside and Unexpose the inside." captionAr="تتضمّن «include» كلٌّ من Restock و Collect الحالتين Expose the inside و Unexpose the inside." />
 
 Now add optional behaviour with **«extend»**. *Restock according to sales* extends *Restock* at the **extension point** "before filling the compartments": stock more of the brands that sell best.
 
-<SlideFigure page={20} source={3} caption="«extend» with an extension point: Restock according to sales adds steps to Restock before the compartments are filled." />
+<Ar>والآن نضيف سلوكًا اختياريًا باستخدام **«extend»**. فالحالة *إعادة التعبئة حسب المبيعات (Restock according to sales)* توسّع الحالة *Restock* عند **نقطة التوسيع (extension point)** «قبل ملء الخانات»: أي تخزين كميات أكبر من الأصناف الأكثر مبيعًا.</Ar>
+
+<SlideFigure page={20} source={3} caption="«extend» with an extension point: Restock according to sales adds steps to Restock before the compartments are filled." captionAr="علاقة «extend» مع نقطة توسيع: تضيف Restock according to sales خطوات إلى Restock قبل ملء الخانات." />
 
 ## More examples
 
-<SlideFigure page={16} caption="Library management system: Administrator, Librarian, Faculty Member and Student actors around Login, Search Book, Issue Book, Reserve Book, Update Member Record and other use cases." />
+<Ar>أمثلة أخرى</Ar>
 
-<SlideFigure page={21} caption="A clinic: the Patient makes, cancels and requests appointments and medication and pays bills; Request Medication «include»s Check patient record, and Pay by instalment «extend»s Pay bill." />
+<SlideFigure page={16} caption="Library management system: Administrator, Librarian, Faculty Member and Student actors around Login, Search Book, Issue Book, Reserve Book, Update Member Record and other use cases." captionAr="نظام إدارة المكتبة: الفاعلون Administrator و Librarian و Faculty Member و Student حول حالات الاستخدام Login و Search Book و Issue Book و Reserve Book و Update Member Record وغيرها." />
+
+<SlideFigure page={21} caption="A clinic: the Patient makes, cancels and requests appointments and medication and pays bills; Request Medication «include»s Check patient record, and Pay by instalment «extend»s Pay bill." captionAr="عيادة: يحجز المريض (Patient) المواعيد ويلغيها، ويطلب المواعيد والأدوية، ويدفع الفواتير؛ وتتضمّن «include» الحالة Request Medication الحالة Check patient record، وتوسّع «extend» الحالة Pay by instalment الحالة Pay bill." />
 
 ## Describing a use case: the template
 
+<Ar>وصف حالة الاستخدام: القالب</Ar>
+
 The diagram is only an overview; each use case needs a **description**. A complete template has these fields:
 
-| Field | What to write |
+<Ar>المخطط مجرد نظرة عامة؛ فكل حالة استخدام تحتاج إلى **وصف (description)**. ويتضمن القالب الكامل الحقول التالية:</Ar>
+
+| Field <Ar>الحقل</Ar> | What to write <Ar>ما تكتبه</Ar> |
 |---|---|
-| **Use Case ID** | A unique identifier, e.g. `UC-1.2.1` |
-| **Use Case Name** | An active verb phrase, e.g. *Withdraw Cash* |
-| **Actors** | The **primary** actor that initiates it, and any **secondary** actors |
-| **Preconditions** | What must be true **before** it starts (numbered) |
-| **Postconditions** | The state **after** it: **minimal guarantees** (even on failure) and **success guarantees** |
-| **Normal flow** | The numbered user actions and system responses under normal conditions |
-| **Alternative flows** | Legitimate **branches** from a numbered step, e.g. *4a*, *4b*, and where the flow resumes |
-| **Exceptions** | **Error conditions** and how the system responds, e.g. *2a. invalid PIN* |
+| **Use Case ID** <Ar>**معرّف حالة الاستخدام**</Ar> | A unique identifier, e.g. `UC-1.2.1` <Ar>معرّف فريد، مثل `UC-1.2.1`</Ar> |
+| **Use Case Name** <Ar>**اسم حالة الاستخدام**</Ar> | An active verb phrase, e.g. *Withdraw Cash* <Ar>عبارة فعلية بصيغة المبني للمعلوم، مثل *سحب النقود (Withdraw Cash)*</Ar> |
+| **Actors** <Ar>**الفاعلون**</Ar> | The **primary** actor that initiates it, and any **secondary** actors <Ar>الفاعل **الأساسي** الذي يبدؤها، وأي فاعلين **ثانويين**</Ar> |
+| **Preconditions** <Ar>**الشروط المسبقة**</Ar> | What must be true **before** it starts (numbered) <Ar>ما يجب أن يكون صحيحًا **قبل** أن تبدأ (مرقّمة)</Ar> |
+| **Postconditions** <Ar>**الشروط اللاحقة**</Ar> | The state **after** it: **minimal guarantees** (even on failure) and **success guarantees** <Ar>الحالة **بعد** انتهائها: **الضمانات الدنيا (minimal guarantees)** (حتى عند الإخفاق) و**ضمانات النجاح (success guarantees)**</Ar> |
+| **Normal flow** <Ar>**المسار العادي**</Ar> | The numbered user actions and system responses under normal conditions <Ar>إجراءات المستخدم واستجابات النظام المرقّمة في الظروف العادية</Ar> |
+| **Alternative flows** <Ar>**المسارات البديلة**</Ar> | Legitimate **branches** from a numbered step, e.g. *4a*, *4b*, and where the flow resumes <Ar>**تفرعات** مشروعة من خطوة مرقّمة، مثل *4a* و *4b*، والموضع الذي يُستأنف منه المسار</Ar> |
+| **Exceptions** <Ar>**الاستثناءات**</Ar> | **Error conditions** and how the system responds, e.g. *2a. invalid PIN* <Ar>**حالات الخطأ** وكيف يستجيب لها النظام، مثل *2a. رقم سري (PIN) غير صحيح*</Ar> |
 
 ```text title="UC-1.2.1 · Withdraw Cash"
 Actors          Customer (primary), Bank system (secondary)
@@ -139,53 +185,75 @@ Exceptions      2a. Invalid PIN: the transaction is refused and the customer re-
                     the PIN (the card is kept after three failures); resume at step 3.
 ```
 
-<SlideFigure page={22} source={1} caption="A filled-in description for the library system's Search use case: actors, precondition, main scenario and alternate scenarios." />
+<SlideFigure page={22} source={1} caption="A filled-in description for the library system's Search use case: actors, precondition, main scenario and alternate scenarios." captionAr="وصف مكتمل لحالة الاستخدام Search في نظام المكتبة: الفاعلون، والشرط المسبق، والسيناريو الرئيسي، والسيناريوهات البديلة." />
 
 <Takeaways>
 
 - **Use cases = user requirements.** Find actors (who uses, maintains, connects?) and use cases (what do they read, create, change, or get notified about?).
+  <Ar>**حالات الاستخدام = متطلبات المستخدم.** استخرج الفاعلين (من يستخدم النظام أو يصونه أو يتصل به؟) وحالات الاستخدام (ما الذي يقرؤونه أو ينشئونه أو يغيّرونه أو يُخطَرون به؟).</Ar>
 - A use case is a set of **scenarios**: the main success scenario plus **alternative paths** (out of stock, wrong amount…).
+  <Ar>حالة الاستخدام مجموعة من **السيناريوهات**: سيناريو النجاح الرئيسي إضافةً إلى **المسارات البديلة** (نفاد المخزون، مبلغ خاطئ…).</Ar>
 - Factor common steps into an **«include»**d use case; add optional steps with **«extend»** at an **extension point**.
+  <Ar>استخرج الخطوات المشتركة في حالة استخدام مُضمَّنة بعلاقة **«include»**؛ وأضف الخطوات الاختيارية باستخدام **«extend»** عند **نقطة توسيع (extension point)**.</Ar>
 - Describe each use case with **ID, name, actors, pre/postconditions, normal flow, alternative flows and exceptions**.
+  <Ar>صِف كل حالة استخدام من خلال **المعرّف، والاسم، والفاعلين، والشروط المسبقة واللاحقة، والمسار العادي، والمسارات البديلة، والاستثناءات**.</Ar>
 
 </Takeaways>
 
 ## Practice
 
-<Exercise title="Student registration system" level="medium">
+<Ar>تدريب</Ar>
+
+<Exercise title="Student registration system" titleAr="نظام تسجيل الطلاب" level="medium">
 
 Students register for courses each semester using a university system. An administrator manages the student records. Students must log in before registering or viewing grades. Draw the use case diagram (as a list) and write the description of *Register Course*.
+
+<Ar>يسجّل الطلاب في المقررات كل فصل دراسي باستخدام نظام جامعي، ويدير مدير النظام سجلات الطلاب. ويجب على الطلاب تسجيل الدخول قبل التسجيل في المقررات أو عرض الدرجات. ارسم مخطط حالات الاستخدام (على هيئة قائمة) واكتب وصف الحالة *تسجيل مقرر (Register Course)*.</Ar>
 
 <Solution>
 
 **Actors**: Student (primary) and Admin (primary for managing students).
 
+<Ar>**الفاعلون**: الطالب (Student) (أساسي) ومدير النظام (Admin) (أساسي فيما يخص إدارة الطلاب).</Ar>
+
 **Use cases**:
+
+<Ar>**حالات الاستخدام**:</Ar>
+
 - Student: *Register Course*, *View Grades*.
+  <Ar>الطالب: *تسجيل مقرر (Register Course)*، و *عرض الدرجات (View Grades)*.</Ar>
 - Admin: *Manage Students*.
+  <Ar>مدير النظام: *إدارة الطلاب (Manage Students)*.</Ar>
 - Both *Register Course* and *View Grades* «include» *Login* (as does *Manage Students*).
+  <Ar>كلٌّ من *Register Course* و *View Grades* تتضمّن «include» الحالة *تسجيل الدخول (Login)* (وكذلك *Manage Students*).</Ar>
 
 **UC-2 · Register Course**
 
-| Field | Content |
+<Ar>**UC-2 · تسجيل مقرر**</Ar>
+
+| Field <Ar>الحقل</Ar> | Content <Ar>المحتوى</Ar> |
 |---|---|
-| **Actor** | Student |
-| **Precondition** | The student is logged in, and registration is open |
-| **Normal flow** | 1. The student opens course registration. 2. The system lists the courses available this semester. 3. The student selects courses. 4. The system checks prerequisites, credit limits and timetable clashes. 5. The system saves the registration and shows a confirmation |
-| **Alternative flow** | 4a. A prerequisite is missing: the system rejects that course and the student selects another; resume at step 3 |
-| **Postcondition** | The student is enrolled in the selected courses |
+| **Actor** <Ar>**الفاعل**</Ar> | Student <Ar>الطالب</Ar> |
+| **Precondition** <Ar>**الشرط المسبق**</Ar> | The student is logged in, and registration is open <Ar>الطالب مسجّل الدخول، والتسجيل مفتوح</Ar> |
+| **Normal flow** <Ar>**المسار العادي**</Ar> | 1. The student opens course registration. 2. The system lists the courses available this semester. 3. The student selects courses. 4. The system checks prerequisites, credit limits and timetable clashes. 5. The system saves the registration and shows a confirmation <Ar>1. يفتح الطالب صفحة تسجيل المقررات. 2. يعرض النظام المقررات المتاحة هذا الفصل الدراسي. 3. يختار الطالب المقررات. 4. يتحقق النظام من المتطلبات السابقة (prerequisites)، وحدود الساعات المعتمدة، وتعارضات الجدول. 5. يحفظ النظام التسجيل ويعرض تأكيدًا</Ar> |
+| **Alternative flow** <Ar>**المسار البديل**</Ar> | 4a. A prerequisite is missing: the system rejects that course and the student selects another; resume at step 3 <Ar>4a. أحد المتطلبات السابقة غير مستوفى: يرفض النظام ذلك المقرر ويختار الطالب مقررًا آخر؛ ويُستأنف المسار من الخطوة 3</Ar> |
+| **Postcondition** <Ar>**الشرط اللاحق**</Ar> | The student is enrolled in the selected courses <Ar>يُسجَّل الطالب في المقررات المختارة</Ar> |
 
 </Solution>
 
 </Exercise>
 
-<Exercise title="Restaurant" level="medium">
+<Exercise title="Restaurant" titleAr="المطعم" level="medium">
 
 In a restaurant, a **waiter** takes orders and serves food, the **chef** cooks, a **client** orders, eats and pays, and a **cashier** accepts payment. Drinks are ordered only if the client wants water. Which relationships would you use?
+
+<Ar>في مطعم، يتلقى **النادل (waiter)** الطلبات ويقدّم الطعام، ويطهو **الطاهي (chef)**، ويطلب **الزبون (client)** الطعام ويأكل ويدفع، ويتسلّم **أمين الصندوق (cashier)** المدفوعات. ولا تُطلب المشروبات إلا إذا أراد الزبون ماءً. ما العلاقات التي ستستخدمها؟</Ar>
 
 <Solution>
 
 Associations: Waiter with *Receive order* and *Serve food*; Chef with *Cook food*; Client with *Order food*, *Eat food* and *Pay for food*; Cashier with *Accept payment*. The water-related use cases (*Order water*, *Serve water*, *Drink water*, *Pay for water*) **«extend»** the matching food use cases, with the condition *[if water was ordered]*. They are optional, so «extend», not «include».
+
+<Ar>الارتباطات (associations): النادل (Waiter) مع *تلقي الطلب (Receive order)* و *تقديم الطعام (Serve food)*؛ والطاهي (Chef) مع *طهو الطعام (Cook food)*؛ والزبون (Client) مع *طلب الطعام (Order food)* و *تناول الطعام (Eat food)* و *دفع ثمن الطعام (Pay for food)*؛ وأمين الصندوق (Cashier) مع *تسلّم الدفع (Accept payment)*. أما حالات الاستخدام المتعلقة بالماء (*Order water* و *Serve water* و *Drink water* و *Pay for water*) فهي **توسّع «extend»** حالات استخدام الطعام المقابلة لها، بالشرط *[if water was ordered]* (أي إذا طُلب الماء). فهي اختيارية، ولذلك نستخدم «extend» لا «include».</Ar>
 
 </Solution>
 
@@ -195,33 +263,48 @@ Associations: Waiter with *Receive order* and *Serve food*; Chef with *Cook food
   questions={[
     {
       q: "In the ATM case study, who is the secondary actor?",
+      qAr: "في دراسة حالة الصراف الآلي، من الفاعل الثانوي؟",
       options: ["ATM Customer", "Operator", "Bank card", "Receipt printer"],
+      optionsAr: ["عميل الصراف", "المشغّل (Operator)", "البطاقة المصرفية", "طابعة الإيصالات"],
       answer: 1,
-      explain: "The Operator maintains the ATM (add cash, startup, shutdown); the customer starts transactions."
+      explain: "The Operator maintains the ATM (add cash, startup, shutdown); the customer starts transactions.",
+      explainAr: "المشغّل يصون الصراف (إضافة النقود، والتشغيل، والإيقاف)؛ أما العميل فيبدأ المعاملات."
     },
     {
       q: "Restock and Collect both start by unsecuring and opening the machine. How do you model this?",
+      qAr: "تبدأ كلٌّ من Restock و Collect بفك تأمين الآلة وفتحها. كيف تنمذج ذلك؟",
       options: ["Generalization", "«extend»", "«include» a shared 'Expose the inside' use case", "A second system boundary"],
+      optionsAr: ["التعميم (Generalization)", "«extend»", "«include» لحالة استخدام مشتركة هي «Expose the inside»", "حدود نظام ثانية"],
       answer: 2,
-      explain: "Common steps go into an included use case."
+      explain: "Common steps go into an included use case.",
+      explainAr: "الخطوات المشتركة توضع في حالة استخدام مُضمَّنة (included)."
     },
     {
       q: "'Restock according to sales' is added before filling compartments. Which relationship?",
+      qAr: "تُضاف الحالة «Restock according to sales» قبل ملء الخانات. ما العلاقة المستخدمة؟",
       options: ["«include»", "«extend» at an extension point", "Association", "Composition"],
+      optionsAr: ["«include»", "«extend» عند نقطة توسيع", "الارتباط (Association)", "التركيب (Composition)"],
       answer: 1,
-      explain: "It adds optional steps to Restock at a defined extension point."
+      explain: "It adds optional steps to Restock at a defined extension point.",
+      explainAr: "تضيف خطوات اختيارية إلى Restock عند نقطة توسيع محددة."
     },
     {
       q: "In a use case template, '2a. invalid PIN' belongs to…",
+      qAr: "في قالب حالة الاستخدام، ينتمي البند «invalid PIN (2a)» إلى…",
       options: ["Preconditions", "Normal flow", "Exceptions", "Postconditions"],
+      optionsAr: ["الشروط المسبقة", "المسار العادي", "الاستثناءات", "الشروط اللاحقة"],
       answer: 2,
-      explain: "Exceptions describe error conditions and the system's response."
+      explain: "Exceptions describe error conditions and the system's response.",
+      explainAr: "تصف الاستثناءات حالات الخطأ واستجابة النظام لها."
     },
     {
       q: "Which question helps identify a SECONDARY actor?",
+      qAr: "أي سؤال يساعد على تحديد الفاعل الثانوي؟",
       options: ["Who uses the main functionality?", "Who maintains and administers the system?", "What does the actor need to read?", "Which events must the actor be notified of?"],
+      optionsAr: ["من يستخدم الوظائف الرئيسية؟", "من يصون النظام ويديره؟", "ما الذي يحتاج الفاعل إلى قراءته؟", "ما الأحداث التي يجب إخطار الفاعل بها؟"],
       answer: 1,
-      explain: "Maintainers and administrators are typically secondary actors."
+      explain: "Maintainers and administrators are typically secondary actors.",
+      explainAr: "القائمون على صيانة النظام وإدارته يكونون عادةً فاعلين ثانويين."
     }
   ]}
 />

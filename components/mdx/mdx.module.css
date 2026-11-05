@@ -484,3 +484,35 @@
   text-align: center;
   font-size: var(--text-sm);
 }
+
+/* ---------- Arabic lines inside small labels ---------- */
+.figureText {
+  min-width: 0;
+}
+
+/* Labels set in tiny uppercase type: Arabic needs a readable size of its own. */
+.definitionTerm :global(.ar),
+.panelTitle :global(.ar),
+.exerciseKicker :global(.ar) {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.definitionTerm :global(.ar) {
+  color: inherit;
+  margin-top: 2px;
+}
+
+/* The title spans the card, so its Arabic line aligns right like the card's Arabic text. */
+.cardTitle {
+  flex: 1;
+  min-width: 0;
+}
+
+.calloutTitle :global(.ar),
+.cardTitle :global(.ar),
+.exerciseTitle :global(.ar) {
+  font-family: var(--font-arabic);
+  font-size: 0.95em;
+  color: inherit;
+}

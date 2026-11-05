@@ -1,7 +1,9 @@
 ---
 number: 0
 title: Introduction to Linux and the Lab Setup
+titleAr: "مقدمة إلى لينكس وتجهيز بيئة المعمل"
 summary: What an OS does from the user's side, GUI vs CLI, how the terminal, shell and kernel fit together, Linux distributions, and how to get an Ubuntu environment running for the labs, through WSL or a VirtualBox virtual machine, plus the NDG Linux Essentials course.
+summaryAr: "ما الذي يفعله نظام التشغيل من جهة المستخدم، والواجهة الرسومية (GUI) مقابل سطر الأوامر (CLI)، وكيف تعمل الطرفية (terminal) والصدفة (shell) والنواة (kernel) معًا، وتوزيعات لينكس (Linux distributions)، وكيف تُشغِّل بيئة Ubuntu للمعامل عبر WSL أو آلة افتراضية (virtual machine) على VirtualBox، إضافةً إلى مقرر NDG Linux Essentials."
 kind: concept
 topics: [What an OS manages, GUI vs CLI, Terminal, Shell, Kernel, Distributions, WSL, VirtualBox, NDG Linux Essentials]
 duration: 25 min + setup
@@ -17,37 +19,53 @@ bookRefs:
 <Objectives>
 
 - Explain which **resources** an OS manages and the two main **user-interface** styles.
+  <Ar>شرح **الموارد (resources)** التي يديرها نظام التشغيل، والنمطين الرئيسيين **لواجهة المستخدم (user interface)**.</Ar>
 - Describe how the **terminal**, the **shell** and the **kernel** work together.
+  <Ar>وصف كيف تعمل **الطرفية (terminal)** و**الصدفة (shell)** و**النواة (kernel)** معًا.</Ar>
 - Name common **Linux distributions** and the **default shell**.
+  <Ar>ذكر أشهر **توزيعات لينكس (Linux distributions)** و**الصدفة الافتراضية (default shell)**.</Ar>
 - Set up **Ubuntu** for the labs with **WSL** or a **VirtualBox** virtual machine.
+  <Ar>تجهيز **Ubuntu** للمعامل باستخدام **WSL** أو آلة افتراضية (virtual machine) على **VirtualBox**.</Ar>
 
 </Objectives>
 
 ## What the OS does for you
 
+<Ar>ما الذي يفعله نظام التشغيل من أجلك</Ar>
+
 An operating system **manages the system's resources**: the **disk** (files), **input devices** (keyboard, mouse), **output devices** (screen, printer) and **software processes** (running programs). It sits between you, your programs and the hardware, as covered in Lecture 1.
 
-<SlideFigure page={3} caption="The OS manages the CPU, RAM, disk, input and output devices, and software processes." />
+<Ar>يتولّى نظام التشغيل **إدارة موارد النظام (system resources)**: **القرص (disk)** (الملفات)، و**أجهزة الإدخال (input devices)** (لوحة المفاتيح والفأرة)، و**أجهزة الإخراج (output devices)** (الشاشة والطابعة)، و**العمليات البرمجية (software processes)** (البرامج قيد التشغيل). وهو يقع بينك وبين برامجك والعتاد (hardware)، كما شرحنا في المحاضرة 1.</Ar>
 
-| Interface | You interact by… | Strengths |
+<SlideFigure page={3} caption="The OS manages the CPU, RAM, disk, input and output devices, and software processes." captionAr="يدير نظام التشغيل المعالج (CPU) والذاكرة (RAM) والقرص وأجهزة الإدخال والإخراج والعمليات البرمجية." />
+
+| Interface <Ar>الواجهة</Ar> | You interact by… <Ar>تتفاعل عن طريق…</Ar> | Strengths <Ar>نقاط القوة</Ar> |
 |---|---|---|
-| **GUI**: graphical user interface | Clicking icons, windows and menus | Easy to learn and discover |
-| **CLI**: command-line interface | Typing commands | Fast, precise, **scriptable**, and works over remote connections with few resources |
+| **GUI**: graphical user interface <Ar>**GUI**: الواجهة الرسومية للمستخدم</Ar> | Clicking icons, windows and menus <Ar>النقر على الأيقونات والنوافذ والقوائم</Ar> | Easy to learn and discover <Ar>سهلة التعلّم والاستكشاف</Ar> |
+| **CLI**: command-line interface <Ar>**CLI**: واجهة سطر الأوامر</Ar> | Typing commands <Ar>كتابة الأوامر</Ar> | Fast, precise, **scriptable**, and works over remote connections with few resources <Ar>سريعة ودقيقة و**قابلة للأتمتة بالسكربتات (scriptable)**، وتعمل عبر الاتصالات البعيدة بموارد قليلة</Ar> |
 
 Desktop OSes include Windows, macOS and Linux distributions. Mobile OSes include Android (built on the Linux kernel) and iOS.
 
+<Ar>من أنظمة تشغيل الحواسيب المكتبية (Desktop) ويندوز (Windows) و macOS وتوزيعات لينكس، ومن أنظمة تشغيل الهواتف المحمولة أندرويد (Android) (المبني على نواة لينكس) و iOS.</Ar>
+
 ## Terminal, shell and kernel
+
+<Ar>الطرفية والصدفة والنواة</Ar>
 
 <Steps>
 
 1. The **terminal** is the window (an application) that accepts what you type and displays output. Open one in Ubuntu with **Ctrl + Alt + T**.
+   <Ar>**الطرفية (terminal)** هي النافذة (وهي تطبيق) التي تستقبل ما تكتبه وتعرض المخرجات. افتح واحدة في Ubuntu باستخدام **Ctrl + Alt + T**.</Ar>
 2. The **shell** **interprets** your command and asks the OS to run it. Ubuntu's default shell is **Bash** (Bourne-Again SHell).
+   <Ar>**الصدفة (shell)** **تفسّر** أمرك وتطلب من نظام التشغيل تنفيذه. والصدفة الافتراضية في Ubuntu هي **Bash** (Bourne-Again SHell).</Ar>
 3. The **kernel** is the core of the OS. It communicates **directly with the hardware** and carries out the request through system calls.
+   <Ar>**النواة (kernel)** هي لبّ نظام التشغيل، فهي تتواصل **مباشرةً مع العتاد (hardware)** وتنفّذ الطلب عبر استدعاءات النظام (system calls).</Ar>
 4. The **hardware** does the actual work.
+   <Ar>**العتاد (hardware)** هو الذي يؤدي العمل الفعلي.</Ar>
 
 </Steps>
 
-<SlideFigure page={7} caption="The terminal passes your command to the shell, which runs it through the kernel on the hardware." />
+<SlideFigure page={7} caption="The terminal passes your command to the shell, which runs it through the kernel on the hardware." captionAr="تمرّر الطرفية أمرك إلى الصدفة، التي تنفّذه عبر النواة على العتاد." />
 
 ```bash title="Terminal"
 echo $SHELL      # /bin/bash  — which shell you are using
@@ -57,36 +75,55 @@ uname -r         # e.g. 6.8.0-45-generic — the kernel release
 
 ## Linux distributions
 
+<Ar>توزيعات لينكس</Ar>
+
 The **Linux kernel** alone isn't a complete OS. A **distribution** packages the kernel with the GNU tools, a package manager, a desktop and applications.
 
-| Family | Distributions | Package manager |
+<Ar>**نواة لينكس (Linux kernel)** وحدها ليست نظام تشغيل كاملًا. أما **التوزيعة (distribution)** فتجمع النواة مع أدوات GNU ومدير الحزم (package manager) وسطح مكتب وتطبيقات.</Ar>
+
+| Family <Ar>العائلة</Ar> | Distributions <Ar>التوزيعات</Ar> | Package manager <Ar>مدير الحزم</Ar> |
 |---|---|---|
-| Debian | **Ubuntu**, Debian, Linux Mint, Kali | `apt` (`.deb`) |
-| Red Hat | Fedora, RHEL, CentOS Stream, Rocky | `dnf` / `yum` (`.rpm`) |
-| Others | Arch, openSUSE, Alpine | `pacman`, `zypper`, `apk` |
+| Debian <Ar>ديبيان (Debian)</Ar> | **Ubuntu**, Debian, Linux Mint, Kali <Ar>**أوبونتو (Ubuntu)**، وديبيان (Debian)، ولينكس منت (Linux Mint)، وكالي (Kali)</Ar> | `apt` (`.deb`) |
+| Red Hat <Ar>ريد هات (Red Hat)</Ar> | Fedora, RHEL, CentOS Stream, Rocky <Ar>فيدورا (Fedora)، و RHEL، و CentOS Stream، وروكي (Rocky)</Ar> | `dnf` / `yum` (`.rpm`) |
+| Others <Ar>أخرى</Ar> | Arch, openSUSE, Alpine <Ar>آرك (Arch)، و openSUSE، وألباين (Alpine)</Ar> | `pacman`, `zypper`, `apk` |
 
 The labs use **Ubuntu**.
 
+<Ar>تستخدم المعامل توزيعة **Ubuntu**.</Ar>
+
 ## Getting Ubuntu for the labs
 
+<Ar>الحصول على Ubuntu للمعامل</Ar>
+
 <Grid cols={2}>
-  <Card title="Option A: WSL (Windows)" tag="quickest">
+  <Card title="Option A: WSL (Windows)" titleAr="الخيار أ: WSL (Windows)" tag="quickest">
     The Windows Subsystem for Linux runs a real Ubuntu inside Windows. Open PowerShell <strong>as administrator</strong>, run <code>wsl --install</code>, reboot, then open <strong>Ubuntu</strong> from the Start menu and create a user name and password.
+
+    <Ar>يشغّل نظام ويندوز الفرعي للينكس (Windows Subsystem for Linux) نسخة Ubuntu حقيقية داخل ويندوز. افتح PowerShell <strong>بصلاحيات مدير النظام (administrator)</strong>، ونفّذ <code>wsl --install</code>، وأعد تشغيل الجهاز، ثم افتح <strong>Ubuntu</strong> من قائمة ابدأ (Start) وأنشئ اسم مستخدم وكلمة مرور.</Ar>
   </Card>
-  <Card title="Option B: a VirtualBox VM" tag="full desktop">
+  <Card title="Option B: a VirtualBox VM" titleAr="الخيار ب: آلة افتراضية على VirtualBox" tag="full desktop">
     A complete Ubuntu desktop in a window, isolated from your main system. It is closest to the lab machines.
+
+    <Ar>سطح مكتب Ubuntu كامل داخل نافذة، معزول عن نظامك الأساسي، وهو الأقرب إلى أجهزة المعمل.</Ar>
   </Card>
 </Grid>
 
 The steps for **Option B** from the slides:
 
+<Ar>خطوات **الخيار ب** كما في الشرائح:</Ar>
+
 <Steps>
 
 1. **Enable virtualization** (Intel VT-x / AMD-V) in your BIOS/UEFI settings.
+   <Ar>**فعّل المحاكاة الافتراضية (virtualization)** (Intel VT-x / AMD-V) من إعدادات BIOS/UEFI.</Ar>
 2. **Install the prerequisites** VirtualBox asks for. The slides mention the JDK; current VirtualBox versions may also need the Microsoft Visual C++ redistributable.
+   <Ar>**ثبّت المتطلبات المسبقة (prerequisites)** التي يطلبها VirtualBox. تذكر الشرائح حزمة JDK، وقد تحتاج الإصدارات الحالية من VirtualBox أيضًا إلى حزمة Microsoft Visual C++ redistributable.</Ar>
 3. **Install VirtualBox**.
+   <Ar>**ثبّت VirtualBox**.</Ar>
 4. **Create a virtual machine**: Linux / Ubuntu (64-bit), at least 4 GB RAM, 2 CPUs and a 25 GB disk.
+   <Ar>**أنشئ آلة افتراضية (virtual machine)**: Linux / Ubuntu (64-bit)، بذاكرة RAM لا تقل عن 4 GB، ومعالجين (2 CPUs)، وقرص بسعة 25 GB.</Ar>
 5. **Install Ubuntu** in the VM from the Ubuntu Desktop ISO.
+   <Ar>**ثبّت Ubuntu** على الآلة الافتراضية من ملف Ubuntu Desktop ISO.</Ar>
 
 </Steps>
 
@@ -97,21 +134,29 @@ wsl -l -v                # list installed distributions and their WSL version
 
 ## The NDG Linux Essentials course
 
+<Ar>مقرر NDG Linux Essentials</Ar>
+
 The labs follow **NDG Linux Essentials** on Cisco Networking Academy (netacad.com). Sign up for the free course and **start from Module 5 (Lab 5)**. Its virtual machines let you practise right in the browser.
 
-| Our section | NDG module |
+<Ar>تتبع المعامل مقرر **NDG Linux Essentials** على منصة Cisco Networking Academy (netacad.com). سجّل في هذا المقرر المجاني و**ابدأ من الوحدة 5 (Lab 5)**، إذ تتيح لك آلاته الافتراضية التدرّب مباشرةً داخل المتصفح.</Ar>
+
+| Our section <Ar>السكشن الخاص بنا</Ar> | NDG module <Ar>وحدة NDG</Ar> |
 |---|---|
-| Section 1 · Command-line skills | Module 5: Command Line Skills |
-| Section 2 · Getting help | Module 6: Getting Help |
-| Section 3 · Files and directories | Modules 7–8: Navigating the Filesystem, Managing Files and Directories |
-| Section 4 · Archiving and compression | Module 9: Archiving and Compression |
+| Section 1 · Command-line skills <Ar>السكشن 1 · مهارات سطر الأوامر</Ar> | Module 5: Command Line Skills <Ar>الوحدة 5: مهارات سطر الأوامر (Command Line Skills)</Ar> |
+| Section 2 · Getting help <Ar>السكشن 2 · الحصول على المساعدة</Ar> | Module 6: Getting Help <Ar>الوحدة 6: الحصول على المساعدة (Getting Help)</Ar> |
+| Section 3 · Files and directories <Ar>السكشن 3 · الملفات والمجلدات</Ar> | Modules 7–8: Navigating the Filesystem, Managing Files and Directories <Ar>الوحدتان 7–8: التنقل في نظام الملفات (Navigating the Filesystem)، وإدارة الملفات والمجلدات (Managing Files and Directories)</Ar> |
+| Section 4 · Archiving and compression <Ar>السكشن 4 · الأرشفة والضغط</Ar> | Module 9: Archiving and Compression <Ar>الوحدة 9: الأرشفة والضغط (Archiving and Compression)</Ar> |
 
 <Takeaways>
 
 - The OS manages **disks, devices and processes**; you reach it through a **GUI** or a **CLI**.
+  <Ar>يدير نظام التشغيل **الأقراص والأجهزة والعمليات (processes)**، وتصل إليه عبر **واجهة رسومية (GUI)** أو **سطر أوامر (CLI)**.</Ar>
 - **Terminal** (the window) → **shell** (Bash, the interpreter) → **kernel** (talks to the hardware).
+  <Ar>**الطرفية (terminal)** (النافذة) ← **الصدفة (shell)** (Bash، المفسِّر) ← **النواة (kernel)** (تتخاطب مع العتاد).</Ar>
 - A **distribution** = Linux kernel + tools + package manager. The labs use **Ubuntu**.
+  <Ar>**التوزيعة (distribution)** = نواة لينكس + أدوات + مدير حزم. وتستخدم المعامل **Ubuntu**.</Ar>
 - Get Ubuntu through **WSL** (`wsl --install`) or a **VirtualBox** VM, and follow NDG Linux Essentials from Module 5.
+  <Ar>احصل على Ubuntu عبر **WSL** (`wsl --install`) أو آلة افتراضية على **VirtualBox**، واتبع مقرر NDG Linux Essentials بدءًا من الوحدة 5.</Ar>
 
 </Takeaways>
 
@@ -119,33 +164,48 @@ The labs follow **NDG Linux Essentials** on Cisco Networking Academy (netacad.co
   questions={[
     {
       q: "Which component interprets the commands you type?",
+      qAr: "أي مكوّن يفسّر الأوامر التي تكتبها؟",
       options: ["Terminal", "Shell", "Kernel", "BIOS"],
+      optionsAr: ["الطرفية", "الصدفة", "النواة", "BIOS"],
       answer: 1,
-      explain: "The terminal shows text; the shell interprets it; the kernel executes it on the hardware."
+      explain: "The terminal shows text; the shell interprets it; the kernel executes it on the hardware.",
+      explainAr: "الطرفية تعرض النص، والصدفة تفسّره، والنواة تنفّذه على العتاد."
     },
     {
       q: "What is Ubuntu's default shell?",
+      qAr: "ما الصدفة الافتراضية في Ubuntu؟",
       options: ["zsh", "sh", "bash", "PowerShell"],
+      optionsAr: ["zsh", "sh", "bash", "PowerShell"],
       answer: 2,
-      explain: "Bash, the Bourne-Again SHell."
+      explain: "Bash, the Bourne-Again SHell.",
+      explainAr: "إنها Bash، أي Bourne-Again SHell."
     },
     {
       q: "Which part of the OS communicates directly with the hardware?",
+      qAr: "أي جزء من نظام التشغيل يتواصل مباشرةً مع العتاد؟",
       options: ["The shell", "The kernel", "The desktop", "The terminal"],
+      optionsAr: ["الصدفة", "النواة", "سطح المكتب", "الطرفية"],
       answer: 1,
-      explain: "The kernel is the core (heart) of the OS."
+      explain: "The kernel is the core (heart) of the OS.",
+      explainAr: "النواة هي لبّ نظام التشغيل (قلبه)."
     },
     {
       q: "What must you enable in the BIOS/UEFI before running a VM?",
+      qAr: "ما الذي يجب تفعيله في BIOS/UEFI قبل تشغيل آلة افتراضية؟",
       options: ["Secure Boot", "Virtualization (VT-x / AMD-V)", "Fast Boot", "TPM"],
+      optionsAr: ["الإقلاع الآمن (Secure Boot)", "المحاكاة الافتراضية: VT-x أو AMD-V", "الإقلاع السريع (Fast Boot)", "TPM"],
       answer: 1,
-      explain: "Hardware virtualization support lets VirtualBox run guests efficiently."
+      explain: "Hardware virtualization support lets VirtualBox run guests efficiently.",
+      explainAr: "دعم العتاد للمحاكاة الافتراضية يتيح لـ VirtualBox تشغيل الأنظمة الضيفة (guests) بكفاءة."
     },
     {
       q: "Ubuntu belongs to which distribution family?",
+      qAr: "إلى أي عائلة توزيعات تنتمي Ubuntu؟",
       options: ["Red Hat", "Debian", "Arch", "BSD"],
+      optionsAr: ["Red Hat", "Debian", "Arch", "BSD"],
       answer: 1,
-      explain: "It uses apt and .deb packages."
+      explain: "It uses apt and .deb packages.",
+      explainAr: "تستخدم apt وحزم .deb."
     }
   ]}
 />

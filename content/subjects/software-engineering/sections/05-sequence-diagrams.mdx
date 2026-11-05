@@ -1,7 +1,9 @@
 ---
 number: 5
 title: Sequence Diagrams
+titleAr: "مخططات التتابع"
 summary: Drawing sequence diagrams in practice. Covers the symbols (actor, lifeline, activation, option/loop and alternative frames) and every message type (synchronous, asynchronous, reply, create, delete, self). Then a method that builds the diagram from use case text plus the class diagram, applied to the ATM, an emotion-based music player, a medical system with an alt frame, online shopping and course registration.
+summaryAr: "رسم مخططات التتابع (sequence diagrams) عمليًا: الرموز (الفاعل، وخط الحياة، والتنشيط، وإطارات الخيار والتكرار والبدائل) وكل أنواع الرسائل (المتزامنة، وغير المتزامنة، والرد، والإنشاء، والحذف، والرسالة الذاتية). ثم طريقة تبني المخطط من نص حالة الاستخدام (use case) مع مخطط الأصناف (class diagram)، مطبَّقة على ماكينة الصراف الآلي (ATM)، ومشغّل موسيقى يعتمد على المشاعر، ونظام طبي بإطار alt، والتسوق عبر الإنترنت، وتسجيل المقررات."
 topics: [Sequence diagram symbols, Lifeline and activation, Synchronous and asynchronous messages, Reply, create and delete messages, Self message, Option, loop and alt frames, From use case to sequence diagram, ATM, Music player, Medical system, Online shopping]
 duration: 55 min hands-on
 kind: practical
@@ -25,51 +27,69 @@ bookRefs:
 <Objectives>
 
 - Use every sequence diagram **symbol** and **message type** correctly.
+  <Ar>استخدام كل **رموز** مخطط التتابع (sequence diagram) وكل **أنواع الرسائل** فيه استخدامًا صحيحًا.</Ar>
 - Model choices and repetition with **alt**, **opt** and **loop** frames.
+  <Ar>نمذجة الاختيارات والتكرار بإطارات **alt** و**opt** و**loop**.</Ar>
 - Build a sequence diagram **from a use case's steps** and the **class diagram**.
+  <Ar>بناء مخطط التتابع **من خطوات حالة الاستخدام (use case)** و**مخطط الأصناف (class diagram)**.</Ar>
 
 </Objectives>
 
 ## Symbols
 
+<Ar>الرموز</Ar>
+
 A sequence diagram is an **interaction diagram**: it shows the **flow of messages** between objects, with **time running downwards**. It gives a precise description of activities, and it is a good basis for designing and implementing communication.
 
-<SlideFigure page={3} caption="Symbols: actor, lifeline (:User), option/loop frame, and alternative frame with a dashed line between the alternatives." />
+<Ar>مخطط التتابع (sequence diagram) هو **مخطط تفاعل (interaction diagram)**: يعرض **تدفق الرسائل** بين الكائنات (objects)، مع **سير الزمن من الأعلى إلى الأسفل**. وهو يقدّم وصفًا دقيقًا للأنشطة، ويُعدّ أساسًا جيدًا لتصميم الاتصال (communication) وتنفيذه.</Ar>
 
-| Symbol | Meaning |
+<SlideFigure page={3} caption="Symbols: actor, lifeline (:User), option/loop frame, and alternative frame with a dashed line between the alternatives." captionAr="الرموز: الفاعل (actor)، وخط الحياة (lifeline) لكائن من الصنف User، وإطار الخيار/التكرار (option/loop)، وإطار البدائل (alternative) مع خط متقطع يفصل بين البدائل." />
+
+| Symbol <Ar>الرمز</Ar> | Meaning <Ar>المعنى</Ar> |
 |---|---|
-| **Actor** (stick figure) | A role outside the system that interacts with it |
-| **Lifeline** | A named rectangle (`:Class` or `name:Class`) with a dashed line below for the object's life |
-| **Activation** (execution) | A thin rectangle on the lifeline: the object is **executing**, **sending a signal** or **waiting for a reply** |
-| **opt / loop frame** | Messages that happen only **if** a condition holds, or **repeatedly** |
-| **alt frame** | **Mutually exclusive** choices, separated by a dashed line, each with a guard |
+| **Actor** (stick figure) <Ar>**الفاعل (Actor)** (رسم عصوي لشخص)</Ar> | A role outside the system that interacts with it <Ar>دور خارج النظام يتفاعل معه</Ar> |
+| **Lifeline** <Ar>**خط الحياة (Lifeline)**</Ar> | A named rectangle (`:Class` or `name:Class`) with a dashed line below for the object's life <Ar>مستطيل يحمل اسمًا (`:Class` أو `name:Class`) وتحته خط متقطع يمثّل حياة الكائن</Ar> |
+| **Activation** (execution) <Ar>**التنشيط (Activation)** (التنفيذ)</Ar> | A thin rectangle on the lifeline: the object is **executing**, **sending a signal** or **waiting for a reply** <Ar>مستطيل رفيع على خط الحياة: الكائن **يُنفِّذ**، أو **يرسل إشارة (signal)**، أو **ينتظر ردًا**</Ar> |
+| **opt / loop frame** <Ar>**إطار opt / loop**</Ar> | Messages that happen only **if** a condition holds, or **repeatedly** <Ar>رسائل تحدث فقط **إذا** تحقق شرط ما، أو تحدث **بشكل متكرر**</Ar> |
+| **alt frame** <Ar>**إطار alt**</Ar> | **Mutually exclusive** choices, separated by a dashed line, each with a guard <Ar>اختيارات **متنافية (mutually exclusive)** يفصل بينها خط متقطع، ولكل منها شرط حراسة (guard)</Ar> |
 
 ## Message types
 
-| Message | Arrow | Meaning |
-|---|---|---|
-| **Synchronous** | Solid line, **filled** arrowhead | The sender **waits** for a response; show both the call and the reply |
-| **Asynchronous** | Solid line, **open** (lined) arrowhead | The sender **doesn't wait**; only the call is shown |
-| **Reply** | **Dashed** line, open arrowhead | The answer to a call |
-| **Create** | **Dashed** line labelled «create» | **Creates** a new object; its lifeline starts there |
-| **Delete** | Solid line ending in an **X** on the lifeline | **Destroys** an object |
-| **Self** | An arrow back to the same lifeline | An object calls its own operation |
+<Ar>أنواع الرسائل</Ar>
 
-<SlideFigure page={6} caption="All message types between Cust_1:Customer, Bank_1:Bank and an InsuranceAgent: synchronous, asynchronous, self, «create», delete (X) and reply." />
+| Message <Ar>الرسالة</Ar> | Arrow <Ar>السهم</Ar> | Meaning <Ar>المعنى</Ar> |
+|---|---|---|
+| **Synchronous** <Ar>**متزامنة (Synchronous)**</Ar> | Solid line, **filled** arrowhead <Ar>خط متصل، ورأس سهم **مُصمَت (filled)**</Ar> | The sender **waits** for a response; show both the call and the reply <Ar>المُرسِل **ينتظر** الاستجابة؛ فارسم الاستدعاء والرد كليهما</Ar> |
+| **Asynchronous** <Ar>**غير متزامنة (Asynchronous)**</Ar> | Solid line, **open** (lined) arrowhead <Ar>خط متصل، ورأس سهم **مفتوح** (مرسوم بخطين)</Ar> | The sender **doesn't wait**; only the call is shown <Ar>المُرسِل **لا ينتظر**؛ ويُرسَم الاستدعاء فقط</Ar> |
+| **Reply** <Ar>**الرد (Reply)**</Ar> | **Dashed** line, open arrowhead <Ar>خط **متقطع**، ورأس سهم مفتوح</Ar> | The answer to a call <Ar>الإجابة عن استدعاء</Ar> |
+| **Create** <Ar>**الإنشاء (Create)**</Ar> | **Dashed** line labelled «create» <Ar>خط **متقطع** مكتوب عليه «create»</Ar> | **Creates** a new object; its lifeline starts there <Ar>**يُنشئ** كائنًا جديدًا، ويبدأ خط حياته عند هذه النقطة</Ar> |
+| **Delete** <Ar>**الحذف (Delete)**</Ar> | Solid line ending in an **X** on the lifeline <Ar>خط متصل ينتهي بعلامة **X** على خط الحياة</Ar> | **Destroys** an object <Ar>**يُدمِّر** كائنًا</Ar> |
+| **Self** <Ar>**الذاتية (Self)**</Ar> | An arrow back to the same lifeline <Ar>سهم يعود إلى خط الحياة نفسه</Ar> | An object calls its own operation <Ar>كائن يستدعي إحدى عملياته (operations) الخاصة</Ar> |
+
+<SlideFigure page={6} caption="All message types between Cust_1:Customer, Bank_1:Bank and an InsuranceAgent: synchronous, asynchronous, self, «create», delete (X) and reply." captionAr="كل أنواع الرسائل بين Cust_1:Customer و Bank_1:Bank ووكيل تأمين InsuranceAgent: المتزامنة، وغير المتزامنة، والذاتية، و«create»، والحذف (X)، والرد." />
 
 ## From use case to sequence diagram
+
+<Ar>من حالة الاستخدام إلى مخطط التتابع</Ar>
 
 <Steps>
 
 1. Take the **use case text**: the numbered steps of one scenario.
+   <Ar>خذ **نص حالة الاستخدام (use case)**: الخطوات المرقَّمة لسيناريو (scenario) واحد.</Ar>
 2. Take the **class diagram**: the objects that will appear as lifelines.
+   <Ar>خذ **مخطط الأصناف (class diagram)**: الكائنات التي ستظهر كخطوط حياة (lifelines).</Ar>
 3. Put the **initiating actor** on the left, then the lifelines in the order they are first used.
+   <Ar>ضع **الفاعل المُبادِر (initiating actor)** على اليسار، ثم خطوط الحياة بترتيب أول استخدام لكل منها.</Ar>
 4. Turn **each step into one or more messages**, top to bottom. Use synchronous calls with replies where an answer is needed.
+   <Ar>حوِّل **كل خطوة إلى رسالة واحدة أو أكثر**، من الأعلى إلى الأسفل. واستخدم الاستدعاءات المتزامنة (synchronous) مع ردودها حيث تلزم إجابة.</Ar>
 5. Add an **alt** frame for each "if/otherwise", and a **loop** for repeated steps.
+   <Ar>أضف إطار **alt** لكل «إذا/وإلا»، وإطار **loop** للخطوات المتكررة.</Ar>
 
 </Steps>
 
 ### Example: buying a product online
+
+<Ar>مثال: شراء منتج عبر الإنترنت</Ar>
 
 ```text title="Use case: Buy a Product Online"
 1. Customer browses the catalogue and selects items to buy.
@@ -82,31 +102,41 @@ A sequence diagram is an **interaction diagram**: it shows the **flow of message
 8. System sends a confirming email to the customer.
 ```
 
-<SlideFigure page={15} caption="Sequence diagram for online shopping: Customer, Browse Interface, Item DB, Purchase Interface, Checkout and Credit Card Authorization." />
+<SlideFigure page={15} caption="Sequence diagram for online shopping: Customer, Browse Interface, Item DB, Purchase Interface, Checkout and Credit Card Authorization." captionAr="مخطط التتابع للتسوق عبر الإنترنت: العميل (Customer)، وواجهة التصفح (Browse Interface)، وقاعدة بيانات العناصر (Item DB)، وواجهة الشراء (Purchase Interface)، والدفع (Checkout)، وتفويض بطاقة الائتمان (Credit Card Authorization)." />
 
-| Step | Message(s) |
+| Step <Ar>الخطوة</Ar> | Message(s) <Ar>الرسالة أو الرسائل</Ar> |
 |---|---|
-| 1 | Customer → Browse Interface: `browseItems()`; Browse Interface → Item DB: `searchItems()`; Customer: `selectItem()` |
-| 2–3 | Customer → Purchase Interface: `purchase()`, then shipping details |
-| 4 | Purchase Interface → Customer: `displayPricingInfo()` (a reply) |
-| 5–6 | Customer → Checkout: credit card info; Checkout → Credit Card Authorization: `authorizeCredit()` and its reply |
-| 7–8 | Checkout → Customer: `confirmSale()`, then a confirming email (asynchronous) |
+| 1 | Customer → Browse Interface: `browseItems()`; Browse Interface → Item DB: `searchItems()`; Customer: `selectItem()` <Ar>من العميل (Customer) إلى واجهة التصفح (Browse Interface): `browseItems()`؛ ومن واجهة التصفح إلى قاعدة بيانات العناصر (Item DB): `searchItems()`؛ ثم العميل: `selectItem()`</Ar> |
+| 2–3 | Customer → Purchase Interface: `purchase()`, then shipping details <Ar>من العميل (Customer) إلى واجهة الشراء (Purchase Interface): `purchase()`، ثم بيانات الشحن</Ar> |
+| 4 | Purchase Interface → Customer: `displayPricingInfo()` (a reply) <Ar>من واجهة الشراء (Purchase Interface) إلى العميل (Customer): `displayPricingInfo()` (رد)</Ar> |
+| 5–6 | Customer → Checkout: credit card info; Checkout → Credit Card Authorization: `authorizeCredit()` and its reply <Ar>من العميل (Customer) إلى الدفع (Checkout): بيانات بطاقة الائتمان؛ ومن الدفع إلى تفويض بطاقة الائتمان (Credit Card Authorization): `authorizeCredit()` وردّها</Ar> |
+| 7–8 | Checkout → Customer: `confirmSale()`, then a confirming email (asynchronous) <Ar>من الدفع (Checkout) إلى العميل (Customer): `confirmSale()`، ثم بريد إلكتروني للتأكيد (غير متزامن)</Ar> |
 
 ### Example: the ATM
 
-<SlideFigure page={10} caption="ATM sequence: the customer inserts a card; the ATM requests the PIN and verifies it with the Bank Server (a loop for retries); then the withdrawal is checked against the Bank Account and dispensed." />
+<Ar>مثال: ماكينة الصراف الآلي (ATM)</Ar>
+
+<SlideFigure page={10} caption="ATM sequence: the customer inserts a card; the ATM requests the PIN and verifies it with the Bank Server (a loop for retries); then the withdrawal is checked against the Bank Account and dispensed." captionAr="تتابع ماكينة الصراف الآلي (ATM): يُدخل العميل البطاقة؛ فتطلب الماكينة الرقم السري (PIN) وتتحقق منه مع خادم البنك (Bank Server)، مع إطار loop لإعادة المحاولة؛ ثم يُتحقَّق من عملية السحب مقابل الحساب البنكي (Bank Account) وتُصرَف النقود." />
 
 ### Example: an emotion-based music player
 
-<SlideFigure page={12} caption="User, Device and Database: open the app, access the webcam, get a photo, detect the mood (self-messages on Device), retrieve moods and music from the Database, and show the playlist." />
+<Ar>مثال: مشغّل موسيقى يعتمد على المشاعر</Ar>
+
+<SlideFigure page={12} caption="User, Device and Database: open the app, access the webcam, get a photo, detect the mood (self-messages on Device), retrieve moods and music from the Database, and show the playlist." captionAr="المستخدم (User) والجهاز (Device) وقاعدة البيانات (Database): فتح التطبيق، والوصول إلى كاميرا الويب، والتقاط صورة، واكتشاف الحالة المزاجية (رسائل ذاتية على الجهاز)، واسترجاع الحالات المزاجية والموسيقى من قاعدة البيانات، وعرض قائمة التشغيل (playlist)." />
 
 The steps are: open the application → access the webcam → capture the image → detect the face and predict the mood (**self-messages**) → ask the database for the dictionary of moods → retrieve the mood → display it → request music → generate and show the playlist.
 
+<Ar>الخطوات هي: فتح التطبيق ← الوصول إلى كاميرا الويب ← التقاط الصورة ← اكتشاف الوجه والتنبؤ بالحالة المزاجية (**رسائل ذاتية (self-messages)**) ← طلب قاموس الحالات المزاجية من قاعدة البيانات ← استرجاع الحالة المزاجية ← عرضها ← طلب الموسيقى ← توليد قائمة التشغيل (playlist) وعرضها.</Ar>
+
 ### Example: a medical system with an alt frame
 
-<SlideFigure page={13} caption="View patient information: the receptionist calls ViewInfo(PID) on PatientInfo, which asks the MHCPMS-DB for a report; the DB checks Authorization; alt [Authorization OK] returns the patient info, [Authorization fail] returns Error (No Access)." />
+<Ar>مثال: نظام طبي بإطار alt</Ar>
+
+<SlideFigure page={13} caption="View patient information: the receptionist calls ViewInfo(PID) on PatientInfo, which asks the MHCPMS-DB for a report; the DB checks Authorization; alt [Authorization OK] returns the patient info, [Authorization fail] returns Error (No Access)." captionAr="عرض بيانات المريض: يستدعي موظف الاستقبال ViewInfo(PID) على PatientInfo، الذي يطلب تقريرًا من MHCPMS-DB؛ فتتحقق قاعدة البيانات من التفويض (Authorization)؛ وفي إطار alt يُرجِع الفرع [Authorization OK] بيانات المريض، ويُرجِع الفرع [Authorization fail] الخطأ Error (No Access)." />
 
 The **alt** frame maps directly to `if/else` in code:
+
+<Ar>يتحوّل إطار **alt** مباشرةً إلى `if/else` في الشيفرة (code):</Ar>
 
 ```python title="The medical-system sequence as code"
 class Authorization:
@@ -133,37 +163,55 @@ print(p.view_info("P17", "dr_ali"))     # Patient 17: next visit 2026-11-02
 print(p.view_info("P17", "visitor"))    # Error (No Access)
 ```
 
-<SlideFigure page={12} source={1} caption="Course registration: Student → Registration Form → Registration Manager → the Math 101 course and its section, asking 'are you open?' and adding the student." />
+<SlideFigure page={12} source={1} caption="Course registration: Student → Registration Form → Registration Manager → the Math 101 course and its section, asking 'are you open?' and adding the student." captionAr="تسجيل المقررات: الطالب (Student) ← نموذج التسجيل (Registration Form) ← مدير التسجيل (Registration Manager) ← المقرر Math 101 وشعبته (section)، مع سؤاله «are you open?» أي «هل أنت متاح؟» ثم إضافة الطالب." />
 
-<Callout type="tip" title="Common mistakes">
+<Callout type="tip" title="Common mistakes" titleAr="أخطاء شائعة">
   Don't connect two lifelines with a message that has no operation name. Every synchronous call needs an <strong>activation bar</strong> on the receiver. Keep <strong>one scenario per diagram</strong>, and use <code>alt</code>/<code>opt</code> instead of drawing several diagrams for small variations. Messages go downwards: a later message is never drawn above an earlier one.
+
+  <Ar>لا تربط بين خطَّي حياة (lifelines) برسالة ليس لها اسم عملية (operation). كل استدعاء متزامن (synchronous) يحتاج إلى <strong>شريط تنشيط (activation bar)</strong> على الطرف المستقبِل. اجعل <strong>سيناريو واحدًا لكل مخطط</strong>، واستخدم <code>alt</code>/<code>opt</code> بدلًا من رسم عدة مخططات للاختلافات الصغيرة. تسير الرسائل إلى الأسفل: لا تُرسَم رسالة لاحقة أبدًا فوق رسالة سابقة.</Ar>
 </Callout>
 
 <Takeaways>
 
 - Lifelines are `:Class` boxes with dashed lines; **activations** show when an object is busy.
+  <Ar>خطوط الحياة (lifelines) صناديق `:Class` تحتها خطوط متقطعة، و**التنشيطات (activations)** تُبيِّن متى يكون الكائن مشغولًا.</Ar>
 - **Synchronous** (filled head, wait for the dashed reply), **asynchronous** (open head), **create** (dashed «create»), **delete** (X), **self**.
+  <Ar>**المتزامنة (synchronous)** (رأس مُصمَت، وانتظار الرد المتقطع)، و**غير المتزامنة (asynchronous)** (رأس مفتوح)، و**الإنشاء (create)** (خط متقطع عليه «create»)، و**الحذف (delete)** (علامة X)، و**الذاتية (self)**.</Ar>
 - **alt** = if/else, **opt** = if, **loop** = repeat.
+  <Ar>**alt** = `if/else`، و**opt** = `if`، و**loop** = التكرار.</Ar>
 - Build the diagram from the **use case steps** (messages) plus the **class diagram** (lifelines).
+  <Ar>ابنِ المخطط من **خطوات حالة الاستخدام (use case)** (وهي الرسائل) مع **مخطط الأصناف (class diagram)** (وهو خطوط الحياة).</Ar>
 
 </Takeaways>
 
 ## Practice
 
-<Exercise title="Library: borrow a book" level="medium">
+<Ar>تدريب</Ar>
+
+<Exercise title="Library: borrow a book" titleAr="المكتبة: استعارة كتاب" level="medium">
 
 Use case steps: the member gives the book and card to the librarian; the librarian scans the card; the system checks the member's loans; **if** the member has fewer than 3 loans the system records the loan and prints a due-date slip; **otherwise** it shows "limit reached". List the lifelines and messages, with an alt frame.
+
+<Ar>خطوات حالة الاستخدام (use case): يُسلِّم العضو الكتاب والبطاقة إلى أمين المكتبة؛ ويمسح أمين المكتبة البطاقة ضوئيًا؛ ويفحص النظام استعارات العضو؛ **فإذا** كان لدى العضو أقل من 3 استعارات، يُسجِّل النظام الاستعارة ويطبع إيصالًا بتاريخ الإرجاع؛ **وإلا** يعرض «limit reached» (تم بلوغ الحد الأقصى). اذكر خطوط الحياة (lifelines) والرسائل، مع إطار alt.</Ar>
 
 <Solution>
 
 **Lifelines**: `Member` (actor), `Librarian` (actor), `:LoanSystem`, `:MemberDB`, `:Printer`.
 
+<Ar>**خطوط الحياة (Lifelines)**: `Member` (فاعل)، و`Librarian` (فاعل)، و`:LoanSystem`، و`:MemberDB`، و`:Printer`.</Ar>
+
 1. Member → Librarian: hand over the book and card.
+   <Ar>من `Member` إلى `Librarian`: تسليم الكتاب والبطاقة.</Ar>
 2. Librarian → :LoanSystem: `scanCard(memberId)`, `scanBook(bookId)`.
+   <Ar>من `Librarian` إلى `:LoanSystem`: `scanCard(memberId)` و`scanBook(bookId)`.</Ar>
 3. :LoanSystem → :MemberDB: `countLoans(memberId)`, with the reply `n`.
+   <Ar>من `:LoanSystem` إلى `:MemberDB`: `countLoans(memberId)`، ويكون الرد `n`.</Ar>
 4. **alt**:
+   <Ar>إطار **alt**:</Ar>
    - `[n < 3]`: :LoanSystem → :MemberDB: `recordLoan(memberId, bookId)`; :LoanSystem → :Printer: `printSlip(dueDate)` (asynchronous); reply "done" to the Librarian.
+     <Ar>`[n < 3]`: من `:LoanSystem` إلى `:MemberDB`: `recordLoan(memberId, bookId)`؛ ومن `:LoanSystem` إلى `:Printer`: `printSlip(dueDate)` (غير متزامنة)؛ ثم الرد «done» إلى `Librarian`.</Ar>
    - `[else]`: :LoanSystem → Librarian: `showMessage("limit reached")`.
+     <Ar>`[else]`: من `:LoanSystem` إلى `Librarian`: `showMessage("limit reached")`.</Ar>
 
 </Solution>
 
@@ -173,33 +221,48 @@ Use case steps: the member gives the book and card to the librarian; the librari
   questions={[
     {
       q: "Which message creates a new object?",
+      qAr: "أي رسالة تُنشئ كائنًا جديدًا؟",
       options: ["A solid line with an X", "A dashed line labelled «create»", "A self message", "A reply"],
+      optionsAr: ["خط متصل بعلامة X", "خط متقطع مكتوب عليه «create»", "رسالة ذاتية", "رد"],
       answer: 1,
-      explain: "The created object's lifeline starts at the «create» message."
+      explain: "The created object's lifeline starts at the «create» message.",
+      explainAr: "يبدأ خط حياة الكائن المُنشأ عند رسالة «create»."
     },
     {
       q: "Which arrow shows an asynchronous message?",
+      qAr: "أي سهم يمثّل رسالة غير متزامنة؟",
       options: ["Solid line with a filled arrowhead", "Solid line with an open arrowhead", "Dashed line with an open arrowhead", "Dashed line with an X"],
+      optionsAr: ["خط متصل برأس سهم مُصمَت", "خط متصل برأس سهم مفتوح", "خط متقطع برأس سهم مفتوح", "خط متقطع بعلامة X"],
       answer: 1,
-      explain: "Filled = synchronous, open = asynchronous, dashed = reply."
+      explain: "Filled = synchronous, open = asynchronous, dashed = reply.",
+      explainAr: "الرأس المُصمَت = متزامنة، والرأس المفتوح = غير متزامنة، والخط المتقطع = رد."
     },
     {
       q: "In the medical system, how is 'authorized or not' modelled?",
+      qAr: "في النظام الطبي، كيف تُنمذَج حالة «مُصرَّح له أم لا»؟",
       options: ["A loop frame", "An alt frame with guards [Authorization OK] / [Authorization fail]", "Two separate diagrams", "A state diagram"],
+      optionsAr: ["إطار loop", "إطار alt بشرطَي الحراسة [Authorization OK] / [Authorization fail]", "مخططان منفصلان", "مخطط حالات"],
       answer: 1,
-      explain: "alt shows mutually exclusive alternatives."
+      explain: "alt shows mutually exclusive alternatives.",
+      explainAr: "يعرض إطار alt بدائل متنافية."
     },
     {
       q: "What does an activation bar represent?",
+      qAr: "ماذا يمثّل شريط التنشيط (activation bar)؟",
       options: ["The object's attributes", "A period when the object is executing or waiting for a reply", "The end of the object's life", "A note"],
+      optionsAr: ["سمات الكائن", "فترة يكون فيها الكائن قيد التنفيذ أو في انتظار رد", "نهاية حياة الكائن", "ملاحظة"],
       answer: 1,
-      explain: "Execution specification: executing behaviour, sending, or waiting."
+      explain: "Execution specification: executing behaviour, sending, or waiting.",
+      explainAr: "مواصفة التنفيذ (execution specification): تنفيذ سلوك، أو إرسال، أو انتظار."
     },
     {
       q: "What do you need to build a sequence diagram for a scenario?",
+      qAr: "ماذا تحتاج لبناء مخطط تتابع لسيناريو ما؟",
       options: ["Only the state diagram", "The use case steps and the class diagram", "Only the DFD", "The test cases"],
+      optionsAr: ["مخطط الحالات فقط", "خطوات حالة الاستخدام ومخطط الأصناف", "مخطط تدفق البيانات (DFD) فقط", "حالات الاختبار"],
       answer: 1,
-      explain: "Steps give the messages; classes give the lifelines."
+      explain: "Steps give the messages; classes give the lifelines.",
+      explainAr: "الخطوات تعطي الرسائل، والأصناف تعطي خطوط الحياة."
     }
   ]}
 />

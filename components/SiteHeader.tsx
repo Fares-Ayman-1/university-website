@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getSubjects } from "@/lib/content";
+import { ArabicToggle } from "./ArabicToggle";
 import { BrandMark } from "./BrandMark";
 import { ThemeToggle } from "./ThemeToggle";
 import styles from "./SiteHeader.module.css";
@@ -24,6 +25,7 @@ export function SiteHeader() {
           ))}
         </nav>
         <div className={styles.actions}>
+          <ArabicToggle />
           <ThemeToggle />
         </div>
       </div>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, BookOpen, Clock, FlaskConical } from "lucide-react";
 import { COLLECTION_META, formatNumber, itemHref, type ResourceItem } from "@/lib/content";
+import { ArLine, ArText } from "./mdx/Arabic";
 import styles from "./ResourceCard.module.css";
 
 export function ResourceCard({ item, index = 0 }: { item: ResourceItem; index?: number }) {
@@ -22,8 +23,14 @@ export function ResourceCard({ item, index = 0 }: { item: ResourceItem; index?: 
             </span>
             {item.data.title}
           </Link>
+          <ArLine>{item.data.titleAr}</ArLine>
         </h3>
         <p className={styles.summary}>{item.data.summary}</p>
+        {item.data.summaryAr ? (
+          <p className={`${styles.summary} ${styles.summaryAr} ar`} lang="ar" dir="rtl">
+            <ArText>{item.data.summaryAr}</ArText>
+          </p>
+        ) : null}
         <div className={styles.meta}>
           <span>
             <Icon aria-hidden="true" /> {meta.singular}

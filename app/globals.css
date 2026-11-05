@@ -56,6 +56,9 @@
   --font-display: "Source Serif 4 Variable", "Century Schoolbook", Georgia, serif;
   --font-body: "Inter Variable", "Segoe UI", system-ui, sans-serif;
   --font-code: "JetBrains Mono Variable", "Cascadia Code", Consolas, monospace;
+  /* Inter first so English terms inside Arabic match the English text; Arabic letters
+     fall through to IBM Plex Sans Arabic (Arabic subset only, imported in app/layout.tsx). */
+  --font-arabic: "Inter Variable", "IBM Plex Sans Arabic", "Segoe UI", Tahoma, sans-serif;
 }
 
 :root,
@@ -520,4 +523,98 @@ button {
 /* Images inside prose */
 .prose img {
   border-radius: var(--radius-sm);
+}
+
+/* ============================================================
+   Arabic translations (rendered under each English block)
+   ============================================================ */
+
+.ar {
+  font-family: var(--font-arabic);
+  line-height: 1.85;
+  /* Tracking and uppercase break the connected script, even inside styled labels. */
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+  font-synthesis: none;
+  font-style: normal;
+  text-align: start;
+}
+
+:root[data-arabic="off"] .ar {
+  display: none !important;
+}
+
+/* Code and math stay left-to-right inside right-to-left text. */
+.ar code,
+.ar .katex,
+.ar kbd {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+/* Italic Arabic is synthesized and ugly: show emphasis with colour instead. */
+.ar em,
+.ar i {
+  font-style: normal;
+  color: var(--accent-text, var(--gold-text));
+}
+
+/* Block translation under a paragraph, list or table: a gold rule on the reading side. */
+.prose .ar:not(.ar-inline):not(.ar-line) {
+  border-inline-start: 2px solid var(--accent, var(--gold));
+  padding-inline-start: 0.85em;
+  color: color-mix(in srgb, var(--text) 86%, var(--muted));
+}
+
+.prose > .ar {
+  margin-top: 0.4em;
+}
+
+.ar > :first-child {
+  margin-top: 0;
+}
+
+.ar > * + * {
+  margin-top: 0.6em;
+}
+
+/* Under a heading: a quiet subtitle, no rule. */
+.prose h2 + .ar,
+.prose h3 + .ar,
+.prose h4 + .ar {
+  margin-top: 0.15em;
+  border-inline-start: 0 !important;
+  padding-inline-start: 0 !important;
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--muted) !important;
+}
+
+/* Inside a list item, table cell or paragraph: its own line, under the English. */
+.ar-inline {
+  display: block;
+  margin-top: 0.2em;
+  color: color-mix(in srgb, var(--text) 82%, var(--muted));
+}
+
+.prose td .ar-inline,
+.prose th .ar-inline {
+  font-weight: 400;
+  font-size: 0.95em;
+}
+
+/* Short Arabic line attached to a title, label or caption. */
+.ar-line {
+  display: block;
+  font-weight: 600;
+}
+
+.ar-line[data-inline] {
+  display: inline;
+}
+
+/* Table header rows are navy: keep their Arabic light enough to read. */
+.prose th .ar-inline {
+  color: inherit;
+  opacity: 0.85;
 }

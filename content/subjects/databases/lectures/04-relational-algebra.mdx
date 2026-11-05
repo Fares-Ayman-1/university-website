@@ -1,7 +1,9 @@
 ---
 number: 4
 title: Relational Algebra
+titleAr: "الجبر العلائقي"
 summary: The formal query language behind SQL. Covers the unary operations SELECT (σ), PROJECT (π) and RENAME (ρ), composing them with intermediate results, the set operations (union, intersection, difference, Cartesian product), and an overview of joins and division, all worked on the COMPANY database.
+summaryAr: "لغة الاستعلام الرسمية التي تقوم عليها SQL: العمليات الأحادية SELECT (σ) و PROJECT (π) و RENAME (ρ)، وتركيبها باستخدام النتائج الوسيطة، وعمليات المجموعات (الاتحاد والتقاطع والفرق والضرب الديكارتي)، ونظرة عامة على الربط (join) والقسمة (division)، وكل ذلك مطبَّق على قاعدة بيانات COMPANY."
 topics: [SELECT σ, PROJECT π, RENAME ρ, Sequences of operations, UNION, Set operations, Cartesian product and joins]
 duration: 50 min study
 sources:
@@ -19,29 +21,41 @@ bookRefs:
 <Objectives>
 
 - Name the groups of relational algebra operations and their symbols.
+  <Ar>تسمية مجموعات عمليات الجبر العلائقي (relational algebra) ورموزها.</Ar>
 - Write and evaluate **SELECT** ($\sigma$), **PROJECT** ($\pi$) and **RENAME** ($\rho$) expressions.
+  <Ar>كتابة تعبيرات **الاختيار SELECT** ($\sigma$) و**الإسقاط PROJECT** ($\pi$) و**إعادة التسمية RENAME** ($\rho$) وحساب نتائجها.</Ar>
 - Combine operations **in sequence** or as **nested expressions**, and translate them to SQL.
+  <Ar>تركيب العمليات **في تسلسل (in sequence)** أو على هيئة **تعبيرات متداخلة (nested expressions)**، وترجمتها إلى SQL.</Ar>
 - Apply **UNION**, **INTERSECTION**, **DIFFERENCE** and **CARTESIAN PRODUCT**, including **union compatibility**.
+  <Ar>تطبيق **الاتحاد (UNION)** و**التقاطع (INTERSECTION)** و**الفرق (DIFFERENCE)** و**الضرب الديكارتي (CARTESIAN PRODUCT)**، بما في ذلك **توافق الاتحاد (union compatibility)**.</Ar>
 - Explain how **JOIN** and **DIVISION** build on the basic operations.
+  <Ar>شرح كيف تُبنى عمليتا **الربط (JOIN)** و**القسمة (DIVISION)** على العمليات الأساسية.</Ar>
 
 </Objectives>
 
 ## What relational algebra is
 
+<Ar>ما الجبر العلائقي؟</Ar>
+
 Relational algebra is a set of **operations on relations** that produce **new relations**. Because every result is itself a relation, operations can be **composed** freely; this property is called **closure**. It is the formal foundation that SQL queries are translated into and optimized with.
 
-| Group | Operations |
-|---|---|
-| **Unary** | SELECT $\sigma$, PROJECT $\pi$, RENAME $\rho$ |
-| **From set theory** | UNION $\cup$, INTERSECTION $\cap$, DIFFERENCE $-$, CARTESIAN PRODUCT $\times$ |
-| **Binary relational** | JOIN $\bowtie$ (several variants), DIVISION $\div$ |
-| **Additional** | Outer joins, outer union, **aggregate functions** (SUM, COUNT, AVG, MIN, MAX) |
+<Ar>الجبر العلائقي (relational algebra) مجموعة من **العمليات على العلاقات** تُنتج **علاقات جديدة**. ولأن كل نتيجة هي نفسها علاقة، يمكن **تركيب** العمليات بحرية، وتُسمى هذه الخاصية **الانغلاق (closure)**. وهو الأساس الرسمي الذي تُترجَم إليه استعلامات SQL وتُحسَّن بواسطته.</Ar>
 
-<SlideFigure page={2} caption="The COMPANY relational schema used in every example." />
+| Group <Ar>المجموعة</Ar> | Operations <Ar>العمليات</Ar> |
+|---|---|
+| **Unary** <Ar>**الأحادية (Unary)**</Ar> | SELECT $\sigma$, PROJECT $\pi$, RENAME $\rho$ <Ar>الاختيار SELECT $\sigma$، والإسقاط PROJECT $\pi$، وإعادة التسمية RENAME $\rho$</Ar> |
+| **From set theory** <Ar>**من نظرية المجموعات**</Ar> | UNION $\cup$, INTERSECTION $\cap$, DIFFERENCE $-$, CARTESIAN PRODUCT $\times$ <Ar>الاتحاد UNION $\cup$، والتقاطع INTERSECTION $\cap$، والفرق DIFFERENCE $-$، والضرب الديكارتي CARTESIAN PRODUCT $\times$</Ar> |
+| **Binary relational** <Ar>**الثنائية العلائقية**</Ar> | JOIN $\bowtie$ (several variants), DIVISION $\div$ <Ar>الربط JOIN $\bowtie$ (بعدة أشكال)، والقسمة DIVISION $\div$</Ar> |
+| **Additional** <Ar>**الإضافية**</Ar> | Outer joins, outer union, **aggregate functions** (SUM, COUNT, AVG, MIN, MAX) <Ar>الربط الخارجي (outer joins)، والاتحاد الخارجي (outer union)، و**دوال التجميع (aggregate functions)** (SUM و COUNT و AVG و MIN و MAX)</Ar> |
+
+<SlideFigure page={2} caption="The COMPANY relational schema used in every example." captionAr="المخطط العلائقي لقاعدة بيانات COMPANY المستخدم في كل الأمثلة." />
 
 All examples use this `EMPLOYEE` state from the COMPANY database:
 
-| FNAME | LNAME | SSN | SEX | SALARY | SUPERSSN | DNO |
+<Ar>تستخدم كل الأمثلة حالة الجدول `EMPLOYEE` هذه من قاعدة بيانات COMPANY:</Ar>
+
+{/* data-table */}
+| FNAME <Ar>الاسم الأول</Ar> | LNAME <Ar>اسم العائلة</Ar> | SSN <Ar>رقم الضمان الاجتماعي</Ar> | SEX <Ar>الجنس</Ar> | SALARY <Ar>الراتب</Ar> | SUPERSSN <Ar>رقم ضمان المشرف</Ar> | DNO <Ar>رقم القسم</Ar> |
 |---|---|---|---|---|---|---|
 | John | Smith | 123456789 | M | 30000 | 333445555 | 5 |
 | Franklin | Wong | 333445555 | M | 40000 | 888665555 | 5 |
@@ -54,26 +68,36 @@ All examples use this `EMPLOYEE` state from the COMPANY database:
 
 ## SELECT: choosing rows (σ)
 
+<Ar>الاختيار SELECT: انتقاء الصفوف (σ)</Ar>
+
 $$
 \sigma_{\langle \text{selection condition} \rangle}(R)
 $$
 
 SELECT keeps the **tuples** (rows) of $R$ for which the Boolean **selection condition** is **true** and discards the rest. The condition compares attributes with constants or with each other ($=, \neq, <, \le, >, \ge$) and combines comparisons with **AND**, **OR** and **NOT**.
 
+<Ar>تُبقي عملية الاختيار (SELECT) على **الصفوف (tuples)** من $R$ التي يكون فيها **شرط الاختيار (selection condition)** المنطقي **صحيحًا**، وتستبعد الباقي. ويقارن الشرط السمات بثوابت أو ببعضها ($=, \neq, <, \le, >, \ge$)، ويجمع المقارنات باستخدام **AND** و**OR** و**NOT**.</Ar>
+
 $$
 \sigma_{DNO = 4}(\text{EMPLOYEE}) \qquad \sigma_{SALARY > 30000}(\text{EMPLOYEE})
 $$
 
-| $\sigma_{DNO=4}$ returns | $\sigma_{SALARY>30000}$ returns |
+| $\sigma_{DNO=4}$ returns <Ar>ما تُرجعه $\sigma_{DNO=4}$</Ar> | $\sigma_{SALARY>30000}$ returns <Ar>ما تُرجعه $\sigma_{SALARY>30000}$</Ar> |
 |---|---|
-| Alicia, Jennifer, Ahmad | Franklin (40000), Jennifer (43000), Ramesh (38000), James (55000) |
+| Alicia, Jennifer, Ahmad <Ar>أليشيا، جينيفر، أحمد</Ar> | Franklin (40000), Jennifer (43000), Ramesh (38000), James (55000) <Ar>فرانكلين (40000)، جينيفر (43000)، راميش (38000)، جيمس (55000)</Ar> |
 
 Properties of SELECT:
 
+<Ar>خصائص عملية الاختيار SELECT:</Ar>
+
 - The result has the **same attributes** (degree) as $R$, and at most as many tuples.
+  <Ar>للنتيجة **السمات نفسها** (الدرجة degree) التي لـ $R$، وعدد صفوفها لا يزيد على عدد صفوف $R$.</Ar>
 - It is **commutative**: $\sigma_{c_1}(\sigma_{c_2}(R)) = \sigma_{c_2}(\sigma_{c_1}(R))$.
+  <Ar>وهي **إبدالية (commutative)**: $\sigma_{c_1}(\sigma_{c_2}(R)) = \sigma_{c_2}(\sigma_{c_1}(R))$.</Ar>
 - A **cascade** of selects is one select with AND: $\sigma_{c_1}(\sigma_{c_2}(R)) = \sigma_{c_1 \text{ AND } c_2}(R)$.
+  <Ar>**سلسلة (cascade)** من عمليات الاختيار تساوي عملية اختيار واحدة مع AND: $\sigma_{c_1}(\sigma_{c_2}(R)) = \sigma_{c_1 \text{ AND } c_2}(R)$.</Ar>
 - The fraction of tuples it keeps is its **selectivity**.
+  <Ar>نسبة الصفوف التي تُبقيها هي **انتقائيتها (selectivity)**.</Ar>
 
 ```sql title="select.sql"
 SELECT * FROM employee WHERE dno = 4;              -- σ DNO=4 (EMPLOYEE)
@@ -82,31 +106,45 @@ SELECT * FROM employee WHERE salary > 30000;
 
 ## PROJECT: choosing columns (π)
 
+<Ar>الإسقاط PROJECT: انتقاء الأعمدة (π)</Ar>
+
 $$
 \pi_{\langle \text{attribute list} \rangle}(R)
 $$
 
 PROJECT keeps only the listed **attributes** (columns), in the order given. The result is a **set**, so **duplicate tuples are removed**.
 
+<Ar>يُبقي الإسقاط (PROJECT) على **السمات** (الأعمدة) المذكورة فقط، بالترتيب المعطى. والنتيجة **مجموعة (set)**، لذا **تُحذف الصفوف المكررة**.</Ar>
+
 $$
 \pi_{LNAME,\ FNAME,\ SALARY}(\text{EMPLOYEE})
 $$
 
-<Callout type="warning" title="Duplicates disappear">
+<Callout type="warning" title="Duplicates disappear" titleAr="المكررات تختفي">
   $\pi_{SEX,\ SALARY}(\text{EMPLOYEE})$ returns <strong>7</strong> tuples, not 8, because Alicia and Joyce both give (F, 25000). In SQL, <code>SELECT sex, salary FROM employee</code> keeps duplicates (a multiset); you need <code>SELECT DISTINCT</code> to match the algebra.
+
+  <Ar>تُرجع العملية $\pi_{SEX,\ SALARY}(\text{EMPLOYEE})$ عدد <strong>7</strong> صفوف لا 8، لأن أليشيا (Alicia) وجويس (Joyce) كلتيهما تعطيان (F, 25000). وفي SQL يُبقي <code>SELECT sex, salary FROM employee</code> على المكررات (مجموعة متعددة multiset)؛ وتحتاج إلى <code>SELECT DISTINCT</code> لتطابق نتيجة الجبر.</Ar>
 </Callout>
 
 PROJECT is **not** commutative, and $\pi_{list_1}(\pi_{list_2}(R)) = \pi_{list_1}(R)$ as long as $list_1 \subseteq list_2$.
 
+<Ar>الإسقاط **ليس** إبداليًا، و $\pi_{list_1}(\pi_{list_2}(R)) = \pi_{list_1}(R)$ ما دامت $list_1 \subseteq list_2$.</Ar>
+
 ## Combining operations
 
+<Ar>تركيب العمليات</Ar>
+
 Operations can be **nested** into one expression:
+
+<Ar>يمكن **دمج** العمليات **بالتداخل (nested)** في تعبير واحد:</Ar>
 
 $$
 \pi_{FNAME,\ LNAME,\ SALARY}\big(\sigma_{DNO=5}(\text{EMPLOYEE})\big)
 $$
 
 Or written as a **sequence**, naming each **intermediate result** with $\leftarrow$:
+
+<Ar>أو كتابتها على هيئة **تسلسل (sequence)**، مع تسمية كل **نتيجة وسيطة (intermediate result)** باستخدام $\leftarrow$:</Ar>
 
 $$
 \begin{aligned}
@@ -115,7 +153,8 @@ $$
 \end{aligned}
 $$
 
-| FNAME | LNAME | SALARY |
+{/* data-table */}
+| FNAME <Ar>الاسم الأول</Ar> | LNAME <Ar>اسم العائلة</Ar> | SALARY <Ar>الراتب</Ar> |
 |---|---|---|
 | John | Smith | 30000 |
 | Franklin | Wong | 40000 |
@@ -130,31 +169,45 @@ SELECT * FROM employee WHERE dno = 4 AND salary >= 25000;   -- σ DNO=4 AND SALA
 
 ## RENAME (ρ)
 
+<Ar>إعادة التسمية RENAME (ρ)</Ar>
+
 RENAME changes the name of a relation, of its attributes, or both:
 
-| Form | Effect |
+<Ar>تغيّر عملية إعادة التسمية (RENAME) اسم العلاقة، أو أسماء سماتها، أو كليهما:</Ar>
+
+| Form <Ar>الصيغة</Ar> | Effect <Ar>الأثر</Ar> |
 |---|---|
-| $\rho_{S(B_1, B_2, \dots, B_n)}(R)$ | Renames the relation to $S$ **and** the attributes to $B_1 \dots B_n$ |
-| $\rho_{S}(R)$ | Renames the **relation** only |
-| $\rho_{(B_1, B_2, \dots, B_n)}(R)$ | Renames the **attributes** only |
+| $\rho_{S(B_1, B_2, \dots, B_n)}(R)$ | Renames the relation to $S$ **and** the attributes to $B_1 \dots B_n$ <Ar>تعيد تسمية العلاقة إلى $S$ **و**السمات إلى $B_1 \dots B_n$</Ar> |
+| $\rho_{S}(R)$ | Renames the **relation** only <Ar>تعيد تسمية **العلاقة** فقط</Ar> |
+| $\rho_{(B_1, B_2, \dots, B_n)}(R)$ | Renames the **attributes** only <Ar>تعيد تسمية **السمات** فقط</Ar> |
 
 The sequence notation renames implicitly too: $\text{RESULT}(First, Last, Pay) \leftarrow \pi_{FNAME, LNAME, SALARY}(\dots)$. In SQL this is what **aliases** do: `SELECT fname AS first …` and `FROM employee e`.
 
+<Ar>ويعيد ترميز التسلسل التسمية ضمنيًا أيضًا: $\text{RESULT}(First, Last, Pay) \leftarrow \pi_{FNAME, LNAME, SALARY}(\dots)$. وفي SQL هذا ما تفعله **الأسماء المستعارة (aliases)**: `SELECT fname AS first …` و `FROM employee e`.</Ar>
+
 ## Set operations
+
+<Ar>عمليات المجموعات</Ar>
 
 ### UNION, INTERSECTION and DIFFERENCE
 
-<Definition term="Union compatibility">
+<Ar>الاتحاد والتقاطع والفرق</Ar>
+
+<Definition term="Union compatibility" termAr="توافق الاتحاد">
   Two relations are <strong>type (union) compatible</strong> if they have the <strong>same number of attributes</strong> and each pair of corresponding attributes has the <strong>same or a compatible domain</strong>. $\cup$, $\cap$ and $-$ require it.
+
+  <Ar>تكون علاقتان <strong>متوافقتين في النوع (متوافقتين للاتحاد union compatible)</strong> إذا كان لهما <strong>العدد نفسه من السمات</strong>، وكان لكل زوج من السمات المتناظرة <strong>النطاق نفسه أو نطاق متوافق</strong>. وتتطلب العمليات $\cup$ و $\cap$ و $-$ ذلك.</Ar>
 </Definition>
 
-| Operation | Result | Properties |
+| Operation <Ar>العملية</Ar> | Result <Ar>النتيجة</Ar> | Properties <Ar>الخصائص</Ar> |
 |---|---|---|
-| $R \cup S$ | Tuples in $R$, in $S$, or in both; duplicates removed | Commutative and associative |
-| $R \cap S$ | Tuples in **both** $R$ and $S$ | Commutative and associative |
-| $R - S$ | Tuples in $R$ but **not** in $S$ | **Not** commutative: $R - S \neq S - R$ |
+| $R \cup S$ | Tuples in $R$, in $S$, or in both; duplicates removed <Ar>الصفوف الموجودة في $R$ أو في $S$ أو في كليهما، مع حذف المكررات</Ar> | Commutative and associative <Ar>إبدالية وتجميعية (associative)</Ar> |
+| $R \cap S$ | Tuples in **both** $R$ and $S$ <Ar>الصفوف الموجودة في $R$ و $S$ **معًا**</Ar> | Commutative and associative <Ar>إبدالية وتجميعية</Ar> |
+| $R - S$ | Tuples in $R$ but **not** in $S$ <Ar>الصفوف الموجودة في $R$ و**ليست** في $S$</Ar> | **Not** commutative: $R - S \neq S - R$ <Ar>**ليست** إبدالية: $R - S \neq S - R$</Ar> |
 
 **Example from the slides:** the SSNs of employees who **work in department 5 or directly supervise** someone who works in department 5:
+
+<Ar>**مثال من الشرائح:** أرقام SSN للموظفين الذين **يعملون في القسم 5 أو يشرفون مباشرة** على شخص يعمل في القسم 5:</Ar>
 
 $$
 \begin{aligned}
@@ -165,11 +218,13 @@ $$
 \end{aligned}
 $$
 
-| RESULT1 (work in 5) | RESULT2 (supervise someone in 5) | RESULT |
+| RESULT1 (work in 5) <Ar>RESULT1 (يعملون في القسم 5)</Ar> | RESULT2 (supervise someone in 5) <Ar>RESULT2 (يشرفون على شخص في القسم 5)</Ar> | RESULT <Ar>النتيجة RESULT</Ar> |
 |---|---|---|
 | 123456789, 333445555, 666884444, 453453453 | 333445555, 888665555 | 123456789, 333445555, 666884444, 453453453, 888665555 |
 
 `333445555` (Franklin Wong) appears in both but only **once** in the union.
+
+<Ar>يظهر `333445555` (Franklin Wong) في كلتيهما، لكنه يظهر **مرة واحدة** فقط في الاتحاد.</Ar>
 
 ```sql title="union.sql"
 SELECT ssn       FROM employee WHERE dno = 5
@@ -180,7 +235,11 @@ SELECT super_ssn FROM employee WHERE dno = 5;
 
 ### CARTESIAN PRODUCT and JOIN
 
+<Ar>الضرب الديكارتي والربط</Ar>
+
 $R \times S$ combines **every** tuple of $R$ with **every** tuple of $S$: $n_R \cdot n_S$ tuples, and degree $\deg(R) + \deg(S)$. It does **not** need union compatibility. On its own it is rarely meaningful; it becomes useful when followed by a SELECT that matches related tuples. That combination is a **JOIN**:
+
+<Ar>يجمع $R \times S$ **كل** صف من $R$ مع **كل** صف من $S$: فينتج $n_R \cdot n_S$ صفًا، بدرجة $\deg(R) + \deg(S)$. وهو **لا** يحتاج إلى توافق الاتحاد. ونادرًا ما يكون له معنى بمفرده، لكنه يصبح مفيدًا عندما تتبعه عملية اختيار (SELECT) تطابق الصفوف المرتبطة. وهذا التركيب هو **الربط (JOIN)**:</Ar>
 
 $$
 R \bowtie_{\langle \text{join condition} \rangle} S \;=\; \sigma_{\langle \text{join condition} \rangle}(R \times S)
@@ -190,14 +249,16 @@ $$
 \text{DEPT\_MGR} \leftarrow \text{DEPARTMENT} \bowtie_{MGRSSN = SSN} \text{EMPLOYEE}
 $$
 
-| Join | Condition |
+| Join <Ar>الربط</Ar> | Condition <Ar>الشرط</Ar> |
 |---|---|
-| **Theta join** | Any comparison $\theta$ ($=, <, \ge, \dots$) |
-| **Equijoin** | Only equality comparisons |
-| **Natural join** $*$ | Equijoin on all attributes **with the same name**, keeping one copy of each |
-| **Outer joins** | Also keep tuples **without** a match, padding them with NULLs (left, right, full) |
+| **Theta join** <Ar>**ربط ثيتا (Theta join)**</Ar> | Any comparison $\theta$ ($=, <, \ge, \dots$) <Ar>أي مقارنة $\theta$ ($=, <, \ge, \dots$)</Ar> |
+| **Equijoin** <Ar>**ربط المساواة (Equijoin)**</Ar> | Only equality comparisons <Ar>مقارنات المساواة فقط</Ar> |
+| **Natural join** $*$ <Ar>**الربط الطبيعي (Natural join)** $*$</Ar> | Equijoin on all attributes **with the same name**, keeping one copy of each <Ar>ربط مساواة على كل السمات **التي لها الاسم نفسه**، مع الإبقاء على نسخة واحدة من كل منها</Ar> |
+| **Outer joins** <Ar>**الربط الخارجي (Outer joins)**</Ar> | Also keep tuples **without** a match, padding them with NULLs (left, right, full) <Ar>تُبقي أيضًا على الصفوف التي **ليس** لها مطابق، وتملؤها بقيم NULL (الأيسر، والأيمن، والكامل)</Ar> |
 
 **DIVISION** $R \div S$ answers "for all" questions, such as *employees who work on **all** the projects that John Smith works on*. You will meet joins again in SQL in Section 6.
+
+<Ar>تجيب **القسمة (DIVISION)** $R \div S$ عن أسئلة «لكل (for all)»، مثل: *الموظفون الذين يعملون على **كل** المشروعات التي يعمل عليها John Smith*. وستقابل الربط مرة أخرى في SQL في السكشن 6.</Ar>
 
 ```python title="algebra.py"
 EMPLOYEE = [
@@ -233,18 +294,27 @@ print(union(result1, result2))
 <Takeaways>
 
 - Relational algebra is **closed**: every operation returns a relation, so operations compose.
+  <Ar>الجبر العلائقي **مغلق (closed)**: كل عملية تُرجع علاقة، لذا يمكن تركيب العمليات.</Ar>
 - $\sigma$ filters **rows** (and is commutative), $\pi$ keeps **columns** and **removes duplicates**, and $\rho$ **renames**.
+  <Ar>العملية $\sigma$ تصفّي **الصفوف** (وهي إبدالية)، و $\pi$ تُبقي على **الأعمدة** و**تحذف المكررات**، و $\rho$ **تعيد التسمية**.</Ar>
 - Long queries can be written as a **sequence** of named intermediate results or as one **nested** expression.
+  <Ar>يمكن كتابة الاستعلامات الطويلة على هيئة **تسلسل** من النتائج الوسيطة المسمّاة، أو على هيئة تعبير **متداخل** واحد.</Ar>
 - $\cup$, $\cap$ and $-$ need **union-compatible** operands; $-$ is not commutative; $\times$ pairs every tuple with every tuple.
+  <Ar>تحتاج $\cup$ و $\cap$ و $-$ إلى معامَلات (operands) **متوافقة للاتحاد**؛ و $-$ ليست إبدالية؛ و $\times$ تقرن كل صف بكل صف.</Ar>
 - A **join** is a Cartesian product followed by a selection, and it is the most common way to combine related tables.
+  <Ar>**الربط (join)** ضرب ديكارتي يتبعه اختيار، وهو الطريقة الأكثر شيوعًا للجمع بين الجداول المرتبطة.</Ar>
 
 </Takeaways>
 
 ## Practice
 
-<Exercise title="Write the expression" level="easy">
+<Ar>تدريب</Ar>
+
+<Exercise title="Write the expression" titleAr="اكتب التعبير" level="easy">
 
 Retrieve the first name and salary of employees in department 4 who earn more than 25,000. Give the algebra expression, the SQL and the result.
+
+<Ar>استرجع الاسم الأول والراتب للموظفين في القسم 4 الذين يتقاضون أكثر من 25,000. اكتب تعبير الجبر العلائقي، وعبارة SQL، والنتيجة.</Ar>
 
 <Solution>
 
@@ -254,13 +324,17 @@ $\pi_{FNAME,\ SALARY}\big(\sigma_{DNO=4\ \text{AND}\ SALARY>25000}(\text{EMPLOYE
 
 Result: **Jennifer, 43000**. Alicia and Ahmad earn exactly 25,000, which is not more than 25,000.
 
+<Ar>النتيجة: **جينيفر (Jennifer)، 43000**. أما أليشيا وأحمد فيتقاضيان 25,000 بالضبط، وهذا ليس أكثر من 25,000.</Ar>
+
 </Solution>
 
 </Exercise>
 
-<Exercise title="Count the tuples" level="medium">
+<Exercise title="Count the tuples" titleAr="عُدّ الصفوف" level="medium">
 
 How many tuples does each return? (a) $\pi_{DNO}(\text{EMPLOYEE})$ (b) $\pi_{SALARY}(\sigma_{SEX='F'}(\text{EMPLOYEE}))$ (c) $\pi_{SSN}(\text{EMPLOYEE}) - \pi_{SUPERSSN}(\text{EMPLOYEE})$
+
+<Ar>كم صفًا يُرجع كل تعبير؟ (a) $\pi_{DNO}(\text{EMPLOYEE})$ (b) $\pi_{SALARY}(\sigma_{SEX='F'}(\text{EMPLOYEE}))$ (c) $\pi_{SSN}(\text{EMPLOYEE}) - \pi_{SUPERSSN}(\text{EMPLOYEE})$</Ar>
 
 <Solution>
 
@@ -268,17 +342,25 @@ How many tuples does each return? (a) $\pi_{DNO}(\text{EMPLOYEE})$ (b) $\pi_{SAL
 (b) **2**: Alicia 25000, Jennifer 43000 and Joyce 25000 give the distinct salaries \{25000, 43000\}.
 (c) The SSNs of employees who supervise nobody. The supervisors are 333445555, 888665555 and 987654321 (NULL matches no SSN), so 8 − 3 = **5** tuples: Smith, Zelaya, Narayan, English and Jabbar.
 
+<Ar>(a) **3**: الأقسام 5 و 4 و 1.
+(b) **2**: أليشيا 25000 وجينيفر 43000 وجويس 25000 تعطي الرواتب المختلفة `{25000, 43000}`.
+(c) أرقام SSN للموظفين الذين لا يشرفون على أحد. المشرفون هم 333445555 و 888665555 و 987654321 (والقيمة NULL لا تطابق أي SSN)، لذا 8 − 3 = **5** صفوف: سميث وزيلايا ونارايان وإنجلش وجبار.</Ar>
+
 </Solution>
 
 </Exercise>
 
-<Exercise title="Is it union compatible?" level="easy">
+<Exercise title="Is it union compatible?" titleAr="هل هما متوافقتان للاتحاد؟" level="easy">
 
 Can you compute $\pi_{FNAME,\ SALARY}(\text{EMPLOYEE}) \cup \pi_{DNAME,\ DNUMBER}(\text{DEPARTMENT})$?
+
+<Ar>هل يمكنك حساب $\pi_{FNAME,\ SALARY}(\text{EMPLOYEE}) \cup \pi_{DNAME,\ DNUMBER}(\text{DEPARTMENT})$؟</Ar>
 
 <Solution>
 
 **Technically yes**: both have two attributes, FNAME and DNAME are both strings, and SALARY and DNUMBER are both numbers. But the result mixes people's salaries with department numbers, so it is **meaningless**. Union compatibility is a type check, not a guarantee that the result makes sense.
+
+<Ar>**نعم من الناحية الفنية**: لكلٍّ منهما سمتان، و FNAME و DNAME كلتاهما نصوص، و SALARY و DNUMBER كلتاهما أرقام. لكن النتيجة تخلط رواتب الأشخاص بأرقام الأقسام، لذا فهي **بلا معنى**. فتوافق الاتحاد فحص للأنواع، وليس ضمانًا لأن تكون النتيجة منطقية.</Ar>
 
 </Solution>
 
@@ -288,45 +370,66 @@ Can you compute $\pi_{FNAME,\ SALARY}(\text{EMPLOYEE}) \cup \pi_{DNAME,\ DNUMBER
   questions={[
     {
       q: "Which operation chooses a subset of rows?",
+      qAr: "أي عملية تنتقي مجموعة جزئية من الصفوف؟",
       options: ["PROJECT π", "SELECT σ", "RENAME ρ", "UNION ∪"],
+      optionsAr: ["الإسقاط PROJECT π", "الاختيار SELECT σ", "إعادة التسمية RENAME ρ", "الاتحاد UNION ∪"],
       answer: 1,
-      explain: "SELECT filters tuples by a condition; PROJECT chooses columns."
+      explain: "SELECT filters tuples by a condition; PROJECT chooses columns.",
+      explainAr: "يصفّي الاختيار SELECT الصفوف حسب شرط، بينما ينتقي الإسقاط PROJECT الأعمدة."
     },
     {
       q: "Why can π_{SEX, SALARY}(EMPLOYEE) return fewer tuples than EMPLOYEE has?",
+      qAr: "لماذا قد تُرجع π_{SEX, SALARY}(EMPLOYEE) صفوفًا أقل مما في EMPLOYEE؟",
       options: ["PROJECT drops NULLs", "PROJECT removes duplicate tuples", "PROJECT sorts the result", "It can't"],
+      optionsAr: ["لأن الإسقاط يحذف قيم NULL", "لأن الإسقاط يحذف الصفوف المكررة", "لأن الإسقاط يرتّب النتيجة", "لا يمكن ذلك"],
       answer: 1,
-      explain: "The result of an algebra operation is a set, so duplicates are eliminated."
+      explain: "The result of an algebra operation is a set, so duplicates are eliminated.",
+      explainAr: "نتيجة أي عملية جبرية مجموعة (set)، لذا تُحذف المكررات."
     },
     {
       q: "σ_{c1}(σ_{c2}(R)) is equivalent to…",
+      qAr: "التعبير σ_{c1}(σ_{c2}(R)) يكافئ…",
       options: ["σ_{c1 OR c2}(R)", "σ_{c1 AND c2}(R)", "π_{c1,c2}(R)", "R − σ_{c2}(R)"],
+      optionsAr: ["σ_{c1 OR c2}(R)", "σ_{c1 AND c2}(R)", "π_{c1,c2}(R)", "R − σ_{c2}(R)"],
       answer: 1,
-      explain: "A cascade of selections equals one selection with the conditions ANDed."
+      explain: "A cascade of selections equals one selection with the conditions ANDed.",
+      explainAr: "سلسلة من عمليات الاختيار تساوي اختيارًا واحدًا تُجمع فيه الشروط بـ AND."
     },
     {
       q: "Which operation is NOT commutative?",
+      qAr: "أي عملية ليست إبدالية؟",
       options: ["UNION", "INTERSECTION", "DIFFERENCE", "SELECT"],
+      optionsAr: ["الاتحاد (UNION)", "التقاطع (INTERSECTION)", "الفرق (DIFFERENCE)", "الاختيار (SELECT)"],
       answer: 2,
-      explain: "R − S keeps tuples of R not in S, which differs from S − R."
+      explain: "R − S keeps tuples of R not in S, which differs from S − R.",
+      explainAr: "تُبقي R − S صفوف R غير الموجودة في S، وهذا يختلف عن S − R."
     },
     {
       q: "Union compatibility requires…",
+      qAr: "يتطلب توافق الاتحاد…",
       options: ["The same relation name", "The same number of attributes with compatible domains", "A common key", "Equal cardinality"],
+      optionsAr: ["اسم العلاقة نفسه", "العدد نفسه من السمات بنطاقات متوافقة", "مفتاحًا مشتركًا", "تساوي عدد الصفوف"],
       answer: 1,
-      explain: "Degree and domains must match pairwise."
+      explain: "Degree and domains must match pairwise.",
+      explainAr: "يجب أن تتطابق الدرجة والنطاقات زوجًا بزوج."
     },
     {
       q: "If R has 4 tuples and S has 5, how many tuples does R × S have?",
+      qAr: "إذا كان في R أربعة صفوف وفي S خمسة، فكم صفًا في R × S؟",
       options: ["9", "20", "4", "5"],
+      optionsAr: ["9", "20", "4", "5"],
       answer: 1,
-      explain: "The Cartesian product pairs every tuple of R with every tuple of S: 4 × 5."
+      explain: "The Cartesian product pairs every tuple of R with every tuple of S: 4 × 5.",
+      explainAr: "يقرن الضرب الديكارتي كل صف من R بكل صف من S: 4 × 5."
     },
     {
       q: "A join can be expressed as…",
+      qAr: "يمكن التعبير عن الربط على أنه…",
       options: ["A union of two projections", "A selection over a Cartesian product", "A rename of a difference", "A projection of a union"],
+      optionsAr: ["اتحاد لعمليتَي إسقاط", "اختيار على ضرب ديكارتي", "إعادة تسمية لفرق", "إسقاط لاتحاد"],
       answer: 1,
-      explain: "R ⋈_c S = σ_c(R × S)."
+      explain: "R ⋈_c S = σ_c(R × S).",
+      explainAr: "أي أن R ⋈_c S = σ_c(R × S)."
     }
   ]}
 />

@@ -1,7 +1,9 @@
 ---
 number: 1
 title: Retrieving Data Using the SQL SELECT Statement
+titleAr: "استرجاع البيانات باستخدام جملة SELECT في SQL"
 summary: Your first queries. Covers selecting all or specific columns, arithmetic expressions and operator precedence, how NULL behaves, column aliases, concatenation and literal strings, the q-quote operator, removing duplicates with DISTINCT, and DESCRIBE.
+summaryAr: "استعلاماتك الأولى: اختيار كل الأعمدة أو أعمدة محددة، والتعبيرات الحسابية وأولوية المؤثرات، وسلوك القيمة الفارغة NULL، والأسماء المستعارة للأعمدة (column aliases)، والدمج (concatenation) والسلاسل الحرفية، ومؤثر الاقتباس q، وإزالة التكرار باستخدام DISTINCT، والأمر DESCRIBE."
 kind: lab
 topics: [SELECT and FROM, Arithmetic expressions, NULL values, Column aliases, Concatenation, q-quote operator, DISTINCT, DESCRIBE]
 duration: 45 min hands-on
@@ -20,18 +22,27 @@ bookRefs:
 <Objectives>
 
 - Describe the three capabilities of `SELECT`: **projection**, **selection** and **join**.
+  <Ar>وصف القدرات الثلاث لجملة `SELECT`: **الإسقاط (projection)** و**الاختيار (selection)** و**الربط (join)**.</Ar>
 - Write a basic `SELECT … FROM …` for all or specific columns, following SQL's writing rules.
+  <Ar>كتابة جملة `SELECT … FROM …` أساسية لكل الأعمدة أو لأعمدة محددة، مع اتباع قواعد كتابة SQL.</Ar>
 - Use **arithmetic expressions** correctly, including **operator precedence** and **NULL**.
+  <Ar>استخدام **التعبيرات الحسابية (arithmetic expressions)** استخدامًا صحيحًا، بما في ذلك **أولوية المؤثرات (operator precedence)** والقيمة **NULL**.</Ar>
 - Rename output with **column aliases**, and build text with **||**, literals and the **q** quote operator.
+  <Ar>إعادة تسمية المخرجات باستخدام **الأسماء المستعارة للأعمدة (column aliases)**، وبناء النصوص باستخدام **`||`** والقيم الحرفية (literals) ومؤثر الاقتباس **q**.</Ar>
 - Remove duplicates with **DISTINCT** and inspect tables with **DESCRIBE**.
+  <Ar>إزالة التكرار باستخدام **DISTINCT** وفحص بنية الجداول باستخدام **DESCRIBE**.</Ar>
 
 </Objectives>
 
 ## What SELECT can do
 
-<SlideFigure page={4} caption="Projection chooses columns, selection chooses rows, and a join combines tables." />
+<Ar>ما الذي تستطيع جملة SELECT فعله</Ar>
+
+<SlideFigure page={4} caption="Projection chooses columns, selection chooses rows, and a join combines tables." captionAr="الإسقاط (projection) يختار الأعمدة، والاختيار (selection) يختار الصفوف، والربط (join) يجمع الجداول." />
 
 These are exactly the relational-algebra operations $\pi$, $\sigma$ and $\bowtie$ from the lectures. This lab covers projection; Section 2 adds selection and Section 6 adds joins.
+
+<Ar>هذه بالضبط عمليات الجبر العلائقي (relational algebra): π و σ و ⋈ التي درستها في المحاضرات. يغطي هذا السكشن الإسقاط (projection)، ويضيف السكشن 2 الاختيار (selection)، ويضيف السكشن 6 الربط (join).</Ar>
 
 ```sql title="syntax"
 SELECT *|{[DISTINCT] column|expression [alias], ...}
@@ -40,7 +51,11 @@ FROM   table;
 
 `SELECT` says **which columns**; `FROM` says **which table**.
 
+<Ar>تحدد `SELECT` **أي الأعمدة**، وتحدد `FROM` **أي جدول**.</Ar>
+
 ## Selecting columns
+
+<Ar>اختيار الأعمدة</Ar>
 
 ```sql
 SELECT * FROM departments;                        -- all columns, in table order
@@ -49,18 +64,26 @@ SELECT department_id, location_id                 -- only these columns, in this
 FROM   departments;
 ```
 
-<Callout type="tip" title="Writing SQL statements">
+<Callout type="tip" title="Writing SQL statements" titleAr="كتابة جمل SQL">
 
 - SQL is **not case-sensitive**, but string data is. By convention, keywords are uppercase.
+  <Ar>لغة SQL **لا تميّز بين الأحرف الكبيرة والصغيرة (not case-sensitive)**، لكن بيانات النصوص تميّز بينها. ومن المتعارف عليه كتابة الكلمات المفتاحية (keywords) بأحرف كبيرة.</Ar>
 - A statement can span **several lines**. Keywords can't be abbreviated or split, and each clause usually goes on its own line.
+  <Ar>يمكن أن تمتد الجملة على **عدة أسطر**. ولا يجوز اختصار الكلمات المفتاحية أو تقسيمها، وعادةً توضع كل عبارة (clause) في سطر مستقل.</Ar>
 - End statements with `;`. It's required in SQL\*Plus and when running several statements in SQL Developer.
+  <Ar>أنهِ الجمل بالرمز `;`، وهو إلزامي في SQL\*Plus وعند تنفيذ عدة جمل في SQL Developer.</Ar>
 - SQL Developer shows headings **uppercase and left-aligned**. SQL\*Plus right-aligns number headings.
+  <Ar>يعرض SQL Developer عناوين الأعمدة **بأحرف كبيرة ومحاذاة لليسار**، بينما يحاذي SQL\*Plus عناوين الأعمدة الرقمية لليمين.</Ar>
 
 </Callout>
 
 ## Arithmetic expressions
 
+<Ar>التعبيرات الحسابية</Ar>
+
 `+`, `-`, `*` and `/` work on **NUMBER** and **DATE** values, in any clause except `FROM`.
+
+<Ar>تعمل المؤثرات `+` و`-` و`*` و`/` على قيم **NUMBER** و**DATE**، في أي عبارة (clause) ما عدا `FROM`.</Ar>
 
 ```sql
 SELECT last_name, salary, salary + 300
@@ -69,12 +92,15 @@ FROM   employees;
 
 **Precedence:** `*` and `/` before `+` and `-`, left to right among equals; parentheses override.
 
+<Ar>**الأولوية (Precedence):** `*` و`/` قبل `+` و`-`، ومن اليسار إلى اليمين بين المؤثرات المتساوية في الأولوية؛ والأقواس تتجاوز هذا الترتيب.</Ar>
+
 ```sql
 SELECT last_name, salary, 12*salary+100, 12*(salary+100)
 FROM   employees;
 ```
 
-| LAST_NAME | SALARY | 12\*SALARY+100 | 12\*(SALARY+100) |
+{/* data-table */}
+| LAST_NAME <Ar>الاسم الأخير</Ar> | SALARY <Ar>الراتب</Ar> | 12\*SALARY+100 <Ar>12 × الراتب + 100</Ar> | 12\*(SALARY+100) <Ar>12 × (الراتب + 100)</Ar> |
 |---|---|---|---|
 | King | 24000 | 288100 | 289200 |
 | Abel | 11000 | 132100 | 133200 |
@@ -82,18 +108,25 @@ FROM   employees;
 
 ## NULL values
 
-<Definition term="NULL">
+<Ar>القيم الفارغة (NULL)</Ar>
+
+<Definition term="NULL" termAr="القيمة الفارغة (NULL)">
   A value that is <strong>unavailable, unassigned, unknown or inapplicable</strong>. It is <strong>not</strong> zero and <strong>not</strong> a blank space.
+
+  <Ar>قيمة <strong>غير متاحة أو غير مُسنَدة أو غير معروفة أو غير قابلة للتطبيق</strong>. وهي <strong>ليست</strong> صفرًا و<strong>ليست</strong> مسافة فارغة.</Ar>
 </Definition>
 
 Only sales staff have a `commission_pct`; everyone else has NULL. **Any arithmetic involving NULL yields NULL:**
+
+<Ar>موظفو المبيعات وحدهم لديهم قيمة في `commission_pct`، وكل من عداهم قيمته NULL. **أي عملية حسابية تتضمن NULL تكون نتيجتها NULL:**</Ar>
 
 ```sql
 SELECT last_name, 12*salary*commission_pct
 FROM   employees;
 ```
 
-| LAST_NAME | 12\*SALARY\*COMMISSION_PCT |
+{/* data-table */}
+| LAST_NAME <Ar>الاسم الأخير</Ar> | 12\*SALARY\*COMMISSION_PCT <Ar>12 × الراتب × نسبة العمولة</Ar> |
 |---|---|
 | King | (null) |
 | Zlotkey | 25200 |
@@ -103,9 +136,15 @@ FROM   employees;
 
 You'll learn to replace NULL with a value (`NVL`) in Section 3.
 
+<Ar>ستتعلم استبدال NULL بقيمة (`NVL`) في السكشن 3.</Ar>
+
 ## Column aliases
 
+<Ar>الأسماء المستعارة للأعمدة (Column aliases)</Ar>
+
 An alias **renames a heading**. It follows the column, optionally after `AS`. Use **double quotes** when it contains spaces or special characters, or must keep its case.
+
+<Ar>الاسم المستعار (alias) **يعيد تسمية عنوان العمود**. ويأتي بعد العمود، ويمكن أن تسبقه الكلمة `AS` اختياريًا. استخدم **علامات الاقتباس المزدوجة (double quotes)** عندما يحتوي على مسافات أو رموز خاصة، أو عندما يجب أن يحتفظ بحالة أحرفه.</Ar>
 
 ```sql
 SELECT last_name AS name, commission_pct comm
@@ -117,7 +156,11 @@ FROM   employees;                                 -- headings exactly as written
 
 ## Concatenation and literal strings
 
+<Ar>الدمج (Concatenation) والسلاسل الحرفية</Ar>
+
 `||` joins columns and strings into one character column. **Literals** (strings and dates) go in **single quotes** and are repeated on every row.
+
+<Ar>يدمج المؤثر `||` الأعمدة والسلاسل النصية في عمود نصي واحد. وتُكتب **القيم الحرفية (Literals)** (السلاسل النصية والتواريخ) بين **علامتي اقتباس مفردتين (single quotes)**، وتتكرر في كل صف.</Ar>
 
 ```sql
 SELECT last_name || ' is a ' || job_id AS "Employee Details"
@@ -128,6 +171,8 @@ FROM   employees;
 
 When the text itself contains an apostrophe, the **q operator** lets you choose your own delimiter, here `[ ]`:
 
+<Ar>عندما يحتوي النص نفسه على علامة اقتباس مفردة (apostrophe)، يتيح لك **المؤثر q** اختيار المُحدِّد (delimiter) الخاص بك، وهو هنا `[ ]`:</Ar>
+
 ```sql
 SELECT department_name || q'[ Department's Manager Id: ]' || manager_id
        AS "Department and Manager"
@@ -137,7 +182,11 @@ FROM   departments;
 
 ## Removing duplicates: DISTINCT
 
+<Ar>إزالة التكرار: DISTINCT</Ar>
+
 By default every row is returned, including duplicates. `DISTINCT` removes duplicate rows. It applies to the **whole row** of selected columns, so `DISTINCT department_id, job_id` returns unique *pairs*.
+
+<Ar>افتراضيًا تُعاد كل الصفوف، بما فيها المكررة. وتزيل `DISTINCT` الصفوف المكررة، وهي تنطبق على **الصف كاملًا** من الأعمدة المختارة، لذا فإن `DISTINCT department_id, job_id` تُعيد *أزواجًا* فريدة.</Ar>
 
 ```sql
 SELECT department_id FROM employees;              -- 20 rows, many repeats
@@ -146,29 +195,42 @@ SELECT DISTINCT department_id FROM employees;     -- 8 rows: 10, 20, 50, 60, 80,
 
 ## DESCRIBE
 
+<Ar>الأمر DESCRIBE</Ar>
+
 ```sql
 DESCRIBE employees      -- or DESC employees
 ```
 
 It lists each column's **name**, whether it is **NOT NULL**, and its **type**: `NUMBER(p,s)`, `VARCHAR2(n)`, `CHAR(n)`, `DATE`. In SQL Developer you can also click the table and open its **Columns** tab.
 
-<SlideFigure page={27} caption="DESCRIBE employees: column names, NOT NULL constraints and data types." />
+<Ar>يعرض **اسم** كل عمود، وهل هو **NOT NULL**، و**نوعه**: `NUMBER(p,s)` أو `VARCHAR2(n)` أو `CHAR(n)` أو `DATE`. وفي SQL Developer يمكنك أيضًا النقر على الجدول وفتح تبويب **Columns** الخاص به.</Ar>
+
+<SlideFigure page={27} caption="DESCRIBE employees: column names, NOT NULL constraints and data types." captionAr="DESCRIBE employees: أسماء الأعمدة وقيود NOT NULL وأنواع البيانات." />
 
 <Takeaways>
 
 - `SELECT` chooses columns (projection); `FROM` names the table.
+  <Ar>تختار `SELECT` الأعمدة (الإسقاط)، وتحدد `FROM` اسم الجدول.</Ar>
 - Arithmetic follows `*` `/` before `+` `-`; use parentheses to be explicit.
+  <Ar>تتبع العمليات الحسابية قاعدة `*` `/` قبل `+` `-`؛ استخدم الأقواس لتوضيح الترتيب صراحةً.</Ar>
 - **NULL is not zero**: any arithmetic with NULL gives NULL.
+  <Ar>**القيمة NULL ليست صفرًا**: أي عملية حسابية مع NULL تعطي NULL.</Ar>
 - Aliases rename headings (double quotes keep spaces and case); `||` concatenates; `q'[...]'` handles apostrophes.
+  <Ar>الأسماء المستعارة تعيد تسمية العناوين (وعلامات الاقتباس المزدوجة تحافظ على المسافات وحالة الأحرف)، و`||` يدمج النصوص، و`q'[...]'` يتعامل مع علامات الاقتباس المفردة.</Ar>
 - `DISTINCT` removes duplicate rows; `DESCRIBE` shows a table's structure.
+  <Ar>تزيل `DISTINCT` الصفوف المكررة، ويعرض `DESCRIBE` بنية الجدول.</Ar>
 
 </Takeaways>
 
 ## Practice
 
-<Exercise title="Which statements run?" level="easy">
+<Ar>تدريب</Ar>
+
+<Exercise title="Which statements run?" titleAr="أي الجمل تعمل؟" level="easy">
 
 Which of these run successfully?
+
+<Ar>أيٌّ من هذه الجمل يُنفَّذ بنجاح؟</Ar>
 
 ```sql
 1. SELECT first_name, last_name, job_id, salary*12 AS Yearly Sal FROM employees;
@@ -181,13 +243,17 @@ Which of these run successfully?
 
 Only **3** runs. Statements 1 and 2 use an alias with a space and no double quotes. Statement 4 uses `+` on character columns, which fails with "invalid number"; use `||` instead.
 
+<Ar>الجملة **3** فقط هي التي تعمل. فالجملتان 1 و2 تستخدمان اسمًا مستعارًا يحتوي على مسافة دون علامات اقتباس مزدوجة. والجملة 4 تستخدم `+` مع أعمدة نصية، فتفشل بالخطأ «invalid number»؛ استخدم `||` بدلًا منه.</Ar>
+
 </Solution>
 
 </Exercise>
 
-<Exercise title="Write the query" level="medium">
+<Exercise title="Write the query" titleAr="اكتب الاستعلام" level="medium">
 
 Show each employee's ID, the full name as one column called `Employee`, and the annual compensation `12*(salary + 100)` called `Annual Pay`.
+
+<Ar>اعرض رقم كل موظف (ID)، والاسم الكامل في عمود واحد باسم `Employee`، والتعويض السنوي `12*(salary + 100)` باسم `Annual Pay`.</Ar>
 
 <Solution>
 
@@ -202,13 +268,17 @@ FROM   employees;
 
 </Exercise>
 
-<Exercise title="Unique jobs" level="easy">
+<Exercise title="Unique jobs" titleAr="الوظائف الفريدة" level="easy">
 
 List every job ID that appears in `EMPLOYEES`, with no repeats. How many rows do you get from the sample?
+
+<Ar>اعرض كل رمز وظيفة (job ID) يظهر في `EMPLOYEES` دون تكرار. كم صفًا تحصل عليه من العينة؟</Ar>
 
 <Solution>
 
 `SELECT DISTINCT job_id FROM employees;` returns **12** rows: AD_PRES, AD_VP, IT_PROG, ST_MAN, ST_CLERK, SA_MAN, SA_REP, AD_ASST, MK_MAN, MK_REP, AC_MGR, AC_ACCOUNT.
+
+<Ar>تُعيد `SELECT DISTINCT job_id FROM employees;` عدد **12** صفًا: `AD_PRES`، `AD_VP`، `IT_PROG`، `ST_MAN`، `ST_CLERK`، `SA_MAN`، `SA_REP`، `AD_ASST`، `MK_MAN`، `MK_REP`، `AC_MGR`، `AC_ACCOUNT`.</Ar>
 
 </Solution>
 
@@ -218,39 +288,57 @@ List every job ID that appears in `EMPLOYEES`, with no repeats. How many rows do
   questions={[
     {
       q: "What does 12*salary+100 compute for a salary of 1000?",
+      qAr: "ما ناتج 12*salary+100 عندما يكون الراتب 1000؟",
       options: ["13200", "12100", "1112", "12000"],
+      optionsAr: ["13200", "12100", "1112", "12000"],
       answer: 1,
-      explain: "Multiplication first: 12*1000 = 12000, then +100."
+      explain: "Multiplication first: 12*1000 = 12000, then +100.",
+      explainAr: "الضرب أولًا: 12*1000 = 12000، ثم نضيف 100."
     },
     {
       q: "What is the result of 12*salary*commission_pct when commission_pct is NULL?",
+      qAr: "ما نتيجة 12*salary*commission_pct عندما تكون قيمة commission_pct هي NULL؟",
       options: ["0", "12*salary", "NULL", "An error"],
+      optionsAr: ["0", "12*salary", "NULL", "خطأ"],
       answer: 2,
-      explain: "Any arithmetic expression containing NULL evaluates to NULL."
+      explain: "Any arithmetic expression containing NULL evaluates to NULL.",
+      explainAr: "أي تعبير حسابي يحتوي على NULL تكون نتيجته NULL."
     },
     {
       q: "Which alias keeps its space and lowercase letters?",
+      qAr: "أي اسم مستعار يحتفظ بالمسافة وبالأحرف الصغيرة؟",
       options: ["AS annual salary", "annual_salary", "\"Annual Salary\"", "'Annual Salary'"],
+      optionsAr: ["AS annual salary", "annual_salary", "\"Annual Salary\"", "'Annual Salary'"],
       answer: 2,
-      explain: "Aliases with spaces or case-sensitive text need double quotes."
+      explain: "Aliases with spaces or case-sensitive text need double quotes.",
+      explainAr: "الأسماء المستعارة التي تحتوي على مسافات أو على نص تُهم فيه حالة الأحرف تحتاج إلى علامات اقتباس مزدوجة."
     },
     {
       q: "Which operator concatenates strings in Oracle SQL?",
+      qAr: "أي مؤثر يدمج السلاسل النصية في Oracle SQL؟",
       options: ["+", "&", "||", "CONCAT only"],
+      optionsAr: ["+", "&", "||", "CONCAT فقط"],
       answer: 2,
-      explain: "|| joins columns and literals; CONCAT() also exists but takes only two arguments."
+      explain: "|| joins columns and literals; CONCAT() also exists but takes only two arguments.",
+      explainAr: "يدمج || الأعمدة والقيم الحرفية؛ وتوجد الدالة CONCAT() أيضًا لكنها تقبل وسيطين (arguments) فقط."
     },
     {
       q: "SELECT DISTINCT department_id, job_id FROM employees removes duplicate…",
+      qAr: "الجملة التي تختار DISTINCT department_id و job_id من الجدول employees تزيل التكرار في…",
       options: ["Department IDs", "Job IDs", "(department_id, job_id) pairs", "Rows with NULLs"],
+      optionsAr: ["أرقام الأقسام", "رموز الوظائف", "الأزواج المكوّنة من department_id و job_id", "الصفوف التي تحتوي على NULL"],
       answer: 2,
-      explain: "DISTINCT applies to the whole selected row."
+      explain: "DISTINCT applies to the whole selected row.",
+      explainAr: "تنطبق DISTINCT على الصف المختار كاملًا."
     },
     {
       q: "Which command shows a table's columns and types?",
+      qAr: "أي أمر يعرض أعمدة الجدول وأنواعها؟",
       options: ["SHOW TABLE", "DESCRIBE", "SELECT TYPES", "INFO"],
+      optionsAr: ["SHOW TABLE", "DESCRIBE", "SELECT TYPES", "INFO"],
       answer: 1,
-      explain: "DESC[RIBE] tablename."
+      explain: "DESC[RIBE] tablename.",
+      explainAr: "الصيغة هي DESC[RIBE] tablename."
     }
   ]}
 />

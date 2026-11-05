@@ -32,19 +32,23 @@ export type Collection = (typeof COLLECTIONS)[number];
 
 export const COLLECTION_META: Record<
   Collection,
-  { label: string; singular: string; badge: string; description: string }
+  { label: string; labelAr: string; singular: string; badge: string; description: string; descriptionAr: string }
 > = {
   lectures: {
     label: "Lectures",
+    labelAr: "المحاضرات",
     singular: "Lecture",
     badge: "LEC",
     description: "Complete lessons, organized by lecture number.",
+    descriptionAr: "دروس كاملة مرتبة حسب رقم المحاضرة.",
   },
   sections: {
     label: "Sections",
+    labelAr: "السكاشن",
     singular: "Section",
     badge: "SEC",
     description: "Independent labs and practical material on specific topics.",
+    descriptionAr: "معامل ومواد عملية مستقلة في موضوعات محددة.",
   },
 };
 

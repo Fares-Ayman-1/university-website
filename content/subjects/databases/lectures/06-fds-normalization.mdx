@@ -1,7 +1,9 @@
 ---
 number: 6
 title: Functional Dependencies and Normalization
+titleAr: "الاعتمادات الوظيفية والتطبيع"
 summary: How to tell a good relational design from a bad one. Covers the four informal design guidelines and update anomalies, functional dependencies and their inference rules, attribute closure and candidate keys, then step-by-step normalization into 1NF, 2NF and 3NF (with a look at BCNF).
+summaryAr: "كيف تميّز التصميم العلائقي الجيد من السيئ: الإرشادات غير الرسمية الأربعة للتصميم والشذوذ في التحديث (update anomalies)، والاعتمادات الوظيفية (functional dependencies) وقواعد الاستدلال الخاصة بها، وإغلاق السمات (attribute closure) والمفاتيح المرشَّحة، ثم التطبيع (normalization) خطوة بخطوة إلى 1NF و 2NF و 3NF (مع نظرة على BCNF)."
 topics: [Design guidelines, Update anomalies, Spurious tuples, Functional dependencies, Inference rules, Attribute closure, Candidate keys, 1NF, 2NF, 3NF]
 duration: 75 min study
 sources:
@@ -22,55 +24,83 @@ bookRefs:
 <Objectives>
 
 - Apply the **four informal guidelines** and recognize **insertion, deletion and modification anomalies** and **spurious tuples**.
+  <Ar>تطبيق **الإرشادات غير الرسمية الأربعة** والتعرّف على **الشذوذ (anomalies) في الإدراج والحذف والتعديل** و**الصفوف الزائفة (spurious tuples)**.</Ar>
 - Define a **functional dependency** $X \to Y$ and use **inference rules** (Armstrong's axioms and derived rules).
+  <Ar>تعريف **الاعتماد الوظيفي (functional dependency)** $X \to Y$ واستخدام **قواعد الاستدلال (inference rules)** (مسلّمات أرمسترونغ Armstrong's axioms والقواعد المشتقة).</Ar>
 - Compute an **attribute closure** $X^+$ and use it to test FDs and find **candidate keys**.
+  <Ar>حساب **إغلاق السمات (attribute closure)** $X^+$ واستخدامه لاختبار الاعتمادات الوظيفية (FDs) وإيجاد **المفاتيح المرشَّحة (candidate keys)**.</Ar>
 - Classify attributes as **prime** or **nonprime**, and distinguish **full**, **partial** and **transitive** dependencies.
+  <Ar>تصنيف السمات إلى **أولية (prime)** أو **غير أولية (nonprime)**، والتمييز بين الاعتمادات **الكاملة (full)** و**الجزئية (partial)** و**المتعدّية (transitive)**.</Ar>
 - **Normalize** a relation to **1NF, 2NF and 3NF**, and say what **BCNF** adds.
+  <Ar>**تطبيع (Normalize)** علاقة إلى **1NF و 2NF و 3NF**، وبيان ما تضيفه **BCNF**.</Ar>
 
 </Objectives>
 
 ## What makes a design good?
 
+<Ar>ما الذي يجعل التصميم جيدًا؟</Ar>
+
 Relational design is about **grouping attributes into good relation schemas**. The informal measures of quality are four guidelines:
+
+<Ar>يدور التصميم العلائقي حول **تجميع السمات في مخططات علاقات جيدة**. والمقاييس غير الرسمية للجودة أربعة إرشادات:</Ar>
 
 <Steps>
 
 1. **Clear semantics**: each tuple should represent **one** entity or relationship instance. Don't mix attributes of different entities, and refer to other entities only through **foreign keys**.
+   <Ar>**دلالات واضحة (Clear semantics)**: ينبغي أن يمثل كل صف كيانًا **واحدًا** أو نسخة علاقة واحدة. لا تخلط سمات كيانات مختلفة، ولا تُشر إلى الكيانات الأخرى إلا عبر **المفاتيح الأجنبية (foreign keys)**.</Ar>
 2. **No redundancy, no update anomalies**: design schemas that don't suffer from insertion, deletion or modification anomalies.
+   <Ar>**لا تكرار ولا شذوذ في التحديث (No redundancy, no update anomalies)**: صمّم مخططات لا تعاني من الشذوذ في الإدراج أو الحذف أو التعديل.</Ar>
 3. **Few NULLs**: attributes that are often NULL belong in a separate relation (with the primary key).
+   <Ar>**قيم NULL قليلة**: السمات التي تكون NULL كثيرًا مكانها علاقة منفصلة (مع المفتاح الأساسي).</Ar>
 4. **No spurious tuples**: relations should join only on **(primary key, foreign key)** pairs, so natural joins never invent rows.
+   <Ar>**لا صفوف زائفة (No spurious tuples)**: ينبغي ألا تُربط العلاقات إلا على أزواج **(مفتاح أساسي، مفتاح أجنبي)**، حتى لا يختلق الربط الطبيعي صفوفًا غير حقيقية أبدًا.</Ar>
 
 </Steps>
 
 ### Update anomalies
 
-<SlideFigure page={8} caption="EMP_DEPT and EMP_PROJ: two schemas that mix entities and suffer from anomalies." />
+<Ar>الشذوذ في التحديث</Ar>
+
+<SlideFigure page={8} caption="EMP_DEPT and EMP_PROJ: two schemas that mix entities and suffer from anomalies." captionAr="EMP_DEPT و EMP_PROJ: مخططان يخلطان الكيانات ويعانيان من الشذوذ." />
 
 `EMP_DEPT(Ename, Ssn, Bdate, Address, Dnumber, Dname, Dmgr_ssn)` repeats the department's name and manager for **every** employee in that department.
 
-| Anomaly | Example |
+<Ar>يكرر `EMP_DEPT(Ename, Ssn, Bdate, Address, Dnumber, Dname, Dmgr_ssn)` اسم القسم ومديره مع **كل** موظف في ذلك القسم.</Ar>
+
+| Anomaly <Ar>الشذوذ</Ar> | Example <Ar>مثال</Ar> |
 |---|---|
-| **Modification** | Changing the manager of department 5 means updating **every** employee tuple of department 5; miss one and the data is inconsistent |
-| **Insertion** | You can't record a new department that has no employees yet without NULLs in the employee attributes, and in `EMP_PROJ` you can't add a project until someone is assigned to it |
-| **Deletion** | Deleting the last employee of a department, or the only employee on a project, also deletes the department or project information |
+| **Modification** <Ar>**التعديل**</Ar> | Changing the manager of department 5 means updating **every** employee tuple of department 5; miss one and the data is inconsistent <Ar>تغيير مدير القسم 5 يعني تحديث **كل** صفوف الموظفين في القسم 5؛ وإذا فاتك واحد منها أصبحت البيانات غير متسقة</Ar> |
+| **Insertion** <Ar>**الإدراج**</Ar> | You can't record a new department that has no employees yet without NULLs in the employee attributes, and in `EMP_PROJ` you can't add a project until someone is assigned to it <Ar>لا يمكنك تسجيل قسم جديد ليس فيه موظفون بعد دون وضع قيم NULL في سمات الموظف، وفي `EMP_PROJ` لا يمكنك إضافة مشروع حتى يُكلَّف به شخص ما</Ar> |
+| **Deletion** <Ar>**الحذف**</Ar> | Deleting the last employee of a department, or the only employee on a project, also deletes the department or project information <Ar>حذف آخر موظف في قسم، أو الموظف الوحيد في مشروع، يحذف معه معلومات القسم أو المشروع</Ar> |
 
 ### Spurious tuples
 
+<Ar>الصفوف الزائفة</Ar>
+
 Splitting `EMP_PROJ` into `EMP_LOCS(Ename, Plocation)` and `EMP_PROJ1(Ssn, Pnumber, Hours, Pname, Plocation)` and then **natural-joining on Plocation** produces **extra, false rows**. Plocation is neither a key nor a foreign key, so many employees match many projects at the same location. Join only on PK–FK pairs.
+
+<Ar>تقسيم `EMP_PROJ` إلى `EMP_LOCS(Ename, Plocation)` و `EMP_PROJ1(Ssn, Pnumber, Hours, Pname, Plocation)` ثم **ربطهما ربطًا طبيعيًا على Plocation** يُنتج **صفوفًا إضافية زائفة**. فالسمة Plocation ليست مفتاحًا ولا مفتاحًا أجنبيًا، لذا يتطابق موظفون كثيرون مع مشروعات كثيرة في الموقع نفسه. لا تربط إلا على أزواج المفتاح الأساسي والمفتاح الأجنبي (PK–FK).</Ar>
 
 ## Functional dependencies
 
-<Definition term="Functional dependency">
+<Ar>الاعتمادات الوظيفية</Ar>
+
+<Definition term="Functional dependency" termAr="الاعتماد الوظيفي">
   $X \to Y$ holds on relation $R$ if any two tuples that agree on $X$ also agree on $Y$: for all $t_1, t_2 \in r$, $t_1[X] = t_2[X] \Rightarrow t_1[Y] = t_2[Y]$. We say "$X$ functionally determines $Y$".
+
+  <Ar>يتحقق $X \to Y$ على العلاقة $R$ إذا كان أي صفين يتفقان في $X$ يتفقان أيضًا في $Y$: لكل $t_1, t_2 \in r$، $t_1[X] = t_2[X] \Rightarrow t_1[Y] = t_2[Y]$. ونقول إن «$X$ يحدد $Y$ وظيفيًا».</Ar>
 </Definition>
 
 FDs come from the **meaning** of the data (the real-world rules), not from one particular table state. A state can **disprove** an FD, but it can't prove one.
+
+<Ar>تأتي الاعتمادات الوظيفية (FDs) من **معنى** البيانات (قواعد العالم الحقيقي)، لا من حالة معيّنة للجدول. فحالة الجدول يمكن أن **تنفي** اعتمادًا وظيفيًا، لكنها لا تستطيع إثباته.</Ar>
 
 $$
 SSN \to ENAME \qquad PNUMBER \to \{PNAME,\ PLOCATION\} \qquad \{SSN,\ PNUMBER\} \to HOURS
 $$
 
-| roll_no | name | dept_name | dept_building |
+{/* data-table */}
+| roll_no <Ar>رقم القيد</Ar> | name <Ar>الاسم</Ar> | dept_name <Ar>اسم القسم</Ar> | dept_building <Ar>مبنى القسم</Ar> |
 |---|---|---|---|
 | 42 | abc | CO | A4 |
 | 43 | pqr | IT | A3 |
@@ -80,50 +110,71 @@ $$
 | 47 | jkl | ME | B2 |
 
 - **Valid:** `roll_no → {name, dept_name, dept_building}`, `dept_name → dept_building`, `{roll_no, name} → {dept_name, dept_building}`.
+  <Ar>**صحيحة:** `roll_no → {name, dept_name, dept_building}` و `dept_name → dept_building` و `{roll_no, name} → {dept_name, dept_building}`.</Ar>
 - **Invalid:** `name → dept_name` (xyz is in CO and IT), `dept_building → dept_name` (B2 is EC and ME), `dept_building → roll_no`.
+  <Ar>**غير صحيحة:** `name → dept_name` (فالطالب xyz في CO وفي IT)، و `dept_building → dept_name` (فالمبنى B2 لقسمَي EC و ME)، و `dept_building → roll_no`.</Ar>
 
 A **trivial** FD has its right side contained in its left side, e.g. `{title, year} → title`. It always holds.
 
+<Ar>الاعتماد الوظيفي **البديهي (trivial)** هو الذي يكون طرفه الأيمن محتوًى في طرفه الأيسر، مثل `{title, year} → title`، وهو يتحقق دائمًا.</Ar>
+
 ### Inference rules
+
+<Ar>قواعد الاستدلال</Ar>
 
 Given a set of FDs $F$, other FDs follow from it:
 
-| Rule | Statement |
+<Ar>إذا أُعطيت مجموعة من الاعتمادات الوظيفية $F$، فإن اعتمادات وظيفية أخرى تنتج عنها:</Ar>
+
+| Rule <Ar>القاعدة</Ar> | Statement <Ar>النص</Ar> |
 |---|---|
-| **Reflexivity** | If $Y \subseteq X$, then $X \to Y$ (trivial) |
-| **Augmentation** | If $X \to Y$, then $XZ \to YZ$ |
-| **Transitivity** | If $X \to Y$ and $Y \to Z$, then $X \to Z$ |
-| **Decomposition** | If $X \to YZ$, then $X \to Y$ and $X \to Z$ |
-| **Union** | If $X \to Y$ and $X \to Z$, then $X \to YZ$ |
-| **Pseudo-transitivity** | If $X \to Y$ and $WY \to Z$, then $WX \to Z$ |
+| **Reflexivity** <Ar>**الانعكاس (Reflexivity)**</Ar> | If $Y \subseteq X$, then $X \to Y$ (trivial) <Ar>إذا كان $Y \subseteq X$ فإن $X \to Y$ (بديهي)</Ar> |
+| **Augmentation** <Ar>**الزيادة (Augmentation)**</Ar> | If $X \to Y$, then $XZ \to YZ$ <Ar>إذا كان $X \to Y$ فإن $XZ \to YZ$</Ar> |
+| **Transitivity** <Ar>**التعدّي (Transitivity)**</Ar> | If $X \to Y$ and $Y \to Z$, then $X \to Z$ <Ar>إذا كان $X \to Y$ و $Y \to Z$ فإن $X \to Z$</Ar> |
+| **Decomposition** <Ar>**التفكيك (Decomposition)**</Ar> | If $X \to YZ$, then $X \to Y$ and $X \to Z$ <Ar>إذا كان $X \to YZ$ فإن $X \to Y$ و $X \to Z$</Ar> |
+| **Union** <Ar>**الاتحاد (Union)**</Ar> | If $X \to Y$ and $X \to Z$, then $X \to YZ$ <Ar>إذا كان $X \to Y$ و $X \to Z$ فإن $X \to YZ$</Ar> |
+| **Pseudo-transitivity** <Ar>**شبه التعدّي (Pseudo-transitivity)**</Ar> | If $X \to Y$ and $WY \to Z$, then $WX \to Z$ <Ar>إذا كان $X \to Y$ و $WY \to Z$ فإن $WX \to Z$</Ar> |
 
 The first three are **Armstrong's axioms**; the others can be derived from them. Two sets of FDs $F$ and $G$ are **equivalent** if each can be inferred from the other. $\{A \to B, A \to C\}$ is equivalent to $\{A \to BC\}$ by union and decomposition.
 
+<Ar>القواعد الثلاث الأولى هي **مسلّمات أرمسترونغ (Armstrong's axioms)**، ويمكن اشتقاق البقية منها. وتكون مجموعتا الاعتمادات الوظيفية $F$ و $G$ **متكافئتين (equivalent)** إذا أمكن استنتاج كل منهما من الأخرى. فالمجموعة $\{A \to B, A \to C\}$ تكافئ $\{A \to BC\}$ بقاعدتَي الاتحاد والتفكيك.</Ar>
+
 ## Attribute closure
 
-<Definition term="Closure X⁺">
+<Ar>إغلاق السمات</Ar>
+
+<Definition term="Closure X⁺" termAr="الإغلاق X⁺">
   The set of <strong>all attributes functionally determined by X</strong> under F.
+
+  <Ar>مجموعة <strong>كل السمات التي تحددها X وظيفيًا</strong> في ظل F.</Ar>
 </Definition>
 
 <Steps>
 
 1. Start with $X^+ = X$.
+   <Ar>ابدأ بـ $X^+ = X$.</Ar>
 2. Repeat: for each FD $L \to R$ in $F$, if $L \subseteq X^+$, add $R$ to $X^+$.
+   <Ar>كرّر: لكل اعتماد وظيفي $L \to R$ في $F$، إذا كان $L \subseteq X^+$ فأضف $R$ إلى $X^+$.</Ar>
 3. Stop when a full pass adds nothing.
+   <Ar>توقف عندما لا تضيف دورة كاملة أي شيء.</Ar>
 
 </Steps>
 
 **Example.** $R(A,B,C,D,E,F)$ with $F = \{AB \to C,\ BC \to AD,\ D \to E,\ CF \to B\}$. Compute $\{A,B\}^+$:
 
-| Step | FD used | $\{A,B\}^+$ |
+<Ar>**مثال.** $R(A,B,C,D,E,F)$ مع $F = \{AB \to C,\ BC \to AD,\ D \to E,\ CF \to B\}$. احسب $\{A,B\}^+$:</Ar>
+
+| Step <Ar>الخطوة</Ar> | FD used <Ar>الاعتماد الوظيفي المستخدم</Ar> | $\{A,B\}^+$ |
 |---|---|---|
-| start | | $\{A, B\}$ |
+| start <Ar>البداية</Ar> | | $\{A, B\}$ |
 | 1 | $AB \to C$ | $\{A, B, C\}$ |
 | 2 | $BC \to AD$ | $\{A, B, C, D\}$ |
 | 3 | $D \to E$ | $\{A, B, C, D, E\}$ |
-| 4 | $CF \to B$ can't fire, since $F$ never enters | **done** |
+| 4 | $CF \to B$ can't fire, since $F$ never enters <Ar>لا يمكن تطبيق $CF \to B$، لأن $F$ لا تدخل أبدًا</Ar> | **done** <Ar>**انتهى**</Ar> |
 
 **Testing an FD:** $X \to Y$ follows from $F$ **iff** $Y \subseteq X^+$. So $AB \to D$ follows, because $D \in \{A,B\}^+$. $D \to A$ does **not**, because $D^+ = \{D, E\}$.
+
+<Ar>**اختبار اعتماد وظيفي:** ينتج $X \to Y$ من $F$ **إذا وفقط إذا (iff)** كان $Y \subseteq X^+$. لذا ينتج $AB \to D$ لأن $D \in \{A,B\}^+$، أما $D \to A$ **فلا** ينتج لأن $D^+ = \{D, E\}$.</Ar>
 
 ```python title="closure.py"
 from itertools import combinations
@@ -153,64 +204,103 @@ print(candidate_keys("ABCD", [("A", "B"), ("C", "D"), ("AC", "B")]))  # ['AC']
 
 ### Keys, prime and nonprime attributes
 
+<Ar>المفاتيح والسمات الأولية وغير الأولية</Ar>
+
 A set $K$ is a **key** (candidate key) of $R$ if $K^+ = $ all attributes of $R$ (it is a superkey) **and** no proper subset of $K$ has that property (it is minimal).
 
+<Ar>تكون المجموعة $K$ **مفتاحًا** (مفتاحًا مرشَّحًا candidate key) لـ $R$ إذا كانت $K^+$ تساوي كل سمات $R$ (أي أنها مفتاح أعلى superkey) **و**لم تكن لأي مجموعة جزئية فعلية من $K$ هذه الخاصية (أي أنها أدنى minimal).</Ar>
+
 - A **prime** attribute belongs to **some** candidate key.
+  <Ar>السمة **الأولية (prime)** تنتمي إلى مفتاح مرشَّح **ما**.</Ar>
 - A **nonprime** attribute belongs to **none**.
+  <Ar>السمة **غير الأولية (nonprime)** لا تنتمي إلى **أي** مفتاح مرشَّح.</Ar>
 
 **Example.** $R(A,B,C,D)$, $F = \{A \to B,\ C \to D,\ AC \to B\}$. $AC^+ = \{A,B,C,D\}$, while $A^+ = \{A,B\}$ and $C^+ = \{C,D\}$, so **AC** is the only candidate key. A and C are prime; B and D are nonprime.
 
+<Ar>**مثال.** $R(A,B,C,D)$، و $F = \{A \to B,\ C \to D,\ AC \to B\}$. لدينا $AC^+ = \{A,B,C,D\}$، بينما $A^+ = \{A,B\}$ و $C^+ = \{C,D\}$، لذا فإن **AC** هو المفتاح المرشَّح الوحيد. A و C سمتان أوليتان، و B و D سمتان غير أوليتين.</Ar>
+
 ## Normalization
 
-<Definition term="Normalization">
+<Ar>التطبيع</Ar>
+
+<Definition term="Normalization" termAr="التطبيع">
   Decomposing "bad" relations into smaller, well-structured ones, using keys and FDs, to remove redundancy and the insertion, deletion and modification anomalies. A <strong>normal form</strong> is a test that a schema passes or fails.
+
+  <Ar>تفكيك العلاقات «السيئة» إلى علاقات أصغر جيدة البنية، باستخدام المفاتيح والاعتمادات الوظيفية، لإزالة التكرار والشذوذ في الإدراج والحذف والتعديل. و<strong>الصيغة العادية (normal form)</strong> اختبار ينجح فيه المخطط أو يفشل.</Ar>
 </Definition>
 
 1NF, 2NF, 3NF and BCNF are based on keys and FDs; 4NF and 5NF use multivalued and join dependencies. In practice designs are normalized to **3NF or BCNF**.
 
+<Ar>تقوم الصيغ 1NF و 2NF و 3NF و BCNF على المفاتيح والاعتمادات الوظيفية، بينما تستخدم 4NF و 5NF الاعتمادات متعددة القيم (multivalued) واعتمادات الربط (join dependencies). وفي الممارسة العملية تُطبَّع التصاميم إلى **3NF أو BCNF**.</Ar>
+
 ### First normal form (1NF)
+
+<Ar>الصيغة العادية الأولى (1NF)</Ar>
 
 Every attribute value is **atomic**: no multivalued attributes, no composite attributes, no nested relations. This is part of the definition of a relation.
 
-<SlideFigure page={45} caption="DEPARTMENT with a multivalued Dlocations is not in 1NF. The fix: a separate DEPT_LOCATIONS(Dnumber, Dlocation)." />
+<Ar>كل قيمة سمة **ذرّية (atomic)**: لا سمات متعددة القيم، ولا سمات مركبة، ولا علاقات متداخلة. وهذا جزء من تعريف العلاقة.</Ar>
+
+<SlideFigure page={45} caption="DEPARTMENT with a multivalued Dlocations is not in 1NF. The fix: a separate DEPT_LOCATIONS(Dnumber, Dlocation)." captionAr="الجدول DEPARTMENT ذو السمة متعددة القيم Dlocations ليس في 1NF، والحل: علاقة منفصلة DEPT_LOCATIONS(Dnumber, Dlocation)." />
 
 The best fix is a **new relation** for the multivalued attribute, keyed by (original key, value). Repeating the whole row for each location also reaches 1NF, but it creates redundancy.
 
+<Ar>أفضل حل هو **علاقة جديدة** للسمة متعددة القيم، مفتاحها (المفتاح الأصلي، القيمة). وتكرار الصف كاملًا لكل موقع يحقق 1NF أيضًا، لكنه يُحدث تكرارًا (redundancy).</Ar>
+
 ### Second normal form (2NF)
 
-<Definition term="Full vs. partial dependency">
+<Ar>الصيغة العادية الثانية (2NF)</Ar>
+
+<Definition term="Full vs. partial dependency" termAr="الاعتماد الكامل مقابل الاعتماد الجزئي">
   $Y \to Z$ is a <strong>full</strong> FD if removing <em>any</em> attribute from $Y$ breaks it. Otherwise it is <strong>partial</strong>. $\{SSN, PNUMBER\} \to HOURS$ is full. $\{SSN, PNUMBER\} \to ENAME$ is partial, because $SSN \to ENAME$ already holds.
+
+  <Ar>يكون $Y \to Z$ اعتمادًا وظيفيًا <strong>كاملًا (full)</strong> إذا كان حذف <em>أي</em> سمة من $Y$ يُبطله، وإلا فهو <strong>جزئي (partial)</strong>. فالاعتماد $\{SSN, PNUMBER\} \to HOURS$ كامل، أما $\{SSN, PNUMBER\} \to ENAME$ فجزئي، لأن $SSN \to ENAME$ متحقق أصلًا.</Ar>
 </Definition>
 
 **2NF:** in 1NF, and **every nonprime attribute is fully dependent on the primary key**, so there are no partial dependencies. Only relations with a **composite** key can violate 2NF.
 
-<SlideFigure page={49} caption="EMP_PROJ has partial dependencies, so it is split into EP1(Ssn, Pnumber, Hours), EP2(Ssn, Ename) and EP3(Pnumber, Pname, Plocation)." />
+<Ar>**2NF:** أن تكون العلاقة في 1NF، وأن تكون **كل سمة غير أولية معتمدة اعتمادًا كاملًا على المفتاح الأساسي**، فلا توجد اعتمادات جزئية. ولا يمكن أن تنتهك 2NF إلا العلاقات ذات المفتاح **المركب (composite)**.</Ar>
+
+<SlideFigure page={49} caption="EMP_PROJ has partial dependencies, so it is split into EP1(Ssn, Pnumber, Hours), EP2(Ssn, Ename) and EP3(Pnumber, Pname, Plocation)." captionAr="في EMP_PROJ اعتمادات جزئية، لذا تُقسَّم إلى EP1(Ssn, Pnumber, Hours) و EP2(Ssn, Ename) و EP3(Pnumber, Pname, Plocation)." />
 
 ### Third normal form (3NF)
 
-<Definition term="Transitive dependency">
+<Ar>الصيغة العادية الثالثة (3NF)</Ar>
+
+<Definition term="Transitive dependency" termAr="الاعتماد المتعدّي">
   $X \to Z$ is <strong>transitive</strong> if it holds because $X \to Y$ and $Y \to Z$, where $Y$ is not a candidate key. $SSN \to DMGR\_SSN$ is transitive through $DNUMBER$.
+
+  <Ar>يكون $X \to Z$ <strong>متعدّيًا (transitive)</strong> إذا كان متحققًا بسبب $X \to Y$ و $Y \to Z$، حيث $Y$ ليست مفتاحًا مرشَّحًا. فالاعتماد $SSN \to DMGR\_SSN$ متعدٍّ عبر $DNUMBER$.</Ar>
 </Definition>
 
 **3NF:** in 2NF, and **no nonprime attribute is transitively dependent on the primary key**. A transitive chain through another **candidate key** is fine: in `EMP(SSN, Emp#, Salary)`, Emp# is itself a key.
 
-<SlideFigure page={52} caption="EMP_DEPT has Ssn → Dnumber → Dmgr_ssn, so it is split into ED1(Ename, Ssn, Bdate, Address, Dnumber) and ED2(Dnumber, Dname, Dmgr_ssn)." />
+<Ar>**3NF:** أن تكون العلاقة في 2NF، وألا تكون **أي سمة غير أولية معتمدة اعتمادًا متعدّيًا على المفتاح الأساسي**. والسلسلة المتعدّية عبر **مفتاح مرشَّح** آخر مقبولة: ففي `EMP(SSN, Emp#, Salary)` تكون Emp# نفسها مفتاحًا.</Ar>
 
-<Callout type="tip" title="The informal summary">
+<SlideFigure page={52} caption="EMP_DEPT has Ssn → Dnumber → Dmgr_ssn, so it is split into ED1(Ename, Ssn, Bdate, Address, Dnumber) and ED2(Dnumber, Dname, Dmgr_ssn)." captionAr="في EMP_DEPT الاعتماد Ssn → Dnumber → Dmgr_ssn، لذا تُقسَّم إلى ED1(Ename, Ssn, Bdate, Address, Dnumber) و ED2(Dnumber, Dname, Dmgr_ssn)." />
+
+<Callout type="tip" title="The informal summary" titleAr="الملخص غير الرسمي">
   <strong>2NF</strong>: every attribute depends on the <strong>whole</strong> key. <strong>3NF</strong>: every attribute depends on <strong>nothing but</strong> the key.
+
+  <Ar><strong>2NF</strong>: كل سمة تعتمد على المفتاح <strong>كله</strong>. <strong>3NF</strong>: كل سمة تعتمد على المفتاح <strong>ولا شيء غيره</strong>.</Ar>
 </Callout>
 
-| Normal form | Test | Remedy |
+| Normal form <Ar>الصيغة العادية</Ar> | Test <Ar>الاختبار</Ar> | Remedy <Ar>العلاج</Ar> |
 |---|---|---|
-| **1NF** | No multivalued, composite or nested attributes | Move each multivalued attribute to its own relation |
-| **2NF** | No nonprime attribute depends on **part** of a composite key | Split: each partial key gets its own relation with its dependents |
-| **3NF** | No nonprime attribute depends on another **nonkey** attribute | Split: the determining nonkey attribute becomes the key of a new relation |
+| **1NF** <Ar>**الصيغة العادية الأولى**</Ar> | No multivalued, composite or nested attributes <Ar>لا سمات متعددة القيم أو مركبة أو متداخلة</Ar> | Move each multivalued attribute to its own relation <Ar>انقل كل سمة متعددة القيم إلى علاقة خاصة بها</Ar> |
+| **2NF** <Ar>**الصيغة العادية الثانية**</Ar> | No nonprime attribute depends on **part** of a composite key <Ar>لا توجد سمة غير أولية تعتمد على **جزء** من مفتاح مركب</Ar> | Split: each partial key gets its own relation with its dependents <Ar>التقسيم: يحصل كل مفتاح جزئي على علاقة خاصة به مع السمات المعتمدة عليه</Ar> |
+| **3NF** <Ar>**الصيغة العادية الثالثة**</Ar> | No nonprime attribute depends on another **nonkey** attribute <Ar>لا توجد سمة غير أولية تعتمد على سمة أخرى **غير مفتاحية**</Ar> | Split: the determining nonkey attribute becomes the key of a new relation <Ar>التقسيم: تصبح السمة غير المفتاحية المحدِّدة مفتاحًا لعلاقة جديدة</Ar> |
 
 **Beyond 3NF:** in **BCNF** (Boyce–Codd NF), the left side of **every** nontrivial FD must be a superkey. That also rules out a prime attribute that depends on a nonkey. Every BCNF relation is in 3NF, but not the other way round.
 
+<Ar>**ما بعد 3NF:** في **BCNF** (صيغة بويس–كود العادية Boyce–Codd NF) يجب أن يكون الطرف الأيسر **لكل** اعتماد وظيفي غير بديهي مفتاحًا أعلى (superkey). وهذا يستبعد أيضًا السمة الأولية التي تعتمد على سمة غير مفتاحية. وكل علاقة في BCNF هي في 3NF، لكن العكس غير صحيح.</Ar>
+
 ### A worked example
 
-| EMPLOYEE_ID | NAME | JOB_CODE | JOB | STATE_CODE | HOME_STATE |
+<Ar>مثال محلول</Ar>
+
+{/* data-table */}
+| EMPLOYEE_ID <Ar>رقم الموظف</Ar> | NAME <Ar>الاسم</Ar> | JOB_CODE <Ar>رمز الوظيفة</Ar> | JOB <Ar>الوظيفة</Ar> | STATE_CODE <Ar>رمز الولاية</Ar> | HOME_STATE <Ar>ولاية الإقامة</Ar> |
 |---|---|---|---|---|---|
 | E001 | Alice | J01 | Chef | 26 | Michigan |
 | E001 | Alice | J02 | Waiter | 26 | Michigan |
@@ -220,6 +310,8 @@ The best fix is a **new relation** for the multivalued attribute, keyed by (orig
 
 The key is **(EMPLOYEE_ID, JOB_CODE)**, with these FDs:
 
+<Ar>المفتاح هو **(EMPLOYEE_ID, JOB_CODE)**، مع هذه الاعتمادات الوظيفية:</Ar>
+
 - `EMPLOYEE_ID → NAME, STATE_CODE`
 - `JOB_CODE → JOB`
 - `STATE_CODE → HOME_STATE`
@@ -227,58 +319,84 @@ The key is **(EMPLOYEE_ID, JOB_CODE)**, with these FDs:
 <Steps>
 
 1. **Not 2NF**: NAME, STATE_CODE and HOME_STATE depend only on EMPLOYEE_ID, and JOB depends only on JOB_CODE (partial dependencies). Split into `EMP_JOB(EMPLOYEE_ID, JOB_CODE)`, `EMPLOYEE(EMPLOYEE_ID, NAME, STATE_CODE, HOME_STATE)` and `JOB(JOB_CODE, JOB)`.
+   <Ar>**ليست في 2NF**: تعتمد NAME و STATE_CODE و HOME_STATE على EMPLOYEE_ID فقط، وتعتمد JOB على JOB_CODE فقط (اعتمادات جزئية). لذا نقسّمها إلى `EMP_JOB(EMPLOYEE_ID, JOB_CODE)` و `EMPLOYEE(EMPLOYEE_ID, NAME, STATE_CODE, HOME_STATE)` و `JOB(JOB_CODE, JOB)`.</Ar>
 2. **Not 3NF**: in EMPLOYEE, `EMPLOYEE_ID → STATE_CODE → HOME_STATE` is transitive. Split into `EMPLOYEE(EMPLOYEE_ID, NAME, STATE_CODE)` and `STATE(STATE_CODE, HOME_STATE)`.
+   <Ar>**ليست في 3NF**: في EMPLOYEE يكون `EMPLOYEE_ID → STATE_CODE → HOME_STATE` متعدّيًا. لذا نقسّمها إلى `EMPLOYEE(EMPLOYEE_ID, NAME, STATE_CODE)` و `STATE(STATE_CODE, HOME_STATE)`.</Ar>
 3. Result: **4 relations in 3NF**. Each fact (Alice's name, Wyoming's code, what J01 means) is stored **once**.
+   <Ar>النتيجة: **4 علاقات في 3NF**. وكل حقيقة (اسم أليس، ورمز وايومنغ، ومعنى J01) تُخزَّن **مرة واحدة**.</Ar>
 
 </Steps>
 
 <Takeaways>
 
 - Good designs have **clear semantics**, **no redundancy or anomalies**, **few NULLs** and **no spurious tuples**.
+  <Ar>للتصاميم الجيدة **دلالات واضحة**، و**لا تكرار فيها ولا شذوذ**، و**قيم NULL فيها قليلة**، و**لا صفوف زائفة فيها**.</Ar>
 - $X \to Y$: equal $X$ values force equal $Y$ values. Reason with **Armstrong's axioms** and derived rules.
+  <Ar>$X \to Y$: تساوي قيم $X$ يفرض تساوي قيم $Y$. واستدل باستخدام **مسلّمات أرمسترونغ** والقواعد المشتقة.</Ar>
 - **Closure** $X^+$ tests FDs ($X \to Y$ iff $Y \subseteq X^+$) and finds **candidate keys** (minimal $X$ with $X^+ = R$).
+  <Ar>**الإغلاق (Closure)** $X^+$ يختبر الاعتمادات الوظيفية ($X \to Y$ إذا وفقط إذا $Y \subseteq X^+$) ويوجد **المفاتيح المرشَّحة** (أدنى $X$ يحقق $X^+ = R$).</Ar>
 - **1NF**: atomic values. **2NF**: no partial dependencies. **3NF**: no transitive dependencies of nonprime attributes. **BCNF**: every determinant is a superkey.
+  <Ar>**1NF**: قيم ذرّية. **2NF**: لا اعتمادات جزئية. **3NF**: لا اعتمادات متعدّية للسمات غير الأولية. **BCNF**: كل محدِّد (determinant) مفتاح أعلى.</Ar>
 - Normalization **decomposes** a relation, and each step removes one kind of redundancy.
+  <Ar>التطبيع **يفكك** العلاقة، وكل خطوة تزيل نوعًا واحدًا من التكرار.</Ar>
 
 </Takeaways>
 
 ## Practice
 
-<Exercise title="Closure and keys" level="medium">
+<Ar>تدريب</Ar>
+
+<Exercise title="Closure and keys" titleAr="الإغلاق والمفاتيح" level="medium">
 
 $R(A,B,C,D,E)$ with $F = \{A \to B,\ B \to C,\ CD \to E\}$. (a) Compute $A^+$ and $AD^+$. (b) Find the candidate key(s). (c) Which normal form is $R$ in?
+
+<Ar>$R(A,B,C,D,E)$ مع $F = \{A \to B,\ B \to C,\ CD \to E\}$. (a) احسب $A^+$ و $AD^+$. (b) أوجد المفتاح (المفاتيح) المرشَّحة. (c) في أي صيغة عادية تكون $R$؟</Ar>
 
 <Solution>
 
 (a) $A^+ = \{A, B, C\}$ and $AD^+ = \{A, B, C, D, E\}$.
 
+<Ar>(a) لدينا $A^+ = \{A, B, C\}$ و $AD^+ = \{A, B, C, D, E\}$.</Ar>
+
 (b) Neither A nor D appears on any right side, so every key must contain both. $AD^+$ is everything, so **AD** is the only candidate key.
 
+<Ar>(b) لا تظهر A ولا D في أي طرف أيمن، لذا يجب أن يحتوي كل مفتاح على كلتيهما. و $AD^+$ يشمل كل السمات، لذا فإن **AD** هو المفتاح المرشَّح الوحيد.</Ar>
+
 (c) $A \to B$ is a **partial** dependency (B depends on part of the key AD), so R is **not in 2NF**, only **1NF**. A 3NF decomposition that keeps every FD makes one relation per FD plus one for the key: $R_1(\underline{A}, B)$, $R_2(\underline{B}, C)$, $R_3(\underline{C, D}, E)$, $R_4(\underline{A, D})$.
+
+<Ar>(c) $A \to B$ اعتماد **جزئي** (تعتمد B على جزء من المفتاح AD)، لذا فإن R **ليست في 2NF**، بل في **1NF** فقط. والتفكيك إلى 3NF الذي يحافظ على كل الاعتمادات الوظيفية يُنشئ علاقة لكل اعتماد وظيفي، إضافة إلى علاقة للمفتاح: $R_1(\underline{A}, B)$، $R_2(\underline{B}, C)$، $R_3(\underline{C, D}, E)$، $R_4(\underline{A, D})$.</Ar>
 
 </Solution>
 
 </Exercise>
 
-<Exercise title="Spot the dependency type" level="easy">
+<Exercise title="Spot the dependency type" titleAr="حدّد نوع الاعتماد" level="easy">
 
 In `EMP_PROJ(Ssn, Pnumber, Hours, Ename, Pname, Plocation)` with key (Ssn, Pnumber), classify $\{Ssn, Pnumber\} \to Hours$, $Ssn \to Ename$ and $Pnumber \to Plocation$.
+
+<Ar>في `EMP_PROJ(Ssn, Pnumber, Hours, Ename, Pname, Plocation)` ذات المفتاح (Ssn, Pnumber)، صنّف $\{Ssn, Pnumber\} \to Hours$ و $Ssn \to Ename$ و $Pnumber \to Plocation$.</Ar>
 
 <Solution>
 
 $\{Ssn, Pnumber\} \to Hours$ is a **full** dependency. $Ssn \to Ename$ and $Pnumber \to Plocation$ are **partial** dependencies on the key, so EMP_PROJ violates **2NF**.
 
+<Ar>$\{Ssn, Pnumber\} \to Hours$ اعتماد **كامل**. أما $Ssn \to Ename$ و $Pnumber \to Plocation$ فاعتمادان **جزئيان** على المفتاح، لذا تنتهك EMP_PROJ الصيغة **2NF**.</Ar>
+
 </Solution>
 
 </Exercise>
 
-<Exercise title="Prove an FD" level="medium">
+<Exercise title="Prove an FD" titleAr="أثبت اعتمادًا وظيفيًا" level="medium">
 
 Given $F = \{A \to BC,\ CD \to F,\ BE \to D\}$ on $R(A,B,C,D,E,F)$, does $AE \to CDF$ hold?
+
+<Ar>بفرض $F = \{A \to BC,\ CD \to F,\ BE \to D\}$ على $R(A,B,C,D,E,F)$، هل يتحقق $AE \to CDF$؟</Ar>
 
 <Solution>
 
 $AE^+$: start $\{A, E\}$; $A \to BC$ adds $B, C$; $BE \to D$ adds $D$; $CD \to F$ adds $F$. So $AE^+ = \{A,B,C,D,E,F\} \supseteq \{C, D, F\}$, and **yes**, $AE \to CDF$ holds.
+
+<Ar>حساب $AE^+$: نبدأ بـ $\{A, E\}$؛ يضيف $A \to BC$ السمتين $B, C$؛ ويضيف $BE \to D$ السمة $D$؛ ويضيف $CD \to F$ السمة $F$. إذن $AE^+ = \{A,B,C,D,E,F\} \supseteq \{C, D, F\}$، و**نعم**، يتحقق $AE \to CDF$.</Ar>
 
 </Solution>
 
@@ -288,45 +406,66 @@ $AE^+$: start $\{A, E\}$; $A \to BC$ adds $B, C$; $BE \to D$ adds $D$; $CD \to F
   questions={[
     {
       q: "Changing a department's manager requires updating many employee rows. This is a…",
+      qAr: "يتطلب تغيير مدير قسم تحديث صفوف موظفين كثيرة. هذا…",
       options: ["Insertion anomaly", "Deletion anomaly", "Modification anomaly", "Spurious tuple"],
+      optionsAr: ["شذوذ في الإدراج", "شذوذ في الحذف", "شذوذ في التعديل", "صف زائف"],
       answer: 2,
-      explain: "Redundant copies must all be updated, or the data becomes inconsistent."
+      explain: "Redundant copies must all be updated, or the data becomes inconsistent.",
+      explainAr: "يجب تحديث كل النسخ المكررة، وإلا أصبحت البيانات غير متسقة."
     },
     {
       q: "X → Y holds if…",
+      qAr: "يتحقق X → Y إذا…",
       options: ["Y values are unique", "Any two tuples equal on X are equal on Y", "X is a primary key", "Y ⊆ X"],
+      optionsAr: ["كانت قيم Y فريدة", "كان أي صفين متساويين في X متساويين في Y", "كانت X مفتاحًا أساسيًا", "Y ⊆ X"],
       answer: 1,
-      explain: "Equal X values force equal Y values."
+      explain: "Equal X values force equal Y values.",
+      explainAr: "تساوي قيم X يفرض تساوي قيم Y."
     },
     {
       q: "If X → Y and Y → Z, then X → Z. Which rule is this?",
+      qAr: "إذا كان X → Y و Y → Z فإن X → Z. ما هذه القاعدة؟",
       options: ["Augmentation", "Union", "Transitivity", "Decomposition"],
+      optionsAr: ["الزيادة", "الاتحاد", "التعدّي", "التفكيك"],
       answer: 2,
-      explain: "Transitivity is one of Armstrong's axioms."
+      explain: "Transitivity is one of Armstrong's axioms.",
+      explainAr: "التعدّي إحدى مسلّمات أرمسترونغ."
     },
     {
       q: "With F = {A → B, B → D, AB → C}, what is A⁺?",
+      qAr: "إذا كانت F = {A → B, B → D, AB → C}، فما A⁺؟",
       options: ["{A, B}", "{A, B, D}", "{A, B, C, D}", "{A}"],
+      optionsAr: ["{A, B}", "{A, B, D}", "{A, B, C, D}", "{A}"],
       answer: 2,
-      explain: "A gives B, B gives D, and AB gives C."
+      explain: "A gives B, B gives D, and AB gives C.",
+      explainAr: "تعطي A السمة B، وتعطي B السمة D، وتعطي AB السمة C."
     },
     {
       q: "A relation is in 2NF if it is in 1NF and…",
+      qAr: "تكون العلاقة في 2NF إذا كانت في 1NF و…",
       options: ["It has no transitive dependencies", "Every nonprime attribute is fully dependent on the primary key", "It has a single-attribute key", "Every determinant is a superkey"],
+      optionsAr: ["لم تكن فيها اعتمادات متعدّية", "كانت كل سمة غير أولية معتمدة اعتمادًا كاملًا على المفتاح الأساسي", "كان مفتاحها من سمة واحدة", "كان كل محدِّد مفتاحًا أعلى"],
       answer: 1,
-      explain: "2NF forbids partial dependencies on a composite key."
+      explain: "2NF forbids partial dependencies on a composite key.",
+      explainAr: "تمنع 2NF الاعتمادات الجزئية على المفتاح المركب."
     },
     {
       q: "SSN → DNUMBER → DMGR_SSN in EMP_DEPT violates…",
+      qAr: "الاعتماد SSN → DNUMBER → DMGR_SSN في EMP_DEPT ينتهك…",
       options: ["1NF", "2NF", "3NF", "Nothing"],
+      optionsAr: ["1NF", "2NF", "3NF", "لا شيء"],
       answer: 2,
-      explain: "A nonprime attribute depends transitively on the key through a nonkey attribute."
+      explain: "A nonprime attribute depends transitively on the key through a nonkey attribute.",
+      explainAr: "سمة غير أولية تعتمد اعتمادًا متعدّيًا على المفتاح عبر سمة غير مفتاحية."
     },
     {
       q: "'Every attribute depends on nothing but the key' informally describes…",
+      qAr: "عبارة «كل سمة تعتمد على المفتاح ولا شيء غيره» تصف بشكل غير رسمي…",
       options: ["1NF", "2NF", "3NF", "4NF"],
+      optionsAr: ["1NF", "2NF", "3NF", "4NF"],
       answer: 2,
-      explain: "2NF is the whole key; 3NF is nothing but the key."
+      explain: "2NF is the whole key; 3NF is nothing but the key.",
+      explainAr: "2NF تعني المفتاح كله، و 3NF تعني المفتاح ولا شيء غيره."
     }
   ]}
 />
