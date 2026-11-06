@@ -1,0 +1,445 @@
+---
+number: 3
+title: Point (Pixel) Processing
+titleAr: "المعالجة النقطية (معالجة البكسل)"
+summary: Point operations change each pixel using only its own value, s = T(r). Covers the basic gray-level transformations (identity, negative, brightness, log and power-law gamma) with numbers, two worked exam problems (a log transformation with unknown parameters, and round(5√r) on a 4-bit image), intensity level slicing, and full-scale contrast stretching with its worked example, all reproduced with NumPy look-up tables.
+summaryAr: "تغيّر العمليات النقطية كل بكسل باستخدام قيمته وحدها، s = T(r). يتناول السكشن تحويلات مستويات الرمادي الأساسية (التطابق، والصورة السالبة، والسطوع، والتحويل اللوغاريتمي، وتحويل القوة أي تصحيح غاما) بأمثلة رقمية، ومسألتَي امتحان محلولتين (تحويل لوغاريتمي بمعاملات مجهولة، و round(5√r) على صورة بعمق 4 بت)، وتقطيع مستويات الشدة، ومط التباين على المدى الكامل مع مثاله المحلول، وكل ذلك بجداول بحث في NumPy."
+topics: [Point operations, Look-up tables, Negative, Brightness and clipping, Log transformation, Power-law (gamma), Intensity level slicing, Contrast stretching]
+duration: 50 min hands-on
+kind: practical
+sources:
+  - file: sections/sec3/Point-pixel-processing.pdf
+    label: Section 3 – Point pixel processing (slides)
+    pages: "1-11"
+bookRefs:
+  - book: ip-book
+    chapter: Ch 2 · Point Processing (intensity transformations)
+    pages: "42–49"
+  - book: gonzalez
+    chapter: Ch 3 · Intensity Transformations and Spatial Filtering (3.2 Some Basic Intensity Transformation Functions)
+---
+
+<Objectives>
+
+- Explain a **point operation** $s = T(r)$ and implement it as a **look-up table**.
+  <Ar>شرح **العملية النقطية (point operation)** $s = T(r)$ وتنفيذها على هيئة **جدول بحث (look-up table)**.</Ar>
+- Apply the **negative**, **brightness**, **log** and **power-law (gamma)** transformations to given pixel values.
+  <Ar>تطبيق تحويلات **الصورة السالبة (negative)** و**السطوع (brightness)** و**التحويل اللوغاريتمي** و**تحويل القوة (power-law) أي غاما** على قيم بكسلات معطاة.</Ar>
+- Solve for the **unknown parameters** of a transformation from known input/output pixels.
+  <Ar>إيجاد **المعاملات المجهولة** لتحويل ما من بكسلات دخل وخرج معلومة.</Ar>
+- Apply **intensity level slicing** and **contrast stretching** by hand and in NumPy.
+  <Ar>تطبيق **تقطيع مستويات الشدة (intensity level slicing)** و**مط التباين (contrast stretching)** باليد وباستخدام NumPy.</Ar>
+
+</Objectives>
+
+## One pixel in, one pixel out
+
+<Ar>بكسل يدخل وبكسل يخرج</Ar>
+
+A **point operation** keeps the picture's geometry and changes only how light or dark each pixel appears. It reads a pixel's value $r$, applies a rule $T$, and writes the result $s$ at the **same** location:
+
+<Ar>تحافظ **العملية النقطية (point operation)** على هندسة الصورة، ولا تغيّر إلا مدى إضاءة كل بكسل أو إعتامه. فهي تقرأ قيمة البكسل $r$، وتطبّق قاعدة $T$، وتكتب الناتج $s$ في الموقع **نفسه**:</Ar>
+
+$$
+s = T(r)
+$$
+
+<Steps>
+
+1. **Read** the input intensity $r$.
+   <Ar>**اقرأ** شدة الدخل $r$.</Ar>
+2. **Transform** it with the same rule $T$ used for every pixel.
+   <Ar>**حوِّلها** بالقاعدة $T$ نفسها المستخدمة لكل بكسل.</Ar>
+3. **Write** the output intensity $s$ at that location.
+   <Ar>**اكتب** شدة الخرج $s$ في ذلك الموقع.</Ar>
+
+</Steps>
+
+Neighbours never matter, so the order in which pixels are visited is irrelevant. It also means that $T$ only has to be computed **once per gray level**: an 8-bit image needs a table of 256 outputs, and the whole image is transformed by indexing that **look-up table** (LUT), `out = lut[img]`.
+
+<Ar>لا أهمية للبكسلات المجاورة إطلاقًا، لذا لا يهم ترتيب المرور على البكسلات. ويعني ذلك أيضًا أن $T$ تُحسب **مرة واحدة لكل مستوى رمادي**: فالصورة ذات 8 بت تحتاج إلى جدول من 256 قيمة خرج، وتُحوَّل الصورة كلها بالفهرسة في **جدول البحث (look-up table)** هذا، `out = lut[img]`.</Ar>
+
+## Some basic gray-level transformations
+
+<Ar>بعض تحويلات مستويات الرمادي الأساسية</Ar>
+
+For an image with $L$ gray levels ($L = 256$ for 8 bits):
+
+<Ar>لصورة عدد مستويات الرمادي فيها $L$ (أي $L = 256$ لعمق 8 بت):</Ar>
+
+| Transformation <Ar>التحويل</Ar> | Formula <Ar>الصيغة</Ar> | Effect <Ar>الأثر</Ar> |
+|---|---|---|
+| Identity <Ar>التطابق (identity)</Ar> | $s = r$ | Nothing changes <Ar>لا يتغير شيء</Ar> |
+| Negative (inverse) <Ar>الصورة السالبة (negative)</Ar> | $s = L - 1 - r = 255 - r$ | Dark becomes bright and bright dark; reveals white detail in dark regions <Ar>يصبح الداكن ساطعًا والساطع داكنًا؛ ويُظهر التفاصيل البيضاء في المناطق الداكنة</Ar> |
+| Brightness / darkness <Ar>السطوع / الإعتام</Ar> | $s = r \pm c$, then clip to $0 \ldots 255$ <Ar>$s = r \pm c$، ثم القصّ (clipping) إلى $0 \ldots 255$</Ar> | Shifts the whole histogram; clipped values are lost <Ar>يُزيح المدرج التكراري كله؛ والقيم المقصوصة تضيع</Ar> |
+| Logarithmic <Ar>التحويل اللوغاريتمي</Ar> | $s = c \log(1 + r)$ | Expands dark levels, compresses bright ones <Ar>يوسّع المستويات الداكنة ويضغط الساطعة</Ar> |
+| Power-law (gamma) <Ar>تحويل القوة (غاما)</Ar> | $s = c\, r^{\gamma}$ | $\gamma < 1$ brightens like log; $\gamma > 1$ darkens <Ar>القيمة $\gamma < 1$ تزيد السطوع مثل التحويل اللوغاريتمي؛ والقيمة $\gamma > 1$ تزيد الإعتام</Ar> |
+
+<SlideFigure page={3} caption="Some basic gray-level transformations: identity, negative, log and inverse log, nth root and nth power curves, all mapping input level r in [0, L − 1] to output level s." captionAr="بعض تحويلات مستويات الرمادي الأساسية: منحنيات التطابق، والصورة السالبة، واللوغاريتم ومعكوسه، والجذر النوني والقوة النونية، وكلها تحوّل مستوى الدخل r في المدى [0, L − 1] إلى مستوى الخرج s." />
+
+The constant $c$ is chosen so that the output still fills $0 \ldots 255$. For the log, $c = 255/\ln 256 \approx 45.99$ makes $255 \to 255$ (the base of the logarithm only changes $c$). For gamma it is easiest to normalize: $s = 255\,(r/255)^{\gamma}$. A few values make the shapes concrete:
+
+<Ar>يُختار الثابت $c$ بحيث يبقى الخرج مالئًا للمدى $0 \ldots 255$. ففي التحويل اللوغاريتمي يجعل $c = 255/\ln 256 \approx 45.99$ القيمة $255 \to 255$ (وأساس اللوغاريتم لا يغيّر إلا $c$). وفي تحويل غاما الأسهل أن نُطبِّع: $s = 255\,(r/255)^{\gamma}$. وتوضّح بعض القيم أشكال المنحنيات:</Ar>
+
+| $r$ | 0 | 10 | 50 | 100 | 200 | 255 |
+|---|---|---|---|---|---|---|
+| Negative $255 - r$ <Ar>السالبة $255 - r$</Ar> | 255 | 245 | 205 | 155 | 55 | 0 |
+| Brighter $r + 80$, clipped <Ar>أكثر سطوعًا $r + 80$ مع القصّ</Ar> | 80 | 90 | 130 | 180 | 255 | 255 |
+| Log $45.99 \ln(1 + r)$ <Ar>اللوغاريتمي $45.99 \ln(1 + r)$</Ar> | 0 | 110 | 181 | 212 | 244 | 255 |
+| Gamma $\gamma = 0.5$ <Ar>غاما $\gamma = 0.5$</Ar> | 0 | 50 | 113 | 160 | 226 | 255 |
+| Gamma $\gamma = 2$ <Ar>غاما $\gamma = 2$</Ar> | 0 | 0 | 10 | 39 | 157 | 255 |
+
+Read the columns: the log sends 10 to 110, so the darkest tenth of the range takes almost half of the output; $\gamma = 2$ squeezes everything below 50 into $0 \ldots 10$. The log is the classic way to display values with a huge dynamic range, such as a Fourier spectrum; gamma is used to correct display and camera responses.
+
+<Ar>اقرأ الأعمدة: يحوّل التحويل اللوغاريتمي 10 إلى 110، فيأخذ أغمق عُشر من المدى نحو نصف الخرج تقريبًا؛ بينما يضغط $\gamma = 2$ كل ما دون 50 في المدى $0 \ldots 10$. والتحويل اللوغاريتمي هو الطريقة التقليدية لعرض قيم ذات مدى ديناميكي (dynamic range) كبير جدًا مثل طيف فورييه (spectrum)، أما غاما فيُستخدم لتصحيح استجابة الشاشات والكاميرات.</Ar>
+
+```python title="point_luts.py"
+import numpy as np
+
+L = 256
+r = np.arange(L)                              # every possible input level
+c = (L - 1) / np.log(L)                       # log scale factor: 255 -> 255
+curves = {
+    "negative":  L - 1 - r,
+    "brighter":  np.clip(r + 80, 0, L - 1),
+    "log":       c * np.log1p(r),
+    "gamma 0.5": (L - 1) * (r / (L - 1)) ** 0.5,
+    "gamma 2":   (L - 1) * (r / (L - 1)) ** 2.0,
+}
+for name, curve in curves.items():
+    lut = np.floor(curve + 0.5).astype(np.uint8)    # round half up into 0..255
+    print(f"{name:10s}", lut[[0, 10, 50, 100, 200, 255]])
+# negative   [255 245 205 155  55   0]
+# brighter   [ 80  90 130 180 255 255]
+# log        [  0 110 181 212 244 255]
+# gamma 0.5  [  0  50 113 160 226 255]
+# gamma 2    [  0   0  10  39 157 255]
+
+# To transform a whole uint8 image:  out = lut[img]
+# The same in Pillow:                out = img.point(lut.tolist())   (mode "L")
+```
+
+## Example 1: a log transformation with unknown parameters
+
+<Ar>المثال 1: تحويل لوغاريتمي بمعاملات مجهولة</Ar>
+
+A $4 \times 4$, 4 bits/pixel image passes through the point transformation $s = T(r) = \alpha \log_2(1 + r) + \beta$, where $\alpha$ and $\beta$ are unknown. Only a few input and output pixels are known. (a) Find $\alpha$ and $\beta$. (b) Find the output pixel marked "?". (c) Find the input pixel marked "?".
+
+<Ar>تمر صورة بأبعاد $4 \times 4$ وعمق 4 بت لكل بكسل عبر التحويل النقطي $s = T(r) = \alpha \log_2(1 + r) + \beta$، حيث $\alpha$ و $\beta$ مجهولان. ولا يُعرف إلا عدد قليل من بكسلات الدخل والخرج. (a) أوجد $\alpha$ و $\beta$. (b) أوجد بكسل الخرج المُعلَّم بـ «?». (c) أوجد بكسل الدخل المُعلَّم بـ «?».</Ar>
+
+<SlideFigure page={4} caption="Example 1: known pixel pairs 3 → 5 (twice) and 15 → 11; input 1 gives the unknown output, and output 8 comes from the unknown input." captionAr="المثال 1: أزواج البكسلات المعلومة 3 → 5 (مرتين) و 15 → 11؛ والدخل 1 يعطي الخرج المجهول، والخرج 8 ناتج عن الدخل المجهول." />
+
+Reading the two grids position by position gives the pairs $3 \to 5$ (twice), $15 \to 11$, $1 \to\, ?$ and $?\, \to 8$.
+
+<Ar>قراءة الشبكتين موضعًا بموضع تعطي الأزواج $3 \to 5$ (مرتين) و $15 \to 11$ و $1 \to\, ?$ و $?\, \to 8$.</Ar>
+
+**(a)** Each known pair gives one linear equation in $\alpha$ and $\beta$:
+
+<Ar>**(a)** كل زوج معلوم يعطي معادلة خطية واحدة في $\alpha$ و $\beta$:</Ar>
+
+$$
+\begin{aligned}
+r = 3:\quad & 5 = \alpha \log_2 4 + \beta = 2\alpha + \beta \;\Rightarrow\; \beta = 5 - 2\alpha \\
+r = 15:\quad & 11 = \alpha \log_2 16 + \beta = 4\alpha + \beta = 4\alpha + 5 - 2\alpha = 2\alpha + 5 \\
+& \Rightarrow\; 2\alpha = 6,\quad \alpha = 3,\quad \beta = 5 - 6 = -1
+\end{aligned}
+$$
+
+Check: $T(3) = 3(2) - 1 = 5$ and $T(15) = 3(4) - 1 = 11$. Both pairs are satisfied.
+
+<Ar>التحقق: $T(3) = 3(2) - 1 = 5$ و $T(15) = 3(4) - 1 = 11$، فكلا الزوجين متحقق.</Ar>
+
+**(b)** $T(1) = 3 \log_2 2 - 1 = 3 - 1 = 2$.
+
+<Ar>**(b)** الخرج المجهول: $T(1) = 3 \log_2 2 - 1 = 3 - 1 = 2$.</Ar>
+
+**(c)** $8 = 3 \log_2(1 + r) - 1 \Rightarrow \log_2(1 + r) = 3 \Rightarrow 1 + r = 8 \Rightarrow r = 7$.
+
+<Ar>**(c)** الدخل المجهول: $8 = 3 \log_2(1 + r) - 1 \Rightarrow \log_2(1 + r) = 3 \Rightarrow 1 + r = 8 \Rightarrow r = 7$.</Ar>
+
+<Callout type="warning" title="The slide's solution has an algebra slip" titleAr="في حل الشريحة خطأ جبري">
+  Slide 5 simplifies $4\alpha + 5 - 2\alpha$ to "$6\alpha = 6$" and gets $\alpha = 1$, $\beta = 3$, then (b) 4 and (c) 31. But $4\alpha - 2\alpha = 2\alpha$, so $\alpha = 3$ and $\beta = -1$. You can see that $\alpha = 1, \beta = 3$ is wrong because it fails the given pair: $T(15) = 4 + 3 = 7$, not 11. The slide's input 31 is also impossible for a 4-bit image (levels $0 \ldots 15$), while the correct answer, 7, fits.
+
+  <Ar>تختصر الشريحة 5 المقدار $4\alpha + 5 - 2\alpha$ إلى «$6\alpha = 6$» فتحصل على $\alpha = 1$ و $\beta = 3$، ثم (b) 4 و(c) 31. لكن $4\alpha - 2\alpha = 2\alpha$، لذا $\alpha = 3$ و $\beta = -1$. ويظهر خطأ $\alpha = 1, \beta = 3$ لأنهما لا يحققان الزوج المعطى: $T(15) = 4 + 3 = 7$ وليس 11. كما أن الدخل 31 في الشريحة مستحيل في صورة بعمق 4 بت (المستويات $0 \ldots 15$)، بينما الإجابة الصحيحة 7 تقع ضمن المدى.</Ar>
+</Callout>
+
+Two known pairs and two unknowns is a $2 \times 2$ linear system, which NumPy solves directly:
+
+<Ar>زوجان معلومان ومجهولان يعطيان نظامًا خطيًا $2 \times 2$، يحلّه NumPy مباشرةً:</Ar>
+
+```python title="example1.py"
+import numpy as np
+
+# alpha * log2(1 + r) + beta = s for the pairs (3 -> 5) and (15 -> 11)
+A = np.array([[np.log2(1 + 3), 1],
+              [np.log2(1 + 15), 1]])
+alpha, beta = np.linalg.solve(A, [5, 11])
+print(alpha, beta)                       # 3.0 -1.0
+
+
+def T(r):
+    return alpha * np.log2(1 + r) + beta
+
+
+print(T(1))                              # 2.0  -> (b)
+print(2 ** ((8 - beta) / alpha) - 1)     # 7.0  -> (c), inverting T
+```
+
+## Example 2: s = round(5√r) on a 4-bit image
+
+<Ar>المثال 2: التحويل s = round(5√r) على صورة بعمق 4 بت</Ar>
+
+A $4 \times 4$, 4 bits/pixel image passes through $s = T(r) = \text{round}(5\sqrt{r})$. Only seven distinct levels occur, so compute $T$ once for each:
+
+<Ar>تمر صورة بأبعاد $4 \times 4$ وعمق 4 بت لكل بكسل عبر التحويل $s = T(r) = \text{round}(5\sqrt{r})$. ولا يظهر فيها إلا سبعة مستويات مختلفة، لذا نحسب $T$ مرة واحدة لكل منها:</Ar>
+
+| $r$ | 0 | 1 | 2 | 3 | 4 | 5 | 7 |
+|---|---|---|---|---|---|---|---|
+| $5\sqrt{r}$ | 0 | 5 | 7.07 | 8.66 | 10 | 11.18 | 13.23 |
+| $s$ | 0 | 5 | 7 | 9 | 10 | 11 | 13 |
+
+```text
+input            output
+7  3  4  1       13   9  10   5
+1  2  0  3        5   7   0   9
+4  2  2  1       10   7   7   5
+0  3  5  1        0   9  11   5
+```
+
+The slide's answer is correct. Note that this is a power law with $\gamma = 0.5$: it brightens the dark levels (1 becomes 5). It also has a hidden trap: for $r \ge 10$, $5\sqrt{r} \ge 15.8$, which does not fit in 4 bits, so a full 4-bit image would need **clipping** at 15. This image happens to stop at 7.
+
+<Ar>إجابة الشريحة صحيحة. لاحظ أن هذا تحويل قوة (power-law) بقيمة $\gamma = 0.5$: فهو يزيد سطوع المستويات الداكنة (يصبح 1 هو 5). وفيه فخ خفي: عندما $r \ge 10$ يكون $5\sqrt{r} \ge 15.8$، وهذا لا يتسع في 4 بت، لذا تحتاج صورة كاملة بعمق 4 بت إلى **القصّ (clipping)** عند 15. وهذه الصورة تتوقف مصادفةً عند 7.</Ar>
+
+<SlideFigure page={7} caption="Example 2 solution: each input level r is replaced by round(5√r), giving 13, 9, 10, 5 in the first row." captionAr="حل المثال 2: يُستبدل كل مستوى دخل r بالقيمة round(5√r)، فيكون الصف الأول 13 و 9 و 10 و 5." />
+
+## Intensity level slicing
+
+<Ar>تقطيع مستويات الشدة</Ar>
+
+**Intensity level slicing** highlights a specific range of gray levels $[A, B]$, for example water in a satellite image or a blood vessel in an angiogram. There are two versions:
+
+<Ar>يُبرز **تقطيع مستويات الشدة (intensity level slicing)** مدى محددًا من مستويات الرمادي $[A, B]$، مثل الماء في صورة قمر صناعي أو وعاء دموي في صورة الأوعية. وله صيغتان:</Ar>
+
+$$
+\text{(1)}\;\; s = \begin{cases} s_H & A \le r \le B \\ s_L & \text{otherwise} \end{cases}
+\qquad\qquad
+\text{(2)}\;\; s = \begin{cases} s_H & A \le r \le B \\ r & \text{otherwise} \end{cases}
+$$
+
+Version (1) produces a binary-looking image: the band is bright, everything else is one low level. Version (2) brightens the band but **keeps the rest** of the image unchanged, so context stays visible.
+
+<Ar>تُنتج الصيغة (1) صورة تبدو ثنائية: يكون المدى المختار ساطعًا، وكل ما عداه بمستوى منخفض واحد. أما الصيغة (2) فتزيد سطوع المدى المختار مع **إبقاء باقي** الصورة دون تغيير، فيبقى السياق مرئيًا.</Ar>
+
+<SlideFigure page={8} caption="Intensity level slicing: (left) the band A to B is set high and everything else low; (right) the band is raised while other levels keep the identity mapping." captionAr="تقطيع مستويات الشدة: (يسارًا) يُرفع المدى من A إلى B إلى مستوى عالٍ وكل ما عداه إلى مستوى منخفض؛ (يمينًا) يُرفع المدى بينما تبقى المستويات الأخرى على تحويل التطابق." />
+
+With $A = 100$, $B = 180$, $s_H = 255$ and $s_L = 0$, the pixels $10, 60, 100, 150, 200, 250$ become $0, 0, 255, 255, 0, 0$ in version (1) and $10, 60, 255, 255, 200, 250$ in version (2):
+
+<Ar>مع $A = 100$ و $B = 180$ و $s_H = 255$ و $s_L = 0$، تصبح البكسلات $10, 60, 100, 150, 200, 250$ هي $0, 0, 255, 255, 0, 0$ في الصيغة (1)، و $10, 60, 255, 255, 200, 250$ في الصيغة (2):</Ar>
+
+```python title="slicing.py"
+import numpy as np
+
+r = np.array([10, 60, 100, 150, 200, 250])
+A, B = 100, 180
+band = (r >= A) & (r <= B)
+print(np.where(band, 255, 0))    # [  0   0 255 255   0   0]   version (1)
+print(np.where(band, 255, r))    # [ 10  60 255 255 200 250]   version (2)
+```
+
+## Contrast stretching
+
+<Ar>مط التباين</Ar>
+
+A **low-contrast** image uses only a narrow part of the available range, because of poor lighting, a weak sensor or a wrong aperture. It can look washed out (too bright), murky (too dark) or flat gray. **Contrast stretching** maps the image's own range $[r_{\min}, r_{\max}]$ linearly onto a new range $[s_{\min}, s_{\max}]$:
+
+<Ar>تستخدم الصورة **منخفضة التباين (low contrast)** جزءًا ضيقًا فقط من المدى المتاح، بسبب إضاءة سيئة أو مستشعر ضعيف أو فتحة عدسة غير مناسبة. وقد تبدو باهتة (ساطعة أكثر من اللازم) أو معتمة (داكنة أكثر من اللازم) أو رمادية مسطحة. أما **مط التباين (contrast stretching)** فيحوّل مدى الصورة نفسها $[r_{\min}, r_{\max}]$ خطيًا إلى مدى جديد $[s_{\min}, s_{\max}]$:</Ar>
+
+$$
+s = \frac{r - r_{\min}}{r_{\max} - r_{\min}}\,\big(s_{\max} - s_{\min}\big) + s_{\min}
+$$
+
+**Full-scale** stretching uses $s_{\min} = 0$ and $s_{\max} = L - 1$. It is the simplest **piecewise-linear** transformation; the general form bends the line at two control points $(r_1, s_1)$ and $(r_2, s_2)$. Because it uses the extreme values, a single outlier pixel at 0 or $L - 1$ prevents any stretching; in practice the 1st and 99th percentiles are often used instead of the min and max.
+
+<Ar>يستخدم المطّ **على المدى الكامل (full-scale)** القيمتين $s_{\min} = 0$ و $s_{\max} = L - 1$. وهو أبسط **دالة خطية مجزأة (piecewise-linear)**؛ إذ تثني الصيغة العامة الخط عند نقطتي تحكم $(r_1, s_1)$ و $(r_2, s_2)$. ولأنه يعتمد على القيم القصوى، فإن بكسلًا شاذًا واحدًا عند 0 أو $L - 1$ يمنع أي مطّ؛ لذا يُستخدم عمليًا المئين الأول والمئين التاسع والتسعون بدلًا من القيمة الدنيا والقصوى.</Ar>
+
+<SlideFigure page={9} caption="Contrast stretching: three low-contrast versions of the same image (washed out, dark, flat gray) and the high-contrast result that uses the full range." captionAr="مط التباين: ثلاث نسخ منخفضة التباين من الصورة نفسها (باهتة، وداكنة، ورمادية مسطحة)، والنتيجة عالية التباين التي تستخدم المدى كاملًا." />
+
+### Worked example: full-scale stretch of a 4-bit image
+
+<Ar>مثال محلول: مطّ صورة بعمق 4 بت على المدى الكامل</Ar>
+
+A $4 \times 4$, 4 bits/pixel image is given. Here $r_{\min} = 6$, $r_{\max} = 14$, $s_{\min} = 0$ and $s_{\max} = 2^4 - 1 = 15$, so $s = \frac{r - 6}{8} \times 15$, rounded:
+
+<Ar>لدينا صورة بأبعاد $4 \times 4$ وعمق 4 بت لكل بكسل. هنا $r_{\min} = 6$ و $r_{\max} = 14$ و $s_{\min} = 0$ و $s_{\max} = 2^4 - 1 = 15$، لذا $s = \frac{r - 6}{8} \times 15$ ثم التقريب:</Ar>
+
+| $r$ | 6 | 7 | 11 | 12 | 13 | 14 |
+|---|---|---|---|---|---|---|
+| $\frac{r - 6}{8} \times 15$ | 0 | 1.875 | 9.375 | 11.25 | 13.125 | 15 |
+| $s$ | 0 | 2 | 9 | 11 | 13 | 15 |
+
+```text
+original         stretched
+ 6  13  12  13    0  13  11  13
+12   6   7  12   11   0   2  11
+13   7   7  12   13   2   2  11
+14  11  11  14   15   9   9  15
+```
+
+The slide shows the calculations for 6 and 13 only; the full table above confirms its result image. The gap between 7 and 11 (4 levels) becomes a gap of 7 levels: every difference is multiplied by $15/8 = 1.875$.
+
+<Ar>تعرض الشريحة الحساب للقيمتين 6 و 13 فقط؛ والجدول الكامل أعلاه يؤكد صورتها الناتجة. فالفجوة بين 7 و 11 (أربعة مستويات) تصبح فجوة من 7 مستويات: إذ يُضرب كل فرق في $15/8 = 1.875$.</Ar>
+
+<SlideFigure page={11} caption="Contrast stretching example: old min 6 and old max 14 are mapped to new min 0 and new max 15, giving the stretched 4 × 4 image." captionAr="مثال مط التباين: تتحول القيمة الدنيا القديمة 6 والقصوى القديمة 14 إلى القيمة الدنيا الجديدة 0 والقصوى الجديدة 15، فتنتج الصورة الممطوطة بأبعاد 4 × 4." />
+
+```python title="stretch.py"
+import numpy as np
+
+img = np.array([[6, 13, 12, 13],
+                [12, 6, 7, 12],
+                [13, 7, 7, 12],
+                [14, 11, 11, 14]])
+
+
+def stretch(img, new_min=0, new_max=15):
+    lo, hi = img.min(), img.max()
+    s = (img - lo) / (hi - lo) * (new_max - new_min) + new_min
+    return np.floor(s + 0.5).astype(int)        # round half up, as on paper
+
+
+print(stretch(img))
+# [[ 0 13 11 13]
+#  [11  0  2 11]
+#  [13  2  2 11]
+#  [15  9  9 15]]
+```
+
+<Takeaways>
+
+- A point operation is $s = T(r)$: one pixel in, one pixel out, neighbours ignored, so it is a **look-up table** indexed by gray level.
+  <Ar>العملية النقطية هي $s = T(r)$: بكسل يدخل وبكسل يخرج دون اعتبار للجيران، لذا فهي **جدول بحث** مفهرس بمستوى الرمادي.</Ar>
+- **Negative** $s = L - 1 - r$; **brightness** $s = r \pm c$ with clipping; **log** expands dark levels; **gamma** $\gamma < 1$ brightens and $\gamma > 1$ darkens.
+  <Ar>**الصورة السالبة** $s = L - 1 - r$؛ و**السطوع** $s = r \pm c$ مع القصّ؛ و**التحويل اللوغاريتمي** يوسّع المستويات الداكنة؛ و**غاما** بقيمة $\gamma < 1$ يزيد السطوع وبقيمة $\gamma > 1$ يزيد الإعتام.</Ar>
+- Unknown parameters: one equation per known pixel pair, then **check** the answer against every pair and the image's bit depth.
+  <Ar>المعاملات المجهولة: معادلة واحدة لكل زوج بكسلات معلوم، ثم **تحقّق** من الإجابة مع كل زوج ومع عمق البت (bit depth) للصورة.</Ar>
+- **Intensity level slicing** highlights $[A, B]$, either alone or over the original; **contrast stretching** maps $[r_{\min}, r_{\max}]$ linearly onto the full range.
+  <Ar>**تقطيع مستويات الشدة** يُبرز المدى $[A, B]$، إما وحده وإما فوق الصورة الأصلية؛ و**مط التباين** يحوّل المدى $[r_{\min}, r_{\max}]$ خطيًا إلى المدى الكامل.</Ar>
+
+</Takeaways>
+
+## Practice
+
+<Ar>تدريب</Ar>
+
+<Exercise title="Negative and brightness of a 3-bit row" titleAr="الصورة السالبة والسطوع لصف بعمق 3 بت" level="easy">
+
+A 3-bit image row is $0, 2, 5, 7$. Compute (a) its negative and (b) $s = r + 3$ with clipping.
+
+<Ar>صف من صورة بعمق 3 بت هو $0, 2, 5, 7$. احسب (a) الصورة السالبة له، و(b) $s = r + 3$ مع القصّ.</Ar>
+
+<Solution>
+
+$L = 2^3 = 8$, so $L - 1 = 7$. (a) $s = 7 - r$: $7, 5, 2, 0$. (b) $0 + 3 = 3$, $2 + 3 = 5$, $5 + 3 = 8 \to 7$, $7 + 3 = 10 \to 7$: $3, 5, 7, 7$. After clipping, 5 and 7 can no longer be told apart.
+
+<Ar>$L = 2^3 = 8$، لذا $L - 1 = 7$. (a) $s = 7 - r$: $7, 5, 2, 0$. (b) $0 + 3 = 3$، $2 + 3 = 5$، $5 + 3 = 8 \to 7$، $7 + 3 = 10 \to 7$: أي $3, 5, 7, 7$. وبعد القصّ لم يعد ممكنًا التمييز بين 5 و 7.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Stretch one pixel" titleAr="مطّ بكسل واحد" level="easy">
+
+An 8-bit image has minimum 50 and maximum 200. Where does a pixel with $f = 120$ go after full-scale contrast stretching to $[0, 255]$?
+
+<Ar>صورة بعمق 8 بت قيمتها الدنيا 50 والقصوى 200. أين يقع البكسل $f = 120$ بعد مط التباين على المدى الكامل $[0, 255]$؟</Ar>
+
+<Solution>
+
+$s = \frac{120 - 50}{200 - 50} \times 255 = \frac{70}{150} \times 255 = 119$.
+
+<Ar>يقع البكسل عند $s = \frac{120 - 50}{200 - 50} \times 255 = \frac{70}{150} \times 255 = 119$.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Gamma 0.4" titleAr="غاما بقيمة 0.4" level="medium">
+
+Apply $s = 255\,(r/255)^{0.4}$ to $r = 50$ and $r = 100$. What happens to the image's brightness, and which pixels change most?
+
+<Ar>طبّق $s = 255\,(r/255)^{0.4}$ على $r = 50$ و $r = 100$. ماذا يحدث لسطوع الصورة، وأي البكسلات تتغير أكثر؟</Ar>
+
+<Solution>
+
+$50 \to 255 \times 0.196^{0.4} = 132.9 \approx 133$ and $100 \to 255 \times 0.392^{0.4} = 175.4 \approx 175$. With $\gamma = 0.4 < 1$ the image gets **brighter**. Dark pixels gain most (50 gains 83 levels, 100 gains 75), while 0 and 255 stay fixed, so detail in the shadows becomes visible.
+
+<Ar>$50 \to 255 \times 0.196^{0.4} = 132.9 \approx 133$ و $100 \to 255 \times 0.392^{0.4} = 175.4 \approx 175$. ومع $\gamma = 0.4 < 1$ تصبح الصورة **أكثر سطوعًا**. وتكسب البكسلات الداكنة أكثر (يرتفع 50 بمقدار 83 مستوى، ويرتفع 100 بمقدار 75 مستوى)، بينما يبقى 0 و 255 ثابتين، فتظهر التفاصيل في الظلال.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Find c and γ" titleAr="أوجد c و γ" level="hard">
+
+A transformation $s = c\, r^{\gamma}$ maps $16 \to 64$ and $64 \to 128$. Find $c$ and $\gamma$, the output for $r = 144$, and the input that gives $s = 240$.
+
+<Ar>تحويل $s = c\, r^{\gamma}$ يحوّل $16 \to 64$ و $64 \to 128$. أوجد $c$ و $\gamma$، والخرج عند $r = 144$، والدخل الذي يعطي $s = 240$.</Ar>
+
+<Solution>
+
+Divide the two equations: $\frac{128}{64} = \left(\frac{64}{16}\right)^{\gamma}$, so $2 = 4^{\gamma}$ and $\gamma = 0.5$. Then $64 = c\sqrt{16} = 4c$, so $c = 16$ and $s = 16\sqrt{r}$. For $r = 144$: $s = 16 \times 12 = 192$. For $s = 240$: $\sqrt{r} = 15$, so $r = 225$. Check: $16\sqrt{64} = 128$.
+
+<Ar>اقسم المعادلتين: $\frac{128}{64} = \left(\frac{64}{16}\right)^{\gamma}$، أي $2 = 4^{\gamma}$ ومنه $\gamma = 0.5$. ثم $64 = c\sqrt{16} = 4c$، لذا $c = 16$ و $s = 16\sqrt{r}$. عند $r = 144$: $s = 16 \times 12 = 192$. وعند $s = 240$: $\sqrt{r} = 15$، لذا $r = 225$. التحقق: $16\sqrt{64} = 128$.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "In a point operation, the output pixel depends on…",
+      qAr: "في العملية النقطية، يعتمد بكسل الخرج على…",
+      options: ["the input pixel's value only", "the pixel and its 8 neighbours", "the whole image's histogram", "the pixel's position"],
+      optionsAr: ["قيمة بكسل الدخل فقط", "البكسل وجيرانه الثمانية", "المدرج التكراري للصورة كلها", "موقع البكسل"],
+      answer: 0,
+      explain: "s = T(r): one pixel in, one pixel out, so it can be done with a look-up table.",
+      explainAr: "s = T(r): بكسل يدخل وبكسل يخرج، لذا يمكن تنفيذها بجدول بحث."
+    },
+    {
+      q: "What is the negative of the 8-bit pixel value 200?",
+      qAr: "ما قيمة الصورة السالبة للبكسل 200 في صورة بعمق 8 بت؟",
+      options: ["-200", "55", "56", "200"],
+      optionsAr: ["-200", "55", "56", "200"],
+      answer: 1,
+      explain: "s = 255 − 200 = 55.",
+      explainAr: "الصورة السالبة: s = 255 − 200 = 55."
+    },
+    {
+      q: "A power-law transformation with γ = 0.4 will…",
+      qAr: "تحويل القوة بقيمة γ = 0.4 سوف…",
+      options: ["darken the image", "brighten the image, mostly the dark levels", "leave the image unchanged", "invert the image"],
+      optionsAr: ["يزيد إعتام الصورة", "يزيد سطوع الصورة، وبخاصة المستويات الداكنة", "يترك الصورة دون تغيير", "يعكس الصورة"],
+      answer: 1,
+      explain: "γ < 1 lifts the curve above the identity, like the log transformation.",
+      explainAr: "القيمة γ < 1 ترفع المنحنى فوق خط التطابق، مثل التحويل اللوغاريتمي."
+    },
+    {
+      q: "In Example 1, which values satisfy both known pairs 3 → 5 and 15 → 11?",
+      qAr: "في المثال 1، ما القيم التي تحقق الزوجين المعلومين 3 → 5 و 15 → 11 معًا؟",
+      options: ["α = 1, β = 3", "α = 3, β = −1", "α = 2, β = 1", "α = 6, β = −7"],
+      optionsAr: ["α = 1, β = 3", "α = 3, β = −1", "α = 2, β = 1", "α = 6, β = −7"],
+      answer: 1,
+      explain: "2α + β = 5 and 4α + β = 11 give 2α = 6. The slide's α = 1, β = 3 gives T(15) = 7.",
+      explainAr: "المعادلتان 2α + β = 5 و 4α + β = 11 تعطيان 2α = 6. أما α = 1 و β = 3 في الشريحة فتعطيان T(15) = 7."
+    },
+    {
+      q: "Full-scale contrast stretching of a 4-bit image with min 6 and max 14 sends r = 10 to…",
+      qAr: "مط التباين على المدى الكامل لصورة بعمق 4 بت قيمتها الدنيا 6 والقصوى 14 يحوّل r = 10 إلى…",
+      options: ["7", "8", "10", "15"],
+      optionsAr: ["7", "8", "10", "15"],
+      answer: 1,
+      explain: "(10 − 6)/8 × 15 = 7.5, which rounds half up to 8.",
+      explainAr: "(10 − 6)/8 × 15 = 7.5، وتُقرَّب إلى الأعلى فتصبح 8."
+    }
+  ]}
+/>

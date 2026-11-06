@@ -1,0 +1,653 @@
+---
+number: 10
+title: Morphological Operations
+titleAr: "العمليات المورفولوجية"
+summary: Processing the shape of objects with a structuring element. Covers structuring elements and their origin, erosion and dilation (pixel by pixel, as sets and on gray-value images), edge detection and coin counting, opening and closing and their duality, the hit-and-miss transform with corner detection, and thinning and thickening.
+summaryAr: "معالجة شكل الكائنات باستخدام عنصر بنائي (structuring element): العناصر البنائية ونقطة أصلها، والتآكل (erosion) والتمدد (dilation) بكسلًا بكسلًا وبلغة المجموعات وعلى الصور الرمادية، وكشف الحواف وعدّ العملات المعدنية، والفتح (opening) والإغلاق (closing) والثنائية (duality) بينهما، وتحويل الإصابة والإخفاق (hit-and-miss) مع كشف الزوايا، ثم الترقيق (thinning) والتثخين (thickening)."
+topics: [Structuring elements, Erosion, Dilation, Gray-value morphology, Morphological edge detection, Opening, Closing, Duality, Hit-and-miss transform, Corner detection, Thinning, Thickening]
+duration: 60 min study
+sources:
+  - file: lectures/ch10/Introduction_to_Morphological_Operators2.pdf
+    label: Lecture 10 – Introduction to Morphological Operators (slides)
+    pages: "1-76"
+bookRefs:
+  - book: ip-book
+    chapter: Ch 7 · Morphological Operations
+    pages: "138–158"
+  - book: mcandrew
+    chapter: Mathematical Morphology
+  - book: gonzalez
+    chapter: Ch 9 · Morphological Image Processing
+---
+
+<Objectives>
+
+- Describe a **structuring element**: its size, shape, values and **origin**.
+  <Ar>وصف **العنصر البنائي (structuring element)**: حجمه وشكله وقيمه و**نقطة أصله (origin)**.</Ar>
+- Compute **erosion** and **dilation** of a binary image by hand and write them as set operations.
+  <Ar>حساب **التآكل (erosion)** و**التمدد (dilation)** لصورة ثنائية (binary) يدويًا، وكتابتهما عمليتين على المجموعات.</Ar>
+- Explain why gray-value erosion darkens an image and dilation lightens it.
+  <Ar>تفسير سبب تعتيم التآكل للصورة الرمادية، وتفتيح التمدد لها.</Ar>
+- Use **opening** and **closing** to remove noise and fill holes, and state their **duality**.
+  <Ar>استخدام **الفتح (opening)** و**الإغلاق (closing)** لإزالة الضوضاء (noise) وملء الثقوب، وصياغة **الثنائية (duality)** بينهما.</Ar>
+- Apply the **hit-and-miss transform** to find corners, and define **thinning** and **thickening** with it.
+  <Ar>تطبيق **تحويل الإصابة والإخفاق (hit-and-miss)** لإيجاد الزوايا، وتعريف **الترقيق (thinning)** و**التثخين (thickening)** بواسطته.</Ar>
+
+</Objectives>
+
+## What morphology does
+
+<Ar>ماذا تفعل المورفولوجيا</Ar>
+
+**Morphological operations** process an image by the **shape** of its objects. A small pattern, the **structuring element**, is moved over the image, and at each position the output pixel depends on how the pattern overlaps the foreground.
+
+<Ar>تعالج **العمليات المورفولوجية (morphological operations)** الصورةَ وفق **شكل** كائناتها. إذ يُحرَّك فوق الصورة نمط صغير يُسمّى **العنصر البنائي (structuring element)**، ويتحدد بكسل الخرج عند كل موضع بحسب تداخل هذا النمط مع المقدمة (foreground).</Ar>
+
+- They are used mainly on **binary images**, e.g. the result of thresholding or background subtraction, and on **gray-value images** viewed as a **stack of binary images**, one per gray level.
+  <Ar>تُستخدم أساسًا على **الصور الثنائية (binary images)**، مثل ناتج التقطيع بالعتبة (thresholding) أو طرح الخلفية (background subtraction)، وعلى **الصور الرمادية** حين يُنظر إليها **كومةً من الصور الثنائية (stack of binary images)**، صورة لكل مستوى رمادي.</Ar>
+- Typical jobs: removing **noise** in the background and removing **holes** in the foreground or background.
+  <Ar>ومن مهامها النموذجية: إزالة **الضوضاء (noise)** في الخلفية، وإزالة **الثقوب** في المقدمة أو الخلفية.</Ar>
+
+<Callout type="note" title="Conventions" titleAr="اصطلاحات">
+  Foreground pixels are <strong>1</strong> (usually white) and background pixels are <strong>0</strong>. A binary image is the <strong>set</strong> $A$ of its foreground coordinates. Rows and columns are numbered from 1 at the top-left.
+
+  <Ar>بكسلات المقدمة (foreground) قيمتها <strong>1</strong> (بيضاء عادةً)، وبكسلات الخلفية (background) قيمتها <strong>0</strong>. والصورة الثنائية هي <strong>المجموعة (set)</strong> $A$ المكوّنة من إحداثيات مقدمتها. وتُرقَّم الصفوف والأعمدة بدءًا من 1 من الركن العلوي الأيسر.</Ar>
+</Callout>
+
+## A first example: erosion
+
+<Ar>مثال أول: التآكل</Ar>
+
+In slide 4 a 3×3 element of 1s is centred on every pixel in turn, and the output is 1 **only if all nine pixels under it are 1**. Boundary pixels fail this test, so the shape loses its outer layer and parts thinner than three pixels vanish.
+
+<Ar>في الشريحة 4 يُوضع عنصر 3×3 من الآحاد على كل بكسل بالتتابع، ويكون الخرج 1 **فقط إذا كانت البكسلات التسعة تحته كلها 1**. وتفشل بكسلات الحدود في هذا الاختبار، فيفقد الشكل طبقته الخارجية وتختفي الأجزاء التي يقل سمكها عن ثلاثة بكسلات.</Ar>
+
+<SlideFigure page={4} caption="Erosion of a binary shape by a 3×3 structuring element of 1s, also written as the set of its nine offsets from (−1, −1) to (1, 1)." captionAr="تآكل شكل ثنائي بعنصر بنائي 3×3 من الآحاد، يُكتب أيضًا مجموعةً من إزاحاته التسع من (−1, −1) إلى (1, 1)." />
+
+Slides 5–12 step through the same idea in 1-D with the element `1 1 1`, origin in the middle:
+
+<Ar>وتتتبّع الشرائح 5–12 الفكرة نفسها في بُعد واحد بالعنصر `1 1 1`، ونقطة أصله في الوسط:</Ar>
+
+| Position <Ar>الموضع</Ar> | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Input <Ar>الدخل</Ar> | 1 | 0 | 0 | 0 | 1 | 1 | 1 | 0 | 1 | 1 |
+| Erosion <Ar>التآكل</Ar> | – | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | – |
+
+Only at position 6 are all three pixels under the element 1, so the element **fits** and a 1 is written under its origin. The ends are left empty because the element sticks out of the image there.
+
+<Ar>لا تكون البكسلات الثلاثة تحت العنصر كلها 1 إلا عند الموضع 6، فيتسع (fits) العنصر هناك ويُكتب 1 تحت نقطة أصله. ويُترك الطرفان فارغين لأن العنصر يبرز خارج الصورة عندهما.</Ar>
+
+## Structuring elements
+
+<Ar>العناصر البنائية</Ar>
+
+<Definition term="Structuring element (kernel)" termAr="العنصر البنائي (structuring element)">
+  A small binary pattern with a marked <strong>origin</strong>, moved over the image to probe it. Its shape and size decide what an operation keeps or removes.
+
+  <Ar>نمط ثنائي صغير ذو <strong>نقطة أصل (origin)</strong> محددة، يُحرَّك فوق الصورة لسبرها. ويحدد شكله وحجمه ما تُبقيه العملية وما تزيله.</Ar>
+</Definition>
+
+- **Size and shape vary**: a 3×3 **box**, a **disc** (the 3×3 cross is the smallest one), lines, rectangles.
+  <Ar>**يختلف الحجم والشكل**: **مربع (box)** 3×3، و**قرص (disc)** (والصليب 3×3 أصغرها)، وخطوط، ومستطيلات.</Ar>
+- **Values** are 1, 0 or empty; empty cells are **don't cares**. Erosion, dilation, opening and closing use 1s only; 0s are needed for hit-and-miss and thinning.
+  <Ar>**القيم** هي 1 أو 0 أو فراغ، والخانات الفارغة خانات **لا يهم (don't care)**. ويستخدم التآكل والتمدد والفتح والإغلاق الآحاد فقط، أما الأصفار فتلزم للإصابة والإخفاق وللترقيق.</Ar>
+- The **origin** (circled) is where the result is written; usually the centre, but not necessarily. As a set, the element lists its 1-cells' offsets from the origin; the 3×3 box is:
+  <Ar>**نقطة الأصل** (المحاطة بدائرة) هي حيث تُكتب النتيجة، وهي المركز عادةً لا بالضرورة. والعنصر بوصفه مجموعة هو قائمة إزاحات خانات الآحاد عن نقطة الأصل؛ فالمربع 3×3 هو:</Ar>
+
+$$
+B = \{(-1,-1),\ (0,-1),\ (1,-1),\ (-1,0),\ (0,0),\ (1,0),\ (-1,1),\ (0,1),\ (1,1)\}
+$$
+
+<SlideFigure page={14} caption="Structuring elements: a 3×3 box, a 3×3 disc (cross), a 7×7 disc, and elements with 0s and empty don't-care cells. The circled cell is the origin." captionAr="عناصر بنائية: مربع 3×3، وقرص 3×3 (صليب)، وقرص 7×7، وعناصر فيها أصفار وخانات فارغة لا تهم قيمتها. والخانة المحاطة بدائرة هي نقطة الأصل." />
+
+## Erosion and dilation
+
+<Ar>التآكل والتمدد</Ar>
+
+These are the two **basic** operations, and they are **dual**: erosion shrinks the foreground and enlarges the background, dilation does the opposite. Their definitions use **translation** $(B)_z$ (origin moved to pixel $z$), **reflection** $\hat{B}$ (rotation by 180°) and the **complement** $A^c$:
+
+<Ar>هاتان هما العمليتان **الأساسيتان**، وهما **ثنائيتان (dual)**: فالتآكل يقلّص المقدمة ويوسّع الخلفية، والتمدد يفعل العكس. وتستخدم تعريفاتهما **الإزاحة (translation)** $(B)_z$ (نقل نقطة الأصل إلى البكسل $z$)، و**الانعكاس (reflection)** $\hat{B}$ (تدوير 180°)، و**المتمِّم (complement)** $A^c$:</Ar>
+
+$$
+(B)_z = \{\, b + z \mid b \in B \,\} \qquad \hat{B} = \{\, -b \mid b \in B \,\} \qquad A^c = \{\, z \mid z \notin A \,\}
+$$
+
+### Erosion
+
+<Ar>التآكل</Ar>
+
+<Definition term="Erosion" termAr="التآكل (Erosion)">
+  The set of positions where the element <strong>fits into</strong> the foreground: placed at $z$, every 1 of it lies on a foreground pixel.
+
+  <Ar>مجموعة المواضع التي <strong>يتسع فيها</strong> العنصر داخل المقدمة: أي إذا وُضع عند $z$ وقعت كل خانة 1 منه على بكسل من المقدمة.</Ar>
+</Definition>
+
+$$
+A \ominus B = \{\, z \mid (B)_z \subseteq A \,\}
+$$
+
+Erosion is simple **pattern matching**: it strips a layer from every boundary, deletes objects smaller than the element and breaks thin connections.
+
+<Ar>التآكل **مطابقة أنماط (pattern matching)** بسيطة: يزيل طبقة من كل حدّ، ويحذف الكائنات الأصغر من العنصر، ويقطع الوصلات الرفيعة.</Ar>
+
+In slide 17 the white square is the foreground: erosion shrinks it and enlarges its black hole, so the image gets **darker**. Labelled the other way (white = 0, black = 1), the same change is a **dilation** of the black pixels. This is the duality:
+
+<Ar>في الشريحة 17 المربع الأبيض هو المقدمة: يقلّصه التآكل ويوسّع ثقبه الأسود، فتصبح الصورة **أغمق**. وبعكس التسمية (الأبيض = 0، والأسود = 1) يكون التغيير نفسه **تمددًا** للبكسلات السوداء. هذه هي الثنائية (duality):</Ar>
+
+$$
+(A \ominus B)^c = A^c \oplus \hat{B}
+$$
+
+<SlideFigure page={17} caption="Eroding a white square with a black hole: the square shrinks, the hole grows and the image gets darker; with white = 0 and black = 1 this is a dilation of the black region." captionAr="تآكل مربع أبيض فيه ثقب أسود: يتقلص المربع ويكبر الثقب وتصبح الصورة أغمق؛ وباعتبار الأبيض = 0 والأسود = 1 يكون هذا تمددًا للمنطقة السوداء." />
+
+### Dilation
+
+<Ar>التمدد</Ar>
+
+<Definition term="Dilation" termAr="التمدد (Dilation)">
+  The set of positions where the element <strong>touches</strong> the foreground: placed at $z$, at least one 1 of it lies on a foreground pixel.
+
+  <Ar>مجموعة المواضع التي <strong>يلامس فيها</strong> العنصر المقدمة: أي إذا وُضع عند $z$ وقعت خانة 1 واحدة منه على الأقل على بكسل من المقدمة.</Ar>
+</Definition>
+
+$$
+A \oplus B = \{\, z \mid (\hat{B})_z \cap A \neq \emptyset \,\} = \bigcup_{b \in B} (A)_b
+$$
+
+The union form means: **stamp a copy of the element on every foreground pixel**. For symmetric elements $\hat{B} = B$, giving the course book's $A \oplus B = \{ z \mid (B)_z \cap A \neq \emptyset \}$. In 1-D (slides 24–31):
+
+<Ar>وصيغة الاتحاد تعني: **اطبع نسخة من العنصر على كل بكسل من المقدمة**. وفي العناصر المتماثلة (symmetric) يكون $\hat{B} = B$، فنحصل على صيغة كتاب المقرر $A \oplus B = \{ z \mid (B)_z \cap A \neq \emptyset \}$. وفي بُعد واحد (الشرائح 24–31):</Ar>
+
+| Position <Ar>الموضع</Ar> | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Input <Ar>الدخل</Ar> | 1 | 0 | 0 | 0 | 1 | 1 | 1 | 0 | 1 | 1 |
+| Dilation <Ar>التمدد</Ar> | – | 1 | 0 | 1 | 1 | 1 | 1 | 1 | 1 | – |
+
+Only position 3, whose neighbourhood is `0 0 0`, stays 0: the single 0 at position 8 is filled and the run of three 0s shrinks to one.
+
+<Ar>لا يبقى 0 إلا الموضع 3، الذي جواره `0 0 0`: فقد مُلئ الصفر المنفرد عند الموضع 8، وتقلّصت سلسلة الأصفار الثلاثة إلى صفر واحد.</Ar>
+
+### Worked example: a 7×7 image
+
+<Ar>مثال محلول: صورة 7×7</Ar>
+
+$A$ is a 3×3 block and a one-pixel-wide line, one pixel apart; $B$ is the 3×3 box. Pixels outside the grid count as 0.
+
+<Ar>الصورة $A$ كتلة 3×3 وخط عرضه بكسل واحد، تفصل بينهما مسافة بكسل واحد؛ و $B$ هو المربع 3×3. وتُعدّ البكسلات خارج الشبكة أصفارًا.</Ar>
+
+```text title="A, B ([ ] = origin), the erosion A ⊖ B and the dilation A ⊕ B"
+A                    B              A ⊖ B                A ⊕ B
+0 0 0 0 0 0 0        1  1  1        0 0 0 0 0 0 0        1 1 1 1 1 0 0
+0 1 1 1 0 0 0        1 [1] 1        0 0 0 0 0 0 0        1 1 1 1 1 1 1
+0 1 1 1 0 1 0        1  1  1        0 0 1 0 0 0 0        1 1 1 1 1 1 1
+0 1 1 1 0 1 0                       0 0 0 0 0 0 0        1 1 1 1 1 1 1
+0 0 0 0 0 1 0                       0 0 0 0 0 0 0        1 1 1 1 1 1 1
+0 0 0 0 0 0 0                       0 0 0 0 0 0 0        0 0 0 0 1 1 1
+0 0 0 0 0 0 0                       0 0 0 0 0 0 0        0 0 0 0 0 0 0
+```
+
+- **Erosion:** only the block's centre (row 3, column 3) has a fully foreground 3×3 neighbourhood; the line is too thin and vanishes. 12 pixels become 1.
+  <Ar>**التآكل:** لا يملك جوارًا 3×3 كله من المقدمة إلا مركز الكتلة (الصف 3، العمود 3)؛ أما الخط فرفيع جدًا فيختفي. فتصبح البكسلات الاثنا عشر بكسلًا واحدًا.</Ar>
+- **Dilation:** the block grows to 5×5, the line to three pixels wide, and the gap is bridged, so the two objects merge. 12 pixels become 36.
+  <Ar>**التمدد:** تكبر الكتلة إلى 5×5، ويصبح عرض الخط ثلاثة بكسلات، وتُسدّ الفجوة فيندمج الكائنان. فتصبح البكسلات الاثنا عشر 36 بكسلًا.</Ar>
+
+### Shape, origin and size of the element
+
+<Ar>شكل العنصر ونقطة أصله وحجمه</Ar>
+
+<SlideFigure page={37} caption="A square dilated and eroded by a 2×2 square, a vertical pair, a horizontal pair, a cross and a diagonal pair (dot = origin). Dark gray: added pixels; light gray: removed pixels." captionAr="مربع بعد تمدده وتآكله بمربع 2×2، وزوج رأسي، وزوج أفقي، وصليب، وزوج قطري (النقطة = نقطة الأصل). الرمادي الداكن: بكسلات مضافة؛ والفاتح: بكسلات مزالة." />
+
+The **shape** sets the directions of change and the **origin** sets where the result lands: the 2×2 element of slide 37 has its origin at the bottom-left, so dilation adds a row on top and a column on the right, and erosion removes them. A larger element acts more strongly: a 5×5 box erodes two layers instead of one.
+
+<Ar>يحدد **الشكل** اتجاهات التغير، وتحدد **نقطة الأصل** موضع النتيجة: فنقطة أصل العنصر 2×2 في الشريحة 37 في ركنه السفلي الأيسر، ولذا يضيف التمدد صفًا في الأعلى وعمودًا على اليمين، ويزيلهما التآكل. وكلما كبر العنصر قوي تأثيره: فالمربع 5×5 يزيل طبقتين بدل طبقة.</Ar>
+
+| Property <Ar>الخاصية</Ar> | Erosion $\ominus$ <Ar>التآكل $\ominus$</Ar> | Dilation $\oplus$ <Ar>التمدد $\oplus$</Ar> |
+|---|---|---|
+| Output 1 where the element… <Ar>الخرج 1 حيث العنصر…</Ar> | fits inside the foreground <Ar>يتسع داخل المقدمة</Ar> | touches the foreground <Ar>يلامس المقدمة</Ar> |
+| Objects <Ar>الكائنات</Ar> | shrink; small ones vanish <Ar>تتقلص؛ وتختفي الصغيرة</Ar> | grow; close ones merge <Ar>تكبر؛ وتندمج المتقاربة</Ar> |
+| Holes and thin links <Ar>الثقوب والوصلات الرفيعة</Ar> | holes grow, links break <Ar>تكبر الثقوب وتنقطع الوصلات</Ar> | small holes and gaps fill <Ar>تُملأ الثقوب والفجوات الصغيرة</Ar> |
+| Gray-value version <Ar>النسخة الرمادية</Ar> | minimum filter: darker <Ar>مرشح الأدنى (min): أغمق</Ar> | maximum filter: lighter <Ar>مرشح الأقصى (max): أفتح</Ar> |
+
+### Gray-value images
+
+<Ar>الصور الرمادية</Ar>
+
+Cut a gray image at every level $k$ into a binary image ($1$ where $f(x,y) \ge k$), erode each slice and stack them back: with a flat element this equals a **minimum filter**, and dilation a **maximum filter** (the course book also gives the non-flat form, which subtracts or adds $b(s,t)$):
+
+<Ar>اقطع الصورة الرمادية عند كل مستوى $k$ إلى صورة ثنائية (قيمتها 1 حيث $f(x,y) \ge k$)، ثم طبّق التآكل على كل شريحة وأعد تكديسها: مع عنصر مسطّح (flat) يساوي ذلك **مرشح الأدنى (min filter)**، ويساوي التمدد **مرشح الأقصى (max filter)** (ويعطي كتاب المقرر أيضًا الصيغة غير المسطحة التي تطرح $b(s,t)$ أو تضيفها):</Ar>
+
+$$
+(f \ominus b)(x,y) = \min_{(s,t) \in b} f(x+s,\, y+t) \qquad\qquad (f \oplus b)(x,y) = \max_{(s,t) \in b} f(x-s,\, y-t)
+$$
+
+| Position <Ar>الموضع</Ar> | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
+|---|---|---|---|---|---|---|---|---|---|
+| Input $f$ <Ar>الدخل $f$</Ar> | 50 | 50 | 90 | 50 | 50 | 10 | 50 | 50 | 50 |
+| Erosion, min of 3 <Ar>التآكل، أدنى 3 قيم</Ar> | 50 | 50 | 50 | 50 | 10 | 10 | 10 | 50 | 50 |
+| Dilation, max of 3 <Ar>التمدد، أقصى 3 قيم</Ar> | 50 | 90 | 90 | 90 | 50 | 50 | 50 | 50 | 50 |
+
+- **Erosion darkens** (slides 18–19): the minimum over a neighbourhood that includes the pixel itself can never be brighter; bright details narrower than the element (the 90) vanish and dark ones (the 10) widen.
+  <Ar>**التآكل يُعتم** (الشريحتان 18–19): فأدنى قيمة في جوار يضم البكسل نفسه لا يمكن أن تكون أسطع منه، وتختفي التفاصيل الساطعة الأضيق من العنصر (القيمة 90) وتتسع الداكنة (القيمة 10).</Ar>
+- **Dilation lightens and evens out** (slides 32–34): bright regions spread and dark specks, cracks and texture narrower than the element are filled (the 10 vanishes), leaving flat plateaus of nearly constant intensity.
+  <Ar>**التمدد يفتّح ويجانس** (الشرائح 32–34): تنتشر المناطق الساطعة، وتُملأ النقاط والشقوق والنسيج الداكن الأضيق من العنصر (فتختفي القيمة 10)، فتبقى هضاب مستوية ذات شدة (intensity) شبه ثابتة.</Ar>
+
+<SlideFigure page={19} caption="Gray-value erosion: every pixel takes the darkest value in its neighbourhood, so the image gets darker and the bright bulb shrinks." captionAr="التآكل الرمادي: يأخذ كل بكسل أغمق قيمة في جواره، فتصبح الصورة أغمق ويتقلص المصباح الساطع." />
+
+### Edge detection
+
+<Ar>كشف الحواف</Ar>
+
+Slide 35: dilate the input, subtract the input from the dilated image, and only the edges remain.
+
+<Ar>الشريحة 35: طبّق التمدد على الصورة، ثم اطرح الصورة الأصلية من الصورة المتمددة، فلا يبقى إلا الحواف (edges).</Ar>
+
+<SlideFigure page={35} caption="Edge detection: the input, its dilation and their difference, a thin outline of the square plus a ring where the hole shrank." captionAr="كشف الحواف: الصورة، وتمددها، والفرق بينهما، وهو إطار رفيع للمربع مع حلقة حيث تقلّص الثقب." />
+
+$$
+\text{outer} = (A \oplus B) - A \qquad \text{inner} = A - (A \ominus B) \qquad \text{gradient} = (A \oplus B) - (A \ominus B)
+$$
+
+With a 3×3 element the outer and inner boundaries are one pixel wide. Dilation minus erosion is the **morphological gradient**; on gray images it is the local maximum minus the local minimum, large exactly at edges.
+
+<Ar>مع عنصر 3×3 يكون عرض الحد الخارجي والحد الداخلي بكسلًا واحدًا. والتمدد ناقص التآكل هو **التدرج المورفولوجي (morphological gradient)**؛ وفي الصور الرمادية يساوي القيمة القصوى المحلية ناقص الدنيا المحلية، فيكون كبيرًا عند الحواف تحديدًا.</Ar>
+
+### Counting coins
+
+<Ar>عدّ العملات المعدنية</Ar>
+
+Touching coins form one object, so counting them is hard (slide 20). **Binarize** the photo, **erode** with an element wider than the necks where coins touch so every coin becomes a separate blob, then **count** the connected components (`bwlabel` in MATLAB). Erosion shrinks the coins but keeps their number.
+
+<Ar>العملات المتلامسة تشكّل كائنًا واحدًا، فيصعب عدّها (الشريحة 20). **حوّل الصورة إلى صورة ثنائية (binarization)**، ثم **طبّق التآكل** بعنصر أعرض من الأعناق التي تتلامس عندها العملات فتصبح كل عملة كتلة (blob) مستقلة، ثم **عُدّ** المكوّنات المتصلة (connected components) (`bwlabel` في MATLAB). فالتآكل يقلّص العملات لكنه يحافظ على عددها.</Ar>
+
+<SlideFigure page={20} caption="Counting coins: the gray image, the thresholded image with merged coins, and the eroded image in which every coin is a separate blob." captionAr="عدّ العملات: الصورة الرمادية، والصورة بعد التقطيع بالعتبة حيث تندمج العملات، والصورة بعد التآكل حيث تصبح كل عملة كتلة مستقلة." />
+
+## Opening and closing
+
+<Ar>الفتح والإغلاق</Ar>
+
+Both apply erosion and dilation one after the other with the **same structuring element**. They are mostly used on binary images, have gray-value versions, and are dual.
+
+<Ar>كلاهما يطبّق التآكل والتمدد أحدهما تلو الآخر **بالعنصر البنائي نفسه**. ويُستخدمان غالبًا على الصور الثنائية، ولهما نسخ رمادية، وهما ثنائيان (dual).</Ar>
+
+### Opening
+
+<Ar>الفتح</Ar>
+
+<Definition term="Opening" termAr="الفتح (Opening)">
+  An <strong>erosion followed by a dilation</strong> with the same element.
+
+  <Ar><strong>تآكل يليه تمدد</strong> بالعنصر نفسه.</Ar>
+</Definition>
+
+$$
+A \circ B = (A \ominus B) \oplus B = \bigcup \{\, (B)_z \mid (B)_z \subseteq A \,\}
+$$
+
+**Slide the element around inside each foreground region** (slide 43): every pixel it can cover while lying entirely inside is kept, and every foreground pixel it cannot reach without lapping over the edge is removed. Opening is **similar to erosion** (it removes spots, noise, thin lines and protrusions) but **less destructive**, since what survives is grown back. It is **idempotent**: $(A \circ B) \circ B = A \circ B$. In the 7×7 example it restores the block exactly and removes the line:
+
+<Ar>**حرّك العنصر داخل كل منطقة من المقدمة** (الشريحة 43): فيُبقى كل بكسل يستطيع تغطيته وهو داخلها بالكامل، ويُزال كل بكسل من المقدمة لا يبلغه دون أن يتجاوز الحافة. فالفتح **يشبه التآكل** (يزيل النقاط والضوضاء والخطوط الرفيعة والنتوءات) لكنه **أقل تدميرًا**، لأن ما ينجو يُعاد إلى حجمه. وهو **متساوي القوى (idempotent)**: $(A \circ B) \circ B = A \circ B$. وفي مثال الصورة 7×7 يعيد الكتلة كما هي ويزيل الخط:</Ar>
+
+```text title="Opening A ∘ B"
+0 0 0 0 0 0 0
+0 1 1 1 0 0 0
+0 1 1 1 0 0 0
+0 1 1 1 0 0 0
+0 0 0 0 0 0 0
+0 0 0 0 0 0 0
+0 0 0 0 0 0 0
+```
+
+- **Disc, 11 pixels in diameter** (slides 45, 48): the disc cannot fit inside lines or small specks, so they vanish, while circles and large cells survive and can be counted.
+  <Ar>**قرص قطره 11 بكسلًا** (الشريحتان 45 و48): لا يتسع القرص داخل الخطوط أو النقاط الصغيرة فتختفي، بينما تنجو الدوائر والخلايا الكبيرة ويمكن عدّها.</Ar>
+- **3×9 and 9×3 bars** (slide 46): a vertical bar (3 wide, 9 tall) keeps only vertical lines, a horizontal one only horizontal lines.
+  <Ar>**قضيبا 3×9 و9×3** (الشريحة 46): القضيب الرأسي (عرضه 3 وارتفاعه 9) لا يُبقي إلا الخطوط الرأسية، والأفقي لا يُبقي إلا الأفقية.</Ar>
+- **Gray-value opening**, 5×5 square (slide 47): bright details smaller than the element (hair, whiskers) lose intensity, large bright areas (the nose) keep theirs.
+  <Ar>**الفتح الرمادي** بمربع 5×5 (الشريحة 47): تفقد التفاصيل الساطعة الأصغر من العنصر (الشعر والشوارب) شدتها، وتحتفظ المناطق الساطعة الكبيرة (الأنف) بشدتها.</Ar>
+
+<SlideFigure page={45} caption="Opening with an 11-pixel disc removes the lines and keeps the circles." captionAr="الفتح بقرص قطره 11 بكسلًا يزيل الخطوط ويُبقي الدوائر." />
+
+<SlideFigure page={46} caption="Opening with a vertical 3×9 and a horizontal 9×3 bar separates vertical and horizontal lines; small artefacts remain where diagonals cross horizontal lines." captionAr="الفتح بقضيب رأسي 3×9 وقضيب أفقي 9×3 يفصل الخطوط الرأسية عن الأفقية؛ وتبقى شوائب صغيرة حيث تتقاطع الخطوط القطرية مع الأفقية." />
+
+### Closing
+
+<Ar>الإغلاق</Ar>
+
+<Definition term="Closing" termAr="الإغلاق (Closing)">
+  A <strong>dilation followed by an erosion</strong> with the same element.
+
+  <Ar><strong>تمدد يليه تآكل</strong> بالعنصر نفسه.</Ar>
+</Definition>
+
+$$
+A \bullet B = (A \oplus B) \ominus B
+$$
+
+Now **slide the element around outside each region**, in the background (slide 51): background pixels it can cover while lying entirely in the background stay background; those it cannot reach without lapping over an object become foreground. Closing is **similar to dilation** (it removes holes, fills gaps and dark cracks) but changes the outer boundary far less, and it is idempotent too. In the 7×7 example it fills the two gap pixels (rows 3–4, column 5), joining the objects, and changes nothing else:
+
+<Ar>هنا **حرّك العنصر خارج كل منطقة**، أي في الخلفية (الشريحة 51): تبقى خلفيةً البكسلاتُ التي يستطيع تغطيتها وهو في الخلفية بالكامل، وتصبح من المقدمة تلك التي لا يبلغها دون أن يتجاوز حافة كائن. فالإغلاق **يشبه التمدد** (يزيل الثقوب ويملأ الفجوات والشقوق الداكنة) لكنه يغيّر الحدود الخارجية أقل كثيرًا، وهو متساوي القوى أيضًا. وفي مثال الصورة 7×7 يملأ بكسلَي الفجوة (الصفان 3–4، العمود 5) فيصل الكائنين، ولا يغيّر شيئًا آخر:</Ar>
+
+```text title="Closing A • B"
+0 0 0 0 0 0 0
+0 1 1 1 0 0 0
+0 1 1 1 1 1 0
+0 1 1 1 1 1 0
+0 0 0 0 0 1 0
+0 0 0 0 0 0 0
+0 0 0 0 0 0 0
+```
+
+- **22-pixel disc** (slide 53): holes smaller than the disc are filled, larger ones remain.
+  <Ar>**قرص 22 بكسلًا** (الشريحة 53): تُملأ الثقوب الأصغر من القرص وتبقى الأكبر.</Ar>
+- **Thresholded receiver** (slides 54–55): closing with a disc of size 20 fills the shiny parts that thresholding lost, and the **skeleton** of the closed shape is one clean curve instead of a tangle of loops and spurs.
+  <Ar>**سماعة هاتف بعد التقطيع بالعتبة** (الشريحتان 54–55): يملأ الإغلاق بقرص حجمه 20 الأجزاء اللامعة التي أضاعها التقطيع، فيصبح **الهيكل العظمي (skeleton)** للشكل المغلق منحنى واحدًا نظيفًا بدل تشابك من الحلقات والزوائد.</Ar>
+- **Gray-value closing**, 5×5 square (slide 56): dark specks between bright hairs are filled; uniform areas barely change.
+  <Ar>**الإغلاق الرمادي** بمربع 5×5 (الشريحة 56): تُملأ النقاط الداكنة بين الشعيرات الساطعة، ولا تكاد المناطق المتجانسة تتغير.</Ar>
+
+<SlideFigure page={53} caption="Closing with a 22-pixel disc fills the holes smaller than the disc." captionAr="الإغلاق بقرص 22 بكسلًا يملأ الثقوب الأصغر من القرص." />
+
+### Duality and comparison
+
+<Ar>الثنائية والمقارنة</Ar>
+
+Opening the foreground is equivalent to closing the background with the same element (slide 57), so opening removes small **white** details and closing small **black** ones:
+
+<Ar>فتح المقدمة يكافئ إغلاق الخلفية بالعنصر نفسه (الشريحة 57)، ولذا يزيل الفتح التفاصيل **البيضاء** الصغيرة ويزيل الإغلاق **السوداء** الصغيرة:</Ar>
+
+$$
+(A \circ B)^c = A^c \bullet \hat{B} \qquad\qquad A \ominus B \;\subseteq\; A \circ B \;\subseteq\; A \;\subseteq\; A \bullet B \;\subseteq\; A \oplus B
+$$
+
+| Property <Ar>الخاصية</Ar> | Opening $\circ$ <Ar>الفتح $\circ$</Ar> | Closing $\bullet$ <Ar>الإغلاق $\bullet$</Ar> |
+|---|---|---|
+| Order <Ar>الترتيب</Ar> | erosion, then dilation <Ar>تآكل ثم تمدد</Ar> | dilation, then erosion <Ar>تمدد ثم تآكل</Ar> |
+| Similar to <Ar>يشبه</Ar> | erosion, less destructive <Ar>التآكل، وأقل تدميرًا</Ar> | dilation, less destructive <Ar>التمدد، وأقل تدميرًا</Ar> |
+| Removes <Ar>يزيل</Ar> | bright spots, thin lines, protrusions <Ar>النقاط الساطعة، والخطوط الرفيعة، والنتوءات</Ar> | holes, narrow gaps, dark cracks <Ar>الثقوب، والفجوات الضيقة، والشقوق الداكنة</Ar> |
+| Result <Ar>النتيجة</Ar> | subset of $A$ <Ar>مجموعة جزئية من $A$</Ar> | superset of $A$ <Ar>مجموعة شاملة لـ $A$</Ar> |
+
+### Application: a fingerprint
+
+<Ar>تطبيق: بصمة إصبع</Ar>
+
+In slide 58 a 3×3 box cleans a noisy fingerprint $A$. The erosion $A \ominus B$ removes the white background specks but breaks some ridges; the dilation completes the opening $A \circ B$. Dilating and eroding again gives the closing $(A \circ B) \bullet B$, which bridges the breaks. **Open to remove white noise, then close to fill black gaps.**
+
+<Ar>في الشريحة 58 ينظّف مربع 3×3 بصمة إصبع مشوّشة $A$. يزيل التآكل $A \ominus B$ النقاط البيضاء في الخلفية لكنه يقطع بعض الخطوط البارزة (ridges)؛ ثم يُكمل التمدد الفتح $A \circ B$. وتطبيق التمدد ثم التآكل مرة أخرى يعطي الإغلاق $(A \circ B) \bullet B$ الذي يسدّ الانقطاعات. **افتح لإزالة الضوضاء البيضاء، ثم أغلق لملء الفجوات السوداء.**</Ar>
+
+<SlideFigure page={58} caption="Fingerprint clean-up with a 3×3 box: the noisy image, its erosion, the opening, the dilated opening and the closing of the opening." captionAr="تنظيف بصمة إصبع بمربع 3×3: الصورة المشوّشة، وتآكلها، والفتح، وتمدد الصورة المفتوحة، ثم إغلاقها." />
+
+## Hit-and-miss transform
+
+<Ar>تحويل الإصابة والإخفاق</Ar>
+
+The hit-and-miss transform looks for a **particular pattern of foreground and background pixels**, a very simple form of object recognition; all other morphological operations can be derived from it. Its element contains **1s, 0s and don't cares**, usually with a 1 at the origin (slide 61).
+
+<Ar>يبحث تحويل الإصابة والإخفاق (hit-and-miss) عن **نمط محدد من بكسلات المقدمة والخلفية**، وهو صورة بسيطة جدًا من التعرف على الكائنات، ويمكن اشتقاق كل العمليات المورفولوجية الأخرى منه. ويحتوي عنصره على **آحاد وأصفار وخانات لا يهم (don't care)**، وغالبًا ما تكون قيمة نقطة الأصل 1 (الشريحة 61).</Ar>
+
+<Definition term="Hit-and-miss transform" termAr="تحويل الإصابة والإخفاق (Hit-and-miss)">
+  If the element's 1s lie exactly on foreground pixels <strong>and</strong> its 0s exactly on background pixels, the pixel under the origin is set to 1; otherwise to 0.
+
+  <Ar>إذا وقعت آحاد العنصر تمامًا على بكسلات من المقدمة <strong>و</strong>وقعت أصفاره تمامًا على بكسلات من الخلفية، جُعل البكسل تحت نقطة الأصل 1؛ وإلا جُعل 0.</Ar>
+</Definition>
+
+$$
+A \circledast B = (A \ominus B_1) \cap (A^c \ominus B_2)
+$$
+
+$B_1$ holds the 1-cells (they must **hit** the foreground) and $B_2$ the 0-cells (they must **miss** it). With no 0s, $B_2 = \emptyset$ and the transform is plain erosion.
+
+<Ar>تضم $B_1$ خانات الآحاد (يجب أن **تصيب** المقدمة)، وتضم $B_2$ خانات الأصفار (يجب أن **تخطئها**). وإذا لم توجد أصفار كانت $B_2 = \emptyset$ وصار التحويل تآكلًا عاديًا.</Ar>
+
+### Corner detection
+
+<Ar>كشف الزوايا</Ar>
+
+The element of slide 61 matches a pixel with foreground above and to the right and background to the left, below and lower-left: a **bottom-left corner**. Its mirror images give the other corners (slide 63); apply all four and **OR** the results (slide 64).
+
+<Ar>يطابق عنصر الشريحة 61 بكسلًا فوقه وعلى يمينه مقدمة، وعلى يساره وتحته وأسفل يساره خلفية: أي **زاوية سفلية يسرى**. وتعطي صوره المنعكسة الزوايا الأخرى (الشريحة 63)؛ فطبّق العناصر الأربعة وادمج النتائج بالعملية **OR** (الشريحة 64)، وهذا هو كشف الزوايا (corner detection).</Ar>
+
+```text title="Corner elements (· = don't care) and an L-shaped test image"
+bottom-left   bottom-right   top-right   top-left      A                 corners
+· 1 ·         · 1 ·          · 0 0       0 0 ·         0 0 0 0 0 0 0     0 0 0 0 0 0 0
+0 1 1         1 1 0          1 1 0       0 1 1         0 1 1 0 0 0 0     0 1 1 0 0 0 0
+0 0 ·         · 0 0          · 1 ·       · 1 ·         0 1 1 0 0 0 0     0 0 0 0 0 0 0
+                                                       0 1 1 1 1 1 0     0 0 0 0 0 1 0
+                                                       0 1 1 1 1 1 0     0 1 0 0 0 1 0
+                                                       0 0 0 0 0 0 0     0 0 0 0 0 0 0
+```
+
+All five convex corners of the L are found. The concave corner where the arms meet is not, because none of the four patterns occurs there.
+
+<Ar>وُجدت الزوايا المحدّبة (convex) الخمس للشكل L كلها. أما الزاوية المقعّرة (concave) حيث يلتقي الذراعان فلم توجد، لأن أيًّا من الأنماط الأربعة لا يظهر هناك.</Ar>
+
+<SlideFigure page={64} caption="Corner detection: the four corner elements are applied and their results combined with OR." captionAr="كشف الزوايا: تُطبَّق عناصر الزوايا الأربعة وتُدمج نتائجها بالعملية OR." />
+
+## Thinning and thickening
+
+<Ar>الترقيق والتثخين</Ar>
+
+**Thinning** removes selected foreground pixels, e.g. to reduce edge-detector lines that are thicker than one pixel to **one pixel width** (slides 66–67):
+
+<Ar>يزيل **الترقيق (thinning)** بكسلات مختارة من المقدمة، مثلًا لتقليص خطوط كاشف الحواف الأسمك من بكسل إلى **عرض بكسل واحد** (الشريحتان 66–67):</Ar>
+
+$$
+\text{thin}(I, K) = I - \text{HitAndMiss}(I, K) \qquad\text{i.e.}\qquad A \otimes B = A - (A \circledast B), \quad 0 - 1 = 0
+$$
+
+Where the element matches exactly, the pixel at its origin is set to **0**; the element's origin value must be **1 or don't care**, otherwise nothing could ever be removed. In practice the two elements of slide 68 are applied in turn together with their 90° rotations, repeating until nothing changes; each shape shrinks to one-pixel-wide lines near its **skeleton**. K1 removes top-edge pixels and K2 top-right corner pixels, but only where foreground continues behind them, so lines are not cut.
+
+<Ar>حيثما طابق العنصر تمامًا يُجعل البكسل عند نقطة أصله **0**؛ ويجب أن تكون قيمة نقطة الأصل **1 أو لا يهم**، وإلا لما أمكن إزالة أي شيء. وعمليًا يُطبَّق عنصرا الشريحة 68 أدناه بالتناوب مع تدويراتهما بزاوية 90°، مع التكرار حتى يتوقف التغير؛ فيتقلص كل شكل إلى خطوط عرضها بكسل واحد قريبة من **هيكله العظمي (skeleton)**. ويزيل K1 بكسلات الحافة العلوية، ويزيل K2 بكسلات الزاوية العلوية اليمنى، لكن فقط حيث تستمر المقدمة خلفها، فلا تنقطع الخطوط.</Ar>
+
+**Thickening** grows selected foreground regions, e.g. to approximate the **convex hull** (slides 70–71):
+
+<Ar>ويُنمي **التثخين (thickening)** مناطق مختارة من المقدمة، مثلًا لتقريب **الغلاف المحدّب (convex hull)** (الشريحتان 70–71):</Ar>
+
+$$
+\text{thicken}(I, K) = I + \text{HitAndMiss}(I, K) \qquad\text{i.e.}\qquad A \odot B = A \cup (A \circledast B), \quad 1 + 1 = 1
+$$
+
+Here a matched pixel is set to **1**, and the origin value must be **0 or don't care**. Repeated with rotations, the slide 72 elements fill the concave notches, so each cross becomes a convex blob. The two are dual: thickening the foreground is the complement of thinning the background with the element's 0s and 1s swapped.
+
+<Ar>وهنا يُجعل البكسل المطابِق **1**، ويجب أن تكون قيمة نقطة الأصل **0 أو لا يهم**. ومع التكرار والتدوير تملأ عناصر الشريحة 72 التجاويف المقعّرة، فيصبح كل صليب كتلة محدّبة. والعمليتان ثنائيتان: فتثخين المقدمة هو متمِّم (complement) ترقيق الخلفية بعد تبديل أصفار العنصر بآحاده.</Ar>
+
+```text title="Thinning elements (slide 68) and thickening elements (slide 72), · = don't care"
+thin K1     thin K2         thicken K1     thicken K2
+0 0 0       · 0 0           1 1 ·          · 1 1
+· 1 ·       1 1 0           1 0 ·          · 0 1
+1 1 1       · 1 ·           1 · 0          0 · 1
+```
+
+<SlideFigure page={68} caption="Thinning with two hit-and-miss elements and their rotations reduces the shape to one-pixel-wide lines." captionAr="الترقيق بعنصرين لتحويل الإصابة والإخفاق مع تدويراتهما يقلّص الشكل إلى خطوط عرضها بكسل واحد." />
+
+<SlideFigure page={72} caption="Thickening crosses until nothing changes: each becomes a convex blob approximating its convex hull." captionAr="تثخين الصلبان حتى يتوقف التغير: يصبح كل صليب كتلة محدّبة تقارب غلافه المحدّب." />
+
+## In code
+
+<Ar>في الشيفرة</Ar>
+
+The slides ask you to verify the operations in MATLAB; SciPy reproduces the worked examples of this page exactly.
+
+<Ar>تطلب الشرائح التحقق من العمليات في MATLAB؛ وتعيد مكتبة SciPy إنتاج الأمثلة المحلولة في هذه الصفحة بدقة.</Ar>
+
+```matlab title="morphology.m"
+BW = imread('circles.png');              % a binary image
+se = strel('square', 3);                 % also strel('disk', 5, 0) = 11-pixel disc,
+                                         % strel('rectangle', [9 3]) = vertical 3x9 bar
+er = imerode(BW, se);   di = imdilate(BW, se);
+op = imopen(BW, se);    cl = imclose(BW, se);
+grad = di & ~er;                         % morphological gradient
+[~, n] = bwlabel(imerode(BW, strel('disk', 3, 0)));   % count separated objects
+
+Ie = imerode(imread('cameraman.tif'), strel('square', 5));   % gray: minimum filter
+
+interval = [0 1 0; -1 1 1; -1 -1 0];     % 1 = fg, -1 = bg, 0 = don't care
+corners = bwhitmiss(BW, interval) | bwhitmiss(BW, fliplr(interval)) | ...
+          bwhitmiss(BW, flipud(interval)) | bwhitmiss(BW, rot90(interval, 2));
+thin = bwmorph(BW, 'thin', Inf);   thick = bwmorph(BW, 'thicken', Inf);
+```
+
+```python title="morphology.py"
+import numpy as np
+from scipy import ndimage as ndi
+
+A = np.array([[0, 0, 0, 0, 0, 0, 0],
+              [0, 1, 1, 1, 0, 0, 0],
+              [0, 1, 1, 1, 0, 1, 0],
+              [0, 1, 1, 1, 0, 1, 0],
+              [0, 0, 0, 0, 0, 1, 0],
+              [0, 0, 0, 0, 0, 0, 0],
+              [0, 0, 0, 0, 0, 0, 0]], dtype=bool)   # the 7x7 worked example
+B = np.ones((3, 3), dtype=bool)
+
+eroded, dilated = ndi.binary_erosion(A, B), ndi.binary_dilation(A, B)
+opened, closed = ndi.binary_opening(A, B), ndi.binary_closing(A, B)
+
+f = np.array([50, 50, 90, 50, 50, 10, 50, 50, 50])
+print(ndi.grey_erosion(f, size=3))    # [50 50 50 50 10 10 10 50 50]
+print(ndi.grey_dilation(f, size=3))   # [50 90 90 90 50 50 50 50 50]
+```
+
+<Callout type="warning" title="Pixels outside the image" titleAr="البكسلات خارج الصورة">
+  SciPy treats outside pixels as 0, as the hand calculations do. MATLAB's <code>imerode</code> and OpenCV's <code>erode</code> treat them as foreground, so a closing near the border can differ; pad with 0s first if objects come close to the border.
+
+  <Ar>تعامل SciPy البكسلات الخارجية على أنها أصفار، كما في الحسابات اليدوية. أما <code>imerode</code> في MATLAB و<code>erode</code> في OpenCV فتعاملانها على أنها من المقدمة، فقد تختلف نتيجة الإغلاق قرب الحدود؛ فاحشُ الصورة بالأصفار (padding) أولًا إذا اقتربت الكائنات من الحدود.</Ar>
+</Callout>
+
+<Takeaways>
+
+- A **structuring element** is a small pattern with an **origin**; its size and shape decide what is kept or removed.
+  <Ar>**العنصر البنائي (structuring element)** نمط صغير له **نقطة أصل (origin)**؛ ويحدد حجمه وشكله ما يُبقى وما يُزال.</Ar>
+- **Erosion** $A \ominus B$ is 1 where the element **fits** (objects shrink); **dilation** $A \oplus B$ is 1 where it **touches** (objects grow, holes fill). They are **dual**.
+  <Ar>**التآكل (erosion)** $A \ominus B$ قيمته 1 حيث **يتسع** العنصر (تتقلص الكائنات)؛ و**التمدد (dilation)** $A \oplus B$ قيمته 1 حيث **يلامس** (تكبر الكائنات وتُملأ الثقوب). وهما **ثنائيان (dual)**.</Ar>
+- On gray images erosion is a **minimum** filter (darker), dilation a **maximum** filter (lighter, more uniform); their difference marks edges.
+  <Ar>في الصور الرمادية يكون التآكل مرشح **أدنى** (أغمق)، والتمدد مرشح **أقصى** (أفتح وأكثر تجانسًا)؛ والفرق بينهما يعلّم الحواف.</Ar>
+- **Opening** (erode, then dilate) removes small bright details; **closing** (dilate, then erode) fills small holes and gaps. Both are idempotent and dual.
+  <Ar>**الفتح (opening)** (تآكل ثم تمدد) يزيل التفاصيل الساطعة الصغيرة؛ و**الإغلاق (closing)** (تمدد ثم تآكل) يملأ الثقوب والفجوات الصغيرة. وكلاهما متساوي القوى (idempotent)، وهما ثنائيان.</Ar>
+- **Hit-and-miss** matches 1s to foreground and 0s to background (e.g. corners); **thinning** subtracts its result, **thickening** adds it.
+  <Ar>**الإصابة والإخفاق (hit-and-miss)** يطابق الآحاد مع المقدمة والأصفار مع الخلفية (كما في الزوايا)؛ و**الترقيق (thinning)** يطرح نتيجته، و**التثخين (thickening)** يضيفها.</Ar>
+
+</Takeaways>
+
+## Practice
+
+<Ar>تدريب</Ar>
+
+<Exercise title="The four operations in 1-D" titleAr="العمليات الأربع في بُعد واحد" level="easy">
+
+With the element `1 1 1` (origin in the middle) and outside pixels taken as 0, compute the erosion, dilation, opening and closing of `0 1 1 1 0 1 0 1 1 1 1 0 0 0`.
+
+<Ar>باستخدام العنصر `1 1 1` (نقطة أصله في الوسط) ومع اعتبار البكسلات الخارجية أصفارًا، احسب التآكل والتمدد والفتح والإغلاق للصف `0 1 1 1 0 1 0 1 1 1 1 0 0 0`.</Ar>
+
+<Solution>
+
+```text
+input     0 1 1 1 0 1 0 1 1 1 1 0 0 0
+erosion   0 0 1 0 0 0 0 0 1 1 0 0 0 0
+dilation  1 1 1 1 1 1 1 1 1 1 1 1 0 0
+opening   0 1 1 1 0 0 0 1 1 1 1 0 0 0
+closing   0 1 1 1 1 1 1 1 1 1 1 0 0 0
+```
+
+Opening removes the isolated 1 at position 6, which is shorter than the element, and restores the two longer runs exactly. Closing fills the single 0s at positions 5 and 7 and leaves the ends unchanged.
+
+<Ar>يزيل الفتح الواحد المنفرد عند الموضع 6 لأنه أقصر من العنصر، ويعيد السلسلتين الأطول كما هما تمامًا. ويملأ الإغلاق الصفرين المنفردين عند الموضعين 5 و7، ويترك الطرفين دون تغيير.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Darker and more uniform" titleAr="أغمق وأكثر تجانسًا" level="medium">
+
+Problems 1–2 of the slides: why do the images of slide 19 get darker under erosion, and why do the intensities in slide 34 become more uniform under dilation?
+
+<Ar>المسألتان 1–2 في الشرائح: لماذا تصبح صور الشريحة 19 أغمق بالتآكل، ولماذا تصبح الشدّات في الشريحة 34 أكثر تجانسًا بالتمدد؟</Ar>
+
+<Solution>
+
+Erosion replaces each pixel by the **minimum** of a neighbourhood that contains the pixel itself, so nothing gets brighter and every pixel near a darker one gets darker. Dilation takes the **maximum**, so dark details narrower than the element are overwritten by their brighter surroundings; local variation disappears and flat plateaus remain.
+
+<Ar>يستبدل التآكل كل بكسل **بأدنى** قيمة في جوار يضم البكسل نفسه، فلا يصبح شيء أسطع، ويصبح كل بكسل قريب من بكسل أغمق منه أغمقَ. أما التمدد فيأخذ **أقصى** قيمة، فتُستبدل التفاصيل الداكنة الأضيق من العنصر بما يحيط بها من قيم أسطع؛ فيزول التباين المحلي وتبقى هضاب مستوية.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Choosing the operation" titleAr="اختيار العملية" level="medium">
+
+Which operation would you use? (a) White noise spots on the background of a binary image. (b) Two objects touching at their corners that must be counted separately. (c) The small artefacts left in the 9×3 result of slide 46. (d) Small black holes inside objects.
+
+<Ar>أي عملية تستخدم؟ (a) نقاط ضوضاء بيضاء على خلفية صورة ثنائية. (b) كائنان يتلامسان عند ركنيهما ويجب عدّهما منفصلين. (c) الشوائب الصغيرة المتبقية في نتيجة القضيب 9×3 في الشريحة 46. (d) ثقوب سوداء صغيرة داخل الكائنات.</Ar>
+
+<Solution>
+
+(a) **Opening** with an element larger than the spots but smaller than the objects. (b) **Erosion**, as with the coins: the element cannot fit in the narrow joint, so it breaks; then count the connected components. (c) Open with a slightly **longer** horizontal bar, which the short artefacts cannot contain. (d) **Closing** with an element larger than the holes.
+
+<Ar>(a) **الفتح (opening)** بعنصر أكبر من النقاط وأصغر من الكائنات. (b) **التآكل**، كما في العملات: لا يتسع العنصر في نقطة الالتقاء الضيقة فتنقطع؛ ثم عُدّ المكوّنات المتصلة. (c) افتح بقضيب أفقي **أطول** قليلًا، لا تتسع له الشوائب القصيرة. (d) **الإغلاق (closing)** بعنصر أكبر من الثقوب.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Erosion and dilation from hit-and-miss" titleAr="التآكل والتمدد من الإصابة والإخفاق" level="hard">
+
+Derive erosion and dilation from the hit-and-miss transform (problem 6 of the slides). Hint: use an element of only 1s, then one of only 0s.
+
+<Ar>اشتقّ التآكل والتمدد من تحويل الإصابة والإخفاق (المسألة 6 في الشرائح). تلميح: استخدم عنصرًا من الآحاد فقط، ثم عنصرًا من الأصفار فقط.</Ar>
+
+<Solution>
+
+With only 1s, $B_2 = \emptyset$, the miss condition always holds and $A \circledast B = A \ominus B$: erosion. With the same shape filled with 0s, $B_1 = \emptyset$ and $A \circledast B = A^c \ominus B$, the positions where the element touches no foreground pixel. Its complement is $(A^c \ominus B)^c = A \oplus \hat{B}$, the dilation ($= A \oplus B$ for a symmetric element).
+
+<Ar>مع الآحاد فقط تكون $B_2 = \emptyset$، فيتحقق شرط الإخفاق دائمًا ويكون $A \circledast B = A \ominus B$: أي التآكل. ومع الشكل نفسه مملوءًا بالأصفار تكون $B_1 = \emptyset$ ويكون $A \circledast B = A^c \ominus B$، أي المواضع التي لا يلامس فيها العنصر أي بكسل من المقدمة. ومتمِّمها هو $(A^c \ominus B)^c = A \oplus \hat{B}$، أي التمدد (ويساوي $A \oplus B$ في العنصر المتماثل).</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "Opening an image with a structuring element B means…",
+      qAr: "فتح صورة بعنصر بنائي B يعني…",
+      options: ["Dilation followed by erosion with B", "Erosion followed by dilation with B", "Dilation minus erosion", "Hit-and-miss followed by thinning"],
+      optionsAr: ["تمدد يليه تآكل بالعنصر B", "تآكل يليه تمدد بالعنصر B", "التمدد ناقص التآكل", "إصابة وإخفاق يليها ترقيق"],
+      answer: 1,
+      explain: "A ∘ B = (A ⊖ B) ⊕ B; closing uses the reverse order.",
+      explainAr: "A ∘ B = (A ⊖ B) ⊕ B؛ أما الإغلاق فيستخدم الترتيب المعكوس."
+    },
+    {
+      q: "With a flat 3×3 element, gray-value erosion replaces each pixel by…",
+      qAr: "مع عنصر مسطّح 3×3، يستبدل التآكل الرمادي كل بكسل بـ…",
+      options: ["the mean of its neighbourhood", "the median of its neighbourhood", "the minimum of its neighbourhood", "the maximum of its neighbourhood"],
+      optionsAr: ["متوسط جواره", "وسيط جواره", "أدنى قيمة في جواره", "أقصى قيمة في جواره"],
+      answer: 2,
+      explain: "That is why erosion darkens; dilation takes the maximum.",
+      explainAr: "ولهذا يُعتم التآكل؛ أما التمدد فيأخذ القيمة القصوى."
+    },
+    {
+      q: "Eroding the white pixels of a binary image gives the same result as…",
+      qAr: "تآكل البكسلات البيضاء في صورة ثنائية يعطي النتيجة نفسها التي يعطيها…",
+      options: ["dilating the black pixels with the reflected element", "eroding the black pixels", "opening the white pixels", "thinning the black pixels"],
+      optionsAr: ["تمدد البكسلات السوداء بالعنصر المنعكس", "تآكل البكسلات السوداء", "فتح البكسلات البيضاء", "ترقيق البكسلات السوداء"],
+      answer: 0,
+      explain: "Duality: (A ⊖ B)ᶜ = Aᶜ ⊕ B̂.",
+      explainAr: "الثنائية: (A ⊖ B)ᶜ = Aᶜ ⊕ B̂."
+    },
+    {
+      q: "In a hit-and-miss structuring element, a cell containing 0 means…",
+      qAr: "في عنصر الإصابة والإخفاق، تعني الخانة التي قيمتها 0…",
+      options: ["the image pixel there must be background", "the cell is ignored", "the image pixel there must be foreground", "the output is always 0"],
+      optionsAr: ["أن بكسل الصورة هناك يجب أن يكون من الخلفية", "أن الخانة تُهمَل", "أن بكسل الصورة هناك يجب أن يكون من المقدمة", "أن الخرج يكون 0 دائمًا"],
+      answer: 0,
+      explain: "1s must hit the foreground, 0s the background; empty cells are don't cares.",
+      explainAr: "يجب أن تصيب الآحاد المقدمة والأصفار الخلفية؛ أما الخانات الفارغة فلا تهم."
+    },
+    {
+      q: "Thinning an image I with an element K is defined as…",
+      qAr: "يُعرَّف ترقيق صورة I بعنصر K بأنه…",
+      options: ["I + HitAndMiss(I, K)", "I − HitAndMiss(I, K)", "(I ⊖ K) ⊕ K", "(I ⊕ K) − (I ⊖ K)"],
+      optionsAr: ["I + HitAndMiss(I, K)", "I − HitAndMiss(I, K)", "(I ⊖ K) ⊕ K", "(I ⊕ K) − (I ⊖ K)"],
+      answer: 1,
+      explain: "Matched pixels are set to 0. Adding them is thickening; the others are opening and the gradient.",
+      explainAr: "تُجعل البكسلات المطابِقة أصفارًا. وإضافتها هي التثخين، والخياران الآخران هما الفتح والتدرج."
+    }
+  ]}
+/>

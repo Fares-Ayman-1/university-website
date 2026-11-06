@@ -1,0 +1,830 @@
+---
+number: 9
+title: "Region Segmentation: Thresholding"
+titleAr: "تقطيع المناطق: التقطيع بالعتبة"
+summary: "Splitting an image into objects and background by thresholding. Covers what segmentation is, region-based segmentation, single thresholding with the threshold chosen from the histogram, MATLAB's im2bw and graythresh, double thresholding, applications, why one global threshold fails under uneven lighting and how adaptive thresholding fixes it, and Otsu's method with class probabilities, means, within-class and between-class variance, worked out by hand on two small images."
+summaryAr: "فصل الصورة إلى كائنات وخلفية بالعتبة (thresholding): ما التقطيع (segmentation)، والتقطيع القائم على المناطق، والتقطيع بعتبة مفردة مع اختيار العتبة من المدرج التكراري (histogram)، والدالتان im2bw و graythresh في MATLAB، والتقطيع بعتبة مزدوجة، وتطبيقاته، ولماذا تفشل العتبة الشاملة الواحدة مع الإضاءة غير المنتظمة وكيف يعالج ذلك التقطيعُ بالعتبة التكيفية (adaptive)، وطريقة أوتسو (Otsu) باحتمالات الفئات ومتوسطاتها والتباين داخل الفئة (within-class) والتباين بين الفئات (between-class)، مع حلها يدويًا على صورتين صغيرتين."
+topics: [Image segmentation, Region-based segmentation, Single thresholding, Threshold from the histogram, im2bw and graythresh, Double thresholding, Adaptive thresholding, Otsu's method, Within- and between-class variance]
+duration: 60 min study
+sources:
+  - file: lectures/ch9/segmentation_regions-converted.pdf
+    label: "Image Processing Lecture 9 – Segmentation: Regions (slides)"
+    pages: "1-33"
+bookRefs:
+  - book: ip-book
+    chapter: Ch 6 · Region Segmentation
+    pages: "123–137"
+  - book: mcandrew
+    chapter: Image Segmentation
+  - book: gonzalez
+    chapter: Ch 10 · Image Segmentation
+---
+
+<Objectives>
+
+- Define **segmentation** and place thresholding among the segmentation approaches.
+  <Ar>تعريف **التقطيع (segmentation)** وتحديد موقع التقطيع بالعتبة (thresholding) بين طرق التقطيع.</Ar>
+- Segment an image with a **single** and a **double** threshold chosen from the **histogram**, in MATLAB and Python.
+  <Ar>تقطيع صورة بعتبة **مفردة** وبعتبة **مزدوجة** تُختار من **المدرج التكراري (histogram)**، باستخدام MATLAB و Python.</Ar>
+- Explain why one **global** threshold fails under uneven illumination, and apply **adaptive** thresholding.
+  <Ar>شرح سبب فشل العتبة **الشاملة (global)** الواحدة مع الإضاءة غير المنتظمة، وتطبيق التقطيع بالعتبة **التكيفية (adaptive)**.</Ar>
+- Compute class probabilities, means and variances for a threshold, and find **Otsu's** threshold by hand and in code.
+  <Ar>حساب احتمالات الفئات ومتوسطاتها وتبايناتها لعتبة معيّنة، وإيجاد عتبة **أوتسو (Otsu)** يدويًا وبرمجيًا.</Ar>
+
+</Objectives>
+
+## What image segmentation is
+
+<Ar>ما تقطيع الصورة؟</Ar>
+
+<Definition term="Segmentation" termAr="التقطيع (Segmentation)">
+  Partitioning an image into <strong>regions</strong> that are <strong>homogeneous</strong> (the pixels of a region share a property such as grey level, colour or texture) and <strong>meaningful</strong> (they correspond to objects). Every pixel receives exactly one region <strong>label</strong>; the regions are connected and do not overlap.
+
+  <Ar>تجزئة الصورة إلى <strong>مناطق (regions)</strong> <strong>متجانسة</strong> (تشترك بكسلات المنطقة الواحدة في خاصية مثل مستوى الرمادي أو اللون أو النسيج) و<strong>ذات معنى</strong> (تقابل كائنات). ويحصل كل بكسل على <strong>وسم (label)</strong> واحد فقط لمنطقته؛ والمناطق متصلة ولا تتداخل.</Ar>
+</Definition>
+
+So far every operation took an image and returned a better image. Segmentation is the **first step of image analysis**: its output is a set of labelled regions that later steps can count, measure, classify and describe.
+
+<Ar>حتى الآن كانت كل عملية تأخذ صورة وتعيد صورة أفضل. أما التقطيع (segmentation) فهو **الخطوة الأولى في تحليل الصورة**: إذ يكون خرجه مجموعة من المناطق الموسومة تستطيع الخطوات اللاحقة عدَّها وقياسها وتصنيفها ووصفها.</Ar>
+
+Segmentation methods fall into three families:
+
+<Ar>تنقسم طرق التقطيع إلى ثلاث عائلات:</Ar>
+
+- **pixel-based**: each pixel is classified by its own value, which is what **thresholding** does;
+  <Ar>**القائمة على البكسل**: يُصنَّف كل بكسل بحسب قيمته هو، وهذا ما يفعله **التقطيع بالعتبة (thresholding)**؛</Ar>
+- **region-based**: neighbouring pixels with similar values are grown or merged into regions;
+  <Ar>**القائمة على المناطق**: تُنمّى البكسلات المتجاورة ذات القيم المتشابهة أو تُدمج في مناطق؛</Ar>
+- **edge-based**: the boundaries between regions are found first.
+  <Ar>**القائمة على الحواف**: تُكتشف الحدود بين المناطق أولًا.</Ar>
+
+## Region-based segmentation
+
+<Ar>التقطيع القائم على المناطق</Ar>
+
+The goal is to **find the objects of interest** in an image: bacteria under a microscope, coins on a table, flowers in a vase. There are a great many ways to do it; this lecture uses the simplest and most widely used, **thresholding**, and its automatic version, **Otsu's method**, which is in effect a **clustering** of the grey levels into two groups.
+
+<Ar>الهدف هو **إيجاد الكائنات (objects) المهمة** في الصورة: بكتيريا تحت المجهر، أو عملات معدنية على طاولة، أو زهور في مزهرية. وهناك طرق كثيرة جدًا لذلك؛ وتستخدم هذه المحاضرة أبسطها وأوسعها انتشارًا، وهو **التقطيع بالعتبة (thresholding)**، وصيغته الآلية **طريقة أوتسو (Otsu)**، وهي في حقيقتها **عنقدة (clustering)** لمستويات الرمادي في مجموعتين.</Ar>
+
+<SlideFigure page={3} caption="Region-based segmentation: bacteria, coins and flowers (top) and their binary segmentations (bottom), where each pixel is labelled object or background." captionAr="التقطيع القائم على المناطق: بكتيريا وعملات معدنية وزهور (في الأعلى) وتقطيعها الثنائي (في الأسفل)، حيث يوسم كل بكسل بأنه كائن أو خلفية." />
+
+## Segmentation by thresholding
+
+<Ar>التقطيع بالعتبة</Ar>
+
+There are three types of thresholding segmentation:
+
+<Ar>هناك ثلاثة أنواع من التقطيع بالعتبة:</Ar>
+
+| Type <Ar>النوع</Ar> | Idea <Ar>الفكرة</Ar> |
+|---|---|
+| **Single (basic)** <Ar>**المفردة (الأساسية)**</Ar> | One threshold $T$ for the whole image splits it into two classes <Ar>عتبة واحدة $T$ للصورة كلها تقسمها إلى فئتين</Ar> |
+| **Double** <Ar>**المزدوجة**</Ar> | Two thresholds $T_1$ and $T_2$ pick out a band of grey levels <Ar>عتبتان $T_1$ و $T_2$ تنتقيان نطاقًا من مستويات الرمادي</Ar> |
+| **Adaptive** <Ar>**التكيفية (adaptive)**</Ar> | The threshold changes from one part of the image to another <Ar>تتغير العتبة من جزء من الصورة إلى آخر</Ar> |
+
+### Single (basic) thresholding
+
+<Ar>التقطيع بعتبة مفردة (أساسية)</Ar>
+
+Assume the image contains two **classes** of pixels: **background** (class 0) and **object** (class 1). Segmentation then means assigning each pixel the label 0 or 1. For a **dark object on a light background**, the basic rule with threshold $T$ is:
+
+<Ar>لنفترض أن الصورة تحتوي على **فئتين (classes)** من البكسلات: **الخلفية (background)** (الفئة 0) و**الكائن (object)** (الفئة 1). فيصبح التقطيع إعطاءَ كل بكسل الوسم 0 أو 1. ولكائن **داكن على خلفية فاتحة** تكون القاعدة الأساسية بالعتبة $T$ هي:</Ar>
+
+$$
+l[m,n] =
+\begin{cases}
+0 & f[m,n] \ge T \\
+1 & f[m,n] < T
+\end{cases}
+$$
+
+For a **light object on a dark background** the inequalities swap, and pixels with $f(x,y) \ge T$ become the object. Either way the result is a **binary image**.
+
+<Ar>أما **للكائن الفاتح على خلفية داكنة** فتنعكس المتباينتان، فتصبح البكسلات التي تحقق $f(x,y) \ge T$ هي الكائن. وفي الحالتين تكون النتيجة **صورة ثنائية (binary)**.</Ar>
+
+**Example.** Thresholding a 4×4 image of light objects at $T = 100$:
+
+<Ar>**مثال.** تقطيع صورة 4×4 لكائنات فاتحة بالعتبة $T = 100$:</Ar>
+
+$$
+\begin{bmatrix}
+30 & 40 & 160 & 170\\
+35 & 150 & 165 & 45\\
+140 & 155 & 50 & 40\\
+25 & 30 & 35 & 145
+\end{bmatrix}
+\;\xrightarrow{\;f \,\ge\, 100\;}\;
+\begin{bmatrix}
+0 & 0 & 1 & 1\\
+0 & 1 & 1 & 0\\
+1 & 1 & 0 & 0\\
+0 & 0 & 0 & 1
+\end{bmatrix}
+$$
+
+### Choosing the threshold from the histogram
+
+<Ar>اختيار العتبة من المدرج التكراري</Ar>
+
+When object and background pixels have clearly different grey levels, the histogram is **bimodal**: one peak (mode) for the background and one for the object. The natural threshold lies in the **valley** between them:
+
+<Ar>عندما تكون مستويات رمادي بكسلات الكائن والخلفية مختلفة بوضوح، يكون المدرج التكراري **ثنائي القمة (bimodal)**: قمة للخلفية وقمة للكائن. والعتبة الطبيعية تقع في **الوادي** بينهما:</Ar>
+
+<Steps>
+
+1. Compute the **histogram** of the grayscale image.
+   <Ar>احسب **المدرج التكراري (histogram)** للصورة الرمادية.</Ar>
+2. Identify the two **peaks**: the background cluster and the object cluster.
+   <Ar>حدّد **القمتين**: تجمّع الخلفية وتجمّع الكائن.</Ar>
+3. Find the **valley** (the minimum) between the peaks; its grey level is $T$.
+   <Ar>أوجد **الوادي** (القيمة الدنيا) بين القمتين؛ فمستوى رماديه هو $T$.</Ar>
+4. Apply the thresholding rule.
+   <Ar>طبّق قاعدة العتبة.</Ar>
+
+</Steps>
+
+<SlideFigure page={6} caption="Choosing T from the histogram: for the coins, a tall narrow peak of bright background pixels and a low spread of darker coin pixels, split at about 150; for the bacteria, the background peak sits around 110–120 with the dark bacteria to its left, split at about 100." captionAr="اختيار T من المدرج التكراري: في صورة العملات توجد قمة عالية ضيقة لبكسلات الخلفية الساطعة وانتشار منخفض لبكسلات العملات الأدكن، ويُفصل بينهما عند نحو 150؛ وفي صورة البكتيريا تقع قمة الخلفية عند نحو 110–120 والبكتيريا الداكنة على يسارها، ويُفصل بينهما عند نحو 100." />
+
+Single thresholding is **simple and fast** and works well when the contrast between object and background is good. It **fails** when the histogram is unimodal (no clear separation), and it is sensitive to **noise** and to **uneven illumination**.
+
+<Ar>التقطيع بعتبة مفردة **بسيط وسريع**، ويعمل جيدًا عندما يكون التباين (contrast) بين الكائن والخلفية جيدًا. لكنه **يفشل** عندما يكون المدرج التكراري أحادي القمة (لا فصل واضحًا)، وهو حساس **للضوضاء** و**للإضاءة غير المنتظمة**.</Ar>
+
+### Implementation in MATLAB
+
+<Ar>التنفيذ في MATLAB</Ar>
+
+If an 8-bit image is stored in the variable `X`, the expression `X > T` performs the thresholding: it returns a logical (binary) image that is 1 wherever the pixel is above $T$. View it with `imshow`:
+
+<Ar>إذا خُزِّنت صورة 8 بت في المتغير `X`، فإن التعبير `X > T` يُجري التقطيع بالعتبة: إذ يعيد صورة منطقية (ثنائية) قيمتها 1 حيثما كان البكسل أكبر من $T$. ونعرضها باستخدام `imshow`:</Ar>
+
+```matlab title="single_threshold.m"
+c = imread('coins.tif');
+imshow(c), figure, imshow(c > 110);     % bright coins become white on black
+```
+
+MATLAB also has the `im2bw` function, which thresholds an image of **any data type**. Its `level` is a value between 0 and 1: `im2bw` scales it to a grey value appropriate to the image type (for `uint8`, $0.53 \times 255 \approx 135$) and then applies the same rule:
+
+<Ar>ولدى MATLAB أيضًا الدالة `im2bw`، التي تقطّع بالعتبة صورةً من **أي نوع بيانات**. والوسيط `level` قيمة بين 0 و1: إذ تحوّله `im2bw` إلى قيمة رمادي مناسبة لنوع الصورة (فلـ `uint8` تكون $0.53 \times 255 \approx 135$) ثم تطبّق القاعدة نفسها:</Ar>
+
+```matlab
+bw1 = im2bw(c, 0.53);     % im2bw(image, level), level between 0 and 1
+bw2 = im2bw(i, 0.34);
+```
+
+Recent MATLAB versions recommend `imbinarize(I, level)` instead of `im2bw`. In Python the same thresholding is a single comparison:
+
+<Ar>توصي إصدارات MATLAB الحديثة باستخدام `imbinarize(I, level)` بدل `im2bw`. وفي Python يكون التقطيع نفسه مقارنةً واحدة:</Ar>
+
+```python title="single_threshold.py"
+import cv2
+
+binary = img > 110                                          # boolean array, True = above T
+t, bw = cv2.threshold(img, 110, 255, cv2.THRESH_BINARY)     # uint8: 255 where img > 110
+```
+
+<SlideFigure page={9} caption="Results of single thresholding: the bacteria come out cleanly, but bright highlights inside the coins fall on the background side and leave white specks. Good, but not perfect." captionAr="نتائج التقطيع بعتبة مفردة: تظهر البكتيريا نظيفة، لكن اللمعات الساطعة داخل العملات تقع في جانب الخلفية وتترك نقاطًا بيضاء. نتيجة جيدة، لكنها ليست مثالية." />
+
+### Double thresholding
+
+<Ar>التقطيع بعتبة مزدوجة</Ar>
+
+Here we choose two values $T_1 < T_2$. A pixel becomes **white** if its grey level is **between** $T_1$ and $T_2$, and **black** otherwise. This picks out the middle band of grey levels, for example the middle mode of a histogram with three modes. In MATLAB it is a simple variation of the single threshold: `X > T1 & X < T2`.
+
+<Ar>نختار هنا قيمتين $T_1 < T_2$. فيصبح البكسل **أبيض** إذا كان مستوى رماديه **بين** $T_1$ و $T_2$، و**أسود** فيما عدا ذلك. وهذا ينتقي النطاق الأوسط من مستويات الرمادي، مثل القمة الوسطى في مدرج تكراري ثلاثي القمم. وهو في MATLAB تعديل بسيط للعتبة المفردة: `X > T1 & X < T2`.</Ar>
+
+More generally, two thresholds can split the image into **three** classes, with any three distinct output values $a$, $b$, $c$:
+
+<Ar>وبصورة أعم، يمكن لعتبتين تقسيم الصورة إلى **ثلاث** فئات، بأي ثلاث قيم خرج مختلفة $a$ و $b$ و $c$:</Ar>
+
+$$
+g(x,y) =
+\begin{cases}
+a & f(x,y) \ge T_2 \\
+b & T_1 \le f(x,y) < T_2 \\
+c & f(x,y) < T_1
+\end{cases}
+$$
+
+The slides apply it to the spine image, after turning the indexed image into an 8-bit grey one:
+
+<Ar>تطبّقه الشرائح على صورة العمود الفقري (spine)، بعد تحويل الصورة المفهرسة (indexed) إلى صورة رمادية 8 بت:</Ar>
+
+```matlab title="double_threshold.m"
+[x, map] = imread('spine.tif');
+s = uint8(256*ind2gray(x, map));
+imshow(s), figure, imshow(s > 115 & s < 125);
+
+% similar result with im2bw (levels 0.45 and 0.5 of the grey range)
+imshow(im2bw(x, map, 0.45) & ~im2bw(x, map, 0.5))
+```
+
+<SlideFigure page={11} caption="Double thresholding of the spine image: only pixels with grey levels between 115 and 125 are white, which brings out structure inside the vertebrae that the original hides." captionAr="التقطيع بعتبة مزدوجة لصورة العمود الفقري: لا يكون أبيض إلا البكسلات التي تقع مستويات رماديها بين 115 و125، فتبرز بنية داخل الفقرات تخفيها الصورة الأصلية." />
+
+The last line on the slide carries some typesetting debris (`&~{}` and a stray `}`); the command above is the intended one.
+
+<Ar>يحمل السطر الأخير في الشريحة بعض بقايا التنسيق (`&~{}` وقوسًا زائدًا `}`)؛ والأمر أعلاه هو المقصود.</Ar>
+
+### Applications of thresholding
+
+<Ar>تطبيقات التقطيع بالعتبة</Ar>
+
+1. **Removing unnecessary detail** from an image, to concentrate on the essentials: the coins become plain discs that are easy to count and measure.
+   <Ar>**إزالة التفاصيل غير الضرورية** من الصورة للتركيز على الأساسيات: فتصبح العملات أقراصًا بسيطة يسهل عدّها وقياسها.</Ar>
+2. **Bringing out hidden detail**: when an object and its surroundings have very similar grey levels, a well-placed threshold (or a narrow double threshold) separates them.
+   <Ar>**إظهار التفاصيل الخفية**: عندما تكون مستويات رمادي الكائن ومحيطه متقاربة جدًا، تفصل بينهما عتبةٌ موضوعة جيدًا (أو عتبة مزدوجة ضيقة).</Ar>
+3. **Removing a varying background** from text or a drawing.
+   <Ar>**إزالة خلفية متغيرة** من نص أو رسم.</Ar>
+
+The third application is easy to try. The code puts black text on a random grey background and then removes the background with one threshold:
+
+<Ar>التطبيق الثالث سهل التجربة. تضع الشيفرة نصًا أسود على خلفية رمادية عشوائية، ثم تزيل الخلفية بعتبة واحدة:</Ar>
+
+```matlab title="remove_background.m"
+r  = rand(256)*128 + 127;           % random background, values 127..255
+t  = imread('text.tif');            % binary image: text pixels are 1
+tr = uint8(r .* double(not(t)));    % text -> 0 (black), background -> random grey
+imshow(tr)
+imshow(tr > 100)                    % every background value is above 100: clean text
+```
+
+<SlideFigure page={12} caption="Applications of thresholding: a nearly uniform patch reveals hidden texture once thresholded, and text on a random grey background (r = rand(256)*128+127) is recovered cleanly with imshow(tr>100)." captionAr="تطبيقات التقطيع بالعتبة: رقعة شبه متجانسة تكشف نسيجًا خفيًا بعد تقطيعها بالعتبة، ونص على خلفية رمادية عشوائية (r = rand(256)*128+127) يُستعاد نظيفًا باستخدام imshow(tr>100)." />
+
+### When one global threshold fails
+
+<Ar>عندما تفشل العتبة الشاملة الواحدة</Ar>
+
+A **global** threshold uses one $T$ for the whole image. It fails when the **illumination is uneven**: in the photographed page below, the left side is much darker than the right. Whatever $T$ we choose (`ct = im2bw(e3, t)`), not all of the object is isolated from its background: a low $T$ loses the text on the bright side, a high $T$ turns the dark side black. Different thresholds give similar failures.
+
+<Ar>تستخدم العتبة **الشاملة (global)** قيمة $T$ واحدة للصورة كلها. وهي تفشل عندما تكون **الإضاءة غير منتظمة**: ففي الصفحة المصوَّرة أدناه يكون الجانب الأيسر أدكن كثيرًا من الأيمن. ومهما كانت $T$ التي نختارها (`ct = im2bw(e3, t)`) لا ينفصل الكائن كله عن خلفيته: فالعتبة المنخفضة تُضيع النص في الجانب الساطع، والعتبة المرتفعة تحوّل الجانب الداكن إلى أسود. والعتبات المختلفة تعطي إخفاقات متشابهة.</Ar>
+
+<SlideFigure page={13} caption="An attempt at global thresholding of an unevenly lit page: the dark left side turns into a black mass while the text on the right survives." captionAr="محاولة تقطيع صفحة ذات إضاءة غير منتظمة بعتبة شاملة: يتحول الجانب الأيسر الداكن إلى كتلة سوداء بينما يبقى النص في الجانب الأيمن." />
+
+### Adaptive thresholding
+
+<Ar>التقطيع بالعتبة التكيفية</Ar>
+
+The fix is to **cut the image into small pieces** and apply a threshold to **each piece separately**. Within a narrow strip the illumination is nearly constant, so one threshold per strip works. The slides cut a 256×256 image into four vertical strips of 64 columns, threshold each with its own automatic (Otsu) level from `graythresh`, and display the pieces side by side:
+
+<Ar>العلاج هو **تقطيع الصورة إلى قطع صغيرة** وتطبيق عتبة على **كل قطعة على حدة**. فداخل شريط ضيق تكون الإضاءة شبه ثابتة، لذا تنجح عتبة واحدة لكل شريط. وتقطّع الشرائح صورة 256×256 إلى أربعة أشرطة رأسية عرض كل منها 64 عمودًا، وتقطّع كلًّا منها بعتبتها الآلية (عتبة Otsu) المحسوبة بالدالة `graythresh`، ثم تعرض القطع متجاورة:</Ar>
+
+```matlab title="adaptive_by_hand.m"
+p1 = c3(:, 1:64);                   % 1. cut the image into four strips
+p2 = c3(:, 65:128);
+p3 = c3(:, 129:192);
+p4 = c3(:, 193:256);
+g1 = im2bw(p1, graythresh(p1));     % 2. threshold each strip separately
+g2 = im2bw(p2, graythresh(p2));
+g3 = im2bw(p3, graythresh(p3));
+g4 = im2bw(p4, graythresh(p4));
+imshow([g1 g2 g3 g4]);              % 3. display them as a single image
+```
+
+<SlideFigure page={15} caption="Adaptive thresholding: (a) the page cut into vertical strips; (b) each strip thresholded separately, so the text is clean across the whole page." captionAr="التقطيع بالعتبة التكيفية: (a) الصفحة مقطّعة إلى أشرطة رأسية؛ (b) كل شريط مقطَّع بالعتبة على حدة، فيظهر النص نظيفًا على امتداد الصفحة كلها." />
+
+Rather than writing one line per piece, define the operation once as a function and let `blkproc` apply it to every block. The block size `[256,64]` means full height and 64 columns, i.e. the same four strips:
+
+<Ar>وبدل كتابة سطر لكل قطعة، نعرّف العملية مرة واحدة على هيئة دالة (function) وندع `blkproc` تطبّقها على كل قطعة (block). ومقاس القطعة `[256,64]` يعني الارتفاع الكامل و64 عمودًا، أي الأشرطة الأربعة نفسها:</Ar>
+
+```matlab title="adaptive_blkproc.m"
+fun = inline('im2bw(x, graythresh(x))');   % x stands for any input block
+t4  = blkproc(t3, [256, 64], fun);         % t3: the unevenly lit page
+
+% current MATLAB: blockproc with a function handle (the block is b.data)
+t4  = blockproc(t3, [256 64], @(b) imbinarize(b.data, graythresh(b.data)));
+```
+
+The slide prints the function as `im2bw(x.graythresh(x))`; the dot should be a comma, as above.
+
+<Ar>تطبع الشريحة الدالة على هيئة `im2bw(x.graythresh(x))`؛ والصواب فاصلة بدل النقطة، كما في الشيفرة أعلاه.</Ar>
+
+The idea can be pushed down to every pixel: compute a **local threshold** $T(x,y)$ from the neighbourhood of each pixel, usually its mean (or a Gaussian-weighted mean) minus a small constant $C$:
+
+<Ar>ويمكن دفع الفكرة حتى مستوى كل بكسل: نحسب **عتبة محلية** $T(x,y)$ من جوار كل بكسل، وعادةً ما تكون متوسطه (أو متوسطه الموزون غاوسيًا) مطروحًا منه ثابت صغير $C$:</Ar>
+
+$$
+T(x,y) = \mu(x,y) - C
+\qquad\qquad
+g(x,y) =
+\begin{cases}
+1 & f(x,y) \ge T(x,y) \\
+0 & f(x,y) < T(x,y)
+\end{cases}
+$$
+
+```python title="adaptive_threshold.py"
+import numpy as np
+import cv2
+from scipy import ndimage
+
+# 1. block-wise Otsu, as in the slides: one threshold per strip of 64 columns
+def blockwise_otsu(img, block_cols=64):
+    out = np.zeros(img.shape, dtype=np.uint8)
+    for c in range(0, img.shape[1], block_cols):
+        strip = img[:, c:c + block_cols]
+        _, out[:, c:c + block_cols] = cv2.threshold(
+            strip, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    return out
+
+# 2. local mean minus C, one threshold per pixel
+local_mean = ndimage.uniform_filter(img.astype(np.float64), size=35)
+binary = img > local_mean - 10
+# OpenCV equivalent:
+bw = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_MEAN_C,
+                           cv2.THRESH_BINARY, 35, 10)
+```
+
+<SlideFigure page={17} caption="A photographed sudoku: global thresholding at v = 127 turns the shaded half black, while adaptive mean thresholding recovers the grid and the digits everywhere." captionAr="لغز سودوكو مصوَّر: التقطيع بعتبة شاملة عند v = 127 يحوّل النصف المظلَّل إلى أسود، بينما يستعيد التقطيع بعتبة المتوسط التكيفية الشبكة والأرقام في كل مكان." />
+
+Adaptive thresholding handles shadows and illumination gradients, but it has its own costs: the **block size** (and $C$) must be tuned; a block that contains **only background** is still split into two classes by Otsu, so its noise turns into false objects; seams can appear at block borders; and it is slower than one global threshold.
+
+<Ar>يعالج التقطيع بالعتبة التكيفية الظلالَ وتدرّجات الإضاءة، لكن له تكاليفه: إذ يجب ضبط **مقاس القطعة** (والثابت $C$)؛ والقطعة التي **لا تحتوي إلا على خلفية** تقسمها طريقة Otsu إلى فئتين مع ذلك، فتتحول ضوضاؤها إلى كائنات زائفة؛ وقد تظهر خطوط فاصلة عند حدود القطع؛ وهو أبطأ من العتبة الشاملة الواحدة.</Ar>
+
+### Lots of issues
+
+<Ar>مشكلات كثيرة</Ar>
+
+Thresholding looks simple, but a real segmentation system must also deal with:
+
+<Ar>يبدو التقطيع بالعتبة بسيطًا، لكن نظام التقطيع الحقيقي يجب أن يتعامل أيضًا مع:</Ar>
+
+- **more than two classes** in the image;
+  <Ar>**أكثر من فئتين** في الصورة؛</Ar>
+- the **automatic choice of $T$**, which Otsu's method answers;
+  <Ar>**الاختيار الآلي للعتبة $T$**، وهو ما تجيب عنه طريقة أوتسو (Otsu)؛</Ar>
+- the use of **features other than grey value** (colour, texture);
+  <Ar>استخدام **خصائص غير مستوى الرمادي** (اللون، والنسيج)؛</Ar>
+- imposing **geometry** on the segments: no holes, connected, not too big;
+  <Ar>فرض **قيود هندسية** على المقاطع: بلا ثقوب، ومتصلة، وليست كبيرة جدًا؛</Ar>
+- **local** thresholds rather than one global threshold.
+  <Ar>العتبات **المحلية** بدل عتبة شاملة واحدة.</Ar>
+
+## Otsu's method
+
+<Ar>طريقة أوتسو</Ar>
+
+Otsu's method, named after its inventor Nobuyuki Otsu, is a **binarization** algorithm that picks the threshold **automatically** from the histogram. The basic ideas:
+
+<Ar>طريقة أوتسو (Otsu)، المسماة باسم مبتكرها نوبويوكي أوتسو (Nobuyuki Otsu)، خوارزمية **تحويل ثنائي (binarization)** تختار العتبة **آليًا** من المدرج التكراري. وأفكارها الأساسية:</Ar>
+
+- separate the pixels into **two classes**;
+  <Ar>فصل البكسلات إلى **فئتين**؛</Ar>
+- make the pixels in each class **as similar as possible**;
+  <Ar>جعل بكسلات كل فئة **متشابهة قدر الإمكان**؛</Ar>
+- measure similarity by the **variance** of the class histogram: a **high** variance means a **spread-out** histogram, a **low** variance a **compressed** one.
+  <Ar>قياس التشابه **بتباين** المدرج التكراري للفئة: فالتباين **الكبير** يعني مدرجًا **منتشرًا**، والتباين **الصغير** يعني مدرجًا **مضغوطًا**.</Ar>
+
+<SlideFigure page={21} caption="Variances and histograms: a textured image with a wide histogram has variance 0.1582; a nearly uniform image with a narrow spike has variance 0.0016." captionAr="التباينات والمدرجات التكرارية: صورة ذات نسيج ومدرج تكراري عريض تباينها 0.1582؛ وصورة شبه متجانسة ذات قمة ضيقة تباينها 0.0016." />
+
+### Means and variances of a histogram
+
+<Ar>متوسطات المدرج التكراري وتبايناته</Ar>
+
+Let $n_i$ be the number of pixels with grey level $i$, $N$ the total number of pixels and $L$ the number of levels ($L = 256$ for 8-bit images). The **normalized histogram** $p(i) = n_i / N$ is the probability of level $i$. Then:
+
+<Ar>لتكن $n_i$ عدد البكسلات ذات مستوى الرمادي $i$، و $N$ العدد الكلي للبكسلات، و $L$ عدد المستويات ($L = 256$ لصور 8 بت). فيكون **المدرج التكراري المُطبَّع (normalized histogram)** $p(i) = n_i / N$ هو احتمال المستوى $i$. وعندئذ:</Ar>
+
+$$
+\mu = \sum_{i} i\, p(i)
+\qquad\qquad
+\sigma^2 = \sum_{i} (i - \mu)^2\, p(i)
+$$
+
+The **mean** is the average value of the histogram, the **variance** is the average spread about the mean, and the **standard deviation** is the square root of the variance. The slides' example histogram has mean 2.8, variance 0.75 and standard deviation $\sqrt{0.75} = 0.87$.
+
+<Ar>**المتوسط** هو القيمة المتوسطة للمدرج التكراري، و**التباين** هو متوسط الانتشار حول المتوسط، و**الانحراف المعياري** هو الجذر التربيعي للتباين. ومثال المدرج التكراري في الشرائح متوسطه 2.8، وتباينه 0.75، وانحرافه المعياري $\sqrt{0.75} = 0.87$.</Ar>
+
+### Class statistics for a threshold
+
+<Ar>إحصاءات الفئتين لعتبة معيّنة</Ar>
+
+A threshold $T$ splits the levels into class 1, levels $0 \dots T$, and class 2, levels $T+1 \dots L-1$. Each class has a probability, a conditional mean and a conditional variance:
+
+<Ar>تقسم العتبة $T$ المستويات إلى الفئة 1، أي المستويات $0 \dots T$، والفئة 2، أي المستويات $T+1 \dots L-1$. ولكل فئة احتمال، ومتوسط شرطي، وتباين شرطي:</Ar>
+
+$$
+\begin{aligned}
+q_1(T) &= \sum_{i=0}^{T} p(i) & q_2(T) &= \sum_{i=T+1}^{L-1} p(i) = 1 - q_1(T) \\
+\mu_1(T) &= \sum_{i=0}^{T} i\,\frac{p(i)}{q_1(T)} & \mu_2(T) &= \sum_{i=T+1}^{L-1} i\,\frac{p(i)}{q_2(T)} \\
+\sigma_1^2(T) &= \sum_{i=0}^{T} \big(i - \mu_1(T)\big)^2 \frac{p(i)}{q_1(T)} & \sigma_2^2(T) &= \sum_{i=T+1}^{L-1} \big(i - \mu_2(T)\big)^2 \frac{p(i)}{q_2(T)}
+\end{aligned}
+$$
+
+Otsu's criterion is the **weighted within-class variance**, the sum of the two class variances weighted by the class probabilities:
+
+<Ar>ومعيار أوتسو هو **التباين الموزون داخل الفئة (within-class variance)**، أي مجموع تبايني الفئتين موزونين باحتمالَي الفئتين:</Ar>
+
+$$
+\sigma_w^2(T) = q_1(T)\,\sigma_1^2(T) + q_2(T)\,\sigma_2^2(T)
+$$
+
+(The slide labels this sum "total variance"; it is the within-class part of the total.) Otsu's method computes $\sigma_w^2(T)$ for **every possible** $T$ (0, 1, 2, …, 255) and chooses the threshold for which it is **minimum**: the split that makes both classes as tight as possible.
+
+<Ar>(تسمّي الشريحة هذا المجموع «التباين الكلي»؛ وهو في الحقيقة الجزء داخل الفئة من التباين الكلي.) وتحسب طريقة أوتسو قيمة $\sigma_w^2(T)$ **لكل** $T$ **ممكنة** (0، 1، 2، …، 255) وتختار العتبة التي تجعلها **أصغر ما يمكن**: أي التقسيم الذي يجعل الفئتين متماسكتين قدر الإمكان.</Ar>
+
+### Minimising within-class = maximising between-class
+
+<Ar>تصغير التباين داخل الفئة = تكبير التباين بين الفئات</Ar>
+
+The **between-class variance** measures how far apart the two class means are:
+
+<Ar>يقيس **التباين بين الفئات (between-class variance)** مدى تباعد متوسطَي الفئتين:</Ar>
+
+$$
+\sigma_B^2(T) = q_1(T)\,q_2(T)\,\big[\mu_1(T) - \mu_2(T)\big]^2
+$$
+
+For every $T$, the within-class and between-class variances add up to the **total variance** of the image, which does not depend on $T$:
+
+<Ar>ولكل $T$ يكون مجموع التباين داخل الفئة والتباين بين الفئات مساويًا **للتباين الكلي** للصورة، وهو لا يعتمد على $T$:</Ar>
+
+$$
+\sigma^2 = \sigma_w^2(T) + \sigma_B^2(T)
+$$
+
+So the $T$ that **minimises** $\sigma_w^2$ is exactly the $T$ that **maximises** $\sigma_B^2$. Maximising $\sigma_B^2$ is the usual way to compute it, because it needs no class variances at all, only the running sums $q_1(T)$ and $m(T) = \sum_{i=0}^{T} i\,p(i)$, with $\mu$ the global mean:
+
+<Ar>لذا فإن $T$ التي **تصغّر** $\sigma_w^2$ هي نفسها تمامًا $T$ التي **تكبّر** $\sigma_B^2$. وتكبير $\sigma_B^2$ هو الطريقة المعتادة في الحساب، لأنه لا يحتاج إلى تبايني الفئتين إطلاقًا، بل إلى المجموعين التراكميين $q_1(T)$ و $m(T) = \sum_{i=0}^{T} i\,p(i)$ فقط، حيث $\mu$ هو المتوسط الكلي:</Ar>
+
+$$
+\sigma_B^2(T) = \frac{\big[\mu\, q_1(T) - m(T)\big]^2}{q_1(T)\,\big[1 - q_1(T)\big]}
+$$
+
+<Steps>
+
+1. Compute the histogram and normalise it to $p(i)$.
+   <Ar>احسب المدرج التكراري وطبّعه لتحصل على $p(i)$.</Ar>
+2. For every candidate $T$ from 0 to $L-2$, compute $q_1$, $q_2$, $\mu_1$ and $\mu_2$.
+   <Ar>لكل عتبة مرشحة $T$ من 0 إلى $L-2$ احسب $q_1$ و $q_2$ و $\mu_1$ و $\mu_2$.</Ar>
+3. Compute $\sigma_B^2(T)$ (or $\sigma_w^2(T)$, which also needs the class variances).
+   <Ar>احسب $\sigma_B^2(T)$ (أو $\sigma_w^2(T)$، التي تحتاج أيضًا إلى تبايني الفئتين).</Ar>
+4. Choose the $T$ with the **largest** $\sigma_B^2$ (equivalently the **smallest** $\sigma_w^2$).
+   <Ar>اختر $T$ ذات **أكبر** قيمة لـ $\sigma_B^2$ (أي ما يكافئ **أصغر** قيمة لـ $\sigma_w^2$).</Ar>
+5. Threshold: levels up to $T$ form one class, levels above $T$ the other.
+   <Ar>طبّق العتبة: المستويات حتى $T$ تشكّل فئة، والمستويات الأعلى من $T$ تشكّل الفئة الأخرى.</Ar>
+
+</Steps>
+
+## Worked example: the slides' 6×6 image
+
+<Ar>مثال محلول: الصورة 6×6 في الشرائح</Ar>
+
+The slides demonstrate the algorithm on a 6×6 image ($N = 36$) with only **6 grey levels**:
+
+<Ar>تشرح الشرائح الخوارزمية على صورة 6×6 ($N = 36$) لا تحتوي إلا على **6 مستويات رمادي**:</Ar>
+
+| Level $i$ <Ar>المستوى $i$</Ar> | 0 | 1 | 2 | 3 | 4 | 5 |
+|---|---|---|---|---|---|---|
+| Pixels $n_i$ <Ar>عدد البكسلات $n_i$</Ar> | 8 | 7 | 2 | 6 | 9 | 4 |
+
+<SlideFigure page={25} caption="A 6-level greyscale image and its histogram: 8, 7, 2, 6, 9 and 4 pixels at levels 0 to 5." captionAr="صورة رمادية بستة مستويات ومدرجها التكراري: 8 و7 و2 و6 و9 و4 بكسلات عند المستويات من 0 إلى 5." />
+
+In this example the slides use the threshold the other way round: "threshold $T$" means **background** = levels **below** $T$ and **foreground** = levels **at or above** $T$ (so their $T = 3$ is our split after level 2). They write $W$ for the class weights (our $q$) and the subscripts $b$ and $f$ for background and foreground. For $T = 3$:
+
+<Ar>في هذا المثال تستخدم الشرائح العتبة بالاتجاه الآخر: فـ «العتبة $T$» تعني أن **الخلفية** هي المستويات **الأقل من** $T$ و**المقدمة (foreground)** هي المستويات **المساوية لـ** $T$ **أو الأعلى منها** (فعتبتهم $T = 3$ هي تقسيمنا بعد المستوى 2). ويكتبون $W$ لأوزان الفئتين (أي $q$ عندنا)، والرمزين السفليين $b$ و $f$ للخلفية والمقدمة. ولـ $T = 3$:</Ar>
+
+$$
+\begin{aligned}
+W_b &= \tfrac{8+7+2}{36} = 0.4722 &
+\mu_b &= \tfrac{0\times 8 + 1\times 7 + 2\times 2}{17} = 0.6471 \\
+\sigma_b^2 &= \tfrac{0.4187\times 8 + 0.1246\times 7 + 1.8304\times 2}{17} = 0.4637 \\[4pt]
+W_f &= \tfrac{6+9+4}{36} = 0.5278 &
+\mu_f &= \tfrac{3\times 6 + 4\times 9 + 5\times 4}{19} = 3.8947 \\
+\sigma_f^2 &= \tfrac{0.8006\times 6 + 0.0111\times 9 + 1.2216\times 4}{19} = 0.5152 \\[4pt]
+\sigma_w^2 &= W_b\,\sigma_b^2 + W_f\,\sigma_f^2 = 0.4722 \times 0.4637 + 0.5278 \times 0.5152 = 0.4909
+\end{aligned}
+$$
+
+Each number like 0.4187 is a squared distance from the class mean, e.g. $(0 - 0.6471)^2$ and $(3 - 3.8947)^2 = 0.8006$. (On the slide, the middle line of the foreground variance shows the products $0.8006 \times 6 = 4.8033$, $0.0111 \times 9 = 0.0997$ and $1.2216 \times 4 = 4.8864$ in place of the squares; the final 0.5152 is right.)
+
+<Ar>كل عدد مثل 0.4187 هو مربع بُعد عن متوسط الفئة، مثل $(0 - 0.6471)^2$ و $(3 - 3.8947)^2 = 0.8006$. (في الشريحة يعرض السطر الأوسط من تباين المقدمة حواصل الضرب $0.8006 \times 6 = 4.8033$ و $0.0111 \times 9 = 0.0997$ و $1.2216 \times 4 = 4.8864$ مكان المربعات؛ أما الناتج النهائي 0.5152 فصحيح.)</Ar>
+
+The same calculation for every threshold gives the table below. The last column adds the between-class variance $\sigma_B^2$ (capital B, not the background variance $\sigma_b^2$); every row satisfies $\sigma_w^2 + \sigma_B^2 = 3.1196$, the total variance:
+
+<Ar>والحساب نفسه لكل عتبة يعطي الجدول أدناه. ويضيف العمود الأخير التباين بين الفئات $\sigma_B^2$ (بحرف B كبير، وليس تباين الخلفية $\sigma_b^2$)؛ وكل صف يحقق $\sigma_w^2 + \sigma_B^2 = 3.1196$، وهو التباين الكلي:</Ar>
+
+| $T$ | $W_b$ | $\mu_b$ | $\sigma_b^2$ | $W_f$ | $\mu_f$ | $\sigma_f^2$ | $\sigma_w^2$ | $\sigma_B^2$ |
+|---|---|---|---|---|---|---|---|---|
+| 0 | 0 | 0 | 0 | 1 | 2.3611 | 3.1196 | 3.1196 | 0 |
+| 1 | 0.2222 | 0 | 0 | 0.7778 | 3.0357 | 1.9630 | 1.5268 | 1.5928 |
+| 2 | 0.4167 | 0.4667 | 0.2489 | 0.5833 | 3.7143 | 0.7755 | 0.5561 | 2.5635 |
+| **3** | 0.4722 | 0.6471 | 0.4637 | 0.5278 | 3.8947 | 0.5152 | **0.4909** | **2.6287** |
+| 4 | 0.6389 | 1.2609 | 1.4102 | 0.3611 | 4.3077 | 0.2130 | 0.9779 | 2.1417 |
+| 5 | 0.8889 | 2.0313 | 2.5303 | 0.1111 | 5.0000 | 0 | 2.2491 | 0.8705 |
+
+<SlideFigure page={28} caption="The slides' table for thresholds T = 0 to 5: the binary image, the split histogram, the weights, means and variances of both classes, and the within-class variance, which is lowest (0.4909) at T = 3." captionAr="جدول الشرائح للعتبات من T = 0 إلى 5: الصورة الثنائية، والمدرج التكراري المقسوم، وأوزان الفئتين ومتوسطاتهما وتبايناتهما، والتباين داخل الفئة الذي يكون أصغر ما يمكن (0.4909) عند T = 3." />
+
+$T = 3$ has the **lowest** within-class variance and, equivalently, the **highest** between-class variance, so it is the selected threshold: pixels with a level **less than 3** are background and those **equal to or greater than 3** are foreground. As the images in the table show, this threshold works well.
+
+<Ar>العتبة $T = 3$ لها **أصغر** تباين داخل الفئة، أي ما يكافئ **أكبر** تباين بين الفئات، لذا فهي العتبة المختارة: البكسلات التي مستواها **أقل من 3** خلفية، والتي مستواها **3 أو أكثر** مقدمة. وكما تُظهر الصور في الجدول، تعمل هذه العتبة جيدًا.</Ar>
+
+## Worked example: an 8-level histogram
+
+<Ar>مثال محلول: مدرج تكراري بثمانية مستويات</Ar>
+
+Now the usual convention and the usual criterion: an 8×8 image ($N = 64$) with 8 grey levels, class 1 = levels $\le t$, class 2 = levels $> t$, and we **maximise** $\sigma_B^2$.
+
+<Ar>والآن بالاصطلاح المعتاد والمعيار المعتاد: صورة 8×8 ($N = 64$) بثمانية مستويات رمادي، والفئة 1 = المستويات $\le t$، والفئة 2 = المستويات $> t$، ونحن **نكبّر** $\sigma_B^2$.</Ar>
+
+| Level $i$ <Ar>المستوى $i$</Ar> | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+|---|---|---|---|---|---|---|---|---|
+| Pixels $n_i$ <Ar>عدد البكسلات $n_i$</Ar> | 6 | 12 | 8 | 2 | 3 | 10 | 15 | 8 |
+
+The histogram has a dark peak at level 1, a bright peak at level 6, and a valley at levels 3–4. The sum of $i\,n_i$ is 242, so the global mean is $\mu = 242/64 = 3.7813$. In full for $t = 3$:
+
+<Ar>للمدرج التكراري قمة داكنة عند المستوى 1، وقمة ساطعة عند المستوى 6، ووادٍ عند المستويين 3–4. ومجموع $i\,n_i$ يساوي 242، لذا يكون المتوسط الكلي $\mu = 242/64 = 3.7813$. والحساب كاملًا لـ $t = 3$:</Ar>
+
+$$
+\begin{aligned}
+n_1 &= 6 + 12 + 8 + 2 = 28, & \mu_1 &= \tfrac{0\cdot 6 + 1\cdot 12 + 2\cdot 8 + 3\cdot 2}{28} = \tfrac{34}{28} = 1.2143 \\
+n_2 &= 3 + 10 + 15 + 8 = 36, & \mu_2 &= \tfrac{4\cdot 3 + 5\cdot 10 + 6\cdot 15 + 7\cdot 8}{36} = \tfrac{208}{36} = 5.7778 \\
+q_1 &= \tfrac{28}{64} = 0.4375, & q_2 &= \tfrac{36}{64} = 0.5625 \\
+\sigma_B^2(3) &= 0.4375 \times 0.5625 \times (1.2143 - 5.7778)^2 = 0.24609375 \times 20.8255 = 5.1250
+\end{aligned}
+$$
+
+Repeating this for every $t$:
+
+<Ar>وبتكرار ذلك لكل $t$:</Ar>
+
+| $t$ | $n_1$ | $n_2$ | $q_1$ | $q_2$ | $\mu_1$ | $\mu_2$ | $\sigma_B^2$ |
+|---|---|---|---|---|---|---|---|
+| 0 | 6 | 58 | 0.0938 | 0.9063 | 0.0000 | 4.1724 | 1.4791 |
+| 1 | 18 | 46 | 0.2813 | 0.7188 | 0.6667 | 5.0000 | 3.7959 |
+| 2 | 26 | 38 | 0.4063 | 0.5938 | 1.0769 | 5.6316 | 5.0039 |
+| **3** | 28 | 36 | 0.4375 | 0.5625 | 1.2143 | 5.7778 | **5.1250** |
+| 4 | 31 | 33 | 0.4844 | 0.5156 | 1.4839 | 5.9394 | 4.9581 |
+| 5 | 41 | 23 | 0.6406 | 0.3594 | 2.3415 | 6.3478 | 3.6953 |
+| 6 | 56 | 8 | 0.8750 | 0.1250 | 3.3214 | 7.0000 | 1.4801 |
+
+The maximum is $\sigma_B^2 = 5.1250$ at $t = 3$: levels 0–3 form the dark class and levels 4–7 the bright class, a cut right in the valley of the histogram. As a check, the shortcut formula gives the same value, $\frac{(3.78125 \times 0.4375 - 0.53125)^2}{0.4375 \times 0.5625} = \frac{1.12305^2}{0.24609} = 5.125$, and the total variance is 5.8896, so the minimum within-class variance is $5.8896 - 5.1250 = 0.7646$. With 256 levels the table would have 255 rows, which is why the method is always run by a program.
+
+<Ar>القيمة العظمى هي $\sigma_B^2 = 5.1250$ عند $t = 3$: فالمستويات 0–3 تشكّل الفئة الداكنة، والمستويات 4–7 الفئة الساطعة، وهو تقسيم يقع تمامًا في وادي المدرج التكراري. وللتحقق، تعطي الصيغة المختصرة القيمة نفسها: $\frac{(3.78125 \times 0.4375 - 0.53125)^2}{0.4375 \times 0.5625} = \frac{1.12305^2}{0.24609} = 5.125$، والتباين الكلي 5.8896، لذا يكون أصغر تباين داخل الفئة $5.8896 - 5.1250 = 0.7646$. ومع 256 مستوى يصبح الجدول 255 صفًا، ولهذا تُنفَّذ الطريقة دائمًا ببرنامج.</Ar>
+
+## Otsu at work
+
+<Ar>طريقة أوتسو عمليًا</Ar>
+
+<SlideFigure page={30} caption="Otsu at work: the within-class variance plotted against T for the coins and bacteria images. Each curve has a clear minimum (a wide valley around 150–200 for the coins, near 100 for the bacteria), and that minimum is the chosen threshold." captionAr="طريقة أوتسو عمليًا: التباين داخل الفئة مرسومًا مقابل T لصورتَي العملات والبكتيريا. لكل منحنى قيمة دنيا واضحة (وادٍ عريض حول 150–200 للعملات، وقرب 100 للبكتيريا)، وهذه القيمة الدنيا هي العتبة المختارة." />
+
+Thresholding the two images at their Otsu thresholds gives segmentations as good as the hand-picked thresholds of the earlier slides, but with no human in the loop. The slides also show a poor first guess at a threshold, where only scattered edge pixels survive: with Otsu's method the criterion, not a guess, picks $T$.
+
+<Ar>تقطيع الصورتين بعتبتَي أوتسو يعطي نتائج بجودة العتبات المختارة يدويًا في الشرائح السابقة، لكن من دون تدخل بشري. وتعرض الشرائح أيضًا تخمينًا أوليًا سيئًا للعتبة لا يبقى فيه إلا بكسلات حواف متناثرة: ففي طريقة أوتسو يختار المعيارُ العتبةَ $T$ لا التخمين.</Ar>
+
+Otsu's approach is the basis of MATLAB's **`graythresh`**, which returns the threshold normalised to $[0, 1]$, ready for `im2bw`:
+
+<Ar>طريقة أوتسو هي أساس الدالة **`graythresh`** في MATLAB، التي تعيد العتبة مطبَّعة إلى المجال $[0, 1]$، جاهزةً للدالة `im2bw`:</Ar>
+
+```matlab title="otsu.m"
+I = imread('coins.png');
+level = graythresh(I);       % Otsu threshold, normalised to [0, 1]
+T  = level * 255             % the same threshold as a grey level
+BW = im2bw(I, level);        % or BW = imbinarize(I), which uses Otsu by default
+imshow(BW)
+```
+
+The whole method fits in a few lines of NumPy, using the shortcut formula with cumulative sums:
+
+<Ar>والطريقة كلها تتسع في بضعة أسطر من NumPy، باستخدام الصيغة المختصرة مع المجاميع التراكمية:</Ar>
+
+```python title="otsu.py"
+import numpy as np
+
+def otsu_threshold(img, L=256):
+    hist = np.bincount(img.ravel(), minlength=L)
+    p = hist / hist.sum()                     # normalized histogram p(i)
+    q1 = np.cumsum(p)                         # class-1 probability for t = 0..L-1
+    m = np.cumsum(np.arange(L) * p)           # cumulative mean m(t)
+    mu = m[-1]                                # global mean
+    with np.errstate(divide="ignore", invalid="ignore"):
+        sigma_b2 = (mu * q1 - m) ** 2 / (q1 * (1 - q1))
+    sigma_b2 = np.nan_to_num(sigma_b2, nan=0.0, posinf=0.0)   # empty class: no split
+    return int(np.argmax(sigma_b2))           # class 2 = pixels > t
+
+t = otsu_threshold(img)
+binary = img > t
+# OpenCV: t, bw = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+```
+
+On the 8-level example, `otsu_threshold(img, L=8)` returns 3, and OpenCV agrees.
+
+<Ar>وفي مثال المستويات الثمانية تعيد `otsu_threshold(img, L=8)` القيمة 3، وتوافقها OpenCV.</Ar>
+
+| Strengths <Ar>نقاط القوة</Ar> | Limitations <Ar>القيود</Ar> |
+|---|---|
+| Fully automatic: no manual threshold <Ar>آلية تمامًا: لا عتبة يدوية</Ar> | Assumes a bimodal histogram; fails when one class is tiny or the modes overlap <Ar>تفترض مدرجًا تكراريًا ثنائي القمة؛ وتفشل عندما تكون إحدى الفئتين صغيرة جدًا أو تتداخل القمتان</Ar> |
+| Fast: works on the histogram only, one pass over $L$ levels <Ar>سريعة: تعمل على المدرج التكراري فقط، بمرور واحد على $L$ مستوى</Ar> | Sensitive to noise and uneven lighting: smooth first, or apply it block by block <Ar>حساسة للضوضاء والإضاءة غير المنتظمة: نعّم الصورة أولًا، أو طبّقها قطعةً قطعة</Ar> |
+| Works well for clean images with good contrast <Ar>تعمل جيدًا مع الصور النظيفة ذات التباين الجيد</Ar> | Needs a grayscale input and gives only two classes <Ar>تحتاج إلى مدخل رمادي ولا تعطي إلا فئتين</Ar> |
+
+<Takeaways>
+
+- **Segmentation** partitions an image into homogeneous, meaningful, non-overlapping regions; it is the first step of image analysis.
+  <Ar>**التقطيع (segmentation)** يجزّئ الصورة إلى مناطق متجانسة وذات معنى وغير متداخلة؛ وهو الخطوة الأولى في تحليل الصورة.</Ar>
+- **Single thresholding** labels each pixel object or background by comparing it with $T$; choose $T$ in the **valley** of a **bimodal** histogram. In MATLAB: `X > T` or `im2bw(X, level)` with level in $[0,1]$.
+  <Ar>**التقطيع بعتبة مفردة** يسم كل بكسل بأنه كائن أو خلفية بمقارنته بـ $T$؛ واختر $T$ في **وادي** مدرج تكراري **ثنائي القمة (bimodal)**. وفي MATLAB: `X > T` أو `im2bw(X, level)` مع level في $[0,1]$.</Ar>
+- **Double thresholding** (`X > T1 & X < T2`) isolates a band of grey levels.
+  <Ar>**التقطيع بعتبة مزدوجة** (`X > T1 & X < T2`) يعزل نطاقًا من مستويات الرمادي.</Ar>
+- A **global** threshold fails under uneven lighting; **adaptive** thresholding uses one threshold per block (`blkproc`/`blockproc` with `graythresh`) or per pixel (local mean minus $C$).
+  <Ar>تفشل العتبة **الشاملة** مع الإضاءة غير المنتظمة؛ ويستخدم التقطيع بالعتبة **التكيفية** عتبة لكل قطعة (`blkproc`/`blockproc` مع `graythresh`) أو لكل بكسل (المتوسط المحلي مطروحًا منه $C$).</Ar>
+- **Otsu's method** tries every $T$ and picks the one that **minimises the within-class variance** $q_1\sigma_1^2 + q_2\sigma_2^2$, which is the same as **maximising the between-class variance** $q_1 q_2(\mu_1 - \mu_2)^2$, because their sum is the constant total variance. MATLAB's `graythresh` implements it.
+  <Ar>**طريقة أوتسو (Otsu)** تجرّب كل $T$ وتختار التي **تصغّر التباين داخل الفئة** $q_1\sigma_1^2 + q_2\sigma_2^2$، وهو ما يكافئ **تكبير التباين بين الفئات** $q_1 q_2(\mu_1 - \mu_2)^2$، لأن مجموعهما هو التباين الكلي الثابت. وتنفّذها الدالة `graythresh` في MATLAB.</Ar>
+
+</Takeaways>
+
+## Practice
+
+<Ar>تدريب</Ar>
+
+<Exercise title="Single and double thresholds" titleAr="العتبة المفردة والعتبة المزدوجة" level="easy">
+
+For the image below, write (a) the binary image for light objects with $T = 100$ (object where $f \ge 100$), and (b) the result of a double threshold that makes a pixel white when $50 < f < 100$. (c) How many modes does its histogram have, and which classes do they represent?
+
+<Ar>للصورة أدناه اكتب: (a) الصورة الثنائية لكائنات فاتحة بالعتبة $T = 100$ (الكائن حيث $f \ge 100$)، و(b) نتيجة عتبة مزدوجة تجعل البكسل أبيض عندما $50 < f < 100$. (c) كم قمة في مدرجها التكراري، وأي الفئات تمثّل؟</Ar>
+
+$$
+\begin{bmatrix}
+12 & 15 & 80 & 85\\
+10 & 140 & 150 & 82\\
+145 & 148 & 78 & 14\\
+11 & 76 & 152 & 13
+\end{bmatrix}
+$$
+
+<Solution>
+
+$$
+\text{(a)}\;
+\begin{bmatrix}
+0 & 0 & 0 & 0\\
+0 & 1 & 1 & 0\\
+1 & 1 & 0 & 0\\
+0 & 0 & 1 & 0
+\end{bmatrix}
+\qquad
+\text{(b)}\;
+\begin{bmatrix}
+0 & 0 & 1 & 1\\
+0 & 0 & 0 & 1\\
+0 & 0 & 1 & 0\\
+0 & 1 & 0 & 0
+\end{bmatrix}
+$$
+
+In MATLAB these are `X >= 100` and `X > 50 & X < 100`. (c) Three modes: dark background around 10–15, a middle class around 76–85 and bright objects around 140–152, so a single threshold can only separate the bright class from the rest, and the double threshold picks out the middle one.
+
+<Ar>في MATLAB تكون هاتان النتيجتان `X >= 100` و `X > 50 & X < 100`. (c) ثلاث قمم: خلفية داكنة حول 10–15، وفئة وسطى حول 76–85، وكائنات ساطعة حول 140–152، لذا لا تستطيع العتبة المفردة إلا فصل الفئة الساطعة عن البقية، بينما تنتقي العتبة المزدوجة الفئة الوسطى.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Otsu's threshold by hand" titleAr="عتبة أوتسو يدويًا" level="medium">
+
+A 32-pixel image has 6 grey levels with the histogram below. Using class 1 = levels $\le t$, compute $\sigma_B^2(t)$ for every $t$ and find Otsu's threshold.
+
+<Ar>صورة من 32 بكسلًا لها 6 مستويات رمادي بالمدرج التكراري أدناه. باستخدام الفئة 1 = المستويات $\le t$، احسب $\sigma_B^2(t)$ لكل $t$ وأوجد عتبة أوتسو.</Ar>
+
+| Level $i$ <Ar>المستوى $i$</Ar> | 0 | 1 | 2 | 3 | 4 | 5 |
+|---|---|---|---|---|---|---|
+| Pixels $n_i$ <Ar>عدد البكسلات $n_i$</Ar> | 5 | 10 | 3 | 2 | 8 | 4 |
+
+<Solution>
+
+The products $i\,n_i$ are 0, 10, 6, 6, 32, 20 (total 74, so $\mu = 74/32 = 2.3125$).
+
+<Ar>حواصل الضرب $i\,n_i$ هي 0، 10، 6، 6، 32، 20 (ومجموعها 74، لذا $\mu = 74/32 = 2.3125$).</Ar>
+
+| $t$ | $n_1$ | $n_2$ | $q_1$ | $q_2$ | $\mu_1$ | $\mu_2$ | $\sigma_B^2$ |
+|---|---|---|---|---|---|---|---|
+| 0 | 5 | 27 | 0.1563 | 0.8438 | 0 | $74/27 = 2.7407$ | 0.9903 |
+| 1 | 15 | 17 | 0.4688 | 0.5313 | $10/15 = 0.6667$ | $64/17 = 3.7647$ | 2.3901 |
+| **2** | 18 | 14 | 0.5625 | 0.4375 | $16/18 = 0.8889$ | $58/14 = 4.1429$ | **2.6057** |
+| 3 | 20 | 12 | 0.625 | 0.375 | $22/20 = 1.1$ | $52/12 = 4.3333$ | 2.4503 |
+| 4 | 28 | 4 | 0.875 | 0.125 | $54/28 = 1.9286$ | $20/4 = 5$ | 1.0318 |
+
+For $t = 2$: $0.5625 \times 0.4375 \times (0.8889 - 4.1429)^2 = 0.24609375 \times 10.5885 = 2.6057$. The maximum is at $t = 2$: levels 0–2 form the dark class and levels 3–5 the bright class (in the slides' convention, "$T = 3$").
+
+<Ar>لـ $t = 2$: $0.5625 \times 0.4375 \times (0.8889 - 4.1429)^2 = 0.24609375 \times 10.5885 = 2.6057$. والقيمة العظمى عند $t = 2$: فالمستويات 0–2 تشكّل الفئة الداكنة، والمستويات 3–5 الفئة الساطعة (وبحسب اصطلاح الشرائح: «$T = 3$»).</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Global or local?" titleAr="شاملة أم محلية؟" level="medium">
+
+Explain the difference between global and local (adaptive) thresholding. Which would you use for (a) coins on a uniformly lit table and (b) a page photographed with a shadow across one side? For (b), what can go wrong if you threshold each 64-column strip with its own Otsu level, and how can it be avoided?
+
+<Ar>اشرح الفرق بين التقطيع بالعتبة الشاملة والتقطيع بالعتبة المحلية (التكيفية). أيهما تستخدم لـ (a) عملات معدنية على طاولة مضاءة بانتظام، و(b) صفحة مصوَّرة يغطي الظل أحد جانبيها؟ وفي الحالة (b)، ما الذي قد يسوء إذا قطّعت كل شريط عرضه 64 عمودًا بعتبة Otsu الخاصة به، وكيف يمكن تجنّبه؟</Ar>
+
+<Solution>
+
+A **global** threshold uses one $T$ for every pixel; a **local** threshold $T(x,y)$ depends on the pixel's block or neighbourhood, so it follows changes in illumination.
+
+<Ar>العتبة **الشاملة** تستخدم $T$ واحدة لكل البكسلات؛ أما العتبة **المحلية** $T(x,y)$ فتعتمد على قطعة البكسل أو جواره، فتتبع تغيّرات الإضاءة.</Ar>
+
+- (a) Global (Otsu): the lighting is even, the histogram is bimodal, and one threshold is simpler and faster.
+  <Ar>(a) شاملة (Otsu): الإضاءة منتظمة، والمدرج التكراري ثنائي القمة، والعتبة الواحدة أبسط وأسرع.</Ar>
+- (b) Local: the shadow shifts the grey levels of both text and paper, so no single $T$ works across the page.
+  <Ar>(b) محلية: فالظل يزيح مستويات رمادي النص والورق معًا، لذا لا تصلح $T$ واحدة على امتداد الصفحة.</Ar>
+
+If a strip contains **only paper** (no text), Otsu still splits its histogram into two classes, so the paper's noise and texture appear as false black specks. Remedies: use blocks big enough to always contain some text, skip blocks whose variance is very low (mark them all background), or use a local-mean threshold with an offset, $T(x,y) = \mu(x,y) - C$, which leaves flat paper white.
+
+<Ar>إذا كان الشريط **لا يحتوي إلا على ورق** (بلا نص)، تظل طريقة Otsu تقسم مدرجه التكراري إلى فئتين، فتظهر ضوضاء الورق ونسيجه على هيئة نقاط سوداء زائفة. والعلاج: استخدام قطع كبيرة بما يكفي لتحتوي دائمًا على بعض النص، أو تخطّي القطع ذات التباين الصغير جدًا (ووسمها كلها خلفية)، أو استخدام عتبة المتوسط المحلي مع إزاحة $T(x,y) = \mu(x,y) - C$، التي تترك الورق المستوي أبيض.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Why the two Otsu criteria agree" titleAr="لماذا يتفق معيارا أوتسو" level="hard">
+
+Show that $\sigma^2 = \sigma_w^2(T) + \sigma_B^2(T)$ with $\sigma_B^2 = q_1 q_2 (\mu_1 - \mu_2)^2$, and conclude that minimising $\sigma_w^2$ and maximising $\sigma_B^2$ give the same threshold. Check it on the slides' example at $T = 3$.
+
+<Ar>بيّن أن $\sigma^2 = \sigma_w^2(T) + \sigma_B^2(T)$ حيث $\sigma_B^2 = q_1 q_2 (\mu_1 - \mu_2)^2$، واستنتج أن تصغير $\sigma_w^2$ وتكبير $\sigma_B^2$ يعطيان العتبة نفسها. وتحقق من ذلك على مثال الشرائح عند $T = 3$.</Ar>
+
+<Solution>
+
+Split the sum for $\sigma^2$ over the two classes and, inside class $k$, write $i - \mu = (i - \mu_k) + (\mu_k - \mu)$:
+
+<Ar>قسّم مجموع $\sigma^2$ على الفئتين، واكتب داخل الفئة $k$: $i - \mu = (i - \mu_k) + (\mu_k - \mu)$:</Ar>
+
+$$
+\sum_{i \in C_k} (i - \mu)^2 p(i) = \underbrace{\sum_{i \in C_k} (i - \mu_k)^2 p(i)}_{q_k \sigma_k^2} + 2(\mu_k - \mu)\underbrace{\sum_{i \in C_k} (i - \mu_k)\, p(i)}_{0} + (\mu_k - \mu)^2 \underbrace{\sum_{i \in C_k} p(i)}_{q_k}
+$$
+
+The middle sum is $q_k\mu_k - \mu_k q_k = 0$. Adding the two classes:
+
+<Ar>المجموع الأوسط يساوي $q_k\mu_k - \mu_k q_k = 0$. وبجمع الفئتين:</Ar>
+
+$$
+\sigma^2 = \underbrace{q_1\sigma_1^2 + q_2\sigma_2^2}_{\sigma_w^2} + \underbrace{q_1(\mu_1 - \mu)^2 + q_2(\mu_2 - \mu)^2}_{\sigma_B^2}
+$$
+
+Since $\mu = q_1\mu_1 + q_2\mu_2$ and $q_1 + q_2 = 1$, we have $\mu_1 - \mu = q_2(\mu_1 - \mu_2)$ and $\mu_2 - \mu = q_1(\mu_2 - \mu_1)$, so $\sigma_B^2 = q_1 q_2^2(\mu_1 - \mu_2)^2 + q_2 q_1^2(\mu_1 - \mu_2)^2 = q_1 q_2 (\mu_1 - \mu_2)^2$.
+
+<Ar>وبما أن $\mu = q_1\mu_1 + q_2\mu_2$ و $q_1 + q_2 = 1$، يكون $\mu_1 - \mu = q_2(\mu_1 - \mu_2)$ و $\mu_2 - \mu = q_1(\mu_2 - \mu_1)$، لذا $\sigma_B^2 = q_1 q_2^2(\mu_1 - \mu_2)^2 + q_2 q_1^2(\mu_1 - \mu_2)^2 = q_1 q_2 (\mu_1 - \mu_2)^2$.</Ar>
+
+$\sigma^2$ is computed from the whole histogram and does not depend on $T$, so whatever $T$ makes $\sigma_w^2$ smallest makes $\sigma_B^2 = \sigma^2 - \sigma_w^2$ largest. Check at $T = 3$: $\sigma_B^2 = 0.4722 \times 0.5278 \times (0.6471 - 3.8947)^2 = 0.249228 \times 10.5474 = 2.6287$, and $0.4909 + 2.6287 = 3.1196 = \sigma^2$.
+
+<Ar>تُحسب $\sigma^2$ من المدرج التكراري كله ولا تعتمد على $T$، لذا فإن أي $T$ تجعل $\sigma_w^2$ أصغر ما يمكن تجعل $\sigma_B^2 = \sigma^2 - \sigma_w^2$ أكبر ما يمكن. والتحقق عند $T = 3$: $\sigma_B^2 = 0.4722 \times 0.5278 \times (0.6471 - 3.8947)^2 = 0.249228 \times 10.5474 = 2.6287$، و $0.4909 + 2.6287 = 3.1196 = \sigma^2$.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "Otsu's method chooses the threshold that…",
+      qAr: "تختار طريقة أوتسو العتبة التي…",
+      options: ["Maximises the within-class variance", "Minimises the between-class variance", "Maximises the between-class variance", "Equals the mean grey level"],
+      optionsAr: ["تكبّر التباين داخل الفئة", "تصغّر التباين بين الفئات", "تكبّر التباين بين الفئات", "تساوي متوسط مستوى الرمادي"],
+      answer: 2,
+      explain: "Minimising the within-class variance and maximising the between-class variance are the same, because their sum is the constant total variance.",
+      explainAr: "تصغير التباين داخل الفئة وتكبير التباين بين الفئات أمر واحد، لأن مجموعهما هو التباين الكلي الثابت."
+    },
+    {
+      q: "Which situation defeats a single global threshold?",
+      qAr: "أي حالة تُفشل العتبة الشاملة الواحدة؟",
+      options: ["A bimodal histogram", "Uneven illumination across the image", "Good contrast between object and background", "An 8-bit image"],
+      optionsAr: ["مدرج تكراري ثنائي القمة", "إضاءة غير منتظمة على امتداد الصورة", "تباين جيد بين الكائن والخلفية", "صورة 8 بت"],
+      answer: 1,
+      explain: "With uneven lighting the same object has different grey levels in different places, so the threshold must vary too.",
+      explainAr: "مع الإضاءة غير المنتظمة يكون للكائن نفسه مستويات رمادي مختلفة في أماكن مختلفة، لذا يجب أن تتغير العتبة أيضًا."
+    },
+    {
+      q: "What does the MATLAB expression X > T1 & X < T2 implement?",
+      qAr: "ماذا ينفّذ التعبير X > T1 & X < T2 في MATLAB؟",
+      options: ["Single thresholding", "Double thresholding", "Otsu's method", "Histogram equalization"],
+      optionsAr: ["التقطيع بعتبة مفردة", "التقطيع بعتبة مزدوجة", "طريقة أوتسو", "تسوية المدرج التكراري"],
+      answer: 1,
+      explain: "Pixels between the two thresholds become white, all others black.",
+      explainAr: "تصبح البكسلات الواقعة بين العتبتين بيضاء، وكل ما عداها أسود."
+    },
+    {
+      q: "For a uint8 image, im2bw(I, 0.5) thresholds at about which grey level?",
+      qAr: "لصورة من النوع uint8، عند أي مستوى رمادي تقريبًا تقطّع im2bw(I, 0.5)؟",
+      options: ["0.5", "50", "128", "255"],
+      optionsAr: ["0.5", "50", "128", "255"],
+      answer: 2,
+      explain: "im2bw scales the level to the image's range: 0.5 × 255 ≈ 128.",
+      explainAr: "تحوّل im2bw قيمة level إلى مدى الصورة: 0.5 × 255 ≈ 128."
+    },
+    {
+      q: "In Otsu's method, q₁(T) is…",
+      qAr: "في طريقة أوتسو، q₁(T) هي…",
+      options: ["The mean of class 1", "The probability of class 1: the sum of p(i) for i = 0…T", "The variance of class 1", "The number of grey levels"],
+      optionsAr: ["متوسط الفئة 1", "احتمال الفئة 1: مجموع p(i) من i = 0 حتى T", "تباين الفئة 1", "عدد مستويات الرمادي"],
+      answer: 1,
+      explain: "q₁ is the fraction of pixels whose level is at most T.",
+      explainAr: "q₁ هي نسبة البكسلات التي لا يتجاوز مستواها T."
+    },
+    {
+      q: "What does adaptive thresholding with blkproc and graythresh do?",
+      qAr: "ماذا يفعل التقطيع بالعتبة التكيفية باستخدام blkproc و graythresh؟",
+      options: ["Applies one Otsu threshold to the whole image", "Computes a separate Otsu threshold for each block", "Equalizes the histogram of each block", "Applies a median filter to each block"],
+      optionsAr: ["يطبّق عتبة أوتسو واحدة على الصورة كلها", "يحسب عتبة أوتسو مستقلة لكل قطعة", "يسوّي المدرج التكراري لكل قطعة", "يطبّق مرشح الوسيط على كل قطعة"],
+      answer: 1,
+      explain: "Each block is binarised with its own threshold, which follows the local illumination.",
+      explainAr: "تُحوَّل كل قطعة إلى صورة ثنائية بعتبتها الخاصة، التي تتبع الإضاءة المحلية."
+    }
+  ]}
+/>

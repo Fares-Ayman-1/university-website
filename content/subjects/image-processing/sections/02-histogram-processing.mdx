@@ -1,0 +1,585 @@
+---
+number: 2
+title: Histogram Processing
+titleAr: "معالجة المدرج التكراري"
+summary: What an image histogram and its shape say about brightness and contrast, then histogram equalization and histogram matching worked by hand step by step and checked in Python, with the Q&A problems on contrast stretching, equalization, bit-plane slicing and matching.
+summaryAr: "ما المدرج التكراري (histogram) للصورة وما يدل عليه شكله من سطوع وتباين، ثم تسوية المدرج التكراري (histogram equalization) ومطابقته (histogram matching) حسابيًا باليد خطوة بخطوة مع التحقق باستخدام Python، إضافةً إلى مسائل الأسئلة والأجوبة في مط التباين والتسوية وتقطيع مستويات البت والمطابقة."
+topics: [Histogram, Normalized histogram, Histogram shape, Channel histograms, Histogram equalization, Mean and standard deviation, Histogram matching, Bit-plane slicing]
+duration: 60 min hands-on
+kind: practical
+sources:
+  - file: sections/sec2/Histogram processing.pdf
+    label: Section 2 – Image histograms and histogram processing (slides)
+    pages: "1-17"
+  - file: "sections/sec2/Histogram (Q&A).pdf"
+    label: Section 2 – Histogram Q&A and assignment (handwritten solutions)
+    pages: "1-8"
+bookRefs:
+  - book: ip-book
+    chapter: Ch 2 · Point Processing (histogram, histogram equalization)
+    pages: "41, 50–56"
+  - book: gonzalez
+    chapter: Ch 3 · Intensity Transformations and Spatial Filtering (3.3 Histogram Processing)
+---
+
+<Objectives>
+
+- Compute a **histogram** and a **normalized histogram**, and read an image's brightness and contrast from its shape.
+  <Ar>حساب **المدرج التكراري (histogram)** و**المدرج التكراري المُطبَّع (normalized histogram)**، وقراءة سطوع الصورة وتباينها من شكله.</Ar>
+- Apply **histogram equalization** by hand: $n_k$, $p_k$, CDF, $(L-1)\cdot$CDF, rounding.
+  <Ar>تطبيق **تسوية المدرج التكراري (histogram equalization)** باليد: $n_k$ و $p_k$ ودالة التوزيع التراكمي (CDF) و $(L-1)\cdot$CDF ثم التقريب.</Ar>
+- Apply **histogram matching** to a specified histogram using both CDFs.
+  <Ar>تطبيق **مطابقة المدرج التكراري (histogram matching)** على مدرج مُحدَّد باستخدام دالتَي التوزيع التراكمي كلتيهما.</Ar>
+- Check every hand calculation with a few lines of NumPy.
+  <Ar>التحقق من كل حساب يدوي ببضعة أسطر من NumPy.</Ar>
+
+</Objectives>
+
+## The histogram: counting intensities
+
+<Ar>المدرج التكراري: عدّ الشدّات</Ar>
+
+Every pixel contributes one value to a distribution. The histogram counts those values, turning a picture into something we can inspect, compare and transform. For an $M \times N$ image with $L$ gray levels ($L = 256$ for 8 bits, range $0 \ldots 255$):
+
+<Ar>يساهم كل بكسل بقيمة واحدة في توزيع. ويَعُدّ المدرج التكراري (histogram) هذه القيم، فيحوّل الصورة إلى شيء يمكننا فحصه ومقارنته وتحويله. لصورة أبعادها $M \times N$ وعدد مستويات الرمادي فيها $L$ (أي $L = 256$ لعمق 8 بت، والمدى $0 \ldots 255$):</Ar>
+
+$$
+h(r_k) = n_k, \qquad p_r(r_k) = \frac{n_k}{MN}, \qquad \sum_{k=0}^{L-1} p_r(r_k) = 1, \qquad k = 0, 1, \ldots, L-1
+$$
+
+Intensity goes on the x-axis and the count on the y-axis. Histograms can also use **bins**: the slide's example groups the values into ranges of four levels, $[1, 5], (5, 9], \ldots$, and counts the pixels in each range.
+
+<Ar>توضع الشدة على المحور الأفقي والعدد على المحور الرأسي. ويمكن أيضًا تجميع القيم في **فئات (bins)**: فمثال الشريحة يجمع القيم في مدى من أربعة مستويات، $[1, 5], (5, 9], \ldots$، ويَعُدّ البكسلات في كل مدى.</Ar>
+
+```python title="histogram.py"
+import numpy as np
+from PIL import Image
+
+img = np.array([[6, 13, 12, 13],
+                [12, 6, 7, 12],
+                [13, 7, 7, 12],
+                [14, 11, 11, 14]], dtype=np.uint8)   # a 4-bit image (L = 16)
+
+h = np.bincount(img.ravel(), minlength=16)   # n_k for k = 0..15
+p = h / img.size                              # normalized histogram
+print(h)          # [0 0 0 0 0 0 2 3 0 0 0 2 4 3 2 0]
+print(p.sum())    # 1.0
+
+# For a real photo: Image.open("photo.jpg").convert("L").histogram() -> 256 counts
+```
+
+### Shape as evidence
+
+<Ar>الشكل دليل</Ar>
+
+The **position** of the histogram tells you the brightness and its **spread** tells you the contrast. Peak height tells you how many pixels occupy an intensity range.
+
+<Ar>يدل **موضع** المدرج التكراري على السطوع (brightness)، ويدل **انتشاره** على التباين (contrast). أما ارتفاع القمة فيدل على عدد البكسلات التي تشغل مدى الشدة ذاك.</Ar>
+
+| Histogram <Ar>المدرج التكراري</Ar> | Image <Ar>الصورة</Ar> |
+|---|---|
+| Crowded on the left <Ar>متكدس جهة اليسار</Ar> | Dark <Ar>داكنة</Ar> |
+| Crowded on the right <Ar>متكدس جهة اليمين</Ar> | Bright <Ar>ساطعة</Ar> |
+| Narrow, in the middle <Ar>ضيق، في المنتصف</Ar> | Low contrast, washed out <Ar>منخفضة التباين، باهتة</Ar> |
+| Wide, covering the whole range <Ar>عريض، يغطي المدى كله</Ar> | High contrast <Ar>عالية التباين</Ar> |
+
+<SlideFigure page={3} caption="Shape reveals darkness, brightness and contrast: the same pollen image as dark, bright, low-contrast and high-contrast, each beside its histogram." captionAr="الشكل يكشف الإعتام والسطوع والتباين: صورة حبوب اللقاح نفسها داكنةً وساطعةً ومنخفضة التباين وعالية التباين، وبجانب كل منها مدرجها التكراري." />
+
+### One histogram per colour channel
+
+<Ar>مدرج تكراري لكل قناة لونية</Ar>
+
+A grayscale image has one intensity distribution. A colour image can be inspected through **separate red, green and blue histograms**. Channel views expose a **colour cast** (one channel shifted right) and **clipping** (a spike at 0 or 255) that a single gray histogram hides. In Pillow, `histogram()` on an RGB image returns 768 counts: 256 for R, then G, then B.
+
+<Ar>للصورة الرمادية توزيع شدة واحد. أما الصورة الملونة فيمكن فحصها من خلال **مدرجات تكرارية منفصلة للأحمر والأخضر والأزرق**. وتكشف مدرجات القنوات **الانحراف اللوني (color cast)**، أي إزاحة قناة واحدة نحو اليمين، و**القصّ (clipping)**، أي قمة حادة عند 0 أو 255، وهي أمور يخفيها المدرج الرمادي الواحد. وفي Pillow تعيد الدالة `histogram()` لصورة RGB عدد 768 قيمة: 256 للأحمر، ثم للأخضر، ثم للأزرق.</Ar>
+
+## Equalization and matching
+
+<Ar>التسوية والمطابقة</Ar>
+
+| | Equalization <Ar>التسوية (equalization)</Ar> | Matching <Ar>المطابقة (matching)</Ar> |
+|---|---|---|
+| Goal <Ar>الهدف</Ar> | Use the image's own distribution to improve contrast <Ar>استخدام توزيع الصورة نفسها لتحسين التباين</Ar> | Make the image's tonal distribution resemble a reference <Ar>جعل توزيع درجات الصورة يشبه توزيعًا مرجعيًا</Ar> |
+| Best when <Ar>الأنسب عندما</Ar> | A quick, parameter-free contrast boost is needed <Ar>نحتاج إلى تحسين سريع للتباين دون معاملات</Ar> | Consistency with a reference image or collection matters <Ar>يهمّ الاتساق مع صورة أو مجموعة صور مرجعية</Ar> |
+
+## Histogram equalization
+
+<Ar>تسوية المدرج التكراري</Ar>
+
+**Histogram equalization** adjusts the intensities so that they spread over the whole range. Each input level $r_k$ is mapped to an output level $s_k$ by the scaled **cumulative distribution function** (CDF) of the image itself:
+
+<Ar>تعدّل **تسوية المدرج التكراري (histogram equalization)** الشدّات بحيث تنتشر على المدى كله. ويُحوَّل كل مستوى دخل $r_k$ إلى مستوى خرج $s_k$ باستخدام **دالة التوزيع التراكمي (CDF)** للصورة نفسها بعد تحجيمها:</Ar>
+
+$$
+s_k = T(r_k) = (L-1)\sum_{j=0}^{k} p_r(r_j), \qquad k = 0, 1, \ldots, L-1
+$$
+
+$T$ is increasing, so the order of gray levels is kept. Where many pixels sit, the CDF climbs steeply and neighbouring levels are pushed apart; where few pixels sit, levels are squeezed together. The recipe is always the same:
+
+<Ar>الدالة $T$ متزايدة، لذا يُحفَظ ترتيب مستويات الرمادي. فحيث تتجمع بكسلات كثيرة تصعد دالة التوزيع التراكمي بحدة فتتباعد المستويات المتجاورة، وحيث تقل البكسلات تتقارب المستويات. والوصفة ثابتة دائمًا:</Ar>
+
+<Steps>
+
+1. Count $n_k$ for each level and divide by $MN$ to get $p_k$.
+   <Ar>عُدّ $n_k$ لكل مستوى، واقسم على $MN$ لتحصل على $p_k$.</Ar>
+2. Accumulate $p_k$ into the CDF.
+   <Ar>اجمع قيم $p_k$ تراكميًا لتحصل على دالة التوزيع التراكمي (CDF).</Ar>
+3. Multiply by $L-1$ and round to the nearest level: that is $s_k$.
+   <Ar>اضرب في $L-1$ وقرّب إلى أقرب مستوى، فيكون الناتج $s_k$.</Ar>
+4. Replace every pixel $r_k$ by $s_k$; the new histogram has the same counts at the new levels.
+   <Ar>استبدل كل بكسل $r_k$ بالقيمة $s_k$؛ فيحمل المدرج الجديد الأعداد نفسها عند المستويات الجديدة.</Ar>
+
+</Steps>
+
+<SlideFigure page={6} caption="Histogram equalization: a low-contrast photo whose histogram is crowded between about 80 and 160 (a, b), and the equalized photo whose histogram spreads over 0–255 (c, d)." captionAr="تسوية المدرج التكراري: صورة منخفضة التباين يتكدس مدرجها التكراري تقريبًا بين 80 و 160 (a, b)، والصورة بعد التسوية وقد انتشر مدرجها على المدى 0–255 (c, d)." />
+
+### Worked example: a 32 × 32 image with 32 gray levels
+
+<Ar>مثال محلول: صورة بأبعاد 32 × 32 بعدد 32 مستوى رمادي</Ar>
+
+A $32 \times 32$ image ($MN = 1024$) with $L = 32$ gray levels ($L - 1 = 31$) has these counts. Draw (i) the histogram, find (ii) the mean and standard deviation, and (iii) the equalized histogram.
+
+<Ar>صورة بأبعاد $32 \times 32$ (أي $MN = 1024$) بعدد $L = 32$ مستوى رمادي (أي $L - 1 = 31$) لها الأعداد التالية. ارسم (i) المدرج التكراري، وأوجد (ii) المتوسط والانحراف المعياري، و(iii) المدرج التكراري بعد التسوية.</Ar>
+
+| Gray level $r_k$ <Ar>مستوى الرمادي $r_k$</Ar> | 12 | 14 | 15 | 16 | 18 | 19 | 20 | 21 | 22 |
+|---|---|---|---|---|---|---|---|---|---|
+| Pixels $n_k$ <Ar>عدد البكسلات $n_k$</Ar> | 74 | 50 | 100 | 250 | 150 | 280 | 30 | 50 | 40 |
+
+**(i) and (iii) in one table.** The slide rounds $p_k$ to two decimals ($74/1024 = 0.0723 \approx 0.07$) and accumulates the rounded values:
+
+<Ar>**البندان (i) و(iii) في جدول واحد.** تقرّب الشريحة $p_k$ إلى منزلتين عشريتين ($74/1024 = 0.0723 \approx 0.07$) ثم تجمع القيم المقرّبة تراكميًا:</Ar>
+
+| $r_k$ | $n_k$ | $p_k = n_k/1024$ | $\text{CDF}=\sum_{j \le k} p_j$ | $31 \times \text{CDF}$ | $s_k$ |
+|---|---|---|---|---|---|
+| 12 | 74 | 0.07 | 0.07 | 2.17 | 2 |
+| 14 | 50 | 0.05 | 0.12 | 3.72 | 4 |
+| 15 | 100 | 0.10 | 0.22 | 6.82 | 7 |
+| 16 | 250 | 0.24 | 0.46 | 14.26 | 14 |
+| 18 | 150 | 0.15 | 0.61 | 18.91 | 19 |
+| 19 | 280 | 0.27 | 0.88 | 27.28 | 27 |
+| 20 | 30 | 0.03 | 0.91 | 28.21 | 28 |
+| 21 | 50 | 0.05 | 0.96 | 29.76 | 30 |
+| 22 | 40 | 0.04 | 1.00 | 31.00 | 31 |
+
+Re-computing every row confirms the slide's numbers. With unrounded probabilities the products are $2.24, 3.75, 6.78, 14.35, 18.89, 27.37, 28.28, 29.79, 31$, which round to the **same** $s_k$.
+
+<Ar>إعادة حساب كل صف تؤكد صحة أرقام الشريحة. وباستخدام الاحتمالات غير المقرّبة تكون نواتج الضرب $2.24, 3.75, 6.78, 14.35, 18.89, 27.37, 28.28, 29.79, 31$، وتُقرَّب إلى قيم $s_k$ **نفسها**.</Ar>
+
+<SlideFigure page={9} caption="(i) The histogram p_r(r_k): nine bars between 12 and 22, tallest at 19 (0.27) and 16 (0.24); levels 0–11 and 23–31 are empty." captionAr="(i) المدرج التكراري p_r(r_k): تسعة أعمدة بين 12 و 22، أعلاها عند 19 (0.27) و 16 (0.24)؛ والمستويات 0–11 و 23–31 فارغة." />
+
+**(ii) Mean and standard deviation.**
+
+<Ar>**(ii) المتوسط والانحراف المعياري.**</Ar>
+
+$$
+\mu = \sum_k r_k\,p_k = 12(0.07) + 14(0.05) + 15(0.1) + \cdots + 22(0.04) = 17.24
+$$
+
+$$
+\sigma^2 = \sum_k (r_k - \mu)^2 p_k = (12 - 17.24)^2(0.07) + (14 - 17.24)^2(0.05) + \cdots \approx 6.09, \qquad \sigma = \sqrt{6.09} \approx 2.47
+$$
+
+The slide's 17.24 comes from the rounded $p_k$; the exact mean is $\sum r_k n_k / 1024 = 17638/1024 = 17.22$. Either way $\sigma^2 \approx 6.08\text{–}6.09$ and $\sigma \approx 2.47$. A standard deviation of 2.5 levels out of 32 confirms what the histogram shows: a **low-contrast** image.
+
+<Ar>القيمة 17.24 في الشريحة ناتجة عن قيم $p_k$ المقرّبة؛ أما المتوسط الدقيق فهو $\sum r_k n_k / 1024 = 17638/1024 = 17.22$. وفي الحالتين يكون التباين الإحصائي (variance) $\sigma^2 \approx 6.08\text{–}6.09$ و $\sigma \approx 2.47$. وانحراف معياري قدره 2.5 مستوى من أصل 32 يؤكد ما يُظهره المدرج: الصورة **منخفضة التباين (contrast)**.</Ar>
+
+**(iii) The equalized histogram** keeps each count and moves it to $s_k$: $P(s{=}2) = 0.07$, $P(4) = 0.05$, $P(7) = 0.1$, $P(14) = 0.24$, $P(19) = 0.15$, $P(27) = 0.27$, $P(28) = 0.03$, $P(30) = 0.05$, $P(31) = 0.04$. The levels now run from 2 to 31.
+
+<Ar>**(iii) المدرج التكراري بعد التسوية** يحتفظ بكل عدد وينقله إلى $s_k$: $P(s{=}2) = 0.07$، $P(4) = 0.05$، $P(7) = 0.1$، $P(14) = 0.24$، $P(19) = 0.15$، $P(27) = 0.27$، $P(28) = 0.03$، $P(30) = 0.05$، $P(31) = 0.04$. وأصبحت المستويات تمتد من 2 إلى 31.</Ar>
+
+<SlideFigure page={12} caption="(iii) The equalized histogram: the same nine bar heights, now spread from 2 to 31. The bars are not equal: discrete equalization moves bins but cannot split them." captionAr="(iii) المدرج التكراري بعد التسوية: ارتفاعات الأعمدة التسعة نفسها وقد انتشرت من 2 إلى 31. الأعمدة غير متساوية: فالتسوية المتقطعة تنقل الفئات لكنها لا تستطيع تقسيمها." />
+
+<Callout type="note" title="Why the result is not flat" titleAr="لماذا لا تكون النتيجة مستوية">
+  In theory equalization gives a uniform histogram. With discrete levels, all pixels of one level go to <strong>one</strong> output level, so a bin can move (or merge with another) but never split. The result is <strong>spread out</strong>, not flat.
+
+  <Ar>نظريًا تعطي التسوية مدرجًا تكراريًا منتظمًا. لكن مع المستويات المتقطعة تنتقل جميع بكسلات المستوى الواحد إلى مستوى خرج <strong>واحد</strong>، فيمكن للفئة أن تنتقل (أو تندمج مع غيرها) لكنها لا تنقسم أبدًا. لذا تكون النتيجة <strong>منتشرة</strong> لا مستوية.</Ar>
+</Callout>
+
+```python title="equalize_example.py"
+import numpy as np
+
+L = 32
+r = np.array([12, 14, 15, 16, 18, 19, 20, 21, 22])
+n = np.array([74, 50, 100, 250, 150, 280, 30, 50, 40])
+
+img = np.repeat(r, n).reshape(32, 32)          # a 32x32 image with exactly these counts
+p = np.bincount(img.ravel(), minlength=L) / img.size
+cdf = np.cumsum(p)
+lut = np.floor((L - 1) * cdf + 0.5).astype(int)   # s_k = round((L-1) * CDF), halves up
+eq = lut[img]                                     # apply the mapping to every pixel
+
+levels = np.arange(L)
+mu = (levels * p).sum()
+sd = np.sqrt(((levels - mu) ** 2 * p).sum())
+print(lut[r])                    # [ 2  4  7 14 19 27 28 30 31]
+print(round(mu, 2), round(sd, 2))   # 17.22 2.47
+print(np.nonzero(np.bincount(eq.ravel(), minlength=L))[0])   # [ 2  4  7 14 19 27 28 30 31]
+```
+
+<Callout type="warning" title="Library equalizers use other formulas" titleAr="دوال التسوية في المكتبات تستخدم صيغًا أخرى">
+  <code>cv2.equalizeHist</code> maps the first occupied level to 0, and Pillow's <code>ImageOps.equalize</code> rounds its own way, so both differ from the hand formula. Build the look-up table yourself, as above, to check an exam answer.
+
+  <Ar>الدالة <code>cv2.equalizeHist</code> تحوّل أول مستوى مشغول إلى 0، والدالة <code>ImageOps.equalize</code> في Pillow تقرّب بطريقتها الخاصة، لذا تختلف كلتاهما عن الصيغة اليدوية. ابنِ جدول البحث (look-up table) بنفسك، كما في الشيفرة السابقة، للتحقق من إجابة امتحان.</Ar>
+</Callout>
+
+## Histogram matching
+
+<Ar>مطابقة المدرج التكراري</Ar>
+
+**Histogram matching** (specification) produces an image whose histogram has a **specified** shape $p_z(z)$. It goes through the equalized level $s$ as a bridge: equalize the input with $T$, equalize the specification with $G$, then invert $G$.
+
+<Ar>تُنتج **مطابقة المدرج التكراري (histogram matching)**، وتسمى أيضًا التحديد (specification)، صورةً لمدرجها التكراري شكل **مُحدَّد** $p_z(z)$. وهي تمر بالمستوى المُسوّى $s$ جسرًا: نسوّي الدخل بالدالة $T$، ونسوّي المدرج المحدَّد بالدالة $G$، ثم نعكس $G$.</Ar>
+
+$$
+s_k = T(r_k) = (L-1)\sum_{j=0}^{k} p_r(r_j), \qquad G(z_q) = (L-1)\sum_{i=0}^{q} p_z(z_i), \qquad z = G^{-1}(s)
+$$
+
+<SlideFigure page={13} caption="Histogram matching: r is mapped to s by T(r), and s is mapped to z by inverting G(z), the equalizing function of the specified histogram." captionAr="مطابقة المدرج التكراري: يُحوَّل r إلى s بالدالة T(r)، ثم يُحوَّل s إلى z بعكس G(z)، وهي دالة التسوية للمدرج المحدَّد." />
+
+<Steps>
+
+1. Equalize the input: compute $s_k = T(r_k)$ and round.
+   <Ar>سوِّ الدخل: احسب $s_k = T(r_k)$ وقرّب.</Ar>
+2. Equalize the specification: compute $G(z_q)$ for every $z_q$ and round.
+   <Ar>سوِّ المدرج المحدَّد: احسب $G(z_q)$ لكل $z_q$ وقرّب.</Ar>
+3. For each $s_k$, find the $z_q$ whose $G(z_q)$ is **closest** to $s_k$; on a tie take the smallest $z_q$.
+   <Ar>لكل $s_k$، أوجد $z_q$ الذي تكون قيمة $G(z_q)$ له **الأقرب** إلى $s_k$؛ وعند التساوي خذ أصغر $z_q$.</Ar>
+4. Map every pixel $r_k \to z_q$ and add up the probabilities that land on the same $z_q$.
+   <Ar>حوِّل كل بكسل $r_k \to z_q$، واجمع الاحتمالات التي تقع على $z_q$ نفسه.</Ar>
+
+</Steps>
+
+### Worked example: matching the previous image
+
+<Ar>مثال محلول: مطابقة الصورة السابقة</Ar>
+
+For the same image, find the histogram that results from matching it to this specification (the probabilities sum to 1):
+
+<Ar>للصورة نفسها، أوجد المدرج التكراري الناتج عن مطابقتها بالمدرج المحدَّد التالي (مجموع الاحتمالات 1):</Ar>
+
+| $z_q$ | 4 | 6 | 8 | 10 | 12 | 16 | 18 | 20 | 22 |
+|---|---|---|---|---|---|---|---|---|---|
+| $p_z(z_q)$ | 0.05 | 0.1 | 0.1 | 0.15 | 0.2 | 0.15 | 0.1 | 0.1 | 0.05 |
+
+**Step 2: the function $G$.**
+
+<Ar>**الخطوة 2: الدالة $G$.**</Ar>
+
+| $z_q$ | 4 | 6 | 8 | 10 | 12 | 16 | 18 | 20 | 22 |
+|---|---|---|---|---|---|---|---|---|---|
+| $\sum p_z$ | 0.05 | 0.15 | 0.25 | 0.40 | 0.60 | 0.75 | 0.85 | 0.95 | 1.00 |
+| $31 \times \sum p_z$ | 1.55 | 4.65 | 7.75 | 12.4 | 18.6 | 23.25 | 26.35 | 29.45 | 31 |
+| $G(z_q)$ | 2 | 5 | 8 | 12 | 19 | 23 | 26 | 29 | 31 |
+
+<Callout type="note" title="Slip on slide 15" titleAr="خطأ بسيط في الشريحة 15">
+  The slide writes $G(z_6) = 31 \times (0.1 + 0.05) = 4.56$. The product is $31 \times 0.15 = 4.65$. Both round to 5, so the rest of the solution is unaffected.
+
+  <Ar>تكتب الشريحة $G(z_6) = 31 \times (0.1 + 0.05) = 4.56$، والصحيح $31 \times 0.15 = 4.65$. وكلاهما يُقرَّب إلى 5، فلا يتأثر باقي الحل.</Ar>
+</Callout>
+
+**Steps 3 and 4: map each $s_k$ to the closest $G(z_q)$.** The $s_k$ column comes from the equalization above:
+
+<Ar>**الخطوتان 3 و 4: حوِّل كل $s_k$ إلى أقرب $G(z_q)$.** يأتي العمود $s_k$ من التسوية السابقة:</Ar>
+
+| $r_k$ | $s_k$ | closest $G(z_q)$ <Ar>أقرب $G(z_q)$</Ar> | $z_q$ | $P(z_q)$ |
+|---|---|---|---|---|
+| 12 | 2 | 2 | 4 | 0.07 |
+| 14 | 4 | 5 | 6 | 0.05 |
+| 15 | 7 | 8 | 8 | 0.10 |
+| 16 | 14 | 12 | 10 | 0.24 |
+| 18 | 19 | 19 | 12 | 0.15 |
+| 19 | 27 | 26 | 18 | 0.27 |
+| 20 | 28 | 29 | 20 | 0.03 + 0.05 = 0.08 |
+| 21 | 30 | 29 (tie with 31) <Ar>29 (تساوٍ مع 31)</Ar> | 20 | (included above) <Ar>(محسوب أعلاه)</Ar> |
+| 22 | 31 | 31 | 22 | 0.04 |
+
+Levels $r = 20$ and $r = 21$ both land on $z = 20$, so their probabilities add, and no pixel lands on $z = 16$. The matched histogram is therefore $P(4) = 0.07$, $P(6) = 0.05$, $P(8) = 0.1$, $P(10) = 0.24$, $P(12) = 0.15$, $P(16) = 0$, $P(18) = 0.27$, $P(20) = 0.08$, $P(22) = 0.04$: it follows the specification as closely as whole levels allow, but not exactly.
+
+<Ar>يقع المستويان $r = 20$ و $r = 21$ كلاهما على $z = 20$، فتُجمع احتمالاتهما، ولا يقع أي بكسل على $z = 16$. وعليه يكون المدرج بعد المطابقة $P(4) = 0.07$، $P(6) = 0.05$، $P(8) = 0.1$، $P(10) = 0.24$، $P(12) = 0.15$، $P(16) = 0$، $P(18) = 0.27$، $P(20) = 0.08$، $P(22) = 0.04$: فهو يتبع المدرج المحدَّد بأقرب ما تسمح به المستويات الصحيحة، لكن ليس تمامًا.</Ar>
+
+```python title="match_example.py"
+import numpy as np
+
+L = 32
+r  = np.array([12, 14, 15, 16, 18, 19, 20, 21, 22])
+n  = np.array([74, 50, 100, 250, 150, 280, 30, 50, 40])
+z  = np.array([4, 6, 8, 10, 12, 16, 18, 20, 22])
+pz = np.array([0.05, 0.1, 0.1, 0.15, 0.2, 0.15, 0.1, 0.1, 0.05])
+
+
+def round_half_up(x):
+    return np.floor(x + 0.5).astype(int)
+
+
+s = round_half_up((L - 1) * np.cumsum(n) / n.sum())   # T(r)
+G = round_half_up((L - 1) * np.cumsum(pz))            # G(z)
+# closest G(z_q) for every s_k; argmin returns the first (smallest z) on a tie
+zq = z[np.abs(G[None, :] - s[:, None]).argmin(axis=1)]
+
+print(s)    # [ 2  4  7 14 19 27 28 30 31]
+print(G)    # [ 2  5  8 12 19 23 26 29 31]
+print(zq)   # [ 4  6  8 10 12 18 20 20 22]
+for level in np.unique(zq):
+    print(level, round(n[zq == level].sum() / n.sum(), 3))
+# 4 0.072 | 6 0.049 | 8 0.098 | 10 0.244 | 12 0.146 | 18 0.273 | 20 0.078 | 22 0.039
+```
+
+<Takeaways>
+
+- The histogram counts pixels per gray level; $p_k = n_k/MN$ sums to 1. **Position** shows brightness, **spread** shows contrast.
+  <Ar>يَعُدّ المدرج التكراري البكسلات في كل مستوى رمادي؛ ومجموع $p_k = n_k/MN$ يساوي 1. **الموضع** يدل على السطوع، و**الانتشار** يدل على التباين.</Ar>
+- **Equalization**: $s_k = \text{round}\big((L-1)\cdot\text{CDF}(r_k)\big)$. It spreads the levels over the range; counts move but never split, so the result is not flat.
+  <Ar>**التسوية**: $s_k = \text{round}\big((L-1)\cdot\text{CDF}(r_k)\big)$. وهي تنشر المستويات على المدى؛ تنتقل الأعداد لكنها لا تنقسم، لذا لا تكون النتيجة مستوية.</Ar>
+- **Matching**: equalize the input ($T$) and the specification ($G$), then send each $s_k$ to the $z_q$ with the closest $G(z_q)$.
+  <Ar>**المطابقة**: سوِّ الدخل ($T$) والمدرج المحدَّد ($G$)، ثم أرسل كل $s_k$ إلى $z_q$ صاحب أقرب قيمة $G(z_q)$.</Ar>
+- Keep exact fractions or two decimals consistently, round halves up, and check with a NumPy look-up table rather than a library equalizer.
+  <Ar>التزم باستخدام الكسور الدقيقة أو منزلتين عشريتين باتساق، وقرّب الأنصاف إلى الأعلى، وتحقق بجدول بحث في NumPy لا بدالة تسوية جاهزة من مكتبة.</Ar>
+
+</Takeaways>
+
+## Practice
+
+<Ar>تدريب</Ar>
+
+These problems come from the section's Q&A sheet (IP1, IP2, IP4 and Assignment 1). Every answer below was re-computed and agrees with the handwritten solutions.
+
+<Ar>هذه المسائل من ورقة الأسئلة والأجوبة الخاصة بالسكشن (IP1 و IP2 و IP4 و Assignment 1). وقد أُعيد حساب كل إجابة أدناه، وهي تتفق مع الحلول المكتوبة باليد.</Ar>
+
+<Exercise title="IP1: stretch, then equalize a 4-bit image" titleAr="IP1: مطّ التباين ثم تسوية صورة بعمق 4 بت" level="medium">
+
+A $4 \times 4$, 4 bits/pixel image ($L = 16$) is given. (a) Apply full-scale contrast stretching and sketch the result. (b) Apply histogram equalization and sketch the resulting histogram and image.
+
+<Ar>لديك صورة بأبعاد $4 \times 4$ وعمق 4 بت لكل بكسل ($L = 16$). (a) طبّق مط التباين (contrast stretching) على المدى الكامل وارسم النتيجة. (b) طبّق تسوية المدرج التكراري وارسم المدرج الناتج والصورة الناتجة.</Ar>
+
+```text
+ 6  13  12  13
+12   6   7  12
+13   7   7  12
+14  11  11  14
+```
+
+<Solution>
+
+**(a)** Old range $[6, 14]$, new range $[0, 15]$: $s = \dfrac{r - 6}{14 - 6}\times 15$, rounded.
+
+<Ar>**(a)** المدى القديم $[6, 14]$، والمدى الجديد $[0, 15]$: $s = \dfrac{r - 6}{14 - 6}\times 15$ ثم التقريب.</Ar>
+
+| $r$ | 6 | 7 | 11 | 12 | 13 | 14 |
+|---|---|---|---|---|---|---|
+| $s$ | 0 | 1.875 → 2 | 9.375 → 9 | 11.25 → 11 | 13.125 → 13 | 15 |
+
+**(b)** Here $MN = 16$ and $L - 1 = 15$:
+
+<Ar>**(b)** هنا $MN = 16$ و $L - 1 = 15$:</Ar>
+
+| $r_k$ | $n_k$ | $p_k$ | $\text{CDF}$ | $15 \times \text{CDF}$ | $s_k$ |
+|---|---|---|---|---|---|
+| 6 | 2 | 2/16 | 2/16 | 1.875 | 2 |
+| 7 | 3 | 3/16 | 5/16 | 4.6875 | 5 |
+| 11 | 2 | 2/16 | 7/16 | 6.5625 | 7 |
+| 12 | 4 | 4/16 | 11/16 | 10.3125 | 10 |
+| 13 | 3 | 3/16 | 14/16 | 13.125 | 13 |
+| 14 | 2 | 2/16 | 16/16 | 15 | 15 |
+
+```text
+ (a) stretched      (b) equalized
+ 0  13  11  13      2  13  10  13
+11   0   2  11     10   2   5  10
+13   2   2  11     13   5   5  10
+15   9   9  15     15   7   7  15
+```
+
+The equalized histogram has bars of $2/16, 3/16, 2/16, 4/16, 3/16, 2/16$ at levels $2, 5, 7, 10, 13, 15$. Both methods use the full range $0 \ldots 15$, but stretching keeps the **spacing** of the levels while equalization spaces them by **how many pixels** each holds (6 and 7 move apart; 11 and 12 move apart). Assignment 2 on the sheet asks for exactly this equalized image.
+
+<Ar>للمدرج بعد التسوية أعمدة ارتفاعاتها $2/16, 3/16, 2/16, 4/16, 3/16, 2/16$ عند المستويات $2, 5, 7, 10, 13, 15$. وتستخدم الطريقتان المدى الكامل $0 \ldots 15$، لكن مط التباين يحافظ على **المسافات** بين المستويات، بينما تباعد التسوية بينها بحسب **عدد البكسلات** في كل منها (يتباعد 6 و 7، ويتباعد 11 و 12). ويطلب Assignment 2 في الورقة هذه الصورة المُسوّاة نفسها.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="IP2: bit-plane slicing" titleAr="IP2: تقطيع مستويات البت" level="easy">
+
+Slice this 8-bit image into its eight **bit planes** (plane 0 is the least significant bit). The sheet shows only the image and the worked planes; this is the task they answer.
+
+<Ar>قطِّع هذه الصورة ذات 8 بت إلى مستويات البت (bit planes) الثمانية (المستوى 0 هو البت الأدنى أهمية LSB). تعرض الورقة الصورة والمستويات المحلولة فقط، وهذه هي المهمة التي تجيب عنها.</Ar>
+
+```text
+255   13  127    7
+ 55   40  150  255
+160   20  200   14
+170   90  255    9
+```
+
+<Solution>
+
+Write each value in 8-bit binary, then plane $k$ takes bit $k$ of every pixel, i.e. `(img >> k) & 1`:
+
+<Ar>اكتب كل قيمة بالنظام الثنائي بثماني خانات، ثم يأخذ المستوى $k$ البت رقم $k$ من كل بكسل، أي `(img >> k) & 1`:</Ar>
+
+```text
+255 = 11111111   13 = 00001101   127 = 01111111    7 = 00000111
+ 55 = 00110111   40 = 00101000   150 = 10010110  160 = 10100000
+ 20 = 00010100  200 = 11001000    14 = 00001110  170 = 10101010
+ 90 = 01011010    9 = 00001001
+
+plane 0 (LSB)  plane 1    plane 2    plane 3    plane 4    plane 5    plane 6    plane 7 (MSB)
+1 1 1 1        1 0 1 1    1 1 1 1    1 1 1 0    1 0 1 0    1 0 1 0    1 0 1 0    1 0 0 0
+1 0 0 1        1 0 1 1    1 0 1 1    0 1 0 1    1 0 1 1    1 1 0 1    0 0 0 1    0 0 1 1
+0 0 0 0        0 0 0 1    0 1 0 1    0 0 1 1    0 1 0 0    1 0 0 0    0 0 1 0    1 0 1 0
+0 0 1 1        1 1 1 0    0 0 1 0    1 1 1 1    0 1 1 0    1 0 1 0    0 1 1 0    1 0 1 0
+```
+
+The handwritten sheet labels two planes "6"; the first of them is plane 5. Plane 7 is 1 exactly where the pixel is $\ge 128$: the MSB plane is a threshold at 128. The high planes carry the visible structure, the low planes look like noise.
+
+<Ar>تُعنوِن الورقة المكتوبة باليد مستويين بالرقم «6»، وأولهما هو المستوى 5. والمستوى 7 يساوي 1 تمامًا حيث يكون البكسل $\ge 128$: فمستوى البت الأعلى أهمية (MSB) هو تقطيع بالعتبة 128. وتحمل المستويات العليا البنية المرئية، بينما تبدو المستويات الدنيا كالضوضاء (noise).</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="IP4: histogram matching with a look-up table" titleAr="IP4: مطابقة المدرج التكراري بجدول بحث" level="hard">
+
+For the $5 \times 6$ image below (levels $0 \ldots 7$), find a look-up table that changes its histogram to match $h(f)$ in the table, draw the transformed image and give its histogram.
+
+<Ar>للصورة التالية بأبعاد $5 \times 6$ (المستويات $0 \ldots 7$)، أوجد جدول بحث (look-up table) يغيّر مدرجها التكراري ليطابق $h(f)$ في الجدول، وارسم الصورة المحوَّلة، وأعطِ مدرجها التكراري.</Ar>
+
+```text
+4 3 6 1 0 5
+3 2 5 7 5 3
+2 1 4 6 7 4
+1 6 3 5 6 5
+0 5 2 4 7 7
+```
+
+| Gray level <Ar>مستوى الرمادي</Ar> | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+|---|---|---|---|---|---|---|---|---|
+| Target $h(f)$ <Ar>المدرج الهدف $h(f)$</Ar> | 8 | 6 | 4 | 2 | 2 | 3 | 3 | 2 |
+
+<Solution>
+
+$MN = 30$ and $L - 1 = 7$. First equalize the image, then the target:
+
+<Ar>هنا $MN = 30$ و $L - 1 = 7$. نسوّي الصورة أولًا، ثم المدرج الهدف:</Ar>
+
+| level <Ar>المستوى</Ar> | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+|---|---|---|---|---|---|---|---|---|
+| image $n_r$ <Ar>الصورة $n_r$</Ar> | 2 | 3 | 3 | 4 | 4 | 6 | 4 | 4 |
+| $7 \times \text{CDF}_r$ | 0.47 | 1.17 | 1.87 | 2.80 | 3.73 | 5.13 | 6.07 | 7 |
+| $s$ | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+| target $n_z$ <Ar>الهدف $n_z$</Ar> | 8 | 6 | 4 | 2 | 2 | 3 | 3 | 2 |
+| $7 \times \text{CDF}_z$ | 1.87 | 3.27 | 4.20 | 4.67 | 5.13 | 5.83 | 6.53 | 7 |
+| $G(z)$ | 2 | 3 | 4 | 5 | 5 | 6 | 7 | 7 |
+
+The image is already almost uniform, so $s = r$. Now send each $s$ to the smallest $z$ with the closest $G(z)$:
+
+<Ar>الصورة شبه منتظمة أصلًا، لذا $s = r$. والآن أرسل كل $s$ إلى أصغر $z$ له أقرب قيمة $G(z)$:</Ar>
+
+| $r$ (= $s$) | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+|---|---|---|---|---|---|---|---|---|
+| $z$ | 0 | 0 | 0 | 1 | 2 | 3 | 5 | 6 |
+
+```text
+transformed image
+2 1 5 0 0 3
+1 0 3 6 3 1
+0 0 2 5 6 2
+0 5 1 3 5 3
+0 3 0 2 6 6
+```
+
+Histogram of the result: $n(0) = 8$, $n(1) = 4$, $n(2) = 4$, $n(3) = 6$, $n(4) = 0$, $n(5) = 4$, $n(6) = 4$, $n(7) = 0$, i.e. $P = 0.27, 0.13, 0.13, 0.2, 0, 0.13, 0.13, 0$. It is close to the target $8, 6, 4, 2, 2, 3, 3, 2$ but not equal, because each input level must move as a whole.
+
+<Ar>المدرج التكراري للنتيجة: $n(0) = 8$، $n(1) = 4$، $n(2) = 4$، $n(3) = 6$، $n(4) = 0$، $n(5) = 4$، $n(6) = 4$، $n(7) = 0$، أي $P = 0.27, 0.13, 0.13, 0.2, 0, 0.13, 0.13, 0$. وهو قريب من الهدف $8, 6, 4, 2, 2, 3, 3, 2$ لكنه لا يساويه، لأن كل مستوى دخل يجب أن ينتقل كاملًا.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Assignment 1: a dark 8-bit image" titleAr="Assignment 1: صورة داكنة بعمق 8 بت" level="medium">
+
+A $32 \times 32$ image with 8-bit gray levels has the counts below. (A) Draw the histogram: what type of image is it? (B) Find the transformation $T(r)$ and the equalized histogram.
+
+<Ar>صورة بأبعاد $32 \times 32$ ومستويات رمادي بعمق 8 بت لها الأعداد التالية. (A) ارسم المدرج التكراري: ما نوع هذه الصورة؟ (B) أوجد دالة التحويل $T(r)$ والمدرج التكراري بعد التسوية.</Ar>
+
+| Gray level <Ar>مستوى الرمادي</Ar> | 3 | 5 | 6 | 8 | 10 | 12 | 13 | 15 |
+|---|---|---|---|---|---|---|---|---|
+| Pixels <Ar>عدد البكسلات</Ar> | 124 | 50 | 100 | 245 | 150 | 275 | 30 | 50 |
+
+<Solution>
+
+**(A)** All 1024 pixels lie between 3 and 15 on a $0 \ldots 255$ scale: a narrow histogram crowded at the far left, so the image is **dark** and **low-contrast** (almost black).
+
+<Ar>**(A)** تقع جميع البكسلات وعددها 1024 بين 3 و 15 على مقياس $0 \ldots 255$: مدرج تكراري ضيق متكدس في أقصى اليسار، لذا فالصورة **داكنة** و**منخفضة التباين** (شبه سوداء).</Ar>
+
+**(B)** With $L - 1 = 255$:
+
+<Ar>**(B)** مع $L - 1 = 255$:</Ar>
+
+| $r_k$ | $n_k$ | $p_k$ | $\text{CDF}$ | $255 \times \text{CDF}$ | $s_k = T(r_k)$ |
+|---|---|---|---|---|---|
+| 3 | 124 | 0.1211 | 0.1211 | 30.88 | 31 |
+| 5 | 50 | 0.0488 | 0.1699 | 43.33 | 43 |
+| 6 | 100 | 0.0977 | 0.2676 | 68.23 | 68 |
+| 8 | 245 | 0.2393 | 0.5068 | 129.24 | 129 |
+| 10 | 150 | 0.1465 | 0.6533 | 166.60 | 167 |
+| 12 | 275 | 0.2686 | 0.9219 | 235.08 | 235 |
+| 13 | 30 | 0.0293 | 0.9512 | 242.55 | 243 |
+| 15 | 50 | 0.0488 | 1.0000 | 255 | 255 |
+
+$T(r)$ is a staircase through the points $(3, 31), (5, 43), (6, 68), (8, 129), (10, 167), (12, 235), (13, 243), (15, 255)$: steep at the busy levels 8 and 12. The equalized histogram has the same eight bar heights at $31, 43, 68, 129, 167, 235, 243, 255$, spread over the whole range.
+
+<Ar>الدالة $T(r)$ درجية تمر بالنقاط $(3, 31), (5, 43), (6, 68), (8, 129), (10, 167), (12, 235), (13, 243), (15, 255)$، وتكون حادة الصعود عند المستويين المزدحمين 8 و 12. وللمدرج بعد التسوية ارتفاعات الأعمدة الثمانية نفسها عند $31, 43, 68, 129, 167, 235, 243, 255$، منتشرةً على المدى كله.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "An image's histogram is crowded at the left end of 0–255. The image is…",
+      qAr: "مدرج تكراري لصورة متكدس في الطرف الأيسر من المدى 0–255. فالصورة…",
+      options: ["bright", "dark", "high-contrast", "binary"],
+      optionsAr: ["ساطعة", "داكنة", "عالية التباين", "ثنائية"],
+      answer: 1,
+      explain: "Low gray levels are dark; position shows brightness.",
+      explainAr: "مستويات الرمادي المنخفضة داكنة؛ فالموضع يدل على السطوع."
+    },
+    {
+      q: "A narrow histogram in the middle of the range means…",
+      qAr: "المدرج التكراري الضيق في منتصف المدى يعني…",
+      options: ["low contrast", "high contrast", "a colour cast", "a binary image"],
+      optionsAr: ["تباينًا منخفضًا", "تباينًا عاليًا", "انحرافًا لونيًا", "صورة ثنائية"],
+      answer: 0,
+      explain: "Spread shows contrast; a narrow spread uses few gray levels.",
+      explainAr: "الانتشار يدل على التباين؛ والانتشار الضيق يستخدم مستويات رمادي قليلة."
+    },
+    {
+      q: "In histogram equalization, s_k equals…",
+      qAr: "في تسوية المدرج التكراري، تساوي s_k…",
+      options: ["(L − 1) × p(r_k)", "(L − 1) × CDF(r_k), rounded", "r_k − min, scaled to L − 1", "L − 1 − r_k"],
+      optionsAr: ["(L − 1) × p(r_k)", "(L − 1) × CDF(r_k) بعد التقريب", "r_k − min بعد تحجيمها إلى L − 1", "L − 1 − r_k"],
+      answer: 1,
+      explain: "The transformation is the cumulative distribution scaled to the output range.",
+      explainAr: "دالة التحويل هي دالة التوزيع التراكمي بعد تحجيمها إلى مدى الخرج."
+    },
+    {
+      q: "Why is the histogram of a discretely equalized image usually not flat?",
+      qAr: "لماذا لا يكون المدرج التكراري لصورة مُسوّاة تسويةً متقطعة مستويًا في العادة؟",
+      options: ["Because of rounding errors in the mean", "Because all pixels of one level move to one level: bins move or merge but never split", "Because L − 1 is odd", "Because equalization ignores empty levels"],
+      optionsAr: ["بسبب أخطاء التقريب في المتوسط", "لأن جميع بكسلات المستوى الواحد تنتقل إلى مستوى واحد: الفئات تنتقل أو تندمج لكنها لا تنقسم", "لأن L − 1 عدد فردي", "لأن التسوية تتجاهل المستويات الفارغة"],
+      answer: 1,
+      explain: "A point operation maps a level to one level, so the counts cannot be spread out.",
+      explainAr: "العملية النقطية تحوّل المستوى إلى مستوى واحد، فلا يمكن توزيع الأعداد."
+    },
+    {
+      q: "In histogram matching, after computing s_k = T(r_k) and G(z_q), each s_k is mapped to…",
+      qAr: "في مطابقة المدرج التكراري، بعد حساب s_k = T(r_k) و G(z_q)، تُحوَّل كل s_k إلى…",
+      options: ["the z_q with the closest G(z_q)", "the z_q with the largest probability", "G(s_k)", "the mean of the specification"],
+      optionsAr: ["قيمة z_q صاحبة أقرب G(z_q)", "قيمة z_q صاحبة أكبر احتمال", "G(s_k)", "متوسط المدرج المحدَّد"],
+      answer: 0,
+      explain: "z = G⁻¹(s): pick the z_q whose G(z_q) is closest to s_k (smallest z on a tie).",
+      explainAr: "z = G⁻¹(s): اختر z_q التي تكون G(z_q) لها الأقرب إلى s_k (وأصغر z عند التساوي)."
+    }
+  ]}
+/>

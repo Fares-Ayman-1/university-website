@@ -1,0 +1,729 @@
+---
+number: 2
+title: Point Processing
+titleAr: "المعالجة النقطية"
+summary: The three classes of image operations (point, neighbourhood and transform) and the point operations in detail. Covers adding, subtracting, multiplying and dividing by a constant with rounding and clipping, complements and solarization, the histogram, contrast stretching with a piecewise linear function and imadjust, gamma correction, and histogram equalization worked step by step, with MATLAB and Python code.
+summaryAr: "الفئات الثلاث لعمليات الصور (النقطية، والجوار، والتحويل)، ثم العمليات النقطية بالتفصيل: جمع ثابت وطرحه والضرب فيه والقسمة عليه مع التقريب والقصّ (clipping)، والمتمِّم (complement) والتشميس (solarization)، والمدرج التكراري (histogram)، ومط التباين (contrast stretching) بدالة خطية مجزأة وبالدالة imadjust، وتصحيح غاما (gamma correction)، وتسوية المدرج التكراري (histogram equalization) محلولةً خطوة بخطوة، مع شيفرات MATLAB و Python."
+topics: ["Point, neighbourhood and transform operations", Arithmetic operations and clipping, Complements and solarization, Histograms, Contrast stretching, imadjust, Gamma correction, Piecewise linear stretching, Histogram equalization]
+duration: 55 min study
+sources:
+  - file: lectures/ch2/Image processing Lecture 2.pdf
+    label: Image Processing Lecture 2 – Point Processing (slides)
+    pages: "1-26"
+bookRefs:
+  - book: ip-book
+    chapter: Ch 2 · Point Processing
+    pages: "36–58"
+  - book: mcandrew
+    chapter: Point Processing
+---
+
+<Objectives>
+
+- Distinguish **point**, **neighbourhood** and **transform** operations by the information each one needs.
+  <Ar>التمييز بين العمليات **النقطية (point)** وعمليات **الجوار (neighbourhood)** و**التحويل (transform)** بحسب المعلومات التي تحتاجها كلٌّ منها.</Ar>
+- Apply **arithmetic** operations and **complements** to an 8-bit image, with rounding and **clipping**.
+  <Ar>تطبيق العمليات **الحسابية** و**المتمِّم (complement)** على صورة بعمق 8 بِتّات، مع التقريب و**القصّ (clipping)**.</Ar>
+- Compute and read a **histogram**, and relate its shape to the look of the image.
+  <Ar>حساب **المدرج التكراري (histogram)** وقراءته، وربط شكله بمظهر الصورة.</Ar>
+- Improve contrast with **contrast stretching**, `imadjust`, **gamma correction** and **piecewise linear** functions.
+  <Ar>تحسين التباين (contrast) باستخدام **مط التباين (contrast stretching)**، والدالة `imadjust`، و**تصحيح غاما (gamma correction)**، و**الدوال الخطية المجزأة (piecewise-linear)**.</Ar>
+- Perform **histogram equalization** by hand and in code.
+  <Ar>إجراء **تسوية المدرج التكراري (histogram equalization)** يدويًا وبالشيفرة.</Ar>
+
+</Objectives>
+
+## Three classes of image operations
+
+<Ar>الفئات الثلاث لعمليات الصور</Ar>
+
+Image processing operations can be divided into three classes according to the **information required** to compute a new pixel value:
+
+<Ar>يمكن تقسيم عمليات معالجة الصور إلى ثلاث فئات بحسب **المعلومات المطلوبة** لحساب القيمة الجديدة للبكسل:</Ar>
+
+| Class <Ar>الفئة</Ar> | The new value depends on <Ar>القيمة الجديدة تعتمد على</Ar> | Typical uses <Ar>الاستخدامات النموذجية</Ar> |
+|---|---|---|
+| **Point** process <Ar>العملية **النقطية (point)**</Ar> | The pixel's own grey value only, with no knowledge of its surroundings <Ar>قيمة الرمادي للبكسل نفسه فقط، دون أي معرفة بما حوله</Ar> | Brightness and contrast, thresholding, histogram equalization <Ar>السطوع والتباين، والعتبة (thresholding)، وتسوية المدرج التكراري</Ar> |
+| **Neighbourhood** process <Ar>عملية **الجوار (neighbourhood)**</Ar> | The grey levels in a small neighbourhood (a **mask**) around the pixel <Ar>مستويات الرمادي في جوار صغير (**قناع mask**) حول البكسل</Ar> | Smoothing, sharpening, edge detection, noise removal <Ar>التنعيم (smoothing)، والإبراز (sharpening)، وكشف الحواف، وإزالة الضوضاء</Ar> |
+| **Transform** <Ar>**التحويل (transform)**</Ar> | The whole image, processed as a single large block <Ar>الصورة كلها، وتُعالَج كتلةً واحدة كبيرة</Ar> | Frequency analysis (Fourier transform), compression, restoration <Ar>تحليل الترددات (تحويل فورييه Fourier transform)، والضغط، والاستعادة</Ar> |
+
+A **transform** represents the pixel values in some other but equivalent form, which allows some very efficient and powerful algorithms. The image is transformed, processed in the new form, and then brought back by the **inverse transform**.
+
+<Ar>يمثّل **التحويل (transform)** قيم البكسلات في صورة أخرى مكافئة لها، مما يتيح خوارزميات بالغة الكفاءة والقوة. فتُحوَّل الصورة، ثم تُعالَج في صيغتها الجديدة، ثم تُعاد بـ**التحويل العكسي (inverse transform)**.</Ar>
+
+<SlideFigure page={6} caption="Schema for transform processing: image → transform → processing in the transformed domain → inverse transform → processed original image." captionAr="مخطط المعالجة بالتحويل: الصورة ← التحويل ← المعالجة في المجال المحوَّل ← التحويل العكسي ← الصورة الأصلية بعد معالجتها." />
+
+## Point operations
+
+<Ar>العمليات النقطية</Ar>
+
+<Definition term="Point operation" termAr="العملية النقطية (point operation)">
+  In a digital image a point is a pixel. A point operation transforms each pixel's value as a <strong>function of its value alone</strong>, $y = f(x)$, independently of the values of its neighbours.
+
+  <Ar>النقطة في الصورة الرقمية هي البكسل. والعملية النقطية تحوّل قيمة كل بكسل بوصفها <strong>دالةً في قيمته وحدها</strong>، $y = f(x)$، بصرف النظر عن قيم جيرانه.</Ar>
+</Definition>
+
+Point operations are the simplest, most primitive, yet essential image processing operations. They are **intensity transformations**: each old grey level is converted into a new one by a predefined function. They are used mainly for **contrast enhancement**, and especially in **pre-processing**, where an image has to be modified before the main job is attempted. The slides list the main point operations:
+
+<Ar>العمليات النقطية أبسط عمليات معالجة الصور وأكثرها بدائية، لكنها أساسية. فهي **تحويلات للشدة (intensity transformations)**: يتحول فيها كل مستوى رمادي قديم إلى مستوى جديد بدالة محددة مسبقًا. وتُستخدم أساسًا **لتحسين التباين (contrast enhancement)**، ولا سيما في **المعالجة المسبقة (preprocessing)**، حيث يلزم تعديل الصورة قبل البدء في المهمة الرئيسية. وتسرد الشرائح أهم العمليات النقطية:</Ar>
+
+- brightness and contrast adjustment;
+  <Ar>ضبط السطوع (brightness) والتباين؛</Ar>
+- gamma correction;
+  <Ar>تصحيح غاما (gamma correction)؛</Ar>
+- histogram equalization and histogram matching;
+  <Ar>تسوية المدرج التكراري (histogram equalization) ومطابقة المدرج التكراري (histogram matching)؛</Ar>
+- color correction.
+  <Ar>تصحيح الألوان.</Ar>
+
+Because the output depends only on the input value, an 8-bit point operation can be computed once for the 256 possible values and stored in a **lookup table**; processing the image is then one table lookup per pixel, which is why point operations are so fast.
+
+<Ar>ولأن المخرجات لا تعتمد إلا على قيمة المدخلات، يمكن حساب العملية النقطية على صورة بعمق 8 بِتّات مرة واحدة للقيم الممكنة الـ 256 وتخزينها في **جدول بحث (lookup table)**؛ فتصبح معالجة الصورة مجرد بحث واحد في الجدول لكل بكسل، ولهذا تكون العمليات النقطية بهذه السرعة.</Ar>
+
+## Arithmetic operations
+
+<Ar>العمليات الحسابية</Ar>
+
+The simplest functions add or subtract a constant $C$, or multiply by one:
+
+<Ar>أبسط الدوال تجمع ثابتًا $C$ أو تطرحه، أو تضرب فيه:</Ar>
+
+$$
+y = x \pm C \qquad\qquad y = Cx
+$$
+
+The result must again be an 8-bit grey level from 0 to 255, so two things are done to every output value: it is **rounded** to an integer, and it is **clipped** to the range:
+
+<Ar>يجب أن تكون النتيجة مرة أخرى مستوى رماديًا بعمق 8 بِتّات من 0 إلى 255، ولذلك يُجرى أمران على كل قيمة ناتجة: **تُقرَّب** إلى عدد صحيح، ثم **تُقصّ (clipping)** إلى المدى:</Ar>
+
+$$
+y \leftarrow
+\begin{cases}
+255 & \text{if } y > 255 \\
+0 & \text{if } y < 0
+\end{cases}
+$$
+
+Adding a constant **brightens** the image and subtracting **darkens** it. Multiplying by $C > 1$ brightens and stretches the grey levels apart, and $C < 1$ darkens and squeezes them together.
+
+<Ar>جمع ثابت **يزيد سطوع** الصورة، وطرحه **يجعلها أدكن**. والضرب في $C > 1$ يزيد السطوع ويباعد بين مستويات الرمادي، أما $C < 1$ فيجعل الصورة أدكن ويقارب بين المستويات.</Ar>
+
+### A worked example
+
+<Ar>مثال محلول</Ar>
+
+Take this $4 \times 4$ image. Values that had to be clipped are shown in bold:
+
+<Ar>خذ هذه الصورة ذات الأبعاد $4 \times 4$. والقيم التي لزم قصّها مكتوبة بخط عريض:</Ar>
+
+$$
+x = \begin{bmatrix}
+20 & 60 & 100 & 140 \\
+40 & 90 & 130 & 180 \\
+70 & 120 & 200 & 230 \\
+110 & 160 & 220 & 250
+\end{bmatrix}
+\qquad
+x + 128 \to \begin{bmatrix}
+148 & 188 & 228 & \mathbf{255} \\
+168 & 218 & \mathbf{255} & \mathbf{255} \\
+198 & 248 & \mathbf{255} & \mathbf{255} \\
+238 & \mathbf{255} & \mathbf{255} & \mathbf{255}
+\end{bmatrix}
+\qquad
+x - 128 \to \begin{bmatrix}
+\mathbf{0} & \mathbf{0} & \mathbf{0} & 12 \\
+\mathbf{0} & \mathbf{0} & 2 & 52 \\
+\mathbf{0} & \mathbf{0} & 72 & 102 \\
+\mathbf{0} & 32 & 92 & 122
+\end{bmatrix}
+$$
+
+$$
+2x \to \begin{bmatrix}
+40 & 120 & 200 & \mathbf{255} \\
+80 & 180 & \mathbf{255} & \mathbf{255} \\
+140 & 240 & \mathbf{255} & \mathbf{255} \\
+220 & \mathbf{255} & \mathbf{255} & \mathbf{255}
+\end{bmatrix}
+\qquad
+\frac{x}{2} \to \begin{bmatrix}
+10 & 30 & 50 & 70 \\
+20 & 45 & 65 & 90 \\
+35 & 60 & 100 & 115 \\
+55 & 80 & 110 & 125
+\end{bmatrix}
+\qquad
+\frac{x}{2} + 128 \to \begin{bmatrix}
+138 & 158 & 178 & 198 \\
+148 & 173 & 193 & 218 \\
+163 & 188 & 228 & 243 \\
+183 & 208 & 238 & 253
+\end{bmatrix}
+$$
+
+Clipping **destroys information**. After adding 128, the eight different values from 130 to 250 all became 255, and nothing can tell them apart again: subtracting 128 afterwards would not give the original back. The function $y = x/2 + 128$ avoids this: it squeezes the full range 0–255 into 128–255, brightening the image without clipping, at the price of lower contrast.
+
+<Ar>القصّ **يُتلف المعلومات**. فبعد جمع 128 أصبحت القيم الثماني المختلفة من 130 إلى 250 كلها 255، ولا يمكن التمييز بينها مرة أخرى: فطرح 128 بعد ذلك لن يعيد الصورة الأصلية. أما الدالة $y = x/2 + 128$ فتتجنب ذلك: إذ تضغط المدى الكامل 0–255 في المدى 128–255، فتزيد السطوع دون قصّ، مقابل تباين أقل.</Ar>
+
+<SlideFigure page={10} caption="Adding 128 (clipped at 255) and subtracting 128 (clipped at 0): the mapping graphs and the blocks image after each operation." captionAr="جمع 128 (مع القصّ عند 255) وطرح 128 (مع القصّ عند 0): منحنيا التحويل وصورة المكعبات بعد كل عملية." />
+
+### In MATLAB
+
+<Ar>في MATLAB</Ar>
+
+The slides test this on `blocks.tif`, a $256 \times 256$ `uint8` image (65,536 bytes):
+
+<Ar>تختبر الشرائح ذلك على الصورة `blocks.tif`، وهي صورة من النوع `uint8` أبعادها $256 \times 256$ (65,536 بايت):</Ar>
+
+```matlab title="arithmetic.m"
+b  = imread('blocks.tif');
+whos b                              % 256x256, 65536 bytes, uint8
+b1 = uint8(double(b) + 128);        % convert, add, convert back (clips at 255)
+b1 = imadd(b, 128);                 % the same with the toolbox function
+b2 = imsubtract(b, 128);            % clips at 0
+imshow(b1), figure, imshow(b2)
+
+b3 = immultiply(b, 0.5);            % y = x/2   (or imdivide(b, 2))
+b4 = immultiply(b, 2);              % y = 2x
+b5 = imadd(immultiply(b, 0.5), 128);   % y = x/2 + 128
+```
+
+The slides show `b1 = b + 128` failing with "Function '+' not defined for variables of class 'uint8'". That was true of old MATLAB versions. In current versions integer arithmetic **saturates**: `b + 128` works and clips at 255, exactly like `imadd`.
+
+<Ar>تعرض الشرائح فشل `b1 = b + 128` برسالة «Function '+' not defined for variables of class 'uint8'». وكان ذلك صحيحًا في إصدارات MATLAB القديمة. أما في الإصدارات الحالية فالعمليات الحسابية على الأعداد الصحيحة **تتشبّع (saturate)**: فتعمل `b + 128` وتقصّ القيم عند 255، تمامًا مثل `imadd`.</Ar>
+
+<SlideFigure page={12} caption="Multiplication and division: y = x/2 darkens, y = 2x brightens and clips, and y = x/2 + 128 brightens without clipping but lowers contrast." captionAr="الضرب والقسمة: y = x/2 تجعل الصورة أدكن، و y = 2x تزيد السطوع مع القصّ، و y = x/2 + 128 تزيد السطوع دون قصّ لكنها تقلل التباين." />
+
+### In Python
+
+<Ar>في Python</Ar>
+
+<Callout type="warning" title="NumPy uint8 wraps around" titleAr="الأعداد uint8 في NumPy تلتفّ">
+  Unlike MATLAB, NumPy does <strong>not</strong> clip <code>uint8</code> arithmetic: it wraps around modulo 256, so 200 + 128 gives 72, a dark pixel in a region that should be white. Compute in a wider type, clip, then convert back.
+
+  <Ar>على عكس MATLAB، لا تقصّ NumPy نتائج العمليات الحسابية على <code>uint8</code>: بل تلتفّ بباقي القسمة على 256، فيعطي 200 + 128 القيمة 72، أي بكسلًا داكنًا في منطقة يجب أن تكون بيضاء. احسب بنوع أوسع، ثم قُصّ، ثم أعد التحويل.</Ar>
+</Callout>
+
+```python title="arithmetic.py"
+import numpy as np
+
+def point_op(img, f):
+    """Apply y = f(x) to a uint8 image with rounding and clipping."""
+    y = f(img.astype(np.float64))                 # compute without overflow
+    return np.clip(np.round(y), 0, 255).astype(np.uint8)
+
+x = np.array([[20, 60, 100, 140], [40, 90, 130, 180],
+              [70, 120, 200, 230], [110, 160, 220, 250]], dtype=np.uint8)
+
+brighter = point_op(x, lambda v: v + 128)
+darker   = point_op(x, lambda v: v - 128)
+lifted   = point_op(x, lambda v: v / 2 + 128)
+print(x + 128)          # wrong: wraps around (140 + 128 -> 12)
+```
+
+## Complements
+
+<Ar>المتمِّم</Ar>
+
+The **complement** of a grayscale image is its photographic **negative**: dark becomes light and light becomes dark.
+
+<Ar>**المتمِّم (complement)** للصورة الرمادية هو **صورتها السالبة (negative)** بالمعنى الفوتوغرافي: يصبح الداكن فاتحًا والفاتح داكنًا.</Ar>
+
+$$
+y = 255 - x
+$$
+
+For the example image, $255 - x$ gives
+
+<Ar>وفي الصورة المثال، تعطي $255 - x$</Ar>
+
+$$
+\begin{bmatrix}
+235 & 195 & 155 & 115 \\
+215 & 165 & 125 & 75 \\
+185 & 135 & 55 & 25 \\
+145 & 95 & 35 & 5
+\end{bmatrix}
+$$
+
+No clipping is ever needed, and applying the complement twice gives the original back. In MATLAB, `imcomplement` works for every image type: it computes $255 - x$ for `uint8`, $1 - x$ for `double` images in $[0, 1]$, and swaps 0 and 1 in a binary image.
+
+<Ar>لا يلزم القصّ أبدًا، وتطبيق المتمِّم مرتين يعيد الصورة الأصلية. وفي MATLAB تعمل الدالة `imcomplement` مع كل أنواع الصور: فتحسب $255 - x$ للنوع `uint8`، و $1 - x$ لصور `double` ذات المدى $[0, 1]$، وتبدّل بين 0 و1 في الصورة الثنائية.</Ar>
+
+```matlab title="complement.m"
+bc = imcomplement(b);
+imshow(bc)
+
+s = b;                          % solarization: complement only the dark pixels
+dark = b <= 128;
+s(dark) = 255 - b(dark);
+```
+
+Interesting special effects come from complementing **only part** of the grey range, for example only the pixels of grey value 128 or less (or only those of 128 or more), and leaving the others untouched. This effect is called **solarization**. On the example image, complementing the pixels $\le 128$ changes 20 to 235, 60 to 195, 40 to 215 and so on, while 140, 180, 200 and the other bright pixels stay as they are.
+
+<Ar>تنتج مؤثرات خاصة مثيرة من إيجاد المتمِّم **لجزء فقط** من مدى الرمادي، مثل البكسلات التي قيمتها 128 أو أقل فقط (أو التي قيمتها 128 أو أكثر فقط)، وترك البقية دون تغيير. ويُسمّى هذا الأثر **التشميس (solarization)**. ففي الصورة المثال، إيجاد المتمِّم للبكسلات $\le 128$ يحوّل 20 إلى 235، و60 إلى 195، و40 إلى 215، وهكذا، بينما تبقى 140 و180 و200 وبقية البكسلات الساطعة كما هي.</Ar>
+
+<SlideFigure page={13} caption="Image complementation: the mapping y = 255 − x and the negative of the blocks image." captionAr="إيجاد متمِّم الصورة: دالة التحويل y = 255 − x والصورة السالبة لصورة المكعبات." />
+
+## Histograms
+
+<Ar>المدرجات التكرارية</Ar>
+
+<Definition term="Histogram" termAr="المدرج التكراري (histogram)">
+  The histogram of a grayscale image is a graph indicating the <strong>number of times each grey level occurs</strong> in the image, that is, the frequency of each brightness value. For an image with $L$ grey levels it is a one-dimensional array of $L$ elements, where element $k$ holds $n_k$, the number of pixels with grey level $k$.
+
+  <Ar>المدرج التكراري للصورة الرمادية رسم يبيّن <strong>عدد مرات ظهور كل مستوى رمادي</strong> في الصورة، أي تكرار كل قيمة سطوع. وفي صورة ذات $L$ مستوى رماديًا، يكون مصفوفة أحادية البعد من $L$ عنصرًا، يحمل العنصر $k$ فيها $n_k$، أي عدد البكسلات ذات المستوى الرمادي $k$.</Ar>
+</Definition>
+
+The algorithm is a single pass over the image:
+
+<Ar>والخوارزمية مرور واحد على الصورة:</Ar>
+
+1. Assign zero to all elements of the array `hf`.
+   <Ar>أسنِد الصفر إلى كل عناصر المصفوفة `hf`.</Ar>
+2. For every pixel $(x, y)$ of the image $f$, increment `hf[f(x,y)]` by 1.
+   <Ar>لكل بكسل $(x, y)$ في الصورة $f$، زِد `hf[f(x,y)]` بمقدار 1.</Ar>
+
+Dividing by the number of pixels $n$ gives the **normalized histogram** $p(r_k) = n_k / n$, the probability that a randomly chosen pixel has grey level $r_k$; its values add up to 1.
+
+<Ar>والقسمة على عدد البكسلات $n$ تعطي **المدرج التكراري المُطبَّع (normalized histogram)** $p(r_k) = n_k / n$، أي احتمال أن يكون لبكسل مختار عشوائيًا المستوى الرمادي $r_k$؛ ومجموع قيمه 1.</Ar>
+
+```python title="histogram.py"
+import numpy as np
+
+def histogram(img, L=256):
+    hf = np.zeros(L, dtype=int)          # 1. all elements start at zero
+    for v in img.ravel():                # 2. for every pixel...
+        hf[v] += 1                       #    ...increment hf[f(x,y)]
+    return hf
+
+# the same in one vectorized call:  hf = np.bincount(img.ravel(), minlength=256)
+# normalized histogram:             p = hf / img.size
+```
+
+In MATLAB, `imhist(p)` draws the histogram. The **shape** of the histogram tells us how the image looks:
+
+<Ar>وفي MATLAB ترسم الدالة `imhist(p)` المدرج التكراري. و**شكل** المدرج التكراري يخبرنا بمظهر الصورة:</Ar>
+
+| Image <Ar>الصورة</Ar> | Histogram <Ar>المدرج التكراري</Ar> |
+|---|---|
+| Dark <Ar>داكنة</Ar> | Bars crowded at the low (left) end <Ar>الأعمدة متكدسة عند الطرف المنخفض (الأيسر)</Ar> |
+| Light <Ar>فاتحة</Ar> | Bars crowded at the high (right) end <Ar>الأعمدة متكدسة عند الطرف المرتفع (الأيمن)</Ar> |
+| Low contrast (dull, washed out) <Ar>منخفضة التباين (باهتة)</Ar> | A narrow cluster, usually in the middle <Ar>تجمّع ضيق، في المنتصف عادةً</Ar> |
+| High contrast <Ar>عالية التباين</Ar> | Bars spread over the whole range, roughly evenly <Ar>الأعمدة منتشرة على المدى كله، بانتظام تقريبًا</Ar> |
+
+<SlideFigure page={14} caption="The image pout.tif and its histogram: the grey values are crowded into the middle of the range (roughly 75 to 160), so the image is dull and low in contrast." captionAr="الصورة pout.tif ومدرجها التكراري: قيم الرمادي متكدسة في منتصف المدى (من 75 إلى 160 تقريبًا)، ولذلك تبدو الصورة باهتة منخفضة التباين." />
+
+## Histogram (contrast) stretching
+
+<Ar>مط المدرج التكراري (مط التباين)</Ar>
+
+A low-contrast image uses only part of the grey scale. **Contrast stretching** spreads the occupied grey levels out over a wider range with a **piecewise linear** mapping function. The slides use a 16-level image ($i = 0, \dots, 15$) of 360 pixels:
+
+<Ar>الصورة منخفضة التباين لا تستخدم إلا جزءًا من تدرج الرمادي. و**مط التباين (contrast stretching)** ينشر مستويات الرمادي المستخدمة على مدى أوسع بـ**دالة تعيين (mapping function)** خطية مجزأة (piecewise-linear). وتستخدم الشرائح صورة من 16 مستوى ($i = 0, \dots, 15$) فيها 360 بكسلًا:</Ar>
+
+| Grey level $i$ <Ar>المستوى الرمادي $i$</Ar> | 0 | 1–4 | 5 | 6 | 7 | 8 | 9 | 10–14 | 15 |
+|---|---|---|---|---|---|---|---|---|---|
+| $n_i$ | 15 | 0 | 70 | 110 | 45 | 70 | 35 | 0 | 15 |
+
+Almost all pixels lie between 5 and 9. Stretch that band to the range 2 to 14 with the straight line through $(5, 2)$ and $(9, 14)$:
+
+<Ar>تقع كل البكسلات تقريبًا بين 5 و9. فلنمطّ هذا النطاق إلى المدى من 2 إلى 14 بالخط المستقيم المارّ بالنقطتين $(5, 2)$ و $(9, 14)$:</Ar>
+
+$$
+j = \frac{14 - 2}{9 - 5}(i - 5) + 2 = 3(i - 5) + 2
+$$
+
+where $i$ is the original grey level and $j$ its result. Grey levels outside the band are either left alone (as here, where 0 and 15 stay 0 and 15) or mapped by the linear pieces at the two ends of the graph.
+
+<Ar>حيث $i$ المستوى الرمادي الأصلي و $j$ ناتجه. أما المستويات خارج النطاق فإما أن تُترك كما هي (كما في هذا المثال، حيث يبقى 0 و15 كما هما)، وإما أن تُحوَّل بالقطعتين الخطيتين عند طرفي الرسم.</Ar>
+
+| $i$ | 5 | 6 | 7 | 8 | 9 |
+|---|---|---|---|---|---|
+| $j$ | 2 | 5 | 8 | 11 | 14 |
+
+The five crowded bars are now three levels apart instead of one, so neighbouring grey levels are much easier to tell apart. The bars keep their **heights**: stretching moves bars, it never splits or merges them.
+
+<Ar>أصبحت الأعمدة الخمسة المتكدسة تفصل بينها ثلاثة مستويات بدلًا من مستوى واحد، فصار التمييز بين مستويات الرمادي المتجاورة أسهل بكثير. وتحتفظ الأعمدة **بارتفاعاتها**: فالمط ينقل الأعمدة، ولا يقسمها أو يدمجها أبدًا.</Ar>
+
+<SlideFigure page={17} caption="A histogram of a poorly contrasted image and the stretching function that maps grey levels 5–9 to 2–14." captionAr="مدرج تكراري لصورة ضعيفة التباين، ودالة المط التي تحوّل المستويات الرمادية 5–9 إلى 2–14." />
+
+In general, linear stretching maps an occupied range $[r_{\min}, r_{\max}]$ to a target range $[s_{\min}, s_{\max}]$, usually $[0, 255]$:
+
+<Ar>وبوجه عام، يحوّل المط الخطي مدى مستخدمًا $[r_{\min}, r_{\max}]$ إلى مدى مستهدف $[s_{\min}, s_{\max}]$، يكون عادةً $[0, 255]$:</Ar>
+
+$$
+s = \frac{r - r_{\min}}{r_{\max} - r_{\min}}\,(s_{\max} - s_{\min}) + s_{\min}
+$$
+
+### Using `imadjust`
+
+<Ar>استخدام الدالة `imadjust`</Ar>
+
+MATLAB's `imadjust(im,[a,b],[c,d])` performs exactly this stretch, with all values on a $[0, 1]$ scale: grey values up to $a$ become $c$, values from $b$ up become $d$, and values between $a$ and $b$ are mapped linearly onto $[c, d]$. Leaving `[a,b]` or `[c,d]` empty (`[]`) means $[0, 1]$.
+
+<Ar>تُجري الدالة `imadjust(im,[a,b],[c,d])` في MATLAB هذا المط بالضبط، مع اعتبار كل القيم على مقياس $[0, 1]$: فقيم الرمادي حتى $a$ تصبح $c$، والقيم من $b$ فما فوق تصبح $d$، والقيم بين $a$ و $b$ تُحوَّل خطيًا إلى $[c, d]$. وترك `[a,b]` أو `[c,d]` فارغًا (`[]`) يعني $[0, 1]$.</Ar>
+
+<SlideFigure page={19} caption="The stretching function given by imadjust: flat at c up to a, linear from (a, c) to (b, d), flat at d from b." captionAr="دالة المط التي تعطيها imadjust: ثابتة عند c حتى a، وخطية من (a, c) إلى (b, d)، وثابتة عند d ابتداءً من b." />
+
+```matlab title="stretch.m"
+p  = imread('pout.tif');
+pa = imadjust(p, [75 160]/255, [0 1]);   % stretch the occupied grey range to the full range
+% pa = imadjust(p, stretchlim(p), [0 1]); % or let stretchlim find the range
+imshow(pa), figure, imhist(pa), axis tight
+```
+
+## Gamma correction
+
+<Ar>تصحيح غاما</Ar>
+
+`imadjust` takes a fourth argument, **gamma** ($\gamma$). Instead of a straight line between the two points it uses a power curve:
+
+<Ar>تأخذ الدالة `imadjust` وسيطًا (argument) رابعًا هو **غاما** ($\gamma$). فبدلًا من خط مستقيم بين النقطتين تستخدم منحنى قوة (power-law):</Ar>
+
+$$
+y = \left(\frac{x - a}{b - a}\right)^{\gamma} (d - c) + c
+$$
+
+With $\gamma = 1$ this is the linear stretch. With $\gamma < 1$ the curve bends **upward**: dark values are lifted strongly and the image becomes **brighter**, revealing detail in the shadows. With $\gamma > 1$ the curve bends **downward**: the image becomes **darker**, and detail in the bright areas is spread out. The use of the gamma value alone can be enough to change the appearance of an image substantially.
+
+<Ar>مع $\gamma = 1$ يكون هذا هو المط الخطي. ومع $\gamma < 1$ ينحني المنحنى **إلى أعلى**: فتُرفع القيم الداكنة بقوة وتصبح الصورة **أكثر سطوعًا**، فتظهر التفاصيل في الظلال. ومع $\gamma > 1$ ينحني المنحنى **إلى أسفل**: فتصبح الصورة **أدكن**، وتتباعد التفاصيل في المناطق الساطعة. وقد يكفي استخدام قيمة غاما وحدها لتغيير مظهر الصورة تغييرًا كبيرًا.</Ar>
+
+For an 8-bit image over the full range ($a = c = 0$, $b = d = 1$), $y = 255\,(x/255)^{\gamma}$:
+
+<Ar>وفي صورة بعمق 8 بِتّات على المدى الكامل ($a = c = 0$ و $b = d = 1$)، تكون $y = 255\,(x/255)^{\gamma}$:</Ar>
+
+| $x$ | 0 | 32 | 64 | 128 | 192 | 255 |
+|---|---|---|---|---|---|---|
+| $\gamma = 0.5$ | 0 | 90 | 128 | 181 | 221 | 255 |
+| $\gamma = 2$ | 0 | 4 | 16 | 64 | 145 | 255 |
+
+With $\gamma = 0.5$ the dark range 0–64 now occupies 0–128, so it gets twice as many output levels; with $\gamma = 2$ it is squeezed into 0–16. Black and white themselves never move.
+
+<Ar>مع $\gamma = 0.5$ أصبح المدى الداكن 0–64 يشغل 0–128، أي حصل على ضعف عدد مستويات المخرجات؛ ومع $\gamma = 2$ انضغط في 0–16. أما الأسود والأبيض نفساهما فلا يتحركان أبدًا.</Ar>
+
+```matlab title="gamma.m"
+t  = imread('tire.tif');
+th = imadjust(t, [], [], 0.5);    % gamma = 0.5 brightens the dark tire
+imshow(t), figure, imshow(th)
+```
+
+<SlideFigure page={20} caption="Gamma correction: the imadjust curves for gamma < 1 and gamma > 1, and the tire image before and after imadjust(t,[],[],0.5), which brings out detail in the dark rubber." captionAr="تصحيح غاما: منحنيات imadjust عندما تكون غاما أقل من 1 وأكبر من 1، وصورة الإطار قبل imadjust(t,[],[],0.5) وبعدها، حيث تظهر التفاصيل في المطاط الداكن." />
+
+The slides then show a portrait corrected with large gammas (10, 8 and 6): the larger $\gamma$ is, the more of the mid-tones are pushed toward black, until only the brightest areas keep any detail. In the general power-law form $s = c\,r^{\gamma}$, the same rule holds: $\gamma < 1$ brightens and $\gamma > 1$ darkens, and the same correction is used to adjust images for display on monitors.
+
+<Ar>ثم تعرض الشرائح صورة شخصية صُحِّحت بقيم غاما كبيرة (10 و8 و6): فكلما كبرت $\gamma$ دُفع مزيد من الدرجات المتوسطة (mid-tones) نحو الأسود، حتى لا يبقى أي تفصيل إلا في أسطع المناطق. وفي الصيغة العامة لتحويل القوة (power-law) $s = c\,r^{\gamma}$ تنطبق القاعدة نفسها: $\gamma < 1$ تزيد السطوع و $\gamma > 1$ تجعل الصورة أدكن، ويُستخدم التصحيح نفسه لضبط الصور لعرضها على الشاشات.</Ar>
+
+```python title="imadjust.py"
+import numpy as np
+
+def imadjust(x, a=0.0, b=1.0, c=0.0, d=1.0, gamma=1.0):
+    """Like MATLAB's imadjust(x,[a,b],[c,d],gamma); x, a, b, c, d on a [0, 1] scale."""
+    t = np.clip((x - a) / (b - a), 0, 1)     # below a -> 0, above b -> 1
+    return t ** gamma * (d - c) + c
+
+img = np.array([[0, 32, 64], [128, 192, 255]], dtype=np.uint8)
+out = imadjust(img / 255, gamma=0.5)
+print(np.round(out * 255).astype(np.uint8))  # [[0 90 128] [181 221 255]]
+```
+
+## Piecewise linear stretching
+
+<Ar>المط الخطي المجزأ</Ar>
+
+More control comes from a function made of several straight pieces through chosen points $(a_1, b_1), (a_2, b_2), \dots$. Between two neighbouring points $a_i \le x \le a_{i+1}$ the output is
+
+<Ar>يأتي مزيد من التحكم من دالة مكوّنة من عدة قطع مستقيمة تمر بنقاط مختارة $(a_1, b_1), (a_2, b_2), \dots$. فبين نقطتين متجاورتين $a_i \le x \le a_{i+1}$ يكون الناتج</Ar>
+
+$$
+y = \frac{b_{i+1} - b_i}{a_{i+1} - a_i}\,(x - a_i) + b_i
+$$
+
+A **steep** piece (slope greater than 1) stretches its grey levels apart and increases contrast there; a **shallow** piece (slope less than 1) compresses them. The stretching function of the 16-level example is exactly such a function, through $(0, 0)$, $(5, 2)$, $(9, 14)$ and $(15, 15)$: steep in the middle, where the pixels are, and shallow at the ends, where there are almost none.
+
+<Ar>القطعة **شديدة الميل** (ميلها أكبر من 1) تباعد بين مستويات الرمادي فيها وتزيد التباين هناك؛ والقطعة **قليلة الميل** (ميلها أقل من 1) تضغطها. ودالة المط في مثال المستويات الستة عشر هي بالضبط دالة من هذا النوع، تمر بالنقاط $(0, 0)$ و $(5, 2)$ و $(9, 14)$ و $(15, 15)$: شديدة الميل في المنتصف حيث توجد البكسلات، وقليلة الميل عند الطرفين حيث لا يكاد يوجد شيء.</Ar>
+
+<SlideFigure page={22} caption="A piecewise linear stretching function through (a1, b1), …, (a4, b4): the steep middle piece expands the grey levels between a2 and a3." captionAr="دالة مط خطية مجزأة تمر بالنقاط (a1, b1)، …، (a4, b4): القطعة الوسطى شديدة الميل توسّع مستويات الرمادي بين a2 و a3." />
+
+```matlab title="piecewise.m"
+a = [0 64 192 255];   b = [0 20 235 255];   % breakpoints (a_i, b_i)
+lut = interp1(a, b, 0:255);                  % y for every possible grey level
+out = uint8(lut(double(im) + 1));            % look each pixel up (MATLAB indices start at 1)
+```
+
+```python title="piecewise.py"
+out = np.round(np.interp(img, [0, 64, 192, 255], [0, 20, 235, 255])).astype(np.uint8)
+```
+
+## Histogram equalization
+
+<Ar>تسوية المدرج التكراري</Ar>
+
+The trouble with all the stretching methods above is that they **require user input**: someone must choose $a$, $b$, $\gamma$ or the breakpoints. **Histogram equalization** is an entirely **automatic** procedure. The idea is to change the histogram into a **uniform** one, where every bar has the same height, that is, every grey level occurs with the same frequency. In practice this is generally not possible exactly, but the result is still very good.
+
+<Ar>المشكلة في كل طرق المط السابقة أنها **تتطلب مدخلات من المستخدم**: إذ يجب أن يختار أحدٌ $a$ أو $b$ أو $\gamma$ أو نقاط الانكسار. أما **تسوية المدرج التكراري (histogram equalization)** فإجراء **آلي** بالكامل. والفكرة هي تحويل المدرج التكراري إلى مدرج **منتظم (uniform)**، تتساوى فيه ارتفاعات كل الأعمدة، أي يظهر فيه كل مستوى رمادي بالتكرار نفسه. وهذا غير ممكن بدقة في التطبيق العملي عمومًا، لكن النتيجة تظل جيدة جدًا.</Ar>
+
+Suppose the image has $L$ grey levels $0, 1, \dots, L-1$, grey level $i$ occurs $n_i$ times, and there are $n$ pixels in total. Each grey level $i$ is mapped to
+
+<Ar>لنفترض أن في الصورة $L$ مستوى رماديًا $0, 1, \dots, L-1$، وأن المستوى الرمادي $i$ يظهر $n_i$ مرة، وأن العدد الكلي للبكسلات $n$. عندئذ يُحوَّل كل مستوى رمادي $i$ إلى</Ar>
+
+$$
+j = \operatorname{round}\!\left(\frac{L-1}{n} \sum_{k=0}^{i} n_k\right) = \operatorname{round}\big((L-1)\cdot \text{CDF}(i)\big)
+$$
+
+The sum is the **cumulative histogram**: the number of pixels with grey level $i$ or less. Divided by $n$ it is the **cumulative distribution function** (CDF), which rises from near 0 to exactly 1. Why does this flatten the histogram? After the mapping, the fraction of pixels with output value at most $j$ is about $j/(L-1)$, which is exactly what a uniform histogram has. Where the original histogram is tall the CDF rises steeply, so crowded grey levels are **pushed apart**; where it is low the CDF is flat, so rare grey levels are **squeezed together**. Pixels that share a grey level always stay together, which is why the result is only approximately flat: bars can be spread apart or merged, but never split.
+
+<Ar>المجموع هو **المدرج التكراري التراكمي (cumulative histogram)**: أي عدد البكسلات ذات المستوى الرمادي $i$ أو أقل. وبقسمته على $n$ نحصل على **دالة التوزيع التراكمي (CDF)**، التي ترتفع من قرب الصفر إلى 1 تمامًا. فلماذا يؤدي ذلك إلى تسطيح المدرج التكراري؟ بعد التحويل، تكون نسبة البكسلات التي قيمتها الناتجة $j$ على الأكثر نحو $j/(L-1)$، وهذا بالضبط ما يتصف به المدرج المنتظم. فحيث يكون المدرج الأصلي مرتفعًا ترتفع دالة CDF بحدة، فـ**تتباعد** مستويات الرمادي المتكدسة؛ وحيث يكون منخفضًا تكون CDF مسطّحة، فـ**تتقارب** المستويات النادرة. أما البكسلات التي تشترك في مستوى رمادي واحد فتبقى معًا دائمًا، ولهذا تكون النتيجة مسطّحة تقريبًا فقط: فقد تتباعد الأعمدة أو تندمج، لكنها لا تنقسم أبدًا.</Ar>
+
+<Steps>
+
+1. Compute the histogram $n_k$ of the image.
+   <Ar>احسب المدرج التكراري $n_k$ للصورة.</Ar>
+2. Form the cumulative sums $\sum_{k=0}^{i} n_k$.
+   <Ar>كوّن المجاميع التراكمية $\sum_{k=0}^{i} n_k$.</Ar>
+3. Multiply each by $(L-1)/n$ and round to the nearest integer.
+   <Ar>اضرب كلًّا منها في $(L-1)/n$ وقرّبه إلى أقرب عدد صحيح.</Ar>
+4. Replace every pixel of grey level $i$ by its new value $j$.
+   <Ar>استبدل بكل بكسل مستواه الرمادي $i$ قيمته الجديدة $j$.</Ar>
+
+</Steps>
+
+### The slides' example
+
+<Ar>مثال الشرائح</Ar>
+
+A 16-level image ($L = 16$) has 360 pixels, so $(L-1)/n = 15/360 = 1/24$:
+
+<Ar>صورة من 16 مستوى ($L = 16$) فيها 360 بكسلًا، إذن $(L-1)/n = 15/360 = 1/24$:</Ar>
+
+| Grey level $i$ <Ar>المستوى الرمادي $i$</Ar> | $n_i$ | $\sum n_i$ | $\frac{1}{24}\sum n_i$ | Rounded $j$ <Ar>القيمة المقرَّبة $j$</Ar> |
+|---|---|---|---|---|
+| 0 | 15 | 15 | 0.63 | 1 |
+| 1–8 | 0 | 15 | 0.63 | 1 |
+| 9 | 70 | 85 | 3.54 | 4 |
+| 10 | 110 | 195 | 8.13 | 8 |
+| 11 | 45 | 240 | 10 | 10 |
+| 12 | 80 | 320 | 13.33 | 13 |
+| 13 | 40 | 360 | 15 | 15 |
+| 14–15 | 0 | 360 | 15 | 15 |
+
+The slide prints 3.65 for level 9; the correct value is $85/24 = 3.54$, which still rounds to 4. The new histogram has bars at 1 (15 pixels), 4 (70), 8 (110), 10 (45), 13 (80) and 15 (40): the cluster 9–13 now covers almost the whole range 1–15.
+
+<Ar>تطبع الشريحة القيمة 3.65 للمستوى 9، والقيمة الصحيحة $85/24 = 3.54$، وتقريبها لا يزال 4. وفي المدرج الجديد أعمدة عند 1 (15 بكسلًا)، و4 (70)، و8 (110)، و10 (45)، و13 (80)، و15 (40): فالتجمّع 9–13 أصبح يغطي المدى 1–15 كله تقريبًا.</Ar>
+
+### A small example from image to image
+
+<Ar>مثال صغير من الصورة إلى الصورة</Ar>
+
+Equalize this $4 \times 4$ image with 8 grey levels ($L = 8$, $n = 16$, so $(L-1)/n = 7/16$):
+
+<Ar>لنُسوِّ المدرج التكراري لهذه الصورة ذات الأبعاد $4 \times 4$ وذات 8 مستويات رمادية ($L = 8$ و $n = 16$، إذن $(L-1)/n = 7/16$):</Ar>
+
+$$
+f = \begin{bmatrix}
+3 & 3 & 4 & 2 \\
+3 & 4 & 4 & 5 \\
+2 & 3 & 4 & 3 \\
+4 & 2 & 3 & 5
+\end{bmatrix}
+$$
+
+| $r_k$ | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+|---|---|---|---|---|---|---|---|---|
+| $n_k$ | 0 | 0 | 3 | 6 | 5 | 2 | 0 | 0 |
+| $\sum n_k$ | 0 | 0 | 3 | 9 | 14 | 16 | 16 | 16 |
+| $\frac{7}{16}\sum n_k$ | 0 | 0 | 1.31 | 3.94 | 6.13 | 7 | 7 | 7 |
+| $s_k$ | 0 | 0 | 1 | 4 | 6 | 7 | 7 | 7 |
+
+Replacing 2 → 1, 3 → 4, 4 → 6 and 5 → 7 gives
+
+<Ar>باستبدال 2 ← 1، و3 ← 4، و4 ← 6، و5 ← 7 نحصل على</Ar>
+
+$$
+g = \begin{bmatrix}
+4 & 4 & 6 & 1 \\
+4 & 6 & 6 & 7 \\
+1 & 4 & 6 & 4 \\
+6 & 1 & 4 & 7
+\end{bmatrix}
+$$
+
+Compare with linear stretching of the occupied range 2–5 onto 0–7, $s = 7(r-2)/3$, which gives 2 → 0, 3 → 2, 4 → 5, 5 → 7: equal steps of about 2.3. Equalization instead gives the busy levels 3 and 4 (11 of the 16 pixels) the biggest gaps, 3 and 2, and the rare levels small ones.
+
+<Ar>قارن ذلك بالمط الخطي للمدى المستخدم 2–5 إلى المدى 0–7، $s = 7(r-2)/3$، الذي يعطي 2 ← 0، و3 ← 2، و4 ← 5، و5 ← 7: أي خطوات متساوية تقارب 2.3. أما التسوية فتعطي المستويين المزدحمين 3 و4 (اللذين يضمان 11 بكسلًا من 16) أكبر الفجوات، 3 و2، وتعطي المستويات النادرة فجوات صغيرة.</Ar>
+
+### In MATLAB and Python
+
+<Ar>في MATLAB و Python</Ar>
+
+```matlab title="equalize.m"
+p  = imread('pout.tif');
+ph = histeq(p);                          % by default the output has 64 grey levels
+imshow(ph), figure, imhist(ph), axis tight
+```
+
+```python title="equalize.py"
+import numpy as np
+
+def equalize(img, L=256):
+    hist = np.bincount(img.ravel(), minlength=L)            # n_k
+    cum = np.cumsum(hist)                                   # sum of n_k for k <= i
+    lut = np.round((L - 1) * cum / img.size).astype(img.dtype)
+    return lut[img]                                         # map every pixel through the table
+
+f = np.array([[3, 3, 4, 2], [3, 4, 4, 5], [2, 3, 4, 3], [4, 2, 3, 5]])
+print(equalize(f, L=8))     # [[4 4 6 1] [4 6 6 7] [1 4 6 4] [6 1 4 7]]
+```
+
+<SlideFigure page={25} caption="pout.tif after histeq: the grey levels now spread over almost the whole range and the image has much better contrast. The bars are spaced out because histeq targets 64 levels by default." captionAr="الصورة pout.tif بعد histeq: انتشرت مستويات الرمادي على المدى كله تقريبًا وصار تباين الصورة أفضل بكثير. والأعمدة متباعدة لأن histeq تستهدف 64 مستوى افتراضيًا." />
+
+<SlideFigure page={26} caption="Example 2: a darkened engineer.tif whose histogram is squeezed into 0–50, and the same image after equalization, with its histogram spread across 0–255." captionAr="المثال 2: الصورة engineer.tif بعد جعلها داكنة، ومدرجها التكراري منضغط في المدى 0–50، والصورة نفسها بعد التسوية، ومدرجها منتشر على المدى 0–255." />
+
+### Stretching or equalization?
+
+<Ar>المط أم التسوية؟</Ar>
+
+| Feature <Ar>الخاصية</Ar> | Contrast stretching <Ar>مط التباين</Ar> | Histogram equalization <Ar>تسوية المدرج التكراري</Ar> |
+|---|---|---|
+| Mapping <Ar>التحويل</Ar> | Linear (or piecewise linear) <Ar>خطي (أو خطي مجزأ)</Ar> | Non-linear, follows the cumulative histogram <Ar>غير خطي، يتبع المدرج التراكمي</Ar> |
+| User input <Ar>مدخلات المستخدم</Ar> | Needs the range or breakpoints <Ar>يحتاج إلى المدى أو نقاط الانكسار</Ar> | None: fully automatic <Ar>لا شيء: آلي بالكامل</Ar> |
+| Histogram shape <Ar>شكل المدرج التكراري</Ar> | Kept, only widened <Ar>يُحفظ، ويتسع فقط</Ar> | Changed toward uniform <Ar>يتغير نحو المنتظم</Ar> |
+| Risk <Ar>المخاطرة</Ar> | Low <Ar>منخفضة</Ar> | Can over-enhance noise and look unnatural <Ar>قد يبالغ في إبراز الضوضاء ويبدو غير طبيعي</Ar> |
+| Simplicity <Ar>البساطة</Ar> | Very simple: min–max scaling <Ar>بسيط جدًا: تحجيم بين الأدنى والأقصى</Ar> | Needs the histogram and its cumulative sum <Ar>يحتاج إلى المدرج التكراري ومجموعه التراكمي</Ar> |
+
+<Callout type="note" title="What point processing cannot do" titleAr="ما لا تستطيعه المعالجة النقطية">
+  Point operations are fast and simple, but they <strong>ignore neighbours</strong>. They cannot tell an edge from a flat region or a noise spike from a real detail, so noise removal, edge detection and texture analysis need neighbourhood processing, the subject of the next lecture.
+
+  <Ar>العمليات النقطية سريعة وبسيطة، لكنها <strong>تتجاهل الجيران</strong>. فلا تستطيع التمييز بين حافة ومنطقة مستوية، ولا بين نقطة ضوضاء وتفصيل حقيقي، ولذلك تحتاج إزالة الضوضاء وكشف الحواف وتحليل النسيج إلى معالجة الجوار (neighbourhood processing)، وهي موضوع المحاضرة التالية.</Ar>
+</Callout>
+
+<Takeaways>
+
+- A **point operation** computes each new pixel from its own value only, $y = f(x)$; neighbourhood operations use a mask around the pixel, and transforms use the whole image.
+  <Ar>**العملية النقطية** تحسب كل بكسل جديد من قيمته وحدها، $y = f(x)$؛ أما عمليات الجوار فتستخدم قناعًا حول البكسل، والتحويلات تستخدم الصورة كلها.</Ar>
+- Arithmetic ($x \pm C$, $Cx$) changes brightness and contrast; always **round and clip** to 0–255, and remember that clipping loses information.
+  <Ar>العمليات الحسابية ($x \pm C$ و $Cx$) تغيّر السطوع والتباين؛ فقرّب دائمًا **وقُصّ** إلى المدى 0–255، وتذكّر أن القصّ يُضيّع المعلومات.</Ar>
+- The **complement** $255 - x$ gives the negative; complementing only part of the range gives **solarization**.
+  <Ar>**المتمِّم** $255 - x$ يعطي الصورة السالبة؛ وإيجاد المتمِّم لجزء من المدى فقط يعطي **التشميس (solarization)**.</Ar>
+- The **histogram** counts how often each grey level occurs; a narrow histogram means low contrast.
+  <Ar>**المدرج التكراري (histogram)** يعدّ مرات ظهور كل مستوى رمادي؛ والمدرج الضيق يعني تباينًا منخفضًا.</Ar>
+- **Stretching** (`imadjust`, piecewise linear) widens the used range by hand; **gamma** $< 1$ brightens and $> 1$ darkens; **equalization** maps each level through the scaled cumulative histogram, automatically.
+  <Ar>**المط** (`imadjust` والدالة الخطية المجزأة) يوسّع المدى المستخدم يدويًا؛ و**غاما** $< 1$ تزيد السطوع و $> 1$ تجعل الصورة أدكن؛ أما **التسوية** فتحوّل كل مستوى عبر المدرج التراكمي بعد تحجيمه، آليًا.</Ar>
+
+</Takeaways>
+
+## Practice
+
+<Ar>تدريب</Ar>
+
+<Exercise title="Arithmetic and complement" titleAr="العمليات الحسابية والمتمِّم" level="easy">
+
+An 8-bit image is transformed by $g = 2f + 20$. (a) What does a pixel of value 100 become? (b) And a pixel of value 150? (c) What is the complement of 100?
+
+<Ar>تُحوَّل صورة بعمق 8 بِتّات بالدالة $g = 2f + 20$. (a) إلى أي قيمة يتحول بكسل قيمته 100؟ (b) وبكسل قيمته 150؟ (c) ما متمِّم القيمة 100؟</Ar>
+
+<Solution>
+
+(a) $2 \cdot 100 + 20 = 220$. (b) $2 \cdot 150 + 20 = 320$, which is clipped to **255**. (c) $255 - 100 = 155$.
+
+<Ar>(a) $2 \cdot 100 + 20 = 220$. (b) $2 \cdot 150 + 20 = 320$، وتُقصّ إلى **255**. (c) $255 - 100 = 155$.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Contrast stretching and gamma" titleAr="مط التباين وغاما" level="medium">
+
+(a) An image's grey values occupy $[50, 200]$. Stretch it linearly to $[0, 255]$: what does a pixel of value 120 become? (b) With $\gamma = 0.4$ over the full range, what does 64 become, and does the image get brighter or darker?
+
+<Ar>(a) تشغل قيم الرمادي في صورة المدى $[50, 200]$. مُطّها خطيًا إلى $[0, 255]$: إلى أي قيمة يتحول بكسل قيمته 120؟ (b) مع $\gamma = 0.4$ على المدى الكامل، إلى أي قيمة يتحول 64؟ وهل تصبح الصورة أكثر سطوعًا أم أدكن؟</Ar>
+
+<Solution>
+
+(a) $s = \frac{120 - 50}{200 - 50} \cdot 255 = \frac{70}{150} \cdot 255 = 119$. (b) $255 \cdot (64/255)^{0.4} = 255 \cdot 0.575 \approx 147$. The value rises from 64 to 147: with $\gamma < 1$ the image becomes **brighter**, mostly in the dark areas.
+
+<Ar>(a) $s = \frac{120 - 50}{200 - 50} \cdot 255 = \frac{70}{150} \cdot 255 = 119$. (b) $255 \cdot (64/255)^{0.4} = 255 \cdot 0.575 \approx 147$. ترتفع القيمة من 64 إلى 147: فمع $\gamma < 1$ تصبح الصورة **أكثر سطوعًا**، ولا سيما في المناطق الداكنة.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Equalize by hand" titleAr="التسوية يدويًا" level="hard">
+
+A 3-bit image ($L = 8$) of 64 pixels has the histogram below. Equalize it: find the new grey level of each old level and the new histogram.
+
+<Ar>صورة بعمق 3 بِتّات ($L = 8$) فيها 64 بكسلًا، ومدرجها التكراري في الجدول أدناه. سوِّ مدرجها التكراري: أوجد المستوى الرمادي الجديد لكل مستوى قديم، والمدرج التكراري الجديد.</Ar>
+
+| $r_k$ | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+|---|---|---|---|---|---|---|---|---|
+| $n_k$ | 0 | 0 | 10 | 24 | 18 | 8 | 4 | 0 |
+
+<Solution>
+
+Here $(L-1)/n = 7/64$. The cumulative sums are 0, 0, 10, 34, 52, 60, 64, 64; multiplied by $7/64$ they give 0, 0, 1.09, 3.72, 5.69, 6.56, 7, 7. Rounding: 2 → 1, 3 → 4, 4 → 6, 5 → 7, 6 → 7. The new histogram has 10 pixels at level 1, 24 at 4, 18 at 6 and $8 + 4 = 12$ at 7. Levels 5 and 6 **merged**: equalization spreads the busy levels 3 and 4 apart and squeezes the rare bright ones together.
+
+<Ar>هنا $(L-1)/n = 7/64$. والمجاميع التراكمية هي 0، 0، 10، 34، 52، 60، 64، 64؛ وبضربها في $7/64$ نحصل على 0، 0، 1.09، 3.72، 5.69، 6.56، 7، 7. وبالتقريب: 2 ← 1، و3 ← 4، و4 ← 6، و5 ← 7، و6 ← 7. وفي المدرج الجديد 10 بكسلات عند المستوى 1، و24 عند 4، و18 عند 6، و $8 + 4 = 12$ عند 7. لقد **اندمج** المستويان 5 و6: فالتسوية تباعد بين المستويين المزدحمين 3 و4، وتقارب بين المستويات الساطعة النادرة.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "In a point operation, the new value of a pixel depends on…",
+      qAr: "في العملية النقطية، تعتمد القيمة الجديدة للبكسل على…",
+      options: ["Its own value only", "Its 3 × 3 neighbourhood", "The whole image as one block", "The pixel's position"],
+      optionsAr: ["قيمته وحدها", "جواره ذي الأبعاد 3 × 3", "الصورة كلها كتلةً واحدة", "موضع البكسل"],
+      answer: 0,
+      explain: "A point operation is y = f(x): no knowledge of the surroundings is used.",
+      explainAr: "العملية النقطية هي y = f(x): ولا تُستخدم فيها أي معرفة بما حول البكسل."
+    },
+    {
+      q: "An 8-bit pixel of value 200 has 100 added to it, with clipping. The result is…",
+      qAr: "أُضيفت القيمة 100 إلى بكسل بعمق 8 بِتّات قيمته 200، مع القصّ. النتيجة هي…",
+      options: ["300", "255", "44", "200"],
+      optionsAr: ["300", "255", "44", "200"],
+      answer: 1,
+      explain: "300 is above 255, so it is clipped to 255. (44 is what NumPy's wrap-around would give.)",
+      explainAr: "القيمة 300 أكبر من 255، فتُقصّ إلى 255. (أما 44 فهي ما يعطيه الالتفاف في NumPy.)"
+    },
+    {
+      q: "What is the complement of the grey value 60 in an 8-bit image?",
+      qAr: "ما متمِّم القيمة الرمادية 60 في صورة بعمق 8 بِتّات؟",
+      options: ["60", "195", "196", "-60"],
+      optionsAr: ["60", "195", "196", "-60"],
+      answer: 1,
+      explain: "y = 255 − x = 255 − 60 = 195.",
+      explainAr: "المتمِّم هو y = 255 − x = 255 − 60 = 195."
+    },
+    {
+      q: "imadjust(t, [], [], 0.5) applied to a dark image will…",
+      qAr: "تطبيق imadjust(t, [], [], 0.5) على صورة داكنة سوف…",
+      options: ["Darken it", "Brighten it, lifting the dark values most", "Invert it", "Leave it unchanged"],
+      optionsAr: ["يجعلها أدكن", "يزيد سطوعها، مع رفع القيم الداكنة أكثر من غيرها", "يعكسها", "يتركها دون تغيير"],
+      answer: 1,
+      explain: "A gamma below 1 bends the curve upward, so dark values are raised the most.",
+      explainAr: "غاما الأقل من 1 تجعل المنحنى ينحني إلى أعلى، فتُرفع القيم الداكنة أكثر من غيرها."
+    },
+    {
+      q: "Why is histogram equalization preferred to stretching in some cases?",
+      qAr: "لماذا تُفضَّل تسوية المدرج التكراري على المط في بعض الحالات؟",
+      options: ["It never changes the histogram", "It is fully automatic: no parameters to choose", "It removes noise", "It always gives an exactly flat histogram"],
+      optionsAr: ["لأنها لا تغيّر المدرج التكراري أبدًا", "لأنها آلية بالكامل: لا معاملات يجب اختيارها", "لأنها تزيل الضوضاء", "لأنها تعطي دائمًا مدرجًا مسطّحًا تمامًا"],
+      answer: 1,
+      explain: "Equalization computes its mapping from the cumulative histogram; the result is only approximately flat.",
+      explainAr: "تحسب التسوية دالة التحويل من المدرج التراكمي، والنتيجة مسطّحة تقريبًا فقط."
+    },
+    {
+      q: "After equalization, two old grey levels end up with the same new value. Why?",
+      qAr: "بعد التسوية انتهى مستويان رماديان قديمان إلى القيمة الجديدة نفسها. لماذا؟",
+      options: ["A rounding error in MATLAB", "Their scaled cumulative sums round to the same integer, as happens with rare levels", "The image was binary", "Clipping at 255"],
+      optionsAr: ["خطأ تقريب في MATLAB", "لأن مجموعيهما التراكميين بعد التحجيم يُقرَّبان إلى العدد الصحيح نفسه، كما يحدث للمستويات النادرة", "لأن الصورة كانت ثنائية", "بسبب القصّ عند 255"],
+      answer: 1,
+      explain: "A rare level adds little to the cumulative sum, so its mapped value can round to the same level as its neighbour: bars merge but never split.",
+      explainAr: "المستوى النادر يضيف قليلًا إلى المجموع التراكمي، فقد تُقرَّب قيمته الناتجة إلى مستوى جاره نفسه: فالأعمدة تندمج لكنها لا تنقسم أبدًا."
+    }
+  ]}
+/>

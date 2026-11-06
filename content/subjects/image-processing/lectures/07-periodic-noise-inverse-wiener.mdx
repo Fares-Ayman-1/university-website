@@ -1,0 +1,617 @@
+---
+number: 7
+title: "Image Restoration: Periodic Noise, Inverse and Wiener Filtering"
+titleAr: "استعادة الصور: الضوضاء الدورية، والترشيح العكسي، وترشيح فينر"
+summary: "Restoring images in the frequency domain: the degradation model G = HF + N, removing periodic noise with band-reject and notch filters, estimating the degradation function of a blur by imaging an impulse, and undoing the blur with inverse filtering (and why noise ruins it) and with the Wiener filter."
+summaryAr: "استعادة الصور في المجال الترددي: نموذج التدهور G = HF + N، وإزالة الضوضاء الدورية بمرشحات رفض النطاق (band-reject) ومرشحات الثلم (notch)، وتقدير دالة التدهور الناتجة عن التشويش بتصوير نبضة، ثم إزالة التشويش بالترشيح العكسي (inverse filtering) ولماذا تفسده الضوضاء، وبترشيح فينر (Wiener)."
+topics: [Degradation model, Periodic noise, Band-reject filters, Notch filters, Reducing scan lines, Motion and out-of-focus blur, Estimating H by experimentation, Inverse filtering, Wiener filtering]
+duration: 50 min study
+sources:
+  - file: "lectures/ch7/Lec7 (2).pdf"
+    label: Image Processing Lecture 7 – Image Restoration in the Frequency Domain (slides)
+    pages: "1-24"
+bookRefs:
+  - book: ip-book
+    chapter: Ch 5 · Image Restoration
+    pages: "105–107, 113–122"
+  - book: gonzalez
+    chapter: Ch 5 · Image Restoration and Reconstruction
+---
+
+<Objectives>
+
+- Write the **degradation model** in the spatial and the frequency domain, and say what $H$ and $N$ stand for.
+  <Ar>كتابة **نموذج التدهور (degradation model)** في المجال المكاني والمجال الترددي، وبيان ما تمثله $H$ و $N$.</Ar>
+- Recognise **periodic noise** in a spectrum and remove it with **band-reject** and **notch** filters (ideal, Butterworth, Gaussian).
+  <Ar>التعرف على **الضوضاء الدورية (periodic noise)** في الطيف، وإزالتها بمرشحات **رفض النطاق (band-reject)** ومرشحات **الثلم (notch)** بأنواعها المثالية وبترورث (Butterworth) وغاوس (Gaussian).</Ar>
+- **Estimate** a degradation function by imaging an impulse.
+  <Ar>**تقدير** دالة التدهور (degradation function) بتصوير نبضة (impulse).</Ar>
+- Restore a blurred image by **inverse filtering**, explain why noise ruins it, and limit the damage with a cutoff radius.
+  <Ar>استعادة صورة مشوشة بـ**الترشيح العكسي (inverse filtering)**، وشرح لماذا تفسده الضوضاء، والحد من الضرر بنصف قطر للقطع.</Ar>
+- Apply the **Wiener filter** and explain the role of its constant $K$.
+  <Ar>تطبيق **مرشح فينر (Wiener filter)** وشرح دور ثابته $K$.</Ar>
+
+</Objectives>
+
+## Restoration in the frequency domain
+
+<Ar>الاستعادة في المجال الترددي</Ar>
+
+**Restoration** tries to undo a degradation that happened while the image was acquired, using what we know (or can estimate) about that degradation. Random noise and the spatial-domain filters that fight it (mean, order-statistics and adaptive filters, Gaussian smoothing) are covered in lecture 8. This lecture deals with two degradations that are far easier to handle in the frequency domain: **periodic noise** and **blur**.
+
+<Ar>تحاول **الاستعادة (restoration)** إلغاء تدهور حدث أثناء التقاط الصورة، مستعينةً بما نعرفه عن هذا التدهور أو بما نستطيع تقديره. أما الضوضاء العشوائية والمرشحات المكانية التي تقاومها (مرشحات المتوسط، وإحصاءات الترتيب (order-statistics)، والمرشحات التكيفية (adaptive)، والتنعيم الغاوسي) فتُشرح في المحاضرة 8. وتتناول هذه المحاضرة نوعين من التدهور يسهل التعامل معهما كثيرًا في المجال الترددي: **الضوضاء الدورية** و**التشويش (blur)**.</Ar>
+
+Both fit one model. The original image $f$ passes through a degradation $h$ and picks up additive noise $\eta$:
+
+<Ar>ويندرج كلاهما تحت نموذج واحد: تمر الصورة الأصلية $f$ عبر تدهور $h$ وتُضاف إليها ضوضاء جمعية (additive) $\eta$:</Ar>
+
+$$
+g(x,y) = h(x,y) * f(x,y) + \eta(x,y)
+\qquad\Longleftrightarrow\qquad
+G(u,v) = H(u,v)\,F(u,v) + N(u,v)
+$$
+
+The right-hand form follows from the convolution theorem of lecture 6.
+
+<Ar>والصيغة اليمنى تنتج من مبرهنة الالتفاف (convolution theorem) في المحاضرة 6.</Ar>
+
+<Definition term="Degradation function (point spread function)" termAr="دالة التدهور (دالة انتشار النقطة PSF)">
+  $h(x,y)$ describes how the imaging system spreads a single bright point: it is the image of an <strong>impulse</strong>, hence the name point spread function (PSF). Its transform $H(u,v)$ says how much each frequency is attenuated. A blur has an $H$ that falls off at high frequencies.
+
+  <Ar>تصف $h(x,y)$ كيف ينشر نظام التصوير نقطة مضيئة واحدة: فهي صورة <strong>النبضة (impulse)</strong>، ومن هنا جاء اسم دالة انتشار النقطة (PSF). ويبيّن تحويلها $H(u,v)$ مقدار إضعاف كل تردد. والتشويش (blur) له دالة $H$ تتناقص عند الترددات المرتفعة.</Ar>
+</Definition>
+
+## Periodic noise
+
+<Ar>الضوضاء الدورية</Ar>
+
+**Periodic noise** is a regular pattern of stripes or ripples laid over the image, typically from electrical or electromechanical interference during acquisition. In the spatial domain it covers every pixel, so mean or median filters cannot remove it without destroying the image. In the frequency domain it is trivial to see: a sinusoid of frequency $(u_0, v_0)$ transforms into just **two bright spikes**, at $(u_0, v_0)$ and $(-u_0, -v_0)$, symmetric about the centre because the image is real (conjugate symmetry). Remove those few frequencies and the noise is gone, while the image, whose energy is spread over many frequencies, barely changes.
+
+<Ar>**الضوضاء الدورية (periodic noise)** نمط منتظم من الخطوط أو التموجات يتراكب على الصورة، وتنشأ عادةً عن تداخل كهربائي أو كهروميكانيكي أثناء التقاط الصورة. وهي في المجال المكاني تغطي كل البكسلات، فلا تستطيع مرشحات المتوسط أو الوسيط (median) إزالتها دون إتلاف الصورة. أما في المجال الترددي فرؤيتها سهلة جدًا: فالموجة الجيبية (sinusoid) ذات التردد $(u_0, v_0)$ تتحول إلى **قمتين حادتين (spikes)** فقط، عند $(u_0, v_0)$ و $(-u_0, -v_0)$، متناظرتين حول المركز لأن الصورة حقيقية القيم (التناظر المرافق conjugate symmetry). فإذا حذفنا هذه الترددات القليلة زالت الضوضاء، بينما لا تكاد الصورة تتغير لأن طاقتها موزعة على ترددات كثيرة.</Ar>
+
+### Worked example: a noisy row of 8 pixels
+
+<Ar>مثال محلول: صف مشوَّش من 8 بكسلات</Ar>
+
+A flat row of grey level 10 picks up the interference $4\cos(2\pi \cdot 2x/8)$:
+
+<Ar>صف منتظم مستوى رماديه 10 أضيف إليه التداخل $4\cos(2\pi \cdot 2x/8)$:</Ar>
+
+| $x$ | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+|---|---|---|---|---|---|---|---|---|
+| $f(x)$ | 14 | 10 | 6 | 10 | 14 | 10 | 6 | 10 |
+| $F(u)$, with $u = x$ <Ar>$F(u)$، حيث $u = x$</Ar> | 10 | 0 | 2 | 0 | 0 | 0 | 2 | 0 |
+
+The DFT is the DC value 10 plus two spikes of height 2 at $u = 2$ and $u = 6$ (that is, $u = -2$). A **notch** that sets $F(2) = F(6) = 0$ leaves only $F(0) = 10$, and the inverse DFT gives back the clean row $10, 10, \dots, 10$.
+
+<Ar>يتكون التحويل من القيمة المستمرة 10 إضافةً إلى قمتين ارتفاع كل منهما 2 عند $u = 2$ و $u = 6$ (أي $u = -2$). ومرشح **ثلم (notch)** يجعل $F(2) = F(6) = 0$ لا يُبقي إلا $F(0) = 10$، فيعيد التحويل المعكوس الصف النظيف $10, 10, \dots, 10$.</Ar>
+
+The slides cover two filters for periodic noise: **band-reject** filters, which remove a whole ring of frequencies, and **notch** filters, which remove small neighbourhoods around chosen points.
+
+<Ar>تتناول الشرائح نوعين من المرشحات للضوضاء الدورية: مرشحات **رفض النطاق (band-reject)** التي تحذف حلقة كاملة من الترددات، ومرشحات **الثلم (notch)** التي تحذف جوارات صغيرة حول نقاط مختارة.</Ar>
+
+## Band-reject filters
+
+<Ar>مرشحات رفض النطاق</Ar>
+
+A band-reject filter removes a **band of frequencies** in a ring around the origin of the (centred) transform. The ideal version is
+
+<Ar>يحذف مرشح رفض النطاق (band-reject) **نطاقًا من الترددات** على شكل حلقة حول نقطة الأصل في التحويل (بعد توسيطه). والصيغة المثالية هي:</Ar>
+
+$$
+H(u,v) =
+\begin{cases}
+1 & \text{if } D(u,v) < D_0 - \frac{W}{2} \\[4pt]
+0 & \text{if } D_0 - \frac{W}{2} \le D(u,v) \le D_0 + \frac{W}{2} \\[4pt]
+1 & \text{if } D(u,v) > D_0 + \frac{W}{2}
+\end{cases}
+$$
+
+where $D(u,v)$ is the distance from the centre, $D_0$ the **radius of the ring** (its radial centre) and $W$ its **width**.
+
+<Ar>حيث $D(u,v)$ هي المسافة من المركز، و $D_0$ **نصف قطر الحلقة** (مركزها القُطري radial center)، و $W$ **عرضها**.</Ar>
+
+<SlideFigure page={4} caption="The ideal band-reject filter: a flat surface at 1 with a ring-shaped trench of width W at radius D₀." captionAr="مرشح رفض النطاق المثالي: سطح مستوٍ عند القيمة 1 فيه خندق حلقي عرضه W عند نصف القطر D₀." />
+
+As with low-pass filters, smoother versions avoid ringing. The Butterworth band-reject filter of order $n$ and the Gaussian one are
+
+<Ar>وكما في مرشحات التمرير المنخفض، تتجنب الصيغ الأنعم التموج الحلقي (ringing). فمرشح بترورث لرفض النطاق من الرتبة $n$ ومرشح غاوس هما:</Ar>
+
+$$
+H(u,v) = \frac{1}{1 + \left[\dfrac{D(u,v)\,W}{D^2(u,v) - D_0^2}\right]^{2n}}
+\qquad\qquad
+H(u,v) = 1 - e^{-\frac{1}{2}\left[\frac{D^2(u,v) - D_0^2}{D(u,v)\,W}\right]^2}
+$$
+
+Both are exactly 0 on the circle $D = D_0$ and rise smoothly to 1 on either side.
+
+<Ar>وكلاهما يساوي 0 تمامًا على الدائرة $D = D_0$، ويرتفع بسلاسة إلى 1 على جانبيها.</Ar>
+
+<SlideFigure page={7} caption="Butterworth (top) and Gaussian (bottom) band-reject filters: the same ring-shaped trench, but with smooth walls." captionAr="مرشحا رفض النطاق من نوع بترورث (أعلى) وغاوس (أسفل): الخندق الحلقي نفسه لكن بجدران ملساء." />
+
+For a ring at $D_0 = 50$ with width $W = 10$:
+
+<Ar>لحلقة عند $D_0 = 50$ عرضها $W = 10$:</Ar>
+
+| $D$ | 0 | 45 | 50 | 55 | 100 |
+|---|---|---|---|---|---|
+| Ideal <Ar>المثالي</Ar> | 1 | 0 | 0 | 0 | 1 |
+| Butterworth, $n = 1$ <Ar>بترورث، $n = 1$</Ar> | 1 | 0.53 | 0 | 0.48 | 0.98 |
+| Gaussian <Ar>غاوس</Ar> | 1 | 0.43 | 0 | 0.37 | 1.00 |
+
+Turning a band-reject filter around gives a **band-pass** filter, $H_{bp} = 1 - H_{br}$, which keeps only the ring.
+
+<Ar>وبقلب مرشح رفض النطاق نحصل على مرشح **تمرير النطاق (band-pass)**، أي $H_{bp} = 1 - H_{br}$، الذي لا يُبقي إلا الحلقة.</Ar>
+
+### Demo
+
+<Ar>عرض توضيحي</Ar>
+
+<SlideFigure page={8} caption="Band-reject demo: an image corrupted by sinusoidal noise; its spectrum, where the noise appears as bright dots on a circle around the centre; a Butterworth band-reject ring through those dots; and the clean result." captionAr="عرض رفض النطاق: صورة أفسدتها ضوضاء جيبية؛ وطيفها الذي تظهر فيه الضوضاء نقاطًا ساطعة على دائرة حول المركز؛ وحلقة رفض نطاق من نوع بترورث تمر بتلك النقاط؛ والناتج النظيف." />
+
+Here the noise is several sinusoids with the same frequency magnitude in different directions, so its spikes all lie on one circle and a single ring removes them all. A band-reject filter is the natural choice when the noise sits on a circle, or when we only know roughly how far from the centre it is. Its cost: it also removes whatever image content lies on that ring.
+
+<Ar>الضوضاء هنا عدة موجات جيبية لها مقدار التردد نفسه في اتجاهات مختلفة، فتقع قممها كلها على دائرة واحدة، وتحذفها حلقة واحدة جميعًا. ومرشح رفض النطاق هو الاختيار الطبيعي عندما تقع الضوضاء على دائرة، أو عندما لا نعرف إلا بُعدها التقريبي عن المركز. وثمنه أنه يحذف أيضًا أي محتوى من الصورة يقع على تلك الحلقة.</Ar>
+
+## Notch filters
+
+<Ar>مرشحات الثلم</Ar>
+
+A **notch filter** rejects (or passes) frequencies in **predefined neighbourhoods** around chosen centre frequencies, instead of a whole ring. Because the transform of a real image is conjugate symmetric, every spike has a twin, so notches must come in **symmetric pairs** about the origin. For a pair centred at $(u_0, v_0)$ and $(-u_0, -v_0)$ in an $M \times N$ centred spectrum, define the distances to the two centres:
+
+<Ar>يرفض **مرشح الثلم (notch filter)** الترددات (أو يمررها) في **جوارات محددة مسبقًا** حول ترددات مركزية مختارة، بدلًا من حلقة كاملة. ولأن تحويل الصورة الحقيقية متناظر تناظرًا مرافقًا، فلكل قمة توأم، ولذلك يجب أن تأتي الأثلام في **أزواج متناظرة** حول نقطة الأصل. ولزوج مركزاه $(u_0, v_0)$ و $(-u_0, -v_0)$ في طيف مُوسَّط أبعاده $M \times N$، نعرّف المسافتين إلى المركزين:</Ar>
+
+$$
+D_1(u,v) = \left[\left(u - \tfrac{M}{2} - u_0\right)^2 + \left(v - \tfrac{N}{2} - v_0\right)^2\right]^{1/2}
+$$
+
+$$
+D_2(u,v) = \left[\left(u - \tfrac{M}{2} + u_0\right)^2 + \left(v - \tfrac{N}{2} + v_0\right)^2\right]^{1/2}
+$$
+
+The three notch-reject filters with radius $D_0$ are:
+
+<Ar>ومرشحات رفض الثلم (notch reject) الثلاثة بنصف قطر $D_0$ هي:</Ar>
+
+$$
+H_{\text{ideal}}(u,v) =
+\begin{cases}
+0 & \text{if } D_1(u,v) \le D_0 \text{ or } D_2(u,v) \le D_0 \\
+1 & \text{otherwise}
+\end{cases}
+$$
+
+$$
+H_{\text{Butterworth}}(u,v) = \frac{1}{1 + \left[\dfrac{D_0^2}{D_1(u,v)\,D_2(u,v)}\right]^{n}}
+\qquad
+H_{\text{Gaussian}}(u,v) = 1 - e^{-\frac{1}{2}\left[\frac{D_1(u,v)\,D_2(u,v)}{D_0^2}\right]}
+$$
+
+(The Gaussian formula on the slide writes $D_2 D_2$ in the exponent; it should be $D_1 D_2$, as in the Butterworth filter.) Each filter is 0 at both centres and close to 1 away from them.
+
+<Ar>(تكتب الشريحة $D_2 D_2$ في أُسّ صيغة غاوس، والصواب $D_1 D_2$ كما في مرشح بترورث.) وكل مرشح يساوي 0 عند المركزين، ويقترب من 1 بعيدًا عنهما.</Ar>
+
+<SlideFigure page={10} caption="Notch-reject filters as 3-D plots: two symmetric holes, with vertical walls (ideal), smooth walls (Butterworth) or smoother, wider walls (Gaussian)." captionAr="مرشحات رفض الثلم برسوم ثلاثية الأبعاد: ثقبان متناظران، بجدران رأسية (المثالي)، أو ملساء (بترورث)، أو أكثر نعومة واتساعًا (غاوس)." />
+
+The opposite filter, the **notch pass** filter $H_{np} = 1 - H_{nr}$, keeps *only* the notch regions. Applied to a noisy image, it extracts the noise pattern itself, which is a handy way to check that you have found the right frequencies.
+
+<Ar>والمرشح المعاكس، أي مرشح **تمرير الثلم (notch pass)** $H_{np} = 1 - H_{nr}$، لا يُبقي *إلا* مناطق الثلم. وإذا طُبّق على صورة مشوَّشة فإنه يستخرج نمط الضوضاء نفسه، وهي طريقة مفيدة للتأكد من أنك وجدت الترددات الصحيحة.</Ar>
+
+### Reducing the effect of scan lines
+
+<Ar>تقليل أثر خطوط المسح</Ar>
+
+<SlideFigure page={11} caption="Satellite image of Florida with horizontal sensor scan lines (a); its spectrum (b); a notch pass filter along the vertical axis, with the centre left out (c); the noise pattern it extracts (d); and the result of the matching notch reject filter (e)." captionAr="صورة قمر صناعي لفلوريدا فيها خطوط مسح أفقية من المستشعر (a)؛ وطيفها (b)؛ ومرشح تمرير ثلم على امتداد المحور الرأسي مع استبعاد المركز (c)؛ ونمط الضوضاء الذي يستخرجه (d)؛ وناتج مرشح رفض الثلم المقابل (e)." />
+
+Horizontal scan lines change only from row to row, that is, along the vertical direction. Their energy therefore lies along the **vertical axis** of the spectrum. A notch filter shaped as a narrow vertical strip, with a gap around the centre so the image's own low frequencies survive, isolates them. The notch pass version shows the extracted line pattern (d); the notch reject version removes it (e). Notches need not be circles: any region that covers the noise and spares the centre works.
+
+<Ar>خطوط المسح (scan lines) الأفقية لا تتغير إلا من صف إلى صف، أي في الاتجاه الرأسي، ولذلك تقع طاقتها على امتداد **المحور الرأسي** للطيف. ومرشح ثلم على شكل شريط رأسي ضيق، مع فجوة حول المركز كي تبقى الترددات المنخفضة الخاصة بالصورة نفسها، يعزلها. فتُظهر صيغة تمرير الثلم نمط الخطوط المستخرج (d)، وتحذفه صيغة رفض الثلم (e). والأثلام لا يلزم أن تكون دوائر: فأي منطقة تغطي الضوضاء وتستثني المركز تؤدي الغرض.</Ar>
+
+### Code: removing periodic noise
+
+<Ar>الشيفرة: إزالة الضوضاء الدورية</Ar>
+
+```matlab title="band_reject.m"
+f  = im2double(imread('cameraman.tif'));
+[M, N] = size(f);
+[V, U] = meshgrid(1:N, 1:M);
+g  = f + 0.3*sin(2*pi*(20*U/M + 30*V/N));       % periodic noise at (u0, v0) = (20, 30)
+Gs = fftshift(fft2(g));
+figure, imshow(log(1 + abs(Gs)), [])            % two bright spikes, symmetric about the centre
+D  = sqrt((U - (floor(M/2)+1)).^2 + (V - (floor(N/2)+1)).^2);
+D0 = sqrt(20^2 + 30^2);  W = 6;                 % a ring through both spikes
+H  = double(D < D0 - W/2 | D > D0 + W/2);       % ideal band-reject
+f_hat = real(ifft2(ifftshift(H .* Gs)));
+figure, imshow(f_hat)
+```
+
+The same noise removed with a Gaussian notch pair in Python, which touches far fewer frequencies than a ring:
+
+<Ar>والضوضاء نفسها تُزال بزوج أثلام غاوسي في Python، وهو يمس ترددات أقل بكثير من الحلقة:</Ar>
+
+```python title="notch.py"
+import numpy as np
+from skimage import data, img_as_float
+
+f = img_as_float(data.camera())
+M, N = f.shape
+x, y = np.arange(M)[:, None], np.arange(N)[None, :]
+g = f + 0.3 * np.sin(2 * np.pi * (20 * x / M + 30 * y / N))    # spikes at ±(20, 30)
+
+G = np.fft.fftshift(np.fft.fft2(g))
+u, v = x - M // 2, y - N // 2                                   # centred coordinates
+u0, v0, D0 = 20, 30, 5
+D1 = np.sqrt((u - u0)**2 + (v - v0)**2)
+D2 = np.sqrt((u + u0)**2 + (v + v0)**2)
+H = 1 - np.exp(-0.5 * D1 * D2 / D0**2)                          # Gaussian notch reject
+
+f_hat = np.real(np.fft.ifft2(np.fft.ifftshift(H * G)))          # cleaned image
+noise = np.real(np.fft.ifft2(np.fft.ifftshift((1 - H) * G)))    # notch pass: the noise
+```
+
+## Blur and the degradation function
+
+<Ar>التشويش ودالة التدهور</Ar>
+
+<SlideFigure page={13} caption="How to deal with motion or out-of-focus blurring? The original and the same image blurred by motion along a diagonal." captionAr="كيف نتعامل مع تشويش الحركة أو التشويش الناتج عن عدم التركيز؟ الصورة الأصلية والصورة نفسها بعد تشويشها بحركة على امتداد قطري." />
+
+**Motion blur** happens when the camera or the object moves during the exposure; **out-of-focus blur** when the lens is not focused. Ignoring the noise for a moment, both are a convolution with a PSF, so
+
+<Ar>يحدث **تشويش الحركة (motion blur)** عندما تتحرك الكاميرا أو الجسم أثناء زمن التعريض، و**التشويش الناتج عن عدم التركيز (out-of-focus blur)** عندما لا تكون العدسة مضبوطة التركيز. وإذا أهملنا الضوضاء مؤقتًا، فكلاهما التفاف مع دالة انتشار نقطة (PSF)، أي:</Ar>
+
+$$
+G(u,v) = F(u,v)\,H(u,v)
+$$
+
+with $G$ the degraded image, $F$ the original and $H$ the degradation function. Knowing $H$, we could in theory get $F$ back. In practice $H$ is often **unknown** and must be estimated: by observing the image, by experimentation, or by a mathematical model (Gonzalez §5.6). The slides cover experimentation; the course book lists the common models:
+
+<Ar>حيث $G$ الصورة المتدهورة، و $F$ الأصلية، و $H$ دالة التدهور. ولو عرفنا $H$ لأمكننا نظريًا استرجاع $F$. لكن $H$ عمليًا تكون غالبًا **مجهولة** ويجب تقديرها: بملاحظة الصورة، أو بالتجربة، أو بنموذج رياضي (Gonzalez §5.6). وتتناول الشرائح طريقة التجربة، بينما يسرد كتاب المقرر النماذج الشائعة:</Ar>
+
+| Degradation <Ar>التدهور</Ar> | Model of $H(u,v)$ <Ar>نموذج $H(u,v)$</Ar> | Effect <Ar>الأثر</Ar> |
+|---|---|---|
+| Uniform linear motion by $(a, b)$ during time $T$ <Ar>حركة خطية منتظمة بمقدار $(a, b)$ خلال الزمن $T$</Ar> | $\dfrac{T \sin[\pi(ua+vb)]}{\pi(ua+vb)}\, e^{-i\pi(ua+vb)}$ | Streaks; a sinc with zero lines across the spectrum <Ar>خطوط ممتدة؛ ودالة sinc ذات خطوط صفرية عبر الطيف</Ar> |
+| Out of focus, blur circle of radius $r_0$ <Ar>عدم التركيز، دائرة تشويش نصف قطرها $r_0$</Ar> | $\dfrac{2 J_1\left(\pi r_0 \sqrt{u^2+v^2}\right)}{\pi r_0 \sqrt{u^2+v^2}}$ ($J_1$: Bessel function) <Ar>($J_1$: دالة بيسل Bessel)</Ar> | Equal softening in all directions; rings in the spectrum <Ar>تنعيم متساوٍ في كل الاتجاهات؛ وحلقات في الطيف</Ar> |
+| Atmospheric turbulence <Ar>الاضطراب الجوي (atmospheric turbulence)</Ar> | $e^{-k(u^2+v^2)^{5/6}}$ | High frequencies strongly attenuated <Ar>إضعاف شديد للترددات المرتفعة</Ar> |
+
+### Estimating H(u,v) by experimentation
+
+<Ar>تقدير H(u,v) بالتجربة</Ar>
+
+If equipment similar to the one that took the degraded image is available, $H$ can in principle be estimated accurately:
+
+<Ar>إذا توفرت أجهزة مماثلة للجهاز الذي التقط الصورة المتدهورة، فيمكن مبدئيًا تقدير $H$ بدقة:</Ar>
+
+1. **Reproduce the degradation**: vary the system settings until images of a test scene look as degraded as the one you want to restore.
+   <Ar>**أعِد إنتاج التدهور**: غيّر إعدادات النظام حتى تبدو صور مشهد اختباري متدهورة بالقدر نفسه الذي عليه الصورة المراد استعادتها.</Ar>
+2. **Image an impulse**: with the same settings, photograph a small bright dot of light. Its image is the **impulse response** of the degradation, the PSF.
+   <Ar>**صوّر نبضة**: بالإعدادات نفسها، صوّر نقطة ضوء صغيرة ساطعة. فتكون صورتها هي **الاستجابة النبضية (impulse response)** للتدهور، أي دالة انتشار النقطة.</Ar>
+3. **Divide by the impulse's transform**: the Fourier transform of an impulse of strength $A$ is the constant $A$, so
+   <Ar>**اقسم على تحويل النبضة**: تحويل فورييه لنبضة شدتها $A$ هو الثابت $A$، إذن:</Ar>
+
+$$
+H(u,v) = \frac{G(u,v)}{A}
+$$
+
+where $G$ is now the transform of the degraded impulse image. The reason: the system's output for the input $A\delta$ is $h * A\delta = A\,h$, whose transform is $A\,H$.
+
+<Ar>حيث $G$ هنا هو تحويل صورة النبضة المتدهورة. والسبب أن مخرج النظام للمدخل $A\delta$ هو $h * A\delta = A\,h$، وتحويله $A\,H$.</Ar>
+
+<SlideFigure page={16} caption="Left: an impulse of light (magnified), whose transform is the constant A. Right: the same impulse imaged by the degrading system: its transform is G(u,v) = A·H(u,v)." captionAr="يسارًا: نبضة ضوئية (مكبَّرة) تحويلها الثابت A. يمينًا: النبضة نفسها كما صوّرها النظام المسبب للتدهور، وتحويلها G(u,v) = A·H(u,v)." />
+
+## Undoing the degradation
+
+<Ar>إلغاء التدهور</Ar>
+
+Knowing $G$ and $H$, how do we get $F$? The slides give two methods: **inverse filtering** and **Wiener filtering**.
+
+<Ar>إذا عرفنا $G$ و $H$، فكيف نحصل على $F$؟ تقدم الشرائح طريقتين: **الترشيح العكسي (inverse filtering)** و**ترشيح فينر (Wiener filtering)**.</Ar>
+
+### Inverse filtering
+
+<Ar>الترشيح العكسي</Ar>
+
+The simplest idea is to divide. With the noise term included,
+
+<Ar>أبسط فكرة هي القسمة. ومع تضمين حد الضوضاء:</Ar>
+
+$$
+\hat{F}(u,v) = \frac{G(u,v)}{H(u,v)} = F(u,v) + \frac{N(u,v)}{H(u,v)}
+$$
+
+Without noise this recovers $F$ exactly. With noise, the second term is the problem: a blur makes $|H|$ **very small** at high frequencies, and dividing even a little noise by a tiny number produces huge values that **dominate the output**. Where $H = 0$, the information is lost for good. A numerical example with $F = 100$ and noise $N = 2$ at every frequency:
+
+<Ar>دون ضوضاء تسترجع هذه الصيغة $F$ تمامًا. أما مع الضوضاء فالحد الثاني هو المشكلة: فالتشويش يجعل $|H|$ **صغيرة جدًا** عند الترددات المرتفعة، وقسمة ضوضاء ولو قليلة على عدد ضئيل تنتج قيمًا هائلة **تطغى على الناتج**. وحيث $H = 0$ تضيع المعلومات بلا رجعة. ومثال عددي بقيمة $F = 100$ وضوضاء $N = 2$ عند كل تردد:</Ar>
+
+| $H$ | $G = HF + N$ | Inverse $G/H$ <Ar>العكسي $G/H$</Ar> | Error <Ar>الخطأ</Ar> |
+|---|---|---|---|
+| 1 | 102 | 102 | 2 |
+| 0.1 | 12 | 120 | 20 |
+| 0.01 | 3 | 300 | 200 |
+| 0.001 | 2.1 | 2100 | 2000 |
+
+The noise is amplified by $1/|H|$: the more a frequency was attenuated, the more its noise is blown up.
+
+<Ar>تتضخم الضوضاء بالمعامل $1/|H|$: فكلما كان التردد قد أُضعف أكثر، تضخمت ضوضاؤه أكثر.</Ar>
+
+Two similar fixes keep the division away from the small values of $H$, which lie far from the origin:
+
+<Ar>وهناك حلّان متشابهان يُبعدان القسمة عن القيم الصغيرة للدالة $H$، وهي القيم البعيدة عن نقطة الأصل:</Ar>
+
+- **Low-pass filtering**: multiply the result by a low-pass filter $L(u,v)$, such as a Butterworth, to suppress the amplified high frequencies:
+  <Ar>**الترشيح بالتمرير المنخفض**: اضرب الناتج في مرشح تمرير منخفض $L(u,v)$، مثل مرشح بترورث، لكبت الترددات المرتفعة المتضخمة:</Ar>
+
+$$
+\hat{F}(u,v) = \frac{G(u,v)}{H(u,v)}\,L(u,v)
+$$
+
+- **Thresholding**: divide only at frequencies near the origin, within a radius $d$, and leave the rest of $G$ unchanged:
+  <Ar>**التقطيع بالعتبة (thresholding)**: اقسم فقط عند الترددات القريبة من نقطة الأصل، داخل نصف قطر $d$، واترك باقي $G$ دون تغيير:</Ar>
+
+$$
+\hat{F}(u,v) =
+\begin{cases}
+\dfrac{G(u,v)}{H(u,v)} & \text{if } D(u,v) \le d \\[8pt]
+G(u,v) & \text{if } D(u,v) > d
+\end{cases}
+$$
+
+<SlideFigure page={20} caption="Inverse filtering demo. With the full filter the output is pure amplified noise; with d = 40 the image appears but is still blurred; d = 70 gives the best result; at d = 85 the noise starts to take over again." captionAr="عرض الترشيح العكسي. مع المرشح الكامل يكون الناتج ضوضاء متضخمة خالصة؛ ومع d = 40 تظهر الصورة لكنها ما زالت مشوشة؛ وتعطي d = 70 أفضل نتيجة؛ وعند d = 85 تبدأ الضوضاء في الطغيان مرة أخرى." />
+
+The cutoff $d$ is a trade-off: too small and too little of the blur is undone; too large and the division reaches frequencies where $H$ is tiny and the noise explodes. It has to be found by trial.
+
+<Ar>نصف القطر $d$ مقايضة: إذا كان صغيرًا جدًا لم يُلغَ من التشويش إلا القليل، وإذا كان كبيرًا جدًا وصلت القسمة إلى ترددات تكون فيها $H$ ضئيلة فتنفجر الضوضاء. ولا بد من إيجاده بالتجربة.</Ar>
+
+<Callout type="warning" title="Weaknesses of inverse filtering" titleAr="نقاط ضعف الترشيح العكسي">
+  Inverse filtering is not robust: it does not handle the noise explicitly. The true model is $G = FH + N$, so the exact answer would be $F = (G - N)/H$, but $N$ is random and unknown. The noise can completely dominate the output. Use it only when $H$ is known accurately and the noise is negligible.
+
+  <Ar>الترشيح العكسي ليس متينًا: فهو لا يتعامل مع الضوضاء صراحةً. فالنموذج الحقيقي هو $G = FH + N$، ولذلك تكون الإجابة الدقيقة $F = (G - N)/H$، لكن $N$ عشوائية ومجهولة. وقد تطغى الضوضاء على الناتج تمامًا. فلا تستخدمه إلا عندما تكون $H$ معروفة بدقة والضوضاء مهملة.</Ar>
+</Callout>
+
+### Wiener filtering
+
+<Ar>ترشيح فينر</Ar>
+
+To do better we need a measure of a "good" restoration. Given the original $f$ and the restored version $r$, we want $r$ as close to $f$ as possible. One measure is the **sum of squared differences**
+
+<Ar>لكي نحقق نتيجة أفضل نحتاج إلى مقياس للاستعادة «الجيدة». فإذا كانت لدينا الصورة الأصلية $f$ والنسخة المستعادة $r$، فإننا نريد أن تكون $r$ أقرب ما يمكن إلى $f$. ومن المقاييس الممكنة **مجموع مربعات الفروق (sum of squared differences)**:</Ar>
+
+$$
+\sum_{i,j}\left(f_{i,j} - r_{i,j}\right)^2
+$$
+
+which, divided by the number of pixels, is the **mean square error** (MSE). The **Wiener filter** is the linear filter that minimises the expected MSE when the image and the noise are treated as random:
+
+<Ar>وهو إذا قُسم على عدد البكسلات يصبح **متوسط مربع الخطأ (MSE)**. و**مرشح فينر (Wiener filter)** هو المرشح الخطي الذي يجعل متوسط مربع الخطأ المتوقع أصغر ما يمكن، عندما نعامل الصورة والضوضاء على أنهما عشوائيتان:</Ar>
+
+$$
+\hat{F}(u,v) = \left[\frac{1}{H(u,v)}\,\frac{|H(u,v)|^2}{|H(u,v)|^2 + S_\eta(u,v)/S_f(u,v)}\right] G(u,v)
+$$
+
+$S_\eta$ and $S_f$ are the **power spectra** of the noise and of the original image, rarely known in practice. Replacing their ratio by a constant $K$ gives the form on the slide (where $|H(u,v)^2|$ should read $|H(u,v)|^2$):
+
+<Ar>حيث $S_\eta$ و $S_f$ هما **طيفا القدرة (power spectra)** للضوضاء وللصورة الأصلية، ونادرًا ما يكونان معروفين عمليًا. واستبدال نسبتهما بثابت $K$ يعطي الصيغة الواردة في الشريحة (وفيها $|H(u,v)^2|$ والصواب $|H(u,v)|^2$):</Ar>
+
+$$
+\hat{F}(u,v) = \left[\frac{1}{H(u,v)}\,\frac{|H(u,v)|^2}{|H(u,v)|^2 + K}\right] G(u,v)
+= \frac{H^*(u,v)}{|H(u,v)|^2 + K}\,G(u,v)
+$$
+
+where $H^*$ is the complex conjugate of $H$. Read the bracket as "inverse filter times a correction factor":
+
+<Ar>حيث $H^*$ هو المرافق المركب (complex conjugate) للدالة $H$. واقرأ ما بين القوسين على أنه «المرشح العكسي مضروبًا في معامل تصحيح»:</Ar>
+
+- Where $|H|^2 \gg K$ (frequencies the blur kept), the factor is close to 1 and the filter acts as the **inverse filter**.
+  <Ar>حيث $|H|^2 \gg K$ (الترددات التي أبقاها التشويش) يقترب المعامل من 1 ويعمل المرشح عمل **المرشح العكسي**.</Ar>
+- Where $|H|^2 \ll K$ (frequencies the blur destroyed), the filter becomes about $H^*/K$, which is **small**: instead of blowing the noise up, it suppresses it.
+  <Ar>حيث $|H|^2 \ll K$ (الترددات التي أتلفها التشويش) يصبح المرشح قرابة $H^*/K$، وهي قيمة **صغيرة**: فبدلًا من تضخيم الضوضاء، يكبتها.</Ar>
+- With $K = 0$ (no noise) it is exactly the inverse filter.
+  <Ar>وعندما $K = 0$ (لا ضوضاء) يكون هو المرشح العكسي تمامًا.</Ar>
+
+$K$ is an estimate of the noise-to-signal power ratio; in practice it is tuned by trial until the result looks best. Continuing the example above, the ideal choice is $K = |N|^2/|F|^2 = 2^2/100^2 = 0.0004$:
+
+<Ar>الثابت $K$ تقدير لنسبة قدرة الضوضاء إلى قدرة الإشارة، ويُضبط عمليًا بالتجربة حتى يبدو الناتج في أفضل حال. وبمتابعة المثال السابق، يكون الاختيار الأمثل $K = |N|^2/|F|^2 = 2^2/100^2 = 0.0004$:</Ar>
+
+| $H$ | $G$ | Inverse <Ar>العكسي</Ar> | Wiener factor $H/(H^2 + K)$ <Ar>معامل فينر $H/(H^2 + K)$</Ar> | Wiener estimate <Ar>تقدير فينر</Ar> |
+|---|---|---|---|---|
+| 1 | 102 | 102 | 0.9996 | 102.0 |
+| 0.1 | 12 | 120 | 9.6 | 115.4 |
+| 0.01 | 3 | 300 | 20 | 60.0 |
+| 0.001 | 2.1 | 2100 | 2.5 | 5.2 |
+
+Wiener's estimate is never wildly wrong: at frequencies that were almost destroyed it gives up and returns a value near 0, instead of 2100. Its error is at most about the size of $F$ itself.
+
+<Ar>لا يخطئ تقدير فينر خطأً فادحًا أبدًا: فعند الترددات التي كادت تُتلف يستسلم ويعيد قيمة قريبة من 0 بدلًا من 2100. فخطؤه لا يتجاوز تقريبًا حجم $F$ نفسها.</Ar>
+
+<SlideFigure page={23} caption="Inverse vs Wiener filtering. Column 1: a motion-blurred image with additive Gaussian noise of variance 650, 65 and 0.0065 (top to bottom). Column 2: inverse filtering. Column 3: Wiener filtering." captionAr="المقارنة بين الترشيح العكسي وترشيح فينر. العمود 1: صورة مشوشة بالحركة مع ضوضاء غاوسية جمعية تباينها 650 و 65 و 0.0065 (من أعلى إلى أسفل). العمود 2: الترشيح العكسي. العمود 3: ترشيح فينر." />
+
+With heavy noise the inverse filter returns nothing but streaks of amplified noise, while Wiener still recovers readable text. Only when the noise is almost zero (bottom row) does the inverse filter become usable, and even there Wiener is cleaner.
+
+<Ar>مع الضوضاء الشديدة لا يعيد المرشح العكسي سوى خطوط من الضوضاء المتضخمة، بينما ما زال فينر يسترجع نصًا مقروءًا. ولا يصبح المرشح العكسي صالحًا إلا عندما تكاد الضوضاء تنعدم (الصف الأخير)، وحتى هناك يكون ناتج فينر أنظف.</Ar>
+
+| | Inverse filtering <Ar>الترشيح العكسي</Ar> | Wiener filtering <Ar>ترشيح فينر</Ar> |
+|---|---|---|
+| Formula <Ar>الصيغة</Ar> | $\hat F = G/H$ | $\hat F = \dfrac{H^*}{\lvert H \rvert^2 + K}\,G$ |
+| Handles noise <Ar>يتعامل مع الضوضاء</Ar> | No: amplifies it by $1/\lvert H \rvert$ <Ar>لا: يضخّمها بالمعامل $1/\lvert H \rvert$</Ar> | Yes, through $K$ <Ar>نعم، عبر الثابت $K$</Ar> |
+| Needs <Ar>يحتاج إلى</Ar> | $H$, plus a cutoff $d$ or $L(u,v)$ in practice <Ar>$H$، ونصف قطر قطع $d$ أو مرشح $L(u,v)$ عمليًا</Ar> | $H$ and $K$ (or $S_\eta / S_f$) <Ar>$H$ و $K$ (أو $S_\eta / S_f$)</Ar> |
+| Best when <Ar>الأفضل عندما</Ar> | Noise is negligible <Ar>تكون الضوضاء مهملة</Ar> | Blur and noise are both present <Ar>يجتمع التشويش والضوضاء</Ar> |
+
+### Code: inverse and Wiener filtering
+
+<Ar>الشيفرة: الترشيح العكسي وترشيح فينر</Ar>
+
+```matlab title="deblur.m"
+f   = im2double(imread('cameraman.tif'));
+[M, N] = size(f);
+[V, U] = meshgrid(0:N-1, 0:M-1);
+D   = sqrt(min(U, M-U).^2 + min(V, N-V).^2);  % distance from DC in the uncentred spectrum
+
+% degrade: atmospheric-turbulence blur (smooth, never exactly zero), plus a little noise
+H   = exp(-0.0025 * D.^(5/3));                % k (u^2 + v^2)^(5/6), with k = 0.0025
+g   = real(ifft2(H .* fft2(f))) + 0.001*randn(M, N);
+G   = fft2(g);
+
+% inverse filtering, dividing only within radius d of the origin
+d   = 70;
+Fi  = G;                                      % beyond d: keep G unchanged
+Fi(D <= d) = G(D <= d) ./ H(D <= d);
+f_inv = real(ifft2(Fi));
+
+% Wiener filtering with a constant K
+K   = 0.001;
+f_w = real(ifft2(conj(H) ./ (abs(H).^2 + K) .* G));
+% given a PSF instead of H, the toolbox does the same with deconvwnr(g, psf, K)
+figure, imshow([g, f_inv, f_w])
+```
+
+```python title="wiener.py"
+import numpy as np
+
+def wiener(g, H, K):
+    """Wiener deconvolution. H: transfer function with DC at [0, 0], same shape as g."""
+    G = np.fft.fft2(g)
+    return np.real(np.fft.ifft2(np.conj(H) / (np.abs(H)**2 + K) * G))
+
+# H for a horizontal motion blur of L pixels, on an M x N grid:
+#   psf = np.zeros((M, N)); psf[0, :L] = 1 / L;  H = np.fft.fft2(psf)
+```
+
+<Takeaways>
+
+- Degradation model: $g = h * f + \eta$, i.e. $G = HF + N$. $H$ (the transform of the PSF) describes the blur, $N$ the noise.
+  <Ar>نموذج التدهور: $g = h * f + \eta$، أي $G = HF + N$. تصف $H$ (تحويل دالة انتشار النقطة) التشويش، وتصف $N$ الضوضاء.</Ar>
+- **Periodic noise** shows up as pairs of bright spikes, symmetric about the centre of the spectrum. Remove a ring of them with a **band-reject** filter, or individual pairs with **notch** filters; $1 - H$ gives the band-pass and notch-pass versions.
+  <Ar>تظهر **الضوضاء الدورية** على هيئة أزواج من القمم الساطعة متناظرة حول مركز الطيف. تُحذف الحلقة منها بمرشح **رفض النطاق**، وتُحذف الأزواج المنفردة بمرشحات **الثلم**؛ وتعطي $1 - H$ صيغتي تمرير النطاق وتمرير الثلم.</Ar>
+- Estimate $H$ by experimentation: image a dot of light of strength $A$ with the same settings; then $H = G/A$.
+  <Ar>تُقدَّر $H$ بالتجربة: صوّر نقطة ضوء شدتها $A$ بالإعدادات نفسها، فتكون $H = G/A$.</Ar>
+- **Inverse filtering** $G/H$ amplifies noise by $1/|H|$; limit it to a radius $d$ or multiply by a low-pass $L(u,v)$.
+  <Ar>**الترشيح العكسي** $G/H$ يضخّم الضوضاء بالمعامل $1/|H|$؛ فاقصره على نصف قطر $d$ أو اضربه في مرشح تمرير منخفض $L(u,v)$.</Ar>
+- **Wiener filtering** $H^*G/(|H|^2 + K)$ minimises the mean square error: it acts as the inverse filter where $H$ is large and suppresses frequencies where $H$ is small. $K = 0$ gives back the inverse filter.
+  <Ar>**ترشيح فينر** $H^*G/(|H|^2 + K)$ يقلل متوسط مربع الخطأ إلى أدنى حد: يعمل عمل المرشح العكسي حيث تكون $H$ كبيرة، ويكبت الترددات التي تكون فيها $H$ صغيرة. وعندما $K = 0$ نعود إلى المرشح العكسي.</Ar>
+
+</Takeaways>
+
+## Practice
+
+<Ar>تدريب</Ar>
+
+<Exercise title="Where is the twin spike?" titleAr="أين القمة التوأم؟" level="easy">
+
+A $256 \times 256$ image has sinusoidal interference. In its centred spectrum (centre at $(128, 128)$) you find a bright spike at $(148, 108)$. Where is the second spike, and what are $u_0$ and $v_0$ for a notch pair that removes both?
+
+<Ar>صورة أبعادها $256 \times 256$ فيها تداخل جيبي. وفي طيفها المُوسَّط (المركز عند $(128, 128)$) تجد قمة ساطعة عند $(148, 108)$. أين القمة الثانية، وما قيمتا $u_0$ و $v_0$ لزوج أثلام يحذف القمتين؟</Ar>
+
+<Solution>
+
+Relative to the centre the spike is at $(148 - 128, 108 - 128) = (20, -20)$, so $u_0 = 20$ and $v_0 = -20$. By conjugate symmetry its twin is at $(-20, 20)$ relative to the centre, i.e. at $(108, 148)$. A notch pair centred on $(u_0, v_0) = (20, -20)$ uses $D_1$ for the first spike and $D_2$ for the second.
+
+<Ar>بالنسبة إلى المركز تقع القمة عند $(148 - 128, 108 - 128) = (20, -20)$، إذن $u_0 = 20$ و $v_0 = -20$. وبحسب التناظر المرافق تقع توأمها عند $(-20, 20)$ بالنسبة إلى المركز، أي عند $(108, 148)$. وزوج الأثلام المتمركز على $(u_0, v_0) = (20, -20)$ يستخدم $D_1$ للقمة الأولى و $D_2$ للقمة الثانية.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Inverse vs Wiener at two frequencies" titleAr="العكسي مقابل فينر عند ترددين" level="medium">
+
+At two frequencies of a blurred image the original value is $F = 80$ and the noise is $N = 4$. The blur gives $H = 0.5$ at the first frequency and $H = 0.02$ at the second. Compute $G$, the inverse-filter estimate and the Wiener estimate with $K = (N/F)^2$. Which is better, and where?
+
+<Ar>عند ترددين من صورة مشوشة، القيمة الأصلية $F = 80$ والضوضاء $N = 4$. ويعطي التشويش $H = 0.5$ عند التردد الأول و $H = 0.02$ عند الثاني. احسب $G$، وتقدير المرشح العكسي، وتقدير فينر بالثابت $K = (N/F)^2$. أيهما أفضل، وأين؟</Ar>
+
+<Solution>
+
+$K = (4/80)^2 = 0.0025$.
+
+| $H$ | $G = HF + N$ | Inverse $G/H$ <Ar>العكسي $G/H$</Ar> | Wiener $\frac{H}{H^2+K}G$ <Ar>فينر $\frac{H}{H^2+K}G$</Ar> |
+|---|---|---|---|
+| 0.5 | 44 | 88 (error 8) <Ar>88 (الخطأ 8)</Ar> | $1.98 \times 44 \approx 87.1$ (error 7.1) <Ar>$1.98 \times 44 \approx 87.1$ (الخطأ 7.1)</Ar> |
+| 0.02 | 5.6 | 280 (error 200) <Ar>280 (الخطأ 200)</Ar> | $6.90 \times 5.6 \approx 38.6$ (error 41.4) <Ar>$6.90 \times 5.6 \approx 38.6$ (الخطأ 41.4)</Ar> |
+
+Where $H$ is large the two agree, because $H^2 = 0.25 \gg K$. Where $H$ is small the inverse filter multiplies the noise by $1/0.02 = 50$, while Wiener damps it: its error is five times smaller.
+
+<Ar>حيث تكون $H$ كبيرة يتفق الاثنان، لأن $H^2 = 0.25 \gg K$. وحيث تكون $H$ صغيرة يضرب المرشح العكسي الضوضاء في $1/0.02 = 50$، بينما يخمدها فينر: فخطؤه أصغر بخمس مرات.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Restoring a 3×3 averaging blur" titleAr="استعادة صورة شوّشها مرشح المتوسط 3×3" level="hard">
+
+A $256 \times 256$ image was blurred by a 3×3 averaging filter, whose transfer function (from the shift property) is
+
+<Ar>صورة أبعادها $256 \times 256$ شُوِّشت بمرشح المتوسط 3×3، ودالة النقل الخاصة به (من خاصية الإزاحة) هي:</Ar>
+
+$$
+H(u,v) = \frac{1}{9}\left(1 + 2\cos\frac{2\pi u}{M}\right)\left(1 + 2\cos\frac{2\pi v}{N}\right)
+$$
+
+Why does plain inverse filtering fail? Design a restoration filter that works.
+
+<Ar>لماذا يفشل الترشيح العكسي البسيط؟ صمّم مرشح استعادة ينجح.</Ar>
+
+<Solution>
+
+Along $v = 0$, $H(u,0) = \frac{1}{3}\left(1 + 2\cos\frac{2\pi u}{256}\right)$. It is 1 at $u = 0$ but falls to zero near $u = 256/3 \approx 85.3$: $H(85, 0) \approx 0.0047$ and $H(86, 0) \approx -0.0094$. The inverse filter multiplies those frequencies, and the noise in them, by $1/0.0047 \approx 211$, so even tiny noise or rounding to 8 bits produces strong stripes at that frequency.
+
+<Ar>على امتداد $v = 0$ تكون $H(u,0) = \frac{1}{3}\left(1 + 2\cos\frac{2\pi u}{256}\right)$. وهي تساوي 1 عند $u = 0$ لكنها تهبط إلى الصفر قرب $u = 256/3 \approx 85.3$: إذ $H(85, 0) \approx 0.0047$ و $H(86, 0) \approx -0.0094$. فيضرب المرشح العكسي هذه الترددات، وما فيها من ضوضاء، في $1/0.0047 \approx 211$، فتنتج حتى الضوضاء الضئيلة أو تقريب القيم إلى 8 بتات خطوطًا قوية عند ذلك التردد.</Ar>
+
+Two working designs:
+
+<Ar>تصميمان ناجحان:</Ar>
+
+1. **Thresholded inverse**: divide only within a radius $d$ safely below the first zero (say $d = 60$, inside which $H$ stays above 0.39, so the noise is amplified at most about 2.5 times), and keep $G$ beyond it.
+   <Ar>**العكسي بالعتبة**: اقسم فقط داخل نصف قطر $d$ أقل بأمان من أول صفر (مثل $d = 60$، وداخله تبقى $H$ أكبر من 0.39، فلا تتضخم الضوضاء بأكثر من 2.5 مرة تقريبًا)، واترك $G$ كما هي خارجه.</Ar>
+2. **Wiener**: $\hat F = H^* G/(|H|^2 + K)$ with a small $K$, e.g. 0.01. At $(85, 0)$ the gain becomes $0.0047/(0.0047^2 + 0.01) \approx 0.47$ instead of 211, and near $u = 0$ it is still about $1/H$. Tune $K$ by eye: larger $K$ means less noise but more remaining blur.
+   <Ar>**فينر**: $\hat F = H^* G/(|H|^2 + K)$ بثابت $K$ صغير، مثل 0.01. فعند $(85, 0)$ يصبح الكسب $0.0047/(0.0047^2 + 0.01) \approx 0.47$ بدلًا من 211، وقرب $u = 0$ يبقى قرابة $1/H$. واضبط $K$ بالنظر: فكلما زادت $K$ قلّت الضوضاء وزاد التشويش المتبقي.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "How does a single sinusoidal interference pattern appear in the centred spectrum?",
+      qAr: "كيف يظهر نمط تداخل جيبي واحد في الطيف المُوسَّط؟",
+      options: ["As a bright ring", "As two bright spikes, symmetric about the centre", "As noise spread over all frequencies", "As a dark centre"],
+      optionsAr: ["حلقة ساطعة", "قمتان ساطعتان متناظرتان حول المركز", "ضوضاء منتشرة على جميع الترددات", "مركز داكن"],
+      answer: 1,
+      explain: "A sinusoid at (u0, v0) transforms into impulses at (u0, v0) and (−u0, −v0), by conjugate symmetry.",
+      explainAr: "الموجة الجيبية عند (u0, v0) تتحول إلى نبضتين عند (u0, v0) و (−u0, −v0) بسبب التناظر المرافق."
+    },
+    {
+      q: "Why must notch filters come in symmetric pairs?",
+      qAr: "لماذا يجب أن تأتي مرشحات الثلم في أزواج متناظرة؟",
+      options: ["To make the filter faster", "Because the Fourier transform of a real image is conjugate symmetric", "Because images are square", "To avoid ringing"],
+      optionsAr: ["لجعل المرشح أسرع", "لأن تحويل فورييه للصورة الحقيقية متناظر تناظرًا مرافقًا", "لأن الصور مربعة", "لتجنب التموج الحلقي"],
+      answer: 1,
+      explain: "Every spike at (u0, v0) has a twin at (−u0, −v0); removing only one would leave half the noise and a complex result.",
+      explainAr: "لكل قمة عند (u0, v0) توأم عند (−u0, −v0)؛ وحذف واحدة فقط يترك نصف الضوضاء وناتجًا مركب القيم."
+    },
+    {
+      q: "To estimate H(u,v) by experimentation, what do you image with the same system settings?",
+      qAr: "لتقدير H(u,v) بالتجربة، ماذا تصوّر بإعدادات النظام نفسها؟",
+      options: ["A uniform grey card", "A small bright dot of light (an impulse)", "A checkerboard", "Nothing: H is computed from the blurred image alone"],
+      optionsAr: ["لوحة رمادية منتظمة", "نقطة ضوء صغيرة ساطعة (نبضة)", "رقعة شطرنج", "لا شيء: تُحسب H من الصورة المشوشة وحدها"],
+      answer: 1,
+      explain: "The transform of an impulse of strength A is the constant A, so H = G/A.",
+      explainAr: "تحويل نبضة شدتها A هو الثابت A، إذن H = G/A."
+    },
+    {
+      q: "Why does the full inverse filter often produce pure noise?",
+      qAr: "لماذا ينتج المرشح العكسي الكامل غالبًا ضوضاء خالصة؟",
+      options: ["Because H is too large", "Because N/H becomes huge where H is close to zero", "Because the DFT is circular", "Because K is too small"],
+      optionsAr: ["لأن H كبيرة جدًا", "لأن N/H تصبح هائلة حيث تقترب H من الصفر", "لأن تحويل فورييه المتقطع دائري", "لأن K صغير جدًا"],
+      answer: 1,
+      explain: "G/H = F + N/H: the noise is amplified by 1/|H|, which is enormous at the frequencies the blur removed.",
+      explainAr: "G/H = F + N/H: فتتضخم الضوضاء بالمعامل 1/|H|، وهو هائل عند الترددات التي حذفها التشويش."
+    },
+    {
+      q: "What does the Wiener filter become when K = 0?",
+      qAr: "إلامَ يتحول مرشح فينر عندما K = 0؟",
+      options: ["A Gaussian low-pass filter", "The inverse filter", "A notch filter", "The identity: no change"],
+      optionsAr: ["مرشح غاوس للتمرير المنخفض", "المرشح العكسي", "مرشح ثلم", "المطابقة: لا تغيير"],
+      answer: 1,
+      explain: "With K = 0 the factor |H|²/(|H|² + K) is 1, leaving 1/H: inverse filtering, the no-noise case.",
+      explainAr: "عندما K = 0 يصبح المعامل |H|²/(|H|² + K) مساويًا 1، فلا يبقى إلا 1/H: الترشيح العكسي، أي حالة انعدام الضوضاء."
+    }
+  ]}
+/>

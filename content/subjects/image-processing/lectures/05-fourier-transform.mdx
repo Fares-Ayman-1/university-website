@@ -1,0 +1,541 @@
+---
+number: 5
+title: The Fourier Transform
+titleAr: "تحويل فورييه"
+summary: Why images are taken into the frequency domain, and how. Builds the intuition of signals as sums of sinusoids, defines the continuous and the discrete Fourier transform with a 4-point example worked by hand, the inverse DFT and MATLAB's fft and ifft, then the properties that matter for images (linearity, shifting, conjugate symmetry, circular convolution and the convolution theorem), magnitude, phase and the DC coefficient, standard transform pairs, the 2-D FFT, and why filtering in the frequency domain pays off.
+summaryAr: "لماذا تُنقل الصور إلى المجال الترددي (frequency domain) وكيف. تبني المحاضرة تصوّر الإشارات بوصفها مجاميع لدوال جيبية (sinusoids)، وتعرّف تحويل فورييه (Fourier transform) المتصل والمتقطع (DFT) مع مثال من 4 نقاط محلول يدويًا، والتحويل العكسي (inverse DFT) والدالتين fft و ifft في MATLAB، ثم الخواص المهمة للصور (الخطية، والإزاحة، والتناظر المرافق، والالتفاف الدائري، ومبرهنة الالتفاف)، والمقدار (magnitude) والطور (phase) والمركبة المستمرة (DC)، وأزواج التحويل الشائعة، وتحويل فورييه السريع ثنائي البُعد، وفائدة الترشيح في المجال الترددي."
+topics: [Why the Fourier transform, Sums of sinusoids, Continuous Fourier transform, 1-D DFT, Inverse DFT, fft and ifft, Linearity and shifting, Conjugate symmetry, Circular convolution, Convolution theorem, Magnitude and phase, Transform pairs, 2-D FFT, Frequency-domain filtering]
+duration: 55 min study
+sources:
+  - file: lectures/ch5/FFT_lec 5.pdf
+    label: Image Processing Lecture 5 – The Fourier Transform (slides)
+    pages: "1-24"
+bookRefs:
+  - book: ip-book
+    chapter: Ch 4 · Frequency Domain Filtering
+    pages: "80–85"
+  - book: mcandrew
+    chapter: The Fourier Transform
+  - book: gonzalez
+    chapter: Ch 4 · Filtering in the Frequency Domain
+---
+
+<Objectives>
+
+- Explain what the **Fourier transform** does to a signal or image and why it is useful.
+  <Ar>شرح ما يفعله **تحويل فورييه (Fourier transform)** بالإشارة أو الصورة، وسبب فائدته.</Ar>
+- Compute a small **DFT** and its **inverse** by hand, and relate the result to MATLAB's `fft` and `ifft`.
+  <Ar>حساب **تحويل فورييه المتقطع (DFT)** الصغير و**معكوسه (inverse DFT)** يدويًا، وربط النتيجة بالدالتين `fft` و `ifft` في MATLAB.</Ar>
+- Use the DFT's properties: **linearity**, **shifting**, **conjugate symmetry** and **circular convolution**.
+  <Ar>استخدام خواص DFT: **الخطية (linearity)**، و**الإزاحة (shifting)**، و**التناظر المرافق (conjugate symmetry)**، و**الالتفاف الدائري (circular convolution)**.</Ar>
+- Read a 2-D **spectrum** (magnitude and phase) and explain why filtering in the frequency domain is efficient.
+  <Ar>قراءة **طيف (spectrum)** ثنائي البُعد (المقدار والطور)، وشرح سبب كفاءة الترشيح في المجال الترددي.</Ar>
+
+</Objectives>
+
+## Why the Fourier transform?
+
+<Ar>لماذا تحويل فورييه؟</Ar>
+
+The Fourier transform, named after Jean Baptiste Joseph Fourier, **decomposes a signal into sinusoidal components**. For an image, the input is the image in ordinary (spatial) space and the output represents it in **frequency space**: each point of the Fourier image stands for one particular frequency contained in the original.
+
+<Ar>يُفكّك تحويل فورييه (Fourier transform)، المسمّى باسم Jean Baptiste Joseph Fourier، **الإشارةَ إلى مركبات جيبية (sinusoidal components)**. وفي حالة الصورة، يكون الدخل هو الصورة في الفضاء العادي (المكاني)، ويمثّلها الخرج في **فضاء الترددات**: فكل نقطة في صورة فورييه تمثّل ترددًا (frequency) معيّنًا موجودًا في الصورة الأصلية.</Ar>
+
+<SlideFigure page={2} caption="A signal in the time domain (left) is a sum of sine waves; the Fourier transform shows the same signal as spikes at those waves' frequencies (right)." captionAr="الإشارة في المجال الزمني (يسارًا) مجموع موجات جيبية؛ ويُظهر تحويل فورييه الإشارة نفسها على هيئة نبضات عند ترددات تلك الموجات (يمينًا)." />
+
+Why bother?
+
+<Ar>وما الفائدة؟</Ar>
+
+- It lets us do things that are impossible any other way, and its efficiency makes other tasks faster.
+  <Ar>يتيح لنا القيام بمهام مستحيلة بأي طريقة أخرى، وتجعل كفاءته مهامَّ أخرى أسرع.</Ar>
+- It is a powerful alternative to linear spatial filtering: for a **large filter** it is more efficient than convolving in space.
+  <Ar>إنه بديل قوي للترشيح المكاني الخطي: فهو مع **المرشحات الكبيرة** أكفأ من الالتفاف (convolution) في المجال المكاني.</Ar>
+- It isolates particular frequencies, so **low-pass** and **high-pass** filtering can be done with great precision.
+  <Ar>يعزل ترددات بعينها، فيمكن إجراء ترشيح **التمرير المنخفض (low-pass)** و**التمرير المرتفع (high-pass)** بدقة كبيرة.</Ar>
+
+## Intuition: sums of sines
+
+<Ar>الفكرة: مجاميع الدوال الجيبية</Ar>
+
+A **periodic function** can be written as a sum of sines and cosines of different amplitudes and frequencies. The wavy curve on slide 4 is exactly three sines:
+
+<Ar>يمكن كتابة **الدالة الدورية (periodic function)** على هيئة مجموع لدوال جيب وجيب تمام بسعات (amplitudes) وترددات مختلفة. والمنحنى المتموج في الشريحة 4 هو بالضبط ثلاث دوال جيبية:</Ar>
+
+$$
+f(x) = \sin x + \tfrac{1}{3}\sin 2x + \tfrac{1}{5}\sin 4x
+$$
+
+Some functions need only a finite number of terms; others need infinitely many. A **square wave** is the limit of an infinite series, and every extra term makes the corners sharper:
+
+<Ar>بعض الدوال لا تحتاج إلا إلى عدد محدود من الحدود، وبعضها يحتاج إلى عدد لا نهائي. فـ**الموجة المربعة (square wave)** هي نهاية متسلسلة لا نهائية، وكل حد إضافي يجعل زواياها أحدّ:</Ar>
+
+$$
+f(x) = \sin x + \tfrac{1}{3}\sin 3x + \tfrac{1}{5}\sin 5x + \tfrac{1}{7}\sin 7x + \tfrac{1}{9}\sin 9x + \cdots
+$$
+
+<SlideFigure page={5} caption="A square wave and its approximation by the first four odd sine terms; the ripples shrink as more terms are added." captionAr="موجة مربعة وتقريبها بأول أربعة حدود جيبية فردية؛ وتصغر التموجات كلما أُضيفت حدود أكثر." />
+
+The link to images: sharp edges are like the square wave's corners and need many **high-frequency** terms; smooth areas are described by a few **low-frequency** terms.
+
+<Ar>والصلة بالصور: الحواف الحادة تشبه زوايا الموجة المربعة وتحتاج إلى حدود كثيرة ذات **تردد مرتفع**؛ أما المناطق الملساء فتصفها حدود قليلة ذات **تردد منخفض**.</Ar>
+
+## The 1-D continuous Fourier transform
+
+<Ar>تحويل فورييه المتصل أحادي البُعد</Ar>
+
+A function $f(x)$ is a **linear combination of simple periodic patterns** $e^{i 2\pi x u}$, each weighted by $F(u)$:
+
+<Ar>الدالة $f(x)$ **تركيب خطي من أنماط دورية بسيطة** $e^{i 2\pi x u}$، يوزن كلٌّ منها بالقيمة $F(u)$:</Ar>
+
+$$
+F(u) = \int_{-\infty}^{\infty} f(x)\, e^{-i 2\pi x u}\, dx
+\qquad\qquad
+f(x) = \int_{-\infty}^{\infty} F(u)\, e^{i 2\pi x u}\, du
+$$
+
+Here $x$ is the image coordinate, $u$ the **spatial frequency** (whole cycles per unit of $x$), $i = \sqrt{-1}$, and $F(u)$ the **weight** of frequency $u$. The left formula is the Fourier transform; the right one, which rebuilds $f$, is the **inverse** transform. By **Euler's formula** $e^{i\theta} = \cos\theta + i \sin\theta$, each pattern is a cosine plus $i$ times a sine, so $F(u)$ is in general a **complex** number.
+
+<Ar>هنا $x$ هو إحداثي الصورة، و $u$ هو **التردد المكاني (spatial frequency)** (عدد الدورات الكاملة لكل وحدة من $x$)، و $i = \sqrt{-1}$، و $F(u)$ هو **وزن** التردد $u$. الصيغة اليسرى هي تحويل فورييه، واليمنى، التي تعيد بناء $f$، هي التحويل **العكسي (inverse)**. وبحسب **صيغة أويلر (Euler's formula)** $e^{i\theta} = \cos\theta + i \sin\theta$، فإن كل نمط هو جيب تمام مضافًا إليه $i$ مضروبًا في جيب، لذا فإن $F(u)$ في العموم **عدد مركب (complex)**.</Ar>
+
+## The 1-D discrete Fourier transform (DFT)
+
+<Ar>تحويل فورييه المتقطع أحادي البُعد (DFT)</Ar>
+
+Images are **discrete**: a row has a finite number of samples, so a finite number of sinusoids is enough to describe it exactly. For example, the eight samples $1, 1, 1, 1, -1, -1, -1, -1$, a discrete square wave, are exactly the sum of two sampled sinusoids: one making a single cycle over the eight samples and one making three.
+
+<Ar>الصور **متقطعة (discrete)**: فالصف فيه عدد محدود من العينات، لذا يكفي عدد محدود من الدوال الجيبية لوصفه وصفًا تامًا. فمثلًا العينات الثماني $1, 1, 1, 1, -1, -1, -1, -1$، وهي موجة مربعة متقطعة، تساوي تمامًا مجموع دالتين جيبيتين مأخوذتين عيناتٍ: إحداهما تكمل دورة واحدة على العينات الثماني، والأخرى ثلاث دورات.</Ar>
+
+<SlideFigure page={7} caption="(a) The samples 1 1 1 1 −1 −1 −1 −1 approximate a square wave; they are exactly the sum of the sampled sinusoids (b) and (c)." captionAr="(a) العينات 1 1 1 1 −1 −1 −1 −1 تقريب لموجة مربعة؛ وهي تساوي تمامًا مجموع الدالتين الجيبيتين المأخوذتين عيناتٍ (b) و(c)." />
+
+<Definition term="1-D DFT (lecture convention)" termAr="تحويل فورييه المتقطع أحادي البُعد (اصطلاح المحاضرة)">
+  For a sequence $f = [f_0, f_1, \dots, f_{N-1}]$ of length $N$, the DFT is the sequence $F = [F_0, F_1, \dots, F_{N-1}]$ with
+
+  <Ar>للمتتالية $f = [f_0, f_1, \dots, f_{N-1}]$ ذات الطول $N$، يكون DFT هو المتتالية $F = [F_0, F_1, \dots, F_{N-1}]$ حيث</Ar>
+
+  $$
+  F_u = \frac{1}{N} \sum_{x=0}^{N-1} \exp\!\left[-2\pi i \frac{xu}{N}\right] f_x, \qquad u = 0, 1, \dots, N-1
+  $$
+</Definition>
+
+The DFT is a **matrix multiplication** $F = \mathcal{F} f$. With $\omega = \exp[-2\pi i / N]$, the $N \times N$ matrix has entries $\mathcal{F}_{m,n} = \frac{1}{N}\omega^{mn}$:
+
+<Ar>تحويل DFT هو **ضرب مصفوفات (matrix multiplication)** $F = \mathcal{F} f$. ومع $\omega = \exp[-2\pi i / N]$، تكون عناصر المصفوفة $N \times N$ هي $\mathcal{F}_{m,n} = \frac{1}{N}\omega^{mn}$:</Ar>
+
+$$
+\mathcal{F} = \frac{1}{N}\begin{bmatrix}
+1 & 1 & 1 & \cdots & 1 \\
+1 & \omega & \omega^2 & \cdots & \omega^{N-1} \\
+1 & \omega^2 & \omega^4 & \cdots & \omega^{2(N-1)} \\
+\vdots & \vdots & \vdots & \ddots & \vdots \\
+1 & \omega^{N-1} & \omega^{2(N-1)} & \cdots & \omega^{(N-1)^2}
+\end{bmatrix}
+$$
+
+### Worked example: the DFT of [1, 2, 3, 4]
+
+<Ar>مثال محلول: تحويل DFT للمتتالية [1, 2, 3, 4]</Ar>
+
+Here $N = 4$, so $\omega = \exp[-\pi i/2] = \cos(-\tfrac{\pi}{2}) + i\sin(-\tfrac{\pi}{2}) = -i$. Its powers repeat every four steps: $\omega^0 = 1$, $\omega^1 = -i$, $\omega^2 = -1$, $\omega^3 = i$, $\omega^4 = 1$, and so on. Filling the matrix and multiplying:
+
+<Ar>هنا $N = 4$، لذا $\omega = \exp[-\pi i/2] = \cos(-\tfrac{\pi}{2}) + i\sin(-\tfrac{\pi}{2}) = -i$. وتتكرر قواها كل أربع خطوات: $\omega^0 = 1$، و $\omega^1 = -i$، و $\omega^2 = -1$، و $\omega^3 = i$، و $\omega^4 = 1$، وهكذا. وبملء المصفوفة والضرب:</Ar>
+
+$$
+F = \frac{1}{4}\begin{bmatrix} 1 & 1 & 1 & 1 \\ 1 & -i & -1 & i \\ 1 & -1 & 1 & -1 \\ 1 & i & -1 & -i \end{bmatrix}
+\begin{bmatrix} 1 \\ 2 \\ 3 \\ 4 \end{bmatrix}
+= \frac{1}{4}\begin{bmatrix} 10 \\ -2 + 2i \\ -2 \\ -2 - 2i \end{bmatrix}
+$$
+
+| $u$ | Row × $f$ <Ar>الصف × $f$</Ar> | $F_u$ |
+|---|---|---|
+| 0 | $1 + 2 + 3 + 4 = 10$ | $2.5$ |
+| 1 | $1 - 2i - 3 + 4i = -2 + 2i$ | $-0.5 + 0.5i$ |
+| 2 | $1 - 2 + 3 - 4 = -2$ | $-0.5$ |
+| 3 | $1 + 2i - 3 - 4i = -2 - 2i$ | $-0.5 - 0.5i$ |
+
+Notice that $F_0 = 2.5$ is the **average** of the input, and that $F_3$ is the complex conjugate of $F_1$; both facts are general properties, shown below.
+
+<Ar>لاحظ أن $F_0 = 2.5$ هو **متوسط** المدخلات، وأن $F_3$ هو المرافق المركب (complex conjugate) للقيمة $F_1$؛ وكلتاهما خاصية عامة سنراها لاحقًا.</Ar>
+
+### The inverse DFT
+
+<Ar>تحويل DFT العكسي</Ar>
+
+$$
+f_x = \sum_{u=0}^{N-1} \exp\!\left[2\pi i \frac{xu}{N}\right] F_u
+$$
+
+It differs from the forward transform in two ways: there is **no $1/N$** factor, and the sign in the exponent is **positive**. In matrix form $f = \mathcal{F}^{-1} F$, where $\mathcal{F}^{-1}$ has entries $\bar\omega^{mn}$ with $\bar\omega = 1/\omega = \exp[2\pi i/N]$. Check with the example: $f_0 = F_0 + F_1 + F_2 + F_3 = \tfrac{1}{4}(10 - 2 + 2i - 2 - 2 - 2i) = 1$.
+
+<Ar>يختلف عن التحويل الأمامي في أمرين: **لا يوجد المعامل $1/N$**، والإشارة في الأُس **موجبة**. وبصيغة المصفوفات $f = \mathcal{F}^{-1} F$، حيث عناصر $\mathcal{F}^{-1}$ هي $\bar\omega^{mn}$ مع $\bar\omega = 1/\omega = \exp[2\pi i/N]$. وللتحقق بالمثال: $f_0 = F_0 + F_1 + F_2 + F_3 = \tfrac{1}{4}(10 - 2 + 2i - 2 - 2 - 2i) = 1$.</Ar>
+
+### MATLAB: fft and ifft
+
+<Ar>في MATLAB: الدالتان fft و ifft</Ar>
+
+The **fast Fourier transform (FFT)** computes exactly the same DFT, but in about $N \log_2 N$ operations instead of $N^2$, by splitting the sum into halves recursively. For $N = 1024$ that is about $10\,240$ operations instead of about a million. MATLAB's `fft` and `ifft` implement it:
+
+<Ar>يحسب **تحويل فورييه السريع (FFT)** تحويل DFT نفسه تمامًا، لكن بنحو $N \log_2 N$ عملية بدلًا من $N^2$، بتقسيم المجموع إلى نصفين تعاوديًا. فمع $N = 1024$ يكون ذلك نحو $10\,240$ عملية بدلًا من نحو مليون. وتنفّذه الدالتان `fft` و `ifft` في MATLAB:</Ar>
+
+```matlab title="fft_ifft.m"
+a = [1 2 3 4 5 6 7 8 9]
+b = fft(a)
+%  45.00   -4.50+12.36i   -4.50+5.36i   -4.50+2.60i   -4.50+0.79i
+%          -4.50-0.79i    -4.50-2.60i   -4.50-5.36i   -4.50-12.36i
+ifft(b)
+%  1  2  3  4  5  6  7  8  9   (the tiny +-0.0i parts are rounding errors)
+```
+
+<Callout type="warning" title="Where does 1/N go?" titleAr="أين يوضع المعامل 1/N؟">
+  The slides follow McAndrew and put $1/N$ in the <strong>forward</strong> transform. MATLAB's <code>fft</code> and NumPy's <code>np.fft.fft</code> put it in the <strong>inverse</strong> instead, so their output is $N$ times larger: <code>fft([1 2 3 4])</code> gives <code>[10, -2+2i, -2, -2-2i]</code>, and the first value of <code>fft(a)</code> above is the <strong>sum</strong> 45, not the mean 5. Both conventions give the same picture up to that scale factor.
+
+  <Ar>تتبع الشرائح كتاب McAndrew فتضع $1/N$ في التحويل <strong>الأمامي</strong>. أما <code>fft</code> في MATLAB و <code>np.fft.fft</code> في NumPy فتضعانه في التحويل <strong>العكسي</strong>، لذا تكون مخرجاتهما أكبر بمقدار $N$ مرة: فالأمر <code>fft([1 2 3 4])</code> يعطي <code>[10, -2+2i, -2, -2-2i]</code>، والقيمة الأولى من <code>fft(a)</code> أعلاه هي <strong>المجموع</strong> 45 لا المتوسط 5. والاصطلاحان يعطيان الصورة نفسها مع اختلاف هذا المعامل فقط.</Ar>
+</Callout>
+
+```python title="dft.py"
+import numpy as np
+
+F = np.fft.fft([1, 2, 3, 4]) / 4       # lecture convention: [2.5, -0.5+0.5j, -0.5, -0.5-0.5j]
+b = np.fft.fft(np.arange(1, 10))       # MATLAB convention: b[0] = 45
+a = np.fft.ifft(b).real                # back to 1, 2, ..., 9
+```
+
+## Properties of the 1-D DFT
+
+<Ar>خواص تحويل DFT أحادي البُعد</Ar>
+
+### Linearity
+
+<Ar>الخطية</Ar>
+
+If $f$ and $g$ are vectors of the same length, $p$ and $q$ are scalars and $h = pf + qg$, then the DFTs satisfy $H = pF + qG$. The transform of a sum is the sum of the transforms.
+
+<Ar>إذا كان $f$ و $g$ متجهين بالطول نفسه، و $p$ و $q$ عددين ثابتين، و $h = pf + qg$، فإن تحويلات DFT تحقق $H = pF + qG$. أي إن تحويل المجموع يساوي مجموع التحويلات.</Ar>
+
+### Shifting
+
+<Ar>الإزاحة</Ar>
+
+Multiply each element $x_n$ by $(-1)^n$, that is, change the sign of every second element. The DFT of the result equals the original DFT with its **left and right halves swapped**:
+
+<Ar>اضرب كل عنصر $x_n$ في $(-1)^n$، أي غيّر إشارة كل عنصر ثانٍ. فيكون تحويل DFT للنتيجة مساويًا لتحويل الأصل بعد **تبديل نصفيه الأيسر والأيمن**:</Ar>
+
+```matlab title="shifting.m"
+x = [2 3 4 5 6 7 8 1];
+x1 = (-1).^[0:7].*x     % 2 -3 4 -5 6 -7 8 -1
+X = fft(x')
+%  36, -9.6569+4i, -4-4i, 1.6569-4i  |  4, 1.6569+4i, -4+4i, -9.6569-4i
+X1 = fft(x1')
+%  4, 1.6569+4i, -4+4i, -9.6569-4i  |  36, -9.6569+4i, -4-4i, 1.6569-4i
+```
+
+The reason: $(-1)^n = e^{i\pi n} = \exp[2\pi i\, n (N/2)/N]$, a pure oscillation at frequency $N/2$, and multiplying by it moves every frequency by $N/2$ (the modulation pair below). In 2-D, multiplying an image by $(-1)^{x+y}$ moves the DC term from the corner to the **centre** of the spectrum, which is how spectra are displayed.
+
+<Ar>والسبب أن $(-1)^n = e^{i\pi n} = \exp[2\pi i\, n (N/2)/N]$، وهو تذبذب خالص عند التردد $N/2$، والضرب فيه يزيح كل تردد بمقدار $N/2$ (انظر زوج التضمين (modulation) أدناه). وفي البُعدين، يؤدي ضرب الصورة في $(-1)^{x+y}$ إلى نقل المركبة المستمرة (DC) من الركن إلى **مركز** الطيف، وهكذا تُعرض الأطياف.</Ar>
+
+### Conjugate symmetry
+
+<Ar>التناظر المرافق</Ar>
+
+If $x$ is **real** and of length $N$, its DFT satisfies
+
+<Ar>إذا كان $x$ **حقيقيًا** وطوله $N$، فإن تحويل DFT له يحقق</Ar>
+
+$$
+X_k = \overline{X_{N-k}}, \qquad k = 1, 2, \dots, N-1
+$$
+
+where the bar is the complex conjugate. In the output above, $X_1 = -9.6569 + 4i$ and $X_7 = -9.6569 - 4i$. So only about half of the coefficients carry information, and the magnitude $\lvert X_k \rvert$ is mirror-symmetric.
+
+<Ar>حيث يدل الخط العلوي على المرافق المركب (complex conjugate). ففي المخرجات أعلاه $X_1 = -9.6569 + 4i$ و $X_7 = -9.6569 - 4i$. لذا لا يحمل المعلومات إلا نحو نصف المعاملات، ويكون المقدار $\lvert X_k \rvert$ متناظرًا تناظر المرآة.</Ar>
+
+### Circular convolution
+
+<Ar>الالتفاف الدائري</Ar>
+
+For two vectors $x$ and $y$ of the same length $N$, the **circular convolution** $z = x * y$ treats the vectors as periodic, so indices **wrap around**: $y_{-1} = y_{N-1}$, $y_{-2} = y_{N-2}$, and so on.
+
+<Ar>لمتجهين $x$ و $y$ لهما الطول نفسه $N$، يعامل **الالتفاف الدائري (circular convolution)** $z = x * y$ المتجهين على أنهما دوريان، لذا **تلتف** الفهارس: $y_{-1} = y_{N-1}$، و $y_{-2} = y_{N-2}$، وهكذا.</Ar>
+
+$$
+z_k = \sum_{n=0}^{N-1} x_n\, y_{k-n}
+\qquad\text{e.g. } N = 4:\quad z_0 = x_0 y_0 + x_1 y_3 + x_2 y_2 + x_3 y_1
+$$
+
+The slides write a factor $\tfrac{1}{N}$ in front, to match their scaled DFT; MATLAB's `cconv` and the polynomial method below use the unscaled sum.
+
+<Ar>تكتب الشرائح المعامل $\tfrac{1}{N}$ في المقدمة لتتوافق مع تحويل DFT المُحجَّم الخاص بها؛ أما الدالة `cconv` في MATLAB وطريقة كثيرات الحدود أدناه فتستخدمان المجموع دون تحجيم.</Ar>
+
+**Polynomial method.** Let $p(u)$ be the polynomial whose coefficients are the elements of $x$, and $q(u)$ the one for $y$. Expand $p(u)\,q(u)\,(1 + u^N)$; the coefficients of $u^N$ to $u^{2N-1}$ are the circular convolution. For $x = [1, 2, 3, 4]$ and $y = [5, 6, 7, 8]$:
+
+<Ar>**طريقة كثيرات الحدود.** لتكن $p(u)$ كثيرة الحدود (polynomial) التي معاملاتها عناصر $x$، و $q(u)$ كثيرة الحدود الخاصة بالمتجه $y$. افتح الأقواس في $p(u)\,q(u)\,(1 + u^N)$؛ فتكون معاملات $u^N$ حتى $u^{2N-1}$ هي الالتفاف الدائري. فمع $x = [1, 2, 3, 4]$ و $y = [5, 6, 7, 8]$:</Ar>
+
+$$
+p(u)\,q(u)\,(1 + u^4) = 5 + 16u + 34u^2 + 60u^3 + \mathbf{66}u^4 + \mathbf{68}u^5 + \mathbf{66}u^6 + \mathbf{60}u^7 + 61u^8 + 52u^9 + 32u^{10}
+$$
+
+so $x * y = [66, 68, 66, 60]$. Check $z_0$ directly: $1 \cdot 5 + 2 \cdot 8 + 3 \cdot 7 + 4 \cdot 6 = 66$.
+
+<Ar>إذن $x * y = [66, 68, 66, 60]$. وللتحقق من $z_0$ مباشرةً: $1 \cdot 5 + 2 \cdot 8 + 3 \cdot 7 + 4 \cdot 6 = 66$.</Ar>
+
+### Why convolution matters: the convolution theorem
+
+<Ar>أهمية الالتفاف: مبرهنة الالتفاف</Ar>
+
+The DFT of the circular convolution of two vectors equals the **element-by-element product** of their DFTs: if $Z$, $X$, $Y$ are the DFTs of $z = x * y$, $x$ and $y$, then $Z = X \cdot Y$. A whole convolution becomes $N$ multiplications.
+
+<Ar>تحويل DFT للالتفاف الدائري لمتجهين يساوي **حاصل الضرب عنصرًا بعنصر** لتحويليهما: فإذا كانت $Z$ و $X$ و $Y$ هي تحويلات DFT للمتجهات $z = x * y$ و $x$ و $y$، فإن $Z = X \cdot Y$. وهكذا يتحول التفاف كامل إلى $N$ عملية ضرب.</Ar>
+
+```matlab title="convolution_theorem.m"
+a = [1 2 3 4]; b = [5 6 7 8];
+fft(cconv(a, b, 4)')   % 260, -8i, 4, 8i   (cconv: Signal Processing Toolbox)
+fft(a').*fft(b')       % 260, -8i, 4, 8i   the same
+ifft(fft(a).*fft(b))   % 66 68 66 60: a convolution computed through the DFT
+```
+
+## Magnitude, phase and the DC coefficient
+
+<Ar>المقدار والطور والمركبة المستمرة</Ar>
+
+In general each DFT coefficient is **complex**, with a magnitude and a phase:
+
+<Ar>في العموم يكون كل معامل من معاملات DFT **عددًا مركبًا**، له مقدار (magnitude) وطور (phase):</Ar>
+
+$$
+\lvert F_u \rvert = \sqrt{F_{\text{real}}^2 + F_{\text{imag}}^2},
+\qquad
+\phi = \tan^{-1}\!\left(\frac{F_{\text{imag}}}{F_{\text{real}}}\right),
+\qquad
+F_u = \lvert F_u \rvert\, e^{i\phi}
+$$
+
+The **DC coefficient** $F_0$ uses $\exp(0) = 1$ for every term, so it is the **average** of the input (with MATLAB's convention, the sum):
+
+<Ar>تستخدم **المركبة المستمرة (DC coefficient)** $F_0$ القيمة $\exp(0) = 1$ لكل حد، لذا فهي **متوسط** المدخلات (أو مجموعها في اصطلاح MATLAB):</Ar>
+
+$$
+F_0 = \frac{1}{N}\sum_{x=0}^{N-1} f_x \exp(0) = \frac{1}{N}\sum_{x=0}^{N-1} f_x
+$$
+
+## Some transform pairs
+
+<Ar>بعض أزواج التحويل</Ar>
+
+| Property <Ar>الخاصية</Ar> | Spatial domain <Ar>المجال المكاني</Ar> | Frequency domain <Ar>المجال الترددي</Ar> |
+|---|---|---|
+| Scaling <Ar>التحجيم (scaling)</Ar> | $f(ax)$ | $\frac{1}{a} F\!\left(\frac{u}{a}\right)$ |
+| Shift <Ar>الإزاحة (shift)</Ar> | $f(x + a)$ | $F(u)\, e^{i 2\pi a u / M}$ |
+| Modulation <Ar>التضمين (modulation)</Ar> | $f(x)\, e^{i 2\pi a x / M}$ | $F(u - a)$ |
+| Unit impulse at the origin <Ar>نبضة الوحدة عند الأصل</Ar> | $\delta(x)$ | the constant $1/N$ <Ar>الثابت $1/N$</Ar> |
+| Constant <Ar>الثابت</Ar> | $f(x) = 1$ | DC value only <Ar>قيمة مستمرة (DC) فقط</Ar> |
+
+- **Scaling**: stretching a signal in space compresses its spectrum, and vice versa; equivalently $f(x/a) \to a F(au)$.
+  <Ar>**التحجيم**: مطّ الإشارة في المكان يضغط طيفها، والعكس صحيح؛ وبصيغة مكافئة $f(x/a) \to a F(au)$.</Ar>
+- **Shift**: moving the signal changes only the **phase**, never the magnitude, so the magnitude spectrum does not depend on where an object is.
+  <Ar>**الإزاحة**: تحريك الإشارة لا يغيّر إلا **الطور** ولا يغيّر المقدار أبدًا، لذا لا يعتمد طيف المقدار على موضع الجسم.</Ar>
+- **Impulse and constant**: a delta contains all frequencies equally, so its transform is flat; a constant has no variation, so its transform is a single DC value. With $N = 4$: $[1, 0, 0, 0] \to \tfrac{1}{4}[1, 1, 1, 1]$ and $[1, 1, 1, 1] \to [1, 0, 0, 0]$.
+  <Ar>**النبضة والثابت**: تحتوي دالة دلتا على جميع الترددات بالتساوي، لذا يكون تحويلها مستويًا؛ أما الثابت فليس فيه أي تغيّر، لذا يكون تحويله قيمة مستمرة (DC) واحدة. ومع $N = 4$: $[1, 0, 0, 0] \to \tfrac{1}{4}[1, 1, 1, 1]$ و $[1, 1, 1, 1] \to [1, 0, 0, 0]$.</Ar>
+
+<SlideFigure page={20} caption="Transform pairs: a unit impulse at the origin transforms to the constant 1/N, and a constant function transforms to a single DC value." captionAr="أزواج التحويل: نبضة الوحدة عند الأصل تتحول إلى الثابت 1/N، والدالة الثابتة تتحول إلى قيمة مستمرة (DC) واحدة." />
+
+<SlideFigure page={21} caption="A 1-D example: a signal made of three sine waves (left) and its DFT amplitude (right), with a spike at each wave's frequency and mirror-image spikes at the top end, as conjugate symmetry predicts." captionAr="مثال أحادي البُعد: إشارة مكوّنة من ثلاث موجات جيبية (يسارًا) وسعة تحويل DFT لها (يمينًا)، مع نبضة عند تردد كل موجة ونبضات مماثلة كالمرآة في الطرف الأعلى، كما يتنبأ التناظر المرافق." />
+
+## The 2-D DFT
+
+<Ar>تحويل DFT ثنائي البُعد</Ar>
+
+For an $M \times N$ image the transform runs over both coordinates, with frequencies $u$ (down the rows) and $v$ (along the columns):
+
+<Ar>في صورة أبعادها $M \times N$ يمتد التحويل على الإحداثيين كليهما، مع الترددين $u$ (على امتداد الصفوف) و $v$ (على امتداد الأعمدة):</Ar>
+
+$$
+F(u, v) = \frac{1}{MN}\sum_{x=0}^{M-1}\sum_{y=0}^{N-1} f(x, y)\, \exp\!\left[-2\pi i\left(\frac{xu}{M} + \frac{yv}{N}\right)\right]
+\qquad
+f(x, y) = \sum_{u=0}^{M-1}\sum_{v=0}^{N-1} F(u, v)\, \exp\!\left[2\pi i\left(\frac{xu}{M} + \frac{yv}{N}\right)\right]
+$$
+
+The 2-D DFT is **separable**: take the 1-D DFT of every row, then of every column of the result. To display it:
+
+<Ar>تحويل DFT ثنائي البُعد **قابل للفصل (separable)**: خذ تحويل DFT أحادي البُعد لكل صف، ثم لكل عمود من النتيجة. ولعرضه:</Ar>
+
+- **Centre** it (MATLAB's `fftshift`, or multiply by $(-1)^{x+y}$ first) so the DC term is in the middle, low frequencies near the centre and high frequencies at the edges.
+  <Ar>**وسّطه** (بالدالة `fftshift` في MATLAB، أو بالضرب في $(-1)^{x+y}$ أولًا) حتى تقع المركبة المستمرة (DC) في المنتصف، والترددات المنخفضة قرب المركز، والترددات المرتفعة عند الأطراف.</Ar>
+- Show $\log(1 + \lvert F \rvert)$: the DC value is far larger than the rest, so without the log only one bright dot would be visible.
+  <Ar>اعرض $\log(1 + \lvert F \rvert)$: فالقيمة المستمرة أكبر بكثير من البقية، ودون اللوغاريتم لن تظهر إلا نقطة ساطعة واحدة.</Ar>
+
+```matlab title="fft2_demo.m"
+f = imread('cameraman.tif');
+F = fftshift(fft2(double(f)));   % 2-D DFT, DC moved to the centre
+imshow(log(1 + abs(F)), [])      % magnitude spectrum, log scale
+figure, imshow(angle(F), [])     % phase spectrum
+```
+
+<SlideFigure page={22} caption="2-D FFT of Fourier's portrait: the centred magnitude (bright low frequencies in the middle, lines across from strong edges) and the phase, which looks like noise but encodes where structures are." captionAr="تحويل فورييه السريع ثنائي البُعد لصورة فورييه: المقدار بعد التوسيط (ترددات منخفضة ساطعة في المنتصف وخطوط ناتجة عن الحواف القوية) والطور، الذي يبدو كالضوضاء لكنه يرمّز مواضع البنى في الصورة." />
+
+The magnitude tells how strongly each frequency is present; the **phase** tells where the structures are. Both are needed to rebuild the image.
+
+<Ar>يخبرنا المقدار بمدى قوة وجود كل تردد، ويخبرنا **الطور** بمواضع البنى في الصورة. ونحتاج إلى الاثنين لإعادة بناء الصورة.</Ar>
+
+## Filtering in the frequency domain
+
+<Ar>الترشيح في المجال الترددي</Ar>
+
+The convolution theorem holds in 2-D: convolving an image with a kernel in space equals **multiplying their transforms**. So a filter can be applied by transforming the image, multiplying by the filter's transform $H(u, v)$, and transforming back:
+
+<Ar>تصحّ مبرهنة الالتفاف (convolution theorem) في البُعدين أيضًا: فالتفاف الصورة مع نواة (kernel) في المجال المكاني يساوي **ضرب تحويليهما**. لذا يمكن تطبيق المرشح بتحويل الصورة، ثم ضربها في تحويل المرشح $H(u, v)$، ثم التحويل العكسي:</Ar>
+
+$$
+f(x, y) * h(x, y) \;\Longleftrightarrow\; F(u, v)\, H(u, v),
+\qquad
+g = \mathcal{F}^{-1}\big[H \cdot \mathcal{F}[f]\big]
+$$
+
+<SlideFigure page={23} caption="Low-pass filtering: the squirrel, a small blurring kernel and the filtered image (top); their DFTs (bottom). The kernel's DFT is a bright disc that keeps only the low frequencies near the centre." captionAr="ترشيح التمرير المنخفض: صورة السنجاب، ونواة تضبيب صغيرة، والصورة المرشَّحة (في الأعلى)؛ وتحويلات DFT لها (في الأسفل). تحويل النواة قرص ساطع لا يُبقي إلا الترددات المنخفضة قرب المركز." />
+
+**What is the advantage over the spatial domain?** In the frequency domain, convolution, which slides a kernel and sums products at every pixel, becomes a single element-wise product. Direct convolution of an $M \times N$ image with an $m \times m$ kernel costs about $MN m^2$ multiplications, while the FFT route costs on the order of $MN \log(MN)$ whatever the kernel size, so it wins for **large** kernels and lets us keep or remove frequencies precisely. For small or **separable** kernels, filtering in space, one dimension at a time, is usually simpler.
+
+<Ar>**ما ميزته على المجال المكاني؟** في المجال الترددي يصبح الالتفاف، الذي يحرّك نواة ويجمع حواصل الضرب عند كل بكسل، عملية ضرب واحدة عنصرًا بعنصر. فالالتفاف المباشر لصورة $M \times N$ مع نواة $m \times m$ يكلّف نحو $MN m^2$ عملية ضرب، بينما يكلّف طريق FFT ما هو من رتبة $MN \log(MN)$ أيًّا كان حجم النواة، لذا يتفوق مع النوى **الكبيرة** ويتيح لنا إبقاء ترددات بعينها أو إزالتها بدقة. أما مع النوى الصغيرة أو **القابلة للفصل** فإن الترشيح في المجال المكاني، بُعدًا بعد بُعد، يكون عادةً أبسط.</Ar>
+
+<Callout type="note" title="The DFT convolution is circular" titleAr="الالتفاف عبر DFT دائري">
+  Because the DFT treats the image as periodic, the product $F \cdot H$ gives a <strong>circular</strong> convolution: the filter wraps around from one border to the opposite one. Padding the image (and the kernel) with zeros before the transform avoids this wrap-around error. Ideal, Butterworth and Gaussian frequency filters are covered in the next lecture.
+
+  <Ar>لأن DFT يعامل الصورة على أنها دورية، فإن حاصل الضرب $F \cdot H$ يعطي التفافًا <strong>دائريًا</strong>: إذ يلتف المرشح من أحد حدود الصورة إلى الحد المقابل. وحشو الصورة (والنواة) بالأصفار قبل التحويل يتجنب خطأ الالتفاف هذا. وتتناول المحاضرة التالية المرشحات الترددية المثالية (ideal) وبترورث (Butterworth) وغاوس (Gaussian).</Ar>
+</Callout>
+
+<Takeaways>
+
+- The Fourier transform writes a signal or image as a **sum of sinusoids**; sharp edges need high frequencies, smooth areas only low ones.
+  <Ar>يكتب تحويل فورييه الإشارة أو الصورة على هيئة **مجموع دوال جيبية**؛ فالحواف الحادة تحتاج إلى ترددات مرتفعة، والمناطق الملساء لا تحتاج إلا إلى ترددات منخفضة.</Ar>
+- The DFT is $F_u = \frac{1}{N}\sum_x \exp[-2\pi i\, xu/N] f_x$, a matrix product with $\omega = e^{-2\pi i/N}$; the inverse drops the $1/N$ and flips the sign. MATLAB's `fft` puts the $1/N$ in `ifft` instead.
+  <Ar>تحويل DFT هو $F_u = \frac{1}{N}\sum_x \exp[-2\pi i\, xu/N] f_x$، وهو ضرب مصفوفات مع $\omega = e^{-2\pi i/N}$؛ والتحويل العكسي يحذف $1/N$ ويعكس الإشارة. أما `fft` في MATLAB فتضع $1/N$ في `ifft` بدلًا من ذلك.</Ar>
+- The **DC coefficient** $F_0$ is the average; each coefficient has a **magnitude** (how much) and a **phase** (where).
+  <Ar>**المركبة المستمرة (DC)** $F_0$ هي المتوسط؛ ولكل معامل **مقدار** (كم) و**طور** (أين).</Ar>
+- **Linearity**: $H = pF + qG$. **Shifting**: multiplying by $(-1)^n$ swaps the halves of the spectrum, which is how spectra are centred. **Conjugate symmetry**: $X_k = \overline{X_{N-k}}$ for real input.
+  <Ar>**الخطية**: $H = pF + qG$. **الإزاحة**: الضرب في $(-1)^n$ يبدّل نصفي الطيف، وبه تُوسَّط الأطياف. **التناظر المرافق**: $X_k = \overline{X_{N-k}}$ للمدخلات الحقيقية.</Ar>
+- **Convolution theorem**: the DFT of a circular convolution is the element-wise product of the DFTs, which makes large filters fast in the frequency domain.
+  <Ar>**مبرهنة الالتفاف**: تحويل DFT للالتفاف الدائري هو حاصل الضرب عنصرًا بعنصر لتحويلات DFT، وهذا ما يجعل المرشحات الكبيرة سريعة في المجال الترددي.</Ar>
+
+</Takeaways>
+
+## Practice
+
+<Ar>تدريب</Ar>
+
+<Exercise title="Read an fft output" titleAr="قراءة مخرجات fft" level="easy">
+
+For the real vector `x = [2 3 4 5 6 7 8 1]`, MATLAB gives `X(1) = 36` and `X(2) = -9.6569 + 4i`. What is the mean of `x`? What is `X(8)` (the coefficient $X_7$)? What would $F_0$ be in the lecture's convention?
+
+<Ar>للمتجه الحقيقي `x = [2 3 4 5 6 7 8 1]` يعطي MATLAB القيمتين `X(1) = 36` و `X(2) = -9.6569 + 4i`. ما متوسط `x`؟ وما قيمة `X(8)` (أي المعامل $X_7$)؟ وكم تكون $F_0$ في اصطلاح المحاضرة؟</Ar>
+
+<Solution>
+
+MATLAB's `X(1)` is the sum, so the mean is $36/8 = 4.5$, which is also $F_0$ in the lecture's convention. By conjugate symmetry $X_7 = \overline{X_1} = -9.6569 - 4i$.
+
+<Ar>القيمة `X(1)` في MATLAB هي المجموع، لذا فالمتوسط $36/8 = 4.5$، وهو أيضًا $F_0$ في اصطلاح المحاضرة. وبحسب التناظر المرافق $X_7 = \overline{X_1} = -9.6569 - 4i$.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="DFT of a 2×2 image" titleAr="تحويل DFT لصورة 2×2" level="medium">
+
+Compute the 2-D DFT of the image with rows $[1, 2]$ and $[3, 4]$, and interpret the four coefficients.
+
+<Ar>احسب تحويل DFT ثنائي البُعد للصورة ذات الصفين $[1, 2]$ و $[3, 4]$، وفسّر المعاملات الأربعة.</Ar>
+
+<Solution>
+
+With $M = N = 2$ every exponential is $(-1)^{xu + yv}$. Without the $1/MN$ factor (MATLAB's `fft2`):
+
+<Ar>مع $M = N = 2$ يصبح كل أُس مساويًا $(-1)^{xu + yv}$. ودون المعامل $1/MN$ (كما في `fft2` في MATLAB):</Ar>
+
+- $F(0,0) = 1 + 2 + 3 + 4 = 10$: the DC term (mean 2.5 after dividing by $MN = 4$).
+  <Ar>$F(0,0) = 1 + 2 + 3 + 4 = 10$: المركبة المستمرة (المتوسط 2.5 بعد القسمة على $MN = 4$).</Ar>
+- $F(0,1) = (1 + 3) - (2 + 4) = -2$: the change from the left column to the right one.
+  <Ar>$F(0,1) = (1 + 3) - (2 + 4) = -2$: التغيّر من العمود الأيسر إلى الأيمن.</Ar>
+- $F(1,0) = (1 + 2) - (3 + 4) = -4$: the change from the top row to the bottom one, larger because values grow faster down the rows.
+  <Ar>$F(1,0) = (1 + 2) - (3 + 4) = -4$: التغيّر من الصف العلوي إلى السفلي، وهو أكبر لأن القيم تزداد أسرع على امتداد الصفوف.</Ar>
+- $F(1,1) = 1 - 2 - 3 + 4 = 0$: there is no checkerboard (diagonal) pattern.
+  <Ar>$F(1,1) = 1 - 2 - 3 + 4 = 0$: لا يوجد نمط رقعة شطرنج (قُطري).</Ar>
+
+In the lecture's convention divide by 4: $[2.5, -0.5; -1, 0]$.
+
+<Ar>وفي اصطلاح المحاضرة اقسم على 4: $[2.5, -0.5; -1, 0]$.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Circular convolution and the theorem" titleAr="الالتفاف الدائري والمبرهنة" level="hard">
+
+Compute the circular convolution of $x = [1, 0, 0, 2]$ and $y = [0, 1, 1, 0]$ with the polynomial method. Then check the convolution theorem for the coefficients $u = 0$ and $u = 2$ (use unscaled DFTs).
+
+<Ar>احسب الالتفاف الدائري للمتجهين $x = [1, 0, 0, 2]$ و $y = [0, 1, 1, 0]$ بطريقة كثيرات الحدود. ثم تحقق من مبرهنة الالتفاف للمعاملين $u = 0$ و $u = 2$ (استخدم تحويلات DFT دون تحجيم).</Ar>
+
+<Solution>
+
+$p(u) = 1 + 2u^3$ and $q(u) = u + u^2$, so $p\,q = u + u^2 + 2u^4 + 2u^5$ and
+
+<Ar>$p(u) = 1 + 2u^3$ و $q(u) = u + u^2$، لذا $p\,q = u + u^2 + 2u^4 + 2u^5$ و</Ar>
+
+$$
+p\,q\,(1 + u^4) = u + u^2 + \mathbf{2}u^4 + \mathbf{3}u^5 + \mathbf{1}u^6 + \mathbf{0}u^7 + 2u^8 + 2u^9
+$$
+
+so $z = [2, 3, 1, 0]$. For $u = 0$ every exponential is 1: $X_0 = 3$, $Y_0 = 2$, $Z_0 = 6 = X_0 Y_0$. For $u = 2$ the exponentials alternate $+1, -1$: $X_2 = 1 - 2 = -1$, $Y_2 = -1 + 1 = 0$, $Z_2 = 2 - 3 + 1 - 0 = 0 = X_2 Y_2$.
+
+<Ar>إذن $z = [2, 3, 1, 0]$. ومع $u = 0$ يكون كل أُس مساويًا 1: $X_0 = 3$، و $Y_0 = 2$، و $Z_0 = 6 = X_0 Y_0$. ومع $u = 2$ تتناوب الأسس بين $+1$ و $-1$: $X_2 = 1 - 2 = -1$، و $Y_2 = -1 + 1 = 0$، و $Z_2 = 2 - 3 + 1 - 0 = 0 = X_2 Y_2$.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "In the lecture's DFT convention, what is the DC coefficient F0 of a sequence?",
+      qAr: "في اصطلاح DFT الخاص بالمحاضرة، ما المركبة المستمرة F0 لمتتالية؟",
+      options: ["Its largest value", "Its average", "Its first sample", "Always zero"],
+      optionsAr: ["أكبر قيمها", "متوسطها", "أول عينة فيها", "صفر دائمًا"],
+      answer: 1,
+      explain: "F0 = (1/N) Σ f_x exp(0), the mean. MATLAB's fft has no 1/N, so it returns the sum.",
+      explainAr: "F0 = (1/N) Σ f_x exp(0)، أي المتوسط. أما fft في MATLAB فلا تحتوي على 1/N، لذا تعيد المجموع."
+    },
+    {
+      q: "How does the inverse DFT differ from the forward DFT in the lecture's convention?",
+      qAr: "كيف يختلف التحويل العكسي عن التحويل الأمامي في اصطلاح المحاضرة؟",
+      options: ["It uses cosines only", "No 1/N factor and a positive exponent", "It needs N² samples", "It divides by N twice"],
+      optionsAr: ["يستخدم جيب التمام فقط", "لا يوجد المعامل 1/N والأُس موجب", "يحتاج إلى N² عينة", "يقسم على N مرتين"],
+      answer: 1,
+      explain: "f_x = Σ exp[2πi xu/N] F_u: no scaling and the sign of the exponent is positive.",
+      explainAr: "f_x = Σ exp[2πi xu/N] F_u: دون تحجيم، وإشارة الأُس موجبة."
+    },
+    {
+      q: "Multiplying each element x_n of a vector by (−1)^n does what to its DFT?",
+      qAr: "ماذا يفعل ضرب كل عنصر x_n من متجه في (−1)^n بتحويل DFT له؟",
+      options: ["Nothing", "Negates every coefficient", "Swaps its left and right halves", "Takes the complex conjugate"],
+      optionsAr: ["لا شيء", "يعكس إشارة كل معامل", "يبدّل نصفيه الأيسر والأيمن", "يأخذ المرافق المركب"],
+      answer: 2,
+      explain: "It shifts every frequency by N/2; in 2-D, (−1)^(x+y) centres the spectrum.",
+      explainAr: "يزيح كل تردد بمقدار N/2؛ وفي البُعدين يؤدي الضرب في (−1)^(x+y) إلى توسيط الطيف."
+    },
+    {
+      q: "For a real vector of length 8, X1 = 2 − 4.83i. What is X7?",
+      qAr: "لمتجه حقيقي طوله 8، إذا كانت X1 = 2 − 4.83i فكم تكون X7؟",
+      options: ["2 − 4.83i", "2 + 4.83i", "−2 + 4.83i", "0"],
+      optionsAr: ["2 − 4.83i", "2 + 4.83i", "−2 + 4.83i", "0"],
+      answer: 1,
+      explain: "Conjugate symmetry: X_k is the complex conjugate of X_(N−k).",
+      explainAr: "التناظر المرافق: X_k هو المرافق المركب للمعامل X_(N−k)."
+    },
+    {
+      q: "Why is filtering in the frequency domain attractive for large kernels?",
+      qAr: "لماذا يكون الترشيح في المجال الترددي جذابًا مع النوى الكبيرة؟",
+      options: ["It avoids complex numbers", "Convolution becomes an element-by-element product, and the FFT cost does not grow with the kernel size", "It needs no inverse transform", "It works only on binary images"],
+      optionsAr: ["لأنه يتجنب الأعداد المركبة", "لأن الالتفاف يصبح ضربًا عنصرًا بعنصر، ولا تزداد تكلفة FFT بزيادة حجم النواة", "لأنه لا يحتاج إلى تحويل عكسي", "لأنه لا يعمل إلا على الصور الثنائية"],
+      answer: 1,
+      explain: "By the convolution theorem f * h ↔ F·H; direct convolution costs about MN·m² operations, the FFT route about MN·log(MN).",
+      explainAr: "بحسب مبرهنة الالتفاف f * h ↔ F·H؛ والالتفاف المباشر يكلّف نحو MN·m² عملية، بينما يكلّف طريق FFT نحو MN·log(MN)."
+    }
+  ]}
+/>

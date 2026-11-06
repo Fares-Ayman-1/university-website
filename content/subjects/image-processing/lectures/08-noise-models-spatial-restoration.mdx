@@ -1,0 +1,850 @@
+---
+number: 8
+title: "Image Restoration: Noise Models and Spatial Filters"
+titleAr: "استعادة الصورة: نماذج الضوضاء والمرشحات المكانية"
+summary: "How images are degraded and how to clean them in the spatial domain. Covers the degradation model and the signal-to-noise ratio, the main noise models (Gaussian, salt-and-pepper, speckle, periodic) and how Gaussian noise is generated, the mean filters (arithmetic, geometric, harmonic, contraharmonic) and their drawbacks, the order-statistics filters (median, max, min, midpoint, alpha-trimmed), adaptive filtering, and Gaussian smoothing with its sigma, discrete kernel and separable form."
+summaryAr: "كيف تتدهور الصور وكيف ننظّفها في المجال المكاني (spatial domain): نموذج التدهور (degradation) ونسبة الإشارة إلى الضوضاء (SNR)، ونماذج الضوضاء الرئيسية (الغاوسية، والملح والفلفل، والمرقّطة، والدورية) وكيف تُولَّد الضوضاء الغاوسية، ومرشحات المتوسط (الحسابي، والهندسي، والتوافقي، والتوافقي المضاد) وعيوبها، ومرشحات إحصاءات الترتيب (الوسيط، والأقصى، والأدنى، ونقطة المنتصف، والمتوسط المُشذَّب ألفا)، والترشيح التكيفي (adaptive filtering)، والتنعيم الغاوسي (Gaussian smoothing) مع معامله sigma ونواته المتقطعة وصيغته القابلة للفصل."
+topics: [Degradation model, Signal-to-noise ratio, Gaussian noise, Salt-and-pepper noise, Speckle and periodic noise, Mean filters, Order-statistics filters, Adaptive filtering, Gaussian smoothing, Separable kernels]
+duration: 60 min study
+sources:
+  - file: lectures/ch8/lec 8.pdf
+    label: Image Processing Lecture 8 – Image Restoration (slides)
+    pages: "1-29"
+bookRefs:
+  - book: ip-book
+    chapter: Ch 5 · Image Restoration
+    pages: "100–113"
+  - book: gonzalez
+    chapter: Ch 5 · Image Restoration and Reconstruction
+---
+
+<Objectives>
+
+- Write the **degradation model** in the spatial and frequency domains, and say what the **SNR** measures.
+  <Ar>كتابة **نموذج التدهور (degradation model)** في المجالين المكاني والترددي، وبيان ما تقيسه **نسبة الإشارة إلى الضوضاء (SNR)**.</Ar>
+- Describe **Gaussian**, **salt-and-pepper**, **speckle** and **periodic** noise, and add each kind of noise to an image in code.
+  <Ar>وصف الضوضاء (noise) **الغاوسية** و**الملح والفلفل (salt-and-pepper)** و**المرقّطة (speckle)** و**الدورية (periodic)**، وإضافة كل نوع منها إلى صورة برمجيًا.</Ar>
+- Apply the **mean filters** (arithmetic, geometric, harmonic, contraharmonic) and explain their weaknesses.
+  <Ar>تطبيق **مرشحات المتوسط (mean filters)**: الحسابي، والهندسي، والتوافقي (harmonic)، والتوافقي المضاد (contraharmonic)، وشرح نقاط ضعفها.</Ar>
+- Apply the **order-statistics filters** (median, max, min, midpoint, alpha-trimmed) and choose one for a given noise.
+  <Ar>تطبيق **مرشحات إحصاءات الترتيب (order-statistics)**: الوسيط (median)، والأقصى (max)، والأدنى (min)، ونقطة المنتصف (midpoint)، والمتوسط المُشذَّب ألفا (alpha-trimmed)، واختيار المناسب منها لنوع معيّن من الضوضاء.</Ar>
+- Explain how the **adaptive filter** changes its behaviour with the local variance.
+  <Ar>شرح كيف يغيّر **المرشح التكيفي (adaptive filter)** سلوكه تبعًا للتباين المحلي.</Ar>
+- Build a **Gaussian smoothing** kernel: choose sigma, discretise the Gaussian, and use separability to make it fast.
+  <Ar>بناء نواة (kernel) **للتنعيم الغاوسي (Gaussian smoothing)**: اختيار sigma، وتحويل الدالة الغاوسية إلى قيم متقطعة، واستخدام قابلية الفصل (separability) لتسريعها.</Ar>
+
+</Objectives>
+
+## What image restoration is
+
+<Ar>ما استعادة الصورة؟</Ar>
+
+<Definition term="Image restoration" termAr="استعادة الصورة (Image restoration)">
+  The removal or reduction of <strong>degradations</strong> that occurred while the image was acquired, using a <strong>model</strong> of how the image was degraded, so that the result is as close as possible to the original scene.
+
+  <Ar>إزالة <strong>التدهورات (degradations)</strong> التي حدثت أثناء التقاط الصورة أو تقليلها، باستخدام <strong>نموذج</strong> لكيفية تدهور الصورة، بحيث تكون النتيجة أقرب ما يمكن إلى المشهد الأصلي.</Ar>
+</Definition>
+
+Restoration differs from **enhancement**. Enhancement (contrast stretching, sharpening…) makes an image *look better* to a viewer by whatever works, which is subjective. Restoration is **objective**: it assumes a cause of damage and tries to undo it. The three usual sources of degradation are:
+
+<Ar>تختلف الاستعادة (restoration) عن **التحسين (enhancement)**. فالتحسين (مط التباين، والإبراز…) يجعل الصورة *تبدو أفضل* لمن ينظر إليها بأي وسيلة تنجح، وهذا أمر ذاتي. أما الاستعادة فهي **موضوعية**: تفترض سببًا للتلف وتحاول إلغاء أثره. والمصادر الثلاثة المعتادة للتدهور هي:</Ar>
+
+- **noise**, random changes in the grey values;
+  <Ar>**الضوضاء (noise)**: تغيّرات عشوائية في قيم الرمادي؛</Ar>
+- **out-of-focus blurring**, when the lens is not focused on the scene;
+  <Ar>**التشويش الناتج عن عدم التركيز (out-of-focus blur)**: عندما لا تكون العدسة مركَّزة على المشهد؛</Ar>
+- **camera motion blurring**, when the camera or the object moves during the exposure.
+  <Ar>**تشويش حركة الكاميرا (motion blur)**: عندما تتحرك الكاميرا أو الجسم أثناء التعريض.</Ar>
+
+<Callout type="note" title="Scope of this lecture" titleAr="نطاق هذه المحاضرة">
+  This lecture deals with <strong>random noise</strong> and the <strong>spatial filters</strong> that reduce it. Periodic noise and restoration in the frequency domain (notch, inverse and Wiener filtering) are the subject of Lecture 7.
+
+  <Ar>تتناول هذه المحاضرة <strong>الضوضاء العشوائية</strong> و<strong>المرشحات المكانية (spatial filters)</strong> التي تقلّلها. أما الضوضاء الدورية والاستعادة في المجال الترددي (مرشح الثلم notch، والترشيح العكسي، وترشيح فينر Wiener) فهي موضوع المحاضرة 7.</Ar>
+</Callout>
+
+## A model of image degradation
+
+<Ar>نموذج تدهور الصورة</Ar>
+
+In the **spatial domain**, blurring is a **convolution** of the ideal image $f$ with a degradation function $h$ (the **point spread function**, PSF), and noise $n$ is modelled as an **additive** term, independent of the image, added after the convolution:
+
+<Ar>في **المجال المكاني (spatial domain)** يكون التشويش (blurring) عملية **التفاف (convolution)** للصورة المثالية $f$ مع دالة تدهور (degradation function) $h$ هي **دالة انتشار النقطة (PSF)**، وتُنمذَج الضوضاء $n$ بوصفها حدًّا **جمعيًا (additive)** مستقلًا عن الصورة، يُضاف بعد الالتفاف:</Ar>
+
+$$
+g(x,y) = f(x,y) * h(x,y) \qquad\qquad g(x,y) = f(x,y) * h(x,y) + n(x,y)
+$$
+
+Here $g$ is the **observed** (degraded) image and $*$ is convolution. By the convolution theorem, convolution in space becomes multiplication in the **frequency domain**, so the same model reads:
+
+<Ar>حيث $g$ هي الصورة **المرصودة** (المتدهورة) و $*$ هي عملية الالتفاف. وبحسب مبرهنة الالتفاف (convolution theorem) يصبح الالتفاف في المكان ضربًا في **المجال الترددي (frequency domain)**، فيُكتب النموذج نفسه هكذا:</Ar>
+
+$$
+G(u,v) = F(u,v)\,H(u,v) + N(u,v)
+$$
+
+When there is no blur ($h$ is an impulse), the model reduces to $g = f + n$: restoration becomes **noise removal**, and that is the case the spatial filters below handle.
+
+<Ar>عندما لا يوجد تشويش ($h$ دالة نبضة impulse) يُختزل النموذج إلى $g = f + n$: فتصبح الاستعادة **إزالةً للضوضاء**، وهذه هي الحالة التي تعالجها المرشحات المكانية في ما يلي.</Ar>
+
+### Signal-to-noise ratio
+
+<Ar>نسبة الإشارة إلى الضوضاء</Ar>
+
+How noisy an image is can be summed up by comparing the **energy** (sum of squared values) of the image with that of the noise:
+
+<Ar>يمكن تلخيص مقدار الضوضاء في الصورة بمقارنة **طاقة** الصورة (مجموع مربعات قيمها) بطاقة الضوضاء:</Ar>
+
+$$
+\mathrm{SNR} = \frac{F}{E} = \frac{\sum_{(x,y)} g^2(x,y)}{\sum_{(x,y)} n^2(x,y)}
+$$
+
+$F$ is the energy of the image and $E$ the energy of the noise, so a **high SNR means a clean image**. It is often quoted in decibels, $10\log_{10}\mathrm{SNR}$.
+
+<Ar>$F$ هي طاقة الصورة و $E$ طاقة الضوضاء، لذا فإن **ارتفاع نسبة الإشارة إلى الضوضاء (SNR) يعني صورة نظيفة**. وكثيرًا ما تُذكر بوحدة الديسيبل: $10\log_{10}\mathrm{SNR}$.</Ar>
+
+<Callout type="warning" title="Signal over noise" titleAr="الإشارة فوق الضوضاء">
+  The slide writes the ratio as F/E but prints the two sums the other way up, with the noise sum on top. By definition the SNR has the <strong>signal energy in the numerator</strong> and the <strong>noise energy in the denominator</strong>, as in the formula above.
+
+  <Ar>تكتب الشريحة النسبة على أنها F/E لكنها تطبع المجموعين بترتيب معكوس، فتضع مجموع الضوضاء في البسط. وبحسب التعريف تضع نسبة الإشارة إلى الضوضاء (SNR) <strong>طاقة الإشارة في البسط</strong> و<strong>طاقة الضوضاء في المقام</strong>، كما في الصيغة أعلاه.</Ar>
+</Callout>
+
+## Noise in images
+
+<Ar>الضوضاء في الصور</Ar>
+
+Images are often degraded by **random noise**. It can enter during **capture**, **transmission** or **processing**, and it may be **dependent on** the image content or **independent of** it. Because it is random, noise is described by its **probabilistic characteristics**: the probability density function (PDF) of the noise values.
+
+<Ar>كثيرًا ما تتدهور الصور بفعل **الضوضاء العشوائية (random noise)**. وقد تدخل أثناء **الالتقاط** أو **النقل** أو **المعالجة**، وقد تكون **معتمدة على** محتوى الصورة أو **مستقلة عنه**. ولأنها عشوائية، تُوصف الضوضاء **بخصائصها الاحتمالية**: أي بدالة الكثافة الاحتمالية (PDF) لقيمها.</Ar>
+
+**White noise** has a **constant power spectrum**: its intensity does not decrease as the frequency increases, so it contains all frequencies equally. It is only a crude approximation of real image noise, but it is used very often because it **simplifies the calculations**.
+
+<Ar>تمتلك **الضوضاء البيضاء (white noise)** **طيف قدرة (power spectrum) ثابتًا**: فشدتها لا تتناقص بزيادة التردد، أي إنها تحتوي على جميع الترددات بالتساوي. وهي تقريب تقريبي فقط للضوضاء الحقيقية في الصور، لكنها تُستخدم كثيرًا لأنها **تبسّط الحسابات**.</Ar>
+
+### Gaussian noise
+
+<Ar>الضوضاء الغاوسية</Ar>
+
+Gaussian noise is a very good approximation of the noise in many practical cases (sensor heat, electronic circuits, low light). The noise value is a random variable whose probability density is the **Gaussian** (normal) function, with mean $\mu$ and standard deviation $\sigma$:
+
+<Ar>الضوضاء الغاوسية (Gaussian noise) تقريب جيد جدًا للضوضاء في كثير من الحالات العملية (حرارة المستشعر، والدوائر الإلكترونية، والإضاءة الضعيفة). فقيمة الضوضاء متغير عشوائي كثافته الاحتمالية هي الدالة **الغاوسية** (الطبيعية)، بمتوسط $\mu$ وانحراف معياري (standard deviation) $\sigma$:</Ar>
+
+$$
+p(x) = \frac{1}{\sigma\sqrt{2\pi}}\; e^{-\frac{(x-\mu)^2}{2\sigma^2}}
+$$
+
+About **68 %** of the values fall within $\mu \pm \sigma$, **95 %** within $\mu \pm 2\sigma$ and **99.7 %** within $\mu \pm 3\sigma$. Every pixel receives a small random change, so the image looks covered with **fine grain everywhere**; a larger $\sigma$ means stronger grain.
+
+<Ar>تقع نحو **68 %** من القيم ضمن $\mu \pm \sigma$، و**95 %** ضمن $\mu \pm 2\sigma$، و**99.7 %** ضمن $\mu \pm 3\sigma$. ويتلقى كل بكسل (pixel) تغيّرًا عشوائيًا صغيرًا، فتبدو الصورة مغطاة **بحبيبات دقيقة في كل مكان**؛ وكلما كبرت $\sigma$ اشتدت الحبيبات.</Ar>
+
+### Generating Gaussian noise
+
+<Ar>توليد الضوضاء الغاوسية</Ar>
+
+The slides give a simple recipe for adding zero-mean Gaussian noise to an image with $G$ grey levels:
+
+<Ar>تقدّم الشرائح طريقة بسيطة لإضافة ضوضاء غاوسية متوسطها صفر إلى صورة لها $G$ من مستويات الرمادي (grey levels):</Ar>
+
+<Steps>
+
+1. Assume mean 0 and choose $\sigma$: a **low** value gives a **weak** noise effect.
+   <Ar>افترض أن المتوسط 0 واختر $\sigma$: القيمة **الصغيرة** تعطي ضوضاء **ضعيفة** الأثر.</Ar>
+2. For every grey level $i = 0, 1, \dots, G-1$ compute $p[i] = \frac{1}{\sigma\sqrt{2\pi}}\, e^{-i^2/2\sigma^2}$.
+   <Ar>لكل مستوى رمادي $i = 0, 1, \dots, G-1$ احسب $p[i] = \frac{1}{\sigma\sqrt{2\pi}}\, e^{-i^2/2\sigma^2}$.</Ar>
+3. For each pixel $(x,y)$, generate a random number $q_1$ in $[0,1]$ and find the noise magnitude $j = \arg\min_i \lvert q_1 - p[i] \rvert$, the level whose density is closest to $q_1$.
+   <Ar>لكل بكسل $(x,y)$ ولّد عددًا عشوائيًا $q_1$ في $[0,1]$ وأوجد مقدار الضوضاء $j = \arg\min_i \lvert q_1 - p[i] \rvert$، أي المستوى الذي تكون كثافته أقرب ما يمكن إلى $q_1$.</Ar>
+4. Generate a random sign $q_2 \in \{-1, +1\}$ and add the noise: $f^*(x,y) = f(x,y) + q_2\, j$.
+   <Ar>ولّد إشارة عشوائية $q_2 \in \{-1, +1\}$ وأضف الضوضاء: $f^*(x,y) = f(x,y) + q_2\, j$.</Ar>
+5. Clip the result to the valid range, as below.
+   <Ar>اقصُص (clip) النتيجة إلى المدى المسموح، كما يلي.</Ar>
+
+</Steps>
+
+$$
+f(x,y) =
+\begin{cases}
+0 & \text{if } f^*(x,y) < 0 \\
+G-1 & \text{if } f^*(x,y) > G-1 \\
+f^*(x,y) & \text{otherwise}
+\end{cases}
+$$
+
+Step 3 turns a uniform random number into a noise **magnitude** through the Gaussian curve (small magnitudes have high density, so they come up most often), step 4 makes the noise **symmetric** about zero so its mean stays 0, and step 5 is ordinary **clipping**. This is a hand-made recipe; in practice libraries draw normally distributed values directly, as in the code below.
+
+<Ar>تحوّل الخطوة 3 عددًا عشوائيًا منتظمًا إلى **مقدار** للضوضاء عبر المنحنى الغاوسي (فالمقادير الصغيرة كثافتها عالية، لذا تظهر أكثر من غيرها)، وتجعل الخطوة 4 الضوضاء **متناظرة** حول الصفر فيبقى متوسطها 0، والخطوة 5 هي **القصّ (clipping)** المعتاد. هذه طريقة يدوية؛ أما عمليًا فتسحب المكتبات قيمًا موزعة توزيعًا طبيعيًا مباشرة، كما في الشيفرة أدناه.</Ar>
+
+### Salt-and-pepper noise
+
+<Ar>ضوضاء الملح والفلفل</Ar>
+
+**Salt-and-pepper** noise is also called **impulse**, **shot** or **binary** noise. It appears as randomly scattered **white (salt)** and **black (pepper)** pixels. With a noise density $p$, each pixel of an 8-bit image becomes:
+
+<Ar>تُسمّى ضوضاء **الملح والفلفل (salt-and-pepper)** أيضًا **الضوضاء النبضية (impulse)** أو **ضوضاء الطلقات (shot)** أو **الضوضاء الثنائية (binary)**. وتظهر على هيئة بكسلات **بيضاء (الملح)** و**سوداء (الفلفل)** مبعثرة عشوائيًا. فإذا كانت كثافة الضوضاء $p$، يصبح كل بكسل في صورة 8 بت:</Ar>
+
+$$
+g(x,y) =
+\begin{cases}
+0 & \text{with probability } p/2 \quad \text{(pepper)}\\
+255 & \text{with probability } p/2 \quad \text{(salt)}\\
+f(x,y) & \text{with probability } 1-p
+\end{cases}
+$$
+
+It is caused by bit errors in transmission and by faulty sensor cells or memory locations. Only some pixels are hit, but those take **extreme values**, so they are **outliers** that do not belong to their neighbourhood.
+
+<Ar>تنتج عن أخطاء البتات أثناء النقل وعن خلايا مستشعر أو مواقع ذاكرة معطوبة. ولا تصيب إلا بعض البكسلات، لكن هذه البكسلات تأخذ **قيمًا متطرفة**، فهي **قيم شاذة (outliers)** لا تنتمي إلى جوارها.</Ar>
+
+<SlideFigure page={8} caption="Salt-and-pepper noise: isolated white and black pixels scattered at random over the photograph." captionAr="ضوضاء الملح والفلفل: بكسلات بيضاء وسوداء منفردة مبعثرة عشوائيًا على الصورة." />
+
+### Other types of noise
+
+<Ar>أنواع أخرى من الضوضاء</Ar>
+
+**Speckle noise** is **multiplicative**: the noise is multiplied by the image instead of being added to it,
+
+<Ar>**الضوضاء المرقّطة (speckle)** **ضربية (multiplicative)**: إذ تُضرب الضوضاء في الصورة بدل أن تُضاف إليها،</Ar>
+
+$$
+g = f + nf = f\,(1 + n)
+$$
+
+so bright regions get stronger noise than dark ones. It appears in coherent imaging such as ultrasound and radar. It may look superficially like Gaussian noise, but it needs **different removal methods** (for example adaptive filters, or a logarithm that turns the product into a sum, $\log g = \log f + \log(1+n)$).
+
+<Ar>لذا تحصل المناطق الساطعة على ضوضاء أقوى من المناطق المظلمة. وتظهر في التصوير المترابط (coherent imaging) مثل الموجات فوق الصوتية والرادار. وقد تشبه في ظاهرها الضوضاء الغاوسية، لكنها تحتاج إلى **طرق إزالة مختلفة** (مثل المرشحات التكيفية، أو أخذ اللوغاريتم الذي يحوّل حاصل الضرب إلى مجموع: $\log g = \log f + \log(1+n)$).</Ar>
+
+**Periodic noise** is periodic rather than randomly distributed: regular stripes or ripples, usually caused by electrical or mechanical interference.
+
+<Ar>**الضوضاء الدورية (periodic)** دورية وليست موزعة عشوائيًا: خطوط أو تموجات منتظمة، تنتج عادةً عن تداخل كهربائي أو ميكانيكي.</Ar>
+
+<SlideFigure page={9} caption="Other types of noise: speckle noise is multiplicative, g = f + nf; periodic noise covers the whole image with a regular pattern of stripes." captionAr="أنواع أخرى من الضوضاء: الضوضاء المرقّطة ضربية، g = f + nf؛ والضوضاء الدورية تغطي الصورة كلها بنمط منتظم من الخطوط." />
+
+Two remarks decide which tool to use:
+
+<Ar>ملاحظتان تحددان الأداة التي نستخدمها:</Ar>
+
+- Only **periodic** noise is a **global** effect: it shows up as a few spikes in the Fourier spectrum, so it is removed in the frequency domain. The other kinds are **local** degradations.
+  <Ar>الضوضاء **الدورية** وحدها أثر **شامل (global)**: إذ تظهر بضع قمم حادة في طيف فورييه (spectrum)، لذا تُزال في المجال الترددي. أما الأنواع الأخرى فهي تدهورات **محلية**.</Ar>
+- **Spatial filtering** is the method of choice when the noise is **additive** and random.
+  <Ar>**الترشيح المكاني (spatial filtering)** هو الأسلوب المفضّل عندما تكون الضوضاء **جمعية (additive)** وعشوائية.</Ar>
+
+| Noise <Ar>الضوضاء</Ar> | Looks like <Ar>مظهرها</Ar> | Model <Ar>النموذج</Ar> | Typical cause <Ar>السبب المعتاد</Ar> | Usual remedy <Ar>العلاج المعتاد</Ar> |
+|---|---|---|---|---|
+| Gaussian <Ar>الغاوسية</Ar> | Fine grain everywhere <Ar>حبيبات دقيقة في كل مكان</Ar> | $g = f + n$, $n \sim \mathcal{N}(0,\sigma^2)$ | Sensor heat, electronics, low light <Ar>حرارة المستشعر، والإلكترونيات، والإضاءة الضعيفة</Ar> | Mean, Gaussian or adaptive filter <Ar>مرشح المتوسط أو الغاوسي أو التكيفي</Ar> |
+| Uniform <Ar>المنتظمة (uniform)</Ar> | Grain, flatter distribution <Ar>حبيبات بتوزيع أكثر تسطّحًا</Ar> | $g = f + n$, $n$ uniform on $[a,b]$ <Ar>$n$ منتظمة على $[a,b]$</Ar> | Quantization errors <Ar>أخطاء التكميم (quantization)</Ar> | Mean filters <Ar>مرشحات المتوسط</Ar> |
+| Salt-and-pepper <Ar>الملح والفلفل</Ar> | White and black dots <Ar>نقاط بيضاء وسوداء</Ar> | Some pixels set to 0 or 255 <Ar>بعض البكسلات تصبح 0 أو 255</Ar> | Transmission errors, faulty cells <Ar>أخطاء النقل، والخلايا المعطوبة</Ar> | Median, alpha-trimmed <Ar>الوسيط، والمتوسط المُشذَّب ألفا</Ar> |
+| Speckle <Ar>المرقّطة</Ar> | Grain that grows with brightness <Ar>حبيبات تزداد مع السطوع</Ar> | $g = f(1+n)$ | Coherent imaging (ultrasound, radar) <Ar>التصوير المترابط (الموجات فوق الصوتية، والرادار)</Ar> | Adaptive filters <Ar>المرشحات التكيفية</Ar> |
+| Periodic <Ar>الدورية</Ar> | Regular stripes or ripples <Ar>خطوط أو تموجات منتظمة</Ar> | Added sinusoids <Ar>موجات جيبية مضافة</Ar> | Electrical or mechanical interference <Ar>تداخل كهربائي أو ميكانيكي</Ar> | Notch filter in the frequency domain <Ar>مرشح الثلم (notch) في المجال الترددي</Ar> |
+
+### Adding noise in code
+
+<Ar>إضافة الضوضاء برمجيًا</Ar>
+
+MATLAB's `imnoise` adds each kind of noise (its parameters are on the 0–1 intensity scale, so a variance of 0.01 is a standard deviation of 0.1, about 25 grey levels):
+
+<Ar>تضيف الدالة `imnoise` في MATLAB كل نوع من الضوضاء (ومعاملاتها على مقياس الشدة من 0 إلى 1، فالتباين 0.01 يعني انحرافًا معياريًا قدره 0.1، أي نحو 25 مستوى رمادي):</Ar>
+
+```matlab title="add_noise.m"
+I  = imread('cameraman.tif');
+g1 = imnoise(I, 'gaussian', 0, 0.01);    % mean 0, variance 0.01
+g2 = imnoise(I, 'salt & pepper', 0.05);  % 5% of the pixels become 0 or 255
+g3 = imnoise(I, 'speckle', 0.04);        % g = f + n.*f, n uniform with variance 0.04
+imshow([g1 g2 g3])
+```
+
+The same three noises with NumPy:
+
+<Ar>والأنواع الثلاثة نفسها باستخدام NumPy:</Ar>
+
+```python title="add_noise.py"
+import numpy as np
+
+rng = np.random.default_rng(0)
+f = img.astype(np.float64)                     # img: 8-bit grayscale array
+
+# Gaussian: add N(0, sigma^2) to every pixel, then clip to 0..255
+gauss = np.clip(f + rng.normal(0, 20, f.shape), 0, 255).astype(np.uint8)
+
+# Salt and pepper with density p
+p = 0.05
+r = rng.random(img.shape)
+sp = img.copy()
+sp[r < p / 2] = 0                              # pepper
+sp[(r >= p / 2) & (r < p)] = 255               # salt
+
+# Speckle: multiplicative, g = f + f*n
+speckle = np.clip(f + f * rng.normal(0, 0.2, f.shape), 0, 255).astype(np.uint8)
+```
+
+## Mean filters
+
+<Ar>مرشحات المتوسط</Ar>
+
+### Review: the averaging filter
+
+<Ar>مراجعة: مرشح المتوسط</Ar>
+
+The averaging filter from neighbourhood processing replaces each pixel with the average of its window. It reduces noise **by blurring**, and **the larger the kernel, the smoother and blurrier** the result.
+
+<Ar>يستبدل مرشح المتوسط (averaging filter)، الذي درسناه في معالجة الجوار، كلَّ بكسل بمتوسط نافذته. وهو يقلل الضوضاء **عن طريق التنعيم والتشويش**، و**كلما كبرت النواة (kernel) ازدادت النتيجة نعومةً وتشوشًا**.</Ar>
+
+<SlideFigure page={10} caption="Averaging with square kernels of size 1 (the original), 3, 5, 9, 15 and 35: small details and noise disappear first, and with 35 even the large shapes are badly blurred." captionAr="التنعيم بالمتوسط باستخدام نوى مربعة مقاساتها 1 (الأصل)، و3، و5، و9، و15، و35: تختفي التفاصيل الصغيرة والضوضاء أولًا، ومع المقاس 35 تتشوش حتى الأشكال الكبيرة تشوشًا شديدًا." />
+
+In restoration we write the window as a set $S$ of offsets $(a,b)$ of size $m \times n$ centred on the pixel, the corrupted image as $g$, and the filter's estimate of the clean image as $\hat f$.
+
+<Ar>في الاستعادة نكتب النافذة على أنها مجموعة $S$ من الإزاحات $(a,b)$ مقاسها $m \times n$ ومركزها البكسل، والصورة المتضررة $g$، وتقدير المرشح للصورة النظيفة $\hat f$.</Ar>
+
+### Arithmetic mean
+
+<Ar>المتوسط الحسابي</Ar>
+
+$$
+\hat f(x,y) = \frac{1}{mn} \sum_{(a,b) \in S} g(x-a,\, y-b)
+$$
+
+The **arithmetic mean** is the average of the corrupted image over the window: a kernel whose $mn$ coefficients all equal $1/mn$. It smooths local variations, and the noise is reduced **as a result of blurring**.
+
+<Ar>**المتوسط الحسابي** هو متوسط الصورة المتضررة على النافذة: أي نواة معاملاتها الـ $mn$ كلها تساوي $1/mn$. وهو ينعّم التغيّرات المحلية، وتقلّ الضوضاء **نتيجةً للتشويش (blurring)**.</Ar>
+
+### Geometric mean
+
+<Ar>المتوسط الهندسي</Ar>
+
+$$
+\hat f(x,y) = \Big[ \prod_{(a,b) \in S} g(x-a,\, y-b) \Big]^{\frac{1}{mn}}
+$$
+
+The **geometric mean** multiplies the values and takes the $mn$-th root. Its smoothing is comparable to the arithmetic mean, but it **tends to lose less image detail**, and a single bright outlier pulls it less: for eight pixels of 100 and one of 255, the arithmetic mean is 117.2 but the geometric mean is 111.0.
+
+<Ar>يضرب **المتوسط الهندسي** القيم ثم يأخذ الجذر من الرتبة $mn$. وتنعيمه مماثل للمتوسط الحسابي، لكنه **يميل إلى فقدان قدر أقل من تفاصيل الصورة**، ويتأثر أقل بقيمة شاذة ساطعة واحدة: فلثمانية بكسلات قيمتها 100 وبكسل واحد قيمته 255 يكون المتوسط الحسابي 117.2 بينما المتوسط الهندسي 111.0.</Ar>
+
+**What if one pixel in the window has intensity 0?** Then the whole product is 0 and the output is **0**, whatever the other eight values are. A single pepper pixel therefore turns into a black blob the size of the window, and the geometric mean is useless on pepper noise.
+
+<Ar>**ماذا لو كانت شدة أحد البكسلات في النافذة 0؟** عندئذ يصبح حاصل الضرب كله 0 ويكون الخرج **0**، مهما كانت القيم الثمانية الأخرى. لذا يتحول بكسل فلفل واحد إلى بقعة سوداء بحجم النافذة، ويصبح المتوسط الهندسي عديم الفائدة مع ضوضاء الفلفل.</Ar>
+
+### Harmonic and contraharmonic means
+
+<Ar>المتوسط التوافقي والمتوسط التوافقي المضاد</Ar>
+
+Two more members of the family complete the picture (Gonzalez, Ch 5):
+
+<Ar>عضوان آخران من هذه العائلة يكملان الصورة (Gonzalez، الفصل 5):</Ar>
+
+$$
+\hat f_{\text{harmonic}}(x,y) = \frac{mn}{\sum_{(a,b) \in S} \dfrac{1}{g(x-a,\, y-b)}}
+\qquad\qquad
+\hat f_{Q}(x,y) = \frac{\sum_{(a,b) \in S} g(x-a,\, y-b)^{\,Q+1}}{\sum_{(a,b) \in S} g(x-a,\, y-b)^{\,Q}}
+$$
+
+- The **harmonic mean** works well for **salt** noise and Gaussian-like noise, but fails on **pepper** noise ($1/0$ is infinite, so the output drops to 0).
+  <Ar>يعمل **المتوسط التوافقي (harmonic)** جيدًا مع ضوضاء **الملح** والضوضاء الشبيهة بالغاوسية، لكنه يفشل مع ضوضاء **الفلفل** (فالقيمة $1/0$ لا نهائية، فيهبط الخرج إلى 0).</Ar>
+- The **contraharmonic mean** of order $Q$ removes **pepper** noise when $Q > 0$ and **salt** noise when $Q < 0$; $Q = 0$ gives the arithmetic mean and $Q = -1$ the harmonic mean. It cannot remove both at once, and the wrong sign of $Q$ makes the noise worse.
+  <Ar>يزيل **المتوسط التوافقي المضاد (contraharmonic)** من الرتبة $Q$ ضوضاءَ **الفلفل** عندما $Q > 0$، وضوضاءَ **الملح** عندما $Q < 0$؛ و $Q = 0$ تعطي المتوسط الحسابي، و $Q = -1$ تعطي المتوسط التوافقي. ولا يستطيع إزالة النوعين معًا، والإشارة الخاطئة لـ $Q$ تزيد الضوضاء سوءًا.</Ar>
+
+### Demo and drawbacks
+
+<Ar>عرض توضيحي وعيوب</Ar>
+
+<SlideFigure page={12} caption="A circuit-board X-ray corrupted by Gaussian noise and cleaned with an arithmetic mean and a geometric mean: both reduce the grain; the geometric mean keeps slightly more detail." captionAr="صورة أشعة سينية للوحة دوائر متضررة بضوضاء غاوسية، نُظِّفت بالمتوسط الحسابي والمتوسط الهندسي: كلاهما يقلل الحبيبات، ويحافظ المتوسط الهندسي على قدر أكبر قليلًا من التفاصيل." />
+
+Mean filtering has two serious drawbacks:
+
+<Ar>لترشيح المتوسط عيبان خطيران:</Ar>
+
+1. A **single pixel with a very unrepresentative value** can significantly change the mean of all the pixels in its neighbourhood. Salt-and-pepper dots are not removed, they are **smeared** into grey blobs.
+   <Ar>**بكسل واحد ذو قيمة غير ممثِّلة إطلاقًا** قد يغيّر متوسط جميع البكسلات في جواره تغييرًا كبيرًا. فنقاط الملح والفلفل لا تُزال، بل **تُلطَّخ** إلى بقع رمادية.</Ar>
+2. When the window **straddles an edge**, the filter interpolates new values between the two sides, so it **blurs the edge**. That is a problem whenever sharp edges are needed in the output.
+   <Ar>عندما **تمتد النافذة على جانبي حافة (edge)**، يستحدث المرشح قيمًا جديدة وسيطة بين الجانبين، فيُ**شوِّش الحافة**. وهذه مشكلة كلما احتجنا إلى حواف حادة في الخرج.</Ar>
+
+<SlideFigure page={13} caption="Mean filter drawbacks: on salt-and-pepper noise the mean filter leaves grey smudges where the dots were and blurs the edges of the face." captionAr="عيوب مرشح المتوسط: مع ضوضاء الملح والفلفل يترك مرشح المتوسط لطخات رمادية مكان النقاط ويشوّش حواف الوجه." />
+
+## One window, every filter
+
+<Ar>نافذة واحدة وكل المرشحات</Ar>
+
+Take one 3×3 window from a flat region of grey level about 100 that was hit by **one salt and one pepper** pixel. The centre pixel is 101:
+
+<Ar>لنأخذ نافذة واحدة 3×3 من منطقة مستوية مستوى رماديها نحو 100، أصابها بكسل **ملح واحد وبكسل فلفل واحد**. والبكسل المركزي قيمته 101:</Ar>
+
+$$
+\begin{bmatrix} 98 & 102 & 255 \\ 100 & \mathbf{101} & 99 \\ 0 & 103 & 100 \end{bmatrix}
+\qquad
+\text{sorted: } 0,\ 98,\ 99,\ 100,\ 100,\ 101,\ 102,\ 103,\ 255
+$$
+
+The sum of the nine values is 958.
+
+<Ar>مجموع القيم التسع هو 958.</Ar>
+
+| Filter <Ar>المرشح</Ar> | Computation <Ar>الحساب</Ar> | Output <Ar>الخرج</Ar> |
+|---|---|---|
+| Arithmetic mean <Ar>المتوسط الحسابي</Ar> | $958 / 9$ | 106.4 |
+| Geometric mean <Ar>المتوسط الهندسي</Ar> | The product contains a 0 <Ar>حاصل الضرب يحتوي على 0</Ar> | 0 |
+| Harmonic mean <Ar>المتوسط التوافقي</Ar> | $1/0$ is infinite <Ar>$1/0$ لا نهائية</Ar> | 0 |
+| Contraharmonic, $Q = 1.5$ <Ar>التوافقي المضاد، $Q = 1.5$</Ar> | Dominated by the 255 <Ar>تهيمن عليه القيمة 255</Ar> | 157.1 |
+| Median <Ar>الوسيط</Ar> | 5th of the 9 sorted values <Ar>القيمة الخامسة من القيم التسع المرتبة</Ar> | 100 |
+| Min <Ar>الأدنى</Ar> | Smallest value <Ar>أصغر قيمة</Ar> | 0 |
+| Max <Ar>الأقصى</Ar> | Largest value <Ar>أكبر قيمة</Ar> | 255 |
+| Midpoint <Ar>نقطة المنتصف</Ar> | $(0 + 255)/2$ | 127.5 |
+| Alpha-trimmed, $d = 2$ <Ar>المُشذَّب ألفا، $d = 2$</Ar> | $(958 - 0 - 255)/7 = 703/7$ | 100.43 |
+| Alpha-trimmed, $d = 4$ <Ar>المُشذَّب ألفا، $d = 4$</Ar> | $(99 + 100 + 100 + 101 + 102)/5$ | 100.40 |
+
+The two outliers pull the arithmetic mean up to 106; the geometric and harmonic means collapse to 0 because of the pepper pixel; min, max and midpoint return the noise itself. Only the **median** and the **alpha-trimmed mean** ignore the outliers and give a value close to 100.
+
+<Ar>تسحب القيمتان الشاذتان المتوسطَ الحسابي إلى 106؛ وينهار المتوسطان الهندسي والتوافقي إلى 0 بسبب بكسل الفلفل؛ وتعيد مرشحات الأدنى والأقصى ونقطة المنتصف الضوضاءَ نفسها. ولا يتجاهل القيمتين الشاذتين ويعطي قيمة قريبة من 100 إلا **الوسيط** و**المتوسط المُشذَّب ألفا**.</Ar>
+
+## Order-statistics filters
+
+<Ar>مرشحات إحصاءات الترتيب</Ar>
+
+An **order-statistics** (rank) filter **sorts** the pixels inside the window and its response is based on that **ordering**. These filters are **non-linear**: no kernel of weights can produce them.
+
+<Ar>يقوم **مرشح إحصاءات الترتيب (order-statistics)** أو مرشح الرتبة (rank filter) **بفرز** البكسلات داخل النافذة، وتعتمد استجابته على هذا **الترتيب**. وهذه المرشحات **غير خطية (non-linear)**: إذ لا توجد نواة أوزان تستطيع إنتاجها.</Ar>
+
+$$
+\begin{aligned}
+\text{Median: } & \hat f(x,y) = \operatorname*{median}_{(a,b) \in S} \{ g(x-a,\, y-b) \} \\
+\text{Max: } & \hat f(x,y) = \max_{(a,b) \in S} \{ g(x-a,\, y-b) \} \\
+\text{Min: } & \hat f(x,y) = \min_{(a,b) \in S} \{ g(x-a,\, y-b) \} \\
+\text{Midpoint: } & \hat f(x,y) = \tfrac{1}{2} \Big[ \max_{(a,b) \in S} \{ g(x-a,\, y-b) \} + \min_{(a,b) \in S} \{ g(x-a,\, y-b) \} \Big]
+\end{aligned}
+$$
+
+For the **alpha-trimmed mean**, delete the $d/2$ lowest and the $d/2$ highest grey values in the window, let $g_r(x,y)$ be the sum of the $mn - d$ remaining pixels, and average them:
+
+<Ar>أما **المتوسط المُشذَّب ألفا (alpha-trimmed mean)** فنحذف فيه أدنى $d/2$ وأعلى $d/2$ من قيم الرمادي في النافذة، ونجعل $g_r(x,y)$ مجموع البكسلات المتبقية وعددها $mn - d$، ثم نأخذ متوسطها:</Ar>
+
+$$
+\hat f(x,y) = \frac{g_r(x,y)}{mn - d}
+$$
+
+| Filter <Ar>المرشح</Ar> | Good for <Ar>يناسب</Ar> | Side effect <Ar>الأثر الجانبي</Ar> |
+|---|---|---|
+| **Median** <Ar>**الوسيط (median)**</Ar> | Salt-and-pepper noise <Ar>ضوضاء الملح والفلفل</Ar> | Preserves edges: the output is always one of the existing values, so no in-between values are invented <Ar>يحافظ على الحواف: فالخرج دائمًا إحدى القيم الموجودة، فلا تُستحدث قيم وسيطة</Ar> |
+| **Max** <Ar>**الأقصى (max)**</Ar> | Pepper (dark) noise; finding the brightest points <Ar>ضوضاء الفلفل (الداكنة)؛ وإيجاد أسطع النقاط</Ar> | Bright regions grow, dark details shrink <Ar>تتسع المناطق الساطعة وتنكمش التفاصيل الداكنة</Ar> |
+| **Min** <Ar>**الأدنى (min)**</Ar> | Salt (bright) noise <Ar>ضوضاء الملح (الساطعة)</Ar> | Dark regions grow, the image darkens <Ar>تتسع المناطق الداكنة وتُعتم الصورة</Ar> |
+| **Midpoint** <Ar>**نقطة المنتصف (midpoint)**</Ar> | Randomly distributed noise such as Gaussian or uniform <Ar>الضوضاء الموزعة عشوائيًا مثل الغاوسية أو المنتظمة</Ar> | Fails on impulses: one outlier sets the result <Ar>يفشل مع النبضات: قيمة شاذة واحدة تحدد النتيجة</Ar> |
+| **Alpha-trimmed** <Ar>**المُشذَّب ألفا (alpha-trimmed)**</Ar> | Mixed noise, e.g. Gaussian plus salt-and-pepper <Ar>الضوضاء المختلطة، مثل الغاوسية مع الملح والفلفل</Ar> | The choice of $d$ matters: $d = 0$ is the arithmetic mean, $d = mn - 1$ is the median <Ar>اختيار $d$ مهم: $d = 0$ هو المتوسط الحسابي، و $d = mn - 1$ هو الوسيط</Ar> |
+
+### Demo: repeated median filtering
+
+<Ar>عرض توضيحي: تكرار ترشيح الوسيط</Ar>
+
+<SlideFigure page={16} caption="Repeated application of a 3×3 median filter to heavy salt-and-pepper noise: the 1st pass removes most of the dots, the 2nd and 3rd passes remove the remaining clusters." captionAr="تطبيق مرشح وسيط 3×3 مرارًا على ضوضاء ملح وفلفل كثيفة: تزيل المرة الأولى معظم النقاط، وتزيل المرتان الثانية والثالثة التجمعات المتبقية." />
+
+One pass fails wherever **more than half** of a window is noise of the same kind, because then the median itself is a noise value. After one pass those clusters are smaller, so a **second** and **third** pass clean them up. Each extra pass also removes a little fine detail, so stop as soon as the noise is gone.
+
+<Ar>تفشل المرة الواحدة حيثما كان **أكثر من نصف** النافذة ضوضاءً من النوع نفسه، لأن الوسيط نفسه يصبح حينئذ قيمة ضوضاء. وبعد المرة الأولى تصغر هذه التجمعات، فتنظّفها المرتان **الثانية** و**الثالثة**. لكن كل مرة إضافية تزيل أيضًا قليلًا من التفاصيل الدقيقة، لذا توقّف بمجرد زوال الضوضاء.</Ar>
+
+### Demo: max and min filters
+
+<Ar>عرض توضيحي: مرشحا الأقصى والأدنى</Ar>
+
+<SlideFigure page={17} caption="Max and min filters: a max filter removes the black pepper dots but thins the dark structures; a min filter is the tool for white salt dots and thickens the dark structures." captionAr="مرشحا الأقصى والأدنى: يزيل مرشح الأقصى نقاط الفلفل السوداء لكنه يُرقِّق البُنى الداكنة؛ ومرشح الأدنى هو أداة نقاط الملح البيضاء ويُثخِّن البُنى الداكنة." />
+
+### The cost of sorting
+
+<Ar>تكلفة الفرز</Ar>
+
+Order-statistics filters are **relatively expensive**: to find the median, every window must be **sorted**, which is slow even with a fast algorithm such as *quicksort*. The remedy comes from the sliding window: when it moves one pixel to the right, **most pixels stay the same** (6 of 9 for a 3×3 window), and their relative order has not changed. A **running histogram** of the window (Huang's algorithm) exploits this: remove the column that leaves, add the column that enters, and read the median off the histogram counts, with no full sort.
+
+<Ar>مرشحات إحصاءات الترتيب **مكلفة نسبيًا**: فلإيجاد الوسيط يجب **فرز** كل نافذة، وهذا بطيء حتى مع خوارزمية سريعة مثل *quicksort*. ويأتي العلاج من النافذة المنزلقة: فعندما تتحرك بكسلًا واحدًا إلى اليمين **تبقى معظم البكسلات كما هي** (6 من 9 في نافذة 3×3)، ولا يتغير ترتيبها النسبي. ويستغل **المدرج التكراري المتحرك (running histogram)** للنافذة (خوارزمية Huang) ذلك: احذف العمود الخارج، وأضف العمود الداخل، واقرأ الوسيط من عدّادات المدرج التكراري، دون فرز كامل.</Ar>
+
+```matlab title="order_statistics.m"
+g = im2double(imnoise(I, 'salt & pepper', 0.2));  % double, so max+min cannot saturate
+m1  = medfilt2(g, [3 3]);         % median
+m3  = medfilt2(medfilt2(m1));     % two more passes
+mx  = ordfilt2(g, 9, ones(3));    % 9th of 9 sorted values = max
+mn  = ordfilt2(g, 1, ones(3));    % 1st of 9 sorted values = min
+mid = (mx + mn) / 2;              % midpoint
+```
+
+```python title="order_statistics.py"
+import numpy as np
+from scipy import ndimage
+
+med = ndimage.median_filter(sp, size=3)
+mx  = ndimage.maximum_filter(sp, size=3)
+mn  = ndimage.minimum_filter(sp, size=3)
+mid = (mx.astype(np.float64) + mn) / 2
+
+def alpha_trimmed(values, d):
+    v = np.sort(values)
+    return v[d // 2 : len(v) - d // 2].mean()   # drop d/2 lowest and d/2 highest
+
+atm = ndimage.generic_filter(sp.astype(np.float64), alpha_trimmed,
+                             size=3, extra_arguments=(2,))
+```
+
+## Adaptive filtering
+
+<Ar>الترشيح التكيفي</Ar>
+
+An **adaptive filter** changes its behaviour according to the grey values **under the mask**. The one in the slides computes, at each pixel:
+
+<Ar>يغيّر **المرشح التكيفي (adaptive filter)** سلوكه تبعًا لقيم الرمادي **تحت القناع (mask)**. والمرشح الوارد في الشرائح يحسب عند كل بكسل:</Ar>
+
+$$
+\hat f = m_f + \frac{\sigma_f^2}{\sigma_f^2 + \sigma_g^2}\,\big(g - m_f\big)
+$$
+
+- $g$: the current grey value of the pixel;
+  <Ar>$g$: قيمة الرمادي الحالية للبكسل؛</Ar>
+- $m_f$: the **mean** of the grey values under the mask;
+  <Ar>$m_f$: **متوسط** قيم الرمادي تحت القناع؛</Ar>
+- $\sigma_f^2$: the **variance** of the grey values under the mask (the local variance);
+  <Ar>$\sigma_f^2$: **تباين** قيم الرمادي تحت القناع (التباين المحلي)؛</Ar>
+- $\sigma_g^2$: the variance of the **noise** in the image, one number for the whole image.
+  <Ar>$\sigma_g^2$: تباين **الضوضاء** في الصورة، وهو عدد واحد للصورة كلها.</Ar>
+
+The fraction decides how much of the pixel's own deviation from the local mean is kept:
+
+<Ar>يحدد الكسر مقدار ما يُحتفظ به من انحراف البكسل نفسه عن المتوسط المحلي:</Ar>
+
+- If $\sigma_f^2$ is **high**, the fraction is close to 1 and the output is close to the original value $g$. A high local variance means **significant detail**, such as an edge, so the pixel is left alone.
+  <Ar>إذا كان $\sigma_f^2$ **كبيرًا** يقترب الكسر من 1 ويقترب الخرج من القيمة الأصلية $g$. فالتباين المحلي الكبير يعني **تفاصيل مهمة** مثل الحافة، فيُترك البكسل على حاله.</Ar>
+- If the local variance is **low**, as in the background, the fraction is close to 0 and the output is close to the mean $m_f$: the area is **smoothed**.
+  <Ar>إذا كان التباين المحلي **صغيرًا**، كما في الخلفية، يقترب الكسر من 0 ويقترب الخرج من المتوسط $m_f$: أي **تُنعَّم** المنطقة.</Ar>
+
+### A practical variant
+
+<Ar>صيغة عملية بديلة</Ar>
+
+The noise variance $\sigma_g^2$ is usually unknown, so it is taken as the **mean of all the local variances** $\sigma_f^2$ over the image. In practice a slight variant is used:
+
+<Ar>عادةً ما يكون تباين الضوضاء $\sigma_g^2$ مجهولًا، لذا يؤخذ على أنه **متوسط جميع التباينات المحلية** $\sigma_f^2$ على الصورة. وتُستخدم عمليًا صيغة معدّلة قليلًا:</Ar>
+
+$$
+\hat f = m_f + \frac{\max\{0,\ \sigma_f^2 - \sigma_g^2\}}{\max\{\sigma_f^2,\ \sigma_g^2\}}\,\big(g - m_f\big)
+$$
+
+The numerator $\sigma_f^2 - \sigma_g^2$ estimates the variance of the **true signal** in the window (local variance minus the part caused by noise), clipped at 0. In a flat region the local variance is almost all noise, so the fraction drops to about 0 and the pixel is fully averaged; with the first formula it would only fall to about one half. In MATLAB this filter is **`wiener2`**, an adaptive Wiener filter that works in the spatial domain.
+
+<Ar>يقدّر البسط $\sigma_f^2 - \sigma_g^2$ تباينَ **الإشارة الحقيقية** في النافذة (التباين المحلي مطروحًا منه الجزء الناتج عن الضوضاء)، مع قصّه عند 0. ففي المنطقة المستوية يكون التباين المحلي كله تقريبًا ضوضاء، فيهبط الكسر إلى نحو 0 ويُستبدل البكسل بالمتوسط كليًا؛ بينما في الصيغة الأولى لا يهبط إلا إلى نحو النصف. وفي MATLAB يُسمّى هذا المرشح **`wiener2`**، وهو مرشح فينر (Wiener) تكيفي يعمل في المجال المكاني.</Ar>
+
+**Example.** The noise variance is $\sigma_g^2 = 100$.
+
+<Ar>**مثال.** تباين الضوضاء $\sigma_g^2 = 100$.</Ar>
+
+| Pixel <Ar>البكسل</Ar> | $g$ | $m_f$ | $\sigma_f^2$ | Fraction (variant) <Ar>الكسر (الصيغة البديلة)</Ar> | Output <Ar>الخرج</Ar> |
+|---|---|---|---|---|---|
+| Flat background <Ar>خلفية مستوية</Ar> | 112 | 100 | 110 | $10/110 = 0.09$ | $100 + 0.09 \times 12 = 101.1$ |
+| On an edge <Ar>على حافة</Ar> | 160 | 120 | 2500 | $2400/2500 = 0.96$ | $120 + 0.96 \times 40 = 158.4$ |
+
+The background pixel is pulled almost to its local mean, while the edge pixel keeps almost all of its contrast.
+
+<Ar>يُسحب بكسل الخلفية حتى يكاد يساوي متوسطه المحلي، بينما يحتفظ بكسل الحافة بكل تباينه (contrast) تقريبًا.</Ar>
+
+<SlideFigure page={22} caption="Adaptive filtering with a 7×7 mask on Gaussian noise of variance 1000: the 7×7 mean filter blurs everything, the adaptive filter smooths the flat areas but keeps the edges much sharper." captionAr="الترشيح التكيفي بقناع 7×7 على ضوضاء غاوسية تباينها 1000: يشوّش مرشح المتوسط 7×7 كل شيء، بينما ينعّم المرشح التكيفي المناطق المستوية ويحافظ على الحواف أكثر حدّة بكثير." />
+
+```matlab title="adaptive.m"
+g = imnoise(I, 'gaussian', 0, 0.015);
+[a, noiseVar] = wiener2(g, [7 7]);       % noise variance estimated from the image
+m = imfilter(g, fspecial('average', 7)); % plain 7x7 mean, for comparison
+imshow([g m a])
+```
+
+```python title="adaptive.py"
+from scipy import signal
+
+a = signal.wiener(gauss.astype(float), mysize=7)   # same local mean/variance rule
+```
+
+## Gaussian smoothing
+
+<Ar>التنعيم الغاوسي</Ar>
+
+The **Gaussian smoothing** operator blurs an image to remove detail and noise. It is similar to the mean filter, but its kernel has the shape of a Gaussian **bell-shaped hump** (the same function we met as a frequency-domain filter). With mean 0 and standard deviation $\sigma$:
+
+<Ar>يُشوِّش مؤثر **التنعيم الغاوسي (Gaussian smoothing)** الصورةَ لإزالة التفاصيل والضوضاء. وهو يشبه مرشح المتوسط، لكن نواته على شكل **سنام غاوسي جرسي**، وهي الدالة نفسها التي رأيناها مرشحًا في المجال الترددي. وبمتوسط 0 وانحراف معياري $\sigma$:</Ar>
+
+$$
+G(x) = \frac{1}{\sqrt{2\pi}\,\sigma}\, e^{-\frac{x^2}{2\sigma^2}}
+\qquad\qquad
+G(x,y) = \frac{1}{2\pi\sigma^2}\, e^{-\frac{x^2 + y^2}{2\sigma^2}}
+$$
+
+<SlideFigure page={24} caption="The 2-D Gaussian with σ = 1: a smooth hump centred on the origin, so the filter is a weighted average that favours the central pixels." captionAr="الدالة الغاوسية ثنائية الأبعاد مع σ = 1: سنام أملس مركزه نقطة الأصل، لذا يكون المرشح متوسطًا موزونًا يعطي البكسلات المركزية وزنًا أكبر." />
+
+The Gaussian outputs a **weighted average** of each pixel's neighbourhood, with more weight on the central pixels. Compared with the box (mean) filter of the same size, it blurs more gently and does not produce blocky artefacts.
+
+<Ar>تُخرج الدالة الغاوسية **متوسطًا موزونًا** لجوار كل بكسل، يكون فيه وزن البكسلات المركزية أكبر. ومقارنةً بمرشح المتوسط (الصندوقي) من المقاس نفسه، فإنها تشوّش بلطف أكبر ولا تُنتج تشوهات مربعة الشكل.</Ar>
+
+### The role of sigma
+
+<Ar>دور sigma</Ar>
+
+The only parameter is $\sigma$, the standard deviation, which controls the **degree of smoothing**. As $\sigma$ goes up:
+
+<Ar>المعامل الوحيد هو $\sigma$ (sigma)، أي الانحراف المعياري، وهو يتحكم في **درجة التنعيم**. فكلما ازدادت $\sigma$:</Ar>
+
+- more pixels of the neighbourhood take part in the averaging;
+  <Ar>تشارك بكسلات أكثر من الجوار في حساب المتوسط؛</Ar>
+- the image gets **more blurred**;
+  <Ar>تزداد الصورة **تشوشًا**؛</Ar>
+- noise is **more effectively suppressed**.
+  <Ar>تُكبت الضوضاء **بفاعلية أكبر**.</Ar>
+
+<SlideFigure page={28} caption="Gaussian smoothing with σ = 1, 2 and 3: flat areas look almost the same in all three results, while the edges of the camera mount and the door get steadily softer." captionAr="التنعيم الغاوسي مع σ = 1 و2 و3: تبدو المناطق المستوية متماثلة تقريبًا في النتائج الثلاث، بينما تزداد حواف حامل الكاميرا والباب نعومةً بالتدريج." />
+
+Think of $\sigma$ as the **scale** at which information is kept: structure much smaller than $\sigma$ is removed, structure larger than $\sigma$ is retained. That is why different values of $\sigma$ give almost the same result in **homogeneous** areas but very different results along **edges**. Subtracting two results with different $\sigma$ (a *difference of Gaussians*) makes homogeneous areas black (they cancel to zero) and edges white.
+
+<Ar>فكّر في $\sigma$ على أنها **المقياس** الذي تُحفظ عنده المعلومات: البُنى الأصغر كثيرًا من $\sigma$ تُزال، والبُنى الأكبر منها تبقى. ولهذا تعطي قيم $\sigma$ المختلفة النتيجة نفسها تقريبًا في المناطق **المتجانسة**، لكنها تعطي نتائج مختلفة جدًا على طول **الحواف**. وطرح نتيجتين بقيمتين مختلفتين لـ $\sigma$ (أي *فرق الغاوسيات (difference of Gaussians)*) يجعل المناطق المتجانسة سوداء (لأنها تُلغي بعضها إلى الصفر) والحواف بيضاء.</Ar>
+
+### Discretising the Gaussian
+
+<Ar>تحويل الدالة الغاوسية إلى قيم متقطعة</Ar>
+
+In theory the Gaussian is non-zero everywhere, which would need an infinitely large convolution mask. In practice it is effectively zero more than about $3\sigma$ from the mean (99.7 % of its area lies within $\pm 3\sigma$), so the mask is **truncated** there: a half-width of about $3\sigma$, i.e. a size of about $2\lceil 3\sigma \rceil + 1$. The samples are then **normalised** so the weights add up to 1, and the filter does not change the overall brightness. The slide's discrete approximation for $\sigma = 1.4$ is:
+
+<Ar>نظريًا، الدالة الغاوسية غير صفرية في كل مكان، وهذا يتطلب قناع التفاف لا نهائي الحجم. أما عمليًا فهي صفر فعليًا عند أبعد من نحو $3\sigma$ عن المتوسط (إذ يقع 99.7 % من مساحتها ضمن $\pm 3\sigma$)، لذا **يُقتطع** القناع عند هذا الحد: نصف عرض يقارب $3\sigma$، أي مقاس يقارب $2\lceil 3\sigma \rceil + 1$. ثم **تُطبَّع** العينات بحيث يكون مجموع الأوزان 1، فلا يغيّر المرشح السطوع الكلي. والتقريب المتقطع الوارد في الشريحة لـ $\sigma = 1.4$ هو:</Ar>
+
+$$
+\frac{1}{159}
+\begin{bmatrix}
+2 & 4 & 5 & 4 & 2\\
+4 & 9 & 12 & 9 & 4\\
+5 & 12 & 15 & 12 & 5\\
+4 & 9 & 12 & 9 & 4\\
+2 & 4 & 5 & 4 & 2
+\end{bmatrix}
+$$
+
+### The separable Gaussian kernel
+
+<Ar>النواة الغاوسية القابلة للفصل</Ar>
+
+The 2-D isotropic Gaussian is **separable** into an $x$ and a $y$ component, because $e^{-(x^2+y^2)/2\sigma^2} = e^{-x^2/2\sigma^2}\, e^{-y^2/2\sigma^2}$. So the 2-D convolution can be done by first convolving every row with a 1-D Gaussian in the $x$ direction, then every column with the same 1-D Gaussian in the $y$ direction. For $\sigma = 1.4$ the normalised 1-D component is:
+
+<Ar>الدالة الغاوسية ثنائية الأبعاد متماثلة الاتجاهات (isotropic) **قابلة للفصل (separable)** إلى مركّبة في اتجاه $x$ وأخرى في اتجاه $y$، لأن $e^{-(x^2+y^2)/2\sigma^2} = e^{-x^2/2\sigma^2}\, e^{-y^2/2\sigma^2}$. لذا يمكن إجراء الالتفاف ثنائي الأبعاد بالتفاف كل صف أولًا مع دالة غاوسية أحادية البعد في اتجاه $x$، ثم كل عمود مع الدالة أحادية البعد نفسها في اتجاه $y$. ولـ $\sigma = 1.4$ تكون المركّبة أحادية البعد بعد التطبيع:</Ar>
+
+$$
+\begin{bmatrix} 0.110 & 0.237 & 0.306 & 0.237 & 0.110 \end{bmatrix}
+$$
+
+The $y$ component is exactly the same, oriented vertically, and their outer product rebuilt and multiplied by 159 rounds exactly to the 5×5 kernel above. The saving grows with the kernel: a $k \times k$ kernel costs $k^2$ multiplications per pixel, two 1-D passes cost only $2k$ (25 against 10 for $k = 5$, 225 against 30 for $k = 15$).
+
+<Ar>والمركّبة في اتجاه $y$ هي نفسها تمامًا لكن باتجاه رأسي، وحاصل ضربهما الخارجي (outer product) مضروبًا في 159 يُقرَّب تمامًا إلى النواة 5×5 أعلاه. ويزداد التوفير مع كبر النواة: فالنواة $k \times k$ تكلّف $k^2$ عملية ضرب لكل بكسل، بينما لا يكلّف المروران أحاديا البعد إلا $2k$ (أي 25 مقابل 10 عندما $k = 5$، و225 مقابل 30 عندما $k = 15$).</Ar>
+
+<Callout type="warning" title="Check the normalising factors on the slides" titleAr="تحقّق من معاملات التطبيع في الشرائح">
+  The slide puts <strong>1/115</strong> in front of the 5×5 kernel, but its entries add up to <strong>159</strong>, so the factor must be 1/159 for the weights to sum to 1. Likewise the 1-D component printed as 1/10.7 × [1.3 3.2 3.8 3.2 1.3] has entries that add up to 12.8. Always check that a smoothing kernel sums to 1.
+
+  <Ar>تضع الشريحة <strong>1/115</strong> أمام النواة 5×5، لكن مجموع عناصرها <strong>159</strong>، لذا يجب أن يكون المعامل 1/159 حتى يكون مجموع الأوزان 1. وكذلك المركّبة أحادية البعد المطبوعة على هيئة 1/10.7 × [1.3 3.2 3.8 3.2 1.3] مجموع عناصرها 12.8. تحقّق دائمًا من أن مجموع أوزان نواة التنعيم يساوي 1.</Ar>
+</Callout>
+
+```matlab title="gaussian_smoothing.m"
+h   = fspecial('gaussian', 5, 1.4);                 % 5x5 kernel, sigma 1.4, sums to 1
+s1  = imfilter(g, h, 'replicate');
+v   = fspecial('gaussian', [5 1], 1.4);             % 1-D column kernel
+s2  = imfilter(imfilter(g, v, 'replicate'), v', 'replicate');   % same result, separable
+s3  = imgaussfilt(g, 2);                            % sigma = 2, size chosen automatically
+dog = imgaussfilt(im2double(g), 1) - imgaussfilt(im2double(g), 3);  % edges stand out
+```
+
+```python title="gaussian_smoothing.py"
+import numpy as np
+from scipy import ndimage
+
+x = np.arange(-2, 3)
+g1 = np.exp(-x**2 / (2 * 1.4**2))
+g1 /= g1.sum()                       # [0.110 0.237 0.306 0.237 0.110]
+K = np.outer(g1, g1)                 # 5x5 kernel; np.round(K * 159) gives the slide's integers
+
+f = img.astype(np.float64)
+two_pass = ndimage.convolve1d(ndimage.convolve1d(f, g1, axis=1), g1, axis=0)
+one_pass = ndimage.convolve(f, K)    # identical to two_pass, but 25 instead of 10 mults/pixel
+smooth = ndimage.gaussian_filter(f, sigma=2, truncate=3.0)   # cut at 3 sigma
+```
+
+<Takeaways>
+
+- The degradation model is $g = f * h + n$ in space and $G = FH + N$ in frequency; without blur it is $g = f + n$, and restoration becomes noise removal.
+  <Ar>نموذج التدهور هو $g = f * h + n$ في المكان و $G = FH + N$ في التردد؛ ومن دون تشويش يصبح $g = f + n$، فتصبح الاستعادة إزالةً للضوضاء.</Ar>
+- **Gaussian** noise changes every pixel a little; **salt-and-pepper** noise changes a few pixels to 0 or 255; **speckle** is multiplicative; **periodic** noise is global and belongs to the frequency domain.
+  <Ar>الضوضاء **الغاوسية** تغيّر كل بكسل قليلًا؛ وضوضاء **الملح والفلفل** تحوّل بعض البكسلات إلى 0 أو 255؛ و**المرقّطة** ضربية؛ و**الدورية** شاملة ومكانها المجال الترددي.</Ar>
+- **Mean filters** reduce noise by blurring: they smear outliers and blur edges. A single 0 sends the geometric and harmonic means to 0; the contraharmonic mean removes pepper ($Q > 0$) or salt ($Q < 0$).
+  <Ar>**مرشحات المتوسط** تقلل الضوضاء بالتشويش: فتلطّخ القيم الشاذة وتشوّش الحواف. وقيمة 0 واحدة تُهبط المتوسطين الهندسي والتوافقي إلى 0؛ ويزيل المتوسط التوافقي المضاد الفلفلَ ($Q > 0$) أو الملحَ ($Q < 0$).</Ar>
+- **Order-statistics** filters sort the window: the **median** removes salt-and-pepper and keeps edges, **max**/**min** remove pepper/salt, the **alpha-trimmed** mean handles mixed noise. Sorting is their cost.
+  <Ar>مرشحات **إحصاءات الترتيب** تفرز النافذة: **الوسيط** يزيل الملح والفلفل ويحافظ على الحواف، و**الأقصى**/**الأدنى** يزيلان الفلفل/الملح، و**المتوسط المُشذَّب ألفا** يعالج الضوضاء المختلطة. والفرز هو ثمنها.</Ar>
+- The **adaptive** filter ($m_f$ plus a variance-controlled fraction of $g - m_f$, `wiener2`) smooths flat areas and leaves edges alone.
+  <Ar>المرشح **التكيفي** ($m_f$ مضافًا إليه جزء من $g - m_f$ يتحكم فيه التباين، أي `wiener2`) ينعّم المناطق المستوية ويترك الحواف على حالها.</Ar>
+- **Gaussian smoothing** is a weighted average controlled by $\sigma$: truncate at about $3\sigma$, normalise the weights to sum to 1, and use two 1-D passes because the kernel is separable.
+  <Ar>**التنعيم الغاوسي** متوسط موزون تتحكم فيه $\sigma$: اقتطع النواة عند نحو $3\sigma$، وطبّع الأوزان ليكون مجموعها 1، واستخدم مرورين أحاديي البعد لأن النواة قابلة للفصل.</Ar>
+
+</Takeaways>
+
+## Practice
+
+<Ar>تدريب</Ar>
+
+<Exercise title="Match the filter to the noise" titleAr="طابِق المرشح مع الضوضاء" level="easy">
+
+Suggest a suitable filter for each image and justify it in one sentence: (a) Gaussian noise; (b) salt-and-pepper noise with 30 % density; (c) only pepper noise; (d) Gaussian noise plus a few salt-and-pepper pixels; (e) regular diagonal stripes.
+
+<Ar>اقترح مرشحًا مناسبًا لكل صورة وعلّل اختيارك في جملة واحدة: (a) ضوضاء غاوسية؛ (b) ضوضاء ملح وفلفل بكثافة 30 %؛ (c) ضوضاء فلفل فقط؛ (d) ضوضاء غاوسية مع بضعة بكسلات ملح وفلفل؛ (e) خطوط قطرية منتظمة.</Ar>
+
+<Solution>
+
+- (a) A Gaussian or mean filter, or better the **adaptive** filter (`wiener2`): every pixel carries a small error, so averaging works, and the adaptive filter keeps the edges.
+  <Ar>(a) مرشح غاوسي أو مرشح متوسط، أو الأفضل منهما **المرشح التكيفي** (`wiener2`): فكل بكسل يحمل خطأً صغيرًا، لذا ينجح حساب المتوسط، ويحافظ المرشح التكيفي على الحواف.</Ar>
+- (b) A 3×3 **median**, applied two or three times: at this density many windows are more than half noise, so one pass leaves clusters.
+  <Ar>(b) مرشح **وسيط** 3×3 يُطبَّق مرتين أو ثلاثًا: فعند هذه الكثافة يكون أكثر من نصف كثير من النوافذ ضوضاء، لذا تترك المرة الواحدة تجمعات.</Ar>
+- (c) A **max** filter or a contraharmonic mean with $Q > 0$: both replace dark outliers with brighter neighbours.
+  <Ar>(c) مرشح **الأقصى** أو المتوسط التوافقي المضاد مع $Q > 0$: كلاهما يستبدل القيم الشاذة الداكنة بجيران أسطع.</Ar>
+- (d) An **alpha-trimmed mean**: trimming removes the impulses and averaging the rest reduces the Gaussian part.
+  <Ar>(d) **المتوسط المُشذَّب ألفا**: فالتشذيب يزيل النبضات، وأخذ متوسط الباقي يقلل الجزء الغاوسي.</Ar>
+- (e) Periodic noise: a **notch** filter in the frequency domain, since the stripes are a global pattern.
+  <Ar>(e) ضوضاء دورية: مرشح **ثلم (notch)** في المجال الترددي، لأن الخطوط نمط شامل.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Filter one window by hand" titleAr="رشِّح نافذة واحدة يدويًا" level="medium">
+
+A 3×3 window contains one salt pixel:
+
+<Ar>نافذة 3×3 تحتوي على بكسل ملح واحد:</Ar>
+
+$$
+\begin{bmatrix} 52 & 55 & 50 \\ 255 & 54 & 49 \\ 51 & 53 & 56 \end{bmatrix}
+$$
+
+Compute the output of the arithmetic mean, median, min, max, midpoint and alpha-trimmed mean with $d = 2$. Which filters handle the salt pixel well? (Optional: with a calculator, the geometric, harmonic and $Q = -1.5$ contraharmonic means.)
+
+<Ar>احسب خرج المتوسط الحسابي، والوسيط، والأدنى، والأقصى، ونقطة المنتصف، والمتوسط المُشذَّب ألفا مع $d = 2$. أي المرشحات يتعامل جيدًا مع بكسل الملح؟ (اختياري: باستخدام آلة حاسبة، المتوسط الهندسي والتوافقي والتوافقي المضاد مع $Q = -1.5$.)</Ar>
+
+<Solution>
+
+Sorted: 49, 50, 51, 52, 53, 54, 55, 56, 255; the sum is 675.
+
+<Ar>بعد الفرز: 49، 50، 51، 52، 53، 54، 55، 56، 255؛ والمجموع 675.</Ar>
+
+| Filter <Ar>المرشح</Ar> | Output <Ar>الخرج</Ar> |
+|---|---|
+| Arithmetic mean <Ar>المتوسط الحسابي</Ar> | $675/9 = 75$ |
+| Median <Ar>الوسيط</Ar> | 53 |
+| Min / max <Ar>الأدنى / الأقصى</Ar> | 49 / 255 |
+| Midpoint <Ar>نقطة المنتصف</Ar> | $(49 + 255)/2 = 152$ |
+| Alpha-trimmed, $d = 2$ <Ar>المُشذَّب ألفا، $d = 2$</Ar> | $(675 - 49 - 255)/7 = 371/7 = 53$ |
+| Geometric <Ar>الهندسي</Ar> | 62.5 |
+| Harmonic <Ar>التوافقي</Ar> | 57.5 |
+| Contraharmonic, $Q = -1.5$ <Ar>التوافقي المضاد، $Q = -1.5$</Ar> | 54.7 |
+
+The **median**, the **alpha-trimmed mean** and the **min** give values in the true range (about 49–56); the contraharmonic mean with negative $Q$ is close. The arithmetic mean is pulled up to 75, and the max and midpoint are ruined by the salt pixel. The harmonic and geometric means are less affected than the arithmetic mean, as expected for salt noise.
+
+<Ar>يعطي **الوسيط** و**المتوسط المُشذَّب ألفا** و**الأدنى** قيمًا ضمن المدى الحقيقي (نحو 49–56)؛ ويقترب منها المتوسط التوافقي المضاد مع $Q$ سالبة. أما المتوسط الحسابي فيُسحب إلى 75، ويفسد بكسلُ الملح مرشحَي الأقصى ونقطة المنتصف. ويتأثر المتوسطان التوافقي والهندسي أقل من المتوسط الحسابي، كما هو متوقع مع ضوضاء الملح.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Adaptive versus mean filtering" titleAr="الترشيح التكيفي مقابل ترشيح المتوسط" level="medium">
+
+An image has Gaussian noise of variance $\sigma_g^2 = 50$. For pixel A in a flat area, $g = 90$, $m_f = 80$, $\sigma_f^2 = 60$; for pixel B on an edge, $g = 140$, $m_f = 100$, $\sigma_f^2 = 900$. Compute the adaptive filter's output with both formulas and compare it with a mean filter.
+
+<Ar>صورة فيها ضوضاء غاوسية تباينها $\sigma_g^2 = 50$. للبكسل A في منطقة مستوية: $g = 90$، و $m_f = 80$، و $\sigma_f^2 = 60$؛ وللبكسل B على حافة: $g = 140$، و $m_f = 100$، و $\sigma_f^2 = 900$. احسب خرج المرشح التكيفي بالصيغتين، وقارنه بمرشح المتوسط.</Ar>
+
+<Solution>
+
+| Pixel <Ar>البكسل</Ar> | First formula <Ar>الصيغة الأولى</Ar> | Variant <Ar>الصيغة البديلة</Ar> | Mean filter <Ar>مرشح المتوسط</Ar> |
+|---|---|---|---|
+| A | $80 + \frac{60}{110} \times 10 = 85.45$ | $80 + \frac{10}{60} \times 10 = 81.67$ | 80 |
+| B | $100 + \frac{900}{950} \times 40 = 137.89$ | $100 + \frac{850}{900} \times 40 = 137.78$ | 100 |
+
+In the flat area the variant smooths more (81.7 instead of 85.5), close to what the mean filter does. On the edge both adaptive formulas keep almost all of the pixel's contrast (about 138), whereas the mean filter flattens it to 100 and blurs the edge.
+
+<Ar>في المنطقة المستوية تنعّم الصيغة البديلة أكثر (81.7 بدل 85.5)، فتقترب مما يفعله مرشح المتوسط. وعلى الحافة تحتفظ الصيغتان التكيفيتان بكل تباين البكسل تقريبًا (نحو 138)، بينما يسطّحه مرشح المتوسط إلى 100 ويشوّش الحافة.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Build a Gaussian kernel" titleAr="ابنِ نواة غاوسية" level="hard">
+
+For $\sigma = 1$: (a) how large should the kernel be by the $3\sigma$ rule? (b) Compute the normalised 5-tap 1-D Gaussian. (c) From it, find the centre and corner weights of the 5×5 kernel. (d) How many multiplications per pixel does a 7×7 kernel need directly, and how many with separability?
+
+<Ar>لـ $\sigma = 1$: (a) ما المقاس المناسب للنواة بحسب قاعدة $3\sigma$؟ (b) احسب الدالة الغاوسية أحادية البعد ذات العينات الخمس بعد التطبيع. (c) استخرج منها وزنَي المركز والركن في النواة 5×5. (d) كم عملية ضرب لكل بكسل تحتاج نواة 7×7 مباشرةً، وكم تحتاج باستخدام قابلية الفصل؟</Ar>
+
+<Solution>
+
+(a) The half-width is $3\sigma = 3$, so the size is $2 \times 3 + 1 = 7$, a 7×7 kernel.
+
+<Ar>(a) نصف العرض $3\sigma = 3$، لذا يكون المقاس $2 \times 3 + 1 = 7$، أي نواة 7×7.</Ar>
+
+(b) Samples of $e^{-x^2/2}$ at $x = -2, \dots, 2$: 0.1353, 0.6065, 1, 0.6065, 0.1353. Their sum is 2.4837, so the normalised kernel is
+
+<Ar>(b) عينات $e^{-x^2/2}$ عند $x = -2, \dots, 2$ هي: 0.1353، 0.6065، 1، 0.6065، 0.1353. ومجموعها 2.4837، لذا تكون النواة بعد التطبيع:</Ar>
+
+$$
+\begin{bmatrix} 0.0545 & 0.2442 & 0.4026 & 0.2442 & 0.0545 \end{bmatrix}
+$$
+
+(c) The 5×5 kernel is the outer product of this vector with itself: centre $0.4026^2 = 0.1621$, corner $0.0545^2 = 0.0030$. (The constant $1/\sqrt{2\pi}\sigma$ disappears in the normalisation.)
+
+<Ar>(c) النواة 5×5 هي حاصل الضرب الخارجي لهذا المتجه في نفسه: المركز $0.4026^2 = 0.1621$، والركن $0.0545^2 = 0.0030$. (يختفي الثابت $1/\sqrt{2\pi}\sigma$ عند التطبيع.)</Ar>
+
+(d) Directly $7 \times 7 = 49$ multiplications per pixel; separably $7 + 7 = 14$, about 3.5 times fewer.
+
+<Ar>(d) مباشرةً $7 \times 7 = 49$ عملية ضرب لكل بكسل؛ وبالفصل $7 + 7 = 14$، أي أقل بنحو 3.5 مرة.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "Which filter removes salt-and-pepper noise best while preserving edges?",
+      qAr: "أي مرشح يزيل ضوضاء الملح والفلفل على أفضل وجه مع الحفاظ على الحواف؟",
+      options: ["Arithmetic mean", "Median", "Geometric mean", "Midpoint"],
+      optionsAr: ["المتوسط الحسابي", "الوسيط (median)", "المتوسط الهندسي", "نقطة المنتصف"],
+      answer: 1,
+      explain: "The median ignores the extreme values and always outputs one of the existing values, so edges are not blurred.",
+      explainAr: "يتجاهل الوسيط القيم المتطرفة ويُخرج دائمًا إحدى القيم الموجودة، فلا تتشوش الحواف."
+    },
+    {
+      q: "A 3×3 window contains one pixel with value 0. What does the geometric mean filter output?",
+      qAr: "نافذة 3×3 تحتوي على بكسل واحد قيمته 0. ماذا يُخرج مرشح المتوسط الهندسي؟",
+      options: ["The arithmetic mean of the other eight", "0", "The median", "255"],
+      optionsAr: ["المتوسط الحسابي للقيم الثماني الأخرى", "0", "الوسيط", "255"],
+      answer: 1,
+      explain: "The product of the nine values is 0, and the 9th root of 0 is 0.",
+      explainAr: "حاصل ضرب القيم التسع يساوي 0، والجذر التاسع للصفر هو 0."
+    },
+    {
+      q: "Speckle noise is best described as…",
+      qAr: "أفضل وصف للضوضاء المرقّطة (speckle) هو…",
+      options: ["Additive and periodic", "Multiplicative: g = f(1 + n)", "Pixels set to 0 or 255", "Constant power spectrum"],
+      optionsAr: ["جمعية ودورية", "ضربية: g = f(1 + n)", "بكسلات تصبح 0 أو 255", "طيف قدرة ثابت"],
+      answer: 1,
+      explain: "Speckle noise is multiplied by the image, so bright regions are noisier.",
+      explainAr: "تُضرب الضوضاء المرقّطة في الصورة، لذا تكون المناطق الساطعة أكثر ضوضاءً."
+    },
+    {
+      q: "In a flat background region, the adaptive filter's output is close to…",
+      qAr: "في منطقة خلفية مستوية، يكون خرج المرشح التكيفي قريبًا من…",
+      options: ["The original pixel value g", "The local mean under the mask", "Zero", "The noise variance"],
+      optionsAr: ["قيمة البكسل الأصلية g", "المتوسط المحلي تحت القناع", "الصفر", "تباين الضوضاء"],
+      answer: 1,
+      explain: "Low local variance makes the fraction close to 0, so the output is the local mean.",
+      explainAr: "التباين المحلي الصغير يجعل الكسر قريبًا من 0، فيكون الخرج هو المتوسط المحلي."
+    },
+    {
+      q: "What happens when σ of a Gaussian smoothing filter is increased?",
+      qAr: "ماذا يحدث عند زيادة σ في مرشح التنعيم الغاوسي؟",
+      options: ["Less blur, more noise", "More blur, noise more effectively suppressed", "Edges become sharper", "Nothing, σ only scales the brightness"],
+      optionsAr: ["تشويش أقل وضوضاء أكثر", "تشويش أكثر وكبت أفعل للضوضاء", "تصبح الحواف أكثر حدّة", "لا شيء، فـ σ تغيّر السطوع فقط"],
+      answer: 1,
+      explain: "A larger σ involves more pixels in the weighted average.",
+      explainAr: "تُشرك σ الأكبر بكسلات أكثر في المتوسط الموزون."
+    },
+    {
+      q: "Why is the 2-D Gaussian usually applied as two 1-D passes?",
+      qAr: "لماذا تُطبَّق الدالة الغاوسية ثنائية الأبعاد عادةً على هيئة مرورين أحاديي البعد؟",
+      options: ["It gives a sharper result", "It is separable, so a k×k kernel costs 2k instead of k² multiplications per pixel", "It removes salt-and-pepper noise", "MATLAB cannot convolve in 2-D"],
+      optionsAr: ["لأنه يعطي نتيجة أكثر حدّة", "لأنها قابلة للفصل، فتكلّف النواة k×k عدد 2k من عمليات الضرب لكل بكسل بدل k²", "لأنه يزيل ضوضاء الملح والفلفل", "لأن MATLAB لا يستطيع الالتفاف في بعدين"],
+      answer: 1,
+      explain: "The result is identical; only the cost drops.",
+      explainAr: "النتيجة متطابقة؛ وإنما تنخفض التكلفة فقط."
+    }
+  ]}
+/>

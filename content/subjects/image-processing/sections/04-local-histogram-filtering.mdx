@@ -1,0 +1,510 @@
+---
+number: 4
+title: Local Histogram Processing and Spatial Filters
+titleAr: "المعالجة المحلية للمدرج التكراري والمرشحات المكانية"
+summary: From one pixel to its neighbourhood. Local histograms, spatial filtering, correlation versus convolution, padding, averaging, edge and Laplacian sharpening masks, rank filters (min, median, max, midpoint) and separable filters, with every worked example from both decks recomputed by hand and in Python.
+summaryAr: "من البكسل الواحد إلى جواره: المدرجات التكرارية المحلية، والترشيح المكاني (spatial filtering)، والارتباط (correlation) مقابل الالتفاف (convolution)، والحشو (padding)، ومرشحات المتوسط، وأقنعة الحواف والإبراز بلابلاسيان (Laplacian)، ومرشحات الرتبة (الأدنى والوسيط والأقصى ونقطة المنتصف) والمرشحات القابلة للفصل، مع إعادة حساب كل مثال محلول في العرضين باليد وباستخدام Python."
+topics: [Neighbourhoods, Local histograms, Spatial filtering, Correlation and convolution, Padding, Averaging filters, Sobel and difference masks, Laplacian sharpening, Median and rank filters, Separable filters]
+duration: 70 min hands-on
+kind: practical
+sources:
+  - file: sections/sec4/Local-histogram-processing.pdf
+    label: Section 4 – Local histogram processing and spatial filtering (slides)
+    pages: "1-18"
+  - file: sections/sec4/Local-histogram-processing Part 2.pdf
+    label: Section 4 – Part 2, worked examples and rank filters (slides)
+    pages: "1-16"
+bookRefs:
+  - book: ip-book
+    chapter: "Ch 3 · Neighborhood Processing: Spatial Filtering"
+    pages: "59–79"
+  - book: gonzalez
+    chapter: Ch 3 · Intensity Transformations and Spatial Filtering (3.3 local histogram processing, 3.4–3.6 spatial filtering)
+---
+
+<Objectives>
+
+- Explain why a pixel's **neighbourhood** gives context, and build a **local histogram**.
+  <Ar>شرح سبب إعطاء **جوار (neighbourhood)** البكسل سياقًا له، وبناء **مدرج تكراري محلي (local histogram)**.</Ar>
+- Compute a **correlation** and a **convolution** by hand, with **zero**, **replicate** or **mirror padding**.
+  <Ar>حساب **الارتباط (correlation)** و**الالتفاف (convolution)** باليد، مع **الحشو (padding) بالأصفار** أو **بالتكرار (replicate)** أو **بالانعكاس (symmetric)**.</Ar>
+- Choose between **smoothing**, **edge** and **sharpening** masks and predict their output.
+  <Ar>الاختيار بين أقنعة **التنعيم (smoothing)** و**الحواف (edges)** و**الإبراز (sharpening)** وتوقّع مخرجاتها.</Ar>
+- Apply **rank filters** (min, median, max, midpoint) and test whether a mask is **separable**.
+  <Ar>تطبيق **مرشحات الرتبة (rank filters)**: الأدنى والوسيط والأقصى ونقطة المنتصف، واختبار ما إذا كان القناع **قابلًا للفصل (separable)**.</Ar>
+
+</Objectives>
+
+## From one pixel to its neighbourhood
+
+<Ar>من البكسل الواحد إلى جواره</Ar>
+
+A single intensity can be ambiguous: is a gray value of 120 part of a shadow, a texture or an edge? **Point processing** changes a pixel using only its own intensity; **local (neighbourhood) processing** also looks at the pixels around it. The neighbourhood is usually a small rectangular **moving window** (3 × 3, 5 × 5…) that slides across the image, and each position produces **one** output pixel.
+
+<Ar>قد تكون الشدة الواحدة مُبهمة: هل قيمة الرمادي 120 جزء من ظل أم من نسيج أم من حافة؟ تغيّر **المعالجة النقطية (point processing)** البكسل باستخدام شدته وحدها، أما **المعالجة المحلية، أي معالجة الجوار (neighbourhood processing)**، فتنظر أيضًا إلى البكسلات المحيطة به. ويكون الجوار عادةً **نافذة منزلقة (moving window)** مستطيلة صغيرة (3 × 3، 5 × 5…) تتحرك عبر الصورة، وكل موضع يُنتج بكسل خرج **واحدًا**.</Ar>
+
+## The local histogram
+
+<Ar>المدرج التكراري المحلي</Ar>
+
+For each window, count the intensity values, inspect their distribution, and transform the **centre pixel** using that local evidence. The slide's window, centred on 51:
+
+<Ar>لكل نافذة، عُدّ قيم الشدة، وافحص توزيعها، وحوِّل **البكسل المركزي** بناءً على هذا الدليل المحلي. نافذة الشريحة، ومركزها 51:</Ar>
+
+```text
+42  45  47        local histogram (bins of 5 levels)
+44 [51] 53        40–44: 2   (42, 44)        50–54: 3   (51, 53, 50)
+48  50  55        45–49: 3   (45, 47, 48)    55–59: 1   (55)
+```
+
+The counts on the slide are correct. **Local histogram equalization** applies $s = (L-1)\cdot\text{CDF}$ inside the window and keeps only the centre's new value. Sorted, the window is $42, 44, 45, 47, 48, 50, 51, 53, 55$; seven of nine values are $\le 51$, so the centre becomes $255 \times 7/9 = 198.3 \approx 198$. The same 51 in a brighter window would get a much smaller value: each pixel is judged **against its surroundings**, which reveals detail that a global histogram hides.
+
+<Ar>الأعداد في الشريحة صحيحة. و**التسوية المحلية للمدرج التكراري (local histogram equalization)** تطبّق $s = (L-1)\cdot\text{CDF}$ داخل النافذة، ولا تحتفظ إلا بالقيمة الجديدة للمركز. بعد الترتيب تصبح النافذة $42, 44, 45, 47, 48, 50, 51, 53, 55$؛ وسبع من القيم التسع $\le 51$، لذا يصبح المركز $255 \times 7/9 = 198.3 \approx 198$. أما القيمة 51 نفسها في نافذة أكثر سطوعًا فتأخذ قيمة أصغر بكثير: إذ يُحكَم على كل بكسل **مقارنةً بما حوله**، وهذا يُظهر تفاصيل يخفيها المدرج التكراري العام.</Ar>
+
+## Spatial filtering: a weighted neighbourhood operation
+
+<Ar>الترشيح المكاني: عملية جوار موزونة</Ar>
+
+A **mask** (kernel) assigns a weight to each position of the window. The window moves across the image and computes one new value at each location. For an $m \times n$ mask with $m = 2a + 1$ and $n = 2b + 1$:
+
+<Ar>يعطي **القناع (mask)**، أي النواة (kernel)، وزنًا لكل موضع في النافذة. وتتحرك النافذة عبر الصورة وتحسب قيمة جديدة واحدة في كل موقع. لقناع أبعاده $m \times n$ حيث $m = 2a + 1$ و $n = 2b + 1$:</Ar>
+
+$$
+g(x, y) = \sum_{s=-a}^{a} \sum_{t=-b}^{b} w(s, t)\, f(x + s,\, y + t)
+$$
+
+| Filter type <Ar>نوع المرشح</Ar> | Rule <Ar>القاعدة</Ar> | Examples <Ar>أمثلة</Ar> |
+|---|---|---|
+| **Linear** <Ar>**خطي (linear)**</Ar> | Sum of products with fixed weights <Ar>مجموع حواصل الضرب بأوزان ثابتة</Ar> | Blurring, edge detection, sharpening <Ar>التنعيم، وكشف الحواف، والإبراز</Ar> |
+| **Non-linear** <Ar>**غير خطي (non-linear)**</Ar> | Sorting (ranking) the window <Ar>ترتيب قيم النافذة</Ar> | Min, max, median, midpoint <Ar>الأدنى، والأقصى، والوسيط، ونقطة المنتصف</Ar> |
+
+**Worked: one output value.** Centre the mask on the pixel 5, multiply each weight by the pixel under it, and add:
+
+<Ar>**مثال: قيمة خرج واحدة.** ضع مركز القناع على البكسل 5، واضرب كل وزن في البكسل الذي تحته، ثم اجمع:</Ar>
+
+$$
+\begin{bmatrix} 2 & 4 & 6 \\ 3 & 5 & 7 \\ 1 & 4 & 8 \end{bmatrix}
+\star
+\begin{bmatrix} 0 & 1 & 0 \\ 1 & 4 & 1 \\ 0 & 1 & 0 \end{bmatrix}
+= 4 + 3 + 4(5) + 7 + 4 = 38
+$$
+
+## Correlation versus convolution
+
+<Ar>الارتباط مقابل الالتفاف</Ar>
+
+Both operations slide a mask and compute the same sum of products. The only difference is the mask's **orientation**: convolution rotates the mask by **180°** first (flip it top-to-bottom and left-to-right), which is the same as using $f(x - s, y - t)$:
+
+<Ar>تُزلق العمليتان كلتاهما قناعًا وتحسبان مجموع حواصل الضرب نفسه. والفرق الوحيد هو **اتجاه** القناع: إذ يدير الالتفاف (convolution) القناع **180°** أولًا (يقلبه من الأعلى إلى الأسفل ومن اليسار إلى اليمين)، وهذا يكافئ استخدام $f(x - s, y - t)$:</Ar>
+
+$$
+\underbrace{\sum_{s,t} w(s, t)\, f(x + s, y + t)}_{\text{correlation}}
+\qquad
+\underbrace{\sum_{s,t} w(s, t)\, f(x - s, y - t)}_{\text{convolution}}
+\qquad
+\begin{bmatrix} a & b & c \\ d & e & f \\ g & h & i \end{bmatrix}
+\xrightarrow{\;180^\circ\;}
+\begin{bmatrix} i & h & g \\ f & e & d \\ c & b & a \end{bmatrix}
+$$
+
+For **symmetric** masks (box, Laplacian, Gaussian) the two results are identical. For **asymmetric** masks orientation matters. The clearest case is a mask with a single 1 (Part 2, Example 4):
+
+<Ar>في الأقنعة **المتماثلة (symmetric)** مثل مرشح المتوسط ولابلاسيان (Laplacian) والغاوسي تتطابق النتيجتان. أما في الأقنعة **غير المتماثلة** فالاتجاه مهم. وأوضح حالة قناع فيه 1 واحد فقط (الجزء الثاني، المثال 4):</Ar>
+
+| Mask (correlation) <Ar>القناع (ارتباط)</Ar> | Output <Ar>الخرج</Ar> |
+|---|---|
+| 1 at the centre <Ar>1 في المركز</Ar> | $g(x, y) = f(x, y)$: no change <Ar>$g(x, y) = f(x, y)$: لا تغيير</Ar> |
+| 1 at the right of the centre <Ar>1 على يمين المركز</Ar> | $g(x, y) = f(x, y + 1)$: each pixel takes its right neighbour, so the image **shifts left** by one pixel <Ar>$g(x, y) = f(x, y + 1)$: يأخذ كل بكسل قيمة جاره الأيمن، فتنزاح الصورة **يسارًا** بمقدار بكسل واحد</Ar> |
+| 1 at the left of the centre <Ar>1 على يسار المركز</Ar> | $g(x, y) = f(x, y - 1)$: the image **shifts right** by one pixel <Ar>$g(x, y) = f(x, y - 1)$: تنزاح الصورة **يمينًا** بمقدار بكسل واحد</Ar> |
+
+With **convolution** the same masks shift the other way, because the 1 is flipped to the other side. Only the centred 1, an impulse, is symmetric, so both operations return the image unchanged.
+
+<Ar>أما مع **الالتفاف** فتُزيح الأقنعة نفسها الصورة في الاتجاه المعاكس، لأن الرقم 1 ينقلب إلى الجهة الأخرى. والقناع الوحيد المتماثل هنا هو 1 في المركز، أي دالة النبضة (impulse)، لذا تعيد العمليتان كلتاهما الصورة دون تغيير.</Ar>
+
+<SlideFigure page={9} source={1} caption="Example 4: a centred 1 leaves the image unchanged; a 1 on the right shifts it left; a 1 on the left shifts it right." captionAr="المثال 4: الرقم 1 في المركز يترك الصورة دون تغيير؛ و 1 على اليمين يزيحها يسارًا؛ و 1 على اليسار يزيحها يمينًا." />
+
+## The boundary problem and padding
+
+<Ar>مشكلة الحدود والحشو</Ar>
+
+Interior pixels have a complete neighbourhood; border pixels do not, so some mask taps land **outside** the image. Without a rule, the output changes size. **Padding** extends the image before the filter runs, and the choice changes what the filter "sees" at the border:
+
+<Ar>للبكسلات الداخلية جوار كامل، أما بكسلات الحدود فلا، لذا تقع بعض مواضع القناع **خارج** الصورة. ودون قاعدة يتغير حجم الخرج. ويمدّ **الحشو (padding)** الصورة قبل تطبيق المرشح، واختياره يغيّر ما «يراه» المرشح عند الحدود:</Ar>
+
+| Rule <Ar>القاعدة</Ar> | Outside values <Ar>القيم خارج الصورة</Ar> | Effect <Ar>الأثر</Ar> |
+|---|---|---|
+| **Zero** <Ar>**بالأصفار (zero)**</Ar> | 0 (black) <Ar>0 (أسود)</Ar> | Simple, but creates dark borders after smoothing <Ar>بسيط، لكنه يُنشئ حدودًا داكنة بعد التنعيم</Ar> |
+| **Replicate** <Ar>**بالتكرار (replicate)**</Ar> | Copy of the nearest edge pixel <Ar>نسخة من أقرب بكسل حافة</Ar> | Edge values continue outward <Ar>تمتد قيم الحافة إلى الخارج</Ar> |
+| **Mirror (symmetric)** <Ar>**بالانعكاس (symmetric)**</Ar> | Mirror image of the border <Ar>صورة مرآة للحدود</Ar> | Smooth continuation; for a 3 × 3 mask (one pixel of padding) it equals replicate <Ar>امتداد سلس؛ ومع قناع 3 × 3 (بكسل حشو واحد) يساوي الحشو بالتكرار</Ar> |
+| **Ignore** <Ar>**التجاهل (ignore)**</Ar> | None: filter only where the mask fits <Ar>لا شيء: يُرشَّح فقط حيث يتسع القناع</Ar> | Output is smaller: $(M - m + 1) \times (N - n + 1)$ <Ar>الخرج أصغر: $(M - m + 1) \times (N - n + 1)$</Ar> |
+
+The slide promises "four valid rules" but lists three (zero, replicate, ignore); mirror padding, standard in the textbooks and in `np.pad`, is the usual fourth.
+
+<Ar>تَعِد الشريحة بـ «أربع قواعد صالحة» لكنها تذكر ثلاثًا فقط (الأصفار، والتكرار، والتجاهل)؛ والحشو بالانعكاس، وهو قياسي في الكتب وفي `np.pad`، هو القاعدة الرابعة المعتادة.</Ar>
+
+<SlideFigure page={10} caption="Padding a 4 × 4 image with zeros, by replication, and by ignoring the border (only the 2 × 2 interior can be filtered)." captionAr="حشو صورة 4 × 4 بالأصفار، وبالتكرار، وبتجاهل الحدود (لا يمكن ترشيح إلا الجزء الداخلي 2 × 2)." />
+
+<Callout type="note" title="Typo on slide 10" titleAr="خطأ مطبعي في الشريحة 10">
+  In the replicated image, the third row ends in <strong>180</strong>; replicating the edge pixel 80 gives <strong>80</strong>. The correct row is 120, 120, 30, 70, 80, 80.
+
+  <Ar>في الصورة المحشوّة بالتكرار ينتهي الصف الثالث بالقيمة <strong>180</strong>؛ بينما تكرار بكسل الحافة 80 يعطي <strong>80</strong>. فالصف الصحيح هو 120، 120، 30، 70، 80، 80.</Ar>
+</Callout>
+
+```python title="padding.py"
+import numpy as np
+
+f = np.array([[5, 82, 90, 150],
+              [120, 30, 70, 80],
+              [10, 60, 50, 20],
+              [40, 140, 11, 40]])
+print(np.pad(f, 1, mode="constant"))    # zero padding
+print(np.pad(f, 1, mode="edge"))        # replicate: row 3 is [120 120 30 70 80 80]
+print(np.pad(f, 1, mode="symmetric"))   # mirror (same as edge for 1 pixel)
+print(f[1:-1, 1:-1])                    # "ignore": only [[30 70] [60 50]] can be filtered
+```
+
+## Linear filters: smoothing
+
+<Ar>المرشحات الخطية: التنعيم</Ar>
+
+The output of a linear filter is a weighted sum of the neighbourhood; the weights decide what is preserved, suppressed or emphasized. Two smoothing masks from the slides, both with weights that **sum to 1** so a flat region keeps its brightness:
+
+<Ar>خرج المرشح الخطي مجموع موزون للجوار، والأوزان هي التي تحدد ما يُحفَظ وما يُكبَت وما يُبرَز. وهذان قناعا تنعيم (smoothing) من الشرائح، ومجموع أوزان كل منهما **يساوي 1** فتحتفظ المنطقة المستوية بسطوعها:</Ar>
+
+$$
+\text{box: } \frac{1}{9}\begin{bmatrix} 1 & 1 & 1 \\ 1 & 1 & 1 \\ 1 & 1 & 1 \end{bmatrix}
+\qquad
+\text{weighted: } \begin{bmatrix} 0 & \tfrac{1}{8} & 0 \\ \tfrac{1}{8} & \tfrac{1}{2} & \tfrac{1}{8} \\ 0 & \tfrac{1}{8} & 0 \end{bmatrix}
+$$
+
+The **box** (mean) filter gives every pixel equal influence; the **weighted** average gives nearby pixels more weight than distant ones. Averaging is the **smoothing trade-off**: random noise falls, but edges blur, because pixels from both sides of a boundary are mixed. Larger windows smooth more and blur more.
+
+<Ar>يعطي مرشح **المتوسط (box / mean)** كل بكسل تأثيرًا متساويًا، بينما يعطي **المتوسط الموزون** البكسلات القريبة وزنًا أكبر من البعيدة. والتنعيم بالمتوسط هو **مقايضة التنعيم**: تقل الضوضاء (noise) العشوائية، لكن الحواف تتشوش، لأن بكسلات من جانبي الحد تختلط. والنوافذ الأكبر تنعّم أكثر وتشوّش أكثر.</Ar>
+
+**Worked: an impulse under a 3 × 3 mean.** A bright pixel of 200 surrounded by eight 10s:
+
+<Ar>**مثال: نبضة تحت مرشح متوسط 3 × 3.** بكسل ساطع قيمته 200 تحيط به ثماني قيم 10:</Ar>
+
+$$
+g = \frac{8 \times 10 + 200}{9} = \frac{280}{9} = 31.1 \approx 31
+$$
+
+<Callout type="note" title="Slip on slide 13" titleAr="خطأ بسيط في الشريحة 13">
+  The slide writes $(8/9)\times 10 + 200/9 = 30$. The expression is right but its value is $280/9 = 31.1$, so the output is <strong>31</strong>, not 30. Either way the spike is only spread out, not removed: the median filter below does much better.
+
+  <Ar>تكتب الشريحة $(8/9)\times 10 + 200/9 = 30$. والتعبير صحيح لكن قيمته $280/9 = 31.1$، لذا فالخرج <strong>31</strong> وليس 30. وفي الحالتين لا تُزال القمة بل تُفرَد فقط: ومرشح الوسيط (median) الآتي أفضل بكثير.</Ar>
+</Callout>
+
+### Worked example: zero padding with a 4-neighbour mean (Part 2, Example 3)
+
+<Ar>مثال محلول: الحشو بالأصفار مع متوسط الجيران الأربعة (الجزء الثاني، المثال 3)</Ar>
+
+Filter the image with the shift-invariant linear filter $\frac{1}{4}\begin{bmatrix} 0 & 1 & 0 \\ 1 & 0 & 1 \\ 0 & 1 & 0 \end{bmatrix}$ using zero padding. Each output is the average of the four neighbours **up, down, left, right** (the centre has weight 0):
+
+<Ar>رشِّح الصورة بالمرشح الخطي الثابت مع الإزاحة (shift-invariant) $\frac{1}{4}\begin{bmatrix} 0 & 1 & 0 \\ 1 & 0 & 1 \\ 0 & 1 & 0 \end{bmatrix}$ مع الحشو بالأصفار. كل خرج هو متوسط الجيران الأربعة **أعلى وأسفل ويسار ويمين** (وزن المركز 0):</Ar>
+
+```text
+original (padded with a ring of zeros)
+ 2  9 10  0
+ 7  1  6  1
+10 15  2  6
+11  3  8 10
+
+sum of the 4 neighbours       sum / 4                     rounded (filtered)
+16  13  15  11                4     3.25  3.75  2.75      4  3  4  3
+13  37  14  12                3.25  9.25  3.5   3         3  9  4  3
+33  16  35  13                8.25  4     8.75  3.25      8  4  9  3
+13  34  15  14                3.25  8.5   3.75  3.5       3  9  4  4
+
+e.g. (0,0): up 0 + down 7 + left 0 + right 9 = 16 -> 4
+     (1,1): up 9 + down 15 + left 7 + right 6 = 37 -> 9.25 -> 9
+     (3,1): up 15 + down 0 + left 11 + right 8 = 34 -> 8.5 -> 9
+```
+
+This matches the slide's answer, with halves rounded **up** (3.5 → 4, 8.5 → 9). The border outputs are small because the zeros pull them down: that is the dark-border effect of zero padding.
+
+<Ar>وهذا يطابق إجابة الشريحة، مع تقريب الأنصاف **إلى الأعلى** (3.5 → 4، 8.5 → 9). وقيم الخرج عند الحدود صغيرة لأن الأصفار تخفضها: وهذا هو أثر الحدود الداكنة للحشو بالأصفار.</Ar>
+
+<SlideFigure page={7} source={1} caption="Example 3: the zero-padded image with the first mask position marked, and the filtered result." captionAr="المثال 3: الصورة المحشوّة بالأصفار مع تحديد أول موضع للقناع، والنتيجة بعد الترشيح." />
+
+## Edges and sharpening
+
+<Ar>الحواف والإبراز</Ar>
+
+An **edge** is a place where intensity changes quickly, such as a step from dark to bright. **Gradient** (first-derivative) masks measure that change; their weights are positive and negative and **sum to 0**, so a flat region gives 0.
+
+<Ar>**الحافة (edge)** موضع تتغير فيه الشدة بسرعة، مثل قفزة من الداكن إلى الساطع. وتقيس أقنعة **التدرج (gradient)**، أي المشتقة الأولى، هذا التغير؛ وأوزانها موجبة وسالبة **ومجموعها 0**، فتعطي المنطقة المستوية 0.</Ar>
+
+- **Sobel** masks come in four directions: $\begin{bmatrix} -1 & -2 & -1 \\ 0 & 0 & 0 \\ 1 & 2 & 1 \end{bmatrix}$ responds to horizontal edges, its transpose to vertical edges, and two rotated versions to the diagonals.
+  <Ar>تأتي أقنعة **سوبل (Sobel)** في أربعة اتجاهات: يستجيب $\begin{bmatrix} -1 & -2 & -1 \\ 0 & 0 & 0 \\ 1 & 2 & 1 \end{bmatrix}$ للحواف الأفقية، ومنقوله للحواف الرأسية، ونسختان مُدارتان للقطرين.</Ar>
+- The slide's "Robert" masks are plain **first differences** across the centre: up − down, left − right, and the two diagonals.
+  <Ar>أقنعة «Robert» في الشريحة **فروق أولى** بسيطة عبر المركز: الأعلى − الأسفل، والأيسر − الأيمن، والقطران.</Ar>
+
+The **Laplacian** is a second derivative. Its masks also sum to 0:
+
+<Ar>أما **لابلاسيان (Laplacian)** فهو مشتقة ثانية، ومجموع أوزان أقنعته 0 أيضًا:</Ar>
+
+$$
+\nabla^2 f \approx \begin{bmatrix} 0 & 1 & 0 \\ 1 & -4 & 1 \\ 0 & 1 & 0 \end{bmatrix}
+\quad\text{or}\quad
+\begin{bmatrix} 1 & 1 & 1 \\ 1 & -8 & 1 \\ 1 & 1 & 1 \end{bmatrix},
+\qquad
+g = f - \nabla^2 f \;\Rightarrow\; \begin{bmatrix} 0 & -1 & 0 \\ -1 & 5 & -1 \\ 0 & -1 & 0 \end{bmatrix}
+$$
+
+To **sharpen**, subtract the Laplacian (centre negative) from the image: the combined mask **sums to 1**, as the slide says, so flat regions are unchanged and edges are exaggerated. The slide's four "sharpening filters" are the identity plus one difference mask, e.g. centre 1 + (up − down). Results can leave $0 \ldots 255$, so **post-process**: absolute value (edge maps) or clipping to $0 \ldots 255$.
+
+<Ar>**للإبراز (sharpening)** اطرح لابلاسيان (ذا المركز السالب) من الصورة: فمجموع أوزان القناع المركّب **يساوي 1** كما تقول الشريحة، لذا لا تتغير المناطق المستوية وتُضخَّم الحواف. و«مرشحات الإبراز» الأربعة في الشريحة هي التطابق مضافًا إليه قناع فرق واحد، مثل المركز 1 + (الأعلى − الأسفل). وقد تخرج النتائج عن المدى $0 \ldots 255$، لذا **عالِجها لاحقًا**: بالقيمة المطلقة (لخرائط الحواف) أو بالقصّ (clipping) إلى $0 \ldots 255$.</Ar>
+
+<SlideFigure page={15} caption="Sharpening: Laplacian masks with −4 and −8 at the centre (sum 0), four sharpening filters (sum 1), and post-processing by absolute value or clipping." captionAr="الإبراز: قناعا لابلاسيان بالقيمة −4 و −8 في المركز (المجموع 0)، وأربعة مرشحات إبراز (المجموع 1)، والمعالجة اللاحقة بالقيمة المطلقة أو القصّ." />
+
+**Worked: sharpening a step edge** with the 1-D Laplacian $[1, -2, 1]$:
+
+<Ar>**مثال: إبراز حافة درجية (step edge)** باستخدام لابلاسيان أحادي البعد $[1, -2, 1]$:</Ar>
+
+| $f$ | 10 | 10 | 10 | 50 | 50 | 50 |
+|---|---|---|---|---|---|---|
+| $\nabla^2 f$ | · | 0 | 40 | −40 | 0 | · |
+| $f - \nabla^2 f$ | 10 | 10 | −30 → 0 | 90 | 50 | 50 |
+
+Just before the edge the result dips (clipped to 0) and just after it overshoots to 90: the step looks steeper, which is what sharpening means. Flat parts are untouched.
+
+<Ar>قبل الحافة مباشرةً تنخفض النتيجة (وتُقصّ إلى 0)، وبعدها مباشرةً تتجاوز إلى 90: فتبدو القفزة أشد حدة، وهذا هو معنى الإبراز. أما الأجزاء المستوية فلا تُمَسّ.</Ar>
+
+### Example 1: why −8 sharpens more than −4
+
+<Ar>المثال 1: لماذا يُبرز $-8$ أكثر من $-4$</Ar>
+
+A Laplacian is a sum of 1-D second differences $[1, -2, 1]$, one per direction. A centre of $-2$ covers one direction (vertical or horizontal), $-4$ covers vertical + horizontal, and $-8$ adds both diagonals. The $-8$ mask therefore detects intensity changes in **more directions**, responds to more edges and fine detail, and gives stronger enhancement: a sharper-looking image.
+
+<Ar>لابلاسيان مجموع فروق ثانية أحادية البعد $[1, -2, 1]$، فرق لكل اتجاه. فالمركز $-2$ يغطي اتجاهًا واحدًا (رأسيًا أو أفقيًا)، و $-4$ يغطي الرأسي + الأفقي، و $-8$ يضيف القطرين كليهما. لذلك يكشف القناع $-8$ تغيرات الشدة في **اتجاهات أكثر**، ويستجيب لحواف وتفاصيل دقيقة أكثر، ويعطي إبرازًا أقوى: صورة تبدو أكثر حدة.</Ar>
+
+### Example 2: same histogram, different blur
+
+<Ar>المثال 2: المدرج التكراري نفسه وتنعيم مختلف</Ar>
+
+Two images are half black, half white: one black block beside white, and a checkerboard. (a) Same histogram? **Yes**: equal numbers of 0 and 255 pixels, and a histogram ignores **where** pixels are. (b) Same histogram after a 3 × 3 mean? **No.** Averaging creates intermediate grays only where the window straddles an edge. The block image has **one** edge, so it gains just two thin columns at $\tfrac{3}{9} \times 255 = 85$ and $\tfrac{6}{9} \times 255 = 170$. The checkerboard has edges everywhere, and its corners add more levels, such as $\tfrac{4}{9} \times 255 \approx 113$ and $\tfrac{5}{9} \times 255 \approx 142$.
+
+<Ar>صورتان نصفهما أسود ونصفهما أبيض: كتلة سوداء بجانب الأبيض، ورقعة شطرنج. (a) هل المدرج التكراري متماثل؟ **نعم**: عدد البكسلات 0 و 255 متساوٍ، والمدرج التكراري يتجاهل **مواقع** البكسلات. (b) هل يبقى متماثلًا بعد متوسط 3 × 3؟ **لا.** فالتنعيم لا يُنشئ درجات رمادية وسيطة إلا حيث تمتد النافذة على حافة. ولصورة الكتلة حافة **واحدة**، فتكسب عمودين رفيعين فقط بالقيمتين $\tfrac{3}{9} \times 255 = 85$ و $\tfrac{6}{9} \times 255 = 170$. أما رقعة الشطرنج ففيها حواف في كل مكان، وتضيف زواياها مستويات أخرى مثل $\tfrac{4}{9} \times 255 \approx 113$ و $\tfrac{5}{9} \times 255 \approx 142$.</Ar>
+
+<SlideFigure page={5} source={1} caption="Example 2(b): after 3 × 3 averaging the block image's histogram has few levels, the checkerboard's many; red windows straddle edges and corners." captionAr="المثال 2(b): بعد التنعيم بمتوسط 3 × 3 يحوي مدرج صورة الكتلة مستويات قليلة ومدرج رقعة الشطرنج مستويات كثيرة؛ والنوافذ الحمراء تمتد على الحواف والزوايا." />
+
+## Non-linear filters: rank and median
+
+<Ar>المرشحات غير الخطية: الرتبة والوسيط</Ar>
+
+A linear filter asks "what weighted average represents this neighbourhood?" with the same arithmetic everywhere. A **non-linear** filter asks "which value best represents it?", so outliers and edges can change the decision: stronger control over them, but no simple frequency-domain analysis.
+
+<Ar>يسأل المرشح الخطي «أي متوسط موزون يمثّل هذا الجوار؟» بالحساب نفسه في كل مكان. أما المرشح **غير الخطي (non-linear)** فيسأل «أي قيمة تمثّله أفضل تمثيل؟»، لذا يمكن للقيم الشاذة والحواف أن تغيّر القرار: تحكّم أقوى فيها، لكن دون تحليل بسيط في المجال الترددي (frequency domain).</Ar>
+
+**Rank (order-statistics) filters** collect the gray levels in the window, **sort** them, and return the value at a chosen position of that local ordering:
+
+<Ar>تجمع **مرشحات الرتبة (rank filters)**، أي مرشحات إحصاءات الترتيب (order-statistics)، مستويات الرمادي في النافذة، و**ترتّبها**، ثم تعيد القيمة الموجودة في موضع مختار من هذا الترتيب المحلي:</Ar>
+
+| Filter <Ar>المرشح</Ar> | Returns <Ar>يعيد</Ar> |
+|---|---|
+| **Min** <Ar>**الأدنى (min)**</Ar> | Lowest value <Ar>أصغر قيمة</Ar> |
+| **Median** <Ar>**الوسيط (median)**</Ar> | Middle value <Ar>القيمة الوسطى</Ar> |
+| **Max** <Ar>**الأقصى (max)**</Ar> | Highest value <Ar>أكبر قيمة</Ar> |
+| **Midpoint** <Ar>**نقطة المنتصف (midpoint)**</Ar> | $(\min + \max)/2$ |
+
+**Worked: a 3 × 3 window with an impulse.** The window $12, 13, 14 / 13, \mathbf{255}, 14 / 12, 14, 13$ sorts to $12, 12, 13, 13, \mathbf{13}, 14, 14, 14, 255$. The 5th of 9 values is the median, **13**, so the spike is replaced by a value that fits its neighbours. Compare the other filters on the same window: mean $= 360/9 = 40$ (the spike leaks in), min $= 12$, max $= 255$, midpoint $= (12 + 255)/2 = 133.5$.
+
+<Ar>**مثال: نافذة 3 × 3 فيها نبضة.** النافذة $12, 13, 14 / 13, \mathbf{255}, 14 / 12, 14, 13$ تصبح بعد الترتيب $12, 12, 13, 13, \mathbf{13}, 14, 14, 14, 255$. والقيمة الخامسة من تسع هي الوسيط **13**، فتُستبدل القمة بقيمة تلائم جيرانها. وقارِن بالمرشحات الأخرى على النافذة نفسها: المتوسط $= 360/9 = 40$ (تتسرب إليه القمة)، والأدنى $= 12$، والأقصى $= 255$، ونقطة المنتصف $= (12 + 255)/2 = 133.5$.</Ar>
+
+### Worked example: a median with a cross-shaped mask
+
+<Ar>مثال محلول: الوسيط بقناع على شكل صليب</Ar>
+
+Filter the image with a median filter after **replicate padding**, where the mask is a cross (the centre and its up, left, right and down neighbours: 5 values, so the median is the 3rd):
+
+<Ar>رشِّح الصورة بمرشح الوسيط بعد **الحشو بالتكرار (replicate)**، حيث القناع على شكل صليب (المركز وجيرانه الأعلى والأيسر والأيمن والأسفل: 5 قيم، فيكون الوسيط هو الثالث):</Ar>
+
+```text
+image        replicate-padded
+7 1 7 1      7 7 1 7 1 1
+5 3 5 3      7 7 1 7 1 1
+7 1 7 1      5 5 3 5 3 3
+5 3 5 3      7 7 1 7 1 1
+             5 5 3 5 3 3
+             5 5 3 5 3 3
+
+pixel  up left centre right down   sorted       median
+(0,0)  7  7  7  1  5               1 5 7 7 7    7
+(0,1)  1  7  1  7  3               1 1 3 7 7    3
+(0,2)  7  1  7  1  5               1 1 5 7 7    5
+(0,3)  1  7  1  1  3               1 1 1 3 7    1
+(1,0)  7  5  5  3  7               3 5 5 7 7    5
+(1,1)  1  5  3  5  1               1 1 3 5 5    3
+(1,2)  7  3  5  3  7               3 3 5 7 7    5
+(1,3)  1  5  3  3  1               1 1 3 3 5    3
+(2,0)  5  7  7  1  5               1 5 5 7 7    5
+(2,1)  3  7  1  7  3               1 3 3 7 7    3
+(2,2)  5  1  7  1  5               1 1 5 5 7    5
+(2,3)  3  7  1  1  3               1 1 3 3 7    3
+(3,0)  7  5  5  3  5               3 5 5 5 7    5
+(3,1)  1  5  3  5  3               1 3 3 5 5    3
+(3,2)  7  3  5  3  5               3 3 5 5 7    5
+(3,3)  1  5  3  3  3               1 3 3 3 5    3
+
+output: 7 3 5 1 / 5 3 5 3 / 5 3 5 3 / 5 3 5 3
+```
+
+All 16 values match the slide. The alternating 7/5 and 1/3 rows are pulled to the more common value in each column, except at the top corners, where replication duplicates the edge pixel.
+
+<Ar>القيم الست عشرة كلها تطابق الشريحة. فالصفوف المتناوبة 7/5 و 1/3 تنجذب إلى القيمة الأكثر تكرارًا في كل عمود، إلا عند الزاويتين العلويتين حيث يكرر الحشو بكسل الحافة.</Ar>
+
+<SlideFigure page={14} source={1} caption="Median with a cross-shaped mask after replicate padding: the first window sorts to 1, 5, 7, 7, 7, so the output is 7." captionAr="الوسيط بقناع صليبي بعد الحشو بالتكرار: النافذة الأولى تصبح بعد الترتيب 1، 5، 7، 7، 7، فيكون الخرج 7." />
+
+## Separable filters
+
+<Ar>المرشحات القابلة للفصل</Ar>
+
+A mask is **separable** when it is the outer product of a column and a row vector. Then filtering with the 2-D mask equals filtering with the column and then the row, which costs $m + n$ multiplications per pixel instead of $m \times n$ (6 instead of 9 for 3 × 3, 10 instead of 25 for 5 × 5):
+
+<Ar>يكون القناع **قابلًا للفصل (separable)** عندما يكون الضرب الخارجي (outer product) لمتجه عمودي ومتجه أفقي. وعندها يساوي الترشيح بالقناع ثنائي البعد الترشيحَ بالعمود ثم بالصف، وكلفته $m + n$ عملية ضرب لكل بكسل بدلًا من $m \times n$ (أي 6 بدلًا من 9 للقناع 3 × 3، و 10 بدلًا من 25 للقناع 5 × 5):</Ar>
+
+$$
+\frac{1}{9}\begin{bmatrix} 1 & 1 & 1 \\ 1 & 1 & 1 \\ 1 & 1 & 1 \end{bmatrix}
+= \frac{1}{3}\begin{bmatrix} 1 \\ 1 \\ 1 \end{bmatrix} \frac{1}{3}\begin{bmatrix} 1 & 1 & 1 \end{bmatrix},
+\qquad
+\begin{bmatrix} 1 & -2 & 1 \\ -2 & 4 & -2 \\ 1 & -2 & 1 \end{bmatrix}
+= \begin{bmatrix} 1 \\ -2 \\ 1 \end{bmatrix} \begin{bmatrix} 1 & -2 & 1 \end{bmatrix}
+$$
+
+So both "think about it" slides answer **yes**. Test: a mask is separable exactly when its matrix has **rank 1**. Sobel is separable, $[1, 2, 1]^T [-1, 0, 1]$; the $-4$ Laplacian (rank 2) is not, though it is the **sum** of two separable masks.
+
+<Ar>لذا فإجابة شريحتَي «فكّر في الأمر» **نعم**. والاختبار: يكون القناع قابلًا للفصل إذا وفقط إذا كانت رتبة (rank) مصفوفته **1**. ومرشح سوبل قابل للفصل، $[1, 2, 1]^T [-1, 0, 1]$؛ أما لابلاسيان ذو المركز $-4$ (رتبته 2) فليس كذلك، مع أنه **مجموع** قناعين قابلين للفصل.</Ar>
+
+## Check everything in Python
+
+<Ar>تحقّق من كل شيء باستخدام Python</Ar>
+
+SciPy's `ndimage.correlate` and `ndimage.convolve` take the padding as `mode` (`"constant"` = zero, `"nearest"` = replicate, `"reflect"` = mirror), and `median_filter` takes the mask shape as a boolean `footprint`:
+
+<Ar>تأخذ الدالتان `ndimage.correlate` و `ndimage.convolve` في SciPy طريقة الحشو عبر الوسيط `mode` (القيمة `"constant"` للأصفار، و`"nearest"` للتكرار، و`"reflect"` للانعكاس)، وتأخذ الدالة `median_filter` شكل القناع مصفوفةً منطقية عبر الوسيط `footprint`:</Ar>
+
+```python title="filters_check.py"
+import numpy as np
+from scipy import ndimage as ndi
+
+# 1. Example 3: 4-neighbour mean with zero padding, halves rounded up
+f = np.array([[2, 9, 10, 0], [7, 1, 6, 1], [10, 15, 2, 6], [11, 3, 8, 10]], float)
+k = np.array([[0, 1, 0], [1, 0, 1], [0, 1, 0]]) / 4
+g = ndi.correlate(f, k, mode="constant", cval=0)
+print(np.floor(g + 0.5).astype(int))   # [[4 3 4 3] [3 9 4 3] [8 4 9 3] [3 9 4 4]]
+# careful: np.round(8.5) == 8 (round half to even), so use floor(x + 0.5)
+
+# 2. correlation vs convolution with a shift mask
+img = np.arange(1, 6, dtype=float).reshape(1, 5)            # [[1 2 3 4 5]]
+right = np.array([[0, 0, 0], [0, 0, 1], [0, 0, 0]])
+print(ndi.correlate(img, right, mode="constant"))   # [[2. 3. 4. 5. 0.]]  shifted left
+print(ndi.convolve(img, right, mode="constant"))    # [[0. 1. 2. 3. 4.]]  shifted right
+
+# 3. median with a cross mask and replicate padding
+m = np.array([[7, 1, 7, 1], [5, 3, 5, 3], [7, 1, 7, 1], [5, 3, 5, 3]])
+cross = np.array([[0, 1, 0], [1, 1, 1], [0, 1, 0]], bool)
+print(ndi.median_filter(m, footprint=cross, mode="nearest"))
+# [[7 3 5 1] [5 3 5 3] [5 3 5 3] [5 3 5 3]]
+```
+
+<Takeaways>
+
+- Local processing uses a **moving window**; a **local histogram** lets each pixel be judged against its own surroundings.
+  <Ar>تستخدم المعالجة المحلية **نافذة منزلقة**؛ ويتيح **المدرج التكراري المحلي** الحكم على كل بكسل مقارنةً بما حوله.</Ar>
+- Linear filtering is a **sum of products** with a mask. **Convolution** = correlation with the mask rotated 180°; they differ only for asymmetric masks.
+  <Ar>الترشيح الخطي **مجموع حواصل ضرب** مع قناع. و**الالتفاف** = الارتباط مع إدارة القناع 180°، ولا يختلفان إلا في الأقنعة غير المتماثلة.</Ar>
+- Borders need **padding**: zero (dark borders), replicate, mirror, or ignore (smaller output).
+  <Ar>تحتاج الحدود إلى **حشو**: بالأصفار (حدود داكنة)، أو بالتكرار، أو بالانعكاس، أو بالتجاهل (خرج أصغر).</Ar>
+- **Smoothing** masks sum to 1 and blur edges; **edge** and **Laplacian** masks sum to 0; **sharpening** = image − Laplacian, then clip. The **median** removes impulses and keeps edges far better than the mean.
+  <Ar>أقنعة **التنعيم** مجموعها 1 وتشوّش الحواف؛ وأقنعة **الحواف** و**لابلاسيان** مجموعها 0؛ و**الإبراز** = الصورة − لابلاسيان ثم القصّ. و**الوسيط** يزيل النبضات ويحافظ على الحواف أفضل بكثير من المتوسط.</Ar>
+- A mask is **separable** when it has rank 1 (column × row): two 1-D passes, $m + n$ instead of $m \times n$ multiplications.
+  <Ar>يكون القناع **قابلًا للفصل** عندما تكون رتبته 1 (عمود × صف): تمريرتان أحاديتا البعد، و $m + n$ عملية ضرب بدلًا من $m \times n$.</Ar>
+
+</Takeaways>
+
+## Practice
+
+<Ar>تدريب</Ar>
+
+<Exercise title="Five filters, one noisy window" titleAr="خمسة مرشحات ونافذة واحدة فيها ضوضاء" level="easy">
+
+For the 3 × 3 window $10, 12, 11 / 9, 250, 10 / 11, 10, 12$, give the centre's output for the mean, median, min, max and midpoint filters. Which is best here?
+
+<Ar>للنافذة 3 × 3 ذات القيم $10, 12, 11 / 9, 250, 10 / 11, 10, 12$، أعطِ خرج المركز لمرشحات المتوسط، والوسيط، والأدنى، والأقصى، ونقطة المنتصف. أيها الأفضل هنا؟</Ar>
+
+<Solution>
+
+Sum $= 335$, sorted $9, 10, 10, 10, \mathbf{11}, 11, 12, 12, 250$. Mean $= 335/9 \approx 37.2$; median $= 11$; min $= 9$; max $= 250$; midpoint $= (9 + 250)/2 = 129.5$. The **median** is best: it ignores the impulse 250 completely, while the mean, max and midpoint are dragged towards it.
+
+<Ar>المجموع $= 335$، وبعد الترتيب $9, 10, 10, 10, \mathbf{11}, 11, 12, 12, 250$. المتوسط $= 335/9 \approx 37.2$؛ والوسيط $= 11$؛ والأدنى $= 9$؛ والأقصى $= 250$؛ ونقطة المنتصف $= (9 + 250)/2 = 129.5$. و**الوسيط** هو الأفضل: فهو يتجاهل النبضة 250 تمامًا، بينما تنجذب إليها قيم المتوسط والأقصى ونقطة المنتصف.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Correlation or convolution?" titleAr="ارتباط أم التفاف؟" level="medium">
+
+For $f = \begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \\ 7 & 8 & 9 \end{bmatrix}$ and $w = \begin{bmatrix} 1 & 0 & 0 \\ 0 & 0 & 0 \\ 0 & 0 & -1 \end{bmatrix}$, compute the correlation and the convolution at the centre pixel and at the top-left pixel (replicate padding).
+
+<Ar>للصورة $f = \begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \\ 7 & 8 & 9 \end{bmatrix}$ والقناع $w = \begin{bmatrix} 1 & 0 & 0 \\ 0 & 0 & 0 \\ 0 & 0 & -1 \end{bmatrix}$، احسب الارتباط والالتفاف عند البكسل المركزي وعند البكسل العلوي الأيسر (مع الحشو بالتكرار).</Ar>
+
+<Solution>
+
+Correlation uses the up-left neighbour minus the down-right one; convolution uses the rotated mask, i.e. down-right minus up-left.
+
+<Ar>يستخدم الارتباط الجار العلوي الأيسر ناقص الجار السفلي الأيمن؛ ويستخدم الالتفاف القناع المُدار، أي السفلي الأيمن ناقص العلوي الأيسر.</Ar>
+
+- Centre: correlation $= 1 - 9 = -8$, convolution $= 9 - 1 = 8$.
+  <Ar>المركز: الارتباط $= 1 - 9 = -8$، والالتفاف $= 9 - 1 = 8$.</Ar>
+- Top-left: the up-left neighbour is outside and replicates to 1, the down-right neighbour is 5. Correlation $= 1 - 5 = -4$, convolution $= 5 - 1 = 4$.
+  <Ar>العلوي الأيسر: الجار العلوي الأيسر خارج الصورة ويُكرَّر إلى 1، والجار السفلي الأيمن هو 5. الارتباط $= 1 - 5 = -4$، والالتفاف $= 5 - 1 = 4$.</Ar>
+
+For this antisymmetric mask the two operations give opposite signs; after taking the absolute value they agree.
+
+<Ar>في هذا القناع ضدّ المتماثل (antisymmetric) تعطي العمليتان إشارتين متعاكستين، وبعد أخذ القيمة المطلقة تتفقان.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "Convolution differs from correlation by…",
+      qAr: "يختلف الالتفاف عن الارتباط في…",
+      options: ["using a larger mask", "rotating the mask by 180° before the sum of products", "sorting the window values", "padding with zeros"],
+      optionsAr: ["استخدام قناع أكبر", "إدارة القناع 180° قبل مجموع حواصل الضرب", "ترتيب قيم النافذة", "الحشو بالأصفار"],
+      answer: 1,
+      explain: "Same sliding sum of products; only the mask orientation differs. Symmetric masks give identical results.",
+      explainAr: "مجموع حواصل الضرب المنزلق نفسه؛ والفرق في اتجاه القناع فقط. والأقنعة المتماثلة تعطي نتائج متطابقة."
+    },
+    {
+      q: "Which border rule makes the output smaller than the input?",
+      qAr: "أي قاعدة للحدود تجعل الخرج أصغر من الدخل؟",
+      options: ["Zero padding", "Replicate padding", "Mirror padding", "Ignoring the border"],
+      optionsAr: ["الحشو بالأصفار", "الحشو بالتكرار", "الحشو بالانعكاس", "تجاهل الحدود"],
+      answer: 3,
+      explain: "Only positions where the whole mask fits are filtered: (M − m + 1) × (N − n + 1).",
+      explainAr: "لا يُرشَّح إلا حيث يتسع القناع كاملًا: (M − m + 1) × (N − n + 1)."
+    },
+    {
+      q: "What is the median of 12, 13, 14, 13, 255, 14, 12, 14, 13?",
+      qAr: "ما وسيط القيم 12، 13، 14، 13، 255، 14، 12، 14، 13؟",
+      options: ["13", "14", "40", "133.5"],
+      optionsAr: ["13", "14", "40", "133.5"],
+      answer: 0,
+      explain: "Sorted: 12, 12, 13, 13, 13, 14, 14, 14, 255; the 5th value is 13. 40 is the mean, 133.5 the midpoint.",
+      explainAr: "بعد الترتيب: 12، 12، 13، 13، 13، 14، 14، 14، 255؛ والقيمة الخامسة 13. أما 40 فهو المتوسط، و 133.5 نقطة المنتصف."
+    },
+    {
+      q: "Correlating an image with [0 0 0; 0 0 1; 0 0 0] gives…",
+      qAr: "ارتباط صورة بالقناع [0 0 0; 0 0 1; 0 0 0] يعطي…",
+      options: ["the same image", "the image shifted left by one pixel", "the image shifted right by one pixel", "a blurred image"],
+      optionsAr: ["الصورة نفسها", "الصورة مُزاحة يسارًا بكسلًا واحدًا", "الصورة مُزاحة يمينًا بكسلًا واحدًا", "صورة مشوشة"],
+      answer: 1,
+      explain: "g(x, y) = f(x, y + 1): each pixel takes its right neighbour's value.",
+      explainAr: "g(x, y) = f(x, y + 1): يأخذ كل بكسل قيمة جاره الأيمن."
+    }
+  ]}
+/>

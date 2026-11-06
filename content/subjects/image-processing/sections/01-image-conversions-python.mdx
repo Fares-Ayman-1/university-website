@@ -1,0 +1,498 @@
+---
+number: 1
+title: Digital Image Conversions in Python
+titleAr: "التحويل بين أنواع الصور الرقمية باستخدام Python"
+summary: How a digital image is stored as a grid of pixels, and how to move between RGB, grayscale (Pillow mode L) and binary images in Python with Pillow and NumPy. Covers RGB to grayscale by averaging, by weights (including the luminance formula Pillow uses) or by one channel, and grayscale to binary with a threshold T chosen for the task.
+summaryAr: "كيف تُخزَّن الصورة الرقمية شبكةً من البكسلات (pixels)، وكيف ننتقل في Python باستخدام Pillow و NumPy بين الصور الملونة RGB والرمادية (grayscale، الوضع L في Pillow) والثنائية (binary): التحويل من RGB إلى رمادي بالمتوسط أو بالأوزان (بما في ذلك صيغة الإضاءة التي يستخدمها Pillow) أو بقناة واحدة، ثم من رمادي إلى ثنائي بعتبة (threshold) T تُختار بحسب المهمة."
+topics: [Pixel grid, RGB channels, Grayscale (mode L), Binary images and masks, Averaging, Weighted luminance, Thresholding, Choosing a threshold]
+duration: 45 min hands-on
+kind: lab
+sources:
+  - file: sections/sec1/Digital-image-conversions-in-Python.pdf
+    label: Section 1 – Digital image conversions in Python (slides)
+    pages: "1-8"
+bookRefs:
+  - book: ip-book
+    chapter: Ch 1 · Introduction to Image Processing
+    pages: "14–18"
+---
+
+<Objectives>
+
+- Describe a digital image as a **grid of pixels**, and read its width, height and channels in Pillow and NumPy.
+  <Ar>وصف الصورة الرقمية بأنها **شبكة من البكسلات (pixels)**، وقراءة عرضها وارتفاعها وقنواتها (channels) في Pillow و NumPy.</Ar>
+- Tell **RGB**, **grayscale** and **binary** images apart by what each pixel stores.
+  <Ar>التمييز بين الصور **الملونة RGB** و**الرمادية (grayscale)** و**الثنائية (binary)** بحسب ما يخزّنه كل بكسل.</Ar>
+- Convert RGB to grayscale by **averaging**, by **weights** or by **one channel**, and know which formula `convert("L")` uses.
+  <Ar>تحويل صورة RGB إلى رمادية **بالمتوسط** أو **بالأوزان** أو **بقناة واحدة**، ومعرفة الصيغة التي يستخدمها `convert("L")`.</Ar>
+- Turn a grayscale image into a binary one with a **threshold** $T$, and choose $T$ to fit the task.
+  <Ar>تحويل الصورة الرمادية إلى ثنائية باستخدام **عتبة (threshold)** $T$، واختيار $T$ بما يناسب المهمة.</Ar>
+
+</Objectives>
+
+Everything in this lab needs only two libraries: **Pillow** to open, convert and save images, and **NumPy** to see the pixels as numbers.
+
+<Ar>لا يحتاج هذا السكشن (Section) إلا إلى مكتبتين: **Pillow** لفتح الصور وتحويلها وحفظها، و**NumPy** لرؤية البكسلات أرقامًا.</Ar>
+
+```bash title="Terminal"
+pip install pillow numpy
+```
+
+## A digital image is a grid of pixels
+
+<Ar>الصورة الرقمية شبكة من البكسلات</Ar>
+
+A digital (raster) image is a rectangular grid of **pixels** (picture elements). Each pixel holds one or more numbers for one location. The **width** counts the columns, the **height** counts the rows, and the **channels** say what is stored at each location: one intensity value, or three colour values.
+
+<Ar>الصورة الرقمية (النقطية raster) شبكة مستطيلة من **البكسلات (pixels)**، أي عناصر الصورة. يحمل كل بكسل رقمًا واحدًا أو أكثر لموقع واحد. ويَعُدّ **العرض** الأعمدة، ويَعُدّ **الارتفاع** الصفوف، أما **القنوات (channels)** فتحدد ما يُخزَّن في كل موقع: قيمة شدة (intensity) واحدة، أو ثلاث قيم لونية.</Ar>
+
+<SlideFigure page={2} caption="A digital image is a grid of pixels: an illustrative 4 × 3 grayscale grid (12 pixels) and a zoomed photo whose blocks are individual pixel values." captionAr="الصورة الرقمية شبكة من البكسلات: شبكة رمادية توضيحية بأبعاد 4 × 3 (12 بكسلًا)، وصورة مكبَّرة تظهر فيها كل كتلة على أنها قيمة بكسل مستقلة." />
+
+Pillow and NumPy describe the same grid in **opposite orders**, which is the most common beginner bug:
+
+<Ar>يصف Pillow و NumPy الشبكة نفسها **بترتيبين متعاكسين**، وهذا أشهر خطأ يقع فيه المبتدئون:</Ar>
+
+| Question <Ar>السؤال</Ar> | Pillow <Ar>مكتبة Pillow</Ar> | NumPy <Ar>مكتبة NumPy</Ar> |
+|---|---|---|
+| Size <Ar>الحجم</Ar> | `img.size` → (width, height) <Ar>`img.size` ← (العرض، الارتفاع)</Ar> | `a.shape` → (rows, columns[, channels]) <Ar>`a.shape` ← (الصفوف، الأعمدة[، القنوات])</Ar> |
+| One pixel <Ar>بكسل واحد</Ar> | `img.getpixel((x, y))`, column first <Ar>`img.getpixel((x, y))`، العمود أولًا</Ar> | `a[y, x]`, row first <Ar>`a[y, x]`، الصف أولًا</Ar> |
+
+```python title="grid.py"
+import numpy as np
+from PIL import Image
+
+# The slide's illustrative grid: 3 rows x 4 columns of 8-bit intensities
+grid = np.array([[ 40, 127, 128, 210],
+                 [  0,  64, 192, 255],
+                 [ 32,  96, 160, 224]], dtype=np.uint8)
+
+img = Image.fromarray(grid)      # a 2-D uint8 array becomes a mode "L" image
+print(img.mode, img.size)        # L (4, 3)   -> (width, height)
+print(grid.shape)                # (3, 4)     -> (rows, columns)
+print(img.getpixel((3, 1)))      # 255        -> x = column 3, y = row 1
+print(grid[1, 3])                # 255        -> [row 1, column 3]
+```
+
+<Callout type="note" title="File format is not image type" titleAr="صيغة الملف ليست نوع الصورة">
+  <strong>PNG</strong> and <strong>JPEG</strong> are <em>file formats</em>: how the bytes are compressed on disk. <strong>RGB</strong>, <strong>grayscale</strong> and <strong>binary</strong> are <em>types of image</em>: what a pixel means. A PNG can hold any of the three. JPEG compression is lossy and adds in-between grays at sharp edges, so save binary masks as PNG.
+
+  <Ar><strong>PNG</strong> و<strong>JPEG</strong> <em>صيغ ملفات</em>: أي طريقة ضغط البايتات على القرص. أما <strong>RGB</strong> و<strong>الرمادية (grayscale)</strong> و<strong>الثنائية (binary)</strong> فهي <em>أنواع صور</em>: أي ما يعنيه البكسل. ويمكن لملف PNG أن يحمل أيًّا من الأنواع الثلاثة. ضغط JPEG فاقد للبيانات ويضيف درجات رمادية وسيطة عند الحواف الحادة، لذا احفظ الأقنعة الثنائية بصيغة PNG.</Ar>
+</Callout>
+
+## RGB stores three colour channels
+
+<Ar>صورة RGB تخزّن ثلاث قنوات لونية</Ar>
+
+In an **RGB** image every pixel combines a **red**, a **green** and a **blue** value. Pillow's `RGB` mode uses three 8-bit channels, each from 0 to 255, so a pixel takes **24 bits** and can show $256^3 = 16{,}777{,}216$ colours. You can picture the image as three stacked grayscale planes, one per channel; a pixel is the vector $(R, G, B)$ that pierces them.
+
+<Ar>في صورة **RGB** يجمع كل بكسل قيمة **حمراء** وقيمة **خضراء** وقيمة **زرقاء**. يستخدم الوضع (mode) `RGB` في Pillow ثلاث قنوات (channels) بعمق 8 بت، تتراوح كل منها بين 0 و 255، فيشغل البكسل **24 بت** ويمكنه عرض $256^3 = 16{,}777{,}216$ لونًا. ويمكنك تخيّل الصورة ثلاث طبقات رمادية متراكبة، طبقة لكل قناة، والبكسل هو المتجه $(R, G, B)$ الذي يخترقها.</Ar>
+
+<SlideFigure page={3} caption="RGB stores three colour channels: the illustrative pixel (R, G, B) = (200, 100, 50), the three channel planes stacked as a pixel vector, and a colour photo." captionAr="صورة RGB تخزّن ثلاث قنوات لونية: البكسل التوضيحي (R, G, B) = (200, 100, 50)، وطبقات القنوات الثلاث متراكبة على هيئة متجه بكسل، وصورة ملونة." />
+
+The slide's pixel $(200, 100, 50)$ has strong red, medium green and little blue, so it looks orange-brown. In code, a 3-D `uint8` array with three channels becomes an `RGB` image:
+
+<Ar>البكسل $(200, 100, 50)$ في الشريحة فيه أحمر قوي وأخضر متوسط وقليل من الأزرق، لذا يبدو برتقاليًا مائلًا إلى البني. وفي الشيفرة، تصبح المصفوفة ثلاثية الأبعاد من النوع `uint8` ذات القنوات الثلاث صورةً بالوضع `RGB`:</Ar>
+
+```python title="rgb_channels.py"
+import numpy as np
+from PIL import Image
+
+# One row of four RGB pixels: the slide's (200, 100, 50), pure red, a dark green, white
+pixels = np.array([[[200, 100, 50], [255, 0, 0], [0, 130, 0], [255, 255, 255]]],
+                  dtype=np.uint8)
+img = Image.fromarray(pixels)    # 3 channels -> mode "RGB"
+print(img.mode, img.size)        # RGB (4, 1)
+print(img.getpixel((0, 0)))      # (200, 100, 50)
+
+a = np.asarray(img)
+print(a.shape)                   # (1, 4, 3) -> (rows, columns, channels)
+r, g, b = img.split()            # three single-channel ("L") images
+print(np.asarray(r))             # [[200 255   0 255]]
+
+# With a real photo: img = Image.open("flower.jpg").convert("RGB")
+```
+
+## Grayscale stores one intensity channel
+
+<Ar>الصورة الرمادية تخزّن قناة شدة واحدة</Ar>
+
+A **grayscale** image removes colour but keeps the differences in **intensity**. Pillow's `L` mode uses one 8-bit channel per pixel: **0 is black**, **255 is white**, and everything in between is a shade of gray.
+
+<Ar>تحذف الصورة **الرمادية (grayscale)** اللون لكنها تحتفظ بفروق **الشدة (intensity)**. يستخدم الوضع `L` في Pillow قناة واحدة بعمق 8 بت لكل بكسل: **0 هو الأسود**، و**255 هو الأبيض**، وكل ما بينهما درجة من الرمادي.</Ar>
+
+| Mode <Ar>الوضع</Ar> | Values per pixel <Ar>القيم لكل بكسل</Ar> | Information carried <Ar>المعلومات المحمولة</Ar> |
+|---|---|---|
+| RGB <Ar>ملونة RGB</Ar> | Three channel values <Ar>ثلاث قيم للقنوات</Ar> | Colour and intensity differences <Ar>فروق اللون والشدة</Ar> |
+| Grayscale (`L`) <Ar>رمادية (`L`)</Ar> | One intensity value <Ar>قيمة شدة واحدة</Ar> | Intensity differences, without colour <Ar>فروق الشدة، دون لون</Ar> |
+
+The conversion is **many-to-one**: different RGB colours can map to the same gray value, so the original channel values cannot be recovered from grayscale alone. With Pillow's formula, pure red $(255, 0, 0)$ and dark green $(0, 130, 0)$ both become gray **76**.
+
+<Ar>التحويل **من متعدد إلى واحد**: فقد تتحول ألوان RGB مختلفة إلى قيمة الرمادي نفسها، لذا لا يمكن استرجاع قيم القنوات الأصلية من الصورة الرمادية وحدها. فبصيغة Pillow يصبح الأحمر الصافي $(255, 0, 0)$ والأخضر الداكن $(0, 130, 0)$ كلاهما بالرمادي **76**.</Ar>
+
+## Binary images contain two pixel states
+
+<Ar>الصورة الثنائية فيها حالتان فقط للبكسل</Ar>
+
+In a **binary** image every pixel is either black or white, with no intermediate grays. A binary image used as a **mask** marks membership, for example **foreground** (the object) versus **background** in segmentation. The same two states have two common encodings:
+
+<Ar>في الصورة **الثنائية (binary)** يكون كل بكسل إما أسود وإما أبيض، دون أي درجات رمادية وسيطة. وعندما تُستخدم الصورة الثنائية **قناعًا (mask)** فإنها تحدد الانتماء، مثل **المقدمة (foreground)**، أي الكائن، مقابل **الخلفية (background)** في التقطيع (segmentation). ولهاتين الحالتين ترميزان شائعان:</Ar>
+
+| View <Ar>طريقة العرض</Ar> | Two states <Ar>الحالتان</Ar> | In Python <Ar>في Python</Ar> |
+|---|---|---|
+| Logical values <Ar>القيم المنطقية</Ar> | 0 / 1 | NumPy `bool` array, Pillow mode `1` <Ar>مصفوفة `bool` في NumPy، والوضع `1` في Pillow</Ar> |
+| Mapping values <Ar>قيم العرض</Ar> | 0 / 255 | `uint8` array or mode `L` image, ready to display <Ar>مصفوفة `uint8` أو صورة بالوضع `L`، جاهزة للعرض</Ar> |
+
+<SlideFigure page={5} caption="Binary images contain two pixel states: an illustrative 4 × 4 bilevel mask stored as 0/255, the logical 0/1 view, and a binary flower with no intermediate grays." captionAr="الصورة الثنائية فيها حالتان للبكسل: قناع توضيحي ثنائي المستوى بأبعاد 4 × 4 مخزَّن بالقيمتين 0/255، وطريقة العرض المنطقية 0/1، وزهرة ثنائية بلا درجات رمادية وسيطة." />
+
+```python title="mask.py"
+import numpy as np
+from PIL import Image
+
+mask = np.array([[0,   0, 255, 255],
+                 [0, 255, 255,   0],
+                 [0, 255, 255,   0],
+                 [0,   0,   0,   0]], dtype=np.uint8)   # the slide's 0/255 mask
+
+logical = mask > 0                        # True/False view
+print(logical.sum())                      # 6 foreground pixels
+print(Image.fromarray(logical).mode)      # 1  -> Pillow's 1-bit mode
+back = logical.astype(np.uint8) * 255     # back to 0/255 for display
+```
+
+## Converting RGB to grayscale
+
+<Ar>تحويل RGB إلى رمادي</Ar>
+
+There are three common ways to collapse the three channels into one intensity $L$:
+
+<Ar>هناك ثلاث طرق شائعة لدمج القنوات الثلاث في شدة واحدة $L$:</Ar>
+
+1. **Average** the three channels:
+   <Ar>**المتوسط** للقنوات الثلاث:</Ar>
+   $$
+   L = \frac{R + G + B}{3}
+   $$
+2. **Weight** the channels, with weights that sum to 1. The slide's example uses $L = 0.2R + 0.3G + 0.5B$.
+   <Ar>**الأوزان** للقنوات، بشرط أن يكون مجموع الأوزان 1. ومثال الشريحة هو $L = 0.2R + 0.3G + 0.5B$.</Ar>
+3. Use a **single channel**: keep only $R$, $G$ or $B$.
+   <Ar>استخدام **قناة واحدة**: الاحتفاظ بـ $R$ أو $G$ أو $B$ فقط.</Ar>
+
+Why must the weights sum to 1? Because a white pixel $(255, 255, 255)$ must stay $255$, and the result must stay inside $0 \ldots 255$. With weights summing to more than 1, white would overflow; with less, white would turn gray.
+
+<Ar>لماذا يجب أن يكون مجموع الأوزان 1؟ لأن البكسل الأبيض $(255, 255, 255)$ يجب أن يبقى $255$، ويجب أن تبقى النتيجة ضمن $0 \ldots 255$. فإذا زاد المجموع على 1 تجاوز الأبيض الحد، وإذا قلّ عنه صار الأبيض رماديًا.</Ar>
+
+**Which weights does Pillow use?** `Image.convert("L")` applies the ITU-R 601-2 **luma** formula. Green gets the largest weight because the human eye is most sensitive to green, and blue the smallest:
+
+<Ar>**ما الأوزان التي يستخدمها Pillow؟** تطبّق الدالة `Image.convert("L")` صيغة **الإضاءة (luma)** وفق المعيار ITU-R 601-2. ويأخذ الأخضر أكبر وزن لأن العين البشرية أشد حساسية للأخضر، ويأخذ الأزرق أصغر وزن:</Ar>
+
+$$
+L = 0.299\,R + 0.587\,G + 0.114\,B
+$$
+
+<SlideFigure page={6} caption="Convert RGB to grayscale: by the average of the three channels, by weights that sum to 1, or by a single channel. The brown bear becomes a darker gray than the white bear." captionAr="تحويل RGB إلى رمادي: بمتوسط القنوات الثلاث، أو بأوزان مجموعها 1، أو بقناة واحدة. يصبح الدب البني رماديًا أغمق من الدب الأبيض." />
+
+### Worked example: one pixel, five grays
+
+<Ar>مثال محلول: بكسل واحد وخمس درجات رمادية</Ar>
+
+For the slide's pixel $(R, G, B) = (200, 100, 50)$:
+
+<Ar>لبكسل الشريحة $(R, G, B) = (200, 100, 50)$:</Ar>
+
+| Method <Ar>الطريقة</Ar> | Computation <Ar>الحساب</Ar> | $L$ |
+|---|---|---|
+| Average <Ar>المتوسط</Ar> | $(200 + 100 + 50)/3 = 116.67$ | 117 |
+| Slide's weights <Ar>أوزان الشريحة</Ar> | $0.2(200) + 0.3(100) + 0.5(50) = 40 + 30 + 25$ | 95 |
+| Pillow `convert("L")` <Ar>الدالة `convert("L")` في Pillow</Ar> | $0.299(200) + 0.587(100) + 0.114(50) = 59.8 + 58.7 + 5.7 = 124.2$ | 124 |
+| Red / green / blue channel <Ar>القناة الحمراء / الخضراء / الزرقاء</Ar> | take one value <Ar>أخذ قيمة واحدة</Ar> | 200 / 100 / 50 |
+
+The same pixel lands anywhere between 50 and 200 depending on the method: "grayscale" is a choice, not a single answer. The script below reproduces the table for four pixels and checks it against Pillow:
+
+<Ar>يقع البكسل نفسه في أي موضع بين 50 و 200 بحسب الطريقة؛ فالتحويل إلى الرمادي اختيار وليس إجابة واحدة. والبرنامج النصي (script) التالي يعيد حساب الجدول لأربعة بكسلات ويقارنه بنتيجة Pillow:</Ar>
+
+```python title="rgb_to_gray.py"
+import numpy as np
+from PIL import Image
+
+pixels = np.array([[[200, 100, 50], [255, 0, 0], [0, 130, 0], [255, 255, 255]]],
+                  dtype=np.uint8)
+rgb = pixels.astype(np.float64)                     # never add uint8 channels directly
+
+avg      = rgb.mean(axis=2)                         # (R + G + B) / 3
+weighted = rgb @ np.array([0.2, 0.3, 0.5])          # the slide's example weights
+luma     = rgb @ np.array([0.299, 0.587, 0.114])    # ITU-R 601-2, as Pillow uses
+green    = pixels[:, :, 1]                          # a single channel
+
+print(np.round(avg))        # [[117.  85.  43. 255.]]
+print(np.round(weighted))   # [[ 95.  51.  39. 255.]]
+print(np.round(luma))       # [[124.  76.  76. 255.]]
+print(green)                # [[100   0 130 255]]
+
+gray = Image.fromarray(pixels).convert("L")
+print(np.asarray(gray))     # [[124  76  76 255]]  same as luma
+```
+
+<Callout type="warning" title="uint8 overflow" titleAr="الفيضان في النوع uint8">
+  Image arrays are <code>uint8</code>, which wraps around at 256. Adding the channels directly gives <code>200 + 100 + 50 = 94</code> instead of 350, and a white pixel gives <code>253</code> instead of 765, so bright areas turn dark. Convert with <code>.astype(np.float64)</code> (or <code>np.int32</code>) before any arithmetic, then round and clip back to <code>uint8</code>.
+
+  <Ar>مصفوفات الصور من النوع <code>uint8</code> الذي يلتف عند 256. فجمع القنوات مباشرةً يعطي <code>200 + 100 + 50 = 94</code> بدلًا من 350، ويعطي البكسل الأبيض <code>253</code> بدلًا من 765، فتصبح المناطق الساطعة داكنة. حوِّل المصفوفة باستخدام <code>.astype(np.float64)</code> (أو <code>np.int32</code>) قبل أي عملية حسابية، ثم قرِّب النتيجة واقصصها (clipping) وأعِدها إلى <code>uint8</code>.</Ar>
+</Callout>
+
+## Converting grayscale to binary: thresholding
+
+<Ar>تحويل الصورة الرمادية إلى ثنائية: التقطيع بالعتبة</Ar>
+
+Choose a boundary $T$, the **threshold**. Gray values below $T$ become black and values at or above $T$ become white:
+
+<Ar>اختر حدًّا فاصلًا $T$ هو **العتبة (threshold)**. تصبح قيم الرمادي الأقل من $T$ سوداء، وتصبح القيم المساوية لـ $T$ أو الأكبر منها بيضاء:</Ar>
+
+$$
+b(x, y) =
+\begin{cases}
+255 & \text{if } f(x, y) \ge T \\
+0 & \text{if } f(x, y) < T
+\end{cases}
+$$
+
+With $T = 128$ the slide's row $40, 127, 128, 210$ becomes $0, 0, 255, 255$. Notice that 127 and 128 differ by one gray level yet land on opposite sides: thresholding is a **hard decision**, so the choice of $T$ matters.
+
+<Ar>مع $T = 128$ يصبح صف الشريحة $40, 127, 128, 210$ هو $0, 0, 255, 255$. لاحظ أن 127 و 128 يختلفان بمستوى رمادي واحد ومع ذلك يقعان في جهتين متعاكستين؛ فالتقطيع بالعتبة (thresholding) **قرار حاسم**، ولذلك فإن اختيار $T$ مهم.</Ar>
+
+<SlideFigure page={7} caption="Convert grayscale to binary: with T = 128 the inputs 40, 127, 128, 210 become 0, 0, 255, 255; the dark-coated bear falls into the black background." captionAr="تحويل الرمادي إلى ثنائي: مع T = 128 تصبح المدخلات 40 و 127 و 128 و 210 هي 0 و 0 و 255 و 255؛ ويندمج الدب ذو الفراء الداكن في الخلفية السوداء." />
+
+```python title="threshold.py"
+import numpy as np
+from PIL import Image
+
+gray = np.array([[40, 127, 128, 210]], dtype=np.uint8)
+T = 128
+
+binary = np.where(gray >= T, 255, 0).astype(np.uint8)   # NumPy
+print(binary)                                           # [[  0   0 255 255]]
+
+img = Image.fromarray(gray)                             # mode "L"
+bw = img.point(lambda v: 255 if v >= T else 0)          # still mode "L", values 0/255
+print(np.asarray(bw))                                   # [[  0   0 255 255]]
+
+mask = img.point(lambda v: 255 if v >= T else 0, mode="1")   # a true 1-bit image
+print(np.asarray(mask))                                 # [[False False  True  True]]
+```
+
+<Callout type="warning" title='convert("1") dithers by default' titleAr='الدالة convert("1") تطبّق التنقيط افتراضيًا'>
+  <code>img.convert("1")</code> does <strong>not</strong> threshold: by default it applies Floyd–Steinberg <strong>dithering</strong>, which scatters black and white dots to imitate gray. On the row above it returns black, white, black, white. Use <code>img.convert("1", dither=Image.Dither.NONE)</code> (which thresholds at 128) or the <code>point</code> rule above when you want a clean mask.
+
+  <Ar>الدالة <code>img.convert("1")</code> <strong>لا</strong> تطبّق العتبة: فهي افتراضيًا تطبّق <strong>التنقيط (dithering)</strong> بطريقة Floyd–Steinberg، الذي ينثر نقاطًا سوداء وبيضاء لمحاكاة الرمادي. وعلى الصف السابق تعيد: أسود، أبيض، أسود، أبيض. استخدم <code>img.convert("1", dither=Image.Dither.NONE)</code> (التي تطبّق العتبة 128) أو قاعدة <code>point</code> السابقة عندما تريد قناعًا نظيفًا.</Ar>
+</Callout>
+
+## Choose a threshold that fits the task
+
+<Ar>اختر عتبة تناسب المهمة</Ar>
+
+Each image type keeps different information, so pick the type for the job:
+
+<Ar>يحتفظ كل نوع من الصور بمعلومات مختلفة، لذا اختر النوع المناسب للمهمة:</Ar>
+
+| Mode <Ar>النوع</Ar> | Retains <Ar>ما يحتفظ به</Ar> | Useful for <Ar>يُستخدم في</Ar> |
+|---|---|---|
+| RGB <Ar>ملونة RGB</Ar> | Colour and intensity <Ar>اللون والشدة</Ar> | Colour-based analysis <Ar>التحليل المعتمد على اللون</Ar> |
+| Intensity (grayscale) <Ar>الشدة (رمادية)</Ar> | Intensity differences <Ar>فروق الشدة</Ar> | Intensity-based analysis <Ar>التحليل المعتمد على الشدة</Ar> |
+| Binary <Ar>ثنائية</Ar> | A two-state decision <Ar>قرار بحالتين</Ar> | Masks and segmentation <Ar>الأقنعة والتقطيع (segmentation)</Ar> |
+
+$T = 128$ is only the middle of the range. The same four pixels give different masks for different thresholds:
+
+<Ar>القيمة $T = 128$ ليست إلا منتصف المدى. والبكسلات الأربعة نفسها تعطي أقنعة مختلفة بعتبات مختلفة:</Ar>
+
+| $T$ | 40 | 127 | 128 | 210 |
+|---|---|---|---|---|
+| 100 | 0 | 255 | 255 | 255 |
+| 128 | 0 | 0 | 255 | 255 |
+| 200 | 0 | 0 | 0 | 255 |
+
+A threshold that is too low turns background into foreground; one that is too high loses parts of the object. Two practical rules:
+
+<Ar>العتبة المنخفضة جدًا تحوّل الخلفية إلى مقدمة، والعتبة المرتفعة جدًا تُضيّع أجزاءً من الكائن. وهناك قاعدتان عمليتان:</Ar>
+
+- **Look at the histogram.** When object and background form two peaks (a bimodal histogram), put $T$ in the valley between them. Automatic methods such as the image mean or Otsu's method choose $T$ from the histogram.
+  <Ar>**انظر إلى المدرج التكراري (histogram).** عندما يكوّن الكائن والخلفية قمتين (مدرج تكراري ثنائي القمة bimodal)، ضع $T$ في الوادي بينهما. والطرق الآلية مثل متوسط الصورة أو طريقة أوتسو (Otsu) تختار $T$ من المدرج التكراري.</Ar>
+- **Check the polarity.** For a dark object on a bright background, mark the object with $f < T$ instead, or invert the mask.
+  <Ar>**تحقّق من القطبية.** إذا كان الكائن داكنًا على خلفية ساطعة، فحدِّد الكائن بالشرط $f < T$ بدلًا من ذلك، أو اعكس القناع.</Ar>
+### The full pipeline
+
+<Ar>المسار الكامل للتحويل</Ar>
+
+This script runs the whole chain on your own photo (`python convert_all.py photo.jpg`), or on a synthetic test image if you give no file. It uses the image mean as a simple data-driven threshold:
+
+<Ar>يشغّل هذا البرنامج النصي السلسلة كاملةً على صورتك (`python convert_all.py photo.jpg`)، أو على صورة اختبار مصطنعة إذا لم تُعطِه ملفًا. ويستخدم متوسط الصورة عتبةً بسيطة مستخلصة من البيانات:</Ar>
+
+```python title="convert_all.py"
+import sys
+import numpy as np
+from PIL import Image
+
+
+def load(path=None):
+    """Open a photo as RGB, or build a synthetic test image when no path is given."""
+    if path:
+        return Image.open(path).convert("RGB")
+    y, x = np.mgrid[0:256, 0:256]                     # row and column indices
+    rgb = np.stack([x, y, np.full_like(x, 60)], axis=2).astype(np.uint8)
+    return Image.fromarray(rgb)                       # red ramp left->right, green top->bottom
+
+
+img = load(sys.argv[1] if len(sys.argv) > 1 else None)
+gray = img.convert("L")                               # ITU-R 601-2 luma
+g = np.asarray(gray)
+T = int(g.mean())                                     # a simple data-driven threshold
+binary = Image.fromarray(np.where(g >= T, 255, 0).astype(np.uint8))
+
+img.save("1_rgb.png")
+gray.save("2_gray.png")
+binary.save("3_binary.png")                           # PNG: lossless, stays two-valued
+print(f"size={img.size}  T={T}  foreground={np.mean(g >= T):.1%}")
+# synthetic image: size=(256, 256)  T=119  foreground=50.9%
+```
+
+<Takeaways>
+
+- A digital image is a **grid of pixels**: Pillow reports (width, height) and indexes `(x, y)`; NumPy reports (rows, columns, channels) and indexes `[y, x]`.
+  <Ar>الصورة الرقمية **شبكة من البكسلات**: يعطي Pillow (العرض، الارتفاع) ويفهرس بالترتيب `(x, y)`، بينما يعطي NumPy (الصفوف، الأعمدة، القنوات) ويفهرس بالترتيب `[y, x]`.</Ar>
+- **RGB** = three 8-bit channels (24 bits per pixel); **grayscale** (`L`) = one 8-bit intensity, 0 black to 255 white; **binary** = two states, 0/1 or 0/255.
+  <Ar>**RGB** = ثلاث قنوات بعمق 8 بت (24 بت لكل بكسل)؛ و**الرمادية** (`L`) = شدة واحدة بعمق 8 بت، من 0 أسود إلى 255 أبيض؛ و**الثنائية** = حالتان، 0/1 أو 0/255.</Ar>
+- RGB → gray by **average**, by **weights summing to 1**, or by **one channel**; Pillow uses $0.299R + 0.587G + 0.114B$. The conversion cannot be undone.
+  <Ar>التحويل من RGB إلى رمادي يكون **بالمتوسط**، أو **بأوزان مجموعها 1**، أو **بقناة واحدة**؛ ويستخدم Pillow الصيغة $0.299R + 0.587G + 0.114B$. ولا يمكن عكس هذا التحويل.</Ar>
+- Gray → binary by a **threshold** $T$: $f \ge T$ becomes white, $f < T$ black. Choose $T$ from the histogram and the task; `convert("1")` dithers unless told not to.
+  <Ar>التحويل من رمادي إلى ثنائي يكون **بعتبة** $T$: تصبح القيم $f \ge T$ بيضاء والقيم $f < T$ سوداء. اختر $T$ بحسب المدرج التكراري والمهمة؛ والدالة `convert("1")` تطبّق التنقيط (dithering) ما لم تطلب منها غير ذلك.</Ar>
+
+</Takeaways>
+
+## Practice
+
+<Ar>تدريب</Ar>
+
+<Exercise title="One pixel, three grays, three masks" titleAr="بكسل واحد، ثلاث درجات رمادية، ثلاثة أقنعة" level="easy">
+
+For the pixel $(R, G, B) = (120, 200, 40)$, compute the gray value by the average, by Pillow's weights and by the slide's weights $0.2, 0.3, 0.5$. Then threshold each result with $T = 128$.
+
+<Ar>للبكسل $(R, G, B) = (120, 200, 40)$، احسب قيمة الرمادي بالمتوسط، وبأوزان Pillow، وبأوزان الشريحة $0.2, 0.3, 0.5$. ثم طبّق العتبة $T = 128$ على كل نتيجة.</Ar>
+
+<Solution>
+
+| Method <Ar>الطريقة</Ar> | $L$ | With $T = 128$ <Ar>مع $T = 128$</Ar> |
+|---|---|---|
+| Average <Ar>المتوسط</Ar> | $(120 + 200 + 40)/3 = 120$ | 0 (black) <Ar>0 (أسود)</Ar> |
+| Pillow weights <Ar>أوزان Pillow</Ar> | $35.88 + 117.4 + 4.56 = 157.84 \approx 158$ | 255 (white) <Ar>255 (أبيض)</Ar> |
+| Slide's weights <Ar>أوزان الشريحة</Ar> | $24 + 60 + 20 = 104$ | 0 (black) <Ar>0 (أسود)</Ar> |
+
+A bright green pixel is white under Pillow's luma (green has the biggest weight) but black under the other two: the conversion method can flip the final mask.
+
+<Ar>البكسل الأخضر الساطع يصبح أبيض بصيغة الإضاءة (luma) في Pillow (لأن للأخضر أكبر وزن)، لكنه يصبح أسود بالطريقتين الأخريين؛ فطريقة التحويل قد تقلب القناع النهائي.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Storage of the three types" titleAr="حجم تخزين الأنواع الثلاثة" level="easy">
+
+How many bytes does an uncompressed $256 \times 256$ image take as RGB, as grayscale and as a 1-bit binary image?
+
+<Ar>كم بايتًا تشغل صورة غير مضغوطة بأبعاد $256 \times 256$ إذا كانت RGB، ثم رمادية، ثم ثنائية ببت واحد لكل بكسل؟</Ar>
+
+<Solution>
+
+There are $256 \times 256 = 65{,}536$ pixels.
+
+<Ar>عدد البكسلات $256 \times 256 = 65{,}536$.</Ar>
+
+- RGB: $65{,}536 \times 3 = 196{,}608$ bytes $= 192$ KB.
+  <Ar>RGB: $65{,}536 \times 3 = 196{,}608$ بايت $= 192$ KB.</Ar>
+- Grayscale: $65{,}536 \times 1 = 65{,}536$ bytes $= 64$ KB.
+  <Ar>الرمادية: $65{,}536 \times 1 = 65{,}536$ بايت $= 64$ KB.</Ar>
+- Binary: $65{,}536 / 8 = 8{,}192$ bytes $= 8$ KB.
+  <Ar>الثنائية: $65{,}536 / 8 = 8{,}192$ بايت $= 8$ KB.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="A threshold from the data" titleAr="عتبة مستخلصة من البيانات" level="medium">
+
+Write `binarize(gray, T=None)` that thresholds a mode `L` image, uses the image mean when `T` is `None`, and returns the 0/255 mask together with the fraction of foreground pixels.
+
+<Ar>اكتب الدالة `binarize(gray, T=None)` التي تطبّق العتبة على صورة بالوضع `L`، وتستخدم متوسط الصورة عندما تكون `T` هي `None`، وتعيد القناع بالقيمتين 0/255 مع نسبة بكسلات المقدمة (foreground).</Ar>
+
+<Solution>
+
+```python
+import numpy as np
+from PIL import Image
+
+
+def binarize(gray, T=None):
+    g = np.asarray(gray.convert("L"))
+    if T is None:
+        T = g.mean()
+    fg = g >= T
+    return Image.fromarray(fg.astype(np.uint8) * 255), fg.mean()
+
+
+mask, frac = binarize(Image.fromarray(np.array([[40, 127, 128, 210]], np.uint8)))
+print(np.asarray(mask), frac)   # mean = 126.25 -> [[  0 255 255 255]] 0.75
+```
+
+The mean here is $126.25$, so 127 is now foreground: a data-driven $T$ adapts to the image.
+
+<Ar>المتوسط هنا $126.25$، لذا يصبح 127 من المقدمة: فالعتبة المستخلصة من البيانات تتكيف مع الصورة.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "An RGB photo has 640 columns and 480 rows. What do img.size and np.asarray(img).shape return?",
+      qAr: "صورة RGB فيها 640 عمودًا و 480 صفًا. ماذا تعيد img.size و np.asarray(img).shape؟",
+      options: ["(640, 480) and (480, 640, 3)", "(480, 640) and (640, 480, 3)", "(640, 480) and (640, 480, 3)", "(480, 640) and (480, 640, 3)"],
+      optionsAr: ["(640, 480) ثم (480, 640, 3)", "(480, 640) ثم (640, 480, 3)", "(640, 480) ثم (640, 480, 3)", "(480, 640) ثم (480, 640, 3)"],
+      answer: 0,
+      explain: "Pillow gives (width, height); NumPy gives (rows, columns, channels).",
+      explainAr: "يعطي Pillow (العرض، الارتفاع)، ويعطي NumPy (الصفوف، الأعمدة، القنوات)."
+    },
+    {
+      q: "How many bits does one pixel take in Pillow's RGB mode?",
+      qAr: "كم بتًا يشغل البكسل الواحد في الوضع RGB في Pillow؟",
+      options: ["1", "8", "24", "32"],
+      optionsAr: ["1", "8", "24", "32"],
+      answer: 2,
+      explain: "Three channels of 8 bits each: 3 × 8 = 24.",
+      explainAr: "ثلاث قنوات بعمق 8 بت لكل منها: 3 × 8 = 24."
+    },
+    {
+      q: "Which formula does Pillow's convert(\"L\") use?",
+      qAr: "ما الصيغة التي تستخدمها الدالة convert(\"L\") في Pillow؟",
+      options: ["(R + G + B) / 3", "0.2R + 0.3G + 0.5B", "0.299R + 0.587G + 0.114B", "max(R, G, B)"],
+      optionsAr: ["(R + G + B) / 3", "0.2R + 0.3G + 0.5B", "0.299R + 0.587G + 0.114B", "max(R, G, B)"],
+      answer: 2,
+      explain: "It is the ITU-R 601-2 luma transform; green gets the largest weight.",
+      explainAr: "إنها صيغة الإضاءة (luma) وفق المعيار ITU-R 601-2، ويأخذ الأخضر فيها أكبر وزن."
+    },
+    {
+      q: "Why must the weights of a weighted RGB-to-gray conversion sum to 1?",
+      qAr: "لماذا يجب أن يكون مجموع أوزان التحويل الموزون من RGB إلى رمادي يساوي 1؟",
+      options: ["To make the conversion reversible", "So that white stays 255 and results stay in 0 to 255", "Because Pillow rejects other weights", "To give green the largest weight"],
+      optionsAr: ["لكي يصبح التحويل قابلًا للعكس", "لكي يبقى الأبيض 255 وتبقى النتائج بين 0 و 255", "لأن Pillow يرفض الأوزان الأخرى", "لكي يأخذ الأخضر أكبر وزن"],
+      answer: 1,
+      explain: "With weights summing to 1, (255, 255, 255) maps to exactly 255; the conversion is still many-to-one.",
+      explainAr: "عندما يكون مجموع الأوزان 1 يتحول (255, 255, 255) إلى 255 تمامًا؛ ويبقى التحويل من متعدد إلى واحد."
+    },
+    {
+      q: "With T = 128 and the rule 'f ≥ T is white', what does a pixel of 127 become?",
+      qAr: "مع T = 128 والقاعدة «f ≥ T تصبح بيضاء»، إلامَ يتحول بكسل قيمته 127؟",
+      options: ["0 (black)", "127 (unchanged)", "128", "255 (white)"],
+      optionsAr: ["0 (أسود)", "127 (بلا تغيير)", "128", "255 (أبيض)"],
+      answer: 0,
+      explain: "127 is below the threshold, so it becomes black; 128 would become white.",
+      explainAr: "127 أقل من العتبة فيصبح أسود، أما 128 فيصبح أبيض."
+    }
+  ]}
+/>

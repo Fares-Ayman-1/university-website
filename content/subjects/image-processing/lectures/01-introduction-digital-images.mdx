@@ -1,0 +1,700 @@
+---
+number: 1
+title: Introduction to Digital Images
+titleAr: "مقدمة في الصور الرقمية"
+summary: What an image is, what image processing does and how it differs from computer vision, and where both are used. How images are acquired (sampling and the Nyquist criterion, quantization, CCD and CMOS cameras, flatbed scanners) and stored (pixels, neighbourhoods, raster vs vector graphics). The aspects of image processing (enhancement, restoration, segmentation) and the steps of a processing task, the four image types (binary, grayscale, RGB, indexed) with resolution, color depth and file size, and converting between types in MATLAB.
+summaryAr: "ما الصورة، وماذا تفعل معالجة الصور (Image Processing)، وكيف تختلف عن الرؤية الحاسوبية (Computer Vision)، وأين يُستخدم كلٌّ منهما. كيف تُلتقط الصور (المعاينة sampling ومعيار نايكويست، والتكميم quantization، وكاميرات CCD و CMOS، والماسحات الضوئية المسطّحة) وكيف تُخزَّن (البكسلات، والجوار، والصور النقطية مقابل الرسوم المتجهية). جوانب معالجة الصور (التحسين، والاستعادة، والتقطيع) وخطوات مهمة المعالجة، وأنواع الصور الأربعة (الثنائية، والرمادية، و RGB، والمفهرسة) مع الدقة وعمق اللون وحجم الملف، والتحويل بين الأنواع في MATLAB."
+topics: [Images and pictures, Image processing vs computer vision, Applications, "Sampling, aliasing and the Nyquist criterion", "CCD, CMOS and flatbed scanners", Images as functions and pixels, Raster vs vector graphics, "Enhancement, restoration and segmentation", An image processing task, "Binary, grayscale, RGB and indexed images", "Resolution, color depth and file size", Image conversions in MATLAB]
+duration: 60 min study
+sources:
+  - file: lectures/ch1/Image processing Lecture 1.pdf
+    label: Image Processing Lecture 1 – Introduction (slides)
+    pages: "1-69"
+bookRefs:
+  - book: ip-book
+    chapter: Ch 1 · Introduction to Image Processing
+    pages: "7–35"
+  - book: mcandrew
+    chapter: Introduction · Images and MATLAB
+---
+
+<Objectives>
+
+- Explain what **image processing** is, its two goals, and how it differs from **computer vision**.
+  <Ar>شرح ماهية **معالجة الصور (Image Processing)** وهدفيها، وكيف تختلف عن **الرؤية الحاسوبية (Computer Vision)**.</Ar>
+- Describe how a digital image is **acquired**: sampling and the Nyquist criterion, quantization, and CCD, CMOS and scanner sensors.
+  <Ar>وصف كيف **تُلتقط** الصورة الرقمية: المعاينة (sampling) ومعيار نايكويست، والتكميم (quantization)، ومستشعرات CCD و CMOS والماسح الضوئي.</Ar>
+- Represent an image as a **function** and a **matrix of pixels**, and compare **raster** with **vector** graphics.
+  <Ar>تمثيل الصورة على هيئة **دالة** و**مصفوفة من البكسلات (pixels)**، والمقارنة بين **الصور النقطية (raster)** و**الرسوم المتجهية (vector)**.</Ar>
+- Distinguish **enhancement**, **restoration** and **segmentation**, and list the steps of an image processing task.
+  <Ar>التمييز بين **التحسين (enhancement)** و**الاستعادة (restoration)** و**التقطيع (segmentation)**، وسرد خطوات مهمة معالجة الصور.</Ar>
+- Identify **binary**, **grayscale**, **RGB** and **indexed** images, compute their storage size, and convert between them.
+  <Ar>التعرّف على الصور **الثنائية (binary)** و**الرمادية (grayscale)** و**RGB** و**المفهرسة (indexed)**، وحساب حجم تخزينها، والتحويل بينها.</Ar>
+
+</Objectives>
+
+## Images and pictures
+
+<Ar>الصور واللقطات</Ar>
+
+Human beings are predominantly **visual** creatures: we rely on sight more than on any other sense. In this course an **image** is a single picture that represents something: a person, people or animals, an outdoor scene, a microphotograph of an electronic component, or the result of medical imaging. Even when the picture is not immediately recognizable, it is not just a random blur. It has structure, and that structure is what we want to improve or to analyse.
+
+<Ar>البشر كائنات **بصرية** في المقام الأول: فنحن نعتمد على البصر أكثر من أي حاسة أخرى. و**الصورة (image)** في هذا المقرر لقطة واحدة تمثّل شيئًا ما: شخصًا، أو مجموعة من الناس أو الحيوانات، أو مشهدًا خارجيًا، أو صورة مجهرية لمكوّن إلكتروني، أو نتيجة تصوير طبي. وحتى إن لم تكن الصورة مفهومة من النظرة الأولى، فهي ليست مجرد تشويش عشوائي. بل لها بنية، وهذه البنية هي ما نريد تحسينه أو تحليله.</Ar>
+
+## Image processing and computer vision
+
+<Ar>معالجة الصور والرؤية الحاسوبية</Ar>
+
+Image processing is usually described as a **subset of computer vision**. A computer vision system uses image processing algorithms as building blocks while it tries to emulate vision at human scale. The two differ in their **goal**, and therefore in their **output**:
+
+<Ar>تُوصف معالجة الصور (Image Processing) عادةً بأنها **جزء من الرؤية الحاسوبية (Computer Vision)**. فنظام الرؤية الحاسوبية يستخدم خوارزميات معالجة الصور لبناتٍ أساسية وهو يحاول محاكاة الإبصار على مستوى الإنسان. ويختلف المجالان في **الهدف**، ومن ثَمّ في **المخرجات**:</Ar>
+
+|  | Image processing <Ar>معالجة الصور</Ar> | Computer vision <Ar>الرؤية الحاسوبية</Ar> |
+|---|---|---|
+| Input <Ar>المدخلات</Ar> | An image <Ar>صورة</Ar> | An image <Ar>صورة</Ar> |
+| Output <Ar>المخرجات</Ar> | The image in a different, usually better, form <Ar>الصورة نفسها في شكل مختلف، وأفضل عادةً</Ar> | Knowledge of the scene, e.g. "smiling kid" <Ar>معرفة بمحتوى المشهد، مثل «طفل مبتسم»</Ar> |
+| Typical goal <Ar>الهدف النموذجي</Ar> | Enhance the image for later use <Ar>تحسين الصورة لاستخدامها لاحقًا</Ar> | Recognise objects, detect events for automatic driving <Ar>التعرّف على الأجسام، واكتشاف الأحداث في القيادة الذاتية</Ar> |
+
+<SlideFigure page={23} caption="Image processing turns a noisy image into a clean image; computer vision turns an image into knowledge of the scene ('Smiling Kid')." captionAr="معالجة الصور تحوّل صورة مشوَّشة إلى صورة نظيفة، أما الرؤية الحاسوبية فتحوّل الصورة إلى معرفة بمحتوى المشهد («Smiling Kid»)." />
+
+The two are chained in practice. The output of one image processing step (a denoised, sharpened or segmented image) is often the input of another processing step, or of a computer vision system that then extracts the meaning.
+
+<Ar>ويتسلسل المجالان في التطبيق العملي. فمخرجات خطوة من خطوات معالجة الصور (صورة أُزيلت ضوضاؤها، أو أُبرزت تفاصيلها، أو قُطِّعت) تكون في الغالب مدخلات خطوة معالجة أخرى، أو مدخلات نظام رؤية حاسوبية يستخلص منها المعنى بعد ذلك.</Ar>
+
+### Human vision and computer vision
+
+<Ar>الإبصار البشري والرؤية الحاسوبية</Ar>
+
+In human vision the **eye** forms the image and the **brain** interprets it (mountain, sun, cloud, grass, flower). A computer replaces the eye with **sensors** (a camera) and the brain with an **inference system**, in which the image is **pre-processed**, **features** are extracted, and a **machine learning model** turns them into labels. This is where computer vision overlaps with artificial intelligence, machine learning and deep learning.
+
+<Ar>في الإبصار البشري تكوّن **العين** الصورة ويفسّرها **الدماغ** (جبل، شمس، سحابة، عشب، زهرة). أما الحاسوب فيستبدل بالعين **مستشعرات (sensors)** (كاميرا)، وبالدماغ **نظام استدلال (inference system)**، تمر فيه الصورة **بمعالجة مسبقة (preprocessing)**، ثم **تُستخلص منها السمات (features)**، ثم يحوّلها **نموذج تعلم آلة** إلى تسميات. وهنا تتداخل الرؤية الحاسوبية مع الذكاء الاصطناعي (Artificial Intelligence) وتعلم الآلة والتعلم العميق (deep learning).</Ar>
+
+## Where it is used
+
+<Ar>مجالات الاستخدام</Ar>
+
+| Field <Ar>المجال</Ar> | What vision does there <Ar>دور الرؤية فيه</Ar> |
+|---|---|
+| Surveillance (CCTV) <Ar>المراقبة (CCTV)</Ar> | Real-time monitoring, counting people, detecting crowds and **abnormal behaviour** <Ar>المراقبة في الزمن الحقيقي، وعدّ الأشخاص، واكتشاف الحشود و**السلوك غير الطبيعي**</Ar> |
+| Traffic <Ar>المرور</Ar> | **Automatic Number Plate Recognition** (ANPR) for gates and vehicle tracking <Ar>**التعرّف الآلي على لوحات أرقام السيارات (ANPR)** للتحكم في البوابات وتتبع المركبات</Ar> |
+| Self-driving cars <Ar>السيارات ذاتية القيادة</Ar> | Detecting lanes, traffic lights, signs and obstacles, even in fog <Ar>اكتشاف حارات الطريق، وإشارات المرور، واللافتات، والعوائق، حتى في الضباب</Ar> |
+| Medical imaging <Ar>التصوير الطبي</Ar> | Detecting tumours, measuring organs, enhancing X-rays, classifying chest X-rays for COVID-19 <Ar>اكتشاف الأورام، وقياس الأعضاء، وتحسين صور الأشعة السينية، وتصنيف صور الصدر لاكتشاف COVID-19</Ar> |
+| Industrial inspection <Ar>الفحص الصناعي</Ar> | Sorting products and rejecting unlabelled bottles on a conveyor belt <Ar>فرز المنتجات ورفض الزجاجات غير المُلصَق عليها بطاقات على السير الناقل</Ar> |
+
+## What is image processing?
+
+<Ar>ما معالجة الصور؟</Ar>
+
+<Definition term="Image processing" termAr="معالجة الصور (Image Processing)">
+  Changing the nature of an image in order to either <strong>(1) improve its pictorial information for human interpretation</strong>, or <strong>(2) render it more suitable for autonomous machine perception</strong>.
+
+  <Ar>تغيير طبيعة الصورة من أجل أحد أمرين: <strong>(1) تحسين محتواها المرئي ليفسّره الإنسان</strong>، أو <strong>(2) جعلها أنسب لكي تدركها الآلة بصورة مستقلة</strong>.</Ar>
+</Definition>
+
+The two goals can pull in different directions. A person prefers a sharp, clean, well-lit picture. A program is often better served by an image that would look strange to us: only the edges of the objects, or a blurred version with the distracting fine detail removed.
+
+<Ar>وقد يتعارض الهدفان. فالإنسان يفضّل صورة حادة نظيفة جيدة الإضاءة، بينما يكون البرنامج في الغالب أحسن حالًا مع صورة قد تبدو لنا غريبة: حواف الأجسام فقط، أو نسخة مموَّهة أُزيلت منها التفاصيل الدقيقة المشتِّتة.</Ar>
+
+| Operation <Ar>العملية</Ar> | Goal <Ar>الهدف</Ar> | Why <Ar>السبب</Ar> |
+|---|---|---|
+| Enhancing the edges (sharpening) <Ar>إبراز الحواف (sharpening)</Ar> | Human <Ar>الإنسان</Ar> | The image looks crisper <Ar>تبدو الصورة أوضح وأحدّ</Ar> |
+| Removing noise <Ar>إزالة الضوضاء (noise)</Ar> | Human <Ar>الإنسان</Ar> | Random errors in pixel values hide the content <Ar>الأخطاء العشوائية في قيم البكسلات تُخفي المحتوى</Ar> |
+| Removing motion blur <Ar>إزالة تشويش الحركة (motion blur)</Ar> | Human <Ar>الإنسان</Ar> | After deblurring, a car's number plate becomes readable <Ar>بعد إزالة التشويش تصبح لوحة أرقام السيارة مقروءة</Ar> |
+| Obtaining the edges <Ar>استخراج الحواف</Ar> | Machine <Ar>الآلة</Ar> | Edges are what a program needs to find and measure shapes <Ar>الحواف هي ما يحتاجه البرنامج لإيجاد الأشكال وقياسها</Ar> |
+| Removing detail (blurring) <Ar>إزالة التفاصيل (التمويه)</Ar> | Machine <Ar>الآلة</Ar> | Large-scale content is easier to analyse without fine texture <Ar>المحتوى العام أسهل في التحليل دون النسيج الدقيق</Ar> |
+
+<SlideFigure page={18} caption="Sharpening: the original alley image and the result after 'sharpening', where edges are enhanced so the image looks crisper." captionAr="الإبراز (sharpening): صورة الزقاق الأصلية والنتيجة بعد الإبراز، حيث تُقوّى الحواف فتبدو الصورة أوضح." />
+
+<SlideFigure page={21} caption="Obtaining the edges: the blocks image and its edge image, which is useful for a machine but not for a human viewer." captionAr="استخراج الحواف: صورة المكعبات وصورة حوافها، وهي مفيدة للآلة لا للمشاهد البشري." />
+
+## Image acquisition and sampling
+
+<Ar>التقاط الصورة والمعاينة</Ar>
+
+A real scene, and a photograph of it, is **continuous**: brightness changes smoothly from point to point. A computer can only store a finite list of numbers, so the image is digitized in two ways:
+
+<Ar>المشهد الحقيقي، وصورته الفوتوغرافية، **متصل (continuous)**: فالسطوع يتغير بسلاسة من نقطة إلى أخرى. أما الحاسوب فلا يخزّن إلا قائمة محدودة من الأرقام، ولذلك تُحوَّل الصورة إلى صيغة رقمية بطريقتين:</Ar>
+
+- **Sampling**: measure the brightness only at a grid of points, the pixel positions.
+  <Ar>**المعاينة (sampling)**: قياس السطوع عند شبكة من النقاط فقط، وهي مواضع البكسلات.</Ar>
+- **Quantization**: round each measured brightness to one of a finite number of levels, for example 256 levels from 0 to 255.
+  <Ar>**التكميم (quantization)**: تقريب كل قيمة سطوع مَقيسة إلى أحد عدد محدود من المستويات، مثل 256 مستوى من 0 إلى 255.</Ar>
+
+### Sampling and the Nyquist criterion
+
+<Ar>المعاينة ومعيار نايكويست</Ar>
+
+Sampling is the process of digitizing a continuous function. The slides use the function
+
+<Ar>المعاينة (sampling) هي عملية تحويل دالة متصلة إلى صيغة رقمية. وتستخدم الشرائح الدالة</Ar>
+
+$$
+y = \sin(x) + \frac{1}{3}\sin(3x)
+$$
+
+Sampled at only a few points, the dots do not reveal the shape of the curve: this is **undersampling**. Sampled at many more points, the curve can be seen and reconstructed, including the small ripples contributed by $\sin(3x)$.
+
+<Ar>إذا عُويِنت الدالة عند نقاط قليلة فقط، فإن النقاط لا تكشف شكل المنحنى: وهذه هي **المعاينة الناقصة (undersampling)**. أما إذا عُويِنت عند نقاط أكثر بكثير، فيمكن رؤية المنحنى وإعادة بنائه، بما في ذلك التموجات الصغيرة التي يضيفها $\sin(3x)$.</Ar>
+
+<Definition term="Nyquist criterion (sampling theorem)" termAr="معيار نايكويست (Nyquist criterion) أو مبرهنة المعاينة">
+  The sampling frequency must be <strong>at least twice the maximum frequency</strong> present in the function. Sampling more coarsely than this loses information that no later processing can recover.
+
+  <Ar>يجب أن يكون تردد المعاينة <strong>ضعف أعلى تردد</strong> موجود في الدالة على الأقل. والمعاينة بكثافة أقل من ذلك تُضيّع معلومات لا تستطيع أي معالجة لاحقة استرجاعها.</Ar>
+</Definition>
+
+For the function above, the fastest component is $\sin(3x)$, which completes one cycle every $2\pi/3$ units. Two samples per cycle means a sample spacing of at most $\pi/3 \approx 1.05$.
+
+<Ar>في الدالة السابقة، المركّبة الأسرع هي $\sin(3x)$، التي تُكمل دورة واحدة كل $2\pi/3$ وحدة. وعيّنتان لكل دورة تعنيان أن المسافة بين العيّنات يجب ألا تتجاوز $\pi/3 \approx 1.05$.</Ar>
+
+<SlideFigure page={24} caption="Sampling y = sin(x) + (1/3)sin(3x): with too few points the shape is lost (undersampling); with more points the curve, ripples included, is clear." captionAr="معاينة الدالة y = sin(x) + (1/3)sin(3x): مع نقاط قليلة جدًا يضيع الشكل (معاينة ناقصة)، ومع نقاط أكثر يتضح المنحنى بتموجاته." />
+
+In an image, **frequency** means how fast brightness changes across space: fine stripes, sharp edges and texture are high frequencies. Undersampling an image causes **aliasing**: fine patterns are replaced by false, coarser patterns that were never in the scene.
+
+<Ar>في الصورة، يعني **التردد (frequency)** سرعة تغيّر السطوع عبر المكان: فالخطوط الدقيقة والحواف الحادة والنسيج ترددات عالية. والمعاينة الناقصة للصورة تسبب **التداخل الطيفي (aliasing)**: إذ تحلّ محلَّ الأنماط الدقيقة أنماطٌ زائفة أخشن لم تكن موجودة في المشهد قط.</Ar>
+
+<SlideFigure page={25} caption="Effects of sampling: correct sampling shows the swirl pattern cleanly; the undersampled version shows aliasing, with false blocky patterns." captionAr="آثار المعاينة: المعاينة الصحيحة تُظهر النمط الحلزوني بوضوح، بينما تُظهر النسخة ناقصة المعاينة تداخلًا طيفيًا (aliasing) بأنماط مربعة زائفة." />
+
+### Capturing light: CCD, CMOS and flatbed scanners
+
+<Ar>التقاط الضوء: CCD و CMOS والماسحات الضوئية المسطّحة</Ar>
+
+**Light** is the predominant energy source for images, simply because it is the energy that humans observe directly; a photograph is a pictorial record of a visual scene. Visible light is also safe, cheap, easily detected and readily processed with suitable hardware, so most digital images are captured with it. Two popular devices produce them: the **digital camera**, with a CCD or a CMOS sensor, and the **flatbed scanner**.
+
+<Ar>**الضوء** هو مصدر الطاقة الغالب في الصور، لسبب بسيط هو أنه الطاقة التي يراها البشر مباشرةً؛ فالصورة الفوتوغرافية سجلّ مرئي لمشهد بصري. والضوء المرئي كذلك آمن ورخيص وسهل الاكتشاف، ويمكن معالجته بسهولة باستخدام العتاد (hardware) المناسب، ولذلك تُلتقط به معظم الصور الرقمية. وهناك جهازان شائعان لإنتاجها: **الكاميرا الرقمية** بمستشعر CCD أو CMOS، و**الماسح الضوئي المسطّح (flatbed scanner)**.</Ar>
+
+| Device <Ar>الجهاز</Ar> | How it captures the image <Ar>طريقة التقاط الصورة</Ar> | Strengths <Ar>نقاط القوة</Ar> | Weaknesses <Ar>نقاط الضعف</Ar> |
+|---|---|---|---|
+| CCD camera (Charge-Coupled Device) <Ar>كاميرا CCD (جهاز اقتران الشحنة)</Ar> | A 2-D array of light-sensitive cells (**photosites**), each producing a voltage proportional to the intensity of the light falling on it; the whole image is captured at once <Ar>مصفوفة ثنائية الأبعاد من الخلايا الحساسة للضوء (**photosites**)، تُنتج كلٌّ منها جهدًا يتناسب مع شدة الضوء الساقط عليها، وتُلتقط الصورة كلها مرة واحدة</Ar> | High resolution, robust against noise <Ar>دقة عالية، ومقاومة للضوضاء</Ar> | Costs more and needs more power than CMOS <Ar>أغلى من CMOS ويحتاج إلى طاقة أكبر</Ar> |
+| CMOS camera (Complementary Metal-Oxide Semiconductor) <Ar>كاميرا CMOS (أشباه الموصلات المكمّلة من أكسيد المعدن)</Ar> | Also an array of photosites <Ar>هي أيضًا مصفوفة من الخلايا الحساسة للضوء</Ar> | Cheaper, needs less power <Ar>أرخص، وتحتاج إلى طاقة أقل</Ar> | More susceptible to noise <Ar>أكثر تأثرًا بالضوضاء</Ar> |
+| Flatbed scanner <Ar>الماسح الضوئي المسطّح</Ar> | Same principle as the CCD, but a **single row** of photosites moves across the document and captures it row by row <Ar>المبدأ نفسه في CCD، لكن **صفًّا واحدًا** من الخلايا الحساسة للضوء يتحرك عبر المستند ويلتقطه صفًّا صفًّا</Ar> | Needs only one row of sensors <Ar>لا يحتاج إلا إلى صف واحد من المستشعرات</Ar> | Slower; only for flat, still objects <Ar>أبطأ، ولا يصلح إلا للأجسام المسطّحة الثابتة</Ar> |
+
+<SlideFigure page={28} caption="Capturing an image with a CCD array: the scene is projected onto a grid of photosites, which produces the digital output." captionAr="التقاط صورة بمصفوفة CCD: يُسقَط المشهد على شبكة من الخلايا الحساسة للضوء، فتُنتج المخرجات الرقمية." />
+
+<SlideFigure page={30} caption="Capturing an image with a CCD scanner: a single row of photosites moves down the scene and fills the output array one row at a time." captionAr="التقاط صورة بماسح CCD: صفّ واحد من الخلايا الحساسة للضوء يتحرك على المشهد ويملأ مصفوفة المخرجات صفًّا واحدًا في كل مرة." />
+
+Visible light is only a narrow band of the **electromagnetic spectrum**. The following slides show images formed with **gamma rays** (bone scans, PET), **X-rays** (chest X-ray, CT, circuit boards), **ultraviolet**, the multispectral bands of the **LANDSAT** satellite and **infrared**, as well as images generated by computer. Once digitized, all of them are arrays of numbers, and the methods of this course apply to every one.
+
+<Ar>الضوء المرئي ليس إلا نطاقًا ضيقًا من **الطيف الكهرومغناطيسي**. وتعرض الشرائح التالية صورًا تكوّنت بـ**أشعة غاما** (مسح العظام، و PET)، و**الأشعة السينية** (أشعة الصدر، و CT، واللوحات الإلكترونية)، و**الأشعة فوق البنفسجية**، والنطاقات متعددة الأطياف للقمر الصناعي **LANDSAT**، و**الأشعة تحت الحمراء**، إضافةً إلى صور يولّدها الحاسوب. وبعد تحويلها إلى صيغة رقمية تصبح كلها مصفوفات من الأرقام، وتنطبق عليها جميعًا أساليب هذا المقرر.</Ar>
+
+## Images as functions and pixels
+
+<Ar>الصورة دالةً ومصفوفةً من البكسلات</Ar>
+
+<Definition term="Digital image" termAr="الصورة الرقمية">
+  An image is a two-dimensional function <strong>f(x, y)</strong>, where x and y are spatial coordinates and the value of f at (x, y) is the <strong>intensity</strong> or <strong>grey level</strong> of the image at that point. When x, y and the values of f are all <strong>finite, discrete</strong> quantities, the image is a <strong>digital image</strong>. Its elements, each with a location and a value, are called picture elements, image elements, pels, or most often <strong>pixels</strong>.
+
+  <Ar>الصورة دالة ثنائية الأبعاد <strong>f(x, y)</strong>، حيث x و y إحداثيات مكانية، وقيمة f عند (x, y) هي <strong>الشدة (intensity)</strong> أو <strong>مستوى الرمادي (grey level)</strong> للصورة عند تلك النقطة. وعندما تكون x و y وقيم f كلها كميات <strong>محدودة ومنفصلة (discrete)</strong>، تكون الصورة <strong>صورة رقمية</strong>. وتُسمّى عناصرها، التي لكلٍّ منها موضع وقيمة، عناصر الصورة (picture elements أو image elements) أو pels، وأكثر الأسماء شيوعًا <strong>البكسلات (pixels)</strong>.</Ar>
+</Definition>
+
+Seeing an image as a function lets us plot it as a surface over the $(x, y)$ plane, with bright points high and dark points low, and lets us apply mathematics to it. A digital image differs from a photograph in that $x$, $y$ and $f(x, y)$ are all discrete, usually integers. A $256 \times 256$ grayscale image has $x$ and $y$ running from 1 to 256 and brightness values from 0 (black) to 255 (white). Some software scales brightness to the range 0 to 1 instead; the point marked $f(x, y) = 0.8$ in McAndrew's koala figure is a light grey.
+
+<Ar>النظر إلى الصورة على أنها دالة يتيح لنا رسمها سطحًا فوق المستوى $(x, y)$، تكون فيه النقاط الساطعة مرتفعة والنقاط الداكنة منخفضة، ويتيح لنا تطبيق الرياضيات عليها. وتختلف الصورة الرقمية عن الصورة الفوتوغرافية في أن $x$ و $y$ و $f(x, y)$ كلها منفصلة، وتكون أعدادًا صحيحة عادةً. فالصورة الرمادية ذات الأبعاد $256 \times 256$ تمتد فيها $x$ و $y$ من 1 إلى 256، وقيم السطوع من 0 (أسود) إلى 255 (أبيض). وبعض البرامج تجعل مدى السطوع من 0 إلى 1 بدلًا من ذلك؛ فالنقطة المُعلَّمة $f(x, y) = 0.8$ في شكل الكوالا لدى McAndrew رمادية فاتحة.</Ar>
+
+Stored in the computer, a grayscale image of $M$ rows and $N$ columns is simply a **matrix**:
+
+<Ar>وعند تخزين الصورة الرمادية ذات $M$ صفًّا و $N$ عمودًا في الحاسوب، فهي ببساطة **مصفوفة**:</Ar>
+
+$$
+f = \begin{bmatrix}
+f(1,1) & f(1,2) & \cdots & f(1,N) \\
+f(2,1) & f(2,2) & \cdots & f(2,N) \\
+\vdots & \vdots & \ddots & \vdots \\
+f(M,1) & f(M,2) & \cdots & f(M,N)
+\end{bmatrix}
+$$
+
+<SlideFigure page={43} caption="Image representation: a small grayscale face, its blocks of grey, and the matrix of numbers (0 = black, 255 = white) that the computer actually stores." captionAr="تمثيل الصورة: وجه رمادي صغير، ومربعاته الرمادية، ومصفوفة الأرقام (0 = أسود، 255 = أبيض) التي يخزّنها الحاسوب فعليًا." />
+
+In MATLAB the pixel in row $r$ and column $c$ is `f(r,c)`, with indices starting at 1. In Python with NumPy it is `f[r, c]`, with indices starting at 0.
+
+<Ar>في MATLAB يكون البكسل الواقع في الصف $r$ والعمود $c$ هو `f(r,c)`، وتبدأ الفهارس من 1. أما في Python مع NumPy فهو `f[r, c]`، وتبدأ الفهارس من 0.</Ar>
+
+### Pixels and neighbourhoods
+
+<Ar>البكسلات والجوار</Ar>
+
+Many operations look not at a single pixel but at the pixel together with the pixels around it, its **neighbourhood**. In McAndrew's example the current pixel has the value 113, and the operation uses the $3 \times 5$ neighbourhood (3 rows, 5 columns) centred on it:
+
+<Ar>كثير من العمليات لا تنظر إلى بكسل واحد، بل إلى البكسل مع البكسلات المحيطة به، أي **جواره (neighbourhood)**. ففي مثال McAndrew قيمة البكسل الحالي 113، وتستخدم العملية الجوار ذا الأبعاد $3 \times 5$ (3 صفوف و5 أعمدة) المتمركز حوله:</Ar>
+
+| 127 | 87 | 139 | 44 | 228 |
+|---|---|---|---|---|
+| 229 | 136 | **113** | 250 | 51 |
+| 210 | 185 | 177 | 69 | 76 |
+
+Operations that use only the pixel's own value are **point operations** (Lecture 2). Operations that use a neighbourhood, such as averaging or edge finding, are **neighbourhood operations**.
+
+<Ar>العمليات التي لا تستخدم إلا قيمة البكسل نفسه هي **العمليات النقطية (point operations)** (المحاضرة 2). أما العمليات التي تستخدم الجوار، مثل حساب المتوسط أو إيجاد الحواف، فهي **عمليات الجوار (neighbourhood operations)**.</Ar>
+
+## Storing images: raster vs vector
+
+<Ar>تخزين الصور: الصور النقطية مقابل الرسوم المتجهية</Ar>
+
+Computers store images with two different techniques.
+
+<Ar>تخزّن الحواسيب الصور بأسلوبين مختلفين.</Ar>
+
+**Raster graphics** (bitmaps) store a grid of individual pixels that together compose the image. They are used for analog images such as photographs. A photograph is analog data, like audio, except that its intensity (color) varies in **space** instead of in time, so it must be sampled; for images, sampling is normally called **scanning**, and the samples are the pixels. A raster image is **resolution-specific**: its quality depends on how many pixels were recorded, measured in **dpi** (dots per inch). The higher the dpi, the better the resolution, but enlarging a raster image beyond its resolution makes it pixelate and go fuzzy.
+
+<Ar>تخزّن **الصور النقطية (raster graphics)** (أو صور bitmap) شبكةً من البكسلات المنفردة التي تكوّن الصورة مجتمعةً. وتُستخدم للصور التناظرية مثل الصور الفوتوغرافية. فالصورة الفوتوغرافية بيانات تناظرية مثل الصوت، إلا أن شدتها (لونها) تتغير في **المكان** لا في الزمن، ولذلك يجب معاينتها؛ وتُسمّى المعاينة في الصور عادةً **المسح (scanning)**، والعيّنات هي البكسلات. والصورة النقطية **مرتبطة بالدقة**: فجودتها تعتمد على عدد البكسلات المسجّلة، وتُقاس بوحدة **dpi** (نقطة لكل بوصة). وكلما زاد dpi كانت الدقة (resolution) أفضل، لكن تكبير الصورة النقطية أكثر مما تسمح به دقتها يجعلها متقطعة إلى مربعات وضبابية.</Ar>
+
+**Vector graphics** do not store a bit pattern for each pixel. They store mathematical formulas for geometric primitives (polygons, lines, curves, circles and rectangles), that is, a set of instructions on **how** to draw the shape. A red line from point $a$ to point $b$ is stored as:
+
+<Ar>أما **الرسوم المتجهية (vector graphics)** فلا تخزّن نمطًا من البِتّات لكل بكسل. بل تخزّن صيغًا رياضية لعناصر هندسية أولية (المضلعات، والخطوط، والمنحنيات، والدوائر، والمستطيلات)، أي مجموعة من التعليمات حول **كيفية** رسم الشكل. فالخط الأحمر من النقطة $a$ إلى النقطة $b$ يُخزَّن هكذا:</Ar>
+
+1. Draw a dot at point $a$.
+   <Ar>ارسم نقطة عند $a$.</Ar>
+2. Draw a dot at point $b$.
+   <Ar>ارسم نقطة عند $b$.</Ar>
+3. Connect the points with a straight line of a certain thickness.
+   <Ar>صِل النقطتين بخط مستقيم ذي سُمك معيّن.</Ar>
+4. Color the line red.
+   <Ar>لوِّن الخط بالأحمر.</Ar>
+
+Making the image larger only changes the coordinates used by the same instructions, so the file size does not change and the line stays smooth and clear at any size. This is why **fonts** are stored as vectors: a letter looks equally smooth small or huge.
+
+<Ar>تكبير الصورة لا يغيّر إلا الإحداثيات التي تستخدمها التعليمات نفسها، فلا يتغير حجم الملف ويبقى الخط ناعمًا وواضحًا بأي حجم. ولهذا تُخزَّن **الخطوط الطباعية (fonts)** على هيئة رسوم متجهية: فالحرف يبدو ناعمًا بالقدر نفسه صغيرًا كان أو ضخمًا.</Ar>
+
+<SlideFigure page={40} caption="The same bottle label zoomed in: stored as a vector the text stays sharp; stored as a bitmap it breaks into visible pixels." captionAr="ملصق الزجاجة نفسه بعد التكبير: عند تخزينه رسمًا متجهيًا يبقى النص حادًا، وعند تخزينه صورة نقطية (bitmap) يتفكك إلى بكسلات ظاهرة." />
+
+| Feature <Ar>الخاصية</Ar> | Raster image <Ar>الصورة النقطية</Ar> | Vector image <Ar>الصورة المتجهية</Ar> |
+|---|---|---|
+| Representation <Ar>التمثيل</Ar> | Grid of pixels <Ar>شبكة من البكسلات</Ar> | Mathematical description of shapes <Ar>وصف رياضي للأشكال</Ar> |
+| Resolution <Ar>الدقة</Ar> | Resolution-dependent <Ar>مرتبطة بالدقة</Ar> | Resolution-independent <Ar>مستقلة عن الدقة</Ar> |
+| Enlarging <Ar>التكبير</Ar> | Pixelates, goes fuzzy <Ar>تتقطع إلى مربعات وتصبح ضبابية</Ar> | Stays smooth <Ar>تبقى ناعمة</Ar> |
+| File size grows with… <Ar>يزداد حجم الملف بزيادة…</Ar> | The number of pixels <Ar>عدد البكسلات</Ar> | The number and complexity of shapes <Ar>عدد الأشكال وتعقيدها</Ar> |
+| Best for <Ar>الأنسب لـ</Ar> | Photographs, detailed textures <Ar>الصور الفوتوغرافية، والنسيج المفصّل</Ar> | Logos, fonts, diagrams <Ar>الشعارات، والخطوط الطباعية، والمخططات</Ar> |
+| Formats <Ar>الصيغ</Ar> | JPEG, PNG, BMP, TIFF, GIF <Ar>الصيغ JPEG و PNG و BMP و TIFF و GIF</Ar> | SVG, EPS, AI, PDF <Ar>الصيغ SVG و EPS و AI و PDF</Ar> |
+
+Image processing works on **raster** images: every operation in this course is an operation on a grid of pixels.
+
+<Ar>تعمل معالجة الصور على الصور **النقطية (raster)**: فكل عملية في هذا المقرر عملية على شبكة من البكسلات.</Ar>
+
+## Aspects of image processing
+
+<Ar>جوانب معالجة الصور</Ar>
+
+<Grid cols={3}>
+  <Card title="Image enhancement" titleAr="تحسين الصورة (enhancement)" tag="suit a purpose">
+    Processing an image so that the result is <strong>more suitable for a particular application</strong>: sharpening or de-blurring an out-of-focus image, highlighting edges, improving contrast or brightening, removing noise.
+
+    <Ar>معالجة الصورة بحيث تكون النتيجة <strong>أنسب لتطبيق معيّن</strong>: إبراز صورة خارج التركيز أو إزالة تشويشها، وإظهار الحواف، وتحسين التباين (contrast) أو زيادة السطوع، وإزالة الضوضاء.</Ar>
+  </Card>
+  <Card title="Image restoration" titleAr="استعادة الصورة (restoration)" tag="undo known damage">
+    <strong>Reversing the damage</strong> done to an image by a <strong>known cause</strong>: removing blur caused by linear motion, removing optical distortions, removing periodic interference.
+
+    <Ar><strong>عكس الضرر</strong> الذي لحق بالصورة بسبب <strong>معروف</strong>: إزالة التشويش الناتج عن حركة خطية، وإزالة التشوهات البصرية، وإزالة التداخل الدوري.</Ar>
+  </Card>
+  <Card title="Image segmentation" titleAr="تقطيع الصورة (segmentation)" tag="split into parts">
+    <strong>Subdividing an image into its constituent parts</strong>, or isolating certain aspects of it: finding lines, circles or particular shapes; in an aerial photograph, identifying cars, trees, buildings or roads (<strong>semantic segmentation</strong>, where every pixel gets a class).
+
+    <Ar><strong>تقسيم الصورة إلى الأجزاء المكوّنة لها</strong>، أو عزل جوانب معيّنة منها: إيجاد الخطوط أو الدوائر أو أشكال بعينها؛ وفي صورة جوية، تحديد السيارات والأشجار والمباني والطرق (<strong>التقطيع الدلالي (semantic segmentation)</strong>، حيث يُعطى كل بكسل فئة).</Ar>
+  </Card>
+</Grid>
+
+<Callout type="note" title="Enhancement or restoration?" titleAr="تحسين أم استعادة؟">
+  Both can reduce blur or noise. The difference is the <strong>knowledge used</strong>. Restoration models the specific degradation (for example, a camera that moved a known distance in a known direction) and tries to undo it. Enhancement only makes the image look better or suit a task, without modelling how it was damaged. "Make this dull photo more vivid" is enhancement; "undo the blur of a camera that slid 10 pixels to the right" is restoration.
+
+  <Ar>كلاهما قد يقلل التشويش أو الضوضاء. والفرق هو <strong>المعرفة المستخدمة</strong>. فالاستعادة (restoration) تنمذج التدهور المحدد (مثل كاميرا تحركت مسافة معروفة في اتجاه معروف) وتحاول عكسه. أما التحسين (enhancement) فيجعل الصورة تبدو أفضل أو تناسب مهمة ما، دون نمذجة الطريقة التي تضررت بها. فعبارة «اجعل هذه الصورة الباهتة أكثر حيوية» تحسين، وعبارة «أزِل تشويش كاميرا انزلقت 10 بكسلات إلى اليمين» استعادة.</Ar>
+</Callout>
+
+## An image processing task
+
+<Ar>مهمة معالجة الصور</Ar>
+
+A typical task, such as reading a car's number plate, passes through these steps:
+
+<Ar>تمر المهمة النموذجية، مثل قراءة لوحة أرقام سيارة، بالخطوات التالية:</Ar>
+
+<Steps>
+
+1. **Acquiring the image**: capture it with a camera or scanner and digitize it (sampling and quantization), giving a matrix of pixel values. *Photograph the car.*
+   <Ar>**التقاط الصورة**: تصويرها بكاميرا أو ماسح ضوئي وتحويلها إلى صيغة رقمية (المعاينة والتكميم)، فنحصل على مصفوفة من قيم البكسلات. *تصوير السيارة.*</Ar>
+2. **Preprocessing**: improve the image before the main job: remove noise, enhance contrast, sharpen or smooth. *Brighten a dark photo and remove noise.*
+   <Ar>**المعالجة المسبقة (preprocessing)**: تحسين الصورة قبل المهمة الرئيسية: إزالة الضوضاء، وتحسين التباين، والإبراز أو التنعيم (smoothing). *زيادة سطوع صورة داكنة وإزالة ضوضائها.*</Ar>
+3. **Segmentation**: separate the objects of interest from the background. *Find the plate, then each character on it.*
+   <Ar>**التقطيع (segmentation)**: فصل الأجسام المهمة عن الخلفية (background). *إيجاد اللوحة، ثم كل حرف عليها.*</Ar>
+4. **Representation and description**: describe each object by features a program can compare: size, shape, boundary, texture, color. *Describe each character's strokes.*
+   <Ar>**التمثيل والوصف**: وصف كل جسم بسمات يستطيع البرنامج مقارنتها: الحجم، والشكل، والحدود، والنسيج، واللون. *وصف خطوط كل حرف.*</Ar>
+
+</Steps>
+
+The course book adds the final stages: **recognition and interpretation**, which assign labels to the described objects and draw a conclusion (*the plate reads "DS 8354"; open the gate*).
+
+<Ar>ويضيف كتاب المقرر المراحل الأخيرة: **التعرّف والتفسير**، اللذين يعطيان الأجسام الموصوفة تسميات ويستخلصان نتيجة (*اللوحة تُقرأ «DS 8354»؛ افتح البوابة*).</Ar>
+
+### Example: counting coins
+
+<Ar>مثال: عدّ العملات المعدنية</Ar>
+
+1. **Segment**: threshold the grayscale image so the dark coins become white (1) on a black (0) background.
+   <Ar>**التقطيع**: تطبيق عتبة (threshold) على الصورة الرمادية بحيث تصبح العملات الداكنة بيضاء (1) على خلفية سوداء (0).</Ar>
+2. **Erode** to separate objects: touching coins merge into one white blob, and erosion shrinks every white region until they come apart.
+   <Ar>**التآكل (erosion)** لفصل الأجسام: العملات المتلامسة تندمج في كتلة (blob) بيضاء واحدة، والتآكل يُقلّص كل منطقة بيضاء حتى تنفصل.</Ar>
+3. **Count** the separate white regions (connected components): $N = 22$.
+   <Ar>**العدّ**: عدّ المناطق البيضاء المنفصلة (المكوّنات المتصلة connected components): $N = 22$.</Ar>
+
+<SlideFigure page={53} caption="Counting coins: the original image is segmented by thresholding, eroded with a structuring element to separate touching coins, and the regions are counted (N = 22)." captionAr="عدّ العملات: تُقطَّع الصورة الأصلية بالعتبة، ثم تُطبَّق عليها عملية التآكل بعنصر بنائي (structuring element) لفصل العملات المتلامسة، ثم تُعدّ المناطق (N = 22)." />
+
+```matlab title="count_coins.m"
+g  = imread('dark_coins.png');        % grayscale: dark coins on a light background
+bw = ~imbinarize(g);                  % 1. segment: threshold, then invert so coins are 1
+bw = imerode(bw, strel('disk', 7));   % 2. erode (the disk size depends on how much coins touch)
+[labels, n] = bwlabel(bw);            % 3. label the connected regions and count them
+fprintf('N = %d\n', n)
+```
+
+A real system follows the same pattern. An **automatic fingerprint identification system** (AFIS) preprocesses the fingerprint image, enhances its ridges, extracts **minutiae** features (the points where ridges end or split), and matches them against a database to authenticate the person.
+
+<Ar>ويتبع النظام الحقيقي النمط نفسه. فـ**نظام التعرّف الآلي على بصمات الأصابع** (AFIS) يُجري معالجة مسبقة لصورة البصمة، ويحسّن خطوطها البارزة، ويستخلص سمات **النقاط الدقيقة (minutiae)** (النقاط التي تنتهي عندها الخطوط أو تتفرع)، ثم يطابقها مع قاعدة بيانات للتحقق من هوية الشخص.</Ar>
+
+## Types of digital images
+
+<Ar>أنواع الصور الرقمية</Ar>
+
+Raster images come in four basic types, which differ in what a pixel value means and how many bits it needs.
+
+<Ar>تأتي الصور النقطية في أربعة أنواع أساسية، تختلف في معنى قيمة البكسل وفي عدد البِتّات التي يحتاجها.</Ar>
+
+### Binary images
+
+<Ar>الصور الثنائية</Ar>
+
+Each pixel is just **black or white**, 0 or 1. With two possible values a pixel needs only **one bit**, so binary images are very efficient to store. They suit text (printed or handwritten), fingerprints and architectural plans, and they are the usual result of thresholding and edge detection: the edge image of the blocks is binary, with 1 for the white edges and 0 for the black background.
+
+<Ar>كل بكسل إما **أسود أو أبيض**، أي 0 أو 1. ولأن للبكسل قيمتين ممكنتين فقط، فهو لا يحتاج إلا إلى **بِت واحد**، ولذلك تكون الصور الثنائية (binary) فعّالة جدًا في التخزين. وهي تناسب النصوص (المطبوعة أو المكتوبة بخط اليد)، وبصمات الأصابع، والمخططات المعمارية، وهي النتيجة المعتادة للتقطيع بالعتبة (thresholding) ولكشف الحواف (edge detection): فصورة حواف المكعبات ثنائية، فيها 1 للحواف البيضاء و0 للخلفية السوداء.</Ar>
+
+### Grayscale images
+
+<Ar>الصور الرمادية</Ar>
+
+Each pixel is a **shade of grey**, normally from 0 (black) to 255 (white): 256 levels, exactly **8 bits** (one byte) per pixel. The range is fine enough for smooth-looking shading, and one byte per pixel makes the image easy to store and process. A grayscale image has a **single channel**, so it needs a third of the storage and computation of a color image, and it is preferred whenever color carries no useful information.
+
+<Ar>كل بكسل **درجة من درجات الرمادي**، عادةً من 0 (أسود) إلى 255 (أبيض): أي 256 مستوى، وهي **8 بِتّات** بالضبط (بايت واحد) لكل بكسل. وهذا المدى دقيق بما يكفي لظلال تبدو ناعمة، ووجود بايت واحد لكل بكسل يجعل الصورة سهلة التخزين والمعالجة. وللصورة الرمادية (grayscale) **قناة (channel) واحدة**، فهي تحتاج إلى ثلث ما تحتاجه الصورة الملونة من تخزين وحساب، وتُفضَّل كلما كان اللون لا يحمل معلومات مفيدة.</Ar>
+
+The number of bits per pixel, the **bit depth** $k$, fixes the number of grey levels $L = 2^k$:
+
+<Ar>عدد البِتّات لكل بكسل، أي **عمق البت (bit depth)** $k$، يحدد عدد مستويات الرمادي $L = 2^k$:</Ar>
+
+| Bit depth $k$ <Ar>عمق البت $k$</Ar> | 1 | 2 | 4 | 8 | 10 | 16 |
+|---|---|---|---|---|---|---|
+| Grey levels $L = 2^k$ <Ar>مستويات الرمادي $L = 2^k$</Ar> | 2 | 4 | 16 | 256 | 1024 | 65536 |
+
+With too few levels, smooth gradients (a sky, a cheek) break into visible bands; going up from 1 to 8 bits lets the image show ever finer changes in brightness.
+
+<Ar>ومع عدد قليل جدًا من المستويات، تتفكك التدرجات الناعمة (سماء، أو خدّ) إلى أشرطة ظاهرة؛ والارتفاع من 1 إلى 8 بِتّات يتيح للصورة إظهار تغيرات في السطوع أدقّ فأدقّ.</Ar>
+
+### RGB (true color) images
+
+<Ar>صور RGB (الألوان الحقيقية)</Ar>
+
+Each pixel has **three values**, the amounts of **red**, **green** and **blue**, each usually from 0 to 255. The image is stored as three matrices (a 3-D array of size rows × columns × 3), one per channel. That is $3 \times 8 = 24$ bits per pixel and $2^{24} = 16{,}777{,}216$ possible colors.
+
+<Ar>لكل بكسل **ثلاث قيم**، هي مقادير **الأحمر** و**الأخضر** و**الأزرق**، وكلٌّ منها عادةً من 0 إلى 255. وتُخزَّن الصورة على هيئة ثلاث مصفوفات (مصفوفة ثلاثية الأبعاد حجمها الصفوف × الأعمدة × 3)، واحدة لكل قناة (channel). أي $3 \times 8 = 24$ بِتًّا لكل بكسل، و $2^{24} = 16{,}777{,}216$ لونًا ممكنًا.</Ar>
+
+<SlideFigure page={59} caption="A true color image: a small patch around one point of the flower image is described by three matrices, the red, green and blue values." captionAr="صورة بالألوان الحقيقية: رقعة صغيرة حول نقطة من صورة الزهور توصف بثلاث مصفوفات، هي قيم الأحمر والأخضر والأزرق." />
+
+### Indexed images
+
+<Ar>الصور المفهرسة</Ar>
+
+An **indexed image** stores, for each pixel, an **index** into a **color map** (palette): a table with one row per color, each row holding a red, green and blue value (between 0 and 1 in MATLAB). The pixel values are row numbers, not colors, so the matrix of indices means nothing without its map. In MATLAB, for a `uint8` indexed image, index 0 refers to the first row of the map; the boxed pixel value 6 in the emu image therefore picks row 7, the dark grey (0.2627, 0.2588, 0.2549). With up to 256 colors a pixel needs only 8 bits, plus the small map: a third of true color.
+
+<Ar>تخزّن **الصورة المفهرسة (indexed image)** لكل بكسل **فهرسًا** يشير إلى **خريطة ألوان (color map)** (لوحة ألوان palette): وهي جدول فيه صف لكل لون، ويحمل كل صف قيمة للأحمر وأخرى للأخضر وثالثة للأزرق (بين 0 و1 في MATLAB). فقيم البكسلات أرقام صفوف لا ألوان، ولذلك لا معنى لمصفوفة الفهارس دون خريطتها. وفي MATLAB، في الصورة المفهرسة من النوع `uint8` يشير الفهرس 0 إلى الصف الأول من الخريطة؛ ولذلك فإن قيمة البكسل 6 المحاطة بإطار في صورة طائر الإيمو تختار الصف 7، وهو الرمادي الداكن (0.2627، 0.2588، 0.2549). ومع 256 لونًا على الأكثر لا يحتاج البكسل إلا إلى 8 بِتّات، إضافةً إلى الخريطة الصغيرة: أي ثلث ما تحتاجه الألوان الحقيقية.</Ar>
+
+<SlideFigure page={60} caption="An indexed color image: each pixel holds an index, and the index selects a row (red, green, blue) of the color map." captionAr="صورة ملونة مفهرسة: يحمل كل بكسل فهرسًا، ويختار الفهرس صفًّا (أحمر، أخضر، أزرق) من خريطة الألوان." />
+
+| Type <Ar>النوع</Ar> | What a pixel holds <Ar>ما يحمله البكسل</Ar> | Bits per pixel <Ar>البِتّات لكل بكسل</Ar> | Typical use <Ar>الاستخدام النموذجي</Ar> |
+|---|---|---|---|
+| Binary <Ar>ثنائية</Ar> | 0 or 1 <Ar>0 أو 1</Ar> | 1 | Text, fingerprints, plans, masks <Ar>النصوص، والبصمات، والمخططات، والأقنعة</Ar> |
+| Grayscale <Ar>رمادية</Ar> | One grey level, 0 to 255 <Ar>مستوى رمادي واحد من 0 إلى 255</Ar> | 8 | Natural scenes, X-rays <Ar>المشاهد الطبيعية، والأشعة السينية</Ar> |
+| RGB (true color) <Ar>RGB (ألوان حقيقية)</Ar> | Red, green and blue values, 0 to 255 each <Ar>قيم الأحمر والأخضر والأزرق، كلٌّ منها من 0 إلى 255</Ar> | 24 | Photographs <Ar>الصور الفوتوغرافية</Ar> |
+| Indexed <Ar>مفهرسة</Ar> | An index into a shared color map <Ar>فهرس يشير إلى خريطة ألوان مشتركة</Ar> | 8 (up to 256 colors) <Ar>8 (حتى 256 لونًا)</Ar> | GIF images, icons, cartoons <Ar>صور GIF، والأيقونات، والرسوم الكرتونية</Ar> |
+
+## Resolution, color depth and file size
+
+<Ar>الدقة وعمق اللون وحجم الملف</Ar>
+
+**Resolution.** Just as audio is sampled in time, an image is sampled in space, so we must decide how many pixels to record for each square or linear inch. This scanning rate is the **resolution**. If it is high enough, the human eye cannot see the discontinuity between pixels in the reproduced image. Resolution is also quoted as a pixel count, such as $1920 \times 1080$ for Full HD.
+
+<Ar>**الدقة.** كما يُعايَن الصوت في الزمن، تُعايَن الصورة في المكان، ولذلك يجب أن نقرر عدد البكسلات التي نسجّلها لكل بوصة مربعة أو طولية. ومعدل المسح هذا هو **الدقة (resolution)**. فإذا كانت عالية بما يكفي، لا تستطيع العين البشرية رؤية الانقطاع بين البكسلات في الصورة المُعاد إنتاجها. وتُذكر الدقة أيضًا بعدد البكسلات، مثل $1920 \times 1080$ في Full HD.</Ar>
+
+**Color depth.** The number of bits used to represent a pixel is its **color depth**, and it depends on how the pixel's color is encoded. Our eyes have different photoreceptor cells: some respond to the three primary colors red, green and blue (hence **RGB**), while others respond only to the intensity of light.
+
+<Ar>**عمق اللون.** عدد البِتّات المستخدمة لتمثيل البكسل هو **عمق اللون (color depth)**، ويعتمد على طريقة ترميز لون البكسل. ففي أعيننا خلايا مستقبِلة للضوء من أنواع مختلفة: بعضها يستجيب للألوان الأساسية الثلاثة الأحمر والأخضر والأزرق (ومن هنا جاء الاسم **RGB**)، وبعضها لا يستجيب إلا لشدة الضوء.</Ar>
+
+**True-Color** encodes a pixel with 24 bits, 8 for each primary. Some colors in True-Color:
+
+<Ar>يرمّز نظام **الألوان الحقيقية (True-Color)** البكسل بـ 24 بِتًّا، منها 8 لكل لون أساسي. وهذه بعض الألوان في نظام الألوان الحقيقية:</Ar>
+
+| Color <Ar>اللون</Ar> | Red <Ar>الأحمر</Ar> | Green <Ar>الأخضر</Ar> | Blue <Ar>الأزرق</Ar> | Color <Ar>اللون</Ar> | Red <Ar>الأحمر</Ar> | Green <Ar>الأخضر</Ar> | Blue <Ar>الأزرق</Ar> |
+|---|---|---|---|---|---|---|---|
+| Black <Ar>أسود</Ar> | 0 | 0 | 0 | Yellow <Ar>أصفر</Ar> | 255 | 255 | 0 |
+| Red <Ar>أحمر</Ar> | 255 | 0 | 0 | Cyan <Ar>سماوي</Ar> | 0 | 255 | 255 |
+| Green <Ar>أخضر</Ar> | 0 | 255 | 0 | Magenta <Ar>أرجواني</Ar> | 255 | 0 | 255 |
+| Blue <Ar>أزرق</Ar> | 0 | 0 | 255 | White <Ar>أبيض</Ar> | 255 | 255 | 255 |
+
+Equal amounts of red, green and blue always give a grey; this is why a grayscale image needs only one number per pixel.
+
+<Ar>المقادير المتساوية من الأحمر والأخضر والأزرق تعطي دائمًا لونًا رماديًا؛ ولهذا لا تحتاج الصورة الرمادية إلا إلى رقم واحد لكل بكسل.</Ar>
+
+**Indexed color** (palette color) uses only a portion of the 16,777,216 True-Color colors: typically a palette of 256 entries, each holding one True-Color, with each pixel storing an 8-bit index into it.
+
+<Ar>أما **الألوان المفهرسة (indexed color)** أو ألوان اللوحة (palette color) فلا تستخدم إلا جزءًا من ألوان True-Color البالغة 16,777,216 لونًا: لوحةً تضم عادةً 256 مُدخلًا، يحمل كلٌّ منها لونًا حقيقيًا واحدًا، ويخزّن كل بكسل فهرسًا فيها من 8 بِتّات.</Ar>
+
+The storage needed by an image of $M \times N$ pixels with $b$ bits per pixel is
+
+<Ar>مساحة التخزين التي تحتاجها صورة من $M \times N$ بكسلًا، بعمق $b$ بِتًّا لكل بكسل، هي</Ar>
+
+$$
+\text{size (bits)} = M \times N \times b, \qquad \text{size (bytes)} = \frac{M \times N \times b}{8}
+$$
+
+For example, a high-quality digital camera uses almost three million pixels for a $3 \times 5$ inch photo:
+
+<Ar>فمثلًا، تستخدم كاميرا رقمية عالية الجودة نحو ثلاثة ملايين بكسل لصورة مقاسها $3 \times 5$ بوصة:</Ar>
+
+| Scheme <Ar>النظام</Ar> | Pixels <Ar>البكسلات</Ar> | Bits per pixel <Ar>البِتّات لكل بكسل</Ar> | Bits <Ar>البِتّات</Ar> | Bytes <Ar>البايتات</Ar> |
+|---|---|---|---|---|
+| True-Color <Ar>الألوان الحقيقية</Ar> | 3,000,000 | 24 | 72,000,000 | 9,000,000 (≈ 9 MB) <Ar>9,000,000 (≈ 9 ميغابايت)</Ar> |
+| Indexed color <Ar>الألوان المفهرسة</Ar> | 3,000,000 | 8 | 24,000,000 | 3,000,000 (≈ 3 MB) <Ar>3,000,000 (≈ 3 ميغابايت)</Ar> |
+
+**Standards for image encoding.** Several de facto standards are in use. **JPEG** (Joint Photographic Experts Group) uses the True-Color scheme but **compresses** the image to reduce the number of bits, discarding detail the eye hardly notices. **GIF** (Graphic Interchange Format) uses the **indexed color** scheme, so a GIF holds at most 256 colors.
+
+<Ar>**معايير ترميز الصور.** هناك عدة معايير شائعة الاستخدام بحكم الواقع. فمعيار **JPEG** (Joint Photographic Experts Group) يستخدم نظام الألوان الحقيقية (True-Color) لكنه **يضغط** الصورة لتقليل عدد البِتّات، فيتخلص من تفاصيل لا تكاد العين تلاحظها. أما **GIF** (Graphic Interchange Format) فيستخدم نظام **الألوان المفهرسة (indexed color)**، ولذلك لا تحمل صورة GIF أكثر من 256 لونًا.</Ar>
+
+## Converting between image types
+
+<Ar>التحويل بين أنواع الصور</Ar>
+
+### In MATLAB
+
+<Ar>في MATLAB</Ar>
+
+| Function <Ar>الدالة</Ar> | Use <Ar>الاستخدام</Ar> | Format <Ar>الصيغة</Ar> |
+|---|---|---|
+| `ind2gray` | Indexed to grayscale <Ar>من مفهرسة إلى رمادية</Ar> | `y=ind2gray(x,map);` |
+| `gray2ind` | Grayscale to indexed <Ar>من رمادية إلى مفهرسة</Ar> | `[y,map]=gray2ind(x);` |
+| `rgb2gray` | RGB to grayscale <Ar>من RGB إلى رمادية</Ar> | `y=rgb2gray(x);` |
+| `gray2rgb` | Grayscale to RGB <Ar>من رمادية إلى RGB</Ar> | `y=gray2rgb(x);` |
+| `rgb2ind` | RGB to indexed <Ar>من RGB إلى مفهرسة</Ar> | `[y,map]=rgb2ind(x,n);` |
+| `ind2rgb` | Indexed to RGB <Ar>من مفهرسة إلى RGB</Ar> | `y=ind2rgb(x,map);` |
+
+If your MATLAB version has no `gray2rgb`, stack the grey matrix three times with `cat(3,x,x,x)`. `rgb2ind` needs the number of colors `n` (or a map) to choose.
+
+<Ar>إذا لم يكن في إصدار MATLAB لديك الدالة `gray2rgb`، فكدِّس المصفوفة الرمادية ثلاث مرات باستخدام `cat(3,x,x,x)`. وتحتاج الدالة `rgb2ind` إلى عدد الألوان `n` (أو إلى خريطة ألوان) لكي تختار منها.</Ar>
+
+The lab tasks are to read an image from a file, extract its information, convert it to other types, and **note the effect of each conversion on the image size and data type**:
+
+<Ar>مهام السكشن هي قراءة صورة من ملف، واستخراج معلوماتها، وتحويلها إلى أنواع أخرى، مع **ملاحظة أثر كل تحويل على حجم الصورة ونوع بياناتها**:</Ar>
+
+```matlab title="image_types.m"
+x = imread('peppers.png');      % RGB image: 384x512x3 uint8
+info = imfinfo('peppers.png')   % file information: Width, Height, BitDepth, ColorType, ...
+whos x                          % 589,824 bytes, class uint8
+
+g  = rgb2gray(x);               % RGB -> grayscale: 384x512 uint8 (196,608 bytes)
+bw = g >= 128;                  % grayscale -> binary with threshold 128: class logical
+[ix, map] = rgb2ind(x, 256);    % RGB -> indexed: uint8 index matrix + 256x3 color map
+y  = ind2rgb(ix, map);          % indexed -> RGB: class double, values in [0,1]
+whos g bw ix map y              % y takes 4,718,592 bytes: 8 bytes per value
+imshow(bw), figure, imshow(ix, map)
+```
+
+Notice that the `double` RGB image is **eight times larger** than the `uint8` original, even though it shows the same picture.
+
+<Ar>لاحظ أن صورة RGB من النوع `double` **أكبر بثماني مرات** من الصورة الأصلية من النوع `uint8`، مع أنها تعرض الصورة نفسها.</Ar>
+
+### Grayscale to binary
+
+<Ar>من رمادية إلى ثنائية</Ar>
+
+Choose a **threshold** $T$ and compare every pixel with it:
+
+<Ar>اختر **عتبة (threshold)** $T$ وقارن كل بكسل بها:</Ar>
+
+$$
+\text{Binary}(i,j) =
+\begin{cases}
+0 & \text{if } \text{Gray}(i,j) < T \\
+1 & \text{if } \text{Gray}(i,j) \ge T
+\end{cases}
+$$
+
+### RGB to grayscale
+
+<Ar>من RGB إلى رمادية</Ar>
+
+The slides give two solutions. **Solution 1** averages the three channels:
+
+<Ar>تقدّم الشرائح حلّين. **الحل الأول** يحسب متوسط القنوات الثلاث:</Ar>
+
+$$
+\text{Gray}(i,j) = \frac{R(i,j) + G(i,j) + B(i,j)}{3}
+$$
+
+**Solution 2** simply keeps one of the channels, R, G or B, as the grey image. MATLAB's `rgb2gray` uses a third option, a **weighted** sum that follows the eye's greater sensitivity to green: $0.2989R + 0.5870G + 0.1140B$.
+
+<Ar>أما **الحل الثاني** فيحتفظ ببساطة بإحدى القنوات R أو G أو B صورةً رمادية. وتستخدم الدالة `rgb2gray` في MATLAB خيارًا ثالثًا، هو مجموع **موزون** يراعي حساسية العين الأكبر للأخضر: $0.2989R + 0.5870G + 0.1140B$.</Ar>
+
+<Callout type="example" title="By hand: RGB to grayscale to binary" titleAr="حساب يدوي: من RGB إلى رمادية إلى ثنائية">
+  Take the top-left 3 × 3 patch of the flower image (slide 59). Its channels are R = [49 55 56; 58 60 60; 58 58 54], G = [64 76 82; 93 93 91; 88 82 88] and B = [66 80 77; 81 93 96; 83 83 91]. Averaging (Solution 1) the first pixel gives (49 + 64 + 66) / 3 = 179 / 3 = 59.67, which rounds to 60. Doing this for every pixel, then thresholding at T = 75, gives the two tables below.
+
+  <Ar>خذ الرقعة 3 × 3 في أعلى يسار صورة الزهور (الشريحة 59). قنواتها هي R = [49 55 56; 58 60 60; 58 58 54] و G = [64 76 82; 93 93 91; 88 82 88] و B = [66 80 77; 81 93 96; 83 83 91]. وحساب المتوسط (الحل الأول) للبكسل الأول يعطي (49 + 64 + 66) / 3 = 179 / 3 = 59.67، وتقريبه 60. وبتكرار ذلك لكل بكسل، ثم تطبيق العتبة T = 75، نحصل على الجدولين التاليين.</Ar>
+</Callout>
+
+| Sum R + G + B <Ar>المجموع R + G + B</Ar> | Gray (rounded average) <Ar>الرمادي (المتوسط مقرَّبًا)</Ar> | Binary, T = 75 <Ar>الثنائية، T = 75</Ar> |
+|---|---|---|
+| 179, 211, 215 | 60, 70, 72 | 0, 0, 0 |
+| 232, 246, 247 | 77, 82, 82 | 1, 1, 1 |
+| 229, 223, 233 | 76, 74, 78 | 1, 0, 1 |
+
+### In Python
+
+<Ar>في Python</Ar>
+
+The same conversions with NumPy and Pillow:
+
+<Ar>التحويلات نفسها باستخدام NumPy و Pillow:</Ar>
+
+```python title="image_types.py"
+import numpy as np
+from PIL import Image
+
+rgb = np.array(Image.open("peppers.png").convert("RGB"))   # uint8, shape (H, W, 3)
+print(rgb.shape, rgb.dtype, rgb.nbytes)
+
+gray_avg = np.round(rgb.mean(axis=2)).astype(np.uint8)     # Solution 1: average of R, G, B
+gray_red = rgb[:, :, 0]                                    # Solution 2: keep one channel
+weights = np.array([0.2989, 0.5870, 0.1140])               # rgb2gray's weighted sum
+gray_w = np.round(rgb @ weights).astype(np.uint8)
+
+binary = gray_avg >= 128                                   # bool array: True (1) where gray >= T
+print(gray_avg.nbytes, binary.dtype)
+```
+
+<Takeaways>
+
+- Image processing changes an image to **improve it for people** or to **suit a machine**; computer vision goes further and turns the image into **knowledge** of the scene.
+  <Ar>تغيّر معالجة الصور (Image Processing) الصورةَ **لتحسينها للإنسان** أو **لتناسب الآلة**؛ أما الرؤية الحاسوبية (Computer Vision) فتذهب أبعد من ذلك وتحوّل الصورة إلى **معرفة** بمحتوى المشهد.</Ar>
+- Digitizing means **sampling** (where) and **quantization** (how bright). Sample at **at least twice** the highest frequency (Nyquist), or fine detail turns into **aliasing**.
+  <Ar>التحويل إلى صيغة رقمية يعني **المعاينة (sampling)** (أين نقيس) و**التكميم (quantization)** (كم السطوع). عايِن بتردد يساوي **ضعف** أعلى تردد **على الأقل** (نايكويست)، وإلا تحولت التفاصيل الدقيقة إلى **تداخل طيفي (aliasing)**.</Ar>
+- A digital image is a function $f(x, y)$ with discrete coordinates and values, stored as a **matrix of pixels** (raster); vector graphics store drawing instructions instead.
+  <Ar>الصورة الرقمية دالة $f(x, y)$ إحداثياتها وقيمها منفصلة، وتُخزَّن على هيئة **مصفوفة من البكسلات** (صورة نقطية raster)؛ أما الرسوم المتجهية فتخزّن تعليمات الرسم بدلًا من ذلك.</Ar>
+- **Enhancement** suits an image to a purpose, **restoration** undoes a known degradation, and **segmentation** splits the image into parts.
+  <Ar>**التحسين (enhancement)** يجعل الصورة مناسبة لغرض ما، و**الاستعادة (restoration)** تعكس تدهورًا معروف السبب، و**التقطيع (segmentation)** يقسّم الصورة إلى أجزاء.</Ar>
+- Binary = 1 bit, grayscale = 8 bits, RGB = 24 bits per pixel; indexed = 8-bit index plus a color map. Size in bytes $= M \times N \times b / 8$.
+  <Ar>الثنائية = 1 بِت، والرمادية = 8 بِتّات، و RGB = 24 بِتًّا لكل بكسل؛ والمفهرسة = فهرس من 8 بِتّات إضافةً إلى خريطة ألوان. والحجم بالبايت $= M \times N \times b / 8$.</Ar>
+
+</Takeaways>
+
+## Practice
+
+<Ar>تدريب</Ar>
+
+<Exercise title="Storage and grey levels" titleAr="التخزين ومستويات الرمادي" level="easy">
+
+(a) How many kilobytes does a $256 \times 256$ grayscale image with 8-bit depth need? (b) The same image as binary? (c) How many grey levels does a 10-bit image have?
+
+<Ar>(a) كم كيلوبايت تحتاج صورة رمادية أبعادها $256 \times 256$ بعمق 8 بِتّات؟ (b) وكم تحتاج الصورة نفسها إذا كانت ثنائية؟ (c) كم مستوى رمادي في صورة بعمق 10 بِتّات؟</Ar>
+
+<Solution>
+
+(a) $256 \times 256 \times 8 / 8 = 65{,}536$ bytes $= 64$ KB (with 1 KB = 1024 bytes). (b) $256 \times 256 \times 1 / 8 = 8{,}192$ bytes $= 8$ KB. (c) $2^{10} = 1024$ levels, from 0 to 1023.
+
+<Ar>(a) $256 \times 256 \times 8 / 8 = 65{,}536$ بايت $= 64$ KB (على اعتبار أن 1 KB = 1024 بايت). (b) $256 \times 256 \times 1 / 8 = 8{,}192$ بايت $= 8$ KB. (c) $2^{10} = 1024$ مستوى، من 0 إلى 1023.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="RGB to grayscale to binary" titleAr="من RGB إلى رمادية إلى ثنائية" level="medium">
+
+A $2 \times 3$ RGB patch has R = [83 78 72; 88 91 91], G = [125 119 113; 137 136 132] and B = [135 128 126; 141 129 129]. (a) Convert it to grayscale by averaging (Solution 1), rounding to the nearest integer. (b) Threshold the result at $T = 110$. (c) What binary image do you get if you use Solution 2 with the red channel instead?
+
+<Ar>رقعة RGB أبعادها $2 \times 3$ فيها R = [83 78 72; 88 91 91] و G = [125 119 113; 137 136 132] و B = [135 128 126; 141 129 129]. (a) حوّلها إلى صورة رمادية بحساب المتوسط (الحل الأول) مع التقريب إلى أقرب عدد صحيح. (b) طبّق على النتيجة العتبة $T = 110$. (c) ما الصورة الثنائية التي تحصل عليها إذا استخدمت الحل الثاني بالقناة الحمراء بدلًا من ذلك؟</Ar>
+
+<Solution>
+
+(a) Sums: 343, 325, 311 / 366, 356, 352. Averages: 114.33, 108.33, 103.67 / 122, 118.67, 117.33, so Gray = [114 108 104; 122 119 117]. (b) Binary = [1 0 0; 1 1 1]. (c) Every red value is below 110, so the binary image is all zeros: the choice of conversion changes the result, which is why the averaged or weighted versions are usually preferred.
+
+<Ar>(a) المجاميع: 343، 325، 311 / 366، 356، 352. والمتوسطات: 114.33، 108.33، 103.67 / 122، 118.67، 117.33، إذن Gray = [114 108 104; 122 119 117]. (b) Binary = [1 0 0; 1 1 1]. (c) كل قيم الأحمر أقل من 110، فتكون الصورة الثنائية كلها أصفارًا: فطريقة التحويل تغيّر النتيجة، ولهذا تُفضَّل عادةً الطريقة القائمة على المتوسط أو على المجموع الموزون.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="True-Color or indexed?" titleAr="ألوان حقيقية أم مفهرسة؟" level="hard">
+
+A Full HD image has $1920 \times 1080$ pixels. (a) How many bytes does it need in True-Color? (b) How many as an indexed image with a 256-color map, counting the map at 3 bytes per entry? (c) Which would you choose for a photograph, and which for a company logo with 12 flat colors?
+
+<Ar>صورة Full HD أبعادها $1920 \times 1080$ بكسلًا. (a) كم بايتًا تحتاج بنظام الألوان الحقيقية (True-Color)؟ (b) وكم تحتاج صورةً مفهرسة بخريطة من 256 لونًا، مع احتساب الخريطة بـ 3 بايتات لكل مُدخل؟ (c) أيهما تختار لصورة فوتوغرافية، وأيهما لشعار شركة فيه 12 لونًا مسطّحًا؟</Ar>
+
+<Solution>
+
+The image has $1920 \times 1080 = 2{,}073{,}600$ pixels. (a) $2{,}073{,}600 \times 3 = 6{,}220{,}800$ bytes (about 5.9 MB). (b) $2{,}073{,}600 \times 1 + 256 \times 3 = 2{,}074{,}368$ bytes (about 2 MB), roughly a third. (c) The photograph has far more than 256 distinct colors, so it needs True-Color (JPEG). The logo has only 12 colors, so an indexed image (GIF) stores it exactly at a third of the size.
+
+<Ar>في الصورة $1920 \times 1080 = 2{,}073{,}600$ بكسل. (a) $2{,}073{,}600 \times 3 = 6{,}220{,}800$ بايت (نحو 5.9 MB). (b) $2{,}073{,}600 \times 1 + 256 \times 3 = 2{,}074{,}368$ بايت (نحو 2 MB)، أي الثلث تقريبًا. (c) في الصورة الفوتوغرافية ألوان مختلفة أكثر بكثير من 256، فهي تحتاج إلى الألوان الحقيقية (JPEG). أما الشعار ففيه 12 لونًا فقط، فتخزّنه الصورة المفهرسة (GIF) تخزينًا تامًا بثلث الحجم.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "What is the output of a computer vision system, as opposed to an image processing system?",
+      qAr: "ما مخرجات نظام الرؤية الحاسوبية، في مقابل نظام معالجة الصور؟",
+      options: ["An enhanced image", "Knowledge of the scene, such as 'smiling kid'", "A compressed image file", "A color map"],
+      optionsAr: ["صورة محسَّنة", "معرفة بمحتوى المشهد، مثل «طفل مبتسم»", "ملف صورة مضغوط", "خريطة ألوان"],
+      answer: 1,
+      explain: "Image processing outputs an image; computer vision outputs an understanding of what the image shows.",
+      explainAr: "مخرجات معالجة الصور صورة، أما مخرجات الرؤية الحاسوبية ففهمٌ لما تُظهره الصورة."
+    },
+    {
+      q: "According to the Nyquist criterion, the sampling frequency must be…",
+      qAr: "وفقًا لمعيار نايكويست، يجب أن يكون تردد المعاينة…",
+      options: ["Equal to the maximum frequency", "At least twice the maximum frequency", "Half the maximum frequency", "Independent of the signal"],
+      optionsAr: ["مساويًا لأعلى تردد", "ضعف أعلى تردد على الأقل", "نصف أعلى تردد", "مستقلًا عن الإشارة"],
+      answer: 1,
+      explain: "Sampling below twice the highest frequency causes undersampling and aliasing.",
+      explainAr: "المعاينة بأقل من ضعف أعلى تردد تسبب معاينة ناقصة وتداخلًا طيفيًا (aliasing)."
+    },
+    {
+      q: "Which sensor is cheaper and uses less power, but is more susceptible to noise?",
+      qAr: "أي مستشعر أرخص ويستهلك طاقة أقل، لكنه أكثر تأثرًا بالضوضاء؟",
+      options: ["CCD", "CMOS", "Flatbed scanner", "LANDSAT"],
+      optionsAr: ["CCD", "CMOS", "الماسح الضوئي المسطّح", "LANDSAT"],
+      answer: 1,
+      explain: "CMOS sensors are cheaper and more power-efficient than CCDs; CCDs give higher resolution and resist noise better.",
+      explainAr: "مستشعرات CMOS أرخص وأقل استهلاكًا للطاقة من CCD، بينما تعطي CCD دقة أعلى وتقاوم الضوضاء أفضل."
+    },
+    {
+      q: "Removing blur caused by linear motion of the camera is an example of…",
+      qAr: "إزالة التشويش الناتج عن حركة خطية للكاميرا مثال على…",
+      options: ["Image enhancement", "Image restoration", "Image segmentation", "Image acquisition"],
+      optionsAr: ["تحسين الصورة", "استعادة الصورة", "تقطيع الصورة", "التقاط الصورة"],
+      answer: 1,
+      explain: "Restoration reverses damage done by a known cause, such as linear motion.",
+      explainAr: "الاستعادة تعكس الضرر الناتج عن سبب معروف، مثل الحركة الخطية."
+    },
+    {
+      q: "How many bits per pixel does a True-Color (RGB) image use?",
+      qAr: "كم بِتًّا لكل بكسل تستخدم صورة الألوان الحقيقية (RGB)؟",
+      options: ["1", "8", "16", "24"],
+      optionsAr: ["1", "8", "16", "24"],
+      answer: 3,
+      explain: "Three channels of 8 bits each: 24 bits, or about 16.7 million colors.",
+      explainAr: "ثلاث قنوات، لكلٍّ منها 8 بِتّات: أي 24 بِتًّا، أو نحو 16.7 مليون لون."
+    },
+    {
+      q: "In an indexed image, a pixel value is…",
+      qAr: "في الصورة المفهرسة، قيمة البكسل هي…",
+      options: ["The grey level of the pixel", "Its red value", "A row number in the color map", "Always 0 or 1"],
+      optionsAr: ["مستوى الرمادي للبكسل", "قيمة الأحمر فيه", "رقم صف في خريطة الألوان", "0 أو 1 دائمًا"],
+      answer: 2,
+      explain: "The value is an index; the color itself is stored in that row of the color map (palette).",
+      explainAr: "القيمة فهرس، أما اللون نفسه فمخزَّن في ذلك الصف من خريطة الألوان (palette)."
+    }
+  ]}
+/>

@@ -329,6 +329,79 @@ automatically, so write commands and paths plainly: `"…باستخدام man -k
 | regression testing | اختبار الانحدار (regression testing) |
 | defect / failure | العيب (defect) / الإخفاق (failure) |
 
+### Image processing
+
+| English | Arabic |
+|---|---|
+| image processing / computer vision | معالجة الصور (Image Processing) / الرؤية الحاسوبية (Computer Vision) |
+| digital image / pixel | الصورة الرقمية / البكسل (pixel) |
+| image acquisition / sampling / quantization | التقاط الصورة (image acquisition) / المعاينة (sampling) / التكميم (quantization) |
+| resolution / spatial resolution | الدقة (resolution) / الدقة المكانية (spatial resolution) |
+| bit depth / grey (gray) level / intensity | عمق البت (bit depth) / مستوى الرمادي (grey level) / الشدة (intensity) |
+| binary / grayscale / RGB (true-color) / indexed image | صورة ثنائية (binary) / رمادية (grayscale) / ملونة RGB (true-color) / مفهرسة (indexed) |
+| color map (palette) / channel | خريطة الألوان (color map) / القناة (channel) |
+| raster (bitmap) / vector graphics | الصور النقطية (raster / bitmap) / الرسوم المتجهية (vector graphics) |
+| CCD / CMOS sensor | مستشعر CCD / مستشعر CMOS |
+| image enhancement / restoration / segmentation | تحسين الصورة (enhancement) / استعادة الصورة (restoration) / تقطيع الصورة (segmentation) |
+| point processing (point operation) | المعالجة النقطية (point processing) |
+| neighbourhood (neighborhood) processing | معالجة الجوار (neighbourhood processing) |
+| transform / spatial domain / frequency domain | التحويل (transform) / المجال المكاني (spatial domain) / المجال الترددي (frequency domain) |
+| complement (negative) | المتمِّم (complement) / الصورة السالبة (negative) |
+| clipping | القصّ (clipping) |
+| histogram / normalized histogram | المدرج التكراري (histogram) / المدرج التكراري المُطبَّع (normalized histogram) |
+| PDF / CDF (cumulative distribution) | دالة الكثافة الاحتمالية (PDF) / دالة التوزيع التراكمي (CDF) |
+| contrast / brightness | التباين (contrast) / السطوع (brightness) |
+| contrast (histogram) stretching | مط التباين (contrast stretching) |
+| gamma correction / power-law transformation | تصحيح غاما (gamma correction) / تحويل القوة (power-law) |
+| log transformation / piecewise-linear function | التحويل اللوغاريتمي / الدالة الخطية المجزأة (piecewise-linear) |
+| histogram equalization / histogram matching (specification) | تسوية المدرج التكراري (histogram equalization) / مطابقة المدرج التكراري (histogram matching) |
+| intensity level slicing / bit-plane slicing | تقطيع مستويات الشدة (intensity level slicing) / تقطيع مستويات البت (bit-plane slicing) |
+| local histogram processing | المعالجة المحلية للمدرج التكراري (local histogram processing) |
+| filter / mask / kernel | المرشح (filter) / القناع (mask) / النواة (kernel) |
+| spatial filtering / linear / non-linear filter | الترشيح المكاني (spatial filtering) / مرشح خطي (linear) / غير خطي (non-linear) |
+| convolution / correlation | الالتفاف (convolution) / الارتباط (correlation) |
+| padding (zero, replicate, symmetric) | الحشو (padding): بالأصفار / بالتكرار (replicate) / بالانعكاس (symmetric) |
+| separable filter | مرشح قابل للفصل (separable) |
+| impulse (delta) function / sifting property | دالة النبضة (دالة دلتا) (impulse) / خاصية الغربلة (sifting property) |
+| smoothing / averaging (mean) filter | التنعيم (smoothing) / مرشح المتوسط (averaging / mean filter) |
+| sharpening / edge / edge detection | الإبراز (sharpening) / الحافة (edge) / كشف الحواف (edge detection) |
+| low-pass / high-pass / band-reject / band-pass filter | مرشح تمرير منخفض (low-pass) / تمرير مرتفع (high-pass) / رفض نطاق (band-reject) / تمرير نطاق (band-pass) |
+| Laplacian / gradient / Sobel | لابلاسيان (Laplacian) / التدرج (gradient) / مرشح سوبل (Sobel) |
+| unsharp masking / high-boost filtering | الإبراز بالقناع غير الحاد (unsharp masking) / الترشيح عالي التعزيز (high-boost) |
+| median / max / min / midpoint filter | مرشح الوسيط (median) / الأقصى (max) / الأدنى (min) / نقطة المنتصف (midpoint) |
+| order-statistics (rank) filter | مرشح إحصاءات الترتيب (order-statistics) / مرشح الرتبة (rank filter) |
+| alpha-trimmed mean filter | مرشح المتوسط المُشذَّب ألفا (alpha-trimmed mean) |
+| arithmetic / geometric / harmonic mean | المتوسط الحسابي / الهندسي / التوافقي (harmonic) |
+| adaptive filter | المرشح التكيفي (adaptive filter) |
+| Gaussian smoothing / standard deviation (sigma) | التنعيم الغاوسي (Gaussian smoothing) / الانحراف المعياري (sigma) |
+| Fourier transform / DFT / FFT / inverse DFT | تحويل فورييه (Fourier transform) / تحويل فورييه المتقطع (DFT) / تحويل فورييه السريع (FFT) / المعكوس (inverse DFT) |
+| frequency / spectrum / magnitude / phase | التردد (frequency) / الطيف (spectrum) / المقدار (magnitude) / الطور (phase) |
+| DC component (coefficient) | المركبة المستمرة (DC component) |
+| linearity / conjugate symmetry / circular convolution | الخطية (linearity) / التناظر المرافق (conjugate symmetry) / الالتفاف الدائري (circular convolution) |
+| convolution theorem / shifting (centring) | مبرهنة الالتفاف (convolution theorem) / الإزاحة (shifting) أي توسيط الطيف |
+| transfer function / cutoff frequency | دالة النقل (transfer function) / تردد القطع (cutoff frequency) |
+| ideal / Butterworth / Gaussian filter | مرشح مثالي (ideal) / مرشح بترورث (Butterworth) / مرشح غاوس (Gaussian) |
+| ringing | التموج الحلقي (ringing) |
+| notch filter | مرشح الثلم (notch filter) |
+| noise / Gaussian / salt-and-pepper / uniform / periodic / speckle noise | الضوضاء (noise): الغاوسية / الملح والفلفل (salt-and-pepper) / المنتظمة (uniform) / الدورية (periodic) / المرقّطة (speckle) |
+| additive / multiplicative noise | ضوضاء جمعية (additive) / ضوضاء ضربية (multiplicative) |
+| degradation function / point spread function (PSF) | دالة التدهور (degradation function) / دالة انتشار النقطة (PSF) |
+| motion blur / out-of-focus blur | تشويش الحركة (motion blur) / التشويش الناتج عن عدم التركيز (out-of-focus blur) |
+| inverse filtering / Wiener filtering | الترشيح العكسي (inverse filtering) / ترشيح فينر (Wiener filtering) |
+| mean square error (MSE) | متوسط مربع الخطأ (MSE) |
+| segmentation / region / object / background | التقطيع (segmentation) / المنطقة (region) / الكائن (object) / الخلفية (background) |
+| threshold / thresholding (single, double, adaptive) | العتبة (threshold) / التقطيع بالعتبة (thresholding): المفردة / المزدوجة / التكيفية (adaptive) |
+| Otsu's method / within-class / between-class variance | طريقة أوتسو (Otsu) / التباين داخل الفئة (within-class) / التباين بين الفئات (between-class) |
+| bimodal histogram | مدرج تكراري ثنائي القمة (bimodal) |
+| morphology / morphological operation | المورفولوجيا (morphology) / العملية المورفولوجية (morphological operation) |
+| structuring element (SE) / origin | العنصر البنائي (structuring element) / نقطة الأصل (origin) |
+| erosion / dilation | التآكل (erosion) / التمدد (dilation) |
+| opening / closing / duality | الفتح (opening) / الإغلاق (closing) / الثنائية (duality) |
+| hit-and-miss transform | تحويل الإصابة والإخفاق (hit-and-miss) |
+| thinning / thickening / skeleton | الترقيق (thinning) / التثخين (thickening) / الهيكل العظمي (skeleton) |
+| foreground / background pixel | بكسل المقدمة (foreground) / بكسل الخلفية (background) |
+| blob / connected component | الكتلة (blob) / المكوّن المتصل (connected component) |
+
 ### Terms added during the first translation pass
 
 Coined by the translators while translating the pages; prefer these renderings for consistency.
@@ -753,3 +826,126 @@ Coined by the translators while translating the pages; prefer these renderings f
 | web services | خدمات الويب |
 | workarounds | الحلول الالتفافية |
 | workflow | سير العمل (workflow) |
+
+#### Image processing
+
+| English | Arabic |
+|---|---|
+| 3-D mesh plot / cross-section | رسم شبكي ثلاثي الأبعاد (mesh) / المقطع العرضي |
+| aliasing | التداخل الطيفي |
+| ANPR / AFIS | التعرّف الآلي على لوحات أرقام السيارات / نظام التعرّف الآلي على بصمات الأصابع |
+| antisymmetric | ضدّ المتماثل (antisymmetric) |
+| artefacts | التشوّهات (artefacts) |
+| atmospheric turbulence | الاضطراب الجوي (atmospheric turbulence) |
+| background subtraction | طرح الخلفية (background subtraction) |
+| Bessel function | دالة بيسل (Bessel) |
+| binarization | التحويل الثنائي (binarization) |
+| bit plane / LSB / MSB | مستوى البت (bit plane) / البت الأدنى أهمية (LSB) / البت الأعلى أهمية (MSB) |
+| block (image block) | القطعة (block) |
+| boost coefficient | معامل التعزيز (boost coefficient) |
+| box / disc / cross (SE shapes) | مربع (box) / قرص (disc) / صليب (cross) |
+| clustering | العنقدة (clustering) |
+| coefficient (mask entry) | المعامل (coefficient) |
+| coherent imaging | التصوير المترابط (coherent imaging) |
+| color depth | عمق اللون |
+| colour cast | الانحراف اللوني (color cast) |
+| commutative / associative / distributive | إبدالي / تجميعي / توزيعي |
+| complex number / complex conjugate | عدد مركب (complex) / المرافق المركب (complex conjugate) |
+| contraharmonic mean | المتوسط التوافقي المضاد (contraharmonic) |
+| convex hull | الغلاف المحدّب (convex hull) |
+| corner detection / convex / concave corner | كشف الزوايا (corner detection) / زاوية محدّبة (convex) / مقعّرة (concave) |
+| cumulative histogram | المدرج التكراري التراكمي |
+| deep learning | التعلم العميق |
+| degradation model | نموذج التدهور (degradation model) |
+| difference of Gaussians | فرق الغاوسيات |
+| Dirac delta / unit impulse | دالة دلتا لديراك (Dirac delta) / نبضة الوحدة |
+| discontinuities | الانقطاعات (discontinuities) |
+| display range / scaling (rescale) | مدى العرض / إعادة التحجيم (scaling) |
+| dithering | التنقيط (dithering) |
+| don't care (SE cell) | لا يهم (don't care) |
+| dpi (dots per inch) | نقطة لكل بوصة |
+| dynamic range | المدى الديناميكي (dynamic range) |
+| edge detector / edge enhancement | كاشف الحواف (edge detector) / تحسين الحواف (edge enhancement) |
+| electromagnetic spectrum | الطيف الكهرومغناطيسي |
+| element-by-element product | حاصل الضرب عنصرًا بعنصر |
+| Euler's formula | صيغة أويلر (Euler's formula) |
+| exposure time | زمن التعريض |
+| features / feature extraction | السمات / استخلاص السمات |
+| fingerprint ridges | الخطوط البارزة (ridges) |
+| flat structuring element | عنصر بنائي مسطّح (flat) |
+| flatbed scanner | الماسح الضوئي المسطّح |
+| full-scale (stretching) | على المدى الكامل (full-scale) |
+| global / local threshold | العتبة الشاملة (global) / المحلية (local) |
+| histogram bins | الفئات (bins) |
+| idempotent | متساوي القوى (idempotent) |
+| identity filter | مرشح الهوية (identity) |
+| identity transformation | التحويل المطابق (identity) |
+| impulse / shot / binary noise | الضوضاء النبضية / ضوضاء الطلقات / الضوضاء الثنائية |
+| impulse response | الاستجابة النبضية (impulse response) |
+| intensity transformation / inverse transform | تحويل الشدة / التحويل العكسي |
+| isotropic | متماثل الاتجاهات (isotropic) |
+| label | الوسم (label) |
+| local mean / local variance / noise variance | المتوسط المحلي / التباين المحلي / تباين الضوضاء |
+| lookup table | جدول البحث |
+| luma / luminance | الإضاءة (luma) |
+| mapping function | دالة التعيين |
+| mid-tones | الدرجات المتوسطة |
+| minutiae | النقاط الدقيقة |
+| mode (Pillow image mode) | الوضع (mode) |
+| modulation | التضمين (modulation) |
+| morphological gradient | التدرج المورفولوجي (morphological gradient) |
+| moving (sliding) window | النافذة المنزلقة (moving window) |
+| notch reject / notch pass | رفض الثلم (notch reject) / تمرير الثلم (notch pass) |
+| Nyquist criterion | معيار نايكويست |
+| object recognition | التعرف على الكائنات (object recognition) |
+| order (of a Butterworth filter) | رتبة المرشح (order) |
+| outer product | الضرب الخارجي (outer product) |
+| outlier | القيمة الشاذة (outlier) |
+| overflow (uint8) | الفيضان (overflow) |
+| overshoot | التجاوز (overshoot) |
+| passband | نطاق التمرير (passband) |
+| pattern matching | مطابقة الأنماط (pattern matching) |
+| peak (mode) / valley | القمة (peak) / الوادي (valley) |
+| periodic function / amplitude / square wave | الدالة الدورية (periodic function) / السعة (amplitude) / الموجة المربعة (square wave) |
+| photosite | الخلية الحساسة للضوء |
+| power spectrum | طيف القدرة (power spectrum) |
+| preprocessing | المعالجة المسبقة |
+| Prewitt masks | قناعا بريويت (Prewitt) |
+| protrusion / plateau | النتوء / الهضبة (plateau) |
+| quadrant | الربع (quadrant) |
+| radial center / band width | المركز القُطري (radial center) / عرض النطاق |
+| rank (of a matrix) | الرتبة (rank) |
+| recognition and interpretation | التعرّف والتفسير |
+| reflection (of an SE) | الانعكاس (reflection) |
+| representation and description | التمثيل والوصف |
+| running histogram | المدرج التكراري المتحرك |
+| saturate (integer arithmetic) | التشبّع |
+| scan lines | خطوط المسح (scan lines) |
+| second-order derivative | المشتقة من الرتبة الثانية (second-order derivative) |
+| semantic segmentation | التقطيع الدلالي |
+| separability | قابلية الفصل (separability) |
+| shift property | خاصية الإزاحة (shift property) |
+| shift-invariant | ثابت مع الإزاحة (shift-invariant) |
+| signal-to-noise ratio (SNR) | نسبة الإشارة إلى الضوضاء (SNR) |
+| sinusoid / sinusoidal component | دالة جيبية / مركبة جيبية (sinusoidal component) |
+| solarization | التشميس |
+| spatial frequency | التردد المكاني (spatial frequency) |
+| specified histogram | المدرج التكراري المُحدَّد (specified histogram) |
+| spike (in a spectrum) | قمة حادة (spike) |
+| stack of binary images | كومة من الصور الثنائية (stack of binary images) |
+| step edge | الحافة الدرجية (step edge) |
+| subset / superset | مجموعة جزئية / مجموعة شاملة |
+| sum of squared differences | مجموع مربعات الفروق |
+| symmetric mask | القناع المتماثل (symmetric) |
+| template / window | القالب (template) / النافذة (window) |
+| total variance | التباين الكلي (total variance) |
+| trimodal | ثلاثي القمم (trimodal) |
+| True-Color / indexed (palette) color | الألوان الحقيقية / الألوان المفهرسة (ألوان اللوحة) |
+| truncate (a kernel) | الاقتطاع (truncate) |
+| undersampling | المعاينة الناقصة |
+| uneven illumination | الإضاءة غير المنتظمة |
+| variance (statistics) | التباين (variance); write «التباين (contrast)» when contrast is meant |
+| weighted average | المتوسط الموزون |
+| white noise | الضوضاء البيضاء |
+| wrap-around padding | الحشو الدائري (wrap around) |
+| zero-crossing | نقطة عبور الصفر (zero-crossing) |

@@ -1,0 +1,74 @@
+{
+  "title": "Image Processing",
+  "titleAr": "معالجة الصور",
+  "shortTitle": "IP",
+  "code": "IP",
+  "order": 6,
+  "materialsDir": "Image Processing",
+  "level": "Level 4 · 2026/2027",
+  "tagline": "How computers enhance, restore and analyse images: from pixels and histograms to filters, the Fourier transform, segmentation and morphology.",
+  "taglineAr": "كيف تحسّن الحواسيب الصور وتستعيدها وتحللها: من البكسلات والمدرجات التكرارية (histograms) إلى المرشحات (filters)، وتحويل فورييه (Fourier transform)، والتقطيع (segmentation)، والعمليات المورفولوجية (morphology).",
+  "description": "Image processing changes an image either to improve it for a human viewer or to make it more suitable for a machine to analyse. The lectures follow the course book and McAndrew's An Introduction to Digital Image Processing with MATLAB: how digital images are acquired, sampled and stored (binary, grayscale, RGB and indexed images); point processing with arithmetic operations, histograms, contrast stretching, gamma correction and histogram equalization; neighbourhood processing with spatial filters (averaging, Laplacian, unsharp masking, median); the discrete Fourier transform and filtering in the frequency domain (ideal, Butterworth and Gaussian filters); image restoration from noise and blur (mean, order-statistics and adaptive filters, notch, inverse and Wiener filtering); segmentation by thresholding and Otsu's method; and morphological operations (erosion, dilation, opening, closing, hit-and-miss, thinning and thickening). The sections are hands-on: converting between image types in Python, histogram equalization and matching worked by hand, point transformations, and local histogram processing with linear and median filters.",
+  "descriptionAr": "تُغيّر معالجة الصور (Image Processing) الصورةَ إما لتحسينها لمن ينظر إليها من البشر، وإما لجعلها أنسب لكي تحللها الآلة. تتبع المحاضرات كتاب المقرر وكتاب An Introduction to Digital Image Processing with MATLAB من تأليف McAndrew: كيف تُلتقط الصور الرقمية وتُعايَن (sampling) وتُخزَّن (الصور الثنائية، والرمادية، و RGB، والمفهرسة)؛ والمعالجة النقطية (point processing) بالعمليات الحسابية، والمدرجات التكرارية (histograms)، ومط التباين (contrast stretching)، وتصحيح غاما (gamma correction)، وتسوية المدرج التكراري (histogram equalization)؛ ومعالجة الجوار (neighbourhood processing) بالمرشحات المكانية (spatial filters) مثل مرشح المتوسط، ولابلاسيان (Laplacian)، والإبراز بالقناع غير الحاد (unsharp masking)، والوسيط (median)؛ وتحويل فورييه المتقطع (DFT) والترشيح في المجال الترددي (المرشحات المثالية، وبترورث Butterworth، وغاوس Gaussian)؛ واستعادة الصور (image restoration) من الضوضاء والتشويش (مرشحات المتوسط، وإحصاءات الترتيب، والمرشحات التكيفية، ومرشحات الثلم notch، والترشيح العكسي، وترشيح فينر Wiener)؛ والتقطيع (segmentation) بالعتبة وطريقة أوتسو (Otsu)؛ والعمليات المورفولوجية (التآكل erosion، والتمدد dilation، والفتح، والإغلاق، والإصابة والإخفاق hit-and-miss، والترقيق، والتثخين). أما السكاشن فعملية: التحويل بين أنواع الصور باستخدام Python، وتسوية المدرج التكراري ومطابقته حسابيًا باليد، والتحويلات النقطية، والمعالجة المحلية للمدرج التكراري باستخدام المرشحات الخطية ومرشح الوسيط.",
+  "instructors": ["Assoc. Prof. Wafaa M. Shalash"],
+  "objectives": [
+    "Explain how digital images are acquired, sampled, quantized and stored, and convert between binary, grayscale, RGB and indexed images.",
+    "Enhance images with point operations: arithmetic, complements, contrast stretching, gamma correction and histogram equalization.",
+    "Apply spatial filters by convolution, and choose between smoothing, sharpening and non-linear (median) filters.",
+    "Compute the discrete Fourier transform and filter images in the frequency domain with ideal, Butterworth and Gaussian filters.",
+    "Model noise and degradation, and restore images with mean, order-statistics, adaptive, notch, inverse and Wiener filters.",
+    "Segment images by thresholding (including Otsu's method) and process shapes with morphological operations."
+  ],
+  "objectivesAr": [
+    "شرح كيف تُلتقط الصور الرقمية وتُعايَن (sampling) وتُكمَّم (quantization) وتُخزَّن، والتحويل بين الصور الثنائية والرمادية و RGB والمفهرسة.",
+    "تحسين الصور بالعمليات النقطية: العمليات الحسابية، والمتمِّم (complement)، ومط التباين (contrast stretching)، وتصحيح غاما (gamma correction)، وتسوية المدرج التكراري (histogram equalization).",
+    "تطبيق المرشحات المكانية (spatial filters) بالالتفاف (convolution)، والاختيار بين مرشحات التنعيم (smoothing) والإبراز (sharpening) والمرشحات غير الخطية (الوسيط median).",
+    "حساب تحويل فورييه المتقطع (DFT) وترشيح الصور في المجال الترددي باستخدام المرشحات المثالية ومرشحات بترورث (Butterworth) وغاوس (Gaussian).",
+    "نمذجة الضوضاء (noise) والتدهور (degradation)، واستعادة الصور بمرشحات المتوسط، وإحصاءات الترتيب (order-statistics)، والمرشحات التكيفية، ومرشحات الثلم (notch)، والترشيح العكسي (inverse)، وترشيح فينر (Wiener).",
+    "تقطيع الصور بالعتبة (thresholding) بما في ذلك طريقة أوتسو (Otsu)، ومعالجة الأشكال بالعمليات المورفولوجية (morphological operations)."
+  ],
+  "topics": [
+    "Image acquisition and sampling",
+    "Binary, grayscale, RGB and indexed images",
+    "Point processing and histograms",
+    "Contrast stretching, gamma correction and histogram equalization",
+    "Spatial filtering and convolution",
+    "Laplacian, unsharp masking and high-boost filtering",
+    "Median and order-statistics filters",
+    "The discrete Fourier transform",
+    "Ideal, Butterworth and Gaussian frequency filters",
+    "Noise models and image restoration",
+    "Inverse and Wiener filtering",
+    "Thresholding and Otsu's method",
+    "Erosion, dilation, opening and closing",
+    "Hit-and-miss, thinning and thickening"
+  ],
+  "books": [
+    {
+      "id": "ip-book",
+      "title": "Image Processing (course book)",
+      "author": "Assoc. Prof. Wafaa M. Shalash, Computer Science Dept., 2026/2027",
+      "file": "Digital Image Processing 27.pdf",
+      "chapters": [
+        { "title": "Ch 1 · Introduction to Image Processing", "pages": "7–35" },
+        { "title": "Ch 2 · Point Processing", "pages": "36–58" },
+        { "title": "Ch 3 · Neighborhood Processing: Spatial Filtering", "pages": "59–79" },
+        { "title": "Ch 4 · Frequency Domain Filtering", "pages": "80–99" },
+        { "title": "Ch 5 · Image Restoration", "pages": "100–122" },
+        { "title": "Ch 6 · Region Segmentation", "pages": "123–137" },
+        { "title": "Ch 7 · Morphological Operations", "pages": "138–158" },
+        { "title": "Ch 8 · Questions", "pages": "159–167" }
+      ]
+    },
+    {
+      "id": "mcandrew",
+      "title": "An Introduction to Digital Image Processing with MATLAB",
+      "author": "Alasdair McAndrew, Course Technology 2004"
+    },
+    {
+      "id": "gonzalez",
+      "title": "Digital Image Processing (4th ed.)",
+      "author": "Rafael C. Gonzalez & Richard E. Woods, Pearson 2018"
+    }
+  ]
+}

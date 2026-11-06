@@ -1,0 +1,559 @@
+---
+number: 3
+title: "Neighbourhood Processing: Spatial Filtering"
+titleAr: "معالجة الجوار: الترشيح المكاني"
+summary: How a small mask slid over an image computes each output pixel from its neighbourhood. Covers convolution and correlation, output size, borders and out-of-range values, the averaging filter, the impulse function, separable filters, low-pass and high-pass filters, the Laplacian, unsharp masking, high-boost filtering, and the non-linear median and alpha-trimmed mean filters.
+summaryAr: "كيف يحسب قناعٌ (mask) صغير يتحرك فوق الصورة كلَّ بكسل في المخرجات من جواره. تتناول المحاضرة الالتفاف (convolution) والارتباط (correlation)، وحجم المخرجات، وحدود الصورة والقيم الخارجة عن المدى، ومرشح المتوسط (averaging filter)، ودالة النبضة (impulse)، والمرشحات القابلة للفصل (separable)، ومرشحات التمرير المنخفض والمرتفع، ولابلاسيان (Laplacian)، والإبراز بالقناع غير الحاد (unsharp masking)، والترشيح عالي التعزيز (high-boost)، والمرشحين غير الخطيين: الوسيط (median) والمتوسط المُشذَّب ألفا (alpha-trimmed mean)."
+topics: [Spatial filtering, Convolution and correlation, Padding and output size, Averaging filter, Impulse function, Separable filters, Low-pass and high-pass filters, Laplacian, Unsharp masking, High-boost filtering, Median filter, Alpha-trimmed mean]
+duration: 60 min study
+sources:
+  - file: lectures/ch3/Image processing Lecture 3.pdf
+    label: Image Processing Lecture 3 – Neighbourhood Processing and Spatial Filtering (slides)
+    pages: "1-38"
+bookRefs:
+  - book: ip-book
+    chapter: "Ch 3 · Neighborhood Processing: Spatial Filtering"
+    pages: "59–79"
+  - book: mcandrew
+    chapter: Neighbourhood Processing
+  - book: gonzalez
+    chapter: Ch 3 · Intensity Transformations and Spatial Filtering
+---
+
+<Objectives>
+
+- Compute a filtered pixel by sliding a **mask** over an image, and tell **convolution** from **correlation**.
+  <Ar>حساب قيمة بكسل مُرشَّح بتحريك **قناع (mask)** فوق الصورة، والتمييز بين **الالتفاف (convolution)** و**الارتباط (correlation)**.</Ar>
+- Predict the **output size** and handle **borders** and out-of-range values.
+  <Ar>توقّع **حجم المخرجات**، والتعامل مع **حدود الصورة (borders)** والقيم الخارجة عن المدى.</Ar>
+- Smooth with **low-pass** filters, find and enhance edges with the **Laplacian**, and sharpen with **unsharp masking** and **high-boost** filtering.
+  <Ar>التنعيم بمرشحات **التمرير المنخفض (low-pass)**، وإيجاد الحواف وتحسينها باستخدام **لابلاسيان (Laplacian)**، والإبراز بطريقتي **القناع غير الحاد (unsharp masking)** و**الترشيح عالي التعزيز (high-boost)**.</Ar>
+- Apply **non-linear** filters and explain why the median removes salt-and-pepper noise.
+  <Ar>تطبيق المرشحات **غير الخطية (non-linear)**، وشرح سبب إزالة مرشح الوسيط (median) لضوضاء الملح والفلفل (salt-and-pepper).</Ar>
+
+</Objectives>
+
+## What spatial filtering is
+
+<Ar>ما الترشيح المكاني؟</Ar>
+
+Point processing changes each pixel using only its own value. **Neighbourhood processing** computes each output pixel from a small **neighbourhood** around it. Its main tool is the spatial filter: a small sub-image is moved from point to point across the image, and at every position a fixed rule turns the pixels underneath into one output value.
+
+<Ar>تغيّر المعالجة النقطية (point processing) كل بكسل اعتمادًا على قيمته هو فقط. أما **معالجة الجوار (neighbourhood processing)** فتحسب كل بكسل في المخرجات من **جوار** صغير حوله. وأداتها الرئيسية المرشح المكاني: صورة جزئية صغيرة تُنقل من نقطة إلى أخرى عبر الصورة، وفي كل موضع تحوّل قاعدةٌ ثابتة البكسلاتِ الواقعة تحتها إلى قيمة واحدة في المخرجات.</Ar>
+
+<Definition term="Spatial filter (mask)" termAr="المرشح المكاني (القناع)">
+  The sub-image moved over the image, also called a <strong>filter</strong>, <strong>mask</strong>, <strong>kernel</strong>, <strong>template</strong> or <strong>window</strong>. Its entries are <strong>coefficients</strong>, not pixels. When the rule is "multiply each pixel by the coefficient on top of it and add", the process is <strong>convolution</strong>, written $f * w$ or $f \otimes w$.
+
+  <Ar>الصورة الجزئية التي تُحرَّك فوق الصورة، وتُسمّى أيضًا <strong>المرشح (filter)</strong> أو <strong>القناع (mask)</strong> أو <strong>النواة (kernel)</strong> أو <strong>القالب (template)</strong> أو <strong>النافذة (window)</strong>. وعناصرها <strong>معاملات (coefficients)</strong> لا بكسلات. وعندما تكون القاعدة «اضرب كل بكسل في المعامل الواقع فوقه ثم اجمع»، تُسمّى العملية <strong>الالتفاف (convolution)</strong>، وتُكتب $f * w$ أو $f \otimes w$.</Ar>
+</Definition>
+
+### Filtering one pixel
+
+<Ar>ترشيح بكسل واحد</Ar>
+
+Put the centre of an $m \times n$ mask (odd sizes, so it has a centre) on pixel $(x, y)$; coefficient $w(s, t)$ lies on pixel $f(x+s, y+t)$, and the output is the sum of the products:
+
+<Ar>ضع مركز قناع أبعاده $m \times n$ (أبعاد فردية حتى يكون له مركز) على البكسل $(x, y)$؛ فيقع المعامل $w(s, t)$ على البكسل $f(x+s, y+t)$، والمخرج هو مجموع حواصل الضرب:</Ar>
+
+$$
+g(x, y) = \sum_{s=-a}^{a} \sum_{t=-b}^{b} w(s, t)\, f(x+s,\, y+t), \qquad a = \frac{m-1}{2},\quad b = \frac{n-1}{2}
+$$
+
+<SlideFigure page={3} caption="A 3×3 mask over the image: coefficient w(s,t) lies on pixel f(x+s, y+t), and g(x,y) is the sum of the nine products." captionAr="قناع 3×3 فوق الصورة: يقع المعامل w(s,t) على البكسل f(x+s, y+t)، و g(x,y) هي مجموع حواصل الضرب التسعة." />
+
+### Worked example: sliding a 3×3 mask
+
+<Ar>مثال محلول: تحريك قناع 3×3</Ar>
+
+Slide 5 filters this 5×5 image with the mask $w$. Start with the mask on the top-left 3×3 block:
+
+<Ar>ترشّح الشريحة 5 هذه الصورة 5×5 بالقناع $w$. ابدأ بوضع القناع على الكتلة 3×3 في الركن العلوي الأيسر:</Ar>
+
+$$
+f = \begin{bmatrix} 3 & 3 & 2 & 1 & 0 \\ 0 & 0 & 1 & 3 & 1 \\ 3 & 1 & 2 & 2 & 3 \\ 2 & 0 & 0 & 2 & 2 \\ 2 & 0 & 0 & 0 & 1 \end{bmatrix}
+\qquad
+w = \begin{bmatrix} 0 & 1 & 2 \\ 2 & 2 & 0 \\ 0 & 1 & 2 \end{bmatrix}
+$$
+
+| Mask row <Ar>صف القناع</Ar> | Products <Ar>حواصل الضرب</Ar> | Sum <Ar>المجموع</Ar> |
+|---|---|---|
+| 1 | $3 \cdot 0 + 3 \cdot 1 + 2 \cdot 2$ | 7 |
+| 2 | $0 \cdot 2 + 0 \cdot 2 + 1 \cdot 0$ | 0 |
+| 3 | $3 \cdot 0 + 1 \cdot 1 + 2 \cdot 2$ | 5 |
+| **Output** <Ar>**المخرج**</Ar> | | **12** |
+
+Then move one pixel right ($0+3+4 + 0+2+0 + 0+2+4 = 12$), and at the end of a row move down. Nine positions fit, so the output is 3×3:
+
+<Ar>ثم تحرّك بكسلًا واحدًا إلى اليمين ($0+3+4 + 0+2+0 + 0+2+4 = 12$)، وفي نهاية الصف انزل صفًا. يتسع المكان لتسعة مواضع فقط، فتكون المخرجات 3×3:</Ar>
+
+$$
+g = \begin{bmatrix} 12 & 12 & 17 \\ 10 & 17 & 19 \\ 9 & 6 & 14 \end{bmatrix}
+$$
+
+<SlideFigure page={5} caption="The basic operation: the mask (small numbers) slides over the 5×5 input, and each position gives one value of the 3×3 output." captionAr="العملية الأساسية: ينزلق القناع (الأرقام الصغيرة) فوق المدخلات 5×5، ويعطي كل موضع قيمة واحدة من المخرجات 3×3." />
+
+### Convolution or correlation?
+
+<Ar>التفاف أم ارتباط؟</Ar>
+
+Laying the mask directly on the image, as above, is strictly **correlation**. True **convolution** (slide 15) uses $f(x-s, y-t)$, which is the same as **rotating the mask by 180°** first. Image processing uses the discrete form, with a mask that is non-zero only near its centre:
+
+<Ar>وضع القناع مباشرةً على الصورة، كما فعلنا، هو بالمعنى الدقيق **ارتباط (correlation)**. أما **الالتفاف (convolution)** الحقيقي (الشريحة 15) فيستخدم $f(x-s, y-t)$، وهذا يكافئ **تدوير القناع بزاوية 180°** أولًا. وتستخدم معالجة الصور الصيغة المتقطعة، بقناع لا تكون قيمه غير صفرية إلا قرب مركزه:</Ar>
+
+$$
+g(x, y) = \int\!\!\int f(x-s,\, y-t)\, w(s, t)\, ds\, dt
+\qquad\qquad
+g[x, y] = \sum_{s} \sum_{t} f[x-s,\, y-t]\, w[s, t]
+$$
+
+For **symmetric** masks (averaging, Gaussian, Laplacian) the two are identical. Convolution is **commutative**, **associative** and **distributive**; associativity means that filtering with $w_1$ and then $w_2$ equals filtering once with $w_1 * w_2$. In MATLAB, `imfilter` correlates by default (add `'conv'` to convolve) and `conv2` convolves.
+
+<Ar>في الأقنعة **المتماثلة (symmetric)** (المتوسط، وغاوس، ولابلاسيان) تتطابق العمليتان. والالتفاف **إبدالي (commutative)** و**تجميعي (associative)** و**توزيعي (distributive)**؛ وتعني الخاصية التجميعية أن الترشيح بالقناع $w_1$ ثم $w_2$ يساوي الترشيح مرة واحدة بالقناع $w_1 * w_2$. وفي MATLAB تُجري الدالة `imfilter` ارتباطًا افتراضيًا (أضف `'conv'` لإجراء التفاف)، أما `conv2` فتُجري التفافًا.</Ar>
+
+### The impulse (delta) function
+
+<Ar>دالة النبضة (دالة دلتا)</Ar>
+
+A mask with a single 1 at the centre copies the image: it is the **identity** filter. Its continuous counterpart is the **Dirac delta**, zero everywhere except at the origin but with total area 1. Picture a rectangular pulse from $-\varepsilon/2$ to $\varepsilon/2$ of height $1/\varepsilon$: as $\varepsilon \to 0$ it gets infinitely narrow and tall while its area stays 1. Its **sifting property** picks out one value of a function, so as a mask it reproduces the image:
+
+<Ar>القناع الذي يحتوي على 1 واحد في مركزه ينسخ الصورة: إنه مرشح **الهوية (identity)**. ونظيره المتصل هو **دالة دلتا لديراك (Dirac delta)**، وقيمتها صفر في كل مكان عدا نقطة الأصل لكن مساحتها الكلية 1. تخيّل نبضة مستطيلة من $-\varepsilon/2$ إلى $\varepsilon/2$ ارتفاعها $1/\varepsilon$: عندما $\varepsilon \to 0$ تصبح ضيقة وطويلة بلا حدود بينما تبقى مساحتها 1. و**خاصية الغربلة (sifting property)** فيها تلتقط قيمة واحدة من الدالة، لذا فإنها عند استخدامها قناعًا تعيد إنتاج الصورة:</Ar>
+
+$$
+\int\!\!\int \delta(x, y)\, dx\, dy = 1,
+\qquad
+\int\!\!\int f(x, y)\, \delta(x-a,\, y-b)\, dx\, dy = f(a, b),
+\qquad
+\int\!\!\int f(x-s,\, y-t)\, \delta(s, t)\, ds\, dt = f(x, y)
+$$
+
+Moving the 1 off-centre **shifts** the image instead. On slide 9 the 1 is left of centre; convolution flips the mask, so each output pixel copies its right-hand neighbour and the picture moves one pixel **left**.
+
+<Ar>ونقل الـ 1 بعيدًا عن المركز **يزيح** الصورة بدلًا من ذلك. ففي الشريحة 9 يقع الـ 1 يسار المركز؛ والالتفاف يقلب القناع، فينسخ كل بكسل في المخرجات جاره الأيمن، وتتحرك الصورة بكسلًا واحدًا إلى **اليسار**.</Ar>
+
+<SlideFigure page={9} caption="Top: the 3×3 mean filter blurs the image. Bottom: a single off-centre 1 shifts it left by one pixel." captionAr="في الأعلى: مرشح المتوسط 3×3 يُضبّب الصورة. في الأسفل: 1 واحد خارج المركز يزيحها بكسلًا واحدًا إلى اليسار." />
+
+### Output size and borders
+
+<Ar>حجم المخرجات وحدود الصورة</Ar>
+
+If the mask must stay inside the image, an $M \times N$ image and an $m \times n$ mask give an $(M-m+1) \times (N-n+1)$ output (5×5 → 3×3 above). Padding $p$ pixels on every side gives $(M+2p-m+1) \times (N+2p-n+1)$, so $p = (m-1)/2$ keeps the size. Near the borders the mask falls outside the image, so there are several choices:
+
+<Ar>إذا اشترطنا بقاء القناع داخل الصورة، فإن الصورة $M \times N$ مع القناع $m \times n$ تعطي مخرجات $(M-m+1) \times (N-n+1)$ (من 5×5 إلى 3×3 أعلاه). والحشو (padding) بعرض $p$ بكسل من كل جانب يعطي $(M+2p-m+1) \times (N+2p-n+1)$، لذا فإن $p = (m-1)/2$ يحافظ على الحجم. وقرب الحدود يقع القناع خارج الصورة، فتوجد عدة خيارات:</Ar>
+
+| Method <Ar>الطريقة</Ar> | Outside the image <Ar>خارج الصورة</Ar> | Effect <Ar>الأثر</Ar> |
+|---|---|---|
+| Ignore the edges <Ar>تجاهل الحواف</Ar> | nothing <Ar>لا شيء</Ar> | smaller output <Ar>مخرجات أصغر</Ar> |
+| Zero padding <Ar>الحشو بالأصفار (zero padding)</Ar> | zeros <Ar>أصفار</Ar> | dark border artefacts <Ar>تشوّهات (artefacts) داكنة على الإطار</Ar> |
+| Replicate <Ar>التكرار (replicate)</Ar> | nearest border pixel <Ar>أقرب بكسل على الحد</Ar> | good for flat borders <Ar>جيد للحدود المستوية</Ar> |
+| Symmetric (mirror) <Ar>الانعكاس (symmetric)</Ar> | the image reflected <Ar>الصورة منعكسة</Ar> | smooth, few artefacts <Ar>سلس وتشوّهاته قليلة</Ar> |
+| Wrap around <Ar>الحشو الدائري (wrap around)</Ar> | the opposite side <Ar>الجهة المقابلة</Ar> | suits periodic data <Ar>يناسب البيانات الدورية</Ar> |
+
+<SlideFigure page={7} caption="Output size: without padding a 3×3 mask fits 2×2 positions on a 4×4 input; padding a 5×5 input by one pixel (dashed) gives a 5×5 output." captionAr="حجم المخرجات: دون حشو يتسع القناع 3×3 لمواضع عددها 2×2 على مدخلات 4×4؛ وحشو مدخلات 5×5 ببكسل واحد (الخط المتقطع) يعطي مخرجات 5×5." />
+
+### Values outside the range
+
+<Ar>القيم الخارجة عن المدى</Ar>
+
+Negative coefficients can push results below 0 or above 255. Either **clip** them, or **scale** the whole result from its range $[g_L, g_H]$ to $[0, 255]$ (MATLAB's `imshow(g, [])` does this for display):
+
+<Ar>المعاملات السالبة قد تدفع النتائج إلى ما دون 0 أو ما فوق 255. فإما أن **نقصّها (clipping)**، وإما أن **نعيد تحجيم (scaling)** النتيجة كلها من مداها $[g_L, g_H]$ إلى $[0, 255]$ (والأمر `imshow(g, [])` في MATLAB يفعل ذلك عند العرض):</Ar>
+
+$$
+y_{\text{clip}} = \begin{cases} 0 & x < 0 \\ x & 0 \le x \le 255 \\ 255 & x > 255 \end{cases}
+\qquad\qquad
+y_{\text{scale}} = 255 \cdot \frac{x - g_L}{g_H - g_L}
+$$
+
+## The averaging (mean) filter
+
+<Ar>مرشح المتوسط</Ar>
+
+The **mean filter** is the simplest low-pass linear filter: each pixel becomes the average of its neighbourhood. An $n \times n$ mask has every coefficient equal to $1/n^2$ ($1/9$ for 3×3, $1/49$ for 7×7), so the coefficients add up to 1:
+
+<Ar>**مرشح المتوسط (mean filter)** أبسط مرشح خطي للتمرير المنخفض: يصبح كل بكسل متوسط جواره. وكل معامل في القناع $n \times n$ يساوي $1/n^2$ ($1/9$ في 3×3، و $1/49$ في 7×7)، فيكون مجموع المعاملات 1:</Ar>
+
+$$
+g(x, y) = \frac{1}{9}\big[f(x-1, y-1) + f(x-1, y) + f(x-1, y+1) + \dots + f(x+1, y+1)\big]
+$$
+
+**Example.** Across a vertical edge between grey levels 20 and 80, each row 20, 20, 20, 80, 80 becomes 20, 40, 60 in the interior: the jump turns into a ramp, so the edge is **blurred**. The bigger the mask, the stronger the smoothing.
+
+<Ar>**مثال.** عبر حافة (edge) رأسية بين مستويي الرمادي 20 و 80، يصبح كل صف 20، 20، 20، 80، 80 هو 20، 40، 60 في البكسلات الداخلية: تتحول القفزة إلى منحدر، فتُ**ضبَّب** الحافة. وكلما كبر القناع زاد التنعيم (smoothing).</Ar>
+
+```matlab title="average_filter.m"
+clear
+in_image = imread('msalah 2.png');
+h = fspecial('average', 11);        % 11x11 mask, every coefficient 1/121
+out_image = imfilter(in_image, h);  % correlation, zero padding, same size
+imshow(out_image)
+```
+
+<SlideFigure page={11} caption="The effect of the averaging filter size: the original and 11×11, 15×15 and 21×21 masks; the larger the mask, the stronger the blur." captionAr="أثر حجم مرشح المتوسط: الصورة الأصلية والأقنعة 11×11 و15×15 و21×21؛ فكلما كبر القناع زاد التضبيب." />
+
+Averaging also reduces noise, but it handles **salt-and-pepper** noise badly: each impulse is spread over the window and leaves a grey blotch, and the higher the noise density, the worse it gets. The slides' demo:
+
+<Ar>يقلل التوسيط الضوضاء (noise) أيضًا، لكنه يتعامل تعاملًا سيئًا مع ضوضاء **الملح والفلفل (salt-and-pepper)**: فكل نبضة تنتشر على النافذة وتترك بقعة رمادية، وكلما زادت كثافة الضوضاء ساءت النتيجة. وهذا عرض الشرائح:</Ar>
+
+```matlab title="noise_level.m"
+clear
+in_image = imread('msalah 2.png');
+in_image = rgb2gray(in_image);
+in_image2 = imresize(in_image, 0.4);
+imshow(in_image2), figure
+noised_image = imnoise(in_image2, 'salt & pepper', 0.2)
+imshow(noised_image), figure
+h = fspecial('average', 5);
+out_image = imfilter(noised_image, h);
+imshow(out_image)
+```
+
+## Separable filters
+
+<Ar>المرشحات القابلة للفصل</Ar>
+
+Some masks are a column vector times a row vector, so (by associativity) they can be applied as two simpler 1-D filters:
+
+<Ar>بعض الأقنعة حاصل ضرب متجه عمودي في متجه أفقي، لذا يمكن (بفضل الخاصية التجميعية) تطبيقها على هيئة مرشحين أبسط أحاديي البُعد:</Ar>
+
+$$
+\frac{1}{9}\begin{bmatrix} 1 & 1 & 1 \\ 1 & 1 & 1 \\ 1 & 1 & 1 \end{bmatrix}
+= \frac{1}{3}\begin{bmatrix} 1 \\ 1 \\ 1 \end{bmatrix} \frac{1}{3}\begin{bmatrix} 1 & 1 & 1 \end{bmatrix}
+$$
+
+For an $N \times N$ mask this cuts the work per pixel from $N^2$ multiplications and $N^2 - 1$ additions to $2N$ multiplications and $2N - 2$ additions: for 11×11, 121 multiplications become 22. The Gaussian filter is separable too.
+
+<Ar>في القناع $N \times N$ يخفّض هذا العمل لكل بكسل من $N^2$ عملية ضرب و $N^2 - 1$ عملية جمع إلى $2N$ عملية ضرب و $2N - 2$ عملية جمع: ففي 11×11 تصبح 121 عملية ضرب 22 فقط. ومرشح غاوس قابل للفصل أيضًا.</Ar>
+
+## Frequency, low-pass and high-pass
+
+<Ar>التردد، والتمرير المنخفض والمرتفع</Ar>
+
+- **Frequency** measures how much the grey values change with distance.
+  <Ar>**التردد (frequency)** مقياس لمقدار تغيّر القيم الرمادية مع المسافة.</Ar>
+- **High-frequency** components are large changes over small distances (edges, detail, noise); **low-frequency** components are small changes (smooth areas).
+  <Ar>مركبات **التردد المرتفع** تغيّرات كبيرة على مسافات صغيرة (الحواف، والتفاصيل، والضوضاء)؛ ومركبات **التردد المنخفض** تغيّرات صغيرة (المناطق الملساء).</Ar>
+- A **low-pass** filter passes low frequencies and reduces high ones; a **high-pass** filter does the opposite.
+  <Ar>مرشح **التمرير المنخفض (low-pass)** يمرّر الترددات المنخفضة ويقلل المرتفعة؛ ومرشح **التمرير المرتفع (high-pass)** يفعل العكس.</Ar>
+
+<Callout type="tip" title="Read the coefficients" titleAr="اقرأ المعاملات">
+  Coefficients that add up to <strong>1</strong> keep flat regions unchanged (all positive: a smoothing, low-pass filter). Coefficients that add up to <strong>0</strong> turn flat regions into 0 and respond only to change (a high-pass filter).
+
+  <Ar>المعاملات التي مجموعها <strong>1</strong> تُبقي المناطق المستوية دون تغيير (وإذا كانت كلها موجبة فهو مرشح تنعيم، أي تمرير منخفض). والمعاملات التي مجموعها <strong>0</strong> تحوّل المناطق المستوية إلى 0 ولا تستجيب إلا للتغيّر (مرشح تمرير مرتفع).</Ar>
+</Callout>
+
+Low-pass filters are mostly for **smoothing** and **noise reduction**. Besides averaging, the popular **Gaussian filter** weights pixels by the Gaussian bell curve, so the centre counts most and the blur looks more natural. Its **standard deviation** $\sigma$ sets the strength (small $\sigma$: slight smoothing; large $\sigma$: strong blur); it returns in image restoration:
+
+<Ar>تُستخدم مرشحات التمرير المنخفض أساسًا في **التنعيم (smoothing)** و**تقليل الضوضاء**. وإلى جانب التوسيط، يزن **مرشح غاوس (Gaussian filter)** الشائع البكسلاتِ بحسب منحنى غاوس الجرسي، فيكون للمركز الوزن الأكبر ويبدو التضبيب أكثر طبيعية. ويحدد **الانحراف المعياري (sigma)** $\sigma$ قوته ($\sigma$ صغيرة: تنعيم خفيف؛ و $\sigma$ كبيرة: تضبيب شديد)؛ وسنعود إليه في استعادة الصور (restoration):</Ar>
+
+$$
+P(x) = e^{-x^2 / 2\sigma^2} \qquad\qquad G(x, y) = e^{-(x^2 + y^2) / 2\sigma^2}
+$$
+
+## The Laplacian
+
+<Ar>لابلاسيان</Ar>
+
+The **Laplacian** is a **second-order derivative** operator. Approximating each second derivative by a difference of neighbours gives the mask $h_1$; its negative $h_2$ is used just as often:
+
+<Ar>**لابلاسيان (Laplacian)** مؤثر **للمشتقة من الرتبة الثانية (second-order derivative)**. وتقريب كل مشتقة ثانية بفرق بين الجيران يعطي القناع $h_1$؛ وسالبه $h_2$ يُستخدم بالقدر نفسه:</Ar>
+
+$$
+\nabla^2 f = \frac{\partial^2 f}{\partial x^2} + \frac{\partial^2 f}{\partial y^2},
+\qquad
+\frac{\partial^2 f}{\partial x^2} \approx f(x+1, y) + f(x-1, y) - 2f(x, y),
+\qquad
+\frac{\partial^2 f}{\partial y^2} \approx f(x, y+1) + f(x, y-1) - 2f(x, y)
+$$
+
+$$
+h_1 = \begin{bmatrix} 0 & 1 & 0 \\ 1 & -4 & 1 \\ 0 & 1 & 0 \end{bmatrix}
+\qquad
+h_2 = \begin{bmatrix} 0 & -1 & 0 \\ -1 & 4 & -1 \\ 0 & -1 & 0 \end{bmatrix}
+\qquad
+h_3 = \begin{bmatrix} 1 & 1 & 1 \\ 1 & -8 & 1 \\ 1 & 1 & 1 \end{bmatrix}
+\qquad
+\begin{bmatrix} 1 & -2 & 1 \\ -2 & 4 & -2 \\ 1 & -2 & 1 \end{bmatrix} = \begin{bmatrix} 1 \\ -2 \\ 1 \end{bmatrix}\begin{bmatrix} 1 & -2 & 1 \end{bmatrix}
+$$
+
+- The coefficients **add up to zero**: where grey values are similar (low frequency), the output is close to 0, so it is a **high-pass** filter.
+  <Ar>**مجموع المعاملات صفر**: حيثما تتشابه القيم الرمادية (تردد منخفض) تكون المخرجات قريبة من 0، فهو مرشح **تمرير مرتفع**.</Ar>
+- It **highlights grey-level discontinuities**: it is an **edge detector**, and a very noise-sensitive one.
+  <Ar>إنه **يُبرز الانقطاعات (discontinuities) في مستويات الرمادي**: فهو **كاشف حواف (edge detector)**، وشديد الحساسية للضوضاء.</Ar>
+- $h_1$ is **isotropic** for 90° rotations (it treats $x$ and $y$ alike); adding the diagonals ($h_3$, or its negative $h_4$) makes it isotropic for 45° steps. The last mask is a separable variant.
+  <Ar>القناع $h_1$ **متماثل الاتجاهات (isotropic)** عند التدوير بزاوية 90° (يعامل $x$ و $y$ بالتساوي)؛ وإضافة الجيران القُطريين ($h_3$، أو سالبه $h_4$) تجعله متماثلًا لخطوات مقدارها 45°. والقناع الأخير صيغة قابلة للفصل.</Ar>
+
+**Example.** On the 20 | 80 edge, $h_1$ gives 0 in the flat part, $20+20+20+80-4 \cdot 20 = 60$ on the dark side and $80+80+20+80-4 \cdot 80 = -60$ on the bright side. Flat regions vanish; the edge becomes a positive–negative pair whose **zero-crossing** marks its position.
+
+<Ar>**مثال.** على الحافة 20 | 80 يعطي $h_1$ القيمة 0 في الجزء المستوي، و $20+20+20+80-4 \cdot 20 = 60$ على الجانب الداكن، و $80+80+20+80-4 \cdot 80 = -60$ على الجانب الساطع. تختفي المناطق المستوية، وتصبح الحافة زوجًا موجبًا–سالبًا تحدد **نقطة عبور الصفر (zero-crossing)** فيه موضعها.</Ar>
+
+<SlideFigure page={25} caption="Laplacian demo: the Moon and its Laplacian. Featureless regions turn dark; only crater rims and the limb remain." captionAr="عرض لابلاسيان: القمر ولابلاسيان صورته. تصبح المناطق الخالية من التفاصيل داكنة، ولا يبقى إلا حواف الفوهات وحافة القمر." />
+
+### Edge enhancement
+
+<Ar>تحسين الحواف</Ar>
+
+Adding the Laplacian's edge information back to the original **sharpens** it. Because $h_2 = -h_1$, both lines below give the same image, and they combine into one mask:
+
+<Ar>إضافة معلومات الحواف التي يعطيها لابلاسيان إلى الصورة الأصلية **تُبرزها (sharpening)**. ولأن $h_2 = -h_1$ فإن السطرين أدناه يعطيان الصورة نفسها، ويمكن دمجهما في قناع واحد:</Ar>
+
+$$
+g(x, y) = \begin{cases} f(x, y) - \nabla^2 f(x, y), & \text{using } h_1 \\ f(x, y) + \nabla^2 f(x, y), & \text{using } h_2 \end{cases}
+\qquad
+\text{one mask: } \begin{bmatrix} 0 & -1 & 0 \\ -1 & 5 & -1 \\ 0 & -1 & 0 \end{bmatrix}
+$$
+
+On our edge: $20 - 60 = -40$ (clipped to 0) and $80 + 60 = 140$, so the row becomes 20, 20, 0, 140, 80. The dark side gets darker and the bright side brighter, and the edge looks crisper.
+
+<Ar>على حافتنا: $20 - 60 = -40$ (تُقصّ إلى 0) و $80 + 60 = 140$، فيصبح الصف 20، 20، 0، 140، 80. يزداد الجانب الداكن قتامة والجانب الساطع سطوعًا، فتبدو الحافة أوضح.</Ar>
+
+<SlideFigure page={26} caption="Laplacian enhancement: the original Moon and g = f − ∇²f (h1), in which the craters stand out more sharply." captionAr="التحسين بلابلاسيان: القمر الأصلي و g = f − ∇²f (باستخدام h1)، حيث تبرز الفوهات بوضوح أكبر." />
+
+### Directional masks
+
+<Ar>الأقنعة الاتجاهية</Ar>
+
+A mask with a negative side and a positive side responds to edges in **one direction**:
+
+<Ar>القناع الذي له جانب سالب وجانب موجب يستجيب للحواف في **اتجاه واحد**:</Ar>
+
+$$
+h_1 = \begin{bmatrix} -1 & -1 & 0 \\ -1 & 0 & 1 \\ 0 & 1 & 1 \end{bmatrix}
+\qquad
+h_2 = \begin{bmatrix} -1 & -1 & -1 \\ 0 & 0 & 0 \\ 1 & 1 & 1 \end{bmatrix}
+\qquad
+h_3 = \begin{bmatrix} -1 & 0 & 1 \\ -1 & 0 & 1 \\ -1 & 0 & 1 \end{bmatrix}
+$$
+
+$h_2$ compares the rows below and above (**horizontal** edges), $h_3$ the columns right and left (**vertical** edges), and $h_1$ two opposite corners (**diagonal** edges). Weighting the middle row or column by 2 gives the **Sobel** masks, like the one drawn on slide 6, which smooth a little while differentiating.
+
+<Ar>يقارن $h_2$ الصف السفلي بالعلوي (الحواف **الأفقية**)، و $h_3$ العمود الأيمن بالأيسر (الحواف **الرأسية**)، و $h_1$ ركنين متقابلين (الحواف **القُطرية**). وإعطاء الصف أو العمود الأوسط وزنًا مقداره 2 يعطي أقنعة **سوبل (Sobel)**، مثل القناع المرسوم في الشريحة 6، وهي تنعّم قليلًا أثناء الاشتقاق.</Ar>
+
+<SlideFigure page={27} caption="Directional masks applied to two arrows: h1 picks out diagonal edges, h2 horizontal edges and h3 vertical edges." captionAr="أقنعة اتجاهية مطبّقة على سهمين: يلتقط h1 الحواف القُطرية، و h2 الأفقية، و h3 الرأسية." />
+
+## Unsharp masking and high-boost filtering
+
+<Ar>القناع غير الحاد والترشيح عالي التعزيز</Ar>
+
+**Unsharp masking** (edge enhancement, edge crispening) makes edges slightly sharper and is very popular in industry. It **subtracts a blurred version of the image from the image itself**:
+
+<Ar>**الإبراز بالقناع غير الحاد (unsharp masking)** (ويُسمّى أيضًا تحسين الحواف (edge enhancement)) يجعل الحواف أحدّ قليلًا، وهو شائع جدًا في الصناعة. وفيه **تُطرح نسخة مُضبّبة من الصورة من الصورة نفسها**:</Ar>
+
+$$
+f_s(x, y) = f(x, y) - \bar{f}(x, y) \qquad (f_s \text{: sharpened},\ f \text{: original},\ \bar f \text{: blurred})
+$$
+
+**Why it works.** Blurring turns a steep edge into a gentle slope. Just before the edge the blurred copy is brighter than the original, so $f - \bar f$ is negative; just after it, darker, so $f - \bar f$ is positive; in flat areas it is 0. On our edge the mean blur gives 20, 40, 60, so $f - \bar f$ is 0, −20, +20. Adding this to the image pushes the dark side down and the bright side up: the edge gets steeper, with a dip before it and an overshoot after it.
+
+<Ar>**لماذا تنجح؟** التضبيب يحوّل الحافة الحادة إلى منحدر لطيف. فقبل الحافة مباشرةً تكون النسخة المُضبّبة أسطع من الأصل، فيكون $f - \bar f$ سالبًا؛ وبعدها مباشرةً تكون أدكن، فيكون $f - \bar f$ موجبًا؛ وفي المناطق المستوية يساوي 0. وعلى حافتنا يعطي تضبيب المتوسط 20، 40، 60، فيكون $f - \bar f$ هو 0، −20، +20. وإضافة ذلك إلى الصورة تدفع الجانب الداكن إلى الأسفل والجانب الساطع إلى الأعلى: فتصبح الحافة أشد انحدارًا، مع انخفاض قبلها وتجاوز (overshoot) بعدها.</Ar>
+
+<SlideFigure page={31} caption="Why unsharp masking works: an edge profile f(x,y), its blurred version, and the sharpened result with a dip and an overshoot." captionAr="لماذا ينجح القناع غير الحاد: مقطع حافة f(x,y)، ونسختها المُضبّبة، والنتيجة المُبرَزة مع انخفاض وتجاوز." />
+
+In practice only a fraction $1/A$ of the blur is subtracted (original → blur → scale → subtract → scale for display), and the steps combine into one mask; scaling a mask only rescales the output, so:
+
+<Ar>عمليًا لا يُطرح إلا جزء $1/A$ من الصورة المُضبّبة (الأصل ← التضبيب ← الضرب في الثابت ← الطرح ← التحجيم للعرض)، وتُدمج الخطوات في قناع واحد؛ وضرب القناع في ثابت لا يفعل إلا إعادة تحجيم المخرجات، لذا:</Ar>
+
+$$
+h = \delta - \frac{1}{A}\cdot\frac{1}{9}\begin{bmatrix} 1 & 1 & 1 \\ 1 & 1 & 1 \\ 1 & 1 & 1 \end{bmatrix}
+\;\propto\;
+A\,\delta - \frac{1}{9}\begin{bmatrix} 1 & 1 & 1 \\ 1 & 1 & 1 \\ 1 & 1 & 1 \end{bmatrix},
+\qquad
+\delta = \begin{bmatrix} 0 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 0 \end{bmatrix}
+$$
+
+**High-boost filtering** generalises this with a **boost coefficient** $A \ge 1$, and works with any sharpening $f_s$:
+
+<Ar>**الترشيح عالي التعزيز (high-boost filtering)** يعمّم ذلك باستخدام **معامل التعزيز (boost coefficient)** $A \ge 1$، ويصلح مع أي عملية إبراز $f_s$:</Ar>
+
+$$
+f_{hb} = A f - \bar f = (A - 1) f + (f - \bar f) = (A - 1) f + f_s
+\qquad\xrightarrow{\ f_s \,=\, f - \nabla^2 f\ }\qquad
+h = \begin{bmatrix} 0 & -1 & 0 \\ -1 & A + 4 & -1 \\ 0 & -1 & 0 \end{bmatrix}
+$$
+
+With $A = 0$ the mask is the pure Laplacian $h_2$ (edges only); $A = 1$ is ordinary Laplacian sharpening; $A > 1$ adds more of the original, so the result is sharp **and** brighter. With $A = 2$ and the mean blur, our edge becomes 20, 0, 100 around the jump: the dip and overshoot in numbers.
+
+<Ar>مع $A = 0$ يصبح القناع لابلاسيان خالصًا $h_2$ (حواف فقط)؛ و $A = 1$ هو إبراز لابلاسيان العادي؛ و $A > 1$ يضيف جزءًا أكبر من الأصل، فتكون النتيجة حادة **و**أسطع. ومع $A = 2$ وتضبيب المتوسط تصبح حافتنا 20، 0، 100 حول القفزة: الانخفاض والتجاوز بالأرقام.</Ar>
+
+<SlideFigure page={34} caption="High-boost demo: the original, A = 0 (the Laplacian alone), A = 1 (Laplacian sharpening) and A = 1.7 (sharp and much brighter)." captionAr="عرض الترشيح عالي التعزيز: الأصل، و A = 0 (لابلاسيان وحده)، و A = 1 (إبراز لابلاسيان)، و A = 1.7 (حادة وأسطع بكثير)." />
+
+## Non-linear filters
+
+<Ar>المرشحات غير الخطية</Ar>
+
+A **non-linear** filter sorts or selects the values under the mask instead of taking a weighted sum:
+
+<Ar>المرشح **غير الخطي (non-linear)** يرتّب القيم الواقعة تحت القناع أو ينتقي منها بدلًا من حساب مجموع موزون:</Ar>
+
+- **Maximum / minimum filter**: the largest / smallest value under the mask.
+  <Ar>**مرشح الأقصى / الأدنى (max / min)**: أكبر / أصغر قيمة تحت القناع.</Ar>
+- **Rank-order filter**: sort the values and return the one at a chosen position. Max and min are rank-order filters; the most popular is the **median filter**, which returns the middle value.
+  <Ar>**مرشح الرتبة (rank-order filter)**: رتّب القيم وأعِد القيمة الموجودة في موضع محدد. ومرشحا الأقصى والأدنى من مرشحات الرتبة؛ وأشهرها **مرشح الوسيط (median filter)** الذي يعيد القيمة الوسطى.</Ar>
+- **Alpha-trimmed mean**: sort, trim some values off **both ends**, and average the rest. For a 3×3 mask with ordered values $x_1 \le x_2 \le \dots \le x_9$, trimming two at each end gives $(x_3 + x_4 + x_5 + x_6 + x_7)/5$.
+  <Ar>**المتوسط المُشذَّب ألفا (alpha-trimmed mean)**: رتّب، واحذف بعض القيم من **الطرفين**، واحسب متوسط الباقي. ففي قناع 3×3 بقيم مرتبة $x_1 \le x_2 \le \dots \le x_9$، يعطي حذف قيمتين من كل طرف $(x_3 + x_4 + x_5 + x_6 + x_7)/5$.</Ar>
+
+**Example.** The neighbourhood on slide 36 has an outlier, 70, at its centre; sorted, it is $1, 4, 5, 7, 8, 10, 12, 15, 70$:
+
+<Ar>**مثال.** في جوار الشريحة 36 قيمة شاذة هي 70 في المركز؛ وبعد الترتيب تصبح القيم $1, 4, 5, 7, 8, 10, 12, 15, 70$:</Ar>
+
+| Filter <Ar>المرشح</Ar> | Mean <Ar>المتوسط</Ar> | Median <Ar>الوسيط</Ar> | Max <Ar>الأقصى</Ar> | Min <Ar>الأدنى</Ar> | Alpha-trimmed (2 each end) <Ar>المُشذَّب ألفا (قيمتان من كل طرف)</Ar> |
+|---|---|---|---|---|---|
+| New centre <Ar>المركز الجديد</Ar> | $132/9 \approx 14.67$ | 8 | 70 | 1 | $42/5 = 8.4$ |
+
+The single outlier drags the mean up to 14.67, while the median ignores it. Trimming nothing gives the mean and trimming all but one value gives the median, so the alpha-trimmed mean lies between the two.
+
+<Ar>القيمة الشاذة الوحيدة ترفع المتوسط إلى 14.67، بينما يتجاهلها الوسيط. وعدم حذف أي قيمة يعطي المتوسط، وحذف كل القيم عدا واحدة يعطي الوسيط، لذا يقع المتوسط المُشذَّب ألفا بين الاثنين.</Ar>
+
+<Callout type="note" title="Why the median beats salt-and-pepper noise" titleAr="لماذا يتفوّق الوسيط على ضوضاء الملح والفلفل">
+  Salt-and-pepper pixels are extreme (0 or 255), so after sorting they sit at the <strong>ends</strong> of the list and are never chosen unless more than half the window is noise. The median also <strong>preserves edges</strong>, because its output is always a real value from the window, not a blend of both sides.
+
+  <Ar>بكسلات الملح والفلفل قيم متطرفة (0 أو 255)، لذا تقع بعد الترتيب في <strong>طرفي</strong> القائمة ولا تُختار أبدًا ما لم يكن أكثر من نصف النافذة ضوضاء. ويحافظ الوسيط أيضًا <strong>على الحواف</strong>، لأن مخرجه دائمًا قيمة حقيقية من النافذة، لا مزيجًا من جانبي الحافة.</Ar>
+</Callout>
+
+The slides' demo uses a very large 21×21 median, which removes the hairs from a skin image but keeps the skin region's outline:
+
+<Ar>يستخدم عرض الشرائح مرشح وسيط كبيرًا جدًا أبعاده 21×21، فيزيل الشعر من صورة جلد مع الحفاظ على حدود منطقة الجلد:</Ar>
+
+```matlab title="median_filter.m"
+clear
+in_image = imread('h_skin.jpg');
+in_image = rgb2gray(in_image);
+in_image = imresize(in_image, 0.6);
+imshow(in_image), figure
+out_image = medfilt2(in_image, [21, 21]);
+imshow(out_image)
+% rank-order filters: ordfilt2(I, 9, ones(3)) = max, ordfilt2(I, 1, ones(3)) = min
+```
+
+<SlideFigure page={36} caption="The median filter: sorting 1 4 5 7 8 10 12 15 70 replaces the outlier 70 by 8; a 21×21 median removes the hairs from a skin image." captionAr="مرشح الوسيط: ترتيب 1 4 5 7 8 10 12 15 70 يستبدل القيمة الشاذة 70 بالقيمة 8؛ ووسيط 21×21 يزيل الشعر من صورة جلد." />
+
+```python title="nonlinear_filters.py"
+import numpy as np
+from scipy import ndimage as ndi
+
+med = ndi.median_filter(img, size=21)
+
+def alpha_trimmed(values, d=4):          # trim d/2 values at each end
+    v = np.sort(values)
+    return v[d // 2 : len(v) - d // 2].mean()
+
+atm = ndi.generic_filter(img.astype(float), alpha_trimmed, size=3)
+```
+
+<Takeaways>
+
+- A spatial filter slides a **mask** of **coefficients** over the image; **correlation** lays it on directly, **convolution** rotates it by 180° first (identical for symmetric masks).
+  <Ar>يحرّك المرشح المكاني **قناعًا (mask)** من **المعاملات (coefficients)** فوق الصورة؛ و**الارتباط (correlation)** يضعه مباشرةً، و**الالتفاف (convolution)** يدوّره بزاوية 180° أولًا (ويتطابقان في الأقنعة المتماثلة).</Ar>
+- Without padding the output shrinks to $(M-m+1) \times (N-n+1)$; borders are cropped or padded (zeros, replicate, mirror, wrap); out-of-range values are **clipped** or **scaled**.
+  <Ar>دون حشو تتقلص المخرجات إلى $(M-m+1) \times (N-n+1)$؛ وتُقصّ الحدود أو تُحشى (بالأصفار، أو بالتكرار، أو بالانعكاس، أو دائريًا)؛ والقيم الخارجة عن المدى **تُقصّ** أو يُعاد **تحجيمها**.</Ar>
+- **Low-pass** masks (sum 1) smooth, more strongly as they grow; separable masks need $2N$ instead of $N^2$ multiplications.
+  <Ar>أقنعة **التمرير المنخفض** (مجموعها 1) تنعّم، ويزداد أثرها كلما كبرت؛ والأقنعة القابلة للفصل تحتاج إلى $2N$ عملية ضرب بدلًا من $N^2$.</Ar>
+- **High-pass** masks (sum 0) find edges; the **Laplacian** is a second derivative, and $f - \nabla^2 f$ sharpens.
+  <Ar>أقنعة **التمرير المرتفع** (مجموعها 0) تجد الحواف؛ و**لابلاسيان (Laplacian)** مشتقة ثانية، و $f - \nabla^2 f$ تُبرز الصورة.</Ar>
+- **Unsharp masking** subtracts a blurred copy; **high-boost** $A f - \bar f = (A-1) f + f_s$ gives the mask with $A + 4$ at its centre.
+  <Ar>**القناع غير الحاد (unsharp masking)** يطرح نسخة مُضبّبة؛ و**الترشيح عالي التعزيز (high-boost)** $A f - \bar f = (A-1) f + f_s$ يعطي القناع الذي في مركزه $A + 4$.</Ar>
+- **Non-linear** filters sort the window; the **median** removes salt-and-pepper noise and keeps edges.
+  <Ar>المرشحات **غير الخطية** ترتّب قيم النافذة؛ و**الوسيط (median)** يزيل ضوضاء الملح والفلفل ويحافظ على الحواف.</Ar>
+
+</Takeaways>
+
+## Practice
+
+<Ar>تدريب</Ar>
+
+<Exercise title="Averaging by hand" titleAr="التوسيط يدويًا" level="easy">
+
+Apply a 3×3 averaging filter to the sub-image with rows 1 2 3, 4 5 6 and 7 8 9. What is the new centre value? What is each coefficient of a 7×7 averaging mask?
+
+<Ar>طبّق مرشح متوسط 3×3 على الصورة الجزئية ذات الصفوف 1 2 3، و4 5 6، و7 8 9. ما القيمة الجديدة للمركز؟ وكم يساوي كل معامل في قناع متوسط 7×7؟</Ar>
+
+<Solution>
+
+$(1 + 2 + \dots + 9)/9 = 45/9 = 5$. In a 7×7 mask each of the 49 coefficients is $1/49$, so they still add up to 1.
+
+<Ar>$(1 + 2 + \dots + 9)/9 = 45/9 = 5$. وفي القناع 7×7 يساوي كل معامل من المعاملات الـ 49 القيمة $1/49$، فيبقى مجموعها 1.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Laplacian on a flat region and a bright spot" titleAr="لابلاسيان على منطقة مستوية ونقطة ساطعة" level="medium">
+
+With $h_1$, compute the Laplacian at the centre of (a) a uniform region of 50s, and (b) a 3×3 block of 10s whose centre is 50. Then compute the sharpened value $f - \nabla^2 f$ for (b).
+
+<Ar>باستخدام $h_1$، احسب لابلاسيان عند مركز (a) منطقة منتظمة كل قيمها 50، و(b) كتلة 3×3 كل قيمها 10 ومركزها 50. ثم احسب القيمة المُبرَزة $f - \nabla^2 f$ للحالة (b).</Ar>
+
+<Solution>
+
+(a) $4 \cdot 50 - 4 \cdot 50 = 0$: the coefficients sum to zero, so any uniform region gives 0. (b) $4 \cdot 10 - 4 \cdot 50 = -160$, and $f - \nabla^2 f = 50 + 160 = 210$: the spot gets brighter relative to its surroundings. The single mask with 5 at the centre gives the same: $5 \cdot 50 - 4 \cdot 10 = 210$.
+
+<Ar>(a) $4 \cdot 50 - 4 \cdot 50 = 0$: مجموع المعاملات صفر، لذا تعطي أي منطقة منتظمة 0. (b) $4 \cdot 10 - 4 \cdot 50 = -160$، و $f - \nabla^2 f = 50 + 160 = 210$: تصبح النقطة أسطع مقارنةً بما حولها. والقناع الواحد الذي في مركزه 5 يعطي النتيجة نفسها: $5 \cdot 50 - 4 \cdot 10 = 210$.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Mean, median or trimmed mean?" titleAr="المتوسط أم الوسيط أم المتوسط المُشذَّب؟" level="hard">
+
+A 3×3 window in an image with salt-and-pepper noise holds 12, 255, 14, 11, 13, 0, 15, 12, 13. Compute the mean, the median and the alpha-trimmed mean (trimming two values at each end). Which would you use?
+
+<Ar>نافذة 3×3 في صورة بها ضوضاء ملح وفلفل تحتوي على القيم 12، 255، 14، 11، 13، 0، 15، 12، 13. احسب المتوسط والوسيط والمتوسط المُشذَّب ألفا (بحذف قيمتين من كل طرف). أيها تستخدم؟</Ar>
+
+<Solution>
+
+Sorted: $0, 11, 12, 12, 13, 13, 14, 15, 255$ (sum 345). Mean: $345/9 \approx 38.3$, far from the true level of about 13. Median: **13**. Alpha-trimmed: $(12 + 12 + 13 + 13 + 14)/5 = 12.8$. Use the median or the alpha-trimmed mean: the impulses fall at the ends of the sorted list and are discarded, while averaging mixes them in.
+
+<Ar>بعد الترتيب: $0, 11, 12, 12, 13, 13, 14, 15, 255$ (المجموع 345). المتوسط: $345/9 \approx 38.3$، وهو بعيد عن المستوى الحقيقي البالغ نحو 13. الوسيط: **13**. المُشذَّب ألفا: $(12 + 12 + 13 + 13 + 14)/5 = 12.8$. استخدم الوسيط أو المتوسط المُشذَّب ألفا: فالنبضات تقع في طرفي القائمة المرتبة فتُستبعد، بينما يمزجها التوسيط في النتيجة.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "A 256×256 image is filtered with a 5×5 mask, ignoring the edges (no padding). What is the output size?",
+      qAr: "صورة أبعادها 256×256 رُشّحت بقناع 5×5 مع تجاهل الحواف (دون حشو). ما أبعاد المخرجات؟",
+      options: ["256×256", "254×254", "252×252", "251×251"],
+      optionsAr: ["256×256", "254×254", "252×252", "251×251"],
+      answer: 2,
+      explain: "M − m + 1 = 256 − 5 + 1 = 252 in each direction.",
+      explainAr: "M − m + 1 = 256 − 5 + 1 = 252 في كل اتجاه."
+    },
+    {
+      q: "What do the coefficients of a Laplacian mask add up to, and what does that mean?",
+      qAr: "كم يساوي مجموع معاملات قناع لابلاسيان، وماذا يعني ذلك؟",
+      options: ["1: flat regions stay unchanged", "0: flat regions become 0, so it is high-pass", "9: it brightens the image", "−1: it inverts the image"],
+      optionsAr: ["1: تبقى المناطق المستوية دون تغيير", "0: تصبح المناطق المستوية 0، فهو مرشح تمرير مرتفع", "9: يزيد سطوع الصورة", "−1: يعكس الصورة"],
+      answer: 1,
+      explain: "A zero sum means uniform areas give 0; only changes (edges) produce a response.",
+      explainAr: "المجموع الصفري يعني أن المناطق المنتظمة تعطي 0، ولا تنتج استجابةً إلا التغيّرات (الحواف)."
+    },
+    {
+      q: "Which filter is best for removing salt-and-pepper noise while keeping edges?",
+      qAr: "أي مرشح هو الأفضل لإزالة ضوضاء الملح والفلفل مع الحفاظ على الحواف؟",
+      options: ["3×3 averaging filter", "Laplacian", "Median filter", "Maximum filter"],
+      optionsAr: ["مرشح المتوسط 3×3", "لابلاسيان", "مرشح الوسيط", "مرشح الأقصى"],
+      answer: 2,
+      explain: "The extreme impulse values end up at the ends of the sorted list and are never picked as the median.",
+      explainAr: "قيم النبضات المتطرفة تنتهي في طرفي القائمة المرتبة، فلا تُختار وسيطًا أبدًا."
+    },
+    {
+      q: "In the high-boost mask with A + 4 at the centre, which value of A gives the pure Laplacian (edges only)?",
+      qAr: "في قناع الترشيح عالي التعزيز الذي في مركزه A + 4، أي قيمة لـ A تعطي لابلاسيان خالصًا (حواف فقط)؟",
+      options: ["A = 0", "A = 1", "A = 1.7", "A = 4"],
+      optionsAr: ["A = 0", "A = 1", "A = 1.7", "A = 4"],
+      answer: 0,
+      explain: "With A = 0 the mask is h2; A = 1 gives ordinary sharpening and A > 1 a brighter result.",
+      explainAr: "مع A = 0 يصبح القناع h2؛ و A = 1 يعطي الإبراز العادي، و A > 1 يعطي نتيجة أسطع."
+    },
+    {
+      q: "A separable 7×7 filter is applied as a column filter and then a row filter. How many multiplications does each output pixel need?",
+      qAr: "طُبّق مرشح 7×7 قابل للفصل على هيئة مرشح عمودي ثم مرشح أفقي. كم عملية ضرب يحتاجها كل بكسل في المخرجات؟",
+      options: ["49", "14", "12", "7"],
+      optionsAr: ["49", "14", "12", "7"],
+      answer: 1,
+      explain: "2N = 14 multiplications instead of N² = 49.",
+      explainAr: "2N = 14 عملية ضرب بدلًا من N² = 49."
+    }
+  ]}
+/>
