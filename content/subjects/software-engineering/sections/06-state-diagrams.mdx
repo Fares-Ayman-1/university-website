@@ -117,6 +117,13 @@ A transition label can carry an **action** after the slash: what the system **do
 | Confirmed <Ar>مؤكَّد</Ar> | customer moves in / none <Ar>العميل ينتقل للإقامة / بلا إجراء</Ar> | Used <Ar>مُستخدَم</Ar> |
 | Used <Ar>مُستخدَم</Ar> | customer pays / increment room count <Ar>العميل يدفع / زيادة عدد الغرف</Ar> | Archived <Ar>مؤرشَف</Ar> |
 
+<StateMachine
+  preset="hotel-reservation"
+  expect="request,try-confirm,move-in,pay"
+  caption="Run one reservation through the table. Try to confirm it with a free room and with a full hotel, and watch the guards decide and the actions change the room count."
+  captionAr="مرِّر حجزًا واحدًا عبر الجدول. حاول تأكيده مع وجود غرفة متاحة ومع امتلاء الفندق، وراقب كيف تحسم شروط الحراسة الانتقال وكيف تغيّر الإجراءات عدد الغرف."
+/>
+
 The table translates almost line by line into code:
 
 <Ar>يتحوّل الجدول إلى شيفرة (code) سطرًا بسطر تقريبًا:</Ar>

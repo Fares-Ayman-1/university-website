@@ -161,6 +161,15 @@ $$
 | Ramesh | Narayan | 38000 |
 | Joyce | English | 25000 |
 
+<RelationalAlgebra
+  dataset="company-employee"
+  select="DNO = 5"
+  project="FNAME, LNAME, SALARY"
+  expect="σ DNO = 4 => FNAME: Alicia, Jennifer, Ahmad; σ SALARY > 30000 => FNAME: Franklin, Jennifer, Ramesh, James; π SEX, SALARY => 7; σ DNO = 5 π FNAME, LNAME, SALARY => FNAME: John, Franklin, Ramesh, Joyce; π DNO => 3; σ SEX = 'F' π SALARY => 2"
+  caption="This starts from the worked example above: step through σ, then π. Then change the condition or the attributes. Keep only SEX and SALARY with no condition to watch π remove a duplicate tuple: 8 rows give 7 tuples."
+  captionAr="تبدأ الأداة من المثال المحلول أعلاه: تنقّل بين خطوات σ ثم π، ثم غيّر الشرط أو السمات. أبقِ SEX و SALARY فقط بلا شرط لترى π تحذف صفًا مكررًا: من 8 صفوف إلى 7."
+/>
+
 ```sql title="select_project.sql"
 SELECT fname, lname, salary FROM employee WHERE dno = 5;
 -- "Department 4 and salary at least 25000"

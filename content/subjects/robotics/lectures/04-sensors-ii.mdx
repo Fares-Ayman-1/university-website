@@ -85,6 +85,15 @@ With 60 slots, one slot equals $360^\circ/60 = 6^\circ$. Offset slots allow more
 | Double (×2) <Ar>مزدوج (×2)</Ar> | Rising and falling edges of one channel <Ar>الحواف الصاعدة والهابطة لقناة واحدة</Ar> | 2 |
 | **Quadruple (×4)** <Ar>**رباعي (×4)**</Ar> | Rising and falling edges of **both** channels <Ar>الحواف الصاعدة والهابطة **لكلتا** القناتين</Ar> | **4** (most precise) <Ar>**4** (الأدق)</Ar> |
 
+<EncoderSim
+  mode="incremental"
+  ppr={500}
+  bits={4}
+  expect="decode 00 01 11 10 00 = 0.72 forward; gray 0000 0001 0011 0010 0110 0111 0101 0100 1100 1101 1111; skew 0111 1000 = 1111"
+  caption="Drag the disc or step it one state at a time and watch A and B, the direction and the ×1, ×2 and ×4 counts. Then switch to the absolute disc and turn on detector skew to see why Gray code is used."
+  captionAr="اسحب القرص أو حرّكه حالةً واحدة في كل مرة، وراقب القناتين A و B والاتجاه والعدّ ×1 و ×2 و ×4. ثم انتقل إلى القرص المطلق وشغّل انحراف الكواشف لترى لماذا تُستخدم شفرة جراي (Gray code)."
+/>
+
 <SlideFigure page={12} caption="Pulse trains of a two-channel encoder with zero index, and the coding for clockwise and counter-clockwise rotation." captionAr="قطارات النبضات لمُرمِّز ثنائي القنوات مع نبضة الصفر (index)، والترميز للدوران في اتجاه عقارب الساعة وعكسه." />
 
 ```python title="quadrature_decoder.py"

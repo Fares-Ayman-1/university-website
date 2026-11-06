@@ -77,6 +77,13 @@ A process also has its **current activity**: the **program counter** and **regis
 
 <SlideFigure page={9} caption="new → (admitted) → ready ⇄ running (scheduler dispatch / interrupt) → waiting (I/O or event wait) → ready (completion); running → terminated (exit)." captionAr="جديدة ← (القبول) ← جاهزة ⇄ قيد التشغيل (إيفاد المُجدوِل / مقاطعة) ← منتظرة (انتظار إدخال/إخراج أو حدث) ← جاهزة (الاكتمال)؛ وقيد التشغيل ← منتهية (الخروج)." />
 
+<StateMachine
+  preset="process-states"
+  expect="admit,dispatch,interrupt,dispatch,io-wait,io-complete,dispatch,exit"
+  caption="Fire the slide's events at one process. A valid event moves it along its arrow; any other event explains why it can't fire in the current state."
+  captionAr="أطلِق أحداث الشريحة على عملية واحدة. الحدث الصالح ينقلها على السهم الخاص به، وأي حدث آخر يشرح لماذا لا يمكن أن يقع في الحالة الحالية."
+/>
+
 Only **one process per core** can be *running* at a time; many can be *ready* or *waiting*.
 
 <Ar>لا يمكن أن تكون في حالة *التشغيل* إلا **عملية واحدة لكل نواة معالج (core)** في الوقت نفسه، بينما يمكن أن تكون عمليات كثيرة *جاهزة* أو *منتظرة*.</Ar>

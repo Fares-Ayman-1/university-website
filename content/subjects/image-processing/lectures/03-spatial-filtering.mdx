@@ -90,6 +90,16 @@ $$
 g = \begin{bmatrix} 12 & 12 & 17 \\ 10 & 17 & 19 \\ 9 & 6 & 14 \end{bmatrix}
 $$
 
+<ConvolutionStepper
+  image="3 3 2 1 0; 0 0 1 3 1; 3 1 2 2 3; 2 0 0 2 2; 2 0 0 0 1"
+  kernel="0 1 2; 2 2 0; 0 1 2"
+  mode="correlation"
+  padding="none"
+  expect="12 12 17; 10 17 19; 9 6 14"
+  caption="Step through the nine positions of the worked example, then switch to convolution, another mask or a border method and see how the output changes."
+  captionAr="تنقّل بين المواضع التسعة في المثال المحلول، ثم انتقل إلى الالتفاف أو إلى قناع آخر أو طريقة أخرى لمعالجة الحدود، ولاحظ كيف تتغير المخرجات."
+/>
+
 <SlideFigure page={5} caption="The basic operation: the mask (small numbers) slides over the 5×5 input, and each position gives one value of the 3×3 output." captionAr="العملية الأساسية: ينزلق القناع (الأرقام الصغيرة) فوق المدخلات 5×5، ويعطي كل موضع قيمة واحدة من المخرجات 3×3." />
 
 ### Convolution or correlation?
