@@ -37,6 +37,7 @@ The worked example that follows every rule is
 | `title="…"` on `Callout`, `Card`, `Exercise` | Add `titleAr="…"` right after it |
 | `term="…"` on `Definition` | Add `termAr="…"` |
 | `caption="…"` on `SlideFigure` | Add `captionAr="…"` |
+| `caption="…"` / `title="…"` on an interactive widget (`ConvolutionStepper`, `StateMachine`, `SearchStepper`, `RelationalAlgebra`, `EncoderSim`) | Add `captionAr="…"` / `titleAr="…"`. Everything else a widget shows (buttons, labels, step explanations) is written in both languages in its code under `components/widgets/`, typed `Bi = { en, ar }`, so nothing else is needed in the MDX. A widget's data props (matrices, node lists, event paths) stay as they are |
 | Quiz question | Add `qAr` after `q`, `optionsAr` (same number of entries) after `options`, `explainAr` after `explain`, each on its own line. An option that is pure code (`"ls -a"`, `"/recursive"`) is copied unchanged |
 | Frontmatter | `titleAr: "…"` after `title`, `summaryAr: "…"` after `summary`, always in double quotes |
 | `subject.json` | `titleAr`, `taglineAr`, `descriptionAr`, `objectivesAr` (one entry per objective), and `labelAr` in each grading entry |

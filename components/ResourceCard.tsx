@@ -10,7 +10,7 @@ export function ResourceCard({ item, index = 0 }: { item: ResourceItem; index?: 
   const kindLabel = item.collection === "sections" ? item.data.kind : null;
 
   return (
-    <article className={`${styles.card} rise`} data-kind={item.collection} style={{ "--i": index } as React.CSSProperties}>
+    <article className={`${styles.card} rise reveal`} data-kind={item.collection} style={{ "--i": index } as React.CSSProperties}>
       <div className={styles.number} aria-hidden="true">
         <span className={styles.badge}>{meta.badge}</span>
         <span className={styles.digits}>{formatNumber(item.data.number)}</span>

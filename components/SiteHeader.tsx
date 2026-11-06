@@ -3,6 +3,7 @@ import { getSubjects } from "@/lib/content";
 import { ArabicToggle } from "./ArabicToggle";
 import { BrandMark } from "./BrandMark";
 import { ThemeToggle } from "./ThemeToggle";
+import { SearchButton } from "./search/SearchButton";
 import styles from "./SiteHeader.module.css";
 
 export function SiteHeader() {
@@ -25,6 +26,7 @@ export function SiteHeader() {
           ))}
         </nav>
         <div className={styles.actions}>
+          <SearchButton />
           <ArabicToggle />
           <ThemeToggle />
         </div>

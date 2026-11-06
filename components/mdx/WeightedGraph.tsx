@@ -1,37 +1,16 @@
+import {
+  displayNodeId,
+  edgeSegment,
+  GRAPH_DOT,
+  GRAPH_HEIGHT,
+  GRAPH_NODE_R,
+  GRAPH_WIDTH,
+  graphPosition,
+  isMapStyle,
+  parseGraphEdges,
+  parseGraphNodes,
+} from "@/lib/diagrams/graph";
 import styles from "./diagrams.module.css";
-
-type GraphNode = { id: string; x: number; y: number };
-type GraphEdge = { from: string; to: string; weight?: string };
-
-/** "S:10,50 A:35,20" → nodes on a 0–100 grid */
-function parseNodes(source: string): GraphNode[] {
-  return source
-    .trim()
-    .split(/\s+/)
-    .map((token) => {
-      const [id, coords] = token.split(":");
-      const [x, y] = coords.split(",").map(Number);
-      return { id, x, y };
-    });
-}
-
-/** "S-A:1 S-B:5 A-G" → edges with optional weights */
-function parseEdges(source: string): GraphEdge[] {
-  return source
-    .trim()
-    .split(/\s+/)
-    .map((token) => {
-      const [pair, weight] = token.split(":");
-      const [from, to] = pair.split(/->|-/);
-      return { from, to, weight };
-    });
-}
-
-const W = 640;
-const H = 340;
-const R = 20;
-/** Map-style graphs (long city names) draw small dots with the name beside them. */
-const DOT = 7;
 
 export function WeightedGraph({
   nodes,
@@ -41,7 +20,7 @@ export function WeightedGraph({
   start,
   goal,
   caption,
-  height = H,
+  height = GRAPH_HEIGHT,
 }: {
   nodes: string;
   edges: string;
@@ -53,12 +32,10 @@ export function WeightedGraph({
   caption?: string;
   height?: number;
 }) {
-  const nodeList = parseNodes(nodes);
-  const mapStyle = nodeList.some((n) => n.id.length > 2);
-  const r = mapStyle ? DOT : R;
-  const display = (id: string) => id.replace(/_/g, " ");
+  const nodeList = parseGraphNodes(nodes);
+  const mapStyle = isMapStyle(nodeList);
+  const r = mapStyle ? GRAPH_DOT : GRAPH_NODE_R;
   const byId = new Map(nodeList.map((n) => [n.id, n]));
-  const pos = (n: GraphNode) => ({ x: 40 + (n.x / 100) * (W - 80), y: 36 + (n.y / 100) * (height - 72) });
   const pathIds = path ? path.split(",").map((s) => s.trim()) : [];
   const onPath = (a: string, b: string) => {
     for (let i = 0; i < pathIds.length - 1; i++) {
@@ -71,9 +48,9 @@ export function WeightedGraph({
   const markerId = `arrow-${nodeList.map((n) => n.id).join("")}`.slice(0, 40);
 
   return (
-    <figure className={styles.diagram}>
+    <figure className={`${styles.diagram} reveal`}>
       <div className={styles.scroll}>
-        <svg viewBox={`0 0 ${W} ${height}`} style={{ minWidth: 480 }} role="img" aria-label={caption ?? "Graph"}>
+        <svg viewBox={`0 0 ${GRAPH_WIDTH} ${height}`} style={{ minWidth: 480 }} role="img" aria-label={caption ?? "Graph"}>
           {directed ? (
             <defs>
               <marker id={markerId} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
@@ -81,21 +58,11 @@ export function WeightedGraph({
               </marker>
             </defs>
           ) : null}
-          {parseEdges(edges).map((edge) => {
+          {parseGraphEdges(edges).map((edge) => {
             const a = byId.get(edge.from);
             const b = byId.get(edge.to);
             if (!a || !b) throw new Error(`WeightedGraph: unknown node in edge ${edge.from}-${edge.to}`);
-            const p = pos(a);
-            const q = pos(b);
-            const len = Math.hypot(q.x - p.x, q.y - p.y);
-            const ux = (q.x - p.x) / len;
-            const uy = (q.y - p.y) / len;
-            const x1 = p.x + ux * r;
-            const y1 = p.y + uy * r;
-            const x2 = q.x - ux * (r + (directed ? 4 : 0));
-            const y2 = q.y - uy * (r + (directed ? 4 : 0));
-            const mx = (p.x + q.x) / 2;
-            const my = (p.y + q.y) / 2;
+            const { x1, y1, x2, y2, mx, my } = edgeSegment(graphPosition(a, height), graphPosition(b, height), r, directed);
             const active = onPath(edge.from, edge.to);
             return (
               <g key={`${edge.from}-${edge.to}`}>
@@ -119,7 +86,7 @@ export function WeightedGraph({
             );
           })}
           {nodeList.map((node) => {
-            const { x, y } = pos(node);
+            const { x, y } = graphPosition(node, height);
             const cls =
               node.id === goal
                 ? styles.nodeGoal
@@ -135,7 +102,7 @@ export function WeightedGraph({
                 <g key={node.id}>
                   <circle cx={x} cy={y} r={r} className={cls} />
                   <text x={x} y={below ? y + 22 : y - 13} className={styles.mapLabel}>
-                    {display(node.id)}
+                    {displayNodeId(node.id)}
                   </text>
                 </g>
               );
@@ -144,7 +111,7 @@ export function WeightedGraph({
               <g key={node.id}>
                 <circle cx={x} cy={y} r={r} className={cls} />
                 <text x={x} y={y + 5} className={node.id === goal || node.id === start ? styles.labelGoal : styles.label}>
-                  {display(node.id)}
+                  {displayNodeId(node.id)}
                 </text>
               </g>
             );

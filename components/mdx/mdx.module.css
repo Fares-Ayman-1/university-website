@@ -66,6 +66,28 @@
   border: 1px solid var(--border);
 }
 
+/* Arrived from a flashcard link (#def-…): a calm gold ring that fades out once. */
+.definition:target {
+  position: relative;
+}
+
+.definition:target::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border: 3px solid var(--gold);
+  border-radius: calc(var(--radius) + 4px);
+  pointer-events: none;
+  opacity: 0;
+  animation: definition-flash 1.8s var(--ease-out-expo) 200ms both;
+}
+
+@keyframes definition-flash {
+  from {
+    opacity: 1;
+  }
+}
+
 .definitionBadge {
   flex-shrink: 0;
   display: grid;
@@ -436,6 +458,29 @@
 
 .solutionBody {
   padding: 0 14px 14px;
+}
+
+/* The worked solution slides open to its natural height where the browser supports it
+   (Chromium); elsewhere it opens instantly, as before. */
+@supports selector(::details-content) {
+  .solution {
+    interpolate-size: allow-keywords;
+  }
+
+  .solution::details-content {
+    block-size: 0;
+    overflow: clip;
+    opacity: 0;
+    transition:
+      block-size var(--dur-standard) var(--ease-out-expo),
+      opacity var(--dur-standard) var(--ease-out-expo),
+      content-visibility var(--dur-standard) allow-discrete;
+  }
+
+  .solution[open]::details-content {
+    block-size: auto;
+    opacity: 1;
+  }
 }
 
 .solutionBody > * + * {

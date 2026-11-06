@@ -28,12 +28,25 @@ const ROOT = process.cwd();
 const SUBJECTS = path.join(ROOT, "content", "subjects");
 const ARABIC = /[\u0600-\u06FF]{2,}/;
 const ENGLISH_WORD = /[A-Za-z]{2,}/;
+// Interactive widgets (components/widgets). Their UI text lives in code, typed so both
+// languages are required; in the MDX they carry only data plus title/caption props. Adding
+// or editing a widget is not an English text change, so the integrity check skips them.
+const WIDGETS = new Set(["ConvolutionStepper", "StateMachine", "SearchStepper", "RelationalAlgebra", "EncoderSim"]);
 const PROP_TWINS = {
   Callout: [["title", "titleAr"]],
   Definition: [["term", "termAr"]],
   Card: [["title", "titleAr"]],
   Exercise: [["title", "titleAr"]],
   SlideFigure: [["caption", "captionAr"]],
+  ...Object.fromEntries(
+    [...WIDGETS].map((name) => [
+      name,
+      [
+        ["title", "titleAr"],
+        ["caption", "captionAr"],
+      ],
+    ]),
+  ),
 };
 const AR_PROPS = new Set(["titleAr", "termAr", "captionAr"]);
 const QUIZ_AR_KEYS = new Set(["qAr", "optionsAr", "explainAr"]);
@@ -273,6 +286,10 @@ function stripArabic(body, tree) {
     if (n.type === "mdxJsxFlowElement" || n.type === "mdxJsxTextElement") {
       if (n.name === "Quiz") {
         ranges.push([n.position.start.offset, n.position.end.offset]); // compared separately
+        return;
+      }
+      if (WIDGETS.has(n.name)) {
+        ranges.push([n.position.start.offset, n.position.end.offset]); // data only, see WIDGETS
         return;
       }
       for (const a of n.attributes ?? []) if (AR_PROPS.has(a.name) && a.position) ranges.push([a.position.start.offset, a.position.end.offset]);

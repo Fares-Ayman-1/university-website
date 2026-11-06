@@ -49,7 +49,7 @@ export function SlideFigure({
   }
 
   return (
-    <figure className={styles.figure}>
+    <figure className={`${styles.figure} reveal`}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={`/slides/${key}`}

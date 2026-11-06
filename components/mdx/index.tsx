@@ -10,6 +10,11 @@ import { Tree } from "./Tree";
 import { WeightedGraph } from "./WeightedGraph";
 import { AgentLoop } from "./AgentLoop";
 import { Ar, ArInline } from "./Arabic";
+import { ConvolutionStepper } from "@/components/widgets/ConvolutionStepper";
+import { StateMachine } from "@/components/widgets/StateMachine";
+import { SearchStepper } from "@/components/widgets/SearchStepper";
+import { RelationalAlgebra } from "@/components/widgets/RelationalAlgebra";
+import { EncoderSim } from "@/components/widgets/EncoderSim";
 
 type Context = { subject: string; collection: Collection; slug: string };
 
@@ -36,6 +41,11 @@ export function createMdxComponents(context: Context): MDXComponents {
     AgentLoop,
     Ar,
     ArInline,
+    ConvolutionStepper,
+    StateMachine,
+    SearchStepper,
+    RelationalAlgebra,
+    EncoderSim,
     SlideFigure: (props: Omit<React.ComponentProps<typeof SlideFigure>, "context">) => (
       <SlideFigure {...props} context={context} />
     ),

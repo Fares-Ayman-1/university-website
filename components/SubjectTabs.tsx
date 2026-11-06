@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LazyMotion, domAnimation, m } from "framer-motion";
-import { BookOpen, FlaskConical, LayoutGrid } from "lucide-react";
+import { m } from "framer-motion";
+import { BookOpen, FlaskConical, GraduationCap, LayoutGrid } from "lucide-react";
+import { MotionRoot } from "@/components/motion/MotionRoot";
+import { DUR, EASE } from "@/lib/motion";
 import styles from "./SubjectTabs.module.css";
 
 export function SubjectTabs({
@@ -18,18 +20,20 @@ export function SubjectTabs({
   const pathname = usePathname();
   const base = `/subjects/${subject}/`;
   const tabs = [
-    { href: base, label: "Overview", icon: LayoutGrid, kind: undefined, count: undefined },
-    { href: `${base}lectures/`, label: "Lectures", icon: BookOpen, kind: "lectures", count: lectureCount },
-    { href: `${base}sections/`, label: "Sections", icon: FlaskConical, kind: "sections", count: sectionCount },
+    { href: base, label: "Overview", icon: LayoutGrid, kind: undefined, count: undefined, prefix: false },
+    { href: `${base}lectures/`, label: "Lectures", icon: BookOpen, kind: "lectures", count: lectureCount, prefix: false },
+    { href: `${base}sections/`, label: "Sections", icon: FlaskConical, kind: "sections", count: sectionCount, prefix: false },
+    // Stays active on its sub-pages (flashcards, exam).
+    { href: `${base}review/`, label: "Review", icon: GraduationCap, kind: undefined, count: undefined, prefix: true },
   ];
   const normalized = pathname.endsWith("/") ? pathname : `${pathname}/`;
 
   return (
     <div className={styles.bar}>
-      <LazyMotion features={domAnimation}>
+      <MotionRoot>
         <nav className={`container ${styles.tabs}`} aria-label="Subject navigation">
           {tabs.map((tab) => {
-            const active = normalized === tab.href;
+            const active = tab.prefix ? normalized.startsWith(tab.href) : normalized === tab.href;
             const Icon = tab.icon;
             return (
               <Link
@@ -46,14 +50,14 @@ export function SubjectTabs({
                   <m.span
                     layoutId={`tab-indicator-${subject}`}
                     className={styles.indicator}
-                    transition={{ type: "tween", duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                    transition={{ type: "tween", duration: DUR.standard, ease: EASE.outExpo }}
                   />
                 ) : null}
               </Link>
             );
           })}
         </nav>
-      </LazyMotion>
+      </MotionRoot>
     </div>
   );
 }

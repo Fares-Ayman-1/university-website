@@ -11,6 +11,7 @@ import "katex/dist/katex.min.css";
 import "./globals.css";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { RevealObserver } from "@/components/RevealObserver";
 import { THEME_STORAGE_KEY } from "@/lib/theme";
 import { ARABIC_STORAGE_KEY } from "@/lib/arabic";
 
@@ -47,6 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SiteHeader />
         <main id="main">{children}</main>
         <SiteFooter />
+        <RevealObserver />
       </body>
     </html>
   );

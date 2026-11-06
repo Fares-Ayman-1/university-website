@@ -1,0 +1,486 @@
+/* ============================================================
+   <StateMachine>: diagram, event buttons, context, status, log
+   ============================================================ */
+
+/* ---------- Current state + reset ---------- */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+  margin-bottom: 12px;
+}
+
+.current {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  font-size: var(--text-sm);
+}
+
+.currentLabel {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.currentName {
+  padding: 2px 12px;
+  border-radius: 999px;
+  background: var(--gold);
+  color: var(--navy);
+  font-weight: 700;
+}
+
+.currentName :global(.ar-line) {
+  font-weight: 600;
+}
+
+.reset {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--heading);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    border-color var(--dur-micro) ease,
+    transform var(--dur-micro) ease;
+}
+
+.reset:hover {
+  border-color: var(--gold);
+}
+
+.reset:active {
+  transform: scale(0.97);
+}
+
+.reset svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+}
+
+.reset :global(.ar-line) {
+  font-weight: 500;
+}
+
+/* ---------- Diagram (scrolls sideways on narrow screens) ---------- */
+.diagram {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  min-width: 620px;
+  height: auto;
+  font-family: var(--font-body);
+}
+
+.edge {
+  fill: none;
+  stroke: var(--muted);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition:
+    stroke var(--dur-standard) var(--ease-out-expo),
+    stroke-width var(--dur-standard) var(--ease-out-expo);
+}
+
+.edge[data-active] {
+  stroke: var(--gold-text);
+  stroke-width: 2.4;
+}
+
+.edge[data-moving] {
+  stroke-width: 3;
+}
+
+.head {
+  fill: var(--muted);
+}
+
+.headOn {
+  fill: var(--gold-text);
+}
+
+.pseudo {
+  fill: var(--heading);
+}
+
+.state rect {
+  fill: var(--surface);
+  stroke: var(--border-strong);
+  stroke-width: 1.5;
+  transition:
+    fill var(--dur-standard) var(--ease-out-expo),
+    stroke var(--dur-standard) var(--ease-out-expo);
+}
+
+.stateName {
+  fill: var(--heading);
+  font-size: 14px;
+  font-weight: 700;
+  transition: fill var(--dur-standard) var(--ease-out-expo);
+}
+
+.stateNameAr {
+  fill: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  transition: fill var(--dur-standard) var(--ease-out-expo);
+}
+
+/* With the Arabic hidden, centre the English name in its box. */
+:global(:root[data-arabic="off"]) .stateName {
+  transform: translateY(8px);
+}
+
+.state[data-current] rect {
+  fill: var(--gold);
+  stroke: var(--gold);
+}
+
+.state[data-current] .stateName,
+.state[data-current] .stateNameAr {
+  fill: var(--navy);
+}
+
+.finalRing {
+  fill: none;
+  stroke: var(--heading);
+  stroke-width: 2;
+}
+
+.finalDot {
+  fill: var(--heading);
+}
+
+.final[data-current] .finalRing {
+  stroke: var(--gold-text);
+}
+
+.final[data-current] .finalDot {
+  fill: var(--gold);
+}
+
+/* Edge labels: a halo in the diagram's background keeps them readable over lines. */
+.edgeLabel text {
+  fill: var(--text);
+  font-size: 12px;
+  font-weight: 500;
+  paint-order: stroke fill;
+  stroke: var(--bg);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+
+.edgeLabel text.edgeLabelAr {
+  fill: var(--muted);
+  font-size: 11.5px;
+}
+
+.edgeLabel[data-active] text {
+  fill: var(--gold-text);
+  font-weight: 700;
+}
+
+.token circle {
+  fill: var(--gold);
+  stroke: var(--navy);
+  stroke-width: 2.5;
+}
+
+:global(:root[data-theme="dark"]) .token circle {
+  stroke: var(--cream);
+}
+
+/* ---------- Context (e.g. rooms available) ---------- */
+.contextBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  margin-top: 14px;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg);
+}
+
+.contextLabel {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--heading);
+}
+
+.contextLabel :global(.ar-line) {
+  font-weight: 600;
+}
+
+.code {
+  font-family: var(--font-code);
+  font-size: 0.85em;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.value {
+  min-width: 2.2ch;
+  padding: 0 6px;
+  border-radius: 6px;
+  font-family: var(--font-code);
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--heading);
+}
+
+.value[data-flash] {
+  animation: flash var(--dur-dramatic) var(--ease-out-expo);
+}
+
+@keyframes flash {
+  from {
+    background: var(--gold);
+    color: var(--navy);
+  }
+}
+
+.effect {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--gold-text);
+}
+
+.effect :global(.ar-line) {
+  font-weight: 500;
+}
+
+.effectLabel {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.contextHint {
+  flex-basis: 100%;
+  margin-top: 0;
+}
+
+/* ---------- Event buttons ---------- */
+.sectionTitle {
+  margin: 16px 0 8px;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.sectionTitle :global(.ar-line) {
+  font-weight: 600;
+}
+
+.events {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Not disabled when it can't fire: pressing it explains why. */
+.event {
+  display: inline-grid;
+  justify-items: start;
+  gap: 3px;
+  padding: 7px 12px;
+  border: 1px dashed var(--border-strong);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--muted);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  line-height: 1.35;
+  text-align: start;
+  cursor: pointer;
+  transition:
+    border-color var(--dur-micro) ease,
+    background-color var(--dur-micro) ease,
+    color var(--dur-micro) ease,
+    transform var(--dur-micro) ease;
+}
+
+.event[data-enabled="true"] {
+  border: 1px solid var(--gold);
+  background: var(--gold-soft);
+  color: var(--heading);
+}
+
+.event:hover {
+  border-color: var(--gold);
+}
+
+.event:active {
+  transform: scale(0.97);
+}
+
+.event:focus-visible,
+.reset:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.eventName :global(.ar-line) {
+  font-weight: 500;
+}
+
+.guards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  direction: ltr;
+}
+
+.guard,
+.guardValue {
+  padding: 1px 6px;
+  border-radius: 6px;
+  font-family: var(--font-code);
+  font-size: 0.72rem;
+  font-weight: 500;
+}
+
+.guard {
+  background: var(--surface-2);
+  color: var(--muted);
+}
+
+.guard[data-holds="true"] {
+  background: var(--success-soft);
+  color: var(--success-text);
+}
+
+.guardValue {
+  color: var(--heading);
+}
+
+/* ---------- Status ---------- */
+.status {
+  border-inline-start: 3px solid var(--border-strong);
+}
+
+.status[data-tone="fired"] {
+  border-inline-start-color: var(--gold);
+}
+
+.status[data-tone="refused"] {
+  border-inline-start-color: var(--warning);
+  background: var(--warning-soft);
+}
+
+/* ---------- Transition log ---------- */
+.logBox {
+  margin-top: 6px;
+}
+
+.logBox .log {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.logBox .log > li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2px 10px;
+  margin: 0;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+
+.logBox .log > li:first-child {
+  border-color: var(--gold);
+  background: var(--gold-soft);
+}
+
+.logIndex {
+  grid-row: span 2;
+  min-width: 2ch;
+  font-family: var(--font-code);
+  font-size: var(--text-xs);
+  color: var(--muted);
+}
+
+.logLine {
+  font-weight: 600;
+  color: var(--heading);
+}
+
+.logLine :global(.ar-line) {
+  font-weight: 500;
+}
+
+.logDetail {
+  grid-column: 2;
+  font-size: var(--text-xs);
+  color: var(--muted);
+}
+
+.logDetail :global(.ar-line) {
+  font-weight: 400;
+}
+
+.logEmpty {
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+
+.logEmpty :global(.ar-line) {
+  font-weight: 400;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .edge,
+  .state rect,
+  .stateName,
+  .stateNameAr,
+  .event,
+  .reset {
+    transition: none;
+  }
+
+  .value[data-flash] {
+    animation: none;
+  }
+}

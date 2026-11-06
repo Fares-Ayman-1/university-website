@@ -1,4 +1,5 @@
 import { AlertTriangle, BookMarked, CheckCircle2, Info, Lightbulb, Target } from "lucide-react";
+import { definitionId } from "@/lib/definition-id";
 import { ArLine } from "./Arabic";
 import styles from "./mdx.module.css";
 
@@ -46,7 +47,7 @@ export function Definition({
   children: React.ReactNode;
 }) {
   return (
-    <div className={styles.definition}>
+    <div id={definitionId(term)} className={styles.definition}>
       <span className={styles.definitionBadge} aria-hidden="true">
         <BookMarked />
       </span>

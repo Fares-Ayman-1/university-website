@@ -70,7 +70,7 @@ export default function HomePage() {
           {subjects.map(({ subject, lectures, sections }, index) => (
             <article
               key={subject.slug}
-              className={`${styles.card} rise`}
+              className={`${styles.card} rise reveal`}
               style={{ "--i": index + 4 } as React.CSSProperties}
             >
               <div className={styles.cardTop}>

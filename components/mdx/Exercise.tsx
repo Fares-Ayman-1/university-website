@@ -14,7 +14,7 @@ export function Exercise({
   children: React.ReactNode;
 }) {
   return (
-    <section className={styles.exercise}>
+    <section className={`${styles.exercise} reveal`}>
       <div className={styles.exerciseHead}>
         <span className={styles.exerciseIcon} aria-hidden="true">
           <PencilLine />

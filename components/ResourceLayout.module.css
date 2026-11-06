@@ -237,15 +237,27 @@
   font-weight: 600;
 }
 
-.tocSide .tocList a[aria-current="location"]::before {
-  content: "";
+/* Active-heading bar: one element that slides along the TOC's border (TableOfContents.tsx
+   sets --toc-y / --toc-h). Hidden until it has been measured. */
+.tocIndicator {
   position: absolute;
-  left: -17px;
-  top: 4px;
-  bottom: 4px;
+  top: 0;
+  left: -1px;
   width: 2px;
+  height: var(--toc-h, 0px);
   border-radius: 2px;
   background: var(--accent);
+  transform: translateY(var(--toc-y, 0px));
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform var(--dur-standard) var(--ease-out-expo),
+    height var(--dur-standard) var(--ease-out-expo),
+    opacity var(--dur-micro) ease;
+}
+
+.tocIndicator[data-ready] {
+  opacity: 1;
 }
 
 .tocInline {
@@ -265,6 +277,25 @@
 
 .tocInline .tocList {
   padding: 0 16px 14px;
+}
+
+/* Open/close smoothly where the browser can animate <details> to its natural height. */
+@supports selector(::details-content) {
+  .tocInline {
+    interpolate-size: allow-keywords;
+  }
+
+  .tocInline::details-content {
+    block-size: 0;
+    overflow: clip;
+    transition:
+      block-size var(--dur-standard) var(--ease-out-expo),
+      content-visibility var(--dur-standard) allow-discrete;
+  }
+
+  .tocInline[open]::details-content {
+    block-size: auto;
+  }
 }
 
 /* Source material */

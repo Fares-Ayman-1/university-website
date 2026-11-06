@@ -92,7 +92,16 @@ Create `content/subjects/<slug>/subject.json` (copy an existing one), and set `m
 | `<WeightedGraph nodes="S:0,50 A:40,10" edges="S->A:2" directed path="S,A" />` | Weighted graph / map diagram |
 | `<AgentLoop />` | Agent–environment diagram |
 | `<Exercise title="…" level="easy">` … `<Solution>` … | Exercise with a collapsible solution |
-| `<Quiz questions={[{ q, options, answer, explain }]} />` | Interactive quiz with scoring |
+| `<Quiz questions={[{ q, options, answer, explain }]} />` | Interactive quiz with scoring (also feeds the subject's exam mode) |
+| `<ConvolutionStepper image="…" kernel="…" expect="…" />` | Slide a mask over an image step by step (correlation/convolution, border methods) |
+| `<StateMachine preset="process-states" />` | Fire events on a state diagram (presets in `components/widgets/state-machine/presets.ts`) |
+| `<SearchStepper nodes="…" edges="…" start="S" goal="G" />` | Step through DFS / BFS / UCS with the frontier and explored set |
+| `<RelationalAlgebra dataset="company-employee" />` | Build σ / π queries on the EMPLOYEE table and see rows and columns drop out |
+| `<EncoderSim />` | Turn an incremental (quadrature) or absolute (Gray code) encoder disc |
+
+**Interactive widgets** live in `components/widgets/`. Each has a server wrapper that computes every step with pure code in `lib/widgets/` and loads its client player only on pages that use it. Give a widget an `expect` prop copied from the page's own worked answer: if the widget would show something else, the build fails. Its UI text is written in both languages in code (typed `Bi`), so the MDX only needs `caption`/`captionAr`.
+
+Every subject also gets a **Review** tab (flashcards from each page's `<Definition>`s, and an exam mode drawing on every `<Quiz>`), and the header has a **Ctrl+K search** over all pages, headings and definitions, in English and Arabic.
 
 Code blocks support titles and line highlights: ` ```python title="bfs.py" {3,5} `.
 

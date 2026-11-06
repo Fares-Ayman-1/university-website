@@ -1,0 +1,324 @@
+/* ============================================================
+   SearchStepper: graph/tree drawing, frontier and explored set
+   (frame, controls and status come from widgets.module.css;
+   edges, weights and arrowheads from components/mdx/diagrams.module.css)
+   ============================================================ */
+
+/* ---------- Goal field ---------- */
+.goalRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  min-height: 34px;
+}
+
+.goalChip {
+  display: inline-grid;
+  place-items: center;
+  min-width: 34px;
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: var(--gold);
+  color: var(--navy);
+  font-family: var(--font-code);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.goalHint {
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.textButton {
+  padding: 5px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--heading);
+  font: inherit;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0;
+  cursor: pointer;
+  transition: border-color var(--dur-micro) ease;
+}
+
+.textButton:hover {
+  border-color: var(--gold);
+}
+
+/* ---------- Drawing ---------- */
+.canvas {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  background:
+    linear-gradient(var(--grid-line) 1px, transparent 1px) 0 0 / 22px 22px,
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px) 0 0 / 22px 22px,
+    var(--surface);
+}
+
+/* The SVG and the node buttons laid over it share this box, so % positions line up. */
+.stage {
+  position: relative;
+  max-width: 720px;
+  margin-inline: auto;
+}
+
+.stage svg {
+  display: block;
+}
+
+.edge {
+  transition:
+    stroke var(--dur-standard) var(--ease-out-expo),
+    stroke-width var(--dur-standard) var(--ease-out-expo);
+}
+
+.edge[data-state="current"] {
+  stroke: var(--slate);
+  stroke-width: 3;
+}
+
+.arrowCurrent {
+  fill: var(--slate);
+}
+
+.shape {
+  fill: var(--surface);
+  stroke: var(--border-strong);
+  stroke-width: 2;
+  transition:
+    fill var(--dur-standard) var(--ease-out-expo),
+    stroke var(--dur-standard) var(--ease-out-expo);
+}
+
+.label {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 650;
+  text-anchor: middle;
+  fill: var(--heading);
+  transition: fill var(--dur-standard) var(--ease-out-expo);
+}
+
+.node[data-state="frontier"] .shape {
+  fill: var(--slate-soft);
+  stroke: var(--slate);
+  stroke-dasharray: 5 3;
+}
+
+.node[data-state="explored"] .shape {
+  fill: var(--gold-soft);
+  stroke: var(--gold);
+}
+
+.node[data-state="current"] .shape {
+  fill: var(--navy);
+  stroke: var(--gold);
+  stroke-width: 3;
+}
+
+.node[data-state="current"] .label {
+  fill: var(--cream);
+}
+
+:global(:root[data-theme="dark"]) .node[data-state="current"] .shape {
+  fill: var(--slate);
+}
+
+:global(:root[data-theme="dark"]) .node[data-state="current"] .label {
+  fill: var(--navy);
+}
+
+.node[data-state="path"] .shape {
+  fill: var(--gold);
+  stroke: var(--gold);
+}
+
+.node[data-state="path"] .label {
+  fill: var(--navy);
+}
+
+.goalRing {
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 2.5;
+}
+
+/* Transparent buttons over the nodes: click (or Enter) to make a node the goal */
+.hit {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.hit:hover {
+  outline: 2px dashed var(--gold);
+  outline-offset: 2px;
+}
+
+.hit:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
+/* ---------- Legend ---------- */
+.legend.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--text-xs);
+  color: var(--muted);
+}
+
+.legend.legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+}
+
+.swatch {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 2px solid var(--border-strong);
+  background: var(--surface);
+}
+
+[data-key="current"] .swatch {
+  background: var(--navy);
+  border-color: var(--gold);
+}
+
+:global(:root[data-theme="dark"]) [data-key="current"] .swatch {
+  background: var(--slate);
+}
+
+[data-key="frontier"] .swatch {
+  background: var(--slate-soft);
+  border: 2px dashed var(--slate);
+}
+
+[data-key="explored"] .swatch {
+  background: var(--gold-soft);
+  border-color: var(--gold);
+}
+
+[data-key="goal"] .swatch {
+  background: transparent;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--gold);
+  width: 10px;
+  height: 10px;
+  margin: 2px;
+}
+
+[data-key="path"] .swatch {
+  background: var(--gold);
+  border-color: var(--gold);
+}
+
+/* ---------- Frontier and explored set ---------- */
+.panels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 24px;
+  margin-top: 16px;
+}
+
+.panel {
+  flex: 1 1 220px;
+  min-width: 0;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+}
+
+.panelWide {
+  flex: 2 1 300px;
+}
+
+/* Doubled class: beats `.prose ol` padding without !important */
+.list.list {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  margin: 0;
+  padding: 6px;
+  border: 1px dashed var(--border-strong);
+  border-radius: 10px;
+  background: var(--bg);
+  list-style: none;
+  direction: ltr;
+}
+
+.list > .item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 4px 9px;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: var(--surface);
+  font-family: var(--font-code);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--heading);
+  white-space: nowrap;
+}
+
+.list > .item[data-new] {
+  background: var(--slate-soft);
+  border-color: var(--slate);
+}
+
+/* The entry that comes out next (top of the stack / front of the queue) */
+.list > .item[data-next] {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 1px var(--gold);
+}
+
+.exploredList > .item {
+  background: var(--gold-soft);
+  border-color: var(--gold);
+}
+
+.exploredList > .item[data-goal] {
+  background: var(--gold);
+  color: var(--navy);
+}
+
+.cost {
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--gold-soft);
+  color: var(--gold-text);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.list > .empty {
+  margin: 0;
+  padding: 2px 4px;
+  font-size: var(--text-sm);
+  font-style: italic;
+  color: var(--muted);
+}

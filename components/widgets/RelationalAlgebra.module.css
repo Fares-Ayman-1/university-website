@@ -1,0 +1,404 @@
+/* ============================================================
+   RelationalAlgebra: σ condition builder, π picker, and the
+   EMPLOYEE table whose rows and columns collapse step by step.
+   ============================================================ */
+
+/* ---------- σ / π builder ---------- */
+.builder {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.group {
+  min-width: 0; /* fieldsets default to min-content and would overflow at 375px */
+  margin: 0;
+  padding: 10px 14px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+}
+
+.legend {
+  padding: 0 6px;
+  margin-inline-start: -6px;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--gold-text);
+}
+
+.legend :global(.ar-line) {
+  font-weight: 500;
+}
+
+.groupBody {
+  display: grid;
+  gap: 12px;
+}
+
+.term {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px 14px;
+}
+
+.number {
+  width: 8.5em;
+  padding: 7px 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.number[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+
+.picks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pick {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 11px 4px 8px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--surface);
+  font-family: var(--font-code);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition:
+    border-color var(--dur-micro) ease,
+    background-color var(--dur-micro) ease,
+    color var(--dur-micro) ease;
+}
+
+.pick:has(input:checked) {
+  border-color: var(--gold);
+  background: var(--gold-soft);
+  color: var(--heading);
+}
+
+.pick:has(input:disabled) {
+  cursor: not-allowed;
+}
+
+.pick:focus-within {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.pick input {
+  margin: 0;
+  accent-color: var(--gold);
+}
+
+/* ---------- Live expression and SQL ---------- */
+.query {
+  display: grid;
+  gap: 2px;
+  margin-bottom: 14px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--surface-2);
+  min-width: 0;
+}
+
+.queryLabel {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.queryLabel :global(.ar-line) {
+  font-weight: 500;
+}
+
+.queryLabel + .expr {
+  margin-bottom: 8px;
+}
+
+.expr {
+  padding: 2px 0 4px;
+  overflow-x: auto;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  color: var(--heading);
+  white-space: nowrap;
+  text-align: left;
+}
+
+.expr sub {
+  font-family: var(--font-code);
+  font-size: 0.62em;
+  letter-spacing: 0;
+}
+
+.op {
+  padding: 0 3px;
+  border-radius: 6px;
+  transition:
+    background-color var(--dur-standard) var(--ease-out-expo),
+    box-shadow var(--dur-standard) var(--ease-out-expo);
+}
+
+.op[data-active] {
+  background: var(--gold-soft);
+  box-shadow: inset 0 -2px 0 var(--gold);
+}
+
+/* ---------- The relation ---------- */
+.tableWrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.tableWrap:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/* Fills the frame like the site's tables; wider content scrolls instead of squeezing.
+   (.tableWrap .table outranks .prose table.) */
+.tableWrap .table {
+  width: max-content;
+  min-width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.85rem;
+  direction: ltr;
+}
+
+/* (.table .cell outranks the site's .prose th/td rules) */
+.table .cell {
+  --hide-delay: 0s;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  text-align: left;
+  transition:
+    padding var(--dur-dramatic) var(--ease-in-out-smooth),
+    border-bottom-width var(--dur-dramatic) var(--ease-in-out-smooth),
+    background-color var(--dur-standard) ease,
+    visibility 0s linear var(--hide-delay);
+}
+
+.table td.cell {
+  font-family: var(--font-code);
+  color: var(--heading);
+}
+
+/* No zebra stripes: they would jump as rows collapse. */
+.table .row .cell {
+  background: transparent;
+}
+
+.table .row:last-child .cell {
+  border-bottom-width: 0;
+}
+
+/* Rows collapse through a 1fr → 0fr grid row; columns through max-width. */
+.box {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows var(--dur-dramatic) var(--ease-in-out-smooth);
+}
+
+.inner {
+  min-height: 0;
+  max-width: 24em;
+  overflow: hidden;
+  white-space: nowrap;
+  transition:
+    opacity var(--dur-standard) ease,
+    max-width var(--dur-dramatic) ease-in;
+}
+
+.attrName {
+  font-family: var(--font-code);
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.cell :global(.ar-line) {
+  font-size: 0.92em;
+  font-weight: 500;
+  opacity: 0.85;
+}
+
+.null {
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* σ rejects the row: dim it (the reason chip stays readable) … */
+.table .row[data-row="fail"] .cell:not(.note) .inner {
+  opacity: 0.38;
+}
+
+/* … π finds it repeats an earlier tuple … */
+.table .row[data-row="dup"] .cell {
+  background: var(--warning-soft);
+}
+
+/* … then it collapses away. */
+.table .row[data-row="gone"] .cell {
+  --hide-delay: var(--dur-dramatic);
+  padding-block: 0;
+  border-bottom-width: 0;
+  visibility: hidden;
+}
+
+.table .row[data-row="gone"] .box {
+  grid-template-rows: 0fr;
+}
+
+.table .row[data-row="gone"] .inner {
+  opacity: 0;
+}
+
+/* A column π drops: fade, then collapse. */
+.table .cell[data-col="drop"] .inner {
+  opacity: 0.3;
+}
+
+.table .cell[data-col="gone"] {
+  --hide-delay: var(--dur-dramatic);
+  padding-inline: 0;
+  visibility: hidden;
+}
+
+.table .cell[data-col="gone"] .inner {
+  opacity: 0;
+  max-width: 0;
+  transition-timing-function: ease, var(--ease-out-expo);
+}
+
+/* The "why" column: shut (no width, no padding) unless a step has something to explain. */
+.table .note .inner {
+  max-width: 48em;
+}
+
+.table .note[data-note="off"] {
+  padding-inline: 0;
+}
+
+.table .note[data-note="off"] .inner {
+  max-width: 0;
+  transition-timing-function: ease, var(--ease-out-expo);
+}
+
+.chip {
+  display: inline-block;
+  margin: 0 6px 2px 0;
+  padding: 1px 9px;
+  border-radius: 10px;
+  font-family: var(--font-code);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
+.chip :global(.ar-line) {
+  font-size: 1em;
+  font-weight: 500;
+  opacity: 1;
+}
+
+.chip[data-kind="fail"] {
+  background: var(--danger-soft);
+  color: var(--danger-text);
+}
+
+.chip[data-kind="dup"] {
+  background: var(--surface);
+  color: var(--warning-text);
+  box-shadow: inset 0 0 0 1px var(--warning);
+}
+
+/* ---------- Tuple count ---------- */
+.counts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 8px;
+  margin-top: 12px;
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+
+.countsLabel {
+  margin-inline-end: 4px;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.countsLabel :global(.ar-line) {
+  font-weight: 500;
+}
+
+.count {
+  padding: 1px 9px;
+  border-radius: 999px;
+  font-family: var(--font-code);
+  font-size: 0.8rem;
+  transition:
+    background-color var(--dur-standard) var(--ease-out-expo),
+    color var(--dur-standard) var(--ease-out-expo);
+}
+
+.count b {
+  color: var(--heading);
+}
+
+.count[data-active] {
+  background: var(--gold-soft);
+  color: var(--heading);
+}
+
+.count[data-active] b {
+  color: var(--gold-text);
+}
+
+/* ---------- Stage badge in the status line ---------- */
+.stageTag {
+  display: inline-block;
+  margin-inline-end: 8px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--navy);
+  color: var(--cream);
+  font-family: var(--font-code);
+  font-size: 0.75rem;
+  font-weight: 700;
+  vertical-align: 1px;
+}
+
+:global(:root[data-theme="dark"]) .stageTag {
+  background: var(--gold);
+  color: var(--navy);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .table .cell {
+    --hide-delay: 0s !important;
+  }
+}

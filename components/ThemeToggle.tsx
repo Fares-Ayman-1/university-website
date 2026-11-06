@@ -2,10 +2,11 @@
 
 import { useEffect, useRef } from "react";
 import { applyTheme, hasStoredTheme, readTheme } from "@/lib/theme";
+import { DUR_MS, EASE_CSS, prefersReducedMotion } from "@/lib/motion";
 import styles from "./ThemeToggle.module.css";
 
-const REVEAL_MS = 700;
-const REVEAL_EASING = "cubic-bezier(0.65, 0, 0.35, 1)";
+const REVEAL_MS = DUR_MS.dramatic;
+const REVEAL_EASING = EASE_CSS.inOutSmooth;
 
 export function ThemeToggle() {
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -22,7 +23,7 @@ export function ThemeToggle() {
 
   function toggle() {
     const next = readTheme() === "dark" ? "light" : "dark";
-    const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduceMotion = prefersReducedMotion();
 
     if (!document.startViewTransition || reduceMotion || !buttonRef.current) {
       applyTheme(next);

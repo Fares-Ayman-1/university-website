@@ -1,29 +1,23 @@
 "use client";
 
 import { useState } from "react";
-import { Check, RotateCcw, Trophy, X } from "lucide-react";
+import { RotateCcw, Trophy } from "lucide-react";
+import { QuestionCard, type QuizQuestion } from "@/components/quiz/QuestionCard";
 import { ArLine } from "./Arabic";
 import styles from "./Quiz.module.css";
 
-export type QuizQuestion = {
-  q: string;
-  options: string[];
-  /** Index of the correct option */
-  answer: number;
-  explain?: string;
-  /** Arabic translations, shown under the English (optionsAr matches options by index) */
-  qAr?: string;
-  optionsAr?: string[];
-  explainAr?: string;
-};
+export type { QuizQuestion };
 
 export function Quiz({
   title = "Check your understanding",
   titleAr = "اختبر فهمك",
+  id = "quiz",
   questions,
 }: {
   title?: string;
   titleAr?: string;
+  /** Anchor for links from the subject's exam review (one quiz per page) */
+  id?: string;
   questions: QuizQuestion[];
 }) {
   const [picked, setPicked] = useState<(number | null)[]>(() => questions.map(() => null));
@@ -40,7 +34,7 @@ export function Quiz({
   }
 
   return (
-    <section className={styles.quiz} aria-label={title}>
+    <section id={id} className={`${styles.quiz} reveal`} aria-label={title}>
       <header className={styles.head}>
         <div>
           <p className="kicker">Quiz</p>
@@ -55,65 +49,23 @@ export function Quiz({
       </header>
 
       <ol className={styles.questions}>
-        {questions.map((question, qi) => {
-          const choice = picked[qi];
-          const locked = choice !== null;
-          return (
-            <li key={qi} className={styles.question}>
-              <p className={styles.prompt}>
-                <span className={styles.qnum}>{qi + 1}</span>
-                <span className={styles.promptText}>
-                  {question.q}
-                  <ArLine>{question.qAr}</ArLine>
-                </span>
-              </p>
-              <div className={styles.options} role="group" aria-label={`Question ${qi + 1} options`}>
-                {question.options.map((option, oi) => {
-                  const isAnswer = oi === question.answer;
-                  const state = !locked
-                    ? "idle"
-                    : isAnswer
-                      ? "correct"
-                      : oi === choice
-                        ? "wrong"
-                        : "dim";
-                  return (
-                    <button
-                      key={oi}
-                      type="button"
-                      className={styles.option}
-                      data-state={state}
-                      disabled={locked}
-                      aria-pressed={choice === oi}
-                      onClick={() => choose(qi, oi)}
-                    >
-                      <span className={styles.letter}>{String.fromCharCode(65 + oi)}</span>
-                      <span className={styles.optionText}>
-                        {option}
-                        {question.optionsAr?.[oi] !== option ? <ArLine>{question.optionsAr?.[oi]}</ArLine> : null}
-                      </span>
-                      {state === "correct" ? <Check className={styles.mark} aria-label="Correct answer" /> : null}
-                      {state === "wrong" ? <X className={styles.mark} aria-label="Your answer, incorrect" /> : null}
-                    </button>
-                  );
-                })}
-              </div>
-              {locked ? (
-                <p className={styles.feedback} data-correct={choice === question.answer}>
-                  <strong>{choice === question.answer ? "Correct." : "Not quite."}</strong>{" "}
-                  {question.explain}
-                  <ArLine>{question.explainAr}</ArLine>
-                </p>
-              ) : null}
-            </li>
-          );
-        })}
+        {questions.map((question, qi) => (
+          <li key={qi} className={styles.question}>
+            <QuestionCard
+              question={question}
+              index={qi}
+              choice={picked[qi]}
+              onChoose={(option) => choose(qi, option)}
+              mode="instant"
+            />
+          </li>
+        ))}
       </ol>
 
       {done ? (
         <footer className={styles.result}>
           <Trophy aria-hidden="true" />
-          <p>
+          <p role="status">
             You scored <strong>{score}</strong> out of {questions.length}
             {score === questions.length ? ". Perfect!" : score >= questions.length * 0.7 ? ". Well done." : ". Review the sections above and try again."}
           </p>

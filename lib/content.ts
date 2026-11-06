@@ -54,7 +54,13 @@ export const COLLECTION_META: Record<
 
 export type Subject = SubjectData & { slug: string };
 
-export type Heading = { depth: 2 | 3; text: string; id: string };
+export type Heading = {
+  depth: 2 | 3;
+  text: string;
+  id: string;
+  /** The heading's Arabic subtitle (the `<Ar>` line right under it), when present */
+  textAr?: string;
+};
 
 type ItemBase = {
   subject: string;
@@ -83,25 +89,42 @@ function slugFromFile(file: string): string {
   return path.basename(file, ".mdx").replace(/^\d+[-_]/, "");
 }
 
-/** Extracts h2/h3 headings with the same ids rehype-slug will generate. */
+/**
+ * Extracts h2/h3 headings with the same ids rehype-slug will generate. rehype-slug numbers
+ * repeated titles across every heading level, so the slugger sees h1–h6, not just h2/h3.
+ */
 function extractHeadings(body: string): Heading[] {
   const slugger = new GithubSlugger();
   const headings: Heading[] = [];
   let inFence = false;
+  // The last h2/h3, until the next non-blank line shows whether an <Ar> subtitle follows it.
+  let awaitingAr: Heading | null = null;
 
   for (const line of body.split(/\r?\n/)) {
     if (/^\s*(```|~~~)/.test(line)) {
       inFence = !inFence;
+      awaitingAr = null;
       continue;
     }
     if (inFence) continue;
-    const match = /^(##|###)\s+(.+?)\s*#*\s*$/.exec(line);
+    if (awaitingAr && line.trim()) {
+      const ar = /^<Ar>(.+)<\/Ar>\s*$/.exec(line.trim());
+      if (ar) awaitingAr.textAr = ar[1].replace(/[`*_]/g, "").trim();
+      awaitingAr = null;
+    }
+    const match = /^(#{1,6})\s+(.+?)\s*#*\s*$/.exec(line);
     if (!match) continue;
     const text = match[2]
       .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
       .replace(/[`*_]/g, "")
       .trim();
-    headings.push({ depth: match[1].length as 2 | 3, text, id: slugger.slug(text) });
+    const id = slugger.slug(text);
+    const depth = match[1].length;
+    if (depth === 2 || depth === 3) {
+      const heading: Heading = { depth, text, id };
+      headings.push(heading);
+      awaitingAr = heading;
+    }
   }
 
   return headings;

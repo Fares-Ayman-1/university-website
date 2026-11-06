@@ -3,7 +3,7 @@ import styles from "./diagrams.module.css";
 /** The agent–environment loop: percepts in through sensors, actions out through actuators. */
 export function AgentLoop({ caption }: { caption?: string }) {
   return (
-    <figure className={styles.diagram}>
+    <figure className={`${styles.diagram} reveal`}>
       <div className={styles.scroll}>
         <svg viewBox="0 0 640 260" style={{ minWidth: 480 }} role="img" aria-label={caption ?? "Agent and environment loop"}>
           <defs>

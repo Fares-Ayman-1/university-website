@@ -1,11 +1,30 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { Heading } from "@/lib/content";
 import styles from "./ResourceLayout.module.css";
 
+// useLayoutEffect warns during server rendering; the indicator only matters in the browser.
+const useIsomorphicLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
+
 export function TableOfContents({ headings, variant }: { headings: Heading[]; variant: "side" | "inline" }) {
   const [active, setActive] = useState<string | null>(headings[0]?.id ?? null);
+  const navRef = useRef<HTMLElement>(null);
+  const indicatorRef = useRef<HTMLSpanElement>(null);
+
+  // One indicator bar slides to the active heading (CSS transition on transform/height).
+  useIsomorphicLayoutEffect(() => {
+    const nav = navRef.current;
+    const indicator = indicatorRef.current;
+    if (!nav || !indicator || !active) return;
+    const link = nav.querySelector<HTMLElement>(`a[href="#${CSS.escape(active)}"]`);
+    if (!link) return;
+    const navRect = nav.getBoundingClientRect();
+    const linkRect = link.getBoundingClientRect();
+    indicator.style.setProperty("--toc-y", `${linkRect.top - navRect.top + nav.scrollTop + 4}px`);
+    indicator.style.setProperty("--toc-h", `${Math.max(linkRect.height - 8, 8)}px`);
+    indicator.dataset.ready = "";
+  }, [active]);
 
   useEffect(() => {
     const elements = headings
@@ -51,7 +70,8 @@ export function TableOfContents({ headings, variant }: { headings: Heading[]; va
   }
 
   return (
-    <nav className={styles.tocSide} aria-label="On this page">
+    <nav ref={navRef} className={styles.tocSide} aria-label="On this page">
+      <span ref={indicatorRef} className={styles.tocIndicator} aria-hidden="true" />
       <p className={styles.sideTitle}>On this page</p>
       {list}
     </nav>

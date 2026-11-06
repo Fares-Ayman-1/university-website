@@ -135,6 +135,29 @@
   z-index: 2;
 }
 
+/* Arabic show/hide: a short cross-fade (lib/view-transition.ts tags it with data-vt). */
+@keyframes vt-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes vt-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+html[data-vt="arabic"]::view-transition-old(root) {
+  animation: vt-fade-out 180ms var(--ease-in-out-smooth) both;
+  mix-blend-mode: plus-lighter;
+}
+
+html[data-vt="arabic"]::view-transition-new(root) {
+  animation: vt-fade-in 180ms var(--ease-in-out-smooth) both;
+  mix-blend-mode: plus-lighter;
+}
+
 /* ============================================================
    Base
    ============================================================ */
@@ -280,6 +303,45 @@ button {
 .rise {
   animation: rise var(--dur-dramatic) var(--ease-out-expo) both;
   animation-delay: calc(var(--i, 0) * 70ms);
+}
+
+/* One-shot scroll reveal (components/RevealObserver.tsx). Only elements that were below the
+   fold after hydration get data-reveal, so without JavaScript nothing is ever hidden. */
+[data-reveal="pending"] {
+  animation: none;
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+[data-reveal="in"] {
+  animation: none;
+  transition:
+    opacity var(--dur-dramatic) var(--ease-out-expo),
+    transform var(--dur-dramatic) var(--ease-out-expo);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+@media print {
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* Hub tab switch (app/subjects/[subject]/(hub)/template.tsx): opacity only. */
+@keyframes hub-enter {
+  from {
+    opacity: 0;
+  }
+}
+
+.hub-enter {
+  animation: hub-enter 240ms var(--ease-out-expo) both;
+}
+
+/* A modal <dialog> is open (search palette): keep the page behind it still. */
+html:has(dialog[open]) {
+  overflow: hidden;
 }
 
 @media (prefers-reduced-motion: reduce) {

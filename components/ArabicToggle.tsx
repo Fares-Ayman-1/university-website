@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { applyArabicShown, readArabicShown } from "@/lib/arabic";
+import { keepReadingPosition, withViewTransition } from "@/lib/view-transition";
 import styles from "./ArabicToggle.module.css";
 
 /** Shows or hides every Arabic translation on the site; the choice is remembered. */
@@ -12,8 +13,10 @@ export function ArabicToggle() {
 
   function toggle() {
     const next = !readArabicShown();
-    applyArabicShown(next);
     setShown(next);
+    // Showing or hiding every translation reflows the whole page: cross-fade it, and keep
+    // the paragraph the reader is on in the same place on screen.
+    withViewTransition(() => keepReadingPosition(() => applyArabicShown(next)), "arabic");
   }
 
   const label = shown ? "Hide Arabic translation · إخفاء الترجمة العربية" : "Show Arabic translation · إظهار الترجمة العربية";

@@ -92,8 +92,10 @@
   line-height: 1.45;
   cursor: pointer;
   transition:
-    border-color var(--dur-micro) ease,
-    background-color var(--dur-micro) ease,
+    border-color var(--dur-standard) var(--ease-out-expo),
+    background-color var(--dur-standard) var(--ease-out-expo),
+    color var(--dur-standard) var(--ease-out-expo),
+    opacity var(--dur-standard) var(--ease-out-expo),
     transform var(--dur-micro) ease;
 }
 
@@ -127,6 +129,49 @@
   flex-shrink: 0;
   width: 18px;
   height: 18px;
+}
+
+/* The check / cross draws itself in once (pathLength=1 on the path). */
+.mark path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw-mark var(--dur-standard) var(--ease-out-expo) 80ms forwards;
+}
+
+@keyframes draw-mark {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Exam in progress: a pick is highlighted but not judged yet. */
+.option[data-state="picked"] {
+  border-color: var(--gold);
+  background: var(--gold-soft);
+}
+
+.option[data-state="picked"] .letter {
+  border-color: var(--gold);
+  color: var(--gold-text);
+}
+
+.source {
+  margin-bottom: 10px !important;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.source a {
+  color: var(--accent-text, var(--gold-text));
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .option[data-state="correct"] {
