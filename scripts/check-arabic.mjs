@@ -37,6 +37,7 @@ const PROP_TWINS = {
 };
 const AR_PROPS = new Set(["titleAr", "termAr", "captionAr"]);
 const QUIZ_AR_KEYS = new Set(["qAr", "optionsAr", "explainAr"]);
+const FRONTMATTER_AR_KEYS = new Set(["titleAr", "summaryAr"]);
 
 const args = process.argv.slice(2);
 let base = "HEAD";
@@ -285,15 +286,14 @@ function stripArabic(body, tree) {
   return out;
 }
 
-function quizzesOf(tree, dropArabic) {
+/** A copy of `obj` without the given keys (gray-matter caches its results, so never mutate). */
+const without = (obj, keys) => Object.fromEntries(Object.entries(obj).filter(([k]) => !keys.has(k)));
+
+/** The English quiz data of a tree: every quiz question with its …Ar keys removed. */
+function quizzesOf(tree) {
   const found = [];
   const walk = (n) => {
-    if (n.type === "mdxJsxFlowElement" && n.name === "Quiz") {
-      const questions = quizQuestions(n).map((q) =>
-        dropArabic ? Object.fromEntries(Object.entries(q).filter(([k]) => !QUIZ_AR_KEYS.has(k))) : q,
-      );
-      found.push(questions);
-    }
+    if (n.type === "mdxJsxFlowElement" && n.name === "Quiz") found.push(quizQuestions(n).map((q) => without(q, QUIZ_AR_KEYS)));
     (n.children ?? []).forEach(walk);
   };
   walk(tree);
@@ -313,16 +313,15 @@ function checkIntegrity(file, current, problems) {
     problems.push(`(warning) not in ${base}, so the English could not be compared`);
     return;
   }
+  // Arabic is stripped from both sides, so the baseline may or may not already have it.
   const cur = matter(current);
   const orig = matter(original);
-  const curData = { ...cur.data };
-  delete curData.titleAr;
-  delete curData.summaryAr;
-  if (JSON.stringify(curData) !== JSON.stringify(orig.data)) problems.push("frontmatter: English fields differ from the original");
+  if (JSON.stringify(without(cur.data, FRONTMATTER_AR_KEYS)) !== JSON.stringify(without(orig.data, FRONTMATTER_AR_KEYS)))
+    problems.push("frontmatter: English fields differ from the original");
 
   const curTree = parser.parse(cur.content);
   const origTree = parser.parse(orig.content);
-  if (quizzesOf(curTree, true) !== quizzesOf(origTree, false)) problems.push("quiz: English questions/options/answers differ from the original");
+  if (quizzesOf(curTree) !== quizzesOf(origTree)) problems.push("quiz: English questions/options/answers differ from the original");
 
   const a = normalize(stripArabic(cur.content, curTree));
   const b = normalize(stripArabic(orig.content, origTree));
