@@ -16,3 +16,4 @@ export const RelationalAlgebraPlayer = dynamic(() =>
   import("./RelationalAlgebraPlayer").then((m) => m.RelationalAlgebraPlayer),
 );
 export const EncoderSimPlayer = dynamic(() => import("./EncoderSimPlayer").then((m) => m.EncoderSimPlayer));
+export const WalkthroughPlayer = dynamic(() => import("./WalkthroughPlayer").then((m) => m.WalkthroughPlayer));

@@ -40,6 +40,8 @@ bookRefs:
 
 <Ar>المفاهيم الأساسية</Ar>
 
+<Walkthrough id="db-basics" expect="data-info, metadata, mini-world, layers, dbms-jobs" />
+
 <Definition term="Data vs. information" termAr="البيانات مقابل المعلومات">
   <strong>Data</strong> are facts about objects and events that can be recorded and stored: text, numbers, images, sound, video. <strong>Information</strong> is data that has been <strong>processed</strong> (put in context or summarized) so that it is useful for decision making.
 
@@ -90,6 +92,8 @@ In a university database, the **entities** are students, professors, courses and
 
 <Ar>لماذا لا نكتفي باستخدام الملفات؟</Ar>
 
+<Walkthrough id="db-files" expect="silos, inconsistency, dependence, os, sql" />
+
 Before DBMSs, every department wrote its own programs over its own files.
 
 <Ar>قبل ظهور أنظمة إدارة قواعد البيانات (DBMSs)، كان كل قسم يكتب برامجه الخاصة التي تعمل على ملفاته الخاصة.</Ar>
@@ -138,9 +142,19 @@ A DBMS treats a file as a collection of **pages of records** rather than a strin
 
 <Ar>يتعامل نظام إدارة قواعد البيانات (DBMS) مع الملف على أنه مجموعة من **صفحات السجلات (pages of records)** لا سلسلة من الحروف، ويستبدل بمبدأ «برنامج لكل سؤال» **لغةَ استعلام (query language) هي SQL**.</Ar>
 
+<Callout type="warning" title="Check the source" titleAr="راجِع المصدر">
+
+The slides say the OS loads the **whole file** into memory and protects it with **one password per file**. Modern operating systems read only the blocks a program asks for, and they give each user their own permissions. What an OS really lacks is any idea of **records**: no index to find one, no query language, no lock on a single record, and no permission on particular rows or columns. Those are what a DBMS adds.
+
+<Ar>تقول الشرائح إن نظام التشغيل يحمّل **الملف كاملًا** إلى الذاكرة ويحميه **بكلمة مرور واحدة لكل ملف**. لكن أنظمة التشغيل الحديثة لا تقرأ إلا الكتل (blocks) التي يطلبها البرنامج، وتعطي كل مستخدم صلاحياته الخاصة. أما ما ينقص نظام التشغيل فعلًا فهو أي فكرة عن **السجلات (records)**: فلا فهرس (index) للعثور على سجل، ولا لغة استعلام، ولا قفل على سجل واحد، ولا صلاحيات على صفوف أو أعمدة بعينها. وهذا ما يضيفه نظام إدارة قواعد البيانات (DBMS).</Ar>
+
+</Callout>
+
 ## The database approach
 
 <Ar>منهج قواعد البيانات</Ar>
+
+<Walkthrough id="db-approach" expect="central, catalog, independence, views, sharing, tradeoffs" />
 
 **Solution:** a **central repository of shared data**, managed by a controlling agent (the **DBMS**) and stored in a standard form.
 
@@ -207,6 +221,8 @@ A DBMS may be **unnecessary** for a simple, well-defined application that won't 
 
 <Ar>مستخدمو قواعد البيانات</Ar>
 
+<Walkthrough id="db-users" expect="stage, handoff, end-users" />
+
 <Grid cols={2}>
   <Card title="Database administrator (DBA)" titleAr="مدير قاعدة البيانات (DBA)" tag="actor on the scene">
     Authorizes access, coordinates and monitors use, acquires resources, tunes performance, and ensures availability and recovery.
@@ -245,6 +261,8 @@ A DBMS may be **unnecessary** for a simple, well-defined application that won't 
 
 <Ar>التطبيقات وتطور نماذج البيانات</Ar>
 
+<Walkthrough id="db-evolution" expect="timeline, flat, navigational, relational, object, semi" />
+
 Databases are everywhere: enterprise information (sales, accounting, HR), banking and finance, universities and airlines. Newer applications include multimedia, GIS, data warehouses and real-time databases. This course focuses on **traditional** numeric and textual databases.
 
 <Ar>قواعد البيانات في كل مكان: معلومات المؤسسات (المبيعات والمحاسبة والموارد البشرية)، والبنوك والتمويل، والجامعات وشركات الطيران. وتشمل التطبيقات الأحدث الوسائط المتعددة (multimedia)، ونظم المعلومات الجغرافية (GIS)، ومستودعات البيانات (data warehouses)، وقواعد بيانات الزمن الحقيقي (real-time). ويركّز هذا المقرر على قواعد البيانات **التقليدية** الرقمية والنصية.</Ar>
@@ -263,9 +281,19 @@ A **data model** is a set of concepts for describing data that hides low-level s
 
 <Ar>**نموذج البيانات (data model)** مجموعة من المفاهيم لوصف البيانات تُخفي تفاصيل التخزين منخفضة المستوى. و**نموذج الكيان والعلاقة (ER model)** نموذج *دلالي* (مفاهيمي) واسع الاستخدام، أما **النموذج العلائقي (relational model)** فهو النموذج الذي تنفّذه معظم أنظمة إدارة قواعد البيانات (Oracle و IBM DB2 و MySQL…). وسنتناول كليهما في المحاضرات التالية.</Ar>
 
+<Callout type="note" title="Beyond the slides" titleAr="ما بعد الشرائح">
+
+The table stops at XML and RDF. Since the late 2000s, **NoSQL** systems have grown into a major branch next to relational DBMSs: document stores such as MongoDB, key-value stores such as Redis, and graph databases such as Neo4j. They give up some of the relational model's guarantees in exchange for a flexible structure and easy scaling. Relational databases are still the most widely used.
+
+<Ar>يتوقف الجدول عند XML و RDF. ومنذ أواخر العقد الأول من القرن الحادي والعشرين نمت أنظمة **NoSQL** لتصبح فرعًا رئيسيًا إلى جانب أنظمة إدارة قواعد البيانات العلائقية: مخازن المستندات (document stores) مثل MongoDB، ومخازن المفتاح والقيمة (key-value stores) مثل Redis، وقواعد بيانات المخططات البيانية (graph databases) مثل Neo4j. وهي تتنازل عن بعض ضمانات النموذج العلائقي مقابل بنية مرنة وتوسّع سهل. وما زالت قواعد البيانات العلائقية هي الأكثر استخدامًا.</Ar>
+
+</Callout>
+
 ## Inside a DBMS
 
 <Ar>داخل نظام إدارة قواعد البيانات</Ar>
+
+<Walkthrough id="db-query-path" expect="ddl-dml, query, info" />
 
 <SlideFigure page={39} caption="Structure of a DBMS. Single boxes are components, double boxes are in-memory data structures." captionAr="بنية نظام إدارة قواعد البيانات: المربعات المفردة مكوّنات، والمربعات المزدوجة هياكل بيانات في الذاكرة." />
 
@@ -303,6 +331,8 @@ Along the way the components use five kinds of information: **data**, **metadata
 
 <Ar>معالجة المعاملات</Ar>
 
+<Walkthrough id="db-transactions" expect="acid, crash, lost-update, deadlock, durable; transfer=500; drop=500" />
+
 <Definition term="Transaction" termAr="المعاملة">
   A group of one or more database operations that forms a single unit of work. It must execute <strong>atomically</strong> and in apparent <strong>isolation</strong> from other transactions.
 
@@ -318,6 +348,14 @@ Along the way the components use five kinds of information: **data**, **metadata
 
   <Card title="Durability" titleAr="الديمومة" tag="D">Once committed, changes survive crashes.<Ar>بمجرد تأكيد المعاملة (commit)، تبقى التغييرات حتى لو تعطّل النظام.</Ar></Card>
 </Grid>
+
+<Callout type="warning" title="Check the source" titleAr="راجِع المصدر">
+
+Consistency is shared work. The DBMS enforces the constraints you declare (keys, `CHECK`, foreign keys), but it can't know that a transfer must debit exactly what it credits. Writing transactions that keep totals right is the programmer's job. The DBMS then guarantees atomicity, isolation and durability, so a correct transaction stays correct.
+
+<Ar>الاتساق عمل مشترك: يفرض نظام إدارة قواعد البيانات القيود (constraints) التي تعرّفها (المفاتيح و `CHECK` والمفاتيح الأجنبية foreign keys)، لكنه لا يستطيع أن يعرف أن التحويل يجب أن يخصم المبلغ نفسه الذي يودعه. فكتابة معاملات تحافظ على صحة المجاميع مسؤولية المبرمج، ثم يضمن النظام الذرّية والعزل والديمومة، فتبقى المعاملة الصحيحة صحيحة.</Ar>
+
+</Callout>
 
 The **transaction manager** provides these properties with three mechanisms:
 
@@ -347,6 +385,8 @@ COMMIT;   -- durability: from here on the transfer survives a crash
 ## Accessing a database from programs
 
 <Ar>الوصول إلى قاعدة البيانات من البرامج</Ar>
+
+<Walkthrough id="db-programs" expect="declarative, api, embedded, plsql" />
 
 SQL is **declarative**: it says *what* data you want, not *how* to get it. It can't read user input, draw screens or talk to the network, so applications are written in a **host language** that sends SQL to the DBMS.
 

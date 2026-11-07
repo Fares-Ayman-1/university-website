@@ -1,0 +1,642 @@
+/* ============================================================
+   Walkthrough: step pills, an animated SVG stage, the panel's text, Back/Next
+   ============================================================ */
+
+/* ---------- Step pills ---------- */
+.pills {
+  display: flex;
+  gap: 6px;
+  margin: -4px -4px 12px;
+  padding: 4px 4px 8px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+}
+
+.pill {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 15rem;
+  padding: 5px 13px 5px 5px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--muted);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: start;
+  cursor: pointer;
+  scroll-snap-align: start;
+  transition:
+    background-color var(--dur-standard) var(--ease-out-expo),
+    border-color var(--dur-micro) ease,
+    color var(--dur-standard) var(--ease-out-expo);
+}
+
+.pill:hover:not([aria-current]) {
+  border-color: var(--gold);
+  color: var(--heading);
+}
+
+.pill :global(.ar-line) {
+  font-size: 0.82em;
+  font-weight: 500;
+}
+
+.pillNum {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--heading);
+  font-size: var(--text-xs);
+  font-weight: 700;
+}
+
+.pill[data-state="done"] .pillNum {
+  background: var(--gold-soft);
+  color: var(--gold-text);
+}
+
+.pill[aria-current="step"] {
+  border-color: var(--navy);
+  background: var(--navy);
+  color: var(--cream);
+}
+
+.pill[aria-current="step"] .pillNum {
+  background: var(--gold);
+  color: var(--navy);
+}
+
+:global(:root[data-theme="dark"]) .pill[aria-current="step"] {
+  border-color: var(--gold);
+  background: var(--gold);
+  color: var(--navy);
+}
+
+:global(:root[data-theme="dark"]) .pill[aria-current="step"] .pillNum {
+  background: var(--navy);
+  color: var(--gold);
+}
+
+/* ---------- Toggle above the scene ---------- */
+.controlRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  margin-bottom: 10px;
+}
+
+.controlLabel {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.controlLabel :global(.ar-line) {
+  font-weight: 500;
+}
+
+.controlRow button :global(.ar-line) {
+  font-size: 0.85em;
+  font-weight: 500;
+}
+
+/* ---------- Stage ---------- */
+.stage {
+  position: relative;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.replay {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  cursor: pointer;
+  transition:
+    color var(--dur-micro) ease,
+    border-color var(--dur-micro) ease;
+}
+
+.replay:hover {
+  border-color: var(--gold);
+  color: var(--heading);
+}
+
+.replay svg {
+  width: 14px;
+  height: 14px;
+}
+
+.scene {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  font-family: var(--font-body);
+}
+
+.sceneScroll {
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.swipeHint {
+  display: none;
+  margin-top: 6px;
+  font-size: var(--text-xs);
+  color: var(--muted);
+  text-align: center;
+}
+
+.swipeHint :global(.ar-line) {
+  font-weight: 400;
+}
+
+@media (max-width: 560px) {
+  .scene {
+    min-width: 470px;
+  }
+
+  .swipeHint {
+    display: block;
+  }
+}
+
+/* ---------- Panel text ---------- */
+.text {
+  margin-top: 14px;
+}
+
+.panelHeading {
+  font-family: var(--font-display);
+  font-size: 1.12rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--heading);
+}
+
+.panelHeading :global(.ar-line) {
+  font-size: 0.86em;
+  color: var(--muted);
+}
+
+.points {
+  display: grid;
+  gap: 8px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.points li {
+  position: relative;
+  padding-inline-start: 18px;
+  font-size: 0.97rem;
+  line-height: 1.6;
+  color: var(--text);
+}
+
+.points li::before {
+  content: "";
+  position: absolute;
+  top: 0.62em;
+  left: 2px;
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  background: var(--gold);
+  transform: rotate(45deg);
+}
+
+.points li :global(.ar-line) {
+  margin-top: 2px;
+  font-weight: 400;
+  color: color-mix(in srgb, var(--text) 86%, var(--muted));
+}
+
+.points strong {
+  color: var(--heading);
+}
+
+/* ---------- Back / Next ---------- */
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 14px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.navButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--heading);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  line-height: 1.2;
+  cursor: pointer;
+  transition:
+    border-color var(--dur-micro) ease,
+    transform var(--dur-micro) ease;
+}
+
+.navButton:hover:not(:disabled) {
+  border-color: var(--gold);
+}
+
+.navButton:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.navButton:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.navButton svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.navButton :global(.ar-line) {
+  font-size: 0.85em;
+  font-weight: 500;
+}
+
+.navPrimary {
+  border-color: var(--navy);
+  background: var(--navy);
+  color: var(--cream);
+}
+
+:global(:root[data-theme="dark"]) .navPrimary {
+  border-color: var(--gold);
+  background: var(--gold);
+  color: var(--navy);
+}
+
+.position {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--muted);
+  text-align: center;
+}
+
+.position :global(.ar-line) {
+  font-weight: 500;
+}
+
+.analogy {
+  margin-top: 14px;
+  padding: 10px 14px;
+  border-inline-start: 3px solid var(--gold);
+  border-radius: 0 10px 10px 0;
+  background: var(--gold-soft);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  color: var(--text);
+}
+
+.analogy :global(.ar-line) {
+  margin-top: 4px;
+  font-weight: 400;
+}
+
+.analogyLabel {
+  font-weight: 700;
+  color: var(--gold-text);
+}
+
+/* ============================================================
+   SVG scenes (components/widgets/walkthrough/primitives.tsx)
+   ============================================================ */
+
+/* Entrances run once per panel visit; `--d` staggers them. Base styles are the final state,
+   so with animation off (reduced motion) everything is simply there. */
+@keyframes wt-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@keyframes wt-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes wt-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+
+.in {
+  transform-box: fill-box;
+  animation: wt-in var(--dur-dramatic) var(--ease-out-expo) both;
+  animation-delay: var(--d, 0ms);
+}
+
+.fade {
+  animation: wt-fade var(--dur-dramatic) var(--ease-out-expo) both;
+  animation-delay: var(--d, 0ms);
+}
+
+.draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  animation: wt-draw var(--dur, 520ms) var(--ease-in-out-smooth) both;
+  animation-delay: var(--d, 0ms);
+}
+
+/* Hydrated but not yet scrolled into view: hold every entrance at its start. */
+.stage[data-armed]:not([data-live]) :is(.in, .fade, .draw) {
+  animation-play-state: paused;
+}
+
+.stage[data-reduced] :is(.in, .fade, .draw) {
+  animation: none;
+}
+
+/* ---------- Shapes: fill + stroke by tone ---------- */
+/* An opaque base under every shape: soft (translucent) tones then cover whatever was drawn
+   before them, such as a line passing behind or the state a box replaces. */
+.under {
+  fill: var(--surface);
+  stroke: none;
+}
+
+.shape {
+  stroke-width: 1.5;
+}
+
+.shape.navy {
+  fill: var(--navy);
+  stroke: var(--navy);
+}
+
+.shape.gold {
+  fill: var(--gold);
+  stroke: var(--gold-text);
+}
+
+.shape.slate {
+  fill: var(--slate-soft);
+  stroke: var(--slate);
+}
+
+.shape.outline {
+  fill: var(--surface);
+  stroke: var(--border-strong);
+}
+
+.shape.muted {
+  fill: var(--surface-2);
+  stroke: var(--border);
+}
+
+.shape.danger {
+  fill: var(--danger-soft);
+  stroke: var(--danger);
+}
+
+.shape.success {
+  fill: var(--success-soft);
+  stroke: var(--success);
+}
+
+.shape.warn {
+  fill: var(--warning-soft);
+  stroke: var(--warning);
+}
+
+.shape.ghost {
+  fill: none;
+  stroke: var(--border-strong);
+}
+
+:global(:root[data-theme="dark"]) .shape.navy {
+  fill: var(--surface-3);
+  stroke: var(--slate);
+}
+
+.dashed {
+  stroke-dasharray: 5 4;
+}
+
+/* Text inside a shape, by the shape's tone */
+.bt {
+  fill: var(--text);
+}
+
+.bt.navy {
+  fill: var(--cream);
+}
+
+.bt.gold {
+  fill: var(--navy);
+}
+
+.bt.slate,
+.bt.outline,
+.bt.ghost {
+  fill: var(--heading);
+}
+
+.bt.muted {
+  fill: var(--muted);
+}
+
+.bt.danger {
+  fill: var(--danger-text);
+}
+
+.bt.success {
+  fill: var(--success-text);
+}
+
+.bt.warn {
+  fill: var(--warning-text);
+}
+
+:global(:root[data-theme="dark"]) .bt.navy {
+  fill: var(--heading);
+}
+
+/* Free text, by tone */
+.t {
+  fill: var(--text);
+}
+
+.t.heading {
+  fill: var(--heading);
+}
+
+.t.muted {
+  fill: var(--muted);
+}
+
+.t.gold {
+  fill: var(--gold-text);
+}
+
+.t.slate {
+  fill: var(--slate);
+}
+
+.t.danger {
+  fill: var(--danger-text);
+}
+
+.t.success {
+  fill: var(--success-text);
+}
+
+.mono {
+  font-family: var(--font-code);
+  font-variant-ligatures: none; /* show ">=" as typed, not as a ligature */
+  white-space: pre; /* keep code indentation */
+}
+
+/* An English line with an Arabic line under it moves to the middle when Arabic is off. */
+:global(:root[data-arabic="off"]) .shift {
+  transform: translateY(var(--shift, 0px));
+}
+
+/* ---------- Lines and arrowheads ---------- */
+.line {
+  fill: none;
+  stroke: var(--muted);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.line.gold {
+  stroke: var(--gold);
+}
+
+.line.navy {
+  stroke: var(--heading);
+}
+
+.line.slate {
+  stroke: var(--slate);
+}
+
+.line.danger {
+  stroke: var(--danger);
+}
+
+.line.success {
+  stroke: var(--success);
+}
+
+.line.faint {
+  stroke: var(--border-strong);
+}
+
+.head {
+  fill: var(--muted);
+}
+
+.head.gold {
+  fill: var(--gold);
+}
+
+.head.navy {
+  fill: var(--heading);
+}
+
+.head.slate {
+  fill: var(--slate);
+}
+
+.head.danger {
+  fill: var(--danger);
+}
+
+.head.success {
+  fill: var(--success);
+}
+
+.head.faint {
+  fill: var(--border-strong);
+}
+
+/* ---------- Tokens and marks ---------- */
+.token {
+  fill: var(--gold);
+  stroke: var(--surface);
+  stroke-width: 2;
+}
+
+.token.navy {
+  fill: var(--heading);
+}
+
+.token.danger {
+  fill: var(--danger);
+}
+
+.token.success {
+  fill: var(--success);
+}
+
+.mark {
+  stroke: none;
+}
+
+.mark.ok {
+  fill: var(--success);
+}
+
+.mark.bad {
+  fill: var(--danger);
+}
+
+.markGlyph {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}

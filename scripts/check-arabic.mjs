@@ -31,7 +31,7 @@ const ENGLISH_WORD = /[A-Za-z]{2,}/;
 // Interactive widgets (components/widgets). Their UI text lives in code, typed so both
 // languages are required; in the MDX they carry only data plus title/caption props. Adding
 // or editing a widget is not an English text change, so the integrity check skips them.
-const WIDGETS = new Set(["ConvolutionStepper", "StateMachine", "SearchStepper", "RelationalAlgebra", "EncoderSim"]);
+const WIDGETS = new Set(["ConvolutionStepper", "StateMachine", "SearchStepper", "RelationalAlgebra", "EncoderSim", "Walkthrough"]);
 const PROP_TWINS = {
   Callout: [["title", "titleAr"]],
   Definition: [["term", "termAr"]],

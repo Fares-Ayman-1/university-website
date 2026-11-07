@@ -98,8 +98,17 @@ Create `content/subjects/<slug>/subject.json` (copy an existing one), and set `m
 | `<SearchStepper nodes="…" edges="…" start="S" goal="G" />` | Step through DFS / BFS / UCS with the frontier and explored set |
 | `<RelationalAlgebra dataset="company-employee" />` | Build σ / π queries on the EMPLOYEE table and see rows and columns drop out |
 | `<EncoderSim />` | Turn an incremental (quadrature) or absolute (Gray code) encoder disc |
+| `<Walkthrough id="db-transactions" expect="acid, crash, …" />` | A heading's ideas as panels: step pills, an animated drawing per panel, its points, Back/Next and sometimes a toggle |
 
 **Interactive widgets** live in `components/widgets/`. Each has a server wrapper that computes every step with pure code in `lib/widgets/` and loads its client player only on pages that use it. Give a widget an `expect` prop copied from the page's own worked answer: if the widget would show something else, the build fails. Its UI text is written in both languages in code (typed `Bi`), so the MDX only needs `caption`/`captionAr`.
+
+**Walkthroughs** are the step-through visuals placed under a page's headings. Adding one takes three pieces:
+
+1. Its text goes in `lib/walkthroughs/<subject>/lecture-NN.ts` through `defineWalkthrough`: panel ids, pills, headings, points, and an optional toggle whose options can add points (`pointsFor`). All of it is typed `Bi`.
+2. Register it in `lib/walkthroughs/index.ts`.
+3. Draw one scene per panel in `components/widgets/walkthrough/scenes/<subject>/<name>.tsx`, using the SVG pieces in `walkthrough/primitives.tsx` (`Box`, `Cylinder`, `Doc`, `Person`, `Arrow`, `Token`, `Table`, `Chip`, `Mark`), each with a `d` delay so the drawing builds up in order. Add a lazy import to `walkthrough/scenes.tsx`.
+
+TypeScript enforces two things: every walkthrough has scenes, and every panel has exactly one drawing. In the MDX, `expect` lists the panel ids in order and can name numbers the scenes compute (`; drop=500`). The build fails when either disagrees with the page.
 
 Every subject also gets a **Review** tab (flashcards from each page's `<Definition>`s, and an exam mode drawing on every `<Quiz>`), and the header has a **Ctrl+K search** over all pages, headings and definitions, in English and Arabic.
 
