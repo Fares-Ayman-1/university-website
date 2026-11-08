@@ -2,9 +2,9 @@
 
 import type { evolution } from "@/lib/walkthroughs/databases/lecture-01";
 import type { PanelIdOf } from "@/lib/widgets/walkthrough";
-import { bi, type Bi } from "../../../types";
-import { Arrow, Box, Chip, In, Svg, Table, Text, Token, type Pt } from "../../primitives";
-import { sceneSet } from "../../scene-set";
+import { bi, type Bi } from "../../../../types";
+import { Arrow, Box, Chip, In, Svg, Table, Text, Token, type Pt } from "../../../primitives";
+import { sceneSet } from "../../../scene-set";
 
 const ERAS: [string, Bi][] = [
   ["1960s", bi("Flat files", "الملفات المسطحة")],

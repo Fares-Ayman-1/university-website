@@ -2,9 +2,9 @@
 
 import type { approach } from "@/lib/walkthroughs/databases/lecture-01";
 import type { PanelIdOf } from "@/lib/widgets/walkthrough";
-import { bi } from "../../../types";
-import { Arrow, Box, Chip, Cylinder, Fade, Mark, Person, Svg, Table, Text, Token, type Tone } from "../../primitives";
-import { sceneSet } from "../../scene-set";
+import { bi } from "../../../../types";
+import { Arrow, Box, Chip, Cylinder, Fade, Mark, Person, Svg, Table, Text, Token, type Tone } from "../../../primitives";
+import { sceneSet } from "../../../scene-set";
 
 function Central() {
   const depts = [bi("Orders", "الطلبات"), bi("Accounting", "المحاسبة"), bi("Payroll", "الرواتب")];
@@ -139,7 +139,7 @@ function Sharing() {
       <Fade d={2400}>
         <Chip x={420} y={138} text={bi("seat already taken", "المقعد محجوز بالفعل")} tone="danger" center />
       </Fade>
-      <Text x={280} y={260} text={bi("one seat, sold once", "مقعد واحد يُباع مرة واحدة")} tone="success" size={12} d={2600} />
+      <Text x={280} y={252} text={bi("one seat, sold once", "مقعد واحد يُباع مرة واحدة")} tone="success" size={12} d={2600} />
     </Svg>
   );
 }

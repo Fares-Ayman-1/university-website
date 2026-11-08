@@ -35,6 +35,8 @@ bookRefs:
 
 <Ar>عملية البرمجيات</Ar>
 
+<Walkthrough id="se2-process" expect="activities, description, plan-agile, balance" />
+
 <Definition term="Software process" termAr="عملية البرمجيات">
   A structured set of related activities that leads to the production of a software product.
 
@@ -78,6 +80,8 @@ There is no right or wrong process. In practice you balance the two, and most la
 
 <Ar>نموذج الشلال</Ar>
 
+<Walkthrough id="se2-waterfall" expect="cascade, feedback, visibility, late-change, when" />
+
 <SlideFigure page={10} caption="The waterfall model: requirements definition → system and software design → implementation and unit testing → integration and system testing → operation and maintenance." captionAr="نموذج الشلال (waterfall): تعريف المتطلبات ← تصميم النظام والبرمجيات ← التنفيذ واختبار الوحدات ← التكامل واختبار النظام ← التشغيل والصيانة." />
 
 A **plan-driven** model with **separate, distinct phases**: each phase must finish (and be signed off) before the next starts.
@@ -97,6 +101,14 @@ A **plan-driven** model with **separate, distinct phases**: each phase must fini
   </Card>
 </Grid>
 
+<Callout type="warning" title="Check the source" titleAr="راجِع المصدر">
+
+The figure on slide 10 also has arrows going **back up**, from each later phase to the earlier ones. A strictly one-way sequence is the waterfall only **in principle**. In practice the phases overlap and feed information to each other: a design problem can send you back to the requirements, and a failed test back to the design. Going back is what is expensive, because every changed document must be approved again, so after a few iterations parts of the work (often the requirements) are usually **frozen**. That is also what "requirements can't change" really means: a change is possible but costly, because commitments are made early in the project.
+
+<Ar>يحتوي شكل الشريحة 10 أيضًا على أسهم تعود **إلى الأعلى** من كل مرحلة لاحقة إلى المراحل السابقة لها. فالتسلسل أحادي الاتجاه الصارم هو نموذج الشلال (waterfall) **من حيث المبدأ** فقط. أما في الواقع فتتداخل المراحل ويغذّي بعضها بعضًا بالمعلومات: فمشكلة في التصميم قد تعيدك إلى المتطلبات، واختبار فاشل قد يعيدك إلى التصميم. والمكلف هو العودة، لأن كل وثيقة تتغير يجب اعتمادها من جديد، لذلك **تُجمَّد (frozen)** عادةً أجزاء من العمل (غالبًا المتطلبات) بعد عدد قليل من التكرارات. وهذا أيضًا المعنى الحقيقي لعبارة «لا يمكن تغيير المتطلبات»: فالتغيير ممكن لكنه مكلف، لأن الالتزامات تُقطع في وقت مبكر من المشروع.</Ar>
+
+</Callout>
+
 **Use it only when** the requirements are **well understood** from the start, are **unlikely to change**, and delivery time isn't critical. It also suits **large systems-engineering projects** developed at several sites, where the plan coordinates the work.
 
 <Ar>**استخدمه فقط عندما** تكون المتطلبات **مفهومة جيدًا** منذ البداية، و**من غير المرجح أن تتغير**، ولا يكون وقت التسليم حرجًا. ويناسب أيضًا **مشاريع هندسة النظم الكبيرة** التي تُطوَّر في عدة مواقع، حيث تنسّق الخطة العمل.</Ar>
@@ -104,6 +116,8 @@ A **plan-driven** model with **separate, distinct phases**: each phase must fini
 ## Incremental development
 
 <Ar>التطوير التزايدي</Ar>
+
+<Walkthrough id="se2-incremental" expect="versions, evolve, change-cost, value, visibility, structure" />
 
 <SlideFigure page={13} caption="Incremental development: specification, development and validation run concurrently, producing an initial version, intermediate versions and the final version." captionAr="التطوير التزايدي (incremental development): يجري التوصيف والتطوير والتحقق من الصلاحية بالتزامن، فتُنتَج نسخة أولية، ثم نسخ وسيطة، ثم النسخة النهائية." />
 
@@ -122,6 +136,8 @@ The system is developed as a **series of versions (increments)**, each adding fu
 ## Reuse-oriented software engineering
 
 <Ar>هندسة البرمجيات الموجَّهة لإعادة الاستخدام</Ar>
+
+<Walkthrough id="se2-reuse" expect="assemble, process, kinds, tradeoffs" />
 
 This approach assumes many **reusable components** exist. Development focuses on **integrating** them rather than building from scratch.
 
@@ -148,6 +164,8 @@ Three kinds of reusable component:
 ## Coping with change
 
 <Ar>التعامل مع التغيير</Ar>
+
+<Walkthrough id="se2-change" expect="rework, two-ways, prototype, throwaway, delivery, deploy" />
 
 Change is **inevitable** in large projects: the business changes, new technologies appear, and platforms change. Change causes **rework** (for example, re-analyzing requirements) on top of implementing new functions. Two approaches reduce rework costs:
 

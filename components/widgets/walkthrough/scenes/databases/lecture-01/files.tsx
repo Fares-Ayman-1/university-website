@@ -2,9 +2,9 @@
 
 import type { files } from "@/lib/walkthroughs/databases/lecture-01";
 import type { PanelIdOf } from "@/lib/widgets/walkthrough";
-import { bi } from "../../../types";
-import { Arrow, Box, Chip, Doc, Fade, In, Mark, Person, Svg, Table, Text, Token } from "../../primitives";
-import { sceneSet } from "../../scene-set";
+import { bi } from "../../../../types";
+import { Arrow, Box, Chip, Doc, Fade, In, Mark, Person, Svg, Table, Text, Token } from "../../../primitives";
+import { sceneSet } from "../../../scene-set";
 
 function Silos() {
   const columns = [

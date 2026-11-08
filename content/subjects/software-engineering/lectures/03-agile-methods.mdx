@@ -35,6 +35,8 @@ bookRefs:
 
 <Ar>لماذا الأساليب الرشيقة؟</Ar>
 
+<Walkthrough id="se3-why" expect="unclear, rework, feedback" />
+
 <SlideFigure page={2} caption="The classic tree-swing cartoon: what the customer explained, what each role understood or built, and what the customer really needed." captionAr="رسم الأرجوحة على الشجرة الشهير: ما شرحه العميل، وما فهمه أو بناه كل دور، وما كان العميل يحتاجه فعلًا." />
 
 - Customers often **don't know exactly what they want**, and not every requirement can be found at the start.
@@ -54,6 +56,8 @@ Agile methods weren't created because plan-driven methods are "bad". They were c
 
 <Ar>البيان الرشيق</Ar>
 
+<Walkthrough id="se3-manifesto" expect="over, people, software, customer, change" />
+
 <SlideFigure page={5} caption="The Agile Manifesto's four value pairs." captionAr="أزواج القيم الأربعة في البيان الرشيق (Agile Manifesto)." />
 
 | We value… <Ar>نُقدِّر…</Ar> | …over <Ar>…أكثر من</Ar> |
@@ -71,6 +75,8 @@ The items on the right still have value, but the items on the left are valued **
 
 <Ar>المبادئ الرشيقة الرئيسية</Ar>
 
+<Walkthrough id="se3-principles" expect="involvement, incremental, people, change, simplicity" />
+
 | Principle <Ar>المبدأ</Ar> | Meaning <Ar>المعنى</Ar> |
 |---|---|
 | **Customer involvement** <Ar>**مشاركة العميل (Customer involvement)**</Ar> | Customers are closely involved throughout development <Ar>يشارك العملاء عن قرب طوال مدة التطوير</Ar> |
@@ -86,6 +92,8 @@ The best-known agile methods are **Extreme Programming (XP)**, **Scrum** and **K
 ## Extreme Programming (XP)
 
 <Ar>البرمجة القصوى (XP)</Ar>
+
+<Walkthrough id="se3-xp" expect="release-cycle, stories, practices, refactoring, test-first, pairs" />
 
 XP, from the late 1990s, takes an **extreme** approach to iterative development:
 
@@ -218,9 +226,19 @@ Studies suggest a pair is about as productive as two people working separately, 
 
 <Ar>تشير الدراسات إلى أن إنتاجية الزوج تقارب إنتاجية شخصين يعملان منفصلين، مع جودة أعلى للشيفرة.</Ar>
 
+<Callout type="warning" title="Check the source" titleAr="راجِع المصدر">
+
+The claim that a pair is as productive as two people working separately comes from early studies with student volunteers (Williams et al., 2000). Sommerville points out that a later study with experienced programmers (Arisholm et al., 2007) found a clear loss of productivity, with quality gains that didn't fully make up for it. The evidence is mixed: the continuous review and the spread of knowledge are real benefits, but equal productivity is not guaranteed.
+
+<Ar>الادعاء بأن إنتاجية الزوج تعادل إنتاجية شخصين يعملان منفصلين مصدره دراسات مبكرة أُجريت على طلاب متطوعين (Williams et al., 2000). ويشير Sommerville إلى أن دراسة لاحقة على مبرمجين ذوي خبرة (Arisholm et al., 2007) وجدت انخفاضًا واضحًا في الإنتاجية، مع مكاسب في الجودة لم تعوّضه بالكامل. فالأدلة متباينة: المراجعة (review) المستمرة وانتشار المعرفة فائدتان حقيقيتان، لكن تساوي الإنتاجية ليس مضمونًا.</Ar>
+
+</Callout>
+
 ## Scrum
 
 <Ar>منهجية Scrum</Ar>
+
+<Walkthrough id="se3-scrum" expect="phases, select, develop, review, master" />
 
 Scrum is a general agile method that focuses on **managing iterative development**, not on technical practices. It doesn't prescribe pair programming or test-first development, so it is often combined with XP, which supplies the engineering practices while Scrum supplies the management framework.
 
@@ -258,6 +276,14 @@ Scrum is a general agile method that focuses on **managing iterative development
 
 </Steps>
 
+<Callout type="note" title="Beyond the slides" titleAr="ما بعد الشرائح">
+
+These steps follow Sommerville's description of the cycle. The **Scrum Guide** (2020), Scrum's official definition, caps a sprint at **one month**, so one-week sprints are fine too, and it names the events inside a sprint: **sprint planning** (the assess and select steps), a 15-minute **daily scrum**, the **sprint review** with the stakeholders, and the **sprint retrospective**, where the team looks at how it worked and plans improvements for the next sprint. The retrospective is missing from the steps above.
+
+<Ar>تتبع هذه الخطوات وصف Sommerville للدورة. أما **دليل Scrum (Scrum Guide)** لعام 2020، وهو التعريف الرسمي لـ Scrum، فيجعل الحد الأقصى للسبرنت **شهرًا واحدًا**، لذا تصح أيضًا السبرنتات التي مدتها أسبوع واحد، ويسمّي الأحداث (events) التي تجري داخل السبرنت: **تخطيط السبرنت (sprint planning)** (أي خطوتا التقييم والاختيار)، و**اجتماع Scrum اليومي (daily scrum)** ومدته 15 دقيقة، و**مراجعة السبرنت (sprint review)** مع أصحاب المصلحة (stakeholders)، و**الاستعراض الاستعادي للسبرنت (sprint retrospective)**، الذي ينظر فيه الفريق في طريقة عمله ويخطط لتحسينات في السبرنت التالي. والاستعراض الاستعادي غائب عن الخطوات السابقة.</Ar>
+
+</Callout>
+
 ### The Scrum master
 
 <Ar>دور Scrum master</Ar>
@@ -276,6 +302,14 @@ The whole team is empowered to make decisions, so Scrum deliberately avoids the 
   <Ar>يقيس التقدم مقارنةً بقائمة الأعمال، و</Ar>
 - communicates with customers and management outside the team, **protecting the team from distractions**.
   <Ar>يتواصل مع العملاء والإدارة خارج الفريق، **ليحمي الفريق من المشتتات**.</Ar>
+
+<Callout type="warning" title="Check the source" titleAr="راجِع المصدر">
+
+This list follows older editions of Sommerville. In the **Scrum Guide** (2020) a Scrum team has three accountabilities: the **Product Owner**, who orders the product backlog and speaks for the customers and other stakeholders; the **Developers**, who plan their own sprint work and hold the daily scrum; and the **Scrum master**, who coaches everyone in Scrum and gets obstacles removed. So tracking and prioritizing the backlog is the Product Owner's job, and the Scrum master isn't the channel for all communication. Sommerville's later editions add the Product Owner as well.
+
+<Ar>تتبع هذه القائمة الطبعات القديمة من كتاب Sommerville. ففي **دليل Scrum (Scrum Guide)** لعام 2020 يضم فريق Scrum ثلاث مسؤوليات: **مالك المنتج (Product Owner)**، الذي يرتّب قائمة أعمال المنتج (product backlog) ويتحدث باسم العملاء وسائر أصحاب المصلحة؛ و**المطورون (Developers)**، الذين يخططون لعملهم في السبرنت ويعقدون اجتماع Scrum اليومي؛ و**Scrum master**، الذي يدرّب الجميع على Scrum ويعمل على إزالة العوائق. لذا فإن متابعة قائمة الأعمال وترتيب أولوياتها من عمل مالك المنتج، وليس Scrum master قناةً لكل التواصل. وتضيف الطبعات اللاحقة من كتاب Sommerville مالكَ المنتج أيضًا.</Ar>
+
+</Callout>
 
 A **Scrum board**, a whiteboard of sprint-backlog notes, lets everyone see at a glance what others are doing.
 

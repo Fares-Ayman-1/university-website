@@ -2,9 +2,9 @@
 
 import type { programs } from "@/lib/walkthroughs/databases/lecture-01";
 import type { PanelIdOf } from "@/lib/widgets/walkthrough";
-import { bi } from "../../../types";
-import { Arrow, Box, Chip, Cylinder, Mark, Svg, Table, Text, Token } from "../../primitives";
-import { sceneSet } from "../../scene-set";
+import { bi } from "../../../../types";
+import { Arrow, Box, Chip, Cylinder, Mark, Svg, Table, Text, Token } from "../../../primitives";
+import { sceneSet } from "../../../scene-set";
 
 const RECORDS: [string, string][] = [
   ["Sara", "3.6"],

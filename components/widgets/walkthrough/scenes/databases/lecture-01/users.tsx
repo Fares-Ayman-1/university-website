@@ -2,9 +2,9 @@
 
 import type { users } from "@/lib/walkthroughs/databases/lecture-01";
 import type { PanelIdOf } from "@/lib/widgets/walkthrough";
-import { bi, type Bi } from "../../../types";
-import { Arrow, Box, Chip, Cylinder, In, Person, Svg, Text, Token } from "../../primitives";
-import { sceneSet } from "../../scene-set";
+import { bi, type Bi } from "../../../../types";
+import { Arrow, Box, Chip, Cylinder, In, Person, Svg, Text, Token } from "../../../primitives";
+import { sceneSet } from "../../../scene-set";
 
 function Stage() {
   const cast: [Bi, number][] = [

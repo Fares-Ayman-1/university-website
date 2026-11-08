@@ -2,9 +2,9 @@
 
 import type { basics } from "@/lib/walkthroughs/databases/lecture-01";
 import type { PanelIdOf } from "@/lib/widgets/walkthrough";
-import { bi, type Bi } from "../../../types";
-import { Arrow, Box, Chip, Cylinder, Doc, Person, Svg, Table, Text, type Pt } from "../../primitives";
-import { sceneSet } from "../../scene-set";
+import { bi, type Bi } from "../../../../types";
+import { Arrow, Box, Chip, Cylinder, Doc, Person, Svg, Table, Text, type Pt } from "../../../primitives";
+import { sceneSet } from "../../../scene-set";
 
 /** A segment from (x0, y0) towards (x1, y1), trimmed by r0 at the start and r1 at the end. */
 function ray(x0: number, y0: number, x1: number, y1: number, r0: number, r1: number): Pt[] {

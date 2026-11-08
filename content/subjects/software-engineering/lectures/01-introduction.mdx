@@ -39,6 +39,8 @@ bookRefs:
 
 <Ar>ما البرمجيات؟</Ar>
 
+<Walkthrough id="se1-what-is-software" expect="bundle, professional, lifetime" />
+
 <Definition term="Software" termAr="البرمجيات">
   Computer <strong>programs and their associated documentation</strong>: everything needed to install and run the programs correctly, explain how to use the system, and keep users up to date (for example, a website for downloading new versions).
 
@@ -52,6 +54,8 @@ Software engineering supports **professional** software development rather than 
 ## Attributes of good software
 
 <Ar>خصائص البرمجيات الجيدة</Ar>
+
+<Walkthrough id="se1-attributes" expect="baseline, maintainability, dependability, efficiency, acceptability" />
 
 Good software must deliver the required **functionality and performance**. Beyond that, professional software must have four attributes:
 
@@ -70,6 +74,8 @@ Good software must deliver the required **functionality and performance**. Beyon
 
 <Ar>هندسة البرمجيات</Ar>
 
+<Walkthrough id="se1-engineering" expect="all-aspects, systematic, engineer-developer, where-it-fits" />
+
 <Definition term="Software engineering" termAr="هندسة البرمجيات">
   An <strong>engineering discipline</strong> concerned with <strong>all aspects of software production</strong>, using systematic, well-defined techniques. Its result is an effective and reliable software product, built with tools and methods chosen to fit the problem, the constraints and the resources.
 
@@ -83,6 +89,14 @@ Good software must deliver the required **functionality and performance**. Beyon
 | Writes complete programs with ready-made tools <Ar>يكتب برامج كاملة باستخدام أدوات جاهزة</Ar> | Also works with the hardware side, and creates the tools others use <Ar>يعمل أيضًا على جانب العتاد (hardware)، وينشئ الأدوات التي يستخدمها الآخرون</Ar> |
 | Works on a limited scale <Ar>يعمل على نطاق محدود</Ar> | Solves problems on a much larger scale <Ar>يحل المشكلات على نطاق أكبر بكثير</Ar> |
 
+<Callout type="warning" title="Check the source" titleAr="راجِع المصدر">
+
+Sommerville draws no line between these two job titles, and in industry they are often used for the same work: most developers work in teams too. The distinction the textbook makes is between **individual programming**, where you write a program for yourself, and **professional software development**: software built by a team, used by other people and maintained for years. Software engineering is the discipline for the second.
+
+<Ar>لا يفرّق كتاب Sommerville بين هذين المسمَّيين الوظيفيين، وكثيرًا ما يُستخدمان في سوق العمل للعمل نفسه، فمعظم المطوّرين يعملون ضمن فرق أيضًا. أما التمييز الذي يضعه الكتاب فهو بين **البرمجة الفردية (individual programming)**، حين تكتب برنامجًا لنفسك، و**تطوير البرمجيات الاحترافي (professional software development)**: برمجيات يبنيها فريق، ويستخدمها أشخاص آخرون، وتُصان لسنوات. وهندسة البرمجيات (Software Engineering) هي التخصص الذي يُعنى بالنوع الثاني.</Ar>
+
+</Callout>
+
 ### Where it fits
 
 <Ar>موقعها بين التخصصات</Ar>
@@ -95,6 +109,8 @@ Good software must deliver the required **functionality and performance**. Beyon
 ## Software products
 
 <Ar>منتجات البرمجيات</Ar>
+
+<Walkthrough id="se1-products" expect="two-kinds, specification, users-cost, changes" />
 
 <Grid cols={2}>
   <Card title="Generic products" titleAr="المنتجات العامة" tag="open market">
@@ -118,9 +134,19 @@ Good software must deliver the required **functionality and performance**. Beyon
 | **Quality** <Ar>**الجودة**</Ar> | Not always the top priority <Ar>ليست دائمًا الأولوية القصوى</Ar> | The main criterion <Ar>المعيار الرئيسي</Ar> |
 | **Development cost** <Ar>**تكلفة التطوير**</Ar> | Usually not high (shared by many buyers) <Ar>ليست مرتفعة عادةً (يتقاسمها مشترون كثيرون)</Ar> | High (paid by one customer) <Ar>مرتفعة (يدفعها عميل واحد)</Ar> |
 
+<Callout type="warning" title="Check the source" titleAr="راجِع المصدر">
+
+Two rows need care. **Quality** matters for both kinds: a generic product that is unreliable soon loses its market. And the difference Sommerville stresses is **who owns the specification**: for a generic product the developer owns it and decides what changes; for a customized product the customer owns it and decides. The line is also blurring: **ERP** systems such as SAP are generic products that are configured for each customer.
+
+<Ar>صفّان يحتاجان إلى انتباه. **الجودة (Quality)** مهمة في النوعين: فالمنتج العام غير الموثوق يفقد سوقه سريعًا. والفرق الذي يؤكده Sommerville هو **من يملك التوصيف (specification)**: في المنتج العام يملكه المطوّر ويقرر ما يتغير، وفي المنتج المخصص يملكه العميل ويقرر هو. كما أن الحد بين النوعين يزداد غموضًا: فأنظمة **تخطيط موارد المؤسسات (ERP)** مثل SAP منتجات عامة تُهيَّأ لكل عميل.</Ar>
+
+</Callout>
+
 ## The software process
 
 <Ar>عملية البرمجيات</Ar>
+
+<Walkthrough id="se1-process" expect="sequence, specification, development, validation, evolution" />
 
 A **software process** is a sequence of activities that produces a software product. Different systems need different processes, but all of them include four fundamental activities:
 
@@ -145,6 +171,8 @@ A **software process** is a sequence of activities that produces a software prod
 
 <Ar>التحديات والتكاليف</Ar>
 
+<Walkthrough id="se1-challenges" expect="heterogeneity, delivery, trust, costs, no-universal; development=60; testing=40" />
+
 Every new software project faces three key challenges:
 
 <Ar>يواجه كل مشروع برمجي جديد ثلاثة تحديات رئيسية:</Ar>
@@ -159,6 +187,14 @@ Every new software project faces three key challenges:
 
 <Ar>**التكاليف**: نحو **60 %** من التكاليف للتطوير و**40 %** للاختبار. وفي البرمجيات المخصصة، **كثيرًا ما تتجاوز تكلفة التطور (evolution) تكلفة التطوير**. وتعتمد التكاليف على نوع النظام، وعلى الخصائص المطلوبة مثل الأداء والموثوقية، وعلى نموذج التطوير.</Ar>
 
+<Callout type="warning" title="Check the source" titleAr="راجِع المصدر">
+
+The two figures cover different periods. The **60/40 split** is the cost of building the system up to its first delivery. **Evolution** is not part of that 100 %: it starts after delivery and lasts as long as the system is used, so for a long-lived custom system it can cost several times the original development.
+
+<Ar>يغطي الرقمان فترتين مختلفتين. فتوزيع **60/40** هو تكلفة بناء النظام حتى تسليمه أول مرة. أما **التطور (evolution)** فليس داخلًا في هذه النسبة: إذ يبدأ بعد التسليم ويستمر ما دام النظام مستخدمًا، لذلك قد تبلغ تكلفته في نظام مخصص طويل العمر أضعاف تكلفة التطوير الأصلية.</Ar>
+
+</Callout>
+
 <Callout type="note" title="No universal method" titleAr="لا توجد طريقة تناسب الجميع">
   There is no single best method for all systems and companies. The key factor in choosing software engineering methods is the <strong>type of application</strong> being developed.
 
@@ -168,6 +204,8 @@ Every new software project faces three key challenges:
 ## Types of application
 
 <Ar>أنواع التطبيقات</Ar>
+
+<Walkthrough id="se1-app-types" expect="local-remote, embedded, batch, data-collection, others, web" />
 
 | Type <Ar>النوع</Ar> | Description <Ar>الوصف</Ar> | Example <Ar>مثال</Ar> |
 |---|---|---|
@@ -187,6 +225,8 @@ Every new software project faces three key challenges:
 ## Ethics and professional responsibility
 
 <Ar>الأخلاقيات والمسؤولية المهنية</Ar>
+
+<Walkthrough id="se1-ethics" expect="beyond-law, trust-issues, property-issues, code, dilemma, mentcare" />
 
 Software engineering happens within a social and legal framework. Being a professional means behaving **honestly and ethically**, which is more than just obeying the law.
 

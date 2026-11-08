@@ -1,26 +1,21 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import type { WalkthroughId } from "@/lib/walkthroughs";
 import type { SceneProps } from "./scene-set";
+import { loaders as db01 } from "./scenes/databases/lecture-01";
+import { loaders as se01 } from "./scenes/software-engineering/lecture-01";
+import { loaders as se02 } from "./scenes/software-engineering/lecture-02";
+import { loaders as se03 } from "./scenes/software-engineering/lecture-03";
+import { loaders as se04 } from "./scenes/software-engineering/lecture-04";
 
 /*
- * One chunk per walkthrough: a page downloads only the drawings it shows. Keyed by
- * WalkthroughId, so a walkthrough without scenes is a type error.
+ * One chunk per walkthrough: a page downloads only the drawings it shows. Each lecture's
+ * loaders live next to its scenes (scenes/<subject>/lecture-NN.tsx); keyed by WalkthroughId,
+ * so a walkthrough without scenes is a type error.
  */
-const SCENES: Record<WalkthroughId, React.ComponentType<SceneProps>> = {
-  "db-basics": dynamic(() => import("./scenes/databases/basics").then((m) => m.Scene)),
-  "db-files": dynamic(() => import("./scenes/databases/files").then((m) => m.Scene)),
-  "db-approach": dynamic(() => import("./scenes/databases/approach").then((m) => m.Scene)),
-  "db-users": dynamic(() => import("./scenes/databases/users").then((m) => m.Scene)),
-  "db-evolution": dynamic(() => import("./scenes/databases/evolution").then((m) => m.Scene)),
-  "db-query-path": dynamic(() => import("./scenes/databases/query-path").then((m) => m.Scene)),
-  "db-transactions": dynamic(() => import("./scenes/databases/transactions").then((m) => m.Scene)),
-  "db-programs": dynamic(() => import("./scenes/databases/programs").then((m) => m.Scene)),
-};
+const SCENES: Record<WalkthroughId, React.ComponentType<SceneProps>> = { ...db01, ...se01, ...se02, ...se03, ...se04 };
 
 export function WalkthroughScene({ id, panel, control }: SceneProps & { id: string }) {
   const Scene = SCENES[id as WalkthroughId];
   return Scene ? <Scene panel={panel} control={control} /> : null;
 }
-

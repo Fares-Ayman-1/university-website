@@ -37,6 +37,8 @@ bookRefs:
 
 <Ar>المتطلبات وهندسة المتطلبات</Ar>
 
+<Walkthrough id="se4-requirements" expect="requirement, re, complete-consistent, stakeholders, mentcare" />
+
 <Definition term="Requirement" termAr="المتطلب">
   A <strong>function, constraint or other property</strong> that the system must provide to meet the needs of its intended users.
 
@@ -80,12 +82,22 @@ A **stakeholder** is any person or organization affected by the system: **system
 
 <Ar>متطلبات المستخدم ومتطلبات النظام</Ar>
 
+<Walkthrough id="se4-user-system" expect="refine, what-how, readers" />
+
 | | User requirements <Ar>متطلبات المستخدم</Ar> | System requirements <Ar>متطلبات النظام</Ar> |
 |---|---|---|
 | **Form** <Ar>**الشكل**</Ar> | Natural language plus diagrams <Ar>لغة طبيعية مع مخططات</Ar> | A structured, detailed document <Ar>وثيقة منظَّمة ومفصّلة</Ar> |
 | **Content** <Ar>**المحتوى**</Ar> | The **services** the system provides and its operating constraints <Ar>**الخدمات** التي يقدمها النظام وقيود تشغيله</Ar> | Detailed descriptions of functions, services and constraints: what must be implemented <Ar>أوصاف مفصّلة للوظائف والخدمات والقيود: ما يجب تنفيذه</Ar> |
 | **Focus** <Ar>**التركيز**</Ar> | **What** the system should do <Ar>**ماذا** يجب أن يفعل النظام</Ar> | **How** the system will do it <Ar>**كيف** سيفعله النظام</Ar> |
 | **Document** <Ar>**الوثيقة**</Ar> | Business Requirements Specification (BRS) <Ar>وثيقة توصيف متطلبات العمل (BRS)</Ar> | System Requirements Specification (SRS) <Ar>وثيقة توصيف متطلبات النظام (SRS)</Ar> |
+
+<Callout type="warning" title="Check the source" titleAr="راجِع المصدر">
+
+The slides say system requirements specify "**how** the system will achieve those goals technically". Read "how" as how the system must **behave**, in full detail and as seen from outside, not how it is built. Sommerville stresses that system requirements should describe the system's external behaviour and operational constraints, not its design or implementation: the internal "how" (modules, tables, algorithms) is decided in design. Note also that SRS here means the *system* requirements specification, while the SRS of the specification step below is the *software* requirements specification, which holds both the user and the system requirements.
+
+<Ar>تقول الشرائح إن متطلبات النظام تحدد «**كيف** سيحقق النظام تلك الأهداف تقنيًا». اقرأ «كيف» هنا بمعنى كيف يجب أن **يتصرف** النظام، بتفصيل كامل وكما يُرى من الخارج، لا كيف يُبنى. ويؤكد Sommerville أن متطلبات النظام يجب أن تصف السلوك الخارجي للنظام وقيود تشغيله، لا تصميمه أو تنفيذه (implementation): أما «كيف» الداخلية (الوحدات (modules)، والجداول، والخوارزميات) فتُقرَّر في التصميم. ولاحظ أيضًا أن SRS هنا تعني وثيقة توصيف متطلبات **النظام** (system requirements specification)، بينما SRS في خطوة التوصيف أدناه هي وثيقة توصيف متطلبات **البرمجيات** (software requirements specification)، وهي تضم متطلبات المستخدم ومتطلبات النظام معًا.</Ar>
+
+</Callout>
 
 <SlideFigure page={10} caption="One user requirement (monthly drug-cost reports) refined into five detailed system requirements." captionAr="متطلب مستخدم واحد (تقارير شهرية بتكاليف الأدوية) مُفصَّل إلى خمسة متطلبات نظام تفصيلية." />
 
@@ -95,10 +107,20 @@ A **stakeholder** is any person or organization affected by the system: **system
 
 <Ar>المتطلبات الوظيفية وغير الوظيفية</Ar>
 
+<Walkthrough id="se4-fr-nfr" expect="fr-vs-nfr, fr-behaviour, ambiguity, nfr-critical, nfr-types, measurable; limit=5" />
+
 | Functional <Ar>الوظيفية (Functional)</Ar> | Non-functional <Ar>غير الوظيفية (Non-functional)</Ar> |
 |---|---|
 | Something the system must **do** <Ar>شيء يجب أن **يفعله** النظام</Ar> | **How** the system does it: its qualities and constraints <Ar>**كيف** يفعل النظام ذلك: خصائص جودته وقيوده</Ar> |
 | Usually **noun + verb**: "The system prints an invoice." <Ar>عادةً **اسم + فعل**: «يطبع النظام فاتورة».</Ar> | Usually has an **adverb**: "The system prints invoices **quickly**." <Ar>عادةً يتضمن **ظرفًا (adverb)**: «يطبع النظام الفواتير **بسرعة**».</Ar> |
+
+<Callout type="warning" title="Check the source" titleAr="راجِع المصدر">
+
+The noun + verb and adverb patterns are only hints. Many non-functional requirements have no adverb at all: "Users shall authenticate themselves using their health authority identity card" and "The system shall implement patient privacy provisions…" (both in the table below) are non-functional. Ask instead whether the statement adds a **service** the system provides (functional), or **constrains** a service, the whole system, its development or its environment (non-functional). Sommerville adds that the line isn't always sharp: a requirement such as "only authorized users may access the system" looks non-functional, but when worked out in detail it produces functional ones, such as a log-in facility.
+
+<Ar>نمطا «اسم + فعل» و«الظرف» مجرد قرائن. فكثير من المتطلبات غير الوظيفية لا يتضمن أي ظرف: فعبارتا «يجب أن يُثبت المستخدمون هويتهم باستخدام بطاقة الهوية الصادرة عن الهيئة الصحية» و«يجب أن ينفّذ النظام أحكام خصوصية المرضى…» (وكلتاهما في الجدول أدناه) متطلبان غير وظيفيين. لذا اسأل بدلًا من ذلك: هل تضيف العبارة **خدمة** يقدمها النظام (وظيفي)، أم **تقيّد** خدمةً أو النظام كله أو تطويره أو بيئته (غير وظيفي)؟ ويضيف Sommerville أن الحد بينهما ليس حادًّا دائمًا: فمتطلب مثل «لا يدخل النظام إلا المستخدمون المصرَّح لهم» يبدو غير وظيفي، لكنه عند تفصيله يُنتج متطلبات وظيفية، مثل وجود وظيفة لتسجيل الدخول (log-in).</Ar>
+
+</Callout>
 
 ### Functional requirements
 
@@ -162,6 +184,8 @@ Write NFRs **quantitatively**, so they can be objectively **tested**:
 ## The requirements engineering process
 
 <Ar>عملية هندسة المتطلبات</Ar>
+
+<Walkthrough id="se4-re-process" expect="process, elicitation, discovery, srs, validation, techniques" />
 
 RE is **iterative**: its activities are interleaved.
 
@@ -242,6 +266,14 @@ Customers and developers read the document in detail and check its:
 Techniques include **requirements reviews** (systematic manual analysis) and **prototyping** (checking the requirements with an executable model).
 
 <Ar>ومن التقنيات المستخدمة **مراجعات المتطلبات (requirements reviews)** (تحليل يدوي منهجي) و**بناء النماذج الأولية (prototyping)** (فحص المتطلبات باستخدام نموذج قابل للتنفيذ).</Ar>
+
+<Callout type="note" title="Beyond the slides" titleAr="ما بعد الشرائح">
+
+Sommerville adds a fifth check, **verifiability**: every requirement should be written so that a test can show the delivered system meets it, which is exactly why NFRs are made measurable. He also lists a third technique, **test-case generation**: write the tests for each requirement during validation. If a test is hard or impossible to design, the requirement will usually be hard to implement too, and it should be reconsidered.
+
+<Ar>يضيف Sommerville فحصًا خامسًا هو **قابلية التحقق (verifiability)**: يجب أن يُكتب كل متطلب بحيث يستطيع اختبارٌ أن يُثبت أن النظام المُسلَّم يستوفيه، وهذا بالضبط سبب جعل المتطلبات غير الوظيفية قابلة للقياس. ويذكر أيضًا تقنية ثالثة هي **توليد حالات الاختبار (test-case generation)**: كتابة اختبارات كل متطلب أثناء التحقق من الصلاحية. فإذا كان تصميم الاختبار صعبًا أو مستحيلًا، فسيكون تنفيذ المتطلب في الغالب صعبًا أيضًا، ويجب إعادة النظر فيه.</Ar>
+
+</Callout>
 
 <Takeaways>
 

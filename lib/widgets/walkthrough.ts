@@ -47,6 +47,9 @@ export function defineWalkthrough<const I extends string, const P extends readon
 
 export type PanelIdOf<W extends { panels: readonly { id: string }[] }> = W["panels"][number]["id"];
 
+/** The walkthrough ids in a lecture module's `all` list. */
+export type IdsOf<T extends readonly { id: string }[]> = T[number]["id"];
+
 /**
  * Throws (failing the static build) when the definition is malformed or disagrees with the
  * page. `expect` is the panel ids in order, then optionally `; fact=value` clauses:

@@ -2,9 +2,9 @@
 
 import type { queryPath } from "@/lib/walkthroughs/databases/lecture-01";
 import type { PanelIdOf } from "@/lib/widgets/walkthrough";
-import { bi } from "../../../types";
-import { Arrow, Box, Cylinder, Fade, Person, Svg, Text, Token, type Pt } from "../../primitives";
-import { sceneSet } from "../../scene-set";
+import { bi } from "../../../../types";
+import { Arrow, Box, Cylinder, Fade, Person, Svg, Text, Token, type Pt } from "../../../primitives";
+import { sceneSet } from "../../../scene-set";
 
 function DdlDml({ control }: { control: string }) {
   const ddl = control === "ddl";

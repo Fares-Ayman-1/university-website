@@ -720,3 +720,6 @@ export const programs = defineWalkthrough({
     },
   ],
 });
+
+/** Every walkthrough in this lecture, registered in lib/walkthroughs/index.ts. */
+export const all = [basics, files, approach, users, evolution, queryPath, transactions, programs] as const;

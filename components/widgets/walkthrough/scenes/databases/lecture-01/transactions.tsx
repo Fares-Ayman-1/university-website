@@ -3,9 +3,9 @@
 import type { transactions } from "@/lib/walkthroughs/databases/lecture-01";
 import { AMOUNT, START, deposits, total, transfer, type TxEvent } from "@/lib/widgets/transactions";
 import type { PanelIdOf } from "@/lib/widgets/walkthrough";
-import { bi } from "../../../types";
-import { Arrow, Box, Chip, Cylinder, Fade, Mark, Svg, Text, Token, type Tone } from "../../primitives";
-import { sceneSet } from "../../scene-set";
+import { bi } from "../../../../types";
+import { Arrow, Box, Chip, Cylinder, Fade, Mark, Svg, Text, Token, type Tone } from "../../../primitives";
+import { sceneSet } from "../../../scene-set";
 
 const ok = transfer(START, AMOUNT);
 const crashed = transfer(START, AMOUNT, true);
