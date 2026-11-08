@@ -37,6 +37,8 @@ bookRefs:
 
 <Ar>ما الترشيح المكاني؟</Ar>
 
+<Walkthrough id="ip3-spatial-filtering" expect="one-pixel, flip, delta, borders, range; centre=17; corner=12; cropped=3×3" />
+
 Point processing changes each pixel using only its own value. **Neighbourhood processing** computes each output pixel from a small **neighbourhood** around it. Its main tool is the spatial filter: a small sub-image is moved from point to point across the image, and at every position a fixed rule turns the pixels underneath into one output value.
 
 <Ar>تغيّر المعالجة النقطية (point processing) كل بكسل اعتمادًا على قيمته هو فقط. أما **معالجة الجوار (neighbourhood processing)** فتحسب كل بكسل في المخرجات من **جوار** صغير حوله. وأداتها الرئيسية المرشح المكاني: صورة جزئية صغيرة تُنقل من نقطة إلى أخرى عبر الصورة، وفي كل موضع تحوّل قاعدةٌ ثابتة البكسلاتِ الواقعة تحتها إلى قيمة واحدة في المخرجات.</Ar>
@@ -178,6 +180,8 @@ $$
 
 <Ar>مرشح المتوسط</Ar>
 
+<Walkthrough id="ip3-mean-filter" expect="window, size, noise, zero-border; edge=20 40 60" />
+
 The **mean filter** is the simplest low-pass linear filter: each pixel becomes the average of its neighbourhood. An $n \times n$ mask has every coefficient equal to $1/n^2$ ($1/9$ for 3×3, $1/49$ for 7×7), so the coefficients add up to 1:
 
 <Ar>**مرشح المتوسط (mean filter)** أبسط مرشح خطي للتمرير المنخفض: يصبح كل بكسل متوسط جواره. وكل معامل في القناع $n \times n$ يساوي $1/n^2$ ($1/9$ في 3×3، و $1/49$ في 7×7)، فيكون مجموع المعاملات 1:</Ar>
@@ -221,6 +225,8 @@ imshow(out_image)
 
 <Ar>المرشحات القابلة للفصل</Ar>
 
+<Walkthrough id="ip3-separable" expect="outer, passes, cost; direct=121; separable=22" />
+
 Some masks are a column vector times a row vector, so (by associativity) they can be applied as two simpler 1-D filters:
 
 <Ar>بعض الأقنعة حاصل ضرب متجه عمودي في متجه أفقي، لذا يمكن (بفضل الخاصية التجميعية) تطبيقها على هيئة مرشحين أبسط أحاديي البُعد:</Ar>
@@ -237,6 +243,8 @@ For an $N \times N$ mask this cuts the work per pixel from $N^2$ multiplications
 ## Frequency, low-pass and high-pass
 
 <Ar>التردد، والتمرير المنخفض والمرتفع</Ar>
+
+<Walkthrough id="ip3-frequency" expect="profile, low-pass, high-pass, sigma" />
 
 - **Frequency** measures how much the grey values change with distance.
   <Ar>**التردد (frequency)** مقياس لمقدار تغيّر القيم الرمادية مع المسافة.</Ar>
@@ -262,6 +270,8 @@ $$
 ## The Laplacian
 
 <Ar>لابلاسيان</Ar>
+
+<Walkthrough id="ip3-laplacian" expect="second-difference, masks, response, enhance, directional; dark=60; bright=-60; sharpened=20 20 0 140 80" />
 
 The **Laplacian** is a **second-order derivative** operator. Approximating each second derivative by a difference of neighbours gives the mask $h_1$; its negative $h_2$ is used just as often:
 
@@ -344,6 +354,8 @@ $h_2$ compares the rows below and above (**horizontal** edges), $h_3$ the column
 
 <Ar>القناع غير الحاد والترشيح عالي التعزيز</Ar>
 
+<Walkthrough id="ip3-unsharp" expect="difference, add-back, pipeline, high-boost; difference=0 -20 20; boost2=20 0 100" />
+
 **Unsharp masking** (edge enhancement, edge crispening) makes edges slightly sharper and is very popular in industry. It **subtracts a blurred version of the image from the image itself**:
 
 <Ar>**الإبراز بالقناع غير الحاد (unsharp masking)** (ويُسمّى أيضًا تحسين الحواف (edge enhancement)) يجعل الحواف أحدّ قليلًا، وهو شائع جدًا في الصناعة. وفيه **تُطرح نسخة مُضبّبة من الصورة من الصورة نفسها**:</Ar>
@@ -351,6 +363,14 @@ $h_2$ compares the rows below and above (**horizontal** edges), $h_3$ the column
 $$
 f_s(x, y) = f(x, y) - \bar{f}(x, y) \qquad (f_s \text{: sharpened},\ f \text{: original},\ \bar f \text{: blurred})
 $$
+
+<Callout type="warning" title="Check the source" titleAr="راجِع المصدر">
+
+The slides (following the 2nd edition of Gonzalez and Woods) call $f - \bar f$ the sharpened image, but on its own it is a **high-pass** image: every flat region becomes 0 (on our edge it is 0, −20, +20), so displayed alone it looks like an edge map. The sharpening comes from **adding it back** to the original, $g = f + k\,(f - \bar f)$, which is how later editions of Gonzalez define unsharp masking ($k = 1$) and high-boost filtering ($k > 1$); McAndrew gets the same effect by subtracting only a fraction of the blur, as below. So in $f_{hb} = A f - \bar f$ with a blur, $A = 1$ gives only the edges (McAndrew calls it an ordinary high-pass filter), while with the Laplacian form $f_s = f - \nabla^2 f$, $A = 1$ already sharpens.
+
+<Ar>تسمّي الشرائح (متّبعةً الطبعة الثانية من كتاب Gonzalez و Woods) المقدار $f - \bar f$ الصورةَ المُبرَزة، لكنه وحده صورة **تمرير مرتفع (high-pass)**: تصبح فيها كل منطقة مستوية 0 (وعلى حافتنا يساوي 0، −20، +20)، لذا يبدو عند عرضه وحده خريطة حواف. أما الإبراز فيأتي من **إضافته إلى الأصل**: $g = f + k\,(f - \bar f)$، وبهذا تعرّف الطبعات اللاحقة من كتاب Gonzalez القناع غير الحاد (unsharp masking) ($k = 1$) والترشيح عالي التعزيز (high-boost) ($k > 1$)؛ ويصل McAndrew إلى الأثر نفسه بطرح جزء فقط من الصورة المُضبَّبة، كما يلي. لذا ففي $f_{hb} = A f - \bar f$ مع التضبيب لا تعطي $A = 1$ إلا الحواف (ويسمّيه McAndrew مرشح تمرير مرتفع عاديًا)، بينما مع صيغة لابلاسيان $f_s = f - \nabla^2 f$ تُبرز $A = 1$ الصورة فعلًا.</Ar>
+
+</Callout>
 
 **Why it works.** Blurring turns a steep edge into a gentle slope. Just before the edge the blurred copy is brighter than the original, so $f - \bar f$ is negative; just after it, darker, so $f - \bar f$ is positive; in flat areas it is 0. On our edge the mean blur gives 20, 40, 60, so $f - \bar f$ is 0, −20, +20. Adding this to the image pushes the dark side down and the bright side up: the edge gets steeper, with a dip before it and an overshoot after it.
 
@@ -389,6 +409,8 @@ With $A = 0$ the mask is the pure Laplacian $h_2$ (edges only); $A = 1$ is ordin
 ## Non-linear filters
 
 <Ar>المرشحات غير الخطية</Ar>
+
+<Walkthrough id="ip3-nonlinear" expect="sort, rank, trimmed, salt-pepper; sorted=1 4 5 7 8 10 12 15 70; median=8; mean=14.67; max=70; min=1; trimmed=8.4" />
 
 A **non-linear** filter sorts or selects the values under the mask instead of taking a weighted sum:
 

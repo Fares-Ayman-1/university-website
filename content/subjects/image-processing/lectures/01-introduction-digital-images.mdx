@@ -37,6 +37,8 @@ bookRefs:
 
 <Ar>الصور واللقطات</Ar>
 
+<Walkthrough id="ip1-images" expect="subjects, structure" />
+
 Human beings are predominantly **visual** creatures: we rely on sight more than on any other sense. In this course an **image** is a single picture that represents something: a person, people or animals, an outdoor scene, a microphotograph of an electronic component, or the result of medical imaging. Even when the picture is not immediately recognizable, it is not just a random blur. It has structure, and that structure is what we want to improve or to analyse.
 
 <Ar>البشر كائنات **بصرية** في المقام الأول: فنحن نعتمد على البصر أكثر من أي حاسة أخرى. و**الصورة (image)** في هذا المقرر لقطة واحدة تمثّل شيئًا ما: شخصًا، أو مجموعة من الناس أو الحيوانات، أو مشهدًا خارجيًا، أو صورة مجهرية لمكوّن إلكتروني، أو نتيجة تصوير طبي. وحتى إن لم تكن الصورة مفهومة من النظرة الأولى، فهي ليست مجرد تشويش عشوائي. بل لها بنية، وهذه البنية هي ما نريد تحسينه أو تحليله.</Ar>
@@ -44,6 +46,8 @@ Human beings are predominantly **visual** creatures: we rely on sight more than 
 ## Image processing and computer vision
 
 <Ar>معالجة الصور والرؤية الحاسوبية</Ar>
+
+<Walkthrough id="ip1-ip-vs-cv" expect="outputs, chain, human-computer" />
 
 Image processing is usually described as a **subset of computer vision**. A computer vision system uses image processing algorithms as building blocks while it tries to emulate vision at human scale. The two differ in their **goal**, and therefore in their **output**:
 
@@ -73,6 +77,8 @@ In human vision the **eye** forms the image and the **brain** interprets it (mou
 
 <Ar>مجالات الاستخدام</Ar>
 
+<Walkthrough id="ip1-applications" expect="cctv, roads, health-industry" />
+
 | Field <Ar>المجال</Ar> | What vision does there <Ar>دور الرؤية فيه</Ar> |
 |---|---|
 | Surveillance (CCTV) <Ar>المراقبة (CCTV)</Ar> | Real-time monitoring, counting people, detecting crowds and **abnormal behaviour** <Ar>المراقبة في الزمن الحقيقي، وعدّ الأشخاص، واكتشاف الحشود و**السلوك غير الطبيعي**</Ar> |
@@ -84,6 +90,8 @@ In human vision the **eye** forms the image and the **brain** interprets it (mou
 ## What is image processing?
 
 <Ar>ما معالجة الصور؟</Ar>
+
+<Walkthrough id="ip1-what-is-ip" expect="two-goals, for-humans, for-machines" />
 
 <Definition term="Image processing" termAr="معالجة الصور (Image Processing)">
   Changing the nature of an image in order to either <strong>(1) improve its pictorial information for human interpretation</strong>, or <strong>(2) render it more suitable for autonomous machine perception</strong>.
@@ -110,6 +118,8 @@ The two goals can pull in different directions. A person prefers a sharp, clean,
 ## Image acquisition and sampling
 
 <Ar>التقاط الصورة والمعاينة</Ar>
+
+<Walkthrough id="ip1-acquisition" expect="digitize, undersample, nyquist, aliasing, sensors; spacing=1.05" />
 
 A real scene, and a photograph of it, is **continuous**: brightness changes smoothly from point to point. A computer can only store a finite list of numbers, so the image is digitized in two ways:
 
@@ -146,6 +156,14 @@ For the function above, the fastest component is $\sin(3x)$, which completes one
 
 <Ar>في الدالة السابقة، المركّبة الأسرع هي $\sin(3x)$، التي تُكمل دورة واحدة كل $2\pi/3$ وحدة. وعيّنتان لكل دورة تعنيان أن المسافة بين العيّنات يجب ألا تتجاوز $\pi/3 \approx 1.05$.</Ar>
 
+<Callout type="warning" title="Check the source" titleAr="راجِع المصدر">
+
+The slides state the criterion as "at least twice". Gonzalez and Woods state the sampling theorem with a strict inequality: the sampling rate must **exceed** twice the highest frequency, and sampling at exactly twice that frequency (the Nyquist rate) can fail. The function above shows why. Sampled every $\pi/3$ starting at $x = 0$, every sample falls on a zero of $\sin(3x)$, so the samples are exactly those of $\sin(x)$ and the ripple is lost. Any spacing smaller than $\pi/3$ captures it.
+
+<Ar>تصوغ الشرائح المعيار بعبارة «ضعف أعلى تردد على الأقل». أما Gonzalez و Woods فيصوغان مبرهنة المعاينة (sampling theorem) بمتباينة صارمة: يجب أن **يتجاوز** معدل المعاينة ضعف أعلى تردد، والمعاينة بضعف هذا التردد تمامًا (معدل نايكويست Nyquist rate) قد تفشل. والدالة السابقة توضح السبب: فإذا عُويِنت كل $\pi/3$ بدءًا من $x = 0$ وقعت كل عيّنة عند صفر من أصفار $\sin(3x)$، فتكون العيّنات هي نفسها عيّنات $\sin(x)$ ويضيع التموج. وأي مسافة أصغر من $\pi/3$ تلتقطه.</Ar>
+
+</Callout>
+
 <SlideFigure page={24} caption="Sampling y = sin(x) + (1/3)sin(3x): with too few points the shape is lost (undersampling); with more points the curve, ripples included, is clear." captionAr="معاينة الدالة y = sin(x) + (1/3)sin(3x): مع نقاط قليلة جدًا يضيع الشكل (معاينة ناقصة)، ومع نقاط أكثر يتضح المنحنى بتموجاته." />
 
 In an image, **frequency** means how fast brightness changes across space: fine stripes, sharp edges and texture are high frequencies. Undersampling an image causes **aliasing**: fine patterns are replaced by false, coarser patterns that were never in the scene.
@@ -179,6 +197,8 @@ Visible light is only a narrow band of the **electromagnetic spectrum**. The fol
 ## Images as functions and pixels
 
 <Ar>الصورة دالةً ومصفوفةً من البكسلات</Ar>
+
+<Walkthrough id="ip1-pixels" expect="matrix, function, neighbourhood, operations; centre=113" />
 
 <Definition term="Digital image" termAr="الصورة الرقمية">
   An image is a two-dimensional function <strong>f(x, y)</strong>, where x and y are spatial coordinates and the value of f at (x, y) is the <strong>intensity</strong> or <strong>grey level</strong> of the image at that point. When x, y and the values of f are all <strong>finite, discrete</strong> quantities, the image is a <strong>digital image</strong>. Its elements, each with a location and a value, are called picture elements, image elements, pels, or most often <strong>pixels</strong>.
@@ -230,6 +250,8 @@ Operations that use only the pixel's own value are **point operations** (Lecture
 
 <Ar>تخزين الصور: الصور النقطية مقابل الرسوم المتجهية</Ar>
 
+<Walkthrough id="ip1-raster-vector" expect="zoom, instructions, trade-offs" />
+
 Computers store images with two different techniques.
 
 <Ar>تخزّن الحواسيب الصور بأسلوبين مختلفين.</Ar>
@@ -274,6 +296,8 @@ Image processing works on **raster** images: every operation in this course is a
 
 <Ar>جوانب معالجة الصور</Ar>
 
+<Walkthrough id="ip1-aspects" expect="enhancement, restoration, segmentation" />
+
 <Grid cols={3}>
   <Card title="Image enhancement" titleAr="تحسين الصورة (enhancement)" tag="suit a purpose">
     Processing an image so that the result is <strong>more suitable for a particular application</strong>: sharpening or de-blurring an out-of-focus image, highlighting edges, improving contrast or brightening, removing noise.
@@ -301,6 +325,8 @@ Image processing works on **raster** images: every operation in this course is a
 ## An image processing task
 
 <Ar>مهمة معالجة الصور</Ar>
+
+<Walkthrough id="ip1-task" expect="steps, segment-coins, erode-count" />
 
 A typical task, such as reading a car's number plate, passes through these steps:
 
@@ -351,6 +377,8 @@ A real system follows the same pattern. An **automatic fingerprint identificatio
 ## Types of digital images
 
 <Ar>أنواع الصور الرقمية</Ar>
+
+<Walkthrough id="ip1-types" expect="binary, grayscale, rgb, indexed; levels8=256; colors=16777216; index=6; row=7" />
 
 Raster images come in four basic types, which differ in what a pixel value means and how many bits it needs.
 
@@ -415,6 +443,8 @@ An **indexed image** stores, for each pixel, an **index** into a **color map** (
 
 <Ar>الدقة وعمق اللون وحجم الملف</Ar>
 
+<Walkthrough id="ip1-file-size" expect="resolution, color-depth, file-size; truecolor=9000000; indexed=3000000" />
+
 **Resolution.** Just as audio is sampled in time, an image is sampled in space, so we must decide how many pixels to record for each square or linear inch. This scanning rate is the **resolution**. If it is high enough, the human eye cannot see the discontinuity between pixels in the reproduced image. Resolution is also quoted as a pixel count, such as $1920 \times 1080$ for Full HD.
 
 <Ar>**الدقة.** كما يُعايَن الصوت في الزمن، تُعايَن الصورة في المكان، ولذلك يجب أن نقرر عدد البكسلات التي نسجّلها لكل بوصة مربعة أو طولية. ومعدل المسح هذا هو **الدقة (resolution)**. فإذا كانت عالية بما يكفي، لا تستطيع العين البشرية رؤية الانقطاع بين البكسلات في الصورة المُعاد إنتاجها. وتُذكر الدقة أيضًا بعدد البكسلات، مثل $1920 \times 1080$ في Full HD.</Ar>
@@ -466,6 +496,8 @@ For example, a high-quality digital camera uses almost three million pixels for 
 ## Converting between image types
 
 <Ar>التحويل بين أنواع الصور</Ar>
+
+<Walkthrough id="ip1-convert" expect="functions, rgb-to-gray, threshold, sizes; sum=179; gray=60; binary=000/111/101; rgb=589824; double=4718592" />
 
 ### In MATLAB
 

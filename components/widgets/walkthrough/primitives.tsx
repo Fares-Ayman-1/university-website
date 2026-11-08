@@ -399,3 +399,223 @@ export function Table({
     </>
   );
 }
+
+/* ---------- Images and plots (image processing) ---------- */
+
+/** A number as the worked examples print it: integers plain, otherwise up to 2 decimals. */
+export const fmt = (n: number) => (Number.isInteger(n) ? String(n) : n.toFixed(2).replace(/0+$/, "").replace(/\.$/, ""));
+
+/**
+ * A grid of pixels, each filled with its own grey level (0 → black, `max` → white), or with
+ * `colors` for a colour image. Values are printed in black or white, whichever reads on that
+ * pixel. Rows appear `stagger` ms apart; `outline` rings chosen pixels in a line tone.
+ */
+export function Pixels({
+  x,
+  y,
+  values,
+  cell = 26,
+  max = 255,
+  show = "values",
+  colors,
+  outline,
+  d = 0,
+  stagger = 0,
+  size,
+}: {
+  x: number;
+  y: number;
+  values: readonly (readonly number[])[];
+  cell?: number;
+  /** The value drawn as white: 255 for 8-bit, 1 for binary or normalized images */
+  max?: number;
+  show?: "values" | "none";
+  /** CSS colours per pixel (colour images); overrides the grey fill */
+  colors?: readonly (readonly string[])[];
+  /** Ring a pixel (row, column) in this line tone */
+  outline?: (r: number, c: number) => LineTone | undefined;
+  d?: number;
+  stagger?: number;
+  size?: number;
+}) {
+  const fontSize = size ?? Math.max(8, Math.min(12, cell * 0.42));
+  const grey = (v: number) => Math.round(Math.min(Math.max(v / max, 0), 1) * 255);
+  const rings: { r: number; c: number; tone: LineTone }[] = [];
+  values.forEach((row, r) =>
+    row.forEach((_, c) => {
+      const tone = outline?.(r, c);
+      if (tone) rings.push({ r, c, tone });
+    }),
+  );
+  return (
+    <>
+      {values.map((row, r) => (
+        <In key={r} d={d + r * stagger}>
+          {row.map((v, c) => {
+            const g = grey(v);
+            const fill = colors?.[r]?.[c] ?? `rgb(${g},${g},${g})`;
+            const light = colors ? false : g > 140;
+            const cx = x + c * cell;
+            const cy = y + r * cell;
+            return (
+              <g key={c}>
+                <rect x={cx} y={cy} width={cell} height={cell} style={{ fill, stroke: "var(--border-strong)", strokeWidth: 0.6 }} />
+                {show === "values" ? (
+                  <text
+                    x={cx + cell / 2}
+                    y={cy + cell / 2}
+                    textAnchor="middle"
+                    dominantBaseline="central"
+                    fontSize={fontSize}
+                    fontWeight={600}
+                    className={w.mono}
+                    style={{ fill: light ? "#111" : "#fff" }}
+                  >
+                    {fmt(v)}
+                  </text>
+                ) : null}
+              </g>
+            );
+          })}
+        </In>
+      ))}
+      {rings.length ? (
+        <Fade d={d + values.length * stagger + 200}>
+          {rings.map(({ r, c, tone }) => (
+            <rect key={`${r}-${c}`} x={x + c * cell + 1} y={y + r * cell + 1} width={cell - 2} height={cell - 2} className={`${w.line} ${w[tone]}`} style={{ strokeWidth: 2.4 }} />
+          ))}
+        </Fade>
+      ) : null}
+    </>
+  );
+}
+
+/**
+ * A bar chart or histogram on a baseline: bars rise one after another. `labels` go under
+ * the bars (pass "" to skip one); `showValues` prints each value on its bar.
+ */
+export function Bars({
+  x,
+  y,
+  w: bw,
+  h,
+  values,
+  labels,
+  max,
+  tone = "gold",
+  barTone,
+  showValues,
+  d = 0,
+  stagger = 70,
+  gap = 0.25,
+}: {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  values: readonly number[];
+  labels?: readonly string[];
+  max?: number;
+  tone?: Tone;
+  /** Tone of one bar, by index; undefined for `tone` */
+  barTone?: (i: number) => Tone | undefined;
+  showValues?: boolean;
+  d?: number;
+  stagger?: number;
+  gap?: number;
+}) {
+  const top = max ?? Math.max(...values, 1);
+  const slot = bw / values.length;
+  const barW = slot * (1 - gap);
+  return (
+    <>
+      <Arrow pts={[[x - 4, y + h], [x + bw + 4, y + h]]} tone="faint" head={false} d={d} dur={300} />
+      {values.map((v, i) => {
+        const bh = (v / top) * h;
+        const bx = x + i * slot + (slot - barW) / 2;
+        return (
+          <In key={i} d={d + 150 + i * stagger}>
+            {bh > 0 ? <rect x={bx} y={y + h - bh} width={barW} height={bh} rx={Math.min(3, barW / 4)} className={`${w.shape} ${w[barTone?.(i) ?? tone]}`} /> : null}
+            {showValues ? (
+              <text x={bx + barW / 2} y={y + h - bh - 8} textAnchor="middle" dominantBaseline="central" fontSize={10.5} fontWeight={700} className={`${w.t} ${w.heading} ${w.mono}`}>
+                {fmt(v)}
+              </text>
+            ) : null}
+            {labels?.[i] ? (
+              <text x={bx + barW / 2} y={y + h + 11} textAnchor="middle" dominantBaseline="central" fontSize={10} fontWeight={600} className={`${w.t} ${w.muted} ${w.mono}`}>
+                {labels[i]}
+              </text>
+            ) : null}
+          </In>
+        );
+      })}
+    </>
+  );
+}
+
+/** Where a plot is drawn and which data it spans. */
+export type PlotBox = { x: number; y: number; w: number; h: number; domain?: readonly [number, number]; range?: readonly [number, number] };
+
+/** The SVG point of a data point (dx, dy) in a plot box: use it to place marks and labels on a Curve. */
+export function plotAt(box: PlotBox, dx: number, dy: number): Pt {
+  const [d0, d1] = box.domain ?? [0, 1];
+  const [r0, r1] = box.range ?? [0, 1];
+  return [box.x + ((dx - d0) / (d1 - d0)) * box.w, box.y + box.h - ((dy - r0) / (r1 - r0)) * box.h];
+}
+
+/**
+ * A plotted line that draws itself in: either data `points` or a function `fn` sampled over
+ * the domain. With `axes`, both axes are drawn first (labels optional). Several Curves can
+ * share one PlotBox; draw the axes only once.
+ */
+export function Curve({
+  box,
+  points,
+  fn,
+  samples = 80,
+  tone = "gold",
+  axes,
+  xLabel,
+  yLabel,
+  dashed,
+  width = 2.2,
+  d = 0,
+  dur = 900,
+}: {
+  box: PlotBox;
+  points?: readonly (readonly [number, number])[];
+  fn?: (x: number) => number;
+  samples?: number;
+  tone?: LineTone;
+  axes?: boolean;
+  xLabel?: L;
+  yLabel?: L;
+  dashed?: boolean;
+  width?: number;
+  d?: number;
+  dur?: number;
+}) {
+  const [d0, d1] = box.domain ?? [0, 1];
+  const data = points ?? (fn ? Array.from({ length: samples + 1 }, (_, i) => d0 + ((d1 - d0) * i) / samples).map((t) => [t, fn(t)] as const) : []);
+  const path = data.map(([dx, dy], i) => `${i ? "L" : "M"}${plotAt(box, dx, dy).map((n) => n.toFixed(1)).join(",")}`).join(" ");
+  const { x, y, w: bw, h } = box;
+  return (
+    <>
+      {axes ? (
+        <>
+          <Arrow pts={[[x, y + h], [x + bw + 10, y + h]]} tone="faint" d={d} dur={300} />
+          <Arrow pts={[[x, y + h], [x, y - 10]]} tone="faint" d={d} dur={300} />
+          {xLabel !== undefined ? <Text x={x + bw + 10} y={y + h + 14} text={xLabel} anchor="end" size={10.5} tone="muted" d={d + 200} /> : null}
+          {yLabel !== undefined ? <Text x={x + 6} y={y - 12} text={yLabel} anchor="start" size={10.5} tone="muted" d={d + 200} /> : null}
+        </>
+      ) : null}
+      {dashed ? (
+        <Fade d={d + (axes ? 300 : 0)}>
+          <path d={path} className={`${w.line} ${w[tone]} ${w.dashed}`} style={{ strokeWidth: width }} />
+        </Fade>
+      ) : (
+        <path d={path} pathLength={1} className={`${w.line} ${w[tone]} ${w.draw}`} style={{ ...delay(d + (axes ? 300 : 0), dur), strokeWidth: width }} />
+      )}
+    </>
+  );
+}

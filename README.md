@@ -105,7 +105,7 @@ Create `content/subjects/<slug>/subject.json` (copy an existing one), and set `m
 **Walkthroughs** are the step-through visuals placed under a page's headings. Each lecture keeps its own files, so lectures can be written in parallel without touching shared code:
 
 1. **Text:** `lib/walkthroughs/<subject>/lecture-NN.ts` defines each walkthrough with `defineWalkthrough`: panel ids, pills, headings, points, and an optional toggle whose options can add points (`pointsFor`). All of it is typed `Bi`. The file ends with `export const all = [...] as const`, and `lib/walkthroughs/index.ts` spreads that list in once per lecture.
-2. **Drawings:** `components/widgets/walkthrough/scenes/<subject>/lecture-NN/<name>.tsx` holds one scene per panel. Scenes are built from the SVG pieces in `walkthrough/primitives.tsx` (`Box`, `Cylinder`, `Doc`, `Person`, `Arrow`, `Token`, `Table`, `Chip`, `Mark`), each with a `d` delay so the drawing builds up in order.
+2. **Drawings:** `components/widgets/walkthrough/scenes/<subject>/lecture-NN/<name>.tsx` holds one scene per panel. Scenes are built from the SVG pieces in `walkthrough/primitives.tsx` (`Box`, `Cylinder`, `Doc`, `Person`, `Arrow`, `Token`, `Table`, `Chip`, `Mark`, and for images `Pixels`, `Bars` and `Curve`), each with a `d` delay so the drawing builds up in order.
 3. **Loaders:** `scenes/<subject>/lecture-NN.tsx` exports `loaders`, one lazy `dynamic()` import per walkthrough, and `walkthrough/scenes.tsx` spreads it in once per lecture.
 
 TypeScript enforces two things: every walkthrough has scenes, and every panel has exactly one drawing. In the MDX, `expect` lists the panel ids in order and can name numbers the scenes compute (`; drop=500`). The build fails when either disagrees with the page.

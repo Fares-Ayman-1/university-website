@@ -37,6 +37,8 @@ bookRefs:
 
 <Ar>لماذا تحويل فورييه؟</Ar>
 
+<Walkthrough id="ip5-why" expect="decompose, image, isolate" />
+
 The Fourier transform, named after Jean Baptiste Joseph Fourier, **decomposes a signal into sinusoidal components**. For an image, the input is the image in ordinary (spatial) space and the output represents it in **frequency space**: each point of the Fourier image stands for one particular frequency contained in the original.
 
 <Ar>يُفكّك تحويل فورييه (Fourier transform)، المسمّى باسم Jean Baptiste Joseph Fourier، **الإشارةَ إلى مركبات جيبية (sinusoidal components)**. وفي حالة الصورة، يكون الدخل هو الصورة في الفضاء العادي (المكاني)، ويمثّلها الخرج في **فضاء الترددات**: فكل نقطة في صورة فورييه تمثّل ترددًا (frequency) معيّنًا موجودًا في الصورة الأصلية.</Ar>
@@ -57,6 +59,8 @@ Why bother?
 ## Intuition: sums of sines
 
 <Ar>الفكرة: مجاميع الدوال الجيبية</Ar>
+
+<Walkthrough id="ip5-sines" expect="three, square, edges" />
 
 A **periodic function** can be written as a sum of sines and cosines of different amplitudes and frequencies. The wavy curve on slide 4 is exactly three sines:
 
@@ -84,6 +88,8 @@ The link to images: sharp edges are like the square wave's corners and need many
 
 <Ar>تحويل فورييه المتصل أحادي البُعد</Ar>
 
+<Walkthrough id="ip5-continuous" expect="pair, anatomy, euler, measure" />
+
 A function $f(x)$ is a **linear combination of simple periodic patterns** $e^{i 2\pi x u}$, each weighted by $F(u)$:
 
 <Ar>الدالة $f(x)$ **تركيب خطي من أنماط دورية بسيطة** $e^{i 2\pi x u}$، يوزن كلٌّ منها بالقيمة $F(u)$:</Ar>
@@ -101,6 +107,8 @@ Here $x$ is the image coordinate, $u$ the **spatial frequency** (whole cycles pe
 ## The 1-D discrete Fourier transform (DFT)
 
 <Ar>تحويل فورييه المتقطع أحادي البُعد (DFT)</Ar>
+
+<Walkthrough id="ip5-dft" expect="samples, omega, matrix, terms, inverse, fft; F0=2.5; F1=-0.5+0.5i; F2=-0.5; F3=-0.5-0.5i; row1=-2+2i; f0=1; b0=45; b1=-4.50+12.36i; fft1024=10240" />
 
 Images are **discrete**: a row has a finite number of samples, so a finite number of sinusoids is enough to describe it exactly. For example, the eight samples $1, 1, 1, 1, -1, -1, -1, -1$, a discrete square wave, are exactly the sum of two sampled sinusoids: one making a single cycle over the eight samples and one making three.
 
@@ -204,6 +212,8 @@ a = np.fft.ifft(b).real                # back to 1, 2, ..., 9
 
 <Ar>خواص تحويل DFT أحادي البُعد</Ar>
 
+<Walkthrough id="ip5-properties" expect="linearity, shifting, conjugate, wrap-index, linear-circular, theorem; X0=36; X4=4; X1=-9.6569+4i; X7=-9.6569-4i; x1X0=4; z=[66, 68, 66, 60]; lin=[5, 16, 34, 60, 61, 52, 32]; Z=[260, -8i, 4, 8i]; XY=[260, -8i, 4, 8i]" />
+
 ### Linearity
 
 <Ar>الخطية</Ar>
@@ -293,9 +303,19 @@ fft(a').*fft(b')       % 260, -8i, 4, 8i   the same
 ifft(fft(a).*fft(b))   % 66 68 66 60: a convolution computed through the DFT
 ```
 
+<Callout type="warning" title="Check the source" titleAr="راجِع المصدر">
+
+Slide 18 writes `fft(cconv(a,b)')`. Without its third argument, `cconv` returns `length(a) + length(b) - 1` = 7 values, the **linear** convolution $[5, 16, 34, 60, 61, 52, 32]$, and the 7-point DFT of those is not the four values printed on the slide. The length `4` in `cconv(a, b, 4)` above is what makes the convolution circular: it wraps the last three values onto the first three, giving $[66, 68, 66, 60]$.
+
+<Ar>تكتب الشريحة 18 الأمر `fft(cconv(a,b)')`. ودون الوسيط الثالث تعيد `cconv` عددًا من القيم قدره `length(a) + length(b) - 1` = 7، وهي الالتفاف **الخطي (linear convolution)** $[5, 16, 34, 60, 61, 52, 32]$، وتحويل DFT ذو النقاط السبع لهذه القيم ليس القيم الأربع المطبوعة في الشريحة. فالطول `4` في `cconv(a, b, 4)` أعلاه هو ما يجعل الالتفاف دائريًا: إذ يلفّ القيم الثلاث الأخيرة على القيم الثلاث الأولى، فنحصل على $[66, 68, 66, 60]$.</Ar>
+
+</Callout>
+
 ## Magnitude, phase and the DC coefficient
 
 <Ar>المقدار والطور والمركبة المستمرة</Ar>
+
+<Walkthrough id="ip5-mag-phase" expect="polar, spectra, dc; phase1=135; naive1=-45; F0=2.5; sum=10" />
 
 In general each DFT coefficient is **complex**, with a magnitude and a phase:
 
@@ -309,6 +329,14 @@ $$
 F_u = \lvert F_u \rvert\, e^{i\phi}
 $$
 
+<Callout type="warning" title="Check the source" titleAr="راجِع المصدر">
+
+The phase formula has to be read as the **four-quadrant** arctangent, which is how Gonzalez computes it (MATLAB's `atan2(imag, real)`, or `angle`). Taken literally, $\tan^{-1}(F_{\text{imag}}/F_{\text{real}})$ only returns angles between $-90^\circ$ and $90^\circ$, so it is wrong whenever the real part is negative. In the worked example, $F_1 = -0.5 + 0.5i$ gives $\tan^{-1}(-1) = -45^\circ$, but $F_1$ lies in the second quadrant and its phase is $135^\circ$; for $F_2 = -0.5$ the formula gives $0^\circ$ instead of $180^\circ$.
+
+<Ar>يجب أن تُقرأ صيغة الطور على أنها دالة الظل العكسية **رباعية الأرباع (four-quadrant arctangent)**، وهكذا يحسبها Gonzalez (الدالة `atan2(imag, real)` في MATLAB، أو `angle`). فإذا أُخذت $\tan^{-1}(F_{\text{imag}}/F_{\text{real}})$ حرفيًا فإنها لا تعطي إلا زوايا بين $-90^\circ$ و $90^\circ$، لذا تخطئ كلما كان الجزء الحقيقي سالبًا. ففي المثال المحلول تعطي $F_1 = -0.5 + 0.5i$ القيمة $\tan^{-1}(-1) = -45^\circ$، لكن $F_1$ تقع في الربع الثاني وطورها $135^\circ$؛ ومع $F_2 = -0.5$ تعطي الصيغة $0^\circ$ بدلًا من $180^\circ$.</Ar>
+
+</Callout>
+
 The **DC coefficient** $F_0$ uses $\exp(0) = 1$ for every term, so it is the **average** of the input (with MATLAB's convention, the sum):
 
 <Ar>تستخدم **المركبة المستمرة (DC coefficient)** $F_0$ القيمة $\exp(0) = 1$ لكل حد، لذا فهي **متوسط** المدخلات (أو مجموعها في اصطلاح MATLAB):</Ar>
@@ -320,6 +348,8 @@ $$
 ## Some transform pairs
 
 <Ar>بعض أزواج التحويل</Ar>
+
+<Walkthrough id="ip5-pairs" expect="impulse-constant, shift, scaling, box-sinc; impulse=1/4 [1, 1, 1, 1]; constant=[1, 0, 0, 0]" />
 
 | Property <Ar>الخاصية</Ar> | Spatial domain <Ar>المجال المكاني</Ar> | Frequency domain <Ar>المجال الترددي</Ar> |
 |---|---|---|
@@ -343,6 +373,8 @@ $$
 ## The 2-D DFT
 
 <Ar>تحويل DFT ثنائي البُعد</Ar>
+
+<Walkthrough id="ip5-2d" expect="separable, centre, log, mag-phase" />
 
 For an $M \times N$ image the transform runs over both coordinates, with frequencies $u$ (down the rows) and $v$ (along the columns):
 
@@ -379,6 +411,8 @@ The magnitude tells how strongly each frequency is present; the **phase** tells 
 ## Filtering in the frequency domain
 
 <Ar>الترشيح في المجال الترددي</Ar>
+
+<Walkthrough id="ip5-filtering" expect="pipeline, mask, cost, wrap" />
 
 The convolution theorem holds in 2-D: convolving an image with a kernel in space equals **multiplying their transforms**. So a filter can be applied by transforming the image, multiplying by the filter's transform $H(u, v)$, and transforming back:
 

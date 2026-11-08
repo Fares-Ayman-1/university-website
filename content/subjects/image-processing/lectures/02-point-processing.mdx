@@ -37,6 +37,8 @@ bookRefs:
 
 <Ar>الفئات الثلاث لعمليات الصور</Ar>
 
+<Walkthrough id="ip2-classes" expect="inputs, transform, uses" />
+
 Image processing operations can be divided into three classes according to the **information required** to compute a new pixel value:
 
 <Ar>يمكن تقسيم عمليات معالجة الصور إلى ثلاث فئات بحسب **المعلومات المطلوبة** لحساب القيمة الجديدة للبكسل:</Ar>
@@ -56,6 +58,8 @@ A **transform** represents the pixel values in some other but equivalent form, w
 ## Point operations
 
 <Ar>العمليات النقطية</Ar>
+
+<Walkthrough id="ip2-point-ops" expect="function, lookup, family" />
 
 <Definition term="Point operation" termAr="العملية النقطية (point operation)">
   In a digital image a point is a pixel. A point operation transforms each pixel's value as a <strong>function of its value alone</strong>, $y = f(x)$, independently of the values of its neighbours.
@@ -83,6 +87,8 @@ Because the output depends only on the input value, an 8-bit point operation can
 ## Arithmetic operations
 
 <Ar>العمليات الحسابية</Ar>
+
+<Walkthrough id="ip2-arithmetic" expect="add, multiply, lost, overflow; clipped=8; plus-first=148; minus-last=122; lift-last=253; wrap=12; wrap200=72" />
 
 The simplest functions add or subtract a constant $C$, or multiply by one:
 
@@ -226,6 +232,8 @@ print(x + 128)          # wrong: wraps around (140 + 128 -> 12)
 
 <Ar>المتمِّم</Ar>
 
+<Walkthrough id="ip2-complements" expect="negative, types, solarize; neg-first=235; neg-last=5; solar60=195" />
+
 The **complement** of a grayscale image is its photographic **negative**: dark becomes light and light becomes dark.
 
 <Ar>**المتمِّم (complement)** للصورة الرمادية هو **صورتها السالبة (negative)** بالمعنى الفوتوغرافي: يصبح الداكن فاتحًا والفاتح داكنًا.</Ar>
@@ -269,6 +277,8 @@ Interesting special effects come from complementing **only part** of the grey ra
 ## Histograms
 
 <Ar>المدرجات التكرارية</Ar>
+
+<Walkthrough id="ip2-histograms" expect="count, normalized, shape; hist=0 0 3 6 5 2 0 0; pixels=16" />
 
 <Definition term="Histogram" termAr="المدرج التكراري (histogram)">
   The histogram of a grayscale image is a graph indicating the <strong>number of times each grey level occurs</strong> in the image, that is, the frequency of each brightness value. For an image with $L$ grey levels it is a one-dimensional array of $L$ elements, where element $k$ holds $n_k$, the number of pixels with grey level $k$.
@@ -318,6 +328,8 @@ In MATLAB, `imhist(p)` draws the histogram. The **shape** of the histogram tells
 ## Histogram (contrast) stretching
 
 <Ar>مط المدرج التكراري (مط التباين)</Ar>
+
+<Walkthrough id="ip2-stretching" expect="narrow, mapping, result, general, imadjust; pixels=360; stretched=2 5 8 11 14; slope=3" />
 
 A low-contrast image uses only part of the grey scale. **Contrast stretching** spreads the occupied grey levels out over a wider range with a **piecewise linear** mapping function. The slides use a 16-level image ($i = 0, \dots, 15$) of 360 pixels:
 
@@ -378,6 +390,8 @@ imshow(pa), figure, imhist(pa), axis tight
 
 <Ar>تصحيح غاما</Ar>
 
+<Walkthrough id="ip2-gamma" expect="curves, dark-range, tire, large; half=0 90 128 181 221 255; square=0 4 16 64 145 255" />
+
 `imadjust` takes a fourth argument, **gamma** ($\gamma$). Instead of a straight line between the two points it uses a power curve:
 
 <Ar>تأخذ الدالة `imadjust` وسيطًا (argument) رابعًا هو **غاما** ($\gamma$). فبدلًا من خط مستقيم بين النقطتين تستخدم منحنى قوة (power-law):</Ar>
@@ -432,6 +446,8 @@ print(np.round(out * 255).astype(np.uint8))  # [[0 90 128] [181 221 255]]
 
 <Ar>المط الخطي المجزأ</Ar>
 
+<Walkthrough id="ip2-piecewise" expect="pieces, example16, lut; a=0 64 192 255; b=0 20 235 255; slope-mid=3" />
+
 More control comes from a function made of several straight pieces through chosen points $(a_1, b_1), (a_2, b_2), \dots$. Between two neighbouring points $a_i \le x \le a_{i+1}$ the output is
 
 <Ar>يأتي مزيد من التحكم من دالة مكوّنة من عدة قطع مستقيمة تمر بنقاط مختارة $(a_1, b_1), (a_2, b_2), \dots$. فبين نقطتين متجاورتين $a_i \le x \le a_{i+1}$ يكون الناتج</Ar>
@@ -459,6 +475,8 @@ out = np.round(np.interp(img, [0, 64, 192, 255], [0, 20, 235, 255])).astype(np.u
 ## Histogram equalization
 
 <Ar>تسوية المدرج التكراري</Ar>
+
+<Walkthrough id="ip2-equalization" expect="idea, cdf, table, result, small, compare; scaled9=3.54; j9=4; levels=1 4 8 10 13 15; small-map=1 4 6 7; linear-map=0 2 5 7; g-row1=4 4 6 1" />
 
 The trouble with all the stretching methods above is that they **require user input**: someone must choose $a$, $b$, $\gamma$ or the breakpoints. **Histogram equalization** is an entirely **automatic** procedure. The idea is to change the histogram into a **uniform** one, where every bar has the same height, that is, every grey level occurs with the same frequency. In practice this is generally not possible exactly, but the result is still very good.
 
@@ -575,6 +593,14 @@ def equalize(img, L=256):
 f = np.array([[3, 3, 4, 2], [3, 4, 4, 5], [2, 3, 4, 3], [4, 2, 3, 5]])
 print(equalize(f, L=8))     # [[4 4 6 1] [4 6 6 7] [1 4 6 4] [6 1 4 7]]
 ```
+
+<Callout type="warning" title="Check the source" titleAr="راجِع المصدر">
+
+By hand, as with MATLAB's `round`, a value exactly halfway between two integers is rounded up: 2.5 becomes 3. NumPy's `np.round` rounds it to the nearest **even** integer instead (2.5 becomes 2, 0.5 becomes 0), so if a scaled cumulative sum lands exactly halfway, `equalize` gives one level less than the hand method; `np.floor(x + 0.5)` matches it. The same applies to `point_op` when an odd pixel is divided by 2. MATLAB's `histeq` does not apply the formula directly at all: it chooses the mapping whose cumulative histogram comes closest to that of a flat histogram with 64 levels by default, so its output need not match a hand calculation.
+
+<Ar>في الحساب اليدوي، كما في الدالة `round` في MATLAB، تُقرَّب القيمة الواقعة في منتصف المسافة بين عددين صحيحين إلى أعلى: فتصبح 2.5 مساوية 3. أما الدالة `np.round` في NumPy فتقرّبها إلى أقرب عدد صحيح **زوجي** (فتصبح 2.5 مساوية 2، و0.5 مساوية 0)، فإذا وقع مجموع تراكمي بعد تحجيمه في المنتصف تمامًا أعطت الدالة `equalize` مستوى أقل بواحد من الطريقة اليدوية؛ أما `np.floor(x + 0.5)` فتطابقها. والأمر نفسه في `point_op` عند قسمة بكسل قيمته فردية على 2. أما الدالة `histeq` في MATLAB فلا تطبّق الصيغة مباشرة أصلًا: إذ تختار التحويل الذي يقترب مدرجه التراكمي أكثر ما يمكن من المدرج التراكمي لمدرج مسطّح ذي 64 مستوى افتراضيًا، لذلك قد لا يطابق ناتجها الحساب اليدوي.</Ar>
+
+</Callout>
 
 <SlideFigure page={25} caption="pout.tif after histeq: the grey levels now spread over almost the whole range and the image has much better contrast. The bars are spaced out because histeq targets 64 levels by default." captionAr="الصورة pout.tif بعد histeq: انتشرت مستويات الرمادي على المدى كله تقريبًا وصار تباين الصورة أفضل بكثير. والأعمدة متباعدة لأن histeq تستهدف 64 مستوى افتراضيًا." />
 
