@@ -1,19 +1,19 @@
 {
   "title": "AI Lecture Drill",
-  "kicker": "Artificial Intelligence · Lectures 1–3",
+  "kicker": "Artificial Intelligence · Lectures 1–4",
   "heading": "Lecture Drill",
-  "lede": "Practice questions written from your three lecture PDFs and the course book, one tab per lecture. Pick an answer to see at once whether it is right. For classification questions, sort every item into its category. Each answer has a short explanation and the slide or book page it comes from.",
-  "foot": "These are practice questions written from your lecture slides and the AI301 course book (marked \"Book\"). They are not past exam papers. A classification question counts as correct only when every item is in the right category. Progress is saved in this browser only.",
+  "lede": "Practice questions written from your lecture PDFs and the course book, one tab per lecture. Lecture 4 has no slides, so its questions come from the book's Chapter 4. Pick an answer to see at once whether it is right. Each answer has a short explanation and the slide or book page it comes from.",
+  "foot": "These are practice questions written from your lecture slides and the AI301 course book (marked \"Book\"). They are not past exam papers. Progress is saved in this browser only.",
   "banksLabel": "Lectures",
   "unit": "lectures",
   "order": 1,
-  "source": "AI Lec 1-3 slides and 3rd_Artificial_Intelligence_Book.pdf (Ch 1-3)",
+  "source": "AI Lec 1-3 slides and 3rd_Artificial_Intelligence_Book.pdf (Ch 1-4)",
   "banks": [
     {
       "id": "lecture-1",
       "tag": "Lecture 1",
       "name": "Introduction to AI and Intelligent Agents",
-      "scope": "45 questions · 7 classification",
+      "scope": "38 questions",
       "questions": [
         {
           "kind": "mcq",
@@ -44,53 +44,6 @@
           "ref": "Book p. 7 · Four AI approaches"
         },
         {
-          "kind": "sort",
-          "group": "Lecture 1",
-          "text": "Classify each description under the AI approach it belongs to.",
-          "categories": [
-            "Acting humanly",
-            "Thinking humanly",
-            "Thinking rationally",
-            "Acting rationally"
-          ],
-          "items": [
-            {
-              "text": "The Turing test approach",
-              "category": 0
-            },
-            {
-              "text": "Proposed by Alan Turing in 1950 to avoid the vague question 'Can a machine think?'",
-              "category": 0
-            },
-            {
-              "text": "The cognitive modeling approach",
-              "category": 1
-            },
-            {
-              "text": "Studies the mind through introspection, psychological experiments and brain imaging",
-              "category": 1
-            },
-            {
-              "text": "The 'laws of thought' approach",
-              "category": 2
-            },
-            {
-              "text": "Began with Aristotle's attempt to codify 'right thinking'",
-              "category": 2
-            },
-            {
-              "text": "The rational agent approach",
-              "category": 3
-            },
-            {
-              "text": "Acts to achieve the best outcome or, when uncertain, the best expected outcome",
-              "category": 3
-            }
-          ],
-          "why": "Acting humanly is the Turing test; thinking humanly is cognitive modeling via introspection, experiments and brain imaging. Thinking rationally is the laws-of-thought approach from Aristotle; acting rationally is the rational agent approach.",
-          "ref": "Book pp. 7-9 · Four AI approaches"
-        },
-        {
           "kind": "mcq",
           "group": "Lecture 1",
           "text": "For the Turing test a machine needs natural language processing, knowledge representation, automated reasoning and machine learning. What else is needed to pass the total Turing test?",
@@ -103,52 +56,6 @@
           "answer": 3,
           "why": "For the total Turing test a robot also needs computer vision and speech recognition to perceive the world, and robotics to manipulate objects and move about.",
           "ref": "Book p. 8 · Total Turing test"
-        },
-        {
-          "kind": "sort",
-          "group": "Lecture 1",
-          "text": "Classify each question under the foundation discipline of AI that asks it.",
-          "categories": [
-            "Philosophy",
-            "Mathematics",
-            "Economics"
-          ],
-          "items": [
-            {
-              "text": "Where does knowledge come from?",
-              "category": 0
-            },
-            {
-              "text": "How does the mind arise from a physical brain?",
-              "category": 0
-            },
-            {
-              "text": "How does knowledge lead to action?",
-              "category": 0
-            },
-            {
-              "text": "What can be computed?",
-              "category": 1
-            },
-            {
-              "text": "How do we reason with uncertain information?",
-              "category": 1
-            },
-            {
-              "text": "How should we make decisions in accordance with our preferences?",
-              "category": 2
-            },
-            {
-              "text": "How should we decide when others may not cooperate?",
-              "category": 2
-            },
-            {
-              "text": "How should we plan when the payoff may be far in the future?",
-              "category": 2
-            }
-          ],
-          "why": "Philosophy asks where knowledge comes from, how the mind arises and how knowledge leads to action. Mathematics asks what can be computed and how to reason with uncertainty. Economics asks about preferences, uncooperative others and distant payoffs.",
-          "ref": "Book p. 10 · Foundations of AI"
         },
         {
           "kind": "mcq",
@@ -403,53 +310,6 @@
           "ref": "Slide 11 · PEAS task environment"
         },
         {
-          "kind": "sort",
-          "group": "Lecture 1",
-          "text": "Classify each item from the automated taxi's PEAS description.",
-          "categories": [
-            "Performance measure",
-            "Environment",
-            "Actuators",
-            "Sensors"
-          ],
-          "items": [
-            {
-              "text": "Safety",
-              "category": 0
-            },
-            {
-              "text": "Legality",
-              "category": 0
-            },
-            {
-              "text": "Traffic",
-              "category": 1
-            },
-            {
-              "text": "Weather",
-              "category": 1
-            },
-            {
-              "text": "Brake",
-              "category": 2
-            },
-            {
-              "text": "Speaker/display",
-              "category": 2
-            },
-            {
-              "text": "Keyboard",
-              "category": 3
-            },
-            {
-              "text": "GPS",
-              "category": 3
-            }
-          ],
-          "why": "Safety and legality judge the taxi, and traffic and weather are what it drives in. The brake and speaker/display act on the world, while the keyboard and GPS bring information in, so they are sensors.",
-          "ref": "Slide 12 · PEAS for automated taxi"
-        },
-        {
           "kind": "mcq",
           "group": "Lecture 1",
           "text": "Which of these is listed as an actuator of the internet shopping agent?",
@@ -476,52 +336,6 @@
           "answer": 3,
           "why": "The performance measure is price, quality, appropriateness and efficiency. Following URLs is an actuator, WWW sites are its environment, and scripts are part of the HTML pages it senses.",
           "ref": "Slide 14 · Internet shopping agent"
-        },
-        {
-          "kind": "sort",
-          "group": "Lecture 1",
-          "text": "Using the slides' environment types table, classify each entry.",
-          "categories": [
-            "Yes",
-            "No",
-            "Semi or Partly"
-          ],
-          "items": [
-            {
-              "text": "Solitaire: observable?",
-              "category": 0
-            },
-            {
-              "text": "Solitaire: deterministic?",
-              "category": 0
-            },
-            {
-              "text": "Internet shopping: discrete?",
-              "category": 0
-            },
-            {
-              "text": "Backgammon: deterministic?",
-              "category": 1
-            },
-            {
-              "text": "Backgammon: single-agent?",
-              "category": 1
-            },
-            {
-              "text": "Internet shopping: observable?",
-              "category": 1
-            },
-            {
-              "text": "Internet shopping: static?",
-              "category": 2
-            },
-            {
-              "text": "Internet shopping: deterministic?",
-              "category": 2
-            }
-          ],
-          "why": "In the table, Solitaire is Yes for observable and deterministic, and shopping is Yes for discrete. Backgammon is No for deterministic and single-agent, shopping is No for observable, and shopping is Partly deterministic and Semi static.",
-          "ref": "Slide 21 · Environment types table"
         },
         {
           "kind": "mcq",
@@ -564,51 +378,6 @@
           "answer": 3,
           "why": "Taxi is No in all six rows. Backgammon is Yes for observable and discrete, and internet shopping is Yes for discrete and single-agent.",
           "ref": "Slide 21 · Environment types table"
-        },
-        {
-          "kind": "sort",
-          "group": "Lecture 1",
-          "text": "The slides describe what the real world is like. Classify each property.",
-          "categories": [
-            "True of the real world",
-            "Not true of the real world"
-          ],
-          "items": [
-            {
-              "text": "Partially observable",
-              "category": 0
-            },
-            {
-              "text": "Stochastic",
-              "category": 0
-            },
-            {
-              "text": "Sequential",
-              "category": 0
-            },
-            {
-              "text": "Continuous",
-              "category": 0
-            },
-            {
-              "text": "Deterministic",
-              "category": 1
-            },
-            {
-              "text": "Episodic",
-              "category": 1
-            },
-            {
-              "text": "Static",
-              "category": 1
-            },
-            {
-              "text": "Single-agent",
-              "category": 1
-            }
-          ],
-          "why": "The slide says the real world is partially observable, stochastic, sequential, dynamic, continuous and multi-agent. So deterministic, episodic, static and single-agent do not describe it.",
-          "ref": "Slide 21 · The real world"
         },
         {
           "kind": "mcq",
@@ -709,53 +478,6 @@
           "ref": "Book p. 41 · Simple reflex agents"
         },
         {
-          "kind": "sort",
-          "group": "Lecture 1",
-          "text": "Each box or oval below first appears in the diagram of which agent type?",
-          "categories": [
-            "Simple reflex",
-            "Reflex with state",
-            "Goal-based",
-            "Utility-based"
-          ],
-          "items": [
-            {
-              "text": "Condition-action rules",
-              "category": 0
-            },
-            {
-              "text": "What the world is like now",
-              "category": 0
-            },
-            {
-              "text": "State",
-              "category": 1
-            },
-            {
-              "text": "How the world evolves",
-              "category": 1
-            },
-            {
-              "text": "Goals",
-              "category": 2
-            },
-            {
-              "text": "What it will be like if I do action A",
-              "category": 2
-            },
-            {
-              "text": "Utility",
-              "category": 3
-            },
-            {
-              "text": "How happy I will be in such a state",
-              "category": 3
-            }
-          ],
-          "why": "Simple reflex uses condition-action rules on what the world is like now. Reflex with state adds State and how the world evolves. Goal-based adds Goals and what happens after action A; utility-based adds Utility and how happy a state is.",
-          "ref": "Slides 23-28 · Agent type diagrams"
-        },
-        {
           "kind": "mcq",
           "group": "Lecture 1",
           "text": "In the vacuum agent with state, each call first increments `last_A` and `last_B`. The agent is in square A, the square is clean, and after incrementing, `last_B` is 2. What does it return?",
@@ -812,53 +534,6 @@
           "ref": "Slide 29 · Learning agents"
         },
         {
-          "kind": "sort",
-          "group": "Lecture 1",
-          "text": "Classify each description under the learning agent component it describes.",
-          "categories": [
-            "Critic",
-            "Learning element",
-            "Performance element",
-            "Problem generator"
-          ],
-          "items": [
-            {
-              "text": "Tells how well the agent is doing with respect to a fixed performance standard",
-              "category": 0
-            },
-            {
-              "text": "Needed because the percepts themselves give no indication of success",
-              "category": 0
-            },
-            {
-              "text": "Responsible for making improvements",
-              "category": 1
-            },
-            {
-              "text": "Decides how the performance element should be modified to do better",
-              "category": 1
-            },
-            {
-              "text": "Responsible for selecting external actions",
-              "category": 2
-            },
-            {
-              "text": "What was previously considered the entire agent",
-              "category": 2
-            },
-            {
-              "text": "Suggests actions that lead to new and informative experiences",
-              "category": 3
-            },
-            {
-              "text": "Proposes exploratory actions that may be suboptimal in the short run",
-              "category": 3
-            }
-          ],
-          "why": "The critic judges the agent against a fixed performance standard, since percepts alone do not show success. The learning element makes improvements, the performance element selects actions, and the problem generator suggests exploration.",
-          "ref": "Book pp. 50-51 · Learning agent components"
-        },
-        {
           "kind": "mcq",
           "group": "Lecture 1",
           "text": "Which statement matches the summary slide?",
@@ -878,7 +553,7 @@
       "id": "lecture-2",
       "tag": "Lecture 2",
       "name": "Problem Solving and Search",
-      "scope": "36 questions · 6 classification",
+      "scope": "30 questions",
       "questions": [
         {
           "kind": "mcq",
@@ -907,53 +582,6 @@
           "answer": 3,
           "why": "The formulate-and-search block sits inside \"if seq is empty\". Otherwise the agent just takes the next action with RECOMMENDATION and shortens seq with REMAINDER. A percept arrives on every call, so it is not the trigger.",
           "ref": "Slide 3 · Problem-solving agent"
-        },
-        {
-          "kind": "sort",
-          "group": "Lecture 2",
-          "text": "Classify each step of the Romania trip into the phase of the book's four-phase problem-solving process.",
-          "categories": [
-            "Goal formulation",
-            "Problem formulation",
-            "Search",
-            "Execution"
-          ],
-          "items": [
-            {
-              "text": "The agent adopts the goal of reaching Bucharest",
-              "category": 0
-            },
-            {
-              "text": "Limits the objectives and actions to be considered",
-              "category": 0
-            },
-            {
-              "text": "Describes the states and actions needed to reach the goal",
-              "category": 1
-            },
-            {
-              "text": "Models travel between adjacent cities, where only the current city changes",
-              "category": 1
-            },
-            {
-              "text": "Simulates sequences of actions in the model before acting",
-              "category": 2
-            },
-            {
-              "text": "May explore many unsuccessful sequences before finding a solution",
-              "category": 2
-            },
-            {
-              "text": "Carries out the solution's actions one by one",
-              "category": 3
-            },
-            {
-              "text": "Follows a fixed action sequence in a fully observable, deterministic, known world",
-              "category": 3
-            }
-          ],
-          "why": "The four phases run in order: adopt a goal, build an abstract model of the states and actions, simulate action sequences until a solution is found, then execute that solution step by step.",
-          "ref": "Book pp. 55-56 · Problem-solving process"
         },
         {
           "kind": "mcq",
@@ -1024,53 +652,6 @@
           "answer": 1,
           "why": "The solution visits four cities but needs only three drives: Arad to Sibiu, Sibiu to Fagaras and Fagaras to Bucharest. Counting one per action gives 3; 450 would be the cost in road distance.",
           "ref": "Slide 11 · Path cost"
-        },
-        {
-          "kind": "sort",
-          "group": "Lecture 2",
-          "text": "Classify each description into the problem type it belongs to.",
-          "categories": [
-            "Single-state problem",
-            "Conformant problem",
-            "Contingency problem",
-            "Exploration problem"
-          ],
-          "items": [
-            {
-              "text": "Deterministic, fully observable",
-              "category": 0
-            },
-            {
-              "text": "Agent knows exactly which state it will be in",
-              "category": 0
-            },
-            {
-              "text": "Non-observable",
-              "category": 1
-            },
-            {
-              "text": "Agent may have no idea where it is; solution (if any) is a sequence",
-              "category": 1
-            },
-            {
-              "text": "Nondeterministic and/or partially observable",
-              "category": 2
-            },
-            {
-              "text": "Solution is a contingent plan or a policy",
-              "category": 2
-            },
-            {
-              "text": "Unknown state space",
-              "category": 3
-            },
-            {
-              "text": "Also called an \"online\" problem",
-              "category": 3
-            }
-          ],
-          "why": "Single-state problems are deterministic and fully observable; conformant ones are non-observable; contingency problems are nondeterministic or partially observable and rely on percepts; exploration problems have an unknown state space.",
-          "ref": "Slide 6 · Problem types"
         },
         {
           "kind": "mcq",
@@ -1169,49 +750,6 @@
           "answer": 3,
           "why": "The agent cannot sense the right square until it gets there, and Suck can dirty a clean carpet. So it moves Right and sucks only if it perceives dirt. Sucking a clean square, or a fixed sequence, can leave dirt behind.",
           "ref": "Slide 10 · Contingency vacuum world"
-        },
-        {
-          "kind": "sort",
-          "group": "Lecture 2",
-          "text": "Classify each example into the part of the single-state problem formulation it belongs to.",
-          "categories": [
-            "Initial state",
-            "Successor function (actions)",
-            "Goal test",
-            "Path cost"
-          ],
-          "items": [
-            {
-              "text": "\"at Arad\"",
-              "category": 0
-            },
-            {
-              "text": "S(Arad) = {⟨Arad → Zerind, Zerind⟩, ...}",
-              "category": 1
-            },
-            {
-              "text": "Vacuum world: Left, Right, Suck, NoOp",
-              "category": 1
-            },
-            {
-              "text": "x = \"at Bucharest\"",
-              "category": 2
-            },
-            {
-              "text": "Vacuum world: no dirt",
-              "category": 2
-            },
-            {
-              "text": "Sum of distances",
-              "category": 3
-            },
-            {
-              "text": "Number of actions executed",
-              "category": 3
-            }
-          ],
-          "why": "A problem has four items: the initial state (at Arad), a successor function giving the actions and their results, a goal test such as x = \"at Bucharest\" or no dirt, and an additive path cost such as total distance.",
-          "ref": "Slides 11-16 · Problem formulation"
         },
         {
           "kind": "mcq",
@@ -1396,51 +934,6 @@
           "ref": "Slide 17 · Vacuum world path cost"
         },
         {
-          "kind": "sort",
-          "group": "Lecture 2",
-          "text": "In the vacuum world state space graph, classify each state by what the Suck action does there.",
-          "categories": [
-            "Suck leads to a different state",
-            "Suck is a self-loop (no change)"
-          ],
-          "items": [
-            {
-              "text": "#1: robot in left square, both squares dirty",
-              "category": 0
-            },
-            {
-              "text": "#2: robot in right square, both squares dirty",
-              "category": 0
-            },
-            {
-              "text": "#3: robot in left square, only the left square dirty",
-              "category": 0
-            },
-            {
-              "text": "#6: robot in right square, only the right square dirty",
-              "category": 0
-            },
-            {
-              "text": "#4: robot in right square, only the left square dirty",
-              "category": 1
-            },
-            {
-              "text": "#5: robot in left square, only the right square dirty",
-              "category": 1
-            },
-            {
-              "text": "#7: robot in left square, both squares clean",
-              "category": 1
-            },
-            {
-              "text": "#8: robot in right square, both squares clean",
-              "category": 1
-            }
-          ],
-          "why": "In the graph, Suck changes the state only when the robot's own square is dirty, because it cleans that square. When the robot's square is already clean, Suck is drawn as a self-loop back to the same state.",
-          "ref": "Slide 13 · Vacuum state space graph"
-        },
-        {
           "kind": "mcq",
           "group": "Lecture 2",
           "text": "The 8-puzzle start state on the slides is 7 2 4 / 5 _ 6 / 8 3 1, with the blank (_) in the centre. If the action \"move blank up\" is applied, which tile moves?",
@@ -1481,94 +974,6 @@
           "answer": 0,
           "why": "The note says the optimal solution of the n-puzzle family is NP-hard. The puzzle ignores intermediate tile positions and costs 1 per move, and real-valued coordinates belong to robotic assembly.",
           "ref": "Slide 22 · n-puzzle note"
-        },
-        {
-          "kind": "sort",
-          "group": "Lecture 2",
-          "text": "Classify each part of the 8-puzzle and robotic assembly formulations.",
-          "categories": [
-            "States",
-            "Actions",
-            "Goal test",
-            "Path cost"
-          ],
-          "items": [
-            {
-              "text": "8-puzzle: integer locations of tiles",
-              "category": 0
-            },
-            {
-              "text": "Assembly: real-valued coordinates of robot joint angles and object parts",
-              "category": 0
-            },
-            {
-              "text": "8-puzzle: move blank left, right, up, down",
-              "category": 1
-            },
-            {
-              "text": "Assembly: continuous motions of robot joints",
-              "category": 1
-            },
-            {
-              "text": "8-puzzle: equals the given goal state",
-              "category": 2
-            },
-            {
-              "text": "Assembly: complete assembly with no robot included",
-              "category": 2
-            },
-            {
-              "text": "8-puzzle: 1 per move",
-              "category": 3
-            },
-            {
-              "text": "Assembly: time to execute",
-              "category": 3
-            }
-          ],
-          "why": "Both examples use the same four parts. The 8-puzzle has integer tile locations, blank moves, a given goal state and 1 per move; robotic assembly has real-valued joint angles, continuous joint motions, a finished assembly and time.",
-          "ref": "Slides 22-23 · Example formulations"
-        },
-        {
-          "kind": "sort",
-          "group": "Lecture 2",
-          "text": "Classify each item as part of a standardized problem or a real-world problem, as the book groups them.",
-          "categories": [
-            "Standardized problem",
-            "Real-world problem"
-          ],
-          "items": [
-            {
-              "text": "Grid world: the agent moves to adjacent square cells",
-              "category": 0
-            },
-            {
-              "text": "Obstacles (walls) prevent entry into some cells",
-              "category": 0
-            },
-            {
-              "text": "Vacuum world where every cell must end up clean",
-              "category": 0
-            },
-            {
-              "text": "Route finding between cities or airports",
-              "category": 1
-            },
-            {
-              "text": "States hold a location plus the current time",
-              "category": 1
-            },
-            {
-              "text": "Action costs may include money, waiting and comfort",
-              "category": 1
-            },
-            {
-              "text": "Used for airline planning and network routing",
-              "category": 1
-            }
-          ],
-          "why": "The book's standardized problems are the grid world and its vacuum world example. Route finding is a real-world problem: its states add the current time, its costs include money and comfort, and it is used in airline planning.",
-          "ref": "Book pp. 58-59 · Example problems"
         }
       ]
     },
@@ -1576,7 +981,7 @@
       "id": "lecture-3",
       "tag": "Lecture 3",
       "name": "Uninformed Search Strategies",
-      "scope": "46 questions · 8 classification",
+      "scope": "38 questions",
       "questions": [
         {
           "kind": "mcq",
@@ -1649,51 +1054,6 @@
           "ref": "Slide 7 · General tree search"
         },
         {
-          "kind": "sort",
-          "group": "Lecture 3",
-          "text": "Classify each description as belonging to a state or to a node.",
-          "categories": [
-            "State",
-            "Node"
-          ],
-          "items": [
-            {
-              "text": "A (representation of a) physical configuration",
-              "category": 0
-            },
-            {
-              "text": "What the goal test checks",
-              "category": 0
-            },
-            {
-              "text": "Can appear many times in one search tree via different paths",
-              "category": 0
-            },
-            {
-              "text": "Has a parent and children",
-              "category": 1
-            },
-            {
-              "text": "Has a depth",
-              "category": 1
-            },
-            {
-              "text": "Has a path cost g(x)",
-              "category": 1
-            },
-            {
-              "text": "Records the action that generated it",
-              "category": 1
-            },
-            {
-              "text": "A data structure created by the EXPAND function",
-              "category": 1
-            }
-          ],
-          "why": "A state is a physical configuration, and states do not have parents, children, depth or path cost. A node is a search-tree data structure built by EXPAND that stores those fields and points to a state, so one state can sit in many nodes.",
-          "ref": "Slides 6-7 · States vs nodes"
-        },
-        {
           "kind": "mcq",
           "group": "Lecture 3",
           "text": "Following the ...... pointers back from a goal node recovers the whole path from the initial state, which is the solution.",
@@ -1750,53 +1110,6 @@
           "ref": "Slide 8 · Search strategies"
         },
         {
-          "kind": "sort",
-          "group": "Lecture 3",
-          "text": "Classify each statement by the evaluation criterion it describes.",
-          "categories": [
-            "Completeness",
-            "Time complexity",
-            "Space complexity",
-            "Optimality"
-          ],
-          "items": [
-            {
-              "text": "Does it always find a solution if one exists?",
-              "category": 0
-            },
-            {
-              "text": "In an infinite space with no solution, the search can never stop with certainty",
-              "category": 0
-            },
-            {
-              "text": "Number of nodes generated or expanded",
-              "category": 1
-            },
-            {
-              "text": "IDS generates (d+1)b^0 + db^1 + (d-1)b^2 + ... + b^d nodes",
-              "category": 1
-            },
-            {
-              "text": "Maximum number of nodes in memory",
-              "category": 2
-            },
-            {
-              "text": "DFS needs only O(bm), i.e., linear space",
-              "category": 2
-            },
-            {
-              "text": "Does it always find a least-cost solution?",
-              "category": 3
-            },
-            {
-              "text": "UCS expands nodes in increasing order of g(n)",
-              "category": 3
-            }
-          ],
-          "why": "Completeness asks whether a solution is always found, time counts nodes generated or expanded, space is the most nodes held in memory, and optimality asks whether the least-cost solution is found. UCS is optimal because it expands in increasing g(n).",
-          "ref": "Slide 8, Book p. 65 · Evaluation criteria"
-        },
-        {
           "kind": "mcq",
           "group": "Lecture 3",
           "text": "What makes a search strategy uninformed?",
@@ -1823,53 +1136,6 @@
           "answer": 2,
           "why": "The slides list breadth-first, uniform-cost, depth-first, depth-limited and iterative deepening search. Greedy best-first search uses a heuristic h(n) that estimates the distance to the goal, so it is an informed strategy.",
           "ref": "Slide 9 · Uninformed search strategies"
-        },
-        {
-          "kind": "sort",
-          "group": "Lecture 3",
-          "text": "Classify each description by the search strategy it describes.",
-          "categories": [
-            "Breadth-first",
-            "Uniform-cost",
-            "Depth-first",
-            "Iterative deepening"
-          ],
-          "items": [
-            {
-              "text": "Expand the shallowest unexpanded node",
-              "category": 0
-            },
-            {
-              "text": "Explores every node at depth d before any node at depth d+1",
-              "category": 0
-            },
-            {
-              "text": "Expand the least-cost unexpanded node",
-              "category": 1
-            },
-            {
-              "text": "Spreads out in waves of uniform path cost",
-              "category": 1
-            },
-            {
-              "text": "Expand the deepest unexpanded node",
-              "category": 2
-            },
-            {
-              "text": "Can be written as best-first search with f(n) = -depth(n)",
-              "category": 2
-            },
-            {
-              "text": "Runs depth-limited search with limits 0, 1, 2, ... until the result is not cutoff",
-              "category": 3
-            },
-            {
-              "text": "Combines the benefits of depth-first and breadth-first search",
-              "category": 3
-            }
-          ],
-          "why": "BFS expands the shallowest node, UCS the least-cost node and DFS the deepest node. IDS repeats depth-limited search with growing limits, so it keeps the modest memory of DFS while gaining the benefits of BFS.",
-          "ref": "Slides 10-38, Book pp. 66-73 · Strategy definitions"
         },
         {
           "kind": "mcq",
@@ -2026,48 +1292,6 @@
           "ref": "Book pp. 68-69 · Uniform-cost example"
         },
         {
-          "kind": "sort",
-          "group": "Lecture 3",
-          "text": "Classify each strategy or description by the fringe (frontier) data structure it uses.",
-          "categories": [
-            "FIFO queue",
-            "LIFO queue (stack)",
-            "Queue ordered by path cost"
-          ],
-          "items": [
-            {
-              "text": "Breadth-first search",
-              "category": 0
-            },
-            {
-              "text": "New successors go at the end",
-              "category": 0
-            },
-            {
-              "text": "Depth-first search",
-              "category": 1
-            },
-            {
-              "text": "Successors are put at the front",
-              "category": 1
-            },
-            {
-              "text": "Each depth-limited search inside IDS",
-              "category": 1
-            },
-            {
-              "text": "Uniform-cost search",
-              "category": 2
-            },
-            {
-              "text": "The node with the lowest g(n) is removed first",
-              "category": 2
-            }
-          ],
-          "why": "BFS uses a FIFO queue, so new successors go at the end. DFS and its depth-limited form, which IDS runs, use a LIFO queue that puts successors at the front. UCS keeps the fringe ordered by path cost, lowest first.",
-          "ref": "Slides 10-20 · Fringe implementations"
-        },
-        {
           "kind": "mcq",
           "group": "Lecture 3",
           "text": "Depth-first search fails in infinite-depth spaces and in spaces with loops. What modification do the slides suggest?",
@@ -2180,51 +1404,6 @@
           "ref": "Book p. 74 · Depth-limited search results"
         },
         {
-          "kind": "sort",
-          "group": "Lecture 3",
-          "text": "Using the slides, classify each case as complete or not complete.",
-          "categories": [
-            "Complete",
-            "Not complete"
-          ],
-          "items": [
-            {
-              "text": "BFS on a problem where every state has at most 4 successors",
-              "category": 0
-            },
-            {
-              "text": "Uniform-cost search where every step cost is at least 1",
-              "category": 0
-            },
-            {
-              "text": "Iterative deepening search",
-              "category": 0
-            },
-            {
-              "text": "Depth-limited search with l = 6 when the shallowest goal is at d = 4",
-              "category": 0
-            },
-            {
-              "text": "DFS that avoids repeated states along the path, in a finite space",
-              "category": 0
-            },
-            {
-              "text": "Depth-limited search with l = 3 when the shallowest goal is at d = 5",
-              "category": 1
-            },
-            {
-              "text": "Depth-first search in a state space with infinite-depth paths",
-              "category": 1
-            },
-            {
-              "text": "Depth-first search in a space with loops and no repeated-state check",
-              "category": 1
-            }
-          ],
-          "why": "BFS (finite b), UCS (step cost ≥ ε) and IDS are complete, and DLS is complete only if l ≥ d. Plain DFS fails in infinite-depth spaces and spaces with loops, but avoiding repeated states along the path makes it complete in finite spaces.",
-          "ref": "Slides 33, 48 · Summary of algorithms"
-        },
-        {
           "kind": "mcq",
           "group": "Lecture 3",
           "text": "Root A has children B and C; B has children D and E; C has children F and G. The goal is E. Children are taken in alphabetical order. Which sequence lists the nodes that iterative deepening search goal-tests, iteration by iteration?",
@@ -2309,80 +1488,6 @@
           "ref": "Slide 48 · Summary of algorithms"
         },
         {
-          "kind": "sort",
-          "group": "Lecture 3",
-          "text": "Using the space row of the slides' summary table, classify each strategy's memory use.",
-          "categories": [
-            "Linear space",
-            "Exponential space"
-          ],
-          "items": [
-            {
-              "text": "Breadth-first search",
-              "category": 1
-            },
-            {
-              "text": "Uniform-cost search",
-              "category": 1
-            },
-            {
-              "text": "Depth-first search",
-              "category": 0
-            },
-            {
-              "text": "Depth-limited search",
-              "category": 0
-            },
-            {
-              "text": "Iterative deepening search",
-              "category": 0
-            }
-          ],
-          "why": "DFS needs bm, DLS bl and IDS bd, so each grows only linearly with depth. BFS needs b^(d+1) because it keeps every node in memory, and UCS needs b^⌈C*/ε⌉; both grow exponentially.",
-          "ref": "Slide 48 · Summary of algorithms"
-        },
-        {
-          "kind": "sort",
-          "group": "Lecture 3",
-          "text": "Using the slides' conditions, classify each case as optimal or not optimal.",
-          "categories": [
-            "Optimal",
-            "Not optimal"
-          ],
-          "items": [
-            {
-              "text": "BFS when every step costs 1",
-              "category": 0
-            },
-            {
-              "text": "Uniform-cost search",
-              "category": 0
-            },
-            {
-              "text": "Uniform-cost search when all step costs are equal",
-              "category": 0
-            },
-            {
-              "text": "Iterative deepening search when every step costs 1",
-              "category": 0
-            },
-            {
-              "text": "BFS when step costs differ from step to step",
-              "category": 1
-            },
-            {
-              "text": "Depth-first search",
-              "category": 1
-            },
-            {
-              "text": "Depth-limited search",
-              "category": 1
-            }
-          ],
-          "why": "UCS is always optimal because it expands nodes in increasing g(n). BFS and IDS are optimal only when each step costs 1. DFS and DLS are not optimal: they return the first solution found, regardless of its cost.",
-          "ref": "Slide 48 · Summary of algorithms"
-        },
-        {
           "kind": "mcq",
           "group": "Lecture 3",
           "text": "In the slides' repeated-states example, states A, B, C and D form a chain, and each state has two different actions leading to the next state. If tree search does not detect repeated states, how many nodes for state D appear in the search tree?",
@@ -2397,43 +1502,6 @@
           "ref": "Slide 49 · Repeated states"
         },
         {
-          "kind": "sort",
-          "group": "Lecture 3",
-          "text": "Classify each statement as describing tree search or graph search.",
-          "categories": [
-            "Tree search",
-            "Graph search"
-          ],
-          "items": [
-            {
-              "text": "May expand the same state many times through different paths",
-              "category": 0
-            },
-            {
-              "text": "Can turn a linear problem into an exponential one",
-              "category": 0
-            },
-            {
-              "text": "How DFS is usually implemented, without storing visited states",
-              "category": 0
-            },
-            {
-              "text": "Keeps a closed set of states",
-              "category": 1
-            },
-            {
-              "text": "Expands a node only if its state is not yet in closed",
-              "category": 1
-            },
-            {
-              "text": "Can be exponentially more efficient on problems with repeated states",
-              "category": 1
-            }
-          ],
-          "why": "GRAPH-SEARCH keeps a closed set and skips any node whose state is already in it, so it can be exponentially more efficient. Plain tree search does not detect repeated states; the book notes DFS is usually run this way.",
-          "ref": "Slides 49-51 · Tree vs graph search"
-        },
-        {
           "kind": "mcq",
           "group": "Lecture 3",
           "text": "According to the slides' summary, iterative deepening search uses ......",
@@ -2446,6 +1514,518 @@
           "answer": 0,
           "why": "The summary says IDS uses only linear space, O(bd), and not much more time than other uninformed algorithms, since its time is still O(b^d). Repeating the upper levels adds only a small amount of work.",
           "ref": "Slide 51 · Lecture summary"
+        }
+      ]
+    },
+    {
+      "id": "lecture-4",
+      "tag": "Lecture 4",
+      "name": "Adversarial Search",
+      "scope": "36 questions",
+      "questions": [
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "In competitive environments, two or more agents have conflicting goals. The book says this gives rise to ...... problems.",
+          "options": [
+            "uninformed search",
+            "adversarial search",
+            "nondeterministic search",
+            "Monte Carlo search"
+          ],
+          "answer": 1,
+          "why": "The chapter opens by saying that competitive environments, where two or more agents have conflicting goals, lead to adversarial search problems. It studies them through structured games such as chess, Go and poker.",
+          "ref": "Book p. 84 · Introduction"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "Why does the book say physical games such as croquet or ice hockey are less attractive for AI research than chess or Go?",
+          "options": [
+            "They offer too few possible actions to be interesting",
+            "They are zero-sum, so one side must always lose the game",
+            "They have no terminal states or utility values",
+            "Their descriptions are complex and their rules imprecise"
+          ],
+          "answer": 3,
+          "why": "Physical games have complex descriptions, a wide range of possible actions and imprecise legality rules. Chess and Go are easier to represent because their states are well-defined and precise rules govern the actions.",
+          "ref": "Book p. 84 · Introduction"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "A model predicts that prices will rise from total demand, without needing each individual agent's action. Which view of multi-agent environments is this?",
+          "options": [
+            "The aggregate stance",
+            "The adversary-as-environment stance",
+            "Explicit adversarial modeling",
+            "A Monte Carlo-style simulation"
+          ],
+          "answer": 0,
+          "why": "The aggregate stance models a very large number of interacting agents as an economy, so it can predict rising prices from demand without each agent's action. Explicit adversarial modeling instead builds game trees for individual opponents.",
+          "ref": "Book p. 84 · Aggregate stance"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "The adversary-as-environment stance treats opponents as part of a nondeterministic environment, like random events such as rain. What does the book say this view fails to capture?",
+          "options": [
+            "The very large number of agents involved",
+            "The utility values at the terminal states",
+            "The intention of adversaries to defeat us",
+            "The time limit that forces a search cutoff"
+          ],
+          "answer": 2,
+          "why": "Rain is random, but an adversary actively tries to defeat us. Treating it as part of a nondeterministic environment misses this intention, which is why the third stance models adversaries explicitly with game-tree search.",
+          "ref": "Book p. 84 · Adversary-as-environment"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "A Go program cannot search to the end of the game, so it judges a position by averaging the results of many fast plays from it. What is this method called?",
+          "options": [
+            "Monte Carlo-style simulation",
+            "Heuristic evaluation function",
+            "Quiescence search",
+            "Late-move reduction"
+          ],
+          "answer": 0,
+          "why": "When time forces a cutoff, the book estimates outcomes in two ways: heuristic evaluation functions built from features of the state, or Monte Carlo-style simulations that average the results of many fast plays.",
+          "ref": "Book pp. 84-85 · Estimating outcomes"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "A game is zero-sum when ......",
+          "options": [
+            "both players can see the complete state at all times",
+            "the players take turns, and MAX always makes the first move",
+            "what is good for one player is equally bad for the other",
+            "every action leads to exactly one known successor state"
+          ],
+          "answer": 2,
+          "why": "The book defines zero-sum as: what is good for one player is equally bad for the other. Determinism, turn-taking and perfect information are separate properties that it lists alongside zero-sum.",
+          "ref": "Book p. 85 · Zero-sum games"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "The games in Section 4.3 have several properties. Which of the following is NOT one of them?",
+          "options": [
+            "Deterministic",
+            "Perfect information",
+            "Zero-sum",
+            "Simultaneous moves"
+          ],
+          "answer": 3,
+          "why": "The section covers deterministic, turn-taking, perfect-information, zero-sum games. Simultaneous moves would contradict turn-taking, where TO-MOVE(s) names the one player whose turn it is in state s.",
+          "ref": "Book p. 85 · Two-player zero-sum games"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "Which pairing of a formal game element with its meaning is correct?",
+          "options": [
+            "ACTIONS(s): the successor state that a move leads to",
+            "UTILITY(s, p): final payoff to p at a terminal state",
+            "IS-TERMINAL(s): which player has the move in state s",
+            "RESULT(s, a): the set of legal moves in state s"
+          ],
+          "answer": 1,
+          "why": "UTILITY(s, p) is the final payoff to player p at a terminal state, such as win 1, draw ½, loss 0 in chess. ACTIONS(s) gives the legal moves, RESULT(s, a) the successor state, IS-TERMINAL(s) whether the game ended, and TO-MOVE(s) whose turn it is.",
+          "ref": "Book pp. 85-86 · Formal game elements"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "Which statement about the partial tic-tac-toe game tree in Figure 6.1 is correct?",
+          "options": [
+            "MAX moves first by placing an X, then the players alternate",
+            "MIN moves first by placing an O, then the players alternate",
+            "Every level of the tree is a move by MAX, who places an X",
+            "Its terminal states have the utilities 1, ½ and 0"
+          ],
+          "answer": 0,
+          "why": "The top node is the initial state, and MAX moves first by placing an X; MIN (O) and MAX (X) then alternate. The terminal states get utilities −1, 0 and +1 by the game's rules; 1, ½ and 0 is the book's chess example.",
+          "ref": "Book p. 85 · Tic-tac-toe game tree"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "The caption of Figure 6.2 calls it a two-ply game tree. Which description matches the tree drawn in the figure?",
+          "options": [
+            "MAX and MIN each move twice before the leaves",
+            "MAX moves twice in a row, then the leaves follow",
+            "MAX moves at the root, MIN replies, then the leaves",
+            "The root has two MIN children with two leaves each"
+          ],
+          "answer": 2,
+          "why": "In the figure, root A is a MAX node (△) where MAX picks a1, a2 or a3; B, C and D are MIN nodes (▽) where MIN replies; below them are the terminal leaves. The root has three MIN children with three leaves each.",
+          "ref": "Book p. 87 · Figure 6.2"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "The minimax value MINIMAX(s) is the utility for ......, assuming both sides play optimally from state s.",
+          "options": [
+            "MAX",
+            "MIN",
+            "the player to move in s",
+            "the player who wins"
+          ],
+          "answer": 0,
+          "why": "MINIMAX(s) is the utility for MAX, assuming optimal play by both sides: UTILITY(s, MAX) at a terminal state, the maximum over the children when MAX moves, and the minimum when MIN moves.",
+          "ref": "Book p. 86 · Minimax value"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "MAX root R has MIN children X, Y and Z. X's leaves are 7, 2, 9; Y's leaves are 5, 6, 8; Z's leaves are 10, 1, 4. Which move should MAX make, and what is the minimax value of R?",
+          "options": [
+            "Move to Z; value 10",
+            "Move to X; value 9",
+            "Move to Y; value 8",
+            "Move to Y; value 5"
+          ],
+          "answer": 3,
+          "why": "Each MIN node takes its smallest leaf: X = 2, Y = 5, Z = 1. MAX takes the largest of these, so R = 5 via Y. Z holds the biggest leaf, 10, but MIN would reply with 1.",
+          "ref": "Book pp. 86-87 · Minimax decision"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "MAX root A has MIN children B and C. B has MAX children D and E; C has MAX children F and G. The leaves are D: 4, 9; E: 6, 3; F: 2, 8; G: 7, 1. What is the minimax value of A?",
+          "options": [
+            "6",
+            "7",
+            "8",
+            "9"
+          ],
+          "answer": 1,
+          "why": "MAX nodes take their larger leaf: D = 9, E = 6, F = 8, G = 7. MIN nodes take the smaller: B = min(9, 6) = 6 and C = min(8, 7) = 7. So A = max(6, 7) = 7, and MAX's best move is to C.",
+          "ref": "Book p. 86 · Minimax values"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "MAX follows strict minimax against an opponent who does not always play optimally. What does the book say about this?",
+          "options": [
+            "Minimax values become wrong and must be recomputed often",
+            "Minimax can no longer be used, so it must be replaced",
+            "Minimax guarantees at least the optimal-vs-optimal result",
+            "Minimax is then sure to win every game it plays"
+          ],
+          "answer": 2,
+          "why": "The book notes that deviating from strict minimax can sometimes raise the win chances against a suboptimal opponent, but minimax still guarantees at least the outcome of optimal play against optimal play.",
+          "ref": "Book p. 86 · Optimal decisions"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "Minimax is a depth-first recursive procedure. Using the book's costs, about how much time and space does it need when b = 3 and m = 4?",
+          "options": [
+            "81 time and 12 space",
+            "12 time and 81 space",
+            "9 time and 12 space",
+            "64 time and 12 space"
+          ],
+          "answer": 0,
+          "why": "Time is O(b^m), about 3^4 = 81, and space is O(bm), about 3 × 4 = 12. The 9 is b^(m/2), alpha–beta's best case with perfect ordering, and 64 is m^b. With one-successor generation, space drops to O(m).",
+          "ref": "Book p. 87 · Minimax algorithm"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "For chess, the book takes b ≈ 35 and m ≈ 80. What does it conclude about exhaustive minimax?",
+          "options": [
+            "It is feasible, because its space need is only O(bm)",
+            "It is feasible once alpha–beta reaches O(b^(m/2))",
+            "It is infeasible, so its decisions are not optimal",
+            "It is infeasible, but it gives the ground-truth ideal"
+          ],
+          "answer": 3,
+          "why": "With b ≈ 35 and m ≈ 80, O(b^m) is far too many nodes, and the complete chess game tree is astronomically large. So exhaustive minimax is infeasible, yet it still defines optimal play: the ground-truth ideal.",
+          "ref": "Book pp. 86-87 · Minimax complexity"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "Which statement about alpha–beta pruning is correct?",
+          "options": [
+            "It finds a close approximation by skipping moves that seem poor",
+            "It finds the minimax decision while pruning irrelevant branches",
+            "It examines every leaf, but stores fewer nodes than minimax",
+            "It replaces UTILITY at the leaves with a fast evaluation function"
+          ],
+          "answer": 1,
+          "why": "Alpha–beta computes the same minimax decision while pruning branches that cannot influence the result. Skipping moves that only seem poor is forward pruning, and using EVAL at a cutoff is heuristic alpha–beta.",
+          "ref": "Book p. 89 · Alpha–beta pruning"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "Alpha–beta keeps two bounds along the current path. What do α and β mean?",
+          "options": [
+            "α: lowest value so far for MIN; β: highest so far for MAX",
+            "α: highest value so far for MIN; β: lowest so far for MAX",
+            "α: highest value so far for MAX; β: lowest so far for MIN",
+            "α: value at the root; β: value at the current leaf"
+          ],
+          "answer": 2,
+          "why": "α is the best (highest) value found so far for MAX, read as “at least”; β is the best (lowest) for MIN, read as “at most”. A MIN node is pruned once its value is ≤ α, a MAX node once it is ≥ β.",
+          "ref": "Book p. 89 · Alpha and beta"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "In alpha–beta search, MAX-VALUE is called on a node with α = 2 and β = 5, and its children are searched left to right. The first child returns 7. What happens next?",
+          "options": [
+            "Returns 7 at once, skipping its remaining children",
+            "Sets α to 7 and goes on to its next child",
+            "Sets β to 7 and goes on to its next child",
+            "Returns 5, the current value of β"
+          ],
+          "answer": 0,
+          "why": "v becomes 7 and α rises to 7, then the test v ≥ β (7 ≥ 5) succeeds, so MAX-VALUE returns 7 at once. MIN, higher up the path, already has a choice worth at most 5, so play would never reach this node.",
+          "ref": "Book pp. 89-91 · Alpha–beta algorithm"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "In the book's alpha–beta example (Figure 6.5), searched left to right, B's leaves 3, 12, 8 give B = 3. The first leaf under C is 2. Why are C's other two leaves never examined?",
+          "options": [
+            "C is worth at least 2, so it cannot beat B's 3",
+            "The leaf 2 is the smallest utility in the tree",
+            "The test v ≥ β succeeds at the root after leaf 2",
+            "C is worth at most 2, but MAX already has 3 from B"
+          ],
+          "answer": 3,
+          "why": "C is a MIN node, so after the leaf 2 it is worth at most 2. MAX already has B worth 3 and would never choose C, so leaves 4 and 6 cannot change the decision. This is alpha–beta pruning.",
+          "ref": "Book p. 90 · Alpha–beta example"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "In Figure 6.5, searched left to right, B = 3 and C is worth at most 2. The first leaf under D is 14. What range of values does the root have at this moment?",
+          "options": [
+            "[3, 14]",
+            "[3, +∞]",
+            "[−∞, 14]",
+            "[2, 14]"
+          ],
+          "answer": 0,
+          "why": "MAX can already get 3 from B, so the root is at least 3. Every child now has an upper bound (B = 3, C ≤ 2, D ≤ 14), so the root is at most 14. D must still be explored, since 14 is above 3.",
+          "ref": "Book p. 90 · Alpha–beta example"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "MAX root A has MIN children B, C and D, searched left to right. B's leaves are 5, 8, 6; C's leaves are 7, 4, 9; D's leaves are 3, 10, 2. Which leaves does alpha–beta never examine?",
+          "options": [
+            "10 and 2 only",
+            "9 only",
+            "9, 10 and 2",
+            "4, 9, 10 and 2"
+          ],
+          "answer": 2,
+          "why": "B = 5, so α = 5 at the root. In C, 7 is above 5 but 4 is not, so C ≤ 4 and leaf 9 is skipped. In D, the first leaf 3 is already ≤ 5, so 10 and 2 are skipped. The root's value is 5, via B.",
+          "ref": "Book pp. 89-91 · Alpha–beta pruning"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "MAX root A has MIN children B and C, searched left to right. B's leaves are 4 and 6; C's leaves are 9, 3 and 5. After MIN-VALUE at C has processed its first leaf, 9, and before it looks at the next one, what are α and β inside C?",
+          "options": [
+            "α = 4, β = +∞",
+            "α = 4, β = 9",
+            "α = 9, β = +∞",
+            "α = −∞, β = 9"
+          ],
+          "answer": 1,
+          "why": "The search starts with α = −∞ and β = +∞. B returns 4, so the root raises α to 4 and passes it to C, where MIN-VALUE sets β = min(+∞, 9) = 9. The next leaf, 3, is ≤ α, so leaf 5 is pruned.",
+          "ref": "Book p. 91 · Alpha–beta algorithm"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "MAX root A has MIN children B, C and D. B's leaves are 1, 6, 4; C's leaves are 8, 7, 9; D's leaves are 3, 2, 5. Searching B, C, D left to right, alpha–beta examines 7 of the 9 leaves. If the children are searched in the order C, B, D instead (leaves still left to right), how many leaves are examined?",
+          "options": [
+            "3",
+            "5",
+            "7",
+            "9"
+          ],
+          "answer": 1,
+          "why": "C = 7 is searched first, so α = 7 at once. B's first leaf 1 and D's first leaf 3 are both ≤ 7, so each is cut after one leaf: 3 + 1 + 1 = 5. With B first, α was only 1, so all of C had to be read.",
+          "ref": "Book p. 89 · Move ordering"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "A game tree has b = 4 and m = 6, so minimax examines about 4^6 = 4,096 nodes. Using the book's figures, about how many does alpha–beta examine with perfect move ordering, and with random ordering?",
+          "options": [
+            "64 and 512",
+            "512 and 64",
+            "64 and 2,048",
+            "2,048 and 512"
+          ],
+          "answer": 0,
+          "why": "Perfect ordering cuts the nodes examined to O(b^(m/2)), about 4^3 = 64: an effective branching factor of √b = 2. Random ordering gives roughly O(b^(3m/4)), about 4^4.5 = 512. Halving 4,096 is not one of the book's figures.",
+          "ref": "Book p. 89 · Move ordering"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "Alpha–beta works best with good move ordering. The book suggests trying captures, threats and forward moves first, and refining the order with ...... and iterative deepening.",
+          "options": [
+            "beam search",
+            "PROBCUT",
+            "Monte Carlo simulations",
+            "killer moves"
+          ],
+          "answer": 3,
+          "why": "Alpha–beta's effectiveness depends on move ordering, so the book suggests trying captures, threats and forward moves first, then refining with killer moves and iterative deepening. Beam search and PROBCUT are forward pruning.",
+          "ref": "Book p. 89 · Move ordering"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "A chess program reaches the same position through two different move orders. Which technique lets it reuse the earlier result instead of searching that position again?",
+          "options": [
+            "Quiescence search",
+            "Late-move reduction",
+            "A transposition table",
+            "A killer-move heuristic"
+          ],
+          "answer": 2,
+          "why": "Transposition tables cache evaluated positions across different move orders, which avoids re-searching repeated states. Quiescence search extends tactical positions, and late-move reduction searches late moves to a reduced depth.",
+          "ref": "Book p. 89 · Transposition tables"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "When time is limited, heuristic alpha–beta cuts off the search and replaces UTILITY with a fast evaluation function EVAL(s, p). What should EVAL return?",
+          "options": [
+            "UTILITY at terminals; a value between loss and win elsewhere",
+            "UTILITY at every state, whether terminal or not",
+            "A value between loss and win at terminals; UTILITY elsewhere",
+            "A random value between loss and win at every state"
+          ],
+          "answer": 0,
+          "why": "For terminal states EVAL equals UTILITY. For nonterminal states it returns a value between loss and win, such as 0 to 1 for MAX, that correlates with the true chances of winning.",
+          "ref": "Book p. 92 · Heuristic alpha–beta"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "A chess program uses EVAL(s) = Σ w_i f_i(s) with three features: material (w1 = 3), mobility (w2 = 0.5) and king safety (w3 = 2). In state s, f1 = 2, f2 = 4 and f3 = −1. What is EVAL(s)?",
+          "options": [
+            "5.5",
+            "6",
+            "8",
+            "10"
+          ],
+          "answer": 1,
+          "why": "EVAL(s) is the weighted sum: 3 × 2 + 0.5 × 4 + 2 × (−1) = 6 + 2 − 2 = 6. Ignoring the minus sign gives 10 and dropping king safety gives 8. The book's 0..1 range is only an example, so a score of 6 is allowed.",
+          "ref": "Book p. 92 · Evaluation functions"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "Which of the following is NOT one of the book's guidelines for designing evaluation functions?",
+          "options": [
+            "It must be fast to compute",
+            "It should be strongly correlated with winning chances",
+            "Its weights can be hand-tuned or learned from self-play",
+            "It must follow every line down to terminal states"
+          ],
+          "answer": 3,
+          "why": "An evaluation function must be fast and strongly correlated with winning chances, and its weights can be hand-tuned or learned. Its whole purpose is to score positions at a cutoff, so it does not search down to terminal states.",
+          "ref": "Book p. 92 · Evaluation functions"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "A depth-limited chess search stops in the middle of a capture exchange, so the evaluation misreads the position. Which technique extends the search in such tactical positions to avoid horizon effects?",
+          "options": [
+            "Late-move reduction",
+            "Beam search",
+            "Quiescence search",
+            "Iterative deepening"
+          ],
+          "answer": 2,
+          "why": "Quiescence search extends the search in tactical positions, such as forcing captures or checks, to avoid horizon effects. Iterative deepening only repeats the search with deeper limits, and beam search is forward pruning.",
+          "ref": "Book p. 92 · Quiescence search"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "In the book's H-MINIMAX(s, d) formula, the first case returns EVAL(s, MAX). Which condition does the formula give for that case?",
+          "options": [
+            "IS-TERMINAL(s) is true",
+            "TO-MOVE(s) = MAX",
+            "IS-CUTOFF(s, d) is true",
+            "the depth d reaches 0"
+          ],
+          "answer": 2,
+          "why": "H-MINIMAX is minimax with IS-CUTOFF(s, d) in place of IS-TERMINAL(s) and EVAL in place of UTILITY. Otherwise MAX and MIN nodes still take the max and min over RESULT(s, a), with the depth growing to d + 1.",
+          "ref": "Book p. 92 · Heuristic minimax"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "A heuristic alpha–beta program uses iterative deepening. It has finished its depth-5 search when time runs out partway through depth 6. Which move does it play?",
+          "options": [
+            "The best move found so far at depth 6",
+            "The best move from the depth-5 search",
+            "The first legal move in ACTIONS(s)",
+            "The best move from the depth-1 search"
+          ],
+          "answer": 1,
+          "why": "Iterative deepening searches progressively deeper and returns the best move from the deepest completed iteration, which is depth 5 here. The depth-6 search did not finish, and depth 1 is far shallower than what was completed.",
+          "ref": "Book p. 92 · Controlling search"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "Which of the following is NOT a forward-pruning technique?",
+          "options": [
+            "Beam search",
+            "PROBCUT",
+            "Late-move reduction",
+            "Alpha–beta pruning"
+          ],
+          "answer": 3,
+          "why": "Beam search keeps only the top-n moves, PROBCUT prunes nodes probably outside the (α, β) window, and late-move reduction shortens late moves: all prune before proof. Alpha–beta prunes only provably irrelevant branches.",
+          "ref": "Book pp. 92-93 · Forward pruning"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "Late-move reduction searches late-ordered moves to a reduced depth, and ......",
+          "options": [
+            "never searches them again, even if they look good",
+            "re-searches at full depth only if they look good",
+            "stores them as killer moves for the next ply",
+            "extends them with quiescence search until quiet"
+          ],
+          "answer": 1,
+          "why": "Late-move reduction gives late-ordered moves a reduced-depth search and re-searches to full depth only if their value looks promising. With beam search and PROBCUT, it is a forward-pruning method that trades some safety for speed.",
+          "ref": "Book p. 93 · Late-move reduction"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "In the book's chess example, pure minimax at about 1M nodes per second reaches about ...... per minute, while alpha–beta with transposition tables, ordering, quiescence and iterative deepening reaches about ...... on a modern CPU.",
+          "options": [
+            "14 ply; 30+ ply",
+            "5 ply; 30+ ply",
+            "1 ply; 5 ply",
+            "5 ply; 14+ ply"
+          ],
+          "answer": 3,
+          "why": "Pure minimax reaches only about 5 ply per minute, which is too shallow. The combined techniques reach about 14+ ply, expert strength. With heavy optimization and large endgame bases, as in Stockfish, 30+ ply and superhuman play are achievable.",
+          "ref": "Book p. 93 · Chess performance"
         }
       ]
     }
