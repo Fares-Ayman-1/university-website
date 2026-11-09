@@ -35,6 +35,8 @@ bookRefs:
 
 <Ar>وكلاء حل المسائل</Ar>
 
+<Walkthrough id="ai2-agents" expect="loop, romania, route, execute, open-loop; viaFagaras=450; optimal=418" />
+
 A problem-solving agent is a restricted kind of **goal-based agent**. It does not react percept by percept. It thinks ahead: it finds a whole sequence of actions that reaches the goal, then carries that sequence out.
 
 <Ar>وكيل حل المسائل (problem-solving agent) نوع مقيَّد من **الوكيل القائم على الهدف (goal-based agent)**. فهو لا يستجيب لكل إدراك على حدة، بل يفكر مسبقًا: يجد تسلسلًا كاملًا من الأفعال يصل إلى الهدف، ثم ينفّذ ذلك التسلسل.</Ar>
@@ -104,6 +106,8 @@ You are on holiday in **Arad**, and your flight leaves tomorrow from **Bucharest
 
 <Ar>أنواع المسائل</Ar>
 
+<Walkthrough id="ai2-problem-types" expect="states, types, single, belief, contingency; states=8; beliefs=8,4,2,2,1" />
+
 How hard a problem is depends on what the agent knows about the world and its actions.
 
 <Ar>تتوقف صعوبة المسألة على ما يعرفه الوكيل عن العالم وعن أفعاله.</Ar>
@@ -152,11 +156,21 @@ The vacuum world with two squares has **8 states**: 2 robot positions × 2 dirt 
 
 <Ar>صياغة مسألة الحالة الواحدة</Ar>
 
+<Walkthrough id="ai2-formulation" expect="components, successor, goal-test, path-cost, solution; optimal=418; viaFagaras=450; goals=7,8" />
+
 <Definition term="Problem" termAr="المسألة">
   A problem is defined by four items: an <strong>initial state</strong>, a <strong>successor function</strong>, a <strong>goal test</strong> and a <strong>path cost</strong>.
 
   <Ar>تُعرَّف المسألة بأربعة عناصر: <strong>الحالة الابتدائية (initial state)</strong>، و<strong>دالة الحالات التالية (successor function)</strong>، و<strong>اختبار الهدف (goal test)</strong>، و<strong>تكلفة المسار (path cost)</strong>.</Ar>
 </Definition>
+
+<Callout type="note" title="Beyond the slides" titleAr="ما بعد الشرائح">
+
+The course book (pp. 56–57) and newer editions of Russell & Norvig split the successor function in two: `ACTIONS(s)` lists the actions available in state `s`, and the **transition model** `RESULT(s, a)` gives the state that action leads to. Together they say exactly what $S(x)$ says, since $S(x)$ is the set of pairs `(a, RESULT(x, a))` for every `a` in `ACTIONS(x)`. The book also calls step costs **action costs**.
+
+<Ar>يقسم كتاب المقرر (ص 56–57) والطبعات الأحدث من كتاب Russell و Norvig دالة الحالات التالية إلى جزأين: `ACTIONS(s)` تسرد الأفعال المتاحة في الحالة `s`، و**نموذج الانتقال (transition model)** `RESULT(s, a)` يعطي الحالة التي يقود إليها ذلك الفعل. ويقول الاثنان معًا ما تقوله $S(x)$ بالضبط، لأن $S(x)$ هي مجموعة الأزواج `(a, RESULT(x, a))` لكل `a` في `ACTIONS(x)`. كما يسمّي الكتاب تكاليف الخطوات **تكاليف الأفعال (action costs)**.</Ar>
+
+</Callout>
 
 | Component <Ar>المكوّن</Ar> | Meaning <Ar>المعنى</Ar> | Romania example <Ar>مثال رومانيا</Ar> |
 |---|---|---|
@@ -209,6 +223,8 @@ print(problem.successors("Arad"))
 
 <Ar>اختيار فضاء الحالات</Ar>
 
+<Walkthrough id="ai2-abstraction" expect="states, actions, valid, detail; aradZerind=75" />
+
 The real world is far too complex to search directly, so the state space must be **abstracted**:
 
 <Ar>العالم الحقيقي أعقد بكثير من أن نبحث فيه مباشرةً، لذا يجب **تجريد (abstract)** فضاء الحالات:</Ar>
@@ -229,6 +245,8 @@ The real world is far too complex to search directly, so the state space must be
 ## Example problems
 
 <Ar>أمثلة على المسائل</Ar>
+
+<Walkthrough id="ai2-examples" expect="vacuum, puzzle, blank, count, assembly; states=8; puzzleStates=181440; tileActions=32" />
 
 ### The vacuum world
 

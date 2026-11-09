@@ -1,0 +1,731 @@
+---
+number: 4
+title: "Adversarial Search"
+titleAr: "البحث التنافسي"
+summary: "The course book's Chapter 4: competitive environments and the three game-theory stances towards other agents, two-player zero-sum games of perfect information and their formal definition, the minimax value and the minimax algorithm, alpha–beta pruning with its α and β bounds and the effect of move ordering, then heuristic alpha–beta with cutoffs and evaluation functions, forward pruning, and how deep real chess programs search."
+summaryAr: "الفصل الرابع من كتاب المقرر: البيئات التنافسية والمنظورات الثلاثة لنظرية الألعاب (game theory) في التعامل مع الوكلاء الآخرين، والألعاب الثنائية صفرية المجموع (zero-sum) ذات المعلومات الكاملة وتعريفها الرسمي، وقيمة minimax وخوارزميتها، والتقليم ألفا-بيتا (alpha-beta pruning) بحدّيه α و β وأثر ترتيب النقلات، ثم التقليم ألفا-بيتا الاستدلالي مع القطع ودوال التقييم (evaluation functions)، والتقليم الأمامي (forward pruning)، وإلى أي عمق تبحث برامج الشطرنج الحقيقية."
+topics: [Game theory stances, Zero-sum games, Game trees, Minimax, Alpha–beta pruning, Move ordering, Evaluation functions, Quiescence search, Forward pruning]
+duration: "65 min study"
+sources: []
+bookRefs:
+  - book: ai-book
+    chapter: Ch 4 · Adversarial Search Algorithm
+    pages: "84–93"
+  - book: aima
+    chapter: Ch 5 · Adversarial Search and Games
+---
+
+<Objectives>
+
+- Explain what makes a search problem **adversarial**, and compare the three game-theory stances towards other agents.
+  <Ar>شرح ما الذي يجعل مسألة البحث **تنافسية (adversarial)**، والمقارنة بين المنظورات الثلاثة لنظرية الألعاب (game theory) في التعامل مع الوكلاء الآخرين.</Ar>
+- Define a two-player, **zero-sum** game of perfect information with `TO-MOVE`, `ACTIONS`, `RESULT`, `IS-TERMINAL` and `UTILITY`.
+  <Ar>تعريف لعبة ثنائية **صفرية المجموع (zero-sum)** ذات معلومات كاملة باستخدام `TO-MOVE` و `ACTIONS` و `RESULT` و `IS-TERMINAL` و `UTILITY`.</Ar>
+- Compute **minimax values** on a game tree by hand and state the cost of the minimax algorithm.
+  <Ar>حساب **قيم minimax** على شجرة لعبة يدويًا، وبيان تكلفة خوارزمية minimax.</Ar>
+- Trace **alpha–beta pruning** with its α and β bounds, find the pruned branches, and explain how **move ordering** changes the saving.
+  <Ar>تتبّع **التقليم ألفا-بيتا (alpha-beta pruning)** بحدّيه α و β، وتحديد الفروع المقلَّمة، وشرح كيف يغيّر **ترتيب النقلات (move ordering)** مقدار التوفير.</Ar>
+- Describe **heuristic alpha–beta**: depth cutoffs, evaluation functions, quiescence search and forward pruning.
+  <Ar>وصف **التقليم ألفا-بيتا الاستدلالي (heuristic alpha–beta)**: القطع عند عمق محدد، ودوال التقييم (evaluation functions)، وبحث السكون (quiescence search)، والتقليم الأمامي (forward pruning).</Ar>
+
+</Objectives>
+
+## Introduction
+
+<Ar>مقدمة</Ar>
+
+<Walkthrough id="ai4-intro" expect="conflict, structured, which" />
+
+The search problems so far had a single agent. This lecture turns to **competitive environments**, where two or more agents have **conflicting goals**. Planning ahead in such an environment is an **adversarial search** problem: the agent chooses its moves while an opponent chooses moves against it.
+
+<Ar>كانت مسائل البحث حتى الآن ذات وكيل واحد. أما هذه المحاضرة فتنتقل إلى **البيئات التنافسية (competitive environments)**، حيث يكون لوكيلين أو أكثر **أهداف متعارضة**. والتخطيط المسبق في مثل هذه البيئة مسألة **بحث تنافسي (adversarial search)**: إذ يختار الوكيل نقلاته بينما يختار خصمٌ نقلاتٍ مضادة له.</Ar>
+
+Real conflicts are chaotic, so the field concentrates on **structured games** such as chess, Go and poker. They are easy to represent: the states are well defined, and precise rules govern the actions. Physical games such as croquet or ice hockey are much less attractive for AI research: their descriptions are complex, the range of possible actions is huge, and the rules that decide whether a move is legal are imprecise.
+
+<Ar>النزاعات الحقيقية فوضوية، لذا يركّز هذا المجال على **الألعاب المهيكلة (structured games)** مثل الشطرنج وغو (Go) والبوكر (poker). فتمثيلها سهل: حالاتها محددة تمامًا، وتحكم أفعالَها قواعدُ دقيقة. أما الألعاب البدنية مثل الكروكيه (croquet) أو هوكي الجليد (ice hockey) فأقل جاذبية بكثير لأبحاث الذكاء الاصطناعي: إذ إن أوصافها معقدة، ونطاق أفعالها الممكنة هائل، والقواعد التي تحدد مشروعية النقلة فيها غير دقيقة.</Ar>
+
+The algorithms in this lecture assume that both players see the whole state and that nothing is left to chance. Chess and Go satisfy this. Poker, with hidden cards dealt at random, needs more than the methods here.
+
+<Ar>تفترض خوارزميات هذه المحاضرة أن اللاعبين كليهما يريان الحالة كاملة، وأنه لا شيء متروك للمصادفة. والشطرنج وغو يحققان ذلك. أما البوكر، بأوراقه المخفية التي تُوزَّع عشوائيًا، فيحتاج إلى أكثر من الأساليب المعروضة هنا.</Ar>
+
+<Definition term="Adversarial search" termAr="البحث التنافسي">
+  Search in a competitive environment with two or more agents whose goals conflict: the agent plans its moves knowing that an opponent will choose its own moves to defeat it.
+
+  <Ar>البحث في بيئة تنافسية تضم وكيلين أو أكثر أهدافهم متعارضة: إذ يخطط الوكيل لنقلاته وهو يعلم أن خصمًا سيختار نقلاته هو بهدف هزيمته.</Ar>
+</Definition>
+
+## Game theory perspectives
+
+<Ar>منظورات نظرية الألعاب</Ar>
+
+<Walkthrough id="ai4-stances" expect="stances, intention, estimate; avgL=4; avgR=3.5; minL=0; minR=3" />
+
+Game theory offers three stances towards an environment that contains other agents. They differ in how much of the other agents' reasoning they model.
+
+<Ar>تقدّم نظرية الألعاب (game theory) ثلاثة منظورات للتعامل مع بيئة تحتوي على وكلاء آخرين، وتختلف فيما بينها في مقدار ما تنمذجه من تفكير هؤلاء الوكلاء.</Ar>
+
+### Aggregate stance
+
+<Ar>المنظور التجميعي</Ar>
+
+When a **very large number** of agents interact, model them together as an **economy** instead of one by one. For example, we can predict that prices will rise when demand rises without knowing what any individual buyer will do.
+
+<Ar>عندما يتفاعل **عدد كبير جدًا** من الوكلاء، نمذجهم معًا بوصفهم **اقتصادًا (economy)** بدلًا من نمذجة كل واحد منهم على حدة. فمثلًا يمكننا التنبؤ بأن الأسعار سترتفع عندما يرتفع الطلب، دون أن نعرف ما الذي سيفعله أي مشترٍ بعينه.</Ar>
+
+### Adversary as environment
+
+<Ar>الخصم بوصفه جزءًا من البيئة</Ar>
+
+We can treat opponents as part of a **nondeterministic environment**, like the weather, and plan for every outcome they might produce. This view misses **intention**: rain falls at random, but an adversary actively tries to defeat us.
+
+<Ar>يمكننا أن نعامل الخصوم كجزء من **بيئة غير حتمية (nondeterministic environment)**، مثل الطقس، وأن نخطط لكل نتيجة قد يُحدثونها. لكن هذا المنظور يُغفل **النيّة (intention)**: فالمطر يهطل عشوائيًا، أما الخصم فيسعى بنشاط إلى هزيمتنا.</Ar>
+
+A small example makes the difference concrete. MAX can play L or R, and each move can lead to one of two outcomes:
+
+<Ar>يوضّح مثال صغير هذا الفرق. يستطيع MAX أن يلعب L أو R، وقد تؤدي كل نقلة إلى إحدى نتيجتين:</Ar>
+
+| Move <Ar>النقلة</Ar> | Outcomes <Ar>النتائج</Ar> | If the outcome is random: mean <Ar>إذا كانت النتيجة عشوائية: المتوسط</Ar> | If an adversary chooses: worst case <Ar>إذا اختار خصم: أسوأ حالة</Ar> |
+|---|---|---|---|
+| L | 8 or 0 <Ar>8 أو 0</Ar> | 4 | 0 |
+| R | 3 or 4 <Ar>3 أو 4</Ar> | 3.5 | **3** |
+
+Treated like rain, the opponent makes L look better. Treated as an adversary who picks the outcome that is worst for us, R is better, because it guarantees at least 3.
+
+<Ar>إذا عوملت كالمطر بدت L أفضل. أما إذا عوملت كخصم يختار النتيجة الأسوأ بالنسبة إلينا فإن R هي الأفضل، لأنها تضمن 3 على الأقل.</Ar>
+
+### Explicit adversarial modelling
+
+<Ar>النمذجة الصريحة للخصم</Ar>
+
+The third stance models the adversary **explicitly**, as an agent with its own goal, and searches a **game tree**. This leads to algorithms such as **minimax**, a generalisation of the AND–OR search used for nondeterministic problems. To save work, **pruning** ignores the parts of the tree that cannot affect the decision.
+
+<Ar>أما المنظور الثالث فينمذج الخصم **صراحةً** بوصفه وكيلًا له هدفه الخاص، ويبحث في **شجرة لعبة (game tree)**. ويقود ذلك إلى خوارزميات مثل **minimax**، وهي تعميم لبحث AND–OR المستخدم في المسائل غير الحتمية. ولتوفير العمل يتجاهل **التقليم (pruning)** أجزاء الشجرة التي لا يمكن أن تؤثر في القرار.</Ar>
+
+For any nontrivial game the tree is far too big to search to the end in the time available, so the search is **cut off** and the outcome at the cut is **estimated** with either:
+
+<Ar>وفي أي لعبة غير بسيطة تكون الشجرة أكبر بكثير من أن يُبحث فيها حتى النهاية في الوقت المتاح، لذا **يُقطع (cut off)** البحث و**تُقدَّر** النتيجة عند نقطة القطع باستخدام أحد أمرين:</Ar>
+
+- a **heuristic evaluation function**, which scores a state from its features, or
+  <Ar>**دالة تقييم استدلالية (heuristic evaluation function)**، تقيّم الحالة من خلال سماتها (features)، أو</Ar>
+- a **Monte Carlo simulation**, which plays many fast games from the state to the end and averages their results.
+  <Ar>**محاكاة مونت كارلو (Monte Carlo simulation)**، التي تلعب مباريات سريعة كثيرة من الحالة حتى نهايتها وتأخذ متوسط نتائجها.</Ar>
+
+## Two-player, zero-sum, perfect-information games
+
+<Ar>الألعاب الثنائية صفرية المجموع ذات المعلومات الكاملة</Ar>
+
+<Walkthrough id="ai4-games" expect="properties, payoff, formal, tree, value; ttt=362880" />
+
+The games studied first are **deterministic**, **turn-taking**, **two-player** and **zero-sum**, with **perfect information**: nothing depends on chance, the players move alternately, both see the entire state, and what is good for one player is equally bad for the other.
+
+<Ar>الألعاب التي ندرسها أولًا **حتمية (deterministic)**، و**تتبادل الأدوار (turn-taking)**، و**ثنائية اللاعبين**، و**صفرية المجموع (zero-sum)**، وذات **معلومات كاملة (perfect information)**: فلا شيء فيها يتوقف على المصادفة، ويتحرك اللاعبان بالتناوب، ويرى كلاهما الحالة كاملة، وما يفيد أحدهما يضرّ الآخر بالقدر نفسه.</Ar>
+
+<Definition term="Zero-sum game" termAr="اللعبة صفرية المجموع">
+  A game in which no outcome is good for both players: the players' payoffs add up to the same constant in every outcome, so whatever one player gains, the other loses.
+
+  <Ar>لعبة لا توجد فيها نتيجة جيدة للاعبين كليهما: إذ يكون مجموع عوائد (payoffs) اللاعبين الثابتَ نفسه في كل نتيجة، فكل ما يكسبه أحدهما يخسره الآخر.</Ar>
+</Definition>
+
+A game is defined formally by these elements:
+
+<Ar>تُعرَّف اللعبة رسميًا بالعناصر الآتية:</Ar>
+
+- **Players**: MAX, who moves first, and MIN, the opponent.
+  <Ar>**اللاعبان (Players)**: MAX، وهو الذي يتحرك أولًا، و MIN، وهو الخصم.</Ar>
+- $S_0$: the **initial state**.
+  <Ar>$S_0$: **الحالة الابتدائية (initial state)**.</Ar>
+- `TO-MOVE(s)`: the player whose turn it is in state $s$.
+  <Ar>`TO-MOVE(s)`: اللاعب صاحب الدور في الحالة $s$.</Ar>
+- `ACTIONS(s)`: the set of legal moves in $s$.
+  <Ar>`ACTIONS(s)`: مجموعة النقلات المسموحة في $s$.</Ar>
+- `RESULT(s, a)`: the **transition model**, the state that results from playing $a$ in $s$.
+  <Ar>`RESULT(s, a)`: **نموذج الانتقال (transition model)**، أي الحالة الناتجة عن لعب النقلة $a$ في $s$.</Ar>
+- `IS-TERMINAL(s)`: true when the game is over; such states are **terminal states**.
+  <Ar>`IS-TERMINAL(s)`: صحيح عندما تنتهي اللعبة؛ وتُسمّى هذه الحالات **الحالات النهائية (terminal states)**.</Ar>
+- `UTILITY(s, p)`: the final payoff to player $p$ in the terminal state $s$. In chess a win is worth 1, a draw ½ and a loss 0.
+  <Ar>`UTILITY(s, p)`: العائد النهائي للاعب $p$ في الحالة النهائية $s$. ففي الشطرنج يساوي الفوز 1 والتعادل ½ والخسارة 0.</Ar>
+
+<Callout type="note" title="Zero-sum, but the total is 1" titleAr="صفرية المجموع، لكن المجموع 1">
+  With chess scores the two payoffs add up to 1 in every game ($1 + 0$, $	frac12 + 	frac12$ or $0 + 1$), not to 0. What matters is that the total is the **same** for every outcome, so "constant-sum" would be the more accurate name. Subtracting $	frac12$ from every payoff gives $+	frac12$, $0$ and $-	frac12$, which sum to 0 without changing either player's preferences.
+
+  <Ar>مع نقاط الشطرنج يكون مجموع العائدين 1 في كل مباراة ($1 + 0$، أو $	frac12 + 	frac12$، أو $0 + 1$)، لا 0. والمهم أن يكون المجموع **نفسه** في كل نتيجة، لذا فإن «ثابتة المجموع (constant-sum)» تسمية أدق. وطرح $	frac12$ من كل عائد يعطي $+	frac12$ و $0$ و $-	frac12$، ومجموعها 0، دون أن يتغير شيء في تفضيلات أي من اللاعبين.</Ar>
+</Callout>
+
+As in uninformed search, the **state-space graph** (positions as nodes, moves as edges) underlies a **search tree** over those states. The **complete game tree** follows every sequence of moves all the way to a terminal state. For tic-tac-toe it has fewer than $9! = 362{,}880$ terminal nodes; for chess it has more than $10^{40}$ nodes, so it can never be built.
+
+<Ar>كما في البحث غير المُوجَّه، يقوم **رسم فضاء الحالات (state-space graph)**، حيث الوضعيات عقد والنقلات حواف، تحت **شجرة بحث (search tree)** على تلك الحالات. أما **شجرة اللعبة الكاملة (complete game tree)** فتتبع كل تسلسل من النقلات حتى حالة نهائية. ففي لعبة إكس-أو (tic-tac-toe) فيها أقل من $9! = 362{,}880$ عقدة نهائية؛ وفي الشطرنج فيها أكثر من $10^{40}$ عقدة، فلا يمكن بناؤها أبدًا.</Ar>
+
+<Definition term="Game tree" termAr="شجرة اللعبة">
+  A search tree whose nodes are game states and whose edges are moves, with the players' turns alternating from one level to the next. Its leaves are terminal states labelled with their utility for MAX.
+
+  <Ar>شجرة بحث عقدها حالات اللعبة وحوافها النقلات، ويتناوب فيها دور اللاعبين من مستوى إلى الذي يليه. وأوراقها حالات نهائية موسومة بمنفعتها (utility) بالنسبة إلى MAX.</Ar>
+</Definition>
+
+<Definition term="Ply" termAr="المستوى (ply)">
+  One move by one player, that is, one level of the game tree. A two-ply tree is one move by MAX followed by one reply by MIN.
+
+  <Ar>نقلة واحدة يؤديها لاعب واحد، أي مستوى واحد من شجرة اللعبة. فالشجرة ذات المستويين (two-ply) نقلة واحدة من MAX يتبعها رد واحد من MIN.</Ar>
+</Definition>
+
+### Optimal decisions in games: the minimax value
+
+<Ar>القرارات المثلى في الألعاب: قيمة minimax</Ar>
+
+MAX wants a **contingent strategy** that leads to a win: a move now, and a reply ready for every move MIN might make. MIN tries to thwart it. The **minimax value** of a state, $\text{MINIMAX}(s)$, is the utility for MAX of being in $s$, assuming that **both players play optimally** from there to the end of the game:
+
+<Ar>يريد MAX **استراتيجية مشروطة (contingent strategy)** تقود إلى الفوز: أي نقلة الآن، وردًّا جاهزًا على كل نقلة قد يلعبها MIN. ويسعى MIN إلى إحباطها. و**قيمة minimax** لحالة ما، $\text{MINIMAX}(s)$، هي منفعة الوجود في $s$ بالنسبة إلى MAX، بافتراض أن **اللاعبين كليهما يلعبان على النحو الأمثل** من تلك الحالة حتى نهاية اللعبة:</Ar>
+
+$$
+\text{MINIMAX}(s) =
+\begin{cases}
+\text{UTILITY}(s, \text{MAX}) & \text{if IS-TERMINAL}(s) \\
+\max_{a \in \text{ACTIONS}(s)} \text{MINIMAX}(\text{RESULT}(s, a)) & \text{if TO-MOVE}(s) = \text{MAX} \\
+\min_{a \in \text{ACTIONS}(s)} \text{MINIMAX}(\text{RESULT}(s, a)) & \text{if TO-MOVE}(s) = \text{MIN}
+\end{cases}
+$$
+
+At a terminal state the value is the utility. MAX prefers to move to a state of maximum value and MIN to a state of minimum value, so values are **backed up** from the leaves towards the root. The **minimax decision** at the root is the move that leads to the child with the highest backed-up value.
+
+<Ar>القيمة عند الحالة النهائية هي المنفعة نفسها. ويفضّل MAX الانتقال إلى حالة ذات قيمة عظمى، ويفضّل MIN الانتقال إلى حالة ذات قيمة صغرى، لذا **تُرفع (backed up)** القيم من الأوراق نحو الجذر. و**قرار minimax (minimax decision)** عند الجذر هو النقلة التي تقود إلى الابن صاحب أعلى قيمة مرفوعة.</Ar>
+
+<Definition term="Minimax value" termAr="قيمة minimax">
+  The utility for MAX of a state when both players play optimally from it: the utility at a terminal state, the maximum of the children's values where MAX moves, and the minimum where MIN moves.
+
+  <Ar>منفعة الحالة بالنسبة إلى MAX عندما يلعب اللاعبان كلاهما على النحو الأمثل انطلاقًا منها: وهي المنفعة عند الحالة النهائية، وأكبر قيم الأبناء حيث يتحرك MAX، وأصغرها حيث يتحرك MIN.</Ar>
+</Definition>
+
+<Callout type="tip" title="A guarantee, not a prediction" titleAr="ضمانٌ لا تنبّؤ">
+  If MIN plays worse than optimally, MAX does at least as well as the minimax value says. Against an opponent known to be weak, a riskier move can sometimes win more often, but only the minimax move **guarantees** at least the outcome of optimal play against optimal play.
+
+  <Ar>إذا لعب MIN على نحو أسوأ من الأمثل، حصل MAX على ما تقوله قيمة minimax على الأقل. وأمام خصم معروف بضعفه قد تفوز نقلة أكثر مخاطرة أحيانًا بنسبة أكبر، لكن نقلة minimax وحدها **تضمن** على الأقل نتيجة اللعب الأمثل أمام اللعب الأمثل.</Ar>
+</Callout>
+
+## The minimax algorithm
+
+<Ar>خوارزمية minimax</Ar>
+
+<Walkthrough id="ai4-minimax" expect="leaves, min-level, max-level, depth-first, suboptimal; root=3; B=3; C=2; D=2; move=a1; nodes=13; chessExp=123" />
+
+The minimax algorithm computes the minimax decision with a **depth-first recursion**. It walks down the tree until it reaches a terminal state, applies `UTILITY`, and backs the values up as the recursion unwinds: `MAX-VALUE` keeps the largest value among its children and `MIN-VALUE` the smallest. Written in Python, with the game tree as nested dictionaries:
+
+<Ar>تحسب خوارزمية minimax قرار minimax باستخدام **استدعاء ذاتي بالعمق أولًا (depth-first recursion)**. فهي تنزل في الشجرة حتى تبلغ حالة نهائية، وتطبّق `UTILITY`، ثم ترفع القيم كلما عاد الاستدعاء الذاتي: إذ تحتفظ `MAX-VALUE` بأكبر قيم أبنائها، وتحتفظ `MIN-VALUE` بأصغرها. وهذه هي الخوارزمية بلغة Python، مع تمثيل شجرة اللعبة بقواميس (dict) متداخلة:</Ar>
+
+```python title="minimax.py"
+import math
+
+# A game tree as nested dicts: each key is a move, each value the state it leads to.
+# A number is a terminal state; it holds the utility for MAX.
+TREE = {
+    "a1": {"b1": 3, "b2": 12, "b3": 8},
+    "a2": {"c1": 2, "c2": 4, "c3": 6},
+    "a3": {"d1": 14, "d2": 5, "d3": 2},
+}
+
+def is_terminal(state):
+    return not isinstance(state, dict)
+
+def max_value(state):
+    if is_terminal(state):
+        return state, None                 # UTILITY(state, MAX)
+    v, move = -math.inf, None
+    for a, child in state.items():         # ACTIONS and RESULT
+        v2, _ = min_value(child)
+        if v2 > v:
+            v, move = v2, a
+    return v, move
+
+def min_value(state):
+    if is_terminal(state):
+        return state, None
+    v, move = math.inf, None
+    for a, child in state.items():
+        v2, _ = max_value(child)
+        if v2 < v:
+            v, move = v2, a
+    return v, move
+
+def minimax_search(state):
+    value, move = max_value(state)         # MAX is to move at the root
+    return value, move
+
+print(minimax_search(TREE))   # (3, 'a1')
+print(min_value(TREE["a1"]))  # (3, 'b1'): MIN's best reply to a1
+```
+
+The algorithm explores the complete game tree. With maximum depth $m$ and $b$ legal moves at each point:
+
+<Ar>تستكشف الخوارزمية شجرة اللعبة كاملة. فإذا كان أقصى عمق $m$، وكان عدد النقلات المسموحة عند كل نقطة $b$:</Ar>
+
+- its time complexity is $O(b^m)$;
+  <Ar>فتعقيدها الزمني $O(b^m)$؛</Ar>
+- its space complexity is $O(bm)$ if all the actions of a state are generated at once, or $O(m)$ if they are generated one at a time.
+  <Ar>وتعقيدها المكاني $O(bm)$ إذا وُلّدت أفعال الحالة كلها دفعة واحدة، أو $O(m)$ إذا وُلّدت واحدًا تلو الآخر.</Ar>
+
+For chess, with $b \approx 35$ and $m \approx 80$, the tree has about $35^{80} \approx 10^{123}$ nodes. Exhaustive minimax is therefore infeasible for any real game, but it defines the **ideal** that practical algorithms approximate, and everything that follows builds on it.
+
+<Ar>وفي الشطرنج، حيث $b \approx 35$ و $m \approx 80$، تضم الشجرة نحو $35^{80} \approx 10^{123}$ عقدة. لذا يتعذّر تنفيذ minimax الشاملة في أي لعبة حقيقية، لكنها تحدد **المثال (ideal)** الذي تقترب منه الخوارزميات العملية، وكل ما يلي مبنيّ عليها.</Ar>
+
+### Worked example: a two-ply game tree
+
+<Ar>مثال محلول: شجرة لعبة من مستويين</Ar>
+
+In the book's example tree MAX moves first with $a_1$, $a_2$ or $a_3$, MIN replies, and the game ends. The leaves give the utility for MAX:
+
+<Ar>في شجرة المثال في الكتاب يتحرك MAX أولًا بإحدى النقلات $a_1$ أو $a_2$ أو $a_3$، ثم يرد MIN، وتنتهي اللعبة. وتعطي الأوراق منفعة MAX:</Ar>
+
+<Tree
+  tree="A=3(B=3(3,12,8),C=2(2#c1,4,6),D=2(14,5,2#d3))"
+  path="A=3,B=3,3"
+  caption="The root A is a MAX node; B, C and D are MIN nodes. Each node shows its minimax value. The highlighted path is the minimax play: a1, then b1, ending with utility 3."
+/>
+
+| Node <Ar>العقدة</Ar> | Player to move <Ar>صاحب الدور</Ar> | Values of its children <Ar>قيم أبنائها</Ar> | Minimax value <Ar>قيمة minimax</Ar> |
+|---|---|---|---|
+| B | MIN <Ar>اللاعب MIN</Ar> | 3, 12, 8 | **3** |
+| C | MIN <Ar>اللاعب MIN</Ar> | 2, 4, 6 | **2** |
+| D | MIN <Ar>اللاعب MIN</Ar> | 14, 5, 2 | **2** |
+| A (root) <Ar>A (الجذر)</Ar> | MAX <Ar>اللاعب MAX</Ar> | 3, 2, 2 | **3** |
+
+So $\text{MINIMAX}(A) = \max(\min(3, 12, 8), \min(2, 4, 6), \min(14, 5, 2)) = \max(3, 2, 2) = 3$. The minimax decision is $a_1$, and MIN's best reply is $b_1$.
+
+<Ar>إذن $\text{MINIMAX}(A) = \max(\min(3, 12, 8), \min(2, 4, 6), \min(14, 5, 2)) = \max(3, 2, 2) = 3$. وقرار minimax هو $a_1$، وأفضل رد لـ MIN هو $b_1$.</Ar>
+
+## Alpha–beta pruning
+
+<Ar>التقليم ألفا-بيتا</Ar>
+
+<Walkthrough id="ai4-alpha-beta" expect="bounds, trace, compare, ordering, growth; root=3; read=7; pruned=c2, c3; readWorst=9; readBook=7; readBest=5" />
+
+Minimax examines a number of states that is exponential in the depth of the tree. The exponent cannot be removed, but it can often be cut roughly in half. **Alpha–beta pruning** computes the **same minimax decision** while pruning away branches that **cannot possibly influence** the result. It keeps two bounds along the current path of the depth-first search:
+
+<Ar>تفحص minimax عددًا من الحالات يتزايد أُسّيًّا مع عمق الشجرة. ولا يمكن التخلص من الأُس، لكن كثيرًا ما يمكن تقليصه إلى النصف تقريبًا. فـ**التقليم ألفا-بيتا (alpha-beta pruning)** يحسب **قرار minimax نفسه**، ويقلّم في الوقت ذاته الفروع التي **لا يمكن أبدًا أن تؤثر** في النتيجة. وهو يحتفظ بحدّين على امتداد المسار الحالي للبحث بالعمق أولًا:</Ar>
+
+- $\alpha$: the value of the best (highest) choice found so far for MAX anywhere along the path. MAX can get **at least** $\alpha$.
+  <Ar>$\alpha$: قيمة أفضل خيار (الأعلى) وُجد حتى الآن لـ MAX في أي موضع على المسار. فيستطيع MAX الحصول على $\alpha$ **على الأقل**.</Ar>
+- $\beta$: the value of the best (lowest) choice found so far for MIN along the path. MAX can get **at most** $\beta$.
+  <Ar>$\beta$: قيمة أفضل خيار (الأدنى) وُجد حتى الآن لـ MIN على المسار. فيستطيع MAX الحصول على $\beta$ **على الأكثر**.</Ar>
+
+Each node is searched with the window $(\alpha, \beta)$ inherited from its ancestors. As its children return, a MAX node raises $\alpha$ and a MIN node lowers $\beta$. A node is **pruned**, meaning its remaining children are skipped, as soon as its value is provably $\le \alpha$ at a MIN node or $\ge \beta$ at a MAX node.
+
+<Ar>يُبحث في كل عقدة بالنافذة $(\alpha, \beta)$ الموروثة من أسلافها. وكلما عاد أحد أبنائها، ترفع عقدة MAX قيمة $\alpha$، وتخفض عقدة MIN قيمة $\beta$. وتُ**قلَّم** العقدة، أي يُتخطّى ما بقي من أبنائها، بمجرد أن يثبت أن قيمتها $\le \alpha$ عند عقدة MIN أو $\ge \beta$ عند عقدة MAX.</Ar>
+
+<Definition term="Alpha–beta pruning" termAr="التقليم ألفا-بيتا">
+  A version of minimax that carries two bounds down the tree, α (the best value MAX is already sure of) and β (the best value MIN is already sure of), and stops searching a node as soon as its value falls outside (α, β). It returns exactly the minimax decision.
+
+  <Ar>صيغة من minimax تحمل حدّين نزولًا في الشجرة، هما α (أفضل قيمة ضمنها MAX مسبقًا) و β (أفضل قيمة ضمنها MIN مسبقًا)، وتتوقف عن البحث في العقدة بمجرد أن تقع قيمتها خارج (α, β). وهي تُرجع قرار minimax نفسه تمامًا.</Ar>
+</Definition>
+
+The general principle: consider a node $n$ that a player could choose to move to. If that player has a better choice $m$, either at the parent of $n$ or at any choice point further up, then $n$ will **never be reached** in actual play. As soon as we know enough about $n$, by examining some of its descendants, to reach this conclusion, we can prune it.
+
+<Ar>المبدأ العام: لنأخذ عقدة $n$ يستطيع لاعبٌ ما أن يختار الانتقال إليها. فإذا كان لدى ذلك اللاعب خيار أفضل $m$، سواء عند العقدة الأم لـ $n$ أو عند أي نقطة اختيار أعلى منها، فلن **يُوصَل** إلى $n$ أبدًا في اللعب الفعلي. وبمجرد أن نعرف عن $n$ ما يكفي، بفحص بعض أحفادها، للوصول إلى هذا الاستنتاج، يمكننا تقليمها.</Ar>
+
+### Tracing alpha–beta on the example
+
+<Ar>تتبّع ألفا-بيتا على المثال</Ar>
+
+Run on the worked tree, children left to right:
+
+<Ar>بتشغيلها على الشجرة المحلولة، مع فحص الأبناء من اليسار إلى اليمين:</Ar>
+
+| Step <Ar>الخطوة</Ar> | Leaf read <Ar>الورقة المقروءة</Ar> | What happens <Ar>ما الذي يحدث</Ar> | α and β at that node <Ar>α و β عند تلك العقدة</Ar> |
+|---|---|---|---|
+| 1 | $b_1 = 3$ | B is a MIN node, so B ≤ 3 <Ar>B عقدة MIN، لذا B ≤ 3</Ar> | B: $\alpha = -\infty$, $\beta = 3$ |
+| 2 | $b_2 = 12$ | 12 > 3: B is still ≤ 3 <Ar>12 > 3: تبقى B ≤ 3</Ar> | B: $\alpha = -\infty$, $\beta = 3$ |
+| 3 | $b_3 = 8$ | B = 3; at the root MAX can now get at least 3 <Ar>B = 3؛ وعند الجذر صار MAX يستطيع الحصول على 3 على الأقل</Ar> | A: $\alpha = 3$, $\beta = +\infty$ |
+| 4 | $c_1 = 2$ | C ≤ 2 ≤ α: MAX will never play $a_2$, so $c_2$ and $c_3$ are **pruned** <Ar>C ≤ 2 ≤ α: لن يلعب MAX النقلة $a_2$ أبدًا، لذا **تُقلَّم** $c_2$ و $c_3$</Ar> | C: $\alpha = 3$, $\beta = 2$ |
+| 5 | $d_1 = 14$ | D ≤ 14, still above α: go on <Ar>D ≤ 14، وما زالت أعلى من α: تابع</Ar> | D: $\alpha = 3$, $\beta = 14$ |
+| 6 | $d_2 = 5$ | D ≤ 5, still above α: go on <Ar>D ≤ 5، وما زالت أعلى من α: تابع</Ar> | D: $\alpha = 3$, $\beta = 5$ |
+| 7 | $d_3 = 2$ | D = 2; the root is max(3, 2, 2) = 3 <Ar>D = 2؛ والجذر max(3, 2, 2) = 3</Ar> | A: $\alpha = 3$, $\beta = +\infty$ |
+
+Alpha–beta reads **7 of the 9** leaves and never looks at $c_2 = 4$ or $c_3 = 6$: whatever their values, C is worth at most 2, and MAX already has 3 from B.
+
+<Ar>تقرأ ألفا-بيتا **7 من 9** أوراق، ولا تنظر أبدًا إلى $c_2 = 4$ ولا إلى $c_3 = 6$: فمهما كانت قيمتاهما، لا تزيد قيمة C على 2، بينما ضمن MAX مسبقًا 3 من B.</Ar>
+
+<Tree
+  tree="A=3(B=3(3,12,8),C(2#c1,4,6),D=2(14,5,2#d3))"
+  order="3,12,8,2#c1,14,5,2#d3"
+  path="A=3,B=3,3"
+  caption="The numbered leaves are the 7 that alpha–beta reads, in order. The leaves 4 and 6 under C have no number: they are pruned, so C's exact value is never computed (only that it is at most 2)."
+/>
+
+<Callout type="note" title="Ranges are not the α–β window" titleAr="المدى ليس نافذة α–β">
+  The book's stage-by-stage figure labels each node with the **range** of values it can still take, such as $[-\infty, 2]$ for C after its first leaf. That range is not the window C is searched with, which is $(\alpha, \beta) = (3, +\infty)$: α comes from the root, where MAX already has 3. The cut happens exactly because C's range lies entirely at or below α.
+
+  <Ar>يَسِم شكلُ الكتاب ذو المراحل كلَّ عقدة **بمدى (range)** القيم التي ما زال يمكن أن تأخذها، مثل $[-\infty, 2]$ للعقدة C بعد ورقتها الأولى. وهذا المدى ليس النافذة التي يُبحث بها في C، وهي $(\alpha, \beta) = (3, +\infty)$: إذ تأتي α من الجذر، حيث ضمن MAX مسبقًا 3. ويحدث القطع تحديدًا لأن مدى C يقع كله عند α أو دونها.</Ar>
+</Callout>
+
+### Alpha–beta in code
+
+<Ar>ألفا-بيتا في الشيفرة</Ar>
+
+The functions are those of minimax plus the two bounds and two cutoff tests. As in the book's pseudocode, α (or β) is updated whenever $v$ improves, and the function returns early when $v$ falls outside the window:
+
+<Ar>الدوال هي دوال minimax نفسها مع إضافة الحدّين واختبارَي قطع. وكما في الشيفرة الزائفة (pseudocode) في الكتاب، تُحدَّث α (أو β) كلما تحسّنت $v$، وتعود الدالة مبكرًا عندما تقع $v$ خارج النافذة:</Ar>
+
+```python title="alpha_beta.py"
+import math
+
+TREE = {
+    "a1": {"b1": 3, "b2": 12, "b3": 8},
+    "a2": {"c1": 2, "c2": 4, "c3": 6},
+    "a3": {"d1": 14, "d2": 5, "d3": 2},
+}
+read = []                                  # leaves in the order they are examined
+
+def max_value(state, alpha, beta, name="root"):
+    if not isinstance(state, dict):
+        read.append(name)
+        return state, None
+    v, move = -math.inf, None
+    for a, child in state.items():
+        v2, _ = min_value(child, alpha, beta, a)
+        if v2 > v:
+            v, move = v2, a
+            alpha = max(alpha, v)
+        if v >= beta:
+            return v, move                 # MIN above already has something better
+    return v, move
+
+def min_value(state, alpha, beta, name="root"):
+    if not isinstance(state, dict):
+        read.append(name)
+        return state, None
+    v, move = math.inf, None
+    for a, child in state.items():
+        v2, _ = max_value(child, alpha, beta, a)
+        if v2 < v:
+            v, move = v2, a
+            beta = min(beta, v)
+        if v <= alpha:
+            return v, move                 # MAX above already has something better
+    return v, move
+
+def alpha_beta_search(state):
+    return max_value(state, -math.inf, math.inf)
+
+print(alpha_beta_search(TREE))  # (3, 'a1')
+print(read)                     # ['b1', 'b2', 'b3', 'c1', 'd1', 'd2', 'd3']
+```
+
+### Move ordering
+
+<Ar>ترتيب النقلات</Ar>
+
+The effectiveness of alpha–beta depends heavily on the **order** in which moves are examined. In the example, C was pruned at once because its first leaf was its smallest; D was not, because its smallest leaf came last.
+
+<Ar>تعتمد فاعلية ألفا-بيتا اعتمادًا كبيرًا على **الترتيب** الذي تُفحص به النقلات. ففي المثال قُلّمت C فورًا لأن ورقتها الأولى كانت أصغر أوراقها؛ ولم تُقلَّم D لأن أصغر أوراقها جاءت أخيرًا.</Ar>
+
+- **Best case**: with perfect ordering alpha–beta examines only $O(b^{m/2})$ nodes instead of $O(b^m)$. The effective branching factor becomes $\sqrt{b}$, about 6 instead of 35 for chess, so in the same time it can search roughly **twice as deep**.
+  <Ar>**أفضل حالة**: مع الترتيب المثالي لا تفحص ألفا-بيتا إلا $O(b^{m/2})$ عقدة بدلًا من $O(b^m)$. فيصبح معامل التفرّع الفعلي (effective branching factor) $\sqrt{b}$، أي نحو 6 بدلًا من 35 في الشطرنج، فتستطيع في الوقت نفسه أن تبحث إلى **ضعف العمق** تقريبًا.</Ar>
+- **Random ordering**: roughly $O(b^{3m/4})$ nodes.
+  <Ar>**الترتيب العشوائي**: نحو $O(b^{3m/4})$ عقدة.</Ar>
+- **Ordering heuristics**: try captures first, then threats, then forward moves; remember the **killer moves** that turned out best elsewhere in the tree; and use **iterative deepening** so that each search learns a good order from the previous, shallower one.
+  <Ar>**أساليب استدلالية للترتيب**: جرّب نقلات الأسر (captures) أولًا، ثم التهديدات، ثم النقلات المتقدمة إلى الأمام؛ وتذكّر **النقلات القاتلة (killer moves)** التي تبيّن أنها الأفضل في مواضع أخرى من الشجرة؛ واستخدم **التعميق التكراري (iterative deepening)** كي يتعلم كل بحث ترتيبًا جيدًا من البحث الأضحل الذي سبقه.</Ar>
+- **Transposition tables** cache the values of positions already evaluated, so a position reached again by a different order of moves is not searched twice.
+  <Ar>تخزّن **جداول التبديلات (transposition tables)** قيم الوضعيات التي سبق تقييمها، فلا يُبحث مرتين في وضعية يُوصَل إليها مجددًا بترتيب مختلف للنقلات.</Ar>
+
+The same tree, reordered, shows how much the order matters:
+
+<Ar>والشجرة نفسها، بعد إعادة ترتيبها، تُظهر مدى أهمية الترتيب:</Ar>
+
+| Order of the moves <Ar>ترتيب النقلات</Ar> | Leaves read <Ar>الأوراق المقروءة</Ar> | Pruned <Ar>المقلَّمة</Ar> |
+|---|---|---|
+| Worst moves first <Ar>الأسوأ أولًا</Ar> | 9 of 9 <Ar>9 من 9</Ar> | none <Ar>لا شيء</Ar> |
+| The book's order <Ar>ترتيب الكتاب</Ar> | 7 of 9 <Ar>7 من 9</Ar> | $c_2$, $c_3$ |
+| Best moves first <Ar>الأفضل أولًا</Ar> | 5 of 9 <Ar>5 من 9</Ar> | $c_2$, $c_3$, $d_1$, $d_2$ |
+
+"Best first" puts MAX's best child first at the root and the smallest leaf first under each MIN node; "worst first" does the opposite. In a uniform tree with perfect ordering, alpha–beta reads exactly $b^{\lceil m/2 \rceil} + b^{\lfloor m/2 \rfloor} - 1$ leaves (Knuth and Moore, 1975), which for $b = 3$ and $m = 2$ is $3 + 3 - 1 = 5$.
+
+<Ar>يضع ترتيب «الأفضل أولًا» أفضل أبناء MAX أولًا عند الجذر، وأصغر ورقة أولًا تحت كل عقدة MIN؛ ويفعل ترتيب «الأسوأ أولًا» العكس. وفي شجرة منتظمة مع ترتيب مثالي تقرأ ألفا-بيتا $b^{\lceil m/2 \rceil} + b^{\lfloor m/2 \rfloor} - 1$ ورقة بالضبط (Knuth و Moore، 1975)، أي $3 + 3 - 1 = 5$ عندما $b = 3$ و $m = 2$.</Ar>
+
+<Definition term="Transposition table" termAr="جدول التبديلات">
+  A hash table of positions that have already been searched, with their values. A position reached again by a different sequence of moves (a transposition) is looked up instead of being searched again.
+
+  <Ar>جدول تجزئة (hash table) للوضعيات التي سبق البحث فيها مع قيمها. فالوضعية التي يُوصَل إليها مجددًا بتسلسل مختلف من النقلات (أي تبديل (transposition)) يُبحث عنها في الجدول بدلًا من البحث فيها من جديد.</Ar>
+</Definition>
+
+### Heuristic alpha–beta: cutoffs and evaluation
+
+<Ar>ألفا-بيتا الاستدلالي: القطع والتقييم</Ar>
+
+<Walkthrough id="ai4-heuristic" expect="cutoff, eval, quiescence, deepening, forward, chess; eval=1.6; static=3; quiet=-6; plyMinimax=5; plyAlphaBeta=10" />
+
+When time is limited, **cut off** the search at a depth $d$ (or with another test, `IS-CUTOFF`) and replace `UTILITY` with a fast **evaluation function** `EVAL(s, p)`, which estimates the expected utility of state $s$ for player $p$:
+
+<Ar>عندما يكون الوقت محدودًا، **اقطع (cut off)** البحث عند عمق $d$ (أو باختبار آخر هو `IS-CUTOFF`)، واستبدل بالدالة `UTILITY` **دالةَ تقييم (evaluation function)** سريعة `EVAL(s, p)`، تقدّر المنفعة المتوقعة للحالة $s$ بالنسبة إلى اللاعب $p$:</Ar>
+
+- for terminal states, `EVAL` equals `UTILITY`;
+  <Ar>ففي الحالات النهائية تساوي `EVAL` الدالة `UTILITY`؛</Ar>
+- for nonterminal states, it returns a value between a loss and a win (for example between 0 and 1 for MAX) that correlates with the actual chances of winning.
+  <Ar>وفي الحالات غير النهائية تُرجع قيمة بين الخسارة والفوز (بين 0 و 1 لـ MAX مثلًا) ترتبط بفرص الفوز الفعلية.</Ar>
+
+Minimax with a cutoff becomes **H-MINIMAX**, where $d$ is the current depth:
+
+<Ar>وتصبح minimax مع القطع **H-MINIMAX**، حيث $d$ هو العمق الحالي:</Ar>
+
+$$
+\text{H-MINIMAX}(s, d) =
+\begin{cases}
+\text{EVAL}(s, \text{MAX}) & \text{if IS-CUTOFF}(s, d) \\
+\max_{a \in \text{ACTIONS}(s)} \text{H-MINIMAX}(\text{RESULT}(s, a), d + 1) & \text{if TO-MOVE}(s) = \text{MAX} \\
+\min_{a \in \text{ACTIONS}(s)} \text{H-MINIMAX}(\text{RESULT}(s, a), d + 1) & \text{if TO-MOVE}(s) = \text{MIN}
+\end{cases}
+$$
+
+**Designing evaluation functions.** The common approach computes **features** $f_i(s)$ of the state, such as material, mobility and king safety in chess, and combines them as a weighted sum, possibly with nonlinear terms or interactions:
+
+<Ar>**تصميم دوال التقييم.** يقوم الأسلوب الشائع على حساب **سمات (features)** $f_i(s)$ للحالة، مثل العتاد (material) وحرية الحركة (mobility) وأمان الملك في الشطرنج، ثم جمعها في مجموع موزون، وقد تُضاف إليه حدود غير خطية أو تفاعلات بين السمات:</Ar>
+
+$$
+\text{EVAL}(s) = \sum_i w_i \, f_i(s)
+$$
+
+For example, with material counted as pawn 1, knight or bishop 3, rook 5 and queen 9, a position where MAX is a knight up but a pawn down, has 6 more legal moves and a weaker king scores:
+
+<Ar>فمثلًا، إذا احتُسب العتاد بقيمة 1 للبيدق، و 3 للحصان أو الفيل، و 5 للرخ، و 9 للوزير، فإن وضعيةً يتقدم فيها MAX بحصان لكنه متأخر ببيدق، ولديه 6 نقلات مسموحة إضافية، وملكه أضعف حماية، تُقيَّم هكذا:</Ar>
+
+| Feature <Ar>السمة</Ar> | $f_i(s)$ | $w_i$ | $w_i f_i(s)$ |
+|---|---|---|---|
+| Material balance <Ar>توازن العتاد</Ar> | $+3 - 1 = +2$ | 1 | 2 |
+| Mobility (extra legal moves) <Ar>حرية الحركة (النقلات المسموحة الإضافية)</Ar> | $+6$ | 0.1 | 0.6 |
+| King safety <Ar>أمان الملك</Ar> | $-2$ | 0.5 | $-1$ |
+| **Total: EVAL(s)** <Ar>**المجموع: EVAL(s)**</Ar> | | | **1.6** |
+
+- It must be **fast** and strongly **correlated** with the chances of winning.
+  <Ar>يجب أن تكون **سريعة** وشديدة **الارتباط (correlated)** بفرص الفوز.</Ar>
+- The weights $w_i$ can be hand-tuned or **learned** from data or from self-play.
+  <Ar>ويمكن ضبط الأوزان $w_i$ يدويًا أو **تعلّمها** من البيانات أو من اللعب الذاتي (self-play).</Ar>
+- Good functions are **phase-aware** (the endgame needs different weights from the middlegame) and capture **interactions**, such as a pair of bishops being worth more than two separate bishops.
+  <Ar>والدوال الجيدة **تراعي مرحلة اللعبة (phase-aware)** (إذ تحتاج النهايات إلى أوزان تختلف عن أوزان وسط اللعبة)، وتلتقط **التفاعلات (interactions)**، مثل كون زوج الفيلين أثمن من فيلين منفصلين.</Ar>
+
+<Definition term="Evaluation function" termAr="دالة التقييم">
+  A fast estimate EVAL(s, p) of the expected utility of a state for a player, used in place of UTILITY at the states where the search is cut off. It equals the utility at terminal states and should correlate with the chances of winning elsewhere.
+
+  <Ar>تقدير سريع EVAL(s, p) للمنفعة المتوقعة لحالة ما بالنسبة إلى لاعب، يُستخدم بدلًا من UTILITY عند الحالات التي يُقطع فيها البحث. وهو يساوي المنفعة عند الحالات النهائية، وينبغي أن يرتبط بفرص الفوز في غيرها.</Ar>
+</Definition>
+
+**Controlling the search.** Three techniques decide where and how deep to stop:
+
+<Ar>**التحكم في البحث.** تحدد ثلاثة أساليب أين يتوقف البحث وإلى أي عمق:</Ar>
+
+- A **fixed depth limit**, or **iterative deepening**: search progressively deeper and, when time runs out, return the best move of the deepest completed iteration.
+  <Ar>**حدٌّ ثابت للعمق**، أو **التعميق التكراري (iterative deepening)**: ابحث إلى أعماق متزايدة تدريجيًا، وعندما ينفد الوقت أرجِع أفضل نقلة من أعمق تكرار اكتمل.</Ar>
+- Keep the **transposition table** across iterations: it makes the search faster and gives better move ordering.
+  <Ar>احتفظ بـ**جدول التبديلات (transposition table)** بين التكرارات: فهو يُسرّع البحث ويمنح ترتيبًا أفضل للنقلات.</Ar>
+- **Quiescence search**: extend the search in "tactical" positions, such as pending captures or checks, to avoid the **horizon effect**.
+  <Ar>**بحث السكون (quiescence search)**: مدّد البحث في الوضعيات «التكتيكية»، مثل عمليات الأسر أو الكش المعلّقة، لتجنّب **تأثير الأفق (horizon effect)**.</Ar>
+
+<Definition term="Horizon effect" termAr="تأثير الأفق">
+  The failure of a depth-limited search to see a threat or a gain that lies just beyond its cutoff, so that it misjudges the position: for example, scoring a queen's capture of a knight as +3 when the queen is lost on the next move.
+
+  <Ar>إخفاق البحث محدود العمق في رؤية تهديد أو مكسب يقع بعد نقطة القطع مباشرة، فيُسيء تقدير الوضعية: كأن يقيّم أسرَ الوزير لحصانٍ بالقيمة +3، مع أن الوزير يُخسَر في النقلة التالية.</Ar>
+</Definition>
+
+<Definition term="Quiescence search" termAr="بحث السكون">
+  Extending the search beyond the depth limit in positions that are not quiet (pending captures or checks), so that the evaluation function is applied only to positions whose value is unlikely to swing sharply in the next few moves.
+
+  <Ar>تمديد البحث إلى ما بعد حد العمق في الوضعيات غير الهادئة (التي فيها عمليات أسر أو كش معلّقة)، بحيث لا تُطبَّق دالة التقييم إلا على وضعيات يُستبعد أن تتأرجح قيمتها تأرجحًا حادًا في النقلات القليلة التالية.</Ar>
+</Definition>
+
+### Forward pruning
+
+<Ar>التقليم الأمامي</Ar>
+
+Alpha–beta prunes only what is **proven** irrelevant. **Forward pruning** goes further: it prunes moves that merely **seem** poor, before proving that they are irrelevant. This is the spirit of Shannon's "Type B" strategy, which follows a few promising lines instead of every move to a fixed depth ("Type A"). It saves time, but it risks missing a tactic hidden in a pruned move.
+
+<Ar>لا يقلّم ألفا-بيتا إلا ما **ثبت** أنه غير مؤثر. أما **التقليم الأمامي (forward pruning)** فيذهب أبعد من ذلك: إذ يقلّم النقلات التي **تبدو** ضعيفة فحسب، قبل إثبات أنها غير مؤثرة. وهذه روح استراتيجية «النوع B» عند شانون (Shannon)، التي تتبع بضعة مسارات واعدة بدلًا من فحص كل نقلة إلى عمق ثابت («النوع A»). وهو يوفّر الوقت، لكنه قد يُفوِّت تكتيكًا مختبئًا في نقلة مقلَّمة.</Ar>
+
+- **Beam search**: at each ply, consider only the top $n$ moves according to the evaluation function.
+  <Ar>**بحث الحزمة (beam search)**: عند كل مستوى (ply) لا تنظر إلا في أفضل $n$ نقلات وفق دالة التقييم.</Ar>
+- **PROBCUT**: use a shallow search, together with statistics learned from earlier games, to prune nodes whose value is **probably** outside the current $(\alpha, \beta)$ window.
+  <Ar>**PROBCUT**: استخدم بحثًا ضحلًا، مع إحصاءات متعلَّمة من مباريات سابقة، لتقليم العقد التي تقع قيمتها **على الأرجح** خارج النافذة الحالية $(\alpha, \beta)$.</Ar>
+- **Late-move reduction**: search the moves that come late in the ordering to a **reduced depth**, and re-search one to full depth only if its value looks promising.
+  <Ar>**تقليص النقلات المتأخرة (late-move reduction)**: ابحث في النقلات المتأخرة في الترتيب إلى **عمق مخفَّض**، ولا تُعِد البحث في إحداها إلى العمق الكامل إلا إذا بدت قيمتها واعدة.</Ar>
+
+Combined with alpha–beta, good move ordering, transposition tables and quiescence search, these techniques give strong practical play.
+
+<Ar>وعند جمع هذه الأساليب مع ألفا-بيتا، وترتيب جيد للنقلات، وجداول التبديلات، وبحث السكون، فإنها تعطي لعبًا عمليًا قويًا.</Ar>
+
+<Definition term="Forward pruning" termAr="التقليم الأمامي">
+  Pruning moves that appear poor before proving that they cannot affect the decision, as in beam search, PROBCUT or late-move reduction. Unlike alpha–beta it can change the decision, trading some safety for speed.
+
+  <Ar>تقليم النقلات التي تبدو ضعيفة قبل إثبات أنها لا تؤثر في القرار، كما في بحث الحزمة (beam search) و PROBCUT وتقليص النقلات المتأخرة. وهو، بخلاف ألفا-بيتا، قد يغيّر القرار، إذ يُبادل شيئًا من الأمان بالسرعة.</Ar>
+</Definition>
+
+### Practical performance: chess
+
+<Ar>الأداء العملي: الشطرنج</Ar>
+
+The book sums up what these techniques achieve in chess:
+
+<Ar>يلخّص الكتاب ما تحققه هذه الأساليب في الشطرنج:</Ar>
+
+- Pure minimax at about a million nodes per second searches roughly **5 ply** in a minute: too shallow for good play.
+  <Ar>تبحث minimax الخالصة، بمعدل مليون عقدة في الثانية تقريبًا، إلى نحو **5 مستويات** في دقيقة: وهو عمق أضحل من أن يُلعب به جيدًا.</Ar>
+- Alpha–beta with transposition tables, move ordering, quiescence search and iterative deepening reaches **14 ply or more** on a modern CPU: expert strength.
+  <Ar>ويبلغ ألفا-بيتا، مع جداول التبديلات وترتيب النقلات وبحث السكون والتعميق التكراري، **14 مستوى أو أكثر** على معالج حديث: أي مستوى الخبراء.</Ar>
+- Heavily optimised engines with large endgame and knowledge bases, such as **Stockfish**, search **30 ply and more** and play at a superhuman level.
+  <Ar>أما المحركات المُحسَّنة إلى أقصى حد، والمزوّدة بقواعد ضخمة للنهايات والمعرفة، مثل **Stockfish**، فتبحث إلى **30 مستوى وأكثر**، وتلعب بمستوى يفوق البشر.</Ar>
+
+The arithmetic behind the first line: a minute at $10^6$ nodes per second is $6 \times 10^7$ nodes. Full minimax needs about $35^m$ nodes for depth $m$, and $35^5 \approx 5.25 \times 10^7$ fits in the budget while $35^6 \approx 1.8 \times 10^9$ does not. Perfectly ordered alpha–beta needs about $35^{m/2}$ nodes, which reaches $m = 10$ with the same budget.
+
+<Ar>الحساب وراء السطر الأول: دقيقة بمعدل $10^6$ عقدة في الثانية تعني $6 \times 10^7$ عقدة. وتحتاج minimax الكاملة إلى نحو $35^m$ عقدة للعمق $m$، و $35^5 \approx 5.25 \times 10^7$ تتسع لها الميزانية، بينما $35^6 \approx 1.8 \times 10^9$ لا تتسع. أما ألفا-بيتا مع الترتيب المثالي فتحتاج إلى نحو $35^{m/2}$ عقدة، فتبلغ $m = 10$ بالميزانية نفسها.</Ar>
+
+<Callout type="warning" title="Check the source" titleAr="راجِع المصدر">
+
+The book's chess figures need two clarifications. First, "~5 ply/minute" is not a rate. Depth grows only logarithmically with time: each extra ply costs about 35 times more, so two minutes still give about 5 ply, not 10. It means about 5 ply when one move is given about a minute. Second, the book credits the 14+ ply to alpha–beta and four other techniques together. Alpha–beta alone, with good ordering, roughly doubles minimax's depth, from 5 to about 10 ply; AIMA (§5.2.4) states this as searching a tree about twice as deep in the same time. The rest of the way to 14 comes from transposition tables, quiescence, iterative deepening and forward pruning.
+
+<Ar>تحتاج أرقام الكتاب عن الشطرنج إلى توضيحين. أولًا، عبارة «~5 ply/minute» ليست معدّلًا. فالعمق لا ينمو مع الوقت إلا لوغاريتميًا: إذ يكلّف كل مستوى إضافي نحو 35 ضعفًا، لذا تبقى الدقيقتان عند نحو 5 مستويات لا 10. والمقصود نحو 5 مستويات عندما تُمنح النقلة الواحدة دقيقة تقريبًا. ثانيًا، ينسب الكتاب الـ 14 مستوى وأكثر إلى ألفا-بيتا مع أربعة أساليب أخرى مجتمعة. أما ألفا-بيتا وحده، مع ترتيب جيد، فيضاعف عمق minimax تقريبًا، من 5 إلى نحو 10 مستويات؛ ويعبّر AIMA (القسم 5.2.4) عن ذلك بأنه يبحث في شجرة أعمق بنحو الضعف في الوقت نفسه. أما بقية الطريق إلى 14 فتأتي من جداول التبديلات وبحث السكون والتعميق التكراري والتقليم الأمامي.</Ar>
+
+</Callout>
+
+<Takeaways>
+
+- Adversarial search models opponents **explicitly** with **game trees**; the alternatives are the aggregate stance and treating the adversary as part of the environment, which misses intention.
+  <Ar>ينمذج البحث التنافسي الخصوم **صراحةً** باستخدام **أشجار اللعبة (game trees)**؛ والبديلان هما المنظور التجميعي، ومعاملة الخصم كجزء من البيئة، وهو ما يُغفل النيّة.</Ar>
+- For two-player, zero-sum games of perfect information, **minimax** defines optimal play: MIN nodes back up the minimum, MAX nodes the maximum. It costs $O(b^m)$ time and $O(bm)$ space.
+  <Ar>في الألعاب الثنائية صفرية المجموع ذات المعلومات الكاملة، تحدد **minimax** اللعب الأمثل: فعقد MIN ترفع القيمة الصغرى، وعقد MAX ترفع العظمى. وتكلفتها $O(b^m)$ زمنًا و $O(bm)$ مساحةً.</Ar>
+- **Alpha–beta** returns the same decision while pruning provably irrelevant branches; on the worked tree it reads 7 of the 9 leaves and the root is still 3.
+  <Ar>يُرجع **ألفا-بيتا** القرار نفسه بينما يقلّم الفروع التي ثبت أنها غير مؤثرة؛ ففي الشجرة المحلولة يقرأ 7 من 9 أوراق، ويبقى الجذر 3.</Ar>
+- **Move ordering**, **transposition tables** and **iterative deepening** greatly reduce the work: perfect ordering gives $O(b^{m/2})$, about twice the depth in the same time.
+  <Ar>يقلّل **ترتيب النقلات** و**جداول التبديلات** و**التعميق التكراري** العمل كثيرًا: فالترتيب المثالي يعطي $O(b^{m/2})$، أي نحو ضعف العمق في الوقت نفسه.</Ar>
+- With **cutoffs** we rely on fast, informative **evaluation functions** (weighted features, possibly learned), and **quiescence search** guards against the horizon effect.
+  <Ar>ومع **القطع** نعتمد على **دوال تقييم** سريعة وغنية بالمعلومات (سمات موزونة، قد تكون متعلَّمة)، ويحمي **بحث السكون** من تأثير الأفق.</Ar>
+- **Forward pruning** (beam search, PROBCUT, late-move reduction) trades some safety for speed. The right combination of these techniques gives competitive to superhuman play in complex games.
+  <Ar>يُبادل **التقليم الأمامي** (بحث الحزمة، و PROBCUT، وتقليص النقلات المتأخرة) شيئًا من الأمان بالسرعة. والمزيج الصحيح من هذه الأساليب يعطي لعبًا يتراوح بين المنافس والمتفوق على البشر في الألعاب المعقدة.</Ar>
+
+</Takeaways>
+
+## Practice
+
+<Ar>تدريب</Ar>
+
+<Exercise title="Compute the minimax value" titleAr="احسب قيمة minimax" level="easy">
+
+MAX moves at the root A, MIN at B and C, and MAX again at D, E, F and G. The leaves are D: (3, 5), E: (6, 9), F: (1, 2) and G: (0, −1). Compute the minimax value of every node and MAX's best first move.
+
+<Ar>يتحرك MAX عند الجذر A، ويتحرك MIN عند B و C، ثم يتحرك MAX مجددًا عند D و E و F و G. والأوراق هي D: (3, 5)، و E: (6, 9)، و F: (1, 2)، و G: (0, −1). احسب قيمة minimax لكل عقدة، وأفضل نقلة أولى لـ MAX.</Ar>
+
+<Tree tree="A(B(D(3,5),E(6,9)),C(F(1,2),G(0,-1)))" caption="A three-ply tree: MAX at A, MIN at B and C, MAX at D, E, F and G." />
+
+<Solution>
+
+- Bottom MAX level: D = max(3, 5) = 5, E = max(6, 9) = 9, F = max(1, 2) = 2, G = max(0, −1) = 0.
+  <Ar>المستوى السفلي (MAX): D = max(3, 5) = 5، و E = max(6, 9) = 9، و F = max(1, 2) = 2، و G = max(0, −1) = 0.</Ar>
+- MIN level: B = min(5, 9) = 5 and C = min(2, 0) = 0.
+  <Ar>مستوى MIN: B = min(5, 9) = 5، و C = min(2, 0) = 0.</Ar>
+- Root: A = max(5, 0) = **5**, so MAX's best first move is to **B**.
+  <Ar>الجذر: A = max(5, 0) = **5**، لذا فأفضل نقلة أولى لـ MAX هي الانتقال إلى **B**.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Which branches does alpha–beta prune?" titleAr="أي الفروع يقلّمها ألفا-بيتا؟" level="medium">
+
+Run alpha–beta on the same tree, children left to right. Which leaves are never examined, and at which node does each cutoff happen?
+
+<Ar>شغّل ألفا-بيتا على الشجرة نفسها، مع فحص الأبناء من اليسار إلى اليمين. ما الأوراق التي لا تُفحص أبدًا، وعند أي عقدة يحدث كل قطع؟</Ar>
+
+<Solution>
+
+- D reads 3 and 5, so D = 5 and, at B, β = 5.
+  <Ar>تقرأ D القيمتين 3 و 5، فتصبح D = 5، وتصبح β عند B مساوية 5.</Ar>
+- E is searched with (α, β) = (−∞, 5). Its first leaf is 6 ≥ β, so E returns at once and **leaf 9 is pruned**: a cutoff at the MAX node E. Then B = 5, and at the root α = 5.
+  <Ar>يُبحث في E بالنافذة (α, β) = (−∞, 5). وورقتها الأولى 6 ≥ β، فتعود E فورًا و**تُقلَّم الورقة 9**: وهذا قطع عند عقدة MAX هي E. ثم تصبح B = 5، وعند الجذر α = 5.</Ar>
+- C is searched with α = 5. F reads 1 and 2, so F = 2. Now C ≤ 2 ≤ α, so the **whole subtree G (leaves 0 and −1) is pruned**: a cutoff at the MIN node C.
+  <Ar>يُبحث في C مع α = 5. تقرأ F القيمتين 1 و 2، فتصبح F = 2. وعندئذ C ≤ 2 ≤ α، لذا **تُقلَّم الشجرة الفرعية G كلها (الورقتان 0 و −1)**: وهذا قطع عند عقدة MIN هي C.</Ar>
+- Only 5 of the 8 leaves are read (3, 5, 6, 1, 2), and the root is still **5**, as minimax says.
+  <Ar>لا تُقرأ إلا 5 من 8 أوراق (3، 5، 6، 1، 2)، ويبقى الجذر **5** كما تقول minimax.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Order the moves for maximum pruning" titleAr="رتّب النقلات لأقصى تقليم" level="medium">
+
+(a) Reorder the moves of the worked example (root A with B, C and D) so that alpha–beta reads as few leaves as possible. How many does it read? (b) For a uniform tree with $b = 10$ and $m = 6$, how many leaves does minimax examine, and how many does alpha–beta examine with perfect ordering?
+
+<Ar>(أ) أعِد ترتيب نقلات المثال المحلول (الجذر A مع B و C و D) بحيث تقرأ ألفا-بيتا أقل عدد ممكن من الأوراق. كم ورقة تقرأ؟ (ب) في شجرة منتظمة حيث $b = 10$ و $m = 6$، كم ورقة تفحص minimax، وكم ورقة تفحص ألفا-بيتا مع الترتيب المثالي؟</Ar>
+
+<Solution>
+
+(a) Put each player's best move first: B stays first at the root, and under each MIN node the smallest leaf goes first, giving B (3, 8, 12), C (2, 4, 6) and D (2, 5, 14). B is read fully (3 leaves, nothing can be cut there) and sets α = 3 at the root. C and D are each cut after their first leaf, because 2 ≤ 3. Alpha–beta reads **5** leaves, the minimum $3 + 3 - 1$.
+
+<Ar>(أ) ضع أفضل نقلة لكل لاعب أولًا: تبقى B أولى عند الجذر، وتوضع أصغر ورقة أولًا تحت كل عقدة MIN، فنحصل على B (3, 8, 12)، و C (2, 4, 6)، و D (2, 5, 14). تُقرأ B كاملة (3 أوراق، إذ لا يمكن القطع فيها)، فتجعل α = 3 عند الجذر. ثم تُقطع كلٌّ من C و D بعد ورقتها الأولى، لأن 2 ≤ 3. فتقرأ ألفا-بيتا **5** أوراق، وهو الحد الأدنى $3 + 3 - 1$.</Ar>
+
+(b) Minimax examines $10^6 = 1{,}000{,}000$ leaves. Perfectly ordered alpha–beta examines $10^3 + 10^3 - 1 = 1{,}999$, about 500 times fewer. With a random order it would examine roughly $10^{4.5} \approx 31{,}600$.
+
+<Ar>(ب) تفحص minimax $10^6 = 1{,}000{,}000$ ورقة. أما ألفا-بيتا مع الترتيب المثالي فتفحص $10^3 + 10^3 - 1 = 1{,}999$ ورقة، أي أقل بنحو 500 مرة. ومع ترتيب عشوائي تفحص نحو $10^{4.5} \approx 31{,}600$ ورقة.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "Chess scores a win as 1, a draw as ½ and a loss as 0. Why is it still called zero-sum?",
+      qAr: "يحتسب الشطرنج الفوز 1 والتعادل ½ والخسارة 0. فلماذا يُسمّى مع ذلك صفري المجموع؟",
+      options: ["The two players' payoffs always add up to the same constant", "A draw is worth zero", "Optimal play always ends in a draw", "MIN's utility is always 0"],
+      optionsAr: ["مجموع عائدَي اللاعبين يساوي دائمًا الثابت نفسه", "قيمة التعادل صفر", "اللعب الأمثل ينتهي دائمًا بالتعادل", "منفعة MIN تساوي 0 دائمًا"],
+      answer: 0,
+      explain: "In every outcome the payoffs sum to 1 (1 + 0, ½ + ½, 0 + 1), so whatever one player gains the other loses. Constant-sum would be the more precise name.",
+      explainAr: "مجموع العائدين 1 في كل نتيجة (1 + 0، ½ + ½، 0 + 1)، فكل ما يكسبه أحد اللاعبين يخسره الآخر. والتسمية الأدق هي «ثابتة المجموع»."
+    },
+    {
+      q: "In the worked tree (B: 3, 12, 8; C: 2, 4, 6; D: 14, 5, 2), what is the root's minimax value, and which move does MAX play?",
+      qAr: "في الشجرة المحلولة (B: 3, 12, 8؛ C: 2, 4, 6؛ D: 14, 5, 2)، ما قيمة minimax للجذر، وأي نقلة يلعبها MAX؟",
+      options: ["3, move a1", "2, move a2", "14, move a3", "12, move a1"],
+      optionsAr: ["3، النقلة a1", "2، النقلة a2", "14، النقلة a3", "12، النقلة a1"],
+      answer: 0,
+      explain: "B = 3, C = 2 and D = 2, so the root is max(3, 2, 2) = 3, reached by a1.",
+      explainAr: "B = 3 و C = 2 و D = 2، لذا فالجذر max(3, 2, 2) = 3، ويُوصَل إليه بالنقلة a1."
+    },
+    {
+      q: "What are the time and space complexity of minimax with branching factor b and maximum depth m?",
+      qAr: "ما التعقيد الزمني والمكاني لخوارزمية minimax مع معامل تفرّع b وأقصى عمق m؟",
+      options: ["O(b^m) time, O(bm) space", "O(bm) time, O(b^m) space", "O(b^(m/2)) time, O(m) space", "O(m) time, O(b) space"],
+      optionsAr: ["الزمن O(b^m) والمساحة O(bm)", "الزمن O(bm) والمساحة O(b^m)", "الزمن O(b^(m/2)) والمساحة O(m)", "الزمن O(m) والمساحة O(b)"],
+      answer: 0,
+      explain: "It explores the complete game tree depth-first: b^m nodes in time, but only one path and its siblings in memory.",
+      explainAr: "تستكشف شجرة اللعبة كاملة بالعمق أولًا: b^m عقدة من حيث الزمن، لكنها لا تحتفظ في الذاكرة إلا بمسار واحد وأشقاء عقده."
+    },
+    {
+      q: "Which leaves of the worked tree does alpha–beta never examine, with children taken left to right?",
+      qAr: "ما أوراق الشجرة المحلولة التي لا تفحصها ألفا-بيتا أبدًا، مع فحص الأبناء من اليسار إلى اليمين؟",
+      options: ["c2 and c3", "d2 and d3", "b2 and b3", "None: it reads all 9"],
+      optionsAr: ["الورقتان c2 و c3", "الورقتان d2 و d3", "الورقتان b2 و b3", "لا شيء: تقرأ الأوراق التسع كلها"],
+      answer: 0,
+      explain: "After c1 = 2, C is worth at most 2, while MAX already has 3 from B. C can never be chosen, so c2 and c3 are pruned.",
+      explainAr: "بعد c1 = 2 لا تزيد قيمة C على 2، بينما ضمن MAX مسبقًا 3 من B. فلا يمكن أن تُختار C أبدًا، لذا تُقلَّم c2 و c3."
+    },
+    {
+      q: "With perfect move ordering, roughly how many nodes does alpha–beta examine?",
+      qAr: "مع الترتيب المثالي للنقلات، كم عقدة تفحص ألفا-بيتا تقريبًا؟",
+      options: ["O(b^m)", "O(b^(3m/4))", "O(b^(m/2))", "O(bm)"],
+      optionsAr: ["O(b^m)", "O(b^(3m/4))", "O(b^(m/2))", "O(bm)"],
+      answer: 2,
+      explain: "The effective branching factor drops to √b, so alpha–beta searches about twice as deep as minimax in the same time. Random ordering gives roughly O(b^(3m/4)).",
+      explainAr: "ينخفض معامل التفرّع الفعلي إلى √b، فتبحث ألفا-بيتا إلى نحو ضعف عمق minimax في الوقت نفسه. أما الترتيب العشوائي فيعطي نحو O(b^(3m/4))."
+    },
+    {
+      q: "A depth-limited search stops right after MAX's queen takes a knight and scores the position +3, missing that MIN takes the queen next. What is this called, and what fixes it?",
+      qAr: "يتوقف بحث محدود العمق مباشرة بعد أن يأسر وزير MAX حصانًا، فيقيّم الوضعية بالقيمة +3، ويغفل أن MIN سيأسر الوزير في النقلة التالية. ماذا يُسمّى ذلك، وما الذي يعالجه؟",
+      options: ["The horizon effect; quiescence search", "A transposition; a transposition table", "A beam cutoff; beam search", "A killer move; move ordering"],
+      optionsAr: ["تأثير الأفق؛ وبحث السكون", "التبديل؛ وجدول التبديلات", "قطع الحزمة؛ وبحث الحزمة", "النقلة القاتلة؛ وترتيب النقلات"],
+      answer: 0,
+      explain: "Quiescence search keeps searching positions with pending captures or checks until they are quiet, so EVAL is applied only to stable positions.",
+      explainAr: "يواصل بحث السكون البحث في الوضعيات التي فيها عمليات أسر أو كش معلّقة حتى تهدأ، فلا تُطبَّق EVAL إلا على وضعيات مستقرة."
+    },
+    {
+      q: "How does forward pruning differ from alpha–beta pruning?",
+      qAr: "بمَ يختلف التقليم الأمامي عن التقليم ألفا-بيتا؟",
+      options: ["It prunes moves that only seem poor, so it can miss the best move", "It never changes the minimax decision", "It only works with perfect move ordering", "It searches every move to full depth"],
+      optionsAr: ["يقلّم نقلات تبدو ضعيفة فقط، لذا قد يُفوِّت أفضل نقلة", "لا يغيّر قرار minimax أبدًا", "لا يعمل إلا مع الترتيب المثالي للنقلات", "يبحث في كل نقلة إلى العمق الكامل"],
+      answer: 0,
+      explain: "Alpha–beta prunes only branches proven irrelevant, so its decision is exact. Forward pruning (beam search, PROBCUT, late-move reduction) trades that guarantee for speed.",
+      explainAr: "لا يقلّم ألفا-بيتا إلا الفروع التي ثبت أنها غير مؤثرة، لذا يكون قراره دقيقًا. أما التقليم الأمامي (بحث الحزمة، و PROBCUT، وتقليص النقلات المتأخرة) فيُبادل هذا الضمان بالسرعة."
+    }
+  ]}
+/>

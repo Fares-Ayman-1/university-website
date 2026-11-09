@@ -37,6 +37,8 @@ bookRefs:
 
 <Ar>البحث الشجري</Ar>
 
+<Walkthrough id="ai3-tree-search" expect="expand, state-node, loop, insert" />
+
 Search is an **offline, simulated exploration** of the state space. Starting from the initial state, we **expand** states: we generate their successors, then choose which one to expand next. The choice is the **search strategy**.
 
 <Ar>البحث هو **استكشاف محاكى (simulated) يجري مسبقًا دون اتصال (offline)** لفضاء الحالات. فبدءًا من الحالة الابتدائية **نوسّع (expand)** الحالات: أي نولّد الحالات التالية لها، ثم نختار أيها نوسّع بعد ذلك. وهذا الاختيار هو **استراتيجية البحث (search strategy)**.</Ar>
@@ -109,6 +111,8 @@ function EXPAND(node, problem) returns a set of nodes
 
 <Ar>تقييم استراتيجيات البحث</Ar>
 
+<Walkthrough id="ai3-evaluating" expect="criteria, bdm, growth, blind" />
+
 A strategy is defined by the **order of node expansion**. We judge it on four criteria:
 
 <Ar>تُعرَّف الاستراتيجية بـ**ترتيب توسيع العقد**، ونحكم عليها وفق أربعة معايير:</Ar>
@@ -139,6 +143,8 @@ Time and space are measured with three quantities:
 
 <Ar>البحث بالعرض أولًا (BFS)</Ar>
 
+<Walkthrough id="ai3-bfs" expect="fifo, optimal, time, memory; bfs=A,B,C,D,E,F,G; day=8640" />
+
 **Expand the shallowest unexpanded node.** The fringe is a **FIFO queue**: new successors go to the back.
 
 <Ar>**وسّع العقدة الأقل عمقًا من بين العقد غير الموسَّعة.** الحافة هنا **طابور (queue) من نوع FIFO**: تُضاف الحالات التالية الجديدة إلى نهايته.</Ar>
@@ -166,6 +172,8 @@ The extra $b(b^d - 1)$ term appears because the goal test is applied when a node
 
 <Ar>البحث بالتكلفة الموحدة (UCS)</Ar>
 
+<Walkthrough id="ai3-ucs" expect="priority, equal, goal-test, bound; cost=278; early=310" />
+
 **Expand the least-cost unexpanded node.** The fringe is a **priority queue ordered by path cost** $g(n)$, lowest first. When all step costs are equal, UCS behaves exactly like BFS.
 
 <Ar>**وسّع العقدة غير الموسَّعة الأقل تكلفة.** الحافة هنا **طابور أولوية (priority queue) مرتَّب حسب تكلفة المسار** $g(n)$، الأقل أولًا. وعندما تتساوى تكاليف جميع الخطوات، يتصرف UCS تمامًا مثل BFS.</Ar>
@@ -187,9 +195,19 @@ Let $C^*$ be the cost of the optimal solution and $\epsilon$ the smallest step c
   <Ar>للشرط $\epsilon > 0$ أهمية: فمع وجود خطوات تكلفتها صفر، قد يدور UCS إلى الأبد على مسار من الأفعال صفرية التكلفة.</Ar>
 </Callout>
 
+<Callout type="note" title="Beyond the slides" titleAr="ما بعد الشرائح">
+
+UCS's optimality rests on two conditions the slides leave out. Step costs must not be negative, so that $g$ never decreases along a path, and the goal test must be applied when a node is **removed** from the fringe, as TREE-SEARCH does, not when it is generated. From Sibiu, Bucharest is first generated through Fagaras at $99 + 211 = 310$ km, but the route through Rimnicu Vilcea and Pitesti costs $80 + 97 + 101 = 278$ km. A UCS that tested on generation would return the 310 km route (AIMA, Section 3.4.2).
+
+<Ar>تقوم أمثلية UCS على شرطين لا تذكرهما الشرائح. فيجب ألا تكون تكاليف الخطوات سالبة، حتى لا تتناقص $g$ على امتداد المسار، ويجب أن يُطبَّق اختبار الهدف (goal test) عند **إزالة** العقدة من الحافة (fringe)، كما يفعل TREE-SEARCH، لا عند توليدها. فبدءًا من Sibiu تُولَّد Bucharest أولًا عبر Fagaras بتكلفة $99 + 211 = 310$ km، بينما يكلّف الطريق عبر Rimnicu Vilcea و Pitesti ما مقداره $80 + 97 + 101 = 278$ km. ولو اختبر UCS الهدف عند التوليد لأعاد طريق 310 km (AIMA، القسم 3.4.2).</Ar>
+
+</Callout>
+
 ## Depth-first search (DFS)
 
 <Ar>البحث بالعمق أولًا (DFS)</Ar>
+
+<Walkthrough id="ai3-dfs" expect="lifo, complete, time, space, optimal; dfs=A,B,D,H,I,E,J,K,C,F,L,M; expanded=12; path=A,C,F,M" />
 
 **Expand the deepest unexpanded node.** The fringe is a **LIFO stack**: successors go to the front.
 
@@ -213,6 +231,8 @@ Let $C^*$ be the cost of the optimal solution and $\epsilon$ the smallest step c
 ## Depth-limited search (DLS)
 
 <Ar>البحث محدود العمق (DLS)</Ar>
+
+<Walkthrough id="ai3-dls" expect="limit, outcomes, choose; romania=19" />
 
 DLS is DFS with a **depth limit** $l$: nodes at depth $l$ are treated as having no successors. It solves DFS's infinite-path problem, but it returns two kinds of failure:
 
@@ -245,6 +265,8 @@ DLS is complete only if $l \ge d$, and it is not optimal. Choosing $l$ needs kno
 ## Iterative deepening search (IDS)
 
 <Ar>البحث بالتعميق التكراري (IDS)</Ar>
+
+<Walkthrough id="ai3-ids" expect="iterations, formula, overhead; l0=A; l1=A,B,C; l2=A,B,D,E,C,F,G; l3=A,B,D,H,I,E,J,K,C,F,L,M; ids=123450; bfs=1111100; bfs-gen=111110; practice=26" />
 
 IDS runs DLS with limits $0, 1, 2, \dots$ until it finds a solution. It combines the **linear memory of DFS** with the **completeness and optimality of BFS**.
 
@@ -286,9 +308,19 @@ IDS wins here because BFS (testing goals on expansion) also generates the nodes 
 
 <Ar>يتفوق IDS هنا لأن BFS (الذي يختبر الهدف عند التوسيع) يولّد أيضًا العقد عند العمق $d + 1$.</Ar>
 
+<Callout type="note" title="Beyond the slides" titleAr="ما بعد الشرائح">
+
+This comparison is against a BFS that tests for the goal on expansion. If BFS tests nodes when they are generated, as the course book does, it generates $10 + 100 + 1{,}000 + 10{,}000 + 100{,}000 = 111{,}110$ nodes, slightly fewer than IDS. IDS then does about 11% more work, and that is the price of needing only $O(bd)$ memory instead of $O(b^d)$.
+
+<Ar>هذه المقارنة مع BFS يختبر الهدف عند التوسيع. أما إذا اختبر BFS العقد عند توليدها، كما يفعل كتاب المقرر، فإنه يولّد $10 + 100 + 1{,}000 + 10{,}000 + 100{,}000 = 111{,}110$ عقدة، أي أقل قليلًا من IDS. وعندئذ يؤدي IDS عملًا أكثر بنحو 11%، وهذا ثمن احتياجه إلى ذاكرة $O(bd)$ فقط بدلًا من $O(b^d)$.</Ar>
+
+</Callout>
+
 ## Summary of algorithms
 
 <Ar>ملخص الخوارزميات</Ar>
+
+<Walkthrough id="ai3-summary" expect="guarantees, costs, pick" />
 
 | Criterion <Ar>المعيار</Ar> | Breadth-first <Ar>بالعرض أولًا</Ar> | Uniform-cost <Ar>بالتكلفة الموحدة</Ar> | Depth-first <Ar>بالعمق أولًا</Ar> | Depth-limited <Ar>محدود العمق</Ar> | Iterative deepening <Ar>بالتعميق التكراري</Ar> |
 |---|---|---|---|---|---|
@@ -304,6 +336,8 @@ IDS wins here because BFS (testing goals on expansion) also generates the nodes 
 ## Repeated states and graph search
 
 <Ar>الحالات المتكررة والبحث في الرسم البياني</Ar>
+
+<Walkthrough id="ai3-graph-search" expect="unfold, closed, romania" />
 
 If the state space has loops or reversible actions, tree search keeps regenerating the same states.
 
@@ -331,6 +365,8 @@ function GRAPH-SEARCH(problem, fringe) returns a solution, or failure
 ## Implementation in Python
 
 <Ar>التنفيذ بلغة Python</Ar>
+
+<Walkthrough id="ai3-python" expect="loop, parents, ids; bfs=A,C,G; ids=A,C,G" />
 
 All four strategies share one loop; only the fringe changes.
 

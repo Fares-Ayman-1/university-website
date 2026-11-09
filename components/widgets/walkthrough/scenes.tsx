@@ -12,6 +12,10 @@ import { loaders as ip02 } from "./scenes/image-processing/lecture-02";
 import { loaders as ip03 } from "./scenes/image-processing/lecture-03";
 import { loaders as ip04 } from "./scenes/image-processing/lecture-04";
 import { loaders as ip05 } from "./scenes/image-processing/lecture-05";
+import { loaders as ai01 } from "./scenes/artificial-intelligence/lecture-01";
+import { loaders as ai02 } from "./scenes/artificial-intelligence/lecture-02";
+import { loaders as ai03 } from "./scenes/artificial-intelligence/lecture-03";
+import { loaders as ai04 } from "./scenes/artificial-intelligence/lecture-04";
 
 /*
  * One chunk per walkthrough: a page downloads only the drawings it shows. Each lecture's
@@ -29,6 +33,10 @@ const SCENES: Record<WalkthroughId, React.ComponentType<SceneProps>> = {
   ...ip03,
   ...ip04,
   ...ip05,
+  ...ai01,
+  ...ai02,
+  ...ai03,
+  ...ai04,
 };
 
 export function WalkthroughScene({ id, panel, control }: SceneProps & { id: string }) {

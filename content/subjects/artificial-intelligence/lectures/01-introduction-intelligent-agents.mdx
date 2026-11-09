@@ -38,6 +38,8 @@ bookRefs:
 
 <Ar>ما الذكاء الاصطناعي؟</Ar>
 
+<Walkthrough id="ai1-what-is-ai" expect="axes, turing, laws, why-rational" />
+
 There is no single agreed definition of artificial intelligence. Textbooks usually organise the definitions along two axes. The first asks whether we care about **thinking** or about **behaviour**. The second asks whether success is measured against **human** performance or against an ideal standard of **rationality**.
 
 <Ar>لا يوجد تعريف واحد متفق عليه للذكاء الاصطناعي (Artificial Intelligence). وعادةً ما تنظّم الكتب الدراسية التعريفات على محورين: الأول يسأل هل نهتم بـ**التفكير** أم بـ**السلوك**، والثاني يسأل هل يُقاس النجاح بالمقارنة مع الأداء **البشري** أم مع معيار مثالي هو **العقلانية (rationality)**.</Ar>
@@ -78,6 +80,8 @@ Acting rationally is the most useful engineering target. It is more general than
 ## Agents and environments
 
 <Ar>الوكلاء والبيئات</Ar>
+
+<Walkthrough id="ai1-agents" expect="loop, sequence, vacuum, run, table-program; a-dirty=Suck; b-clean=Left" />
 
 Humans, robots, software bots and even thermostats are agents. At every moment the agent receives a **percept**. Everything it has perceived so far is its **percept sequence**, and its behaviour is a mapping from percept sequences to actions:
 
@@ -151,6 +155,8 @@ print(reflex_vacuum_agent(("B", "Clean")))  # Left
 
 <Ar>العقلانية</Ar>
 
+<Walkthrough id="ai1-rationality" expect="measure, omniscient, outcome, what-you-want, autonomy" />
+
 Whether behaviour is "right" depends on a **performance measure** that scores the sequence of environment states the agent produces. For the vacuum world we could award:
 
 <Ar>يتوقف كون السلوك «صحيحًا» على **مقياس الأداء (performance measure)** الذي يقيّم تسلسل حالات البيئة الناتج عن تصرفات الوكيل. ففي عالم المكنسة يمكننا منح:</Ar>
@@ -191,6 +197,8 @@ Because of this, rationality pushes an agent towards **information gathering** (
 
 <Ar>تحديد المهمة: PEAS</Ar>
 
+<Walkthrough id="ai1-peas" expect="letters, card, sort; steering=Actuators" />
+
 Before designing an agent we specify its **task environment** with four components:
 
 <Ar>قبل تصميم الوكيل نحدد **بيئة المهمة (task environment)** الخاصة به من خلال أربعة مكونات:</Ar>
@@ -219,6 +227,8 @@ Before designing an agent we specify its **task environment** with four componen
 
 <Ar>أنواع البيئات</Ar>
 
+<Walkthrough id="ai1-environments" expect="observable, deterministic, episodic, static, discrete-agents, tasks; taxi-hard=6; backgammon-deterministic=No" />
+
 The type of environment largely determines the agent design. Each dimension is a question about the task:
 
 <Ar>يحدد نوع البيئة تصميم الوكيل إلى حد كبير، وكل بُعد هو سؤال عن المهمة:</Ar>
@@ -245,6 +255,14 @@ Applying these to four tasks from the lecture:
 | Discrete <Ar>منفصلة</Ar> | Yes <Ar>نعم</Ar> | Yes <Ar>نعم</Ar> | Yes <Ar>نعم</Ar> | No <Ar>لا</Ar> |
 | Single-agent <Ar>وكيل واحد</Ar> | Yes <Ar>نعم</Ar> | No <Ar>لا</Ar> | Yes (except auctions) <Ar>نعم (باستثناء المزادات)</Ar> | No <Ar>لا</Ar> |
 
+<Callout type="warning" title="Check the source" titleAr="راجِع المصدر">
+
+Two cells in this table are debatable. By the definition above, **backgammon** is **static**, not semi-dynamic: the board waits while a player thinks, and Russell & Norvig's own table of example environments lists it as static. Only a game played against a clock, such as chess with a clock, is semi-dynamic. **Solitaire** is fully observable only in a variant where every card is face up; in the common Klondike game, the face-down cards make it partially observable.
+
+<Ar>خانتان في هذا الجدول قابلتان للنقاش. فبحسب التعريف السابق تُعدّ لعبة **الطاولة (backgammon)** **ساكنة (static)** لا شبه ديناميكية: فالرقعة تنتظر بينما يفكر اللاعب، والجدول الذي يعرض فيه كتاب Russell و Norvig أمثلة البيئات يصنّفها ساكنة. ولا تكون اللعبة شبه ديناميكية إلا إذا لُعبت بساعة توقيت، مثل الشطرنج بساعة توقيت. أما **السوليتير (solitaire)** فلا يكون قابلًا للملاحظة كليًا إلا في نسخة تكون فيها كل الأوراق مكشوفة؛ ففي لعبة Klondike الشائعة تجعل الأوراق المقلوبة البيئةَ قابلةً للملاحظة جزئيًا.</Ar>
+
+</Callout>
+
 <Callout type="note" title="The real world is the hardest case" titleAr="العالم الحقيقي هو أصعب الحالات">
   Taxi driving is partially observable, stochastic, sequential, dynamic, continuous and multi-agent at once.
 
@@ -254,6 +272,8 @@ Applying these to four tasks from the lecture:
 ## Agent architectures
 
 <Ar>معماريات الوكلاء</Ar>
+
+<Walkthrough id="ai1-architectures" expect="ladder, simple-reflex, model-based, goal-based, utility-based, learning; recent=NoOp; threshold=3" />
 
 There are four basic agent types, in order of increasing generality. Any of them can be turned into a **learning agent**.
 
