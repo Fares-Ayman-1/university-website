@@ -1,0 +1,819 @@
+---
+number: 4
+title: "Frequency Domain Filtering (Course Book)"
+titleAr: "الترشيح في المجال الترددي (كتاب المقرر)"
+summary: "The course book's Chapter 4: what frequency means in an image, the 1-D and 2-D discrete Fourier transform with the spectrum, the phase and centring, why filtering in the frequency domain beats spatial filtering for large masks, the filtering model G = HF, ideal, Butterworth and Gaussian low-pass and high-pass filters with a worked example of their values, and the general steps with MATLAB and Python code."
+summaryAr: "الفصل الرابع من كتاب المقرر: معنى التردد (frequency) في الصورة، وتحويل فورييه المتقطع (DFT) أحادي البعد وثنائي البعد مع الطيف (spectrum) والطور (phase) وتوسيط الطيف، ولماذا يتفوق الترشيح في المجال الترددي (frequency domain) على الترشيح المكاني مع الأقنعة الكبيرة، ونموذج الترشيح G = HF، ومرشحات التمرير المنخفض والمرتفع المثالية (ideal) وبترورث (Butterworth) وغاوس (Gaussian) مع مثال محلول لقيمها، ثم الخطوات العامة مع شيفرة MATLAB و Python."
+topics: [Frequency in an image, 1-D DFT, 2-D DFT, Spectrum and phase, Centring the spectrum, Convolution theorem, Operation count, Filtering model G = HF, Ideal filters, Butterworth filters, Gaussian filters, Ringing, Frequency filtering steps]
+duration: "65 min study"
+sources: []
+bookRefs:
+  - book: ip-book
+    chapter: Ch 4 · Frequency Domain Filtering
+    pages: "80–99"
+  - book: gonzalez
+    chapter: Ch 4 · Filtering in the Frequency Domain
+  - book: mcandrew
+    chapter: The Fourier Transform
+---
+
+<Objectives>
+
+- Explain what **frequency** means in an image and how the **Fourier transform** links the spatial and the frequency domain.
+  <Ar>شرح معنى **التردد (frequency)** في الصورة، وكيف يربط **تحويل فورييه (Fourier transform)** بين المجال المكاني (spatial domain) والمجال الترددي (frequency domain).</Ar>
+- Compute a small **1-D DFT** by hand, and read the **2-D DFT** of an image: its spectrum, its phase, its DC term and its centring.
+  <Ar>حساب **تحويل فورييه المتقطع أحادي البعد (1-D DFT)** لإشارة صغيرة يدويًا، وقراءة **التحويل ثنائي البعد (2-D DFT)** للصورة: طيفه (spectrum) وطوره (phase) ومركبته المستمرة (DC) وتوسيطه.</Ar>
+- Explain with an operation count why filtering in the frequency domain pays off for **large masks**.
+  <Ar>شرح سبب جدوى الترشيح في المجال الترددي مع **الأقنعة الكبيرة** اعتمادًا على حساب عدد العمليات.</Ar>
+- Filter with $G(u,v) = H(u,v)\,F(u,v)$ using **ideal**, **Butterworth** and **Gaussian** low-pass and high-pass filters, and compute $H$ at any distance $D(u,v)$.
+  <Ar>الترشيح بالعلاقة $G(u,v) = H(u,v)\,F(u,v)$ باستخدام مرشحات التمرير المنخفض (low-pass) والتمرير المرتفع (high-pass) من الأنواع **المثالية (ideal)** و**بترورث (Butterworth)** و**غاوس (Gaussian)**، وحساب $H$ عند أي مسافة $D(u,v)$.</Ar>
+- Follow the **general steps** of frequency domain filtering in MATLAB or Python.
+  <Ar>اتباع **الخطوات العامة** للترشيح في المجال الترددي باستخدام MATLAB أو Python.</Ar>
+
+</Objectives>
+
+## Introduction: the frequency domain
+
+<Ar>مقدمة: المجال الترددي</Ar>
+
+<Walkthrough id="ip4-intro" expect="decompose, rate, domains, why" />
+
+Frequency domain methods work on the **Fourier transform** of an image instead of on its pixels. Roughly, the **frequency** of an image describes the **rate of change** of its pixel values: how quickly the intensity rises and falls as you move across the picture. The Fourier transform is the bridge between the two domains: it takes an image from the spatial domain to the frequency domain, and the **inverse Fourier transform** brings it back.
+
+<Ar>تعمل طرق المجال الترددي (frequency domain) على **تحويل فورييه (Fourier transform)** للصورة بدلًا من بكسلاتها. وبصورة تقريبية، يصف **التردد (frequency)** في الصورة **معدل تغيّر** قيم بكسلاتها: أي مدى سرعة ارتفاع الشدة (intensity) وانخفاضها كلما تحركنا عبر الصورة. وتحويل فورييه هو الجسر بين المجالين: فهو ينقل الصورة من المجال المكاني (spatial domain) إلى المجال الترددي، و**تحويل فورييه المعكوس (inverse Fourier transform)** يعيدها إليه.</Ar>
+
+<Definition term="Frequency (of an image)" termAr="التردد (في الصورة)">
+  How fast the pixel values change with position. Smooth areas and gradual shading change slowly (<strong>low frequencies</strong>); edges, fine texture and noise change quickly (<strong>high frequencies</strong>).
+
+  <Ar>مدى سرعة تغيّر قيم البكسلات مع الموضع. فالمناطق الملساء والتظليل التدريجي تتغير ببطء (<strong>ترددات منخفضة</strong>)، أما الحواف (edges) والنسيج الدقيق والضوضاء (noise) فتتغير بسرعة (<strong>ترددات مرتفعة</strong>).</Ar>
+</Definition>
+
+The Fourier transform **decomposes** a signal into **sinusoidal components**. Fourier's idea is that a complicated signal can be written as a sum of simple sines and cosines with different **frequencies** and **amplitudes**, and the transform is what separates the signal into those components. For an image, the input is the picture in ordinary (spatial) space and the output is its representation in **frequency space**, where every point stands for one particular frequency contained in the image.
+
+<Ar>يُفكّك تحويل فورييه الإشارة إلى **مركبات جيبية (sinusoidal components)**. وفكرة فورييه أن الإشارة المعقدة يمكن كتابتها على صورة مجموع من دوال الجيب وجيب التمام البسيطة بـ**ترددات** و**سعات (amplitudes)** مختلفة، والتحويل هو ما يفصل الإشارة إلى هذه المركبات. وفي حالة الصورة يكون الدخل هو الصورة في الفضاء العادي (المكاني)، ويكون الخرج تمثيلها في **فضاء الترددات (frequency space)**، حيث تمثّل كل نقطة ترددًا معينًا موجودًا في الصورة.</Ar>
+
+The book's Figure 4.1 shows the idea on a 1-D signal. In the time (or spatial) domain the signal is a wavy curve that is really several waves added together. After the transform, the same signal is drawn against **frequency** on the horizontal axis and **amplitude** on the vertical axis: each **spike** marks a frequency that is present, and its height shows how strong it is. At a glance you can read that the signal has a strong low-frequency component and some weaker high-frequency parts.
+
+<Ar>يوضّح الشكل 4.1 في الكتاب الفكرة على إشارة أحادية البعد. ففي المجال الزمني (أو المكاني) تبدو الإشارة منحنًى متموجًا هو في الحقيقة عدة موجات مجموعة معًا. وبعد التحويل تُرسم الإشارة نفسها مقابل **التردد** على المحور الأفقي و**السعة** على المحور الرأسي: فكل **قمة حادة (spike)** تدل على تردد موجود في الإشارة، وارتفاعها يدل على قوته. وبنظرة واحدة يمكنك أن تقرأ أن الإشارة تحتوي على مركبة قوية منخفضة التردد وأجزاء أضعف مرتفعة التردد.</Ar>
+
+Why work in the frequency domain at all? The book gives three reasons:
+
+<Ar>لماذا نعمل في المجال الترددي أصلًا؟ يذكر الكتاب ثلاثة أسباب:</Ar>
+
+- **Speed.** For a **large** filter it is more efficient to go through the Fourier transform than to slide a spatial mask over the image.
+  <Ar>**السرعة.** مع المرشح **الكبير** يكون العمل عبر تحويل فورييه أكفأ من تحريك قناع (mask) مكاني فوق الصورة.</Ar>
+- **Precision.** Particular frequencies can be isolated and processed, so low-pass and high-pass filtering can be done with great precision.
+  <Ar>**الدقة.** يمكن عزل ترددات بعينها ومعالجتها، فيُنفَّذ الترشيح بالتمرير المنخفض (low-pass) والتمرير المرتفع (high-pass) بدقة كبيرة.</Ar>
+- **New tasks.** Some operations, such as removing periodic noise, would be practically impossible to perform any other way.
+  <Ar>**مهام جديدة.** بعض العمليات، مثل إزالة الضوضاء الدورية (periodic noise)، يكاد يستحيل تنفيذها بأي طريقة أخرى.</Ar>
+
+## The 1-D discrete Fourier transform
+
+<Ar>تحويل فورييه المتقطع أحادي البعد</Ar>
+
+<Walkthrough id="ip4-dft-1d" expect="formula, worked, inverse; smooth=[8, 4, 0, 4]; alternating=[8, 0, -4, 0]; f1=2" />
+
+The **discrete Fourier transform (DFT)** analyses a discrete signal, such as sampled audio or a row of pixel intensities, in the frequency domain: it turns a sequence of $N$ values into the weights of $N$ sinusoids of different frequencies. For a signal $f[n]$ of length $N$ the book writes
+
+<Ar>يحلّل **تحويل فورييه المتقطع (DFT)** الإشارة المتقطعة (discrete)، مثل الصوت المُعايَن أو صف من شدات البكسلات، في المجال الترددي: فهو يحوّل متتالية من $N$ قيمة إلى أوزان $N$ دالة جيبية بترددات مختلفة. وبالنسبة إلى إشارة $f[n]$ طولها $N$ يكتب الكتاب:</Ar>
+
+$$
+F[k] = \sum_{n=0}^{N-1} f[n]\, e^{-i 2\pi kn/N}, \qquad k = 0, 1, \dots, N-1
+$$
+
+and the **inverse DFT (IDFT)**, which goes back from the frequency domain to the time (or spatial) domain, is
+
+<Ar>أما **التحويل المعكوس (inverse DFT)**، الذي يعود من المجال الترددي إلى المجال الزمني (أو المكاني)، فهو:</Ar>
+
+$$
+f[n] = \frac{1}{N}\sum_{k=0}^{N-1} F[k]\, e^{\,i 2\pi kn/N}, \qquad n = 0, 1, \dots, N-1
+$$
+
+Here $f[n]$ is the input sequence, $F[k]$ the output sequence in the frequency domain, $N$ the number of samples and $i = \sqrt{-1}$ (the book writes $j$, as engineers do). The complex exponentials $e^{-i 2\pi kn/N} = \cos(2\pi kn/N) - i\sin(2\pi kn/N)$ are the **basis functions**: a cosine and a sine that complete $k$ cycles over the $N$ samples.
+
+<Ar>حيث $f[n]$ متتالية الدخل، و $F[k]$ متتالية الخرج في المجال الترددي، و $N$ عدد العينات، و $i = \sqrt{-1}$ (ويكتبها الكتاب $j$ كما يفعل المهندسون). والدوال الأُسّية المركبة $e^{-i 2\pi kn/N} = \cos(2\pi kn/N) - i\sin(2\pi kn/N)$ هي **دوال الأساس (basis functions)**: دالة جيب تمام ودالة جيب تُكمِلان $k$ دورة على امتداد العينات الـ $N$.</Ar>
+
+<Definition term="Discrete Fourier transform (DFT)" termAr="تحويل فورييه المتقطع (DFT)">
+  The transform that turns $N$ samples $f[n]$ into $N$ complex weights $F[k]$, one per frequency $k$; the inverse DFT adds the weighted sinusoids back up and returns the samples exactly. The factor $1/N$ appears exactly once: here in the inverse, as in MATLAB's <code>fft</code> and <code>ifft</code>.
+
+  <Ar>التحويل الذي يحوّل $N$ عينة $f[n]$ إلى $N$ وزنًا مركبًا (complex) $F[k]$، وزن لكل تردد $k$؛ ثم يجمع التحويل المعكوس (inverse DFT) الدوال الجيبية الموزونة فيعيد العينات كما هي تمامًا. ويظهر المعامل $1/N$ مرة واحدة فقط: وهو هنا في التحويل المعكوس، كما في الدالتين <code>fft</code> و <code>ifft</code> في MATLAB.</Ar>
+</Definition>
+
+### Worked example: two signals with the same average
+
+<Ar>مثال محلول: إشارتان لهما المتوسط نفسه</Ar>
+
+The book's example space is left empty, so here is one computed with its formula. Take $f = [4, 2, 0, 2]$, one slow cycle, and $g = [1, 3, 1, 3]$, the fastest possible alternation. With $N = 4$ the kernel $e^{-i 2\pi kn/4} = (-i)^{kn}$ only takes the values $1, -i, -1, i$:
+
+<Ar>ترك الكتاب مساحة مثاله فارغة، لذا إليك مثالًا محسوبًا بصيغته. لتكن $f = [4, 2, 0, 2]$، وهي دورة واحدة بطيئة، و $g = [1, 3, 1, 3]$، وهي أسرع تناوب ممكن. وعندما $N = 4$ لا تأخذ النواة (kernel) $e^{-i 2\pi kn/4} = (-i)^{kn}$ إلا القيم $1, -i, -1, i$:</Ar>
+
+| $k$ | $F[k]$ for $f = [4, 2, 0, 2]$ <Ar>$F[k]$ للإشارة $f = [4, 2, 0, 2]$</Ar> | $G[k]$ for $g = [1, 3, 1, 3]$ <Ar>$G[k]$ للإشارة $g = [1, 3, 1, 3]$</Ar> |
+|---|---|---|
+| 0 | $4 + 2 + 0 + 2 = 8$ | $1 + 3 + 1 + 3 = 8$ |
+| 1 | $4 - 2i + 0 + 2i = 4$ | $1 - 3i - 1 + 3i = 0$ |
+| 2 | $4 - 2 + 0 - 2 = 0$ | $1 - 3 + 1 - 3 = -4$ |
+| 3 | $4 + 2i + 0 - 2i = 4$ | $1 + 3i - 1 - 3i = 0$ |
+
+So $F = [8, 4, 0, 4]$ and $G = [8, 0, -4, 0]$. Read them like this:
+
+<Ar>إذن $F = [8, 4, 0, 4]$ و $G = [8, 0, -4, 0]$. وتُقرأ النتيجتان هكذا:</Ar>
+
+- $F[0] = G[0] = 8$: the $k = 0$ term is the **sum** of the samples ($N$ times their mean of 2), the same for both signals.
+  <Ar>$F[0] = G[0] = 8$: الحد $k = 0$ هو **مجموع** العينات ($N$ مضروبًا في متوسطها البالغ 2)، وهو واحد في الإشارتين.</Ar>
+- The smooth signal puts all its other weight at $k = 1$ (and its mirror image $k = 3$): **one slow cycle**, a low frequency.
+  <Ar>تضع الإشارة الملساء بقية وزنها كله عند $k = 1$ (وصورتها المنعكسة $k = 3$): **دورة واحدة بطيئة**، أي تردد منخفض.</Ar>
+- The alternating signal puts it all at $k = 2 = N/2$, the **highest** frequency that four samples can hold.
+  <Ar>أما الإشارة المتناوبة فتضعه كله عند $k = 2 = N/2$، وهو **أعلى** تردد يمكن أن تحمله أربع عينات.</Ar>
+
+The inverse gets the samples back. For $n = 1$, $e^{i 2\pi k/4} = i^k$, so $f[1] = \frac{1}{4}(8 + 4i + 0 - 4i) = 2$.
+
+<Ar>ويعيد التحويل المعكوس العينات. فعند $n = 1$ تكون $e^{i 2\pi k/4} = i^k$، ولذلك $f[1] = \frac{1}{4}(8 + 4i + 0 - 4i) = 2$.</Ar>
+
+### In the context of images
+
+<Ar>في سياق الصور</Ar>
+
+The same idea applies to 2-D images:
+
+<Ar>تنطبق الفكرة نفسها على الصور ثنائية البعد:</Ar>
+
+- The **spatial domain** shows the pixel intensities.
+  <Ar>يعرض **المجال المكاني** شدات البكسلات.</Ar>
+- The **frequency domain** shows how those intensities change across the image.
+  <Ar>ويعرض **المجال الترددي** كيف تتغير هذه الشدات عبر الصورة.</Ar>
+- **High-frequency** components correspond to edges and noise; **low-frequency** components to smooth areas and lighting.
+  <Ar>تقابل مركبات **التردد المرتفع** الحواف والضوضاء، وتقابل مركبات **التردد المنخفض** المناطق الملساء والإضاءة.</Ar>
+
+## The Fourier transform of a 2-D signal
+
+<Ar>تحويل فورييه لإشارة ثنائية البعد</Ar>
+
+<Walkthrough id="ip4-dft-2d" expect="pair, worked, symmetry, block, meaning; F00=3; F02=-1; Fc22=3; Fc20=-1" />
+
+The 2-D DFT extends the 1-D transform to two dimensions, which is exactly what images need: they are 2-D arrays of pixel intensities. It takes an image from the spatial domain (pixels) to the frequency domain (patterns of intensity variation). For an $M \times N$ image $f(x,y)$, the forward transform and its inverse are
+
+<Ar>يمدّ تحويل DFT ثنائي البعد التحويلَ أحادي البعد إلى بُعدين، وهذا بالضبط ما تحتاج إليه الصور، فهي مصفوفات ثنائية البعد من شدات البكسلات. وهو ينقل الصورة من المجال المكاني (البكسلات) إلى المجال الترددي (أنماط تغيّر الشدة). وبالنسبة إلى صورة $f(x,y)$ أبعادها $M \times N$، يكون التحويل الأمامي (forward) ومعكوسه:</Ar>
+
+$$
+F(u,v) = \frac{1}{MN}\sum_{x=0}^{M-1}\sum_{y=0}^{N-1} f(x,y)\,\exp\!\left[-i 2\pi\left(\frac{xu}{M}+\frac{yv}{N}\right)\right]
+$$
+
+$$
+f(x,y) = \sum_{u=0}^{M-1}\sum_{v=0}^{N-1} F(u,v)\,\exp\!\left[i 2\pi\left(\frac{xu}{M}+\frac{yv}{N}\right)\right]
+$$
+
+Each $F(u,v) = R(u,v) + i\,I(u,v)$ is a complex number, so it has a magnitude and an angle:
+
+<Ar>كل قيمة $F(u,v) = R(u,v) + i\,I(u,v)$ عدد مركب (complex)، فلها مقدار (magnitude) وزاوية:</Ar>
+
+$$
+|F(u,v)| = \left[R^2(u,v) + I^2(u,v)\right]^{1/2},
+\qquad
+\phi(u,v) = \tan^{-1}\!\left[\frac{I(u,v)}{R(u,v)}\right]
+$$
+
+<Definition term="Fourier spectrum" termAr="طيف فورييه">
+  The magnitude $|F(u,v)| = \sqrt{R^2 + I^2}$ of the transform: how strongly each frequency is present in the image. It is usually displayed as $\log(1 + |F|)$, because the DC value dwarfs the rest.
+
+  <Ar>مقدار التحويل $|F(u,v)| = \sqrt{R^2 + I^2}$: أي مدى قوة وجود كل تردد في الصورة. ويُعرض عادةً على صورة $\log(1 + |F|)$، لأن قيمة المركبة المستمرة (DC) تطغى على بقية القيم.</Ar>
+</Definition>
+
+<Definition term="Phase angle" termAr="زاوية الطور">
+  The angle $\phi(u,v) = \tan^{-1}(I/R)$ of each coefficient, taken in the correct quadrant (<code>atan2</code>, or <code>angle</code> in MATLAB). It tells where each pattern is shifted to, so it carries the positions of the structures in the image.
+
+  <Ar>زاوية كل معامل $\phi(u,v) = \tan^{-1}(I/R)$، مأخوذةً في الربع (quadrant) الصحيح (الدالة <code>atan2</code>، أو <code>angle</code> في MATLAB). وهي تبيّن مقدار إزاحة كل نمط، ولذلك تحمل مواضع البُنى في الصورة.</Ar>
+</Definition>
+
+<Callout type="warning" title="Check the source" titleAr="راجِع المصدر">
+
+The book's 2-D formulas need two corrections. First, the labels are swapped: the equation printed under "DFT of $f(x,y)$" is the inverse (it rebuilds $f$ from $F$, with $+i$ in the exponent), and the one under "IDFT of $F(u,v)$" is the forward transform. Second, the factor $\frac{1}{MN}$ is printed in the forward transform on page 83 and again in the inverse on page 84; used together they would divide by $MN$ twice. It must appear exactly once. This lecture keeps it in the forward transform, which is what makes the book's own property $F(0,0) = \frac{1}{MN}\sum\sum f(x,y)$ true. The book's 1-D pair, MATLAB's `fft2`/`ifft2` and Gonzalez and Woods put it in the inverse instead, and then $F(0,0)$ is the sum of the pixels, $MN$ times their mean.
+
+<Ar>تحتاج صيغ الكتاب ثنائية البعد إلى تصحيحين. أولًا، العنوانان متبادلان: فالمعادلة المطبوعة تحت «DFT of $f(x,y)$» هي التحويل المعكوس (إذ تعيد بناء $f$ من $F$، مع $+i$ في الأُس)، والمعادلة المطبوعة تحت «IDFT of $F(u,v)$» هي التحويل الأمامي. ثانيًا، المعامل $\frac{1}{MN}$ مطبوع في التحويل الأمامي في الصفحة 83، ثم مرة أخرى في التحويل المعكوس في الصفحة 84؛ واستخدامهما معًا يقسم على $MN$ مرتين. والصحيح أن يظهر مرة واحدة فقط. وتُبقيه هذه المحاضرة في التحويل الأمامي، وهذا ما يجعل خاصية الكتاب نفسه $F(0,0) = \frac{1}{MN}\sum\sum f(x,y)$ صحيحة. أما زوج الكتاب أحادي البعد، والدالتان `fft2` و `ifft2` في MATLAB، وكتاب Gonzalez و Woods، فتضعه في التحويل المعكوس، وعندئذ تكون $F(0,0)$ مجموع البكسلات، أي $MN$ مضروبًا في متوسطها.</Ar>
+
+</Callout>
+
+### Properties for a real image
+
+<Ar>خصائص التحويل لصورة حقيقية القيم</Ar>
+
+For a real image (every pixel a real number) the book lists:
+
+<Ar>بالنسبة إلى صورة حقيقية القيم (كل بكسل فيها عدد حقيقي) يذكر الكتاب ما يلي:</Ar>
+
+$$
+F(0,0) = \frac{1}{MN}\sum_{x=0}^{M-1}\sum_{y=0}^{N-1} f(x,y),
+\qquad
+F(u,v) = F^*(-u,-v) = F^*(M-u,\,N-v),
+\qquad
+|F(u,v)| = |F(-u,-v)|,
+\qquad
+F(u+M,\,v+N) = F(u,v)
+$$
+
+- $F(0,0)$ is the **mean** of all the pixels: every term of its sum uses $\exp(0) = 1$.
+  <Ar>القيمة $F(0,0)$ هي **متوسط** جميع البكسلات: فكل حد في مجموعها يستخدم $\exp(0) = 1$.</Ar>
+- **Conjugate symmetry**: the coefficient at $(-u,-v)$ is the complex conjugate of the one at $(u,v)$, so the spectrum is symmetric about the origin and half of it is redundant.
+  <Ar>**التناظر المرافق (conjugate symmetry)**: المعامل عند $(-u,-v)$ هو المرافق المركب (complex conjugate) للمعامل عند $(u,v)$، لذا يكون الطيف متناظرًا حول نقطة الأصل، ونصفه زائد عن الحاجة.</Ar>
+- **Periodicity**: the transform repeats every $M$ rows and $N$ columns, so $(-u,-v)$ is the same point as $(M-u,\,N-v)$.
+  <Ar>**الدورية (periodicity)**: يتكرر التحويل كل $M$ صفًا و $N$ عمودًا، لذا فإن $(-u,-v)$ هي النقطة نفسها $(M-u,\,N-v)$.</Ar>
+
+<Definition term="DC coefficient" termAr="المركبة المستمرة (DC coefficient)">
+  $F(0,0)$, the coefficient of frequency zero. With the $\frac{1}{MN}$ in the forward transform it equals the mean intensity of the image; it is by far the largest value of the spectrum.
+
+  <Ar>القيمة $F(0,0)$، أي معامل التردد صفر. وعندما يكون المعامل $\frac{1}{MN}$ في التحويل الأمامي فإنها تساوي متوسط شدة الصورة؛ وهي أكبر قيم الطيف بفارق كبير.</Ar>
+</Definition>
+
+### Centring the spectrum
+
+<Ar>توسيط الطيف</Ar>
+
+As computed, the DC term sits at $(0,0)$ in a corner, and the low frequencies are split among the four corners. It is common to multiply the input image by $(-1)^{x+y}$ **before** computing the transform; this shifts the centre of the transform to $(M/2,\,N/2)$:
+
+<Ar>عند الحساب المباشر تقع المركبة المستمرة عند $(0,0)$ في أحد الأركان، وتتوزع الترددات المنخفضة على الأركان الأربعة. لذا يشيع ضرب صورة الدخل في $(-1)^{x+y}$ **قبل** حساب التحويل؛ فهذا ينقل مركز التحويل إلى $(M/2,\,N/2)$:</Ar>
+
+$$
+\mathcal{F}\left[f(x,y)\,(-1)^{x+y}\right] = F\!\left(u - \tfrac{M}{2},\; v - \tfrac{N}{2}\right)
+$$
+
+MATLAB's `fftshift` performs the same move on the transform itself, by swapping its quadrants diagonally.
+
+<Ar>وتؤدي الدالة `fftshift` في MATLAB النقل نفسه على التحويل مباشرةً، بتبديل أرباعه (quadrants) قُطريًا.</Ar>
+
+### Worked example: a 4 × 4 image of stripes
+
+<Ar>مثال محلول: صورة خطوط أبعادها 4 × 4</Ar>
+
+Every row of this image is $2, 4, 2, 4$:
+
+<Ar>كل صف في هذه الصورة هو $2, 4, 2, 4$:</Ar>
+
+$$
+f = \begin{bmatrix} 2 & 4 & 2 & 4 \\ 2 & 4 & 2 & 4 \\ 2 & 4 & 2 & 4 \\ 2 & 4 & 2 & 4 \end{bmatrix} = 3 - (-1)^{y}
+$$
+
+It is a constant 3 plus a pattern that alternates across the columns and never changes down the rows, so only two coefficients survive:
+
+<Ar>فهي ثابت قيمته 3 مضافًا إليه نمط يتناوب عبر الأعمدة ولا يتغير أبدًا على امتداد الصفوف، لذا لا يبقى إلا معاملان:</Ar>
+
+- $F(0,0) = \frac{1}{16}(8 \cdot 2 + 8 \cdot 4) = 3$, the mean.
+  <Ar>$F(0,0) = \frac{1}{16}(8 \cdot 2 + 8 \cdot 4) = 3$، وهو المتوسط.</Ar>
+- $F(0,2) = \frac{1}{16}\sum\sum f(x,y)\,(-1)^{y} = \frac{1}{16}\cdot 4\,(2 - 4 + 2 - 4) = -1$: $v = 2 = N/2$ is the fastest pattern across the columns, and $u = 0$ because all the rows are alike.
+  <Ar>$F(0,2) = \frac{1}{16}\sum\sum f(x,y)\,(-1)^{y} = \frac{1}{16}\cdot 4\,(2 - 4 + 2 - 4) = -1$: فالقيمة $v = 2 = N/2$ هي أسرع نمط عبر الأعمدة، و $u = 0$ لأن الصفوف كلها متماثلة.</Ar>
+- Every other $F(u,v)$ is 0.
+  <Ar>وكل قيم $F(u,v)$ الأخرى تساوي 0.</Ar>
+
+Now multiply the image by $(-1)^{x+y}$ first. Every coefficient moves by $(M/2, N/2) = (2, 2)$, wrapping round the edges: the DC term goes to the **centre**, $F_c(2,2) = 3$, and the stripe term to $F_c(2,0) = -1$, on the **border** of the centred spectrum at distance 2 from the centre, as far out as a 4 × 4 spectrum reaches across the columns. The slowest pattern ends up in the middle and the fastest one farthest out.
+
+<Ar>اضرب الآن الصورة في $(-1)^{x+y}$ أولًا. ينتقل كل معامل بمقدار $(M/2, N/2) = (2, 2)$ مع الالتفاف حول الحواف: فتنتقل المركبة المستمرة إلى **المركز**، $F_c(2,2) = 3$، وينتقل حد الخطوط إلى $F_c(2,0) = -1$، على **حافة** الطيف الموسَّط على مسافة 2 من المركز، وهي أبعد ما يصل إليه طيف 4 × 4 عبر الأعمدة. فيستقر أبطأ نمط في المنتصف، وأسرع نمط في أبعد موضع عنه.</Ar>
+
+### Reading the spectrum
+
+<Ar>قراءة الطيف</Ar>
+
+The book's Figure 4.2 shows a 2-D function, a raised rectangular block, next to a section of its spectrum: a central peak surrounded by smaller ripples. The block is longer along one axis, and its spectrum is more **contracted** along the matching frequency axis: the wider a structure is in space, the narrower its spectrum is in frequency, and the reverse.
+
+<Ar>يعرض الشكل 4.2 في الكتاب دالة ثنائية البعد، هي كتلة مستطيلة مرتفعة، بجوار مقطع من طيفها: قمة مركزية تحيط بها تموجات أصغر. والكتلة أطول على امتداد أحد المحورين، وطيفها أكثر **انكماشًا** على امتداد المحور الترددي المقابل: فكلما اتسعت البنية في المكان ضاق طيفها في التردد، والعكس صحيح.</Ar>
+
+So, in a centred spectrum:
+
+<Ar>إذن، في الطيف الموسَّط:</Ar>
+
+- Each point $F(u,v)$ is one **frequency component** of the image.
+  <Ar>كل نقطة $F(u,v)$ هي **مركبة ترددية** واحدة من مركبات الصورة.</Ar>
+- **Low frequencies**, the smooth areas, are at the **centre** of the spectrum; **high frequencies**, the edges, noise and fine details, are toward its **edges**.
+  <Ar>**الترددات المنخفضة**، أي المناطق الملساء، في **مركز** الطيف؛ و**الترددات المرتفعة**، أي الحواف والضوضاء والتفاصيل الدقيقة، نحو **أطرافه**.</Ar>
+- The **magnitude** $|F(u,v)|$ indicates how strong that frequency is; the **phase** determines where the structures are positioned.
+  <Ar>يدل **المقدار** $|F(u,v)|$ على مدى قوة ذلك التردد، ويحدد **الطور** مواضع البُنى في الصورة.</Ar>
+
+## Advantages over the spatial domain
+
+<Ar>مزايا الترشيح في المجال الترددي على المجال المكاني</Ar>
+
+<Walkthrough id="ip4-advantages" expect="theorem, count, beyond; freq=55; breakeven=9; ratio31=17" />
+
+The book's headline advantage is **efficient convolution via multiplication**. Spatial filtering is a **convolution**: the mask slides over the image, and at every pixel a sum of products is computed. The **convolution theorem** says that convolution in the spatial domain becomes element-by-element **multiplication** in the frequency domain:
+
+<Ar>الميزة الرئيسية التي يذكرها الكتاب هي **الالتفاف الكفء عن طريق الضرب**. فالترشيح المكاني التفافٌ (convolution): ينزلق القناع فوق الصورة، ويُحسب عند كل بكسل مجموعٌ لحواصل الضرب. وتنص **مبرهنة الالتفاف (convolution theorem)** على أن الالتفاف في المجال المكاني يصبح **ضربًا** عنصرًا بعنصر في المجال الترددي:</Ar>
+
+$$
+f(x,y) * h(x,y) \;\Longleftrightarrow\; F(u,v)\,H(u,v)
+$$
+
+<Definition term="Convolution theorem" termAr="مبرهنة الالتفاف">
+  Convolving an image with a mask in the spatial domain is the same as multiplying their Fourier transforms element by element: $f * h \Longleftrightarrow F \cdot H$. It is why any linear spatial filter can be applied in the frequency domain.
+
+  <Ar>التفاف الصورة مع قناع في المجال المكاني يكافئ ضرب تحويلي فورييه لهما عنصرًا بعنصر: $f * h \Longleftrightarrow F \cdot H$. ولهذا يمكن تطبيق أي مرشح مكاني خطي (linear) في المجال الترددي.</Ar>
+</Definition>
+
+### Counting the operations
+
+<Ar>حساب عدد العمليات</Ar>
+
+An $m \times m$ mask costs $m^2$ multiplications at every pixel, a number that grows quickly with the mask. The frequency route costs the same whatever the mask: transform the image and the zero-padded mask, multiply once per frequency, and transform back. With the fast Fourier transform (FFT), each transform of an $M \times N$ image costs about $\log_2(MN)$ operations per pixel, so the comparison per pixel is
+
+<Ar>يكلّف القناع $m \times m$ عدد $m^2$ عملية ضرب عند كل بكسل، وهو عدد ينمو بسرعة مع حجم القناع. أما الطريق الترددي فتكلفته واحدة أيًّا كان القناع: نحوّل الصورة والقناع المحشوّ بالأصفار (zero-padded)، ونضرب مرة واحدة لكل تردد، ثم نعود بالتحويل المعكوس. ومع تحويل فورييه السريع (FFT) يكلّف كل تحويل لصورة $M \times N$ نحو $\log_2(MN)$ عملية لكل بكسل، فتكون المقارنة لكل بكسل:</Ar>
+
+$$
+\underbrace{m^2}_{\text{spatial}} \qquad\text{against}\qquad \underbrace{3\log_2(MN) + 1}_{\text{frequency: three FFTs and one product}}
+$$
+
+For a 512 × 512 image, $\log_2(MN) = 18$, so the frequency route costs about $3 \cdot 18 + 1 = 55$ operations per pixel:
+
+<Ar>ولصورة 512 × 512 يكون $\log_2(MN) = 18$، فيكلّف الطريق الترددي نحو $3 \cdot 18 + 1 = 55$ عملية لكل بكسل:</Ar>
+
+| Mask <Ar>القناع</Ar> | Spatial, per pixel <Ar>المكاني لكل بكسل</Ar> | Frequency, per pixel <Ar>الترددي لكل بكسل</Ar> | Cheaper <Ar>الأرخص</Ar> |
+|---|---|---|---|
+| 3 × 3 | 9 | 55 | Spatial, about 6 times <Ar>المكاني، بنحو 6 مرات</Ar> |
+| 7 × 7 | 49 | 55 | Spatial, only just <Ar>المكاني، بفارق ضئيل</Ar> |
+| 9 × 9 | 81 | 55 | Frequency <Ar>الترددي</Ar> |
+| 31 × 31 | 961 | 55 | Frequency, about 17 times <Ar>الترددي، بنحو 17 مرة</Ar> |
+
+From about 9 × 9 upward the frequency domain wins. For the whole image, a 31 × 31 mask needs about $2.5 \times 10^8$ multiplications in space against about $1.4 \times 10^7$ operations in frequency. The filters of the next sections are designed directly as $H(u,v)$, so they even skip the mask's transform. Small masks, on the other hand, remain cheaper to apply directly.
+
+<Ar>فمن نحو 9 × 9 فما فوق يتفوق المجال الترددي. وعلى مستوى الصورة كلها يحتاج القناع 31 × 31 إلى نحو $2.5 \times 10^8$ عملية ضرب في المجال المكاني مقابل نحو $1.4 \times 10^7$ عملية في المجال الترددي. ومرشحات الأقسام التالية تُصمَّم مباشرةً على صورة $H(u,v)$، فلا تحتاج حتى إلى تحويل القناع. أما الأقنعة الصغيرة فيبقى تطبيقها المباشر أرخص.</Ar>
+
+### More than speed
+
+<Ar>أكثر من السرعة</Ar>
+
+The chapter's introduction adds two more benefits. Filters can keep or remove **exactly** the frequencies we choose: a disc, a ring, or a single point of the spectrum. And some tasks are practically impossible in the spatial domain: periodic noise, for example, is spread over the whole image, but in the spectrum it is just a few isolated bright spikes that can be set to zero.
+
+<Ar>تضيف مقدمة الفصل ميزتين أخريين. فالمرشحات تستطيع أن تُبقي أو تزيل **بالضبط** الترددات التي نختارها: قرصًا، أو حلقة، أو نقطة واحدة من الطيف. وبعض المهام يكاد يستحيل تنفيذها في المجال المكاني: فالضوضاء الدورية (periodic noise) مثلًا منتشرة على الصورة كلها، لكنها في الطيف ليست إلا بضع قمم حادة (spikes) ساطعة ومعزولة يمكن جعلها أصفارًا.</Ar>
+
+## Frequency domain filtering
+
+<Ar>الترشيح في المجال الترددي</Ar>
+
+<Walkthrough id="ip4-filtering" expect="pipeline, centre, lowpass" />
+
+Frequency filters process an image in the frequency domain: the image is Fourier transformed, multiplied by the filter function, and transformed back into the spatial domain. The book's Figure 4.3 draws it as a chain: input image → Fourier transform → filter function → inverse Fourier transform → enhanced image. **Attenuating high frequencies** gives a **smoother** image; **attenuating low frequencies** **enhances the edges**.
+
+<Ar>تعالج المرشحات الترددية الصورة في المجال الترددي: إذ تُحوَّل الصورة بتحويل فورييه، ثم تُضرب في دالة المرشح، ثم تُعاد إلى المجال المكاني. ويرسم الشكل 4.3 في الكتاب ذلك سلسلةً: صورة الدخل ← تحويل فورييه ← دالة المرشح ← تحويل فورييه المعكوس ← الصورة المحسَّنة. و**إضعاف الترددات المرتفعة** يعطي صورة **أنعم**، و**إضعاف الترددات المنخفضة** **يُبرز الحواف**.</Ar>
+
+The basic model for filtering in the frequency domain is
+
+<Ar>والنموذج الأساسي للترشيح في المجال الترددي هو:</Ar>
+
+$$
+G(u,v) = H(u,v)\,F(u,v)
+$$
+
+where $F(u,v)$ is the Fourier transform of the image to be filtered, $H(u,v)$ is the filter and $G(u,v)$ is the result in the frequency domain. The product is taken element by element: each frequency of the image is scaled by the filter's value at that frequency.
+
+<Ar>حيث $F(u,v)$ هو تحويل فورييه للصورة المراد ترشيحها، و $H(u,v)$ هو المرشح، و $G(u,v)$ هو الناتج في المجال الترددي. ويُؤخذ حاصل الضرب عنصرًا بعنصر: فيُضرب كل تردد من ترددات الصورة في قيمة المرشح عند ذلك التردد.</Ar>
+
+<Definition term="Transfer function" termAr="دالة النقل (Transfer function)">
+  The filter $H(u,v)$ in $G = HF$, also called the filter function: a real number for each frequency, near 1 where that frequency should pass and near 0 where it should be removed.
+
+  <Ar>المرشح $H(u,v)$ في العلاقة $G = HF$، ويُسمّى أيضًا دالة المرشح: عدد حقيقي لكل تردد، قريب من 1 حيث ينبغي أن يمر ذلك التردد، وقريب من 0 حيث ينبغي أن يُزال.</Ar>
+</Definition>
+
+Before filtering, the transform is **shifted** so that the DC coefficient is in the centre. This matters because every filter in the next section is defined around the centre: a disc around the centre keeps the low frequencies only if the low frequencies are actually there. Applied to an uncentred spectrum, the same disc would keep the **highest** frequencies instead.
+
+<Ar>قبل الترشيح يُزاح التحويل بحيث تقع المركبة المستمرة (DC coefficient) في المركز. وهذا مهم لأن كل مرشحات القسم التالي معرَّفة حول المركز: فالقرص المحيط بالمركز لا يُبقي الترددات المنخفضة إلا إذا كانت موجودة هناك فعلًا. أما إذا طُبّق القرص نفسه على طيف غير موسَّط فإنه يُبقي **أعلى** الترددات بدلًا منها.</Ar>
+
+The book's Figure 4.4 shows the effect on a photograph of a building:
+
+<Ar>يعرض الشكل 4.4 في الكتاب الأثر على صورة فوتوغرافية لمبنى:</Ar>
+
+- Top: the original $f(x,y)$ and the low-pass result, blurred, with the fine textures and sharp edges suppressed.
+  <Ar>في الأعلى: الصورة الأصلية $f(x,y)$ وناتج التمرير المنخفض، وهو ضبابي (blurred) وقد أُخمدت فيه الأنسجة الدقيقة والحواف الحادة.</Ar>
+- Bottom left: the spectrum $|F(u,v)|$, bright in the centre (low frequencies, the smooth areas), with lines through it from the strong edges (high frequencies). Brighter means a stronger component.
+  <Ar>في الأسفل يسارًا: الطيف $|F(u,v)|$، ساطع في المركز (الترددات المنخفضة، أي المناطق الملساء)، وتعبره خطوط ناتجة عن الحواف القوية (الترددات المرتفعة). وكلما زاد السطوع كانت المركبة أقوى.</Ar>
+- Bottom right: the filtered spectrum. A circular mask keeps the low frequencies near the centre and removes everything outside the circle, so smooth variations pass and rapid changes are blocked.
+  <Ar>في الأسفل يمينًا: الطيف بعد الترشيح. يُبقي قناع دائري الترددات المنخفضة قرب المركز ويزيل كل ما يقع خارج الدائرة، فتمر التغيّرات الملساء وتُحجب التغيّرات السريعة.</Ar>
+
+## Ideal, Butterworth and Gaussian filters
+
+<Ar>المرشحات المثالية ومرشحات بترورث وغاوس</Ar>
+
+<Walkthrough id="ip4-filters" expect="ideal, ringing, butterworth, gaussian, highpass, worked; d66=2.83; ilpf66=0; blpf66=0.2; glpf66=0.37; blpf46=0.5; glpf46=0.61; ghpf66=0.63" />
+
+All six filters in this section are **circularly symmetric**: $H$ depends only on the distance $D(u,v)$ of a frequency from the centre of the shifted spectrum,
+
+<Ar>جميع المرشحات الستة في هذا القسم **متناظرة دائريًا**: فقيمة $H$ تعتمد فقط على المسافة $D(u,v)$ بين التردد ومركز الطيف المُزاح:</Ar>
+
+$$
+D(u,v) = \sqrt{\left(u - \tfrac{M}{2}\right)^2 + \left(v - \tfrac{N}{2}\right)^2}
+$$
+
+and on a **cutoff frequency** $D_0$. Low-pass filters keep the inside of the circle of radius $D_0$; high-pass filters keep the outside.
+
+<Ar>وعلى **تردد القطع (cutoff frequency)** $D_0$. فمرشحات التمرير المنخفض تُبقي داخل الدائرة التي نصف قطرها $D_0$، ومرشحات التمرير المرتفع تُبقي خارجها.</Ar>
+
+<Definition term="Cutoff frequency" termAr="تردد القطع (Cutoff frequency)">
+  The distance $D_0$ from the centre of the shifted spectrum that separates the frequencies a filter keeps from those it removes. The ideal filter jumps from 1 to 0 there; a Butterworth filter passes exactly 0.5 there, and a Gaussian filter $e^{-1/2} \approx 0.61$.
+
+  <Ar>المسافة $D_0$ من مركز الطيف المُزاح التي تفصل بين الترددات التي يُبقيها المرشح والترددات التي يزيلها. فعندها يقفز المرشح المثالي من 1 إلى 0، ويمرر مرشح بترورث 0.5 بالضبط، ويمرر مرشح غاوس $e^{-1/2} \approx 0.61$.</Ar>
+</Definition>
+
+### Ideal low-pass filter (ILPF)
+
+<Ar>مرشح التمرير المنخفض المثالي (ILPF)</Ar>
+
+The low-frequency components are toward the centre, so a low-pass filter multiplies the transform by a matrix that removes, or reduces, the values away from the centre. The ideal one removes them completely:
+
+<Ar>تقع مركبات التردد المنخفض نحو المركز، لذا يضرب مرشح التمرير المنخفض التحويلَ في مصفوفة تزيل القيم البعيدة عن المركز أو تُضعفها. والمرشح المثالي يزيلها تمامًا:</Ar>
+
+$$
+H(u,v) =
+\begin{cases}
+1 & \text{if } D(u,v) \le D_0 \\
+0 & \text{otherwise}
+\end{cases}
+$$
+
+Drawn as a 3-D mesh it is a cylinder; as an image it is a white disc of radius $D_0$ on black; its cross-section jumps straight from 1 to 0 at $D_0$ (Figure 4.5). Figure 4.6 applies it to a test pattern with radii 5, 15, 30, 80 and 230. The smaller the radius, the stronger the blur: at 5 only blobs remain, and at 230 the result is almost the original. Look closely at the middle radii and you will see ripples around the shapes that are not in the original: this is **ringing**.
+
+<Ar>إذا رُسم رسمًا شبكيًا ثلاثي الأبعاد (mesh) كان أسطوانة؛ وإذا عُرض صورةً كان قرصًا أبيض نصف قطره $D_0$ على خلفية سوداء؛ ومقطعه العرضي يقفز مباشرةً من 1 إلى 0 عند $D_0$ (الشكل 4.5). ويطبّقه الشكل 4.6 على نمط اختبار بأنصاف أقطار 5 و 15 و 30 و 80 و 230. وكلما صغر نصف القطر زاد التشويش (blurring): فعند 5 لا يبقى إلا كتل ضبابية، وعند 230 تكاد النتيجة تطابق الأصل. وإذا دققت النظر في أنصاف الأقطار المتوسطة رأيت تموجات حول الأشكال غير موجودة في الأصل: وهذا هو **التموج الحلقي (ringing)**.</Ar>
+
+### Ideal high-pass filter (IHPF)
+
+<Ar>مرشح التمرير المرتفع المثالي (IHPF)</Ar>
+
+The opposite of low-pass filtering: eliminate the centre and keep the rest.
+
+<Ar>عكس التمرير المنخفض: نحذف المركز ونُبقي الباقي.</Ar>
+
+$$
+H(u,v) =
+\begin{cases}
+0 & \text{if } D(u,v) \le D_0 \\
+1 & \text{otherwise}
+\end{cases}
+$$
+
+Figure 4.7 shows it with $D_0 = 15, 30, 80$: only edges and fine detail survive, on a dark background, because $H = 0$ at the centre removes the DC term and with it the average brightness. A larger $D_0$ removes more frequencies and leaves thinner edges, and the sharp cutoff rings here too, so the edges look doubled.
+
+<Ar>يعرضه الشكل 4.7 مع $D_0 = 15, 30, 80$: لا يبقى إلا الحواف والتفاصيل الدقيقة على خلفية داكنة، لأن $H = 0$ في المركز يحذف المركبة المستمرة ومعها متوسط السطوع (brightness). وكلما زاد $D_0$ حُذفت ترددات أكثر وبقيت حواف أرفع، ويُحدث القطع الحاد هنا أيضًا تموجًا حلقيًا، فتبدو الحواف مزدوجة.</Ar>
+
+### Why the ideal filter rings
+
+<Ar>لماذا يُحدث المرشح المثالي تموجًا حلقيًا</Ar>
+
+<Definition term="Ringing" termAr="التموج الحلقي (Ringing)">
+  Ripples that appear beside the edges of a filtered image and are not in the original. They are caused by a transfer function that changes <strong>abruptly</strong>, such as the sharp cutoff of an ideal filter.
+
+  <Ar>تموجات تظهر بجوار حواف الصورة بعد ترشيحها وليست موجودة في الأصل. وسببها دالة نقل (transfer function) تتغير تغيّرًا <strong>مفاجئًا</strong>، مثل القطع الحاد في المرشح المثالي.</Ar>
+</Definition>
+
+The book names ringing but does not explain it; the convolution theorem does. Multiplying by $H$ is the same as convolving the image with $h$, the inverse transform of $H$. The inverse transform of a sharp-edged disc is a bright central lobe surrounded by **rings of alternating sign**, the 2-D relative of $\sin(x)/x$. Convolution places a copy of $h$ at every pixel, so every edge is echoed by those rings. The smoother the transition of $H$ from 1 to 0, the weaker the rings, and that is the whole point of the next two families.
+
+<Ar>يذكر الكتاب التموج الحلقي دون أن يفسّره، ومبرهنة الالتفاف هي التي تفسّره. فالضرب في $H$ يكافئ التفاف الصورة مع $h$، وهي التحويل المعكوس للدالة $H$. والتحويل المعكوس لقرص حادّ الحافة فصٌّ مركزي ساطع تحيط به **حلقات متناوبة الإشارة**، وهو النظير ثنائي البعد للدالة $\sin(x)/x$. ويضع الالتفاف نسخة من $h$ عند كل بكسل، فتتردد أصداء هذه الحلقات حول كل حافة. وكلما كان انتقال $H$ من 1 إلى 0 أنعم ضعفت الحلقات، وهذا هو الهدف كله من العائلتين التاليتين.</Ar>
+
+### Butterworth low-pass filter (BLPF)
+
+<Ar>مرشح بترورث للتمرير المنخفض (BLPF)</Ar>
+
+The Butterworth filter is designed to have a **smooth, gradual transition** between the **passband** (the frequencies that pass) and the **stopband** (the frequencies that are blocked). It avoids the ideal filter's sharp cutoff, which causes undesirable ringing artefacts, and it is one of the most widely used frequency domain filters for smoothing and for edge enhancement. Unlike the ILPF, it has no clear cutoff between passed and removed frequencies:
+
+<Ar>صُمّم مرشح بترورث (Butterworth) ليكون له **انتقال سلس وتدريجي** بين **نطاق التمرير (passband)** (الترددات التي تمر) و**نطاق الإيقاف (stopband)** (الترددات التي تُحجب). فهو يتجنب القطع الحاد في المرشح المثالي، الذي يسبب تشوّهات (artefacts) غير مرغوب فيها من التموج الحلقي، وهو من أكثر المرشحات الترددية استخدامًا في التنعيم (smoothing) وفي تحسين الحواف (edge enhancement). وعلى خلاف المرشح المثالي، لا يملك حدًّا فاصلًا واضحًا بين الترددات المارة والترددات المحذوفة:</Ar>
+
+$$
+H(u,v) = \frac{1}{1 + \left[D(u,v)/D_0\right]^{2n}}
+$$
+
+where $n$ is the **order** of the filter. At $D = D_0$ the bracket equals 1, so $H = 1/2$ for **every** order. The order sets how steeply the curve falls around $D_0$ (Figure 4.8 draws $n = 1$ to $4$): a low order falls gently and rings little; as $n$ grows the filter approaches the ideal one, ringing included. Figure 4.9 uses $n = 2$ with the same radii as Figure 4.6: about the same blur, with the ripples much reduced.
+
+<Ar>حيث $n$ هي **رتبة المرشح (order)**. وعند $D = D_0$ يساوي ما بين القوسين 1، فتكون $H = 1/2$ لـ**كل** الرتب. وتحدد الرتبة مدى حدّة هبوط المنحنى حول $D_0$ (يرسم الشكل 4.8 الرتب من $n = 1$ إلى $4$): فالرتبة المنخفضة تهبط بلطف وتموجها الحلقي قليل، وكلما زادت $n$ اقترب المرشح من المرشح المثالي بما في ذلك تموجه الحلقي. ويستخدم الشكل 4.9 الرتبة $n = 2$ بأنصاف أقطار الشكل 4.6 نفسها: التشويش نفسه تقريبًا، لكن التموجات أقل كثيرًا.</Ar>
+
+<Definition term="Order of a Butterworth filter" termAr="رتبة مرشح بترورث">
+  The exponent $n$ in $1/(1 + [D/D_0]^{2n})$. It sets how steeply the filter falls around $D_0$, where it always passes 0.5: $n = 1$ is gentle with no visible ringing, and as $n \to \infty$ the filter becomes the ideal one.
+
+  <Ar>الأُس $n$ في $1/(1 + [D/D_0]^{2n})$. وهو يحدد مدى حدّة هبوط المرشح حول $D_0$، حيث يمرر دائمًا 0.5: فالرتبة $n = 1$ لطيفة بلا تموج حلقي ظاهر، وعندما $n \to \infty$ يصبح المرشح مثاليًا.</Ar>
+</Definition>
+
+### Butterworth high-pass filter (BHPF)
+
+<Ar>مرشح بترورث للتمرير المرتفع (BHPF)</Ar>
+
+$$
+H(u,v) = \frac{1}{1 + \left[D_0/D(u,v)\right]^{2n}}
+$$
+
+With $r = D/D_0$, $\;1 - \frac{1}{1 + r^{2n}} = \frac{r^{2n}}{1 + r^{2n}} = \frac{1}{1 + r^{-2n}}$, so the BHPF is exactly $1 - H_{\text{BLPF}}$. At $D = 0$ the formula divides by zero; its limit is 0, so set $H = 0$ there in code. Figure 4.10 ($D_0 = 15, 30, 80$) gives edges like the IHPF, but cleaner.
+
+<Ar>بوضع $r = D/D_0$ يكون $\;1 - \frac{1}{1 + r^{2n}} = \frac{r^{2n}}{1 + r^{2n}} = \frac{1}{1 + r^{-2n}}$، إذن مرشح بترورث للتمرير المرتفع يساوي تمامًا $1 - H_{\text{BLPF}}$. وعند $D = 0$ تؤدي الصيغة إلى قسمة على صفر، ونهايتها 0، لذا اجعل $H = 0$ هناك في الشيفرة. ويعطي الشكل 4.10 ($D_0 = 15, 30, 80$) حوافًا تشبه حواف المرشح المثالي للتمرير المرتفع، لكنها أنظف.</Ar>
+
+### Gaussian low-pass filter (GLPF)
+
+<Ar>مرشح غاوس للتمرير المنخفض (GLPF)</Ar>
+
+The Gaussian filter is a linear smoothing filter used to reduce noise and detail. Seen in the spatial domain, it convolves the image with a Gaussian function, which gives more weight to the central pixels and less to distant ones, so it blurs naturally and smoothly and avoids the harsh artefacts of a plain averaging filter. In the frequency domain it is
+
+<Ar>مرشح غاوس (Gaussian) مرشح تنعيم خطي يُستخدم لتقليل الضوضاء والتفاصيل. وإذا نظرنا إليه في المجال المكاني وجدناه يلفّ الصورة مع دالة غاوس، التي تعطي البكسلات المركزية وزنًا أكبر والبكسلات البعيدة وزنًا أقل، فيكون تضبيبه طبيعيًا وسلسًا ويتجنب التشوّهات الحادة التي يُحدثها مرشح المتوسط (averaging filter) البسيط. أما في المجال الترددي فهو:</Ar>
+
+$$
+H(u,v) = e^{-D^2(u,v)/2\sigma^2}
+$$
+
+where $\sigma$, the standard deviation, measures the spread. Replacing $\sigma$ by the cutoff frequency $D_0$ gives
+
+<Ar>حيث $\sigma$، أي الانحراف المعياري (standard deviation)، يقيس الانتشار. وباستبدال تردد القطع $D_0$ بـ $\sigma$ نحصل على:</Ar>
+
+$$
+H(u,v) = e^{-D^2(u,v)/2D_0^2}
+$$
+
+At $D = D_0$ the filter passes $e^{-1/2} \approx 0.61$. The key fact the book states: **the inverse Fourier transform of a Gaussian is also a Gaussian**. By the convolution theorem, multiplying by $H$ means convolving with a single positive bump that has no rings, so the GLPF **never rings**, whatever $D_0$. Figure 4.12 shows smooth blur at every radius.
+
+<Ar>وعند $D = D_0$ يمرر المرشح $e^{-1/2} \approx 0.61$. والحقيقة الأساسية التي يذكرها الكتاب: **التحويل المعكوس لدالة غاوس هو دالة غاوس أيضًا**. وبحسب مبرهنة الالتفاف، فإن الضرب في $H$ يعني الالتفاف مع نتوء موجب واحد بلا حلقات، ولذلك **لا يُحدث** مرشح غاوس للتمرير المنخفض **تموجًا حلقيًا أبدًا** مهما كانت $D_0$. ويعرض الشكل 4.12 تنعيمًا سلسًا عند كل أنصاف الأقطار.</Ar>
+
+<Callout type="warning" title="Check the source" titleAr="راجِع المصدر">
+
+Three details of the Gaussian figures do not match the formula. Figure 4.11 marks the height of the curves at $D = D_0$ as 0.667, but $e^{-1/2} \approx 0.607$. The caption of Figure 4.12 mentions "$n = 2$", but the Gaussian has no order; only the cutoffs 5, 15, 30, 80 and 230 apply. And the second figure numbered 4.12, with $\sigma = 0.5, 1, 2$, blurs **more** as $\sigma$ grows, because there $\sigma$ is the width of the **spatial** Gaussian mask. In the frequency domain formula $\sigma = D_0$ is the width of $H$, and a **larger** $D_0$ keeps more frequencies, so it blurs **less**: a wide Gaussian in one domain is a narrow one in the other (Gonzalez and Woods, Ch 4).
+
+<Ar>ثلاث تفاصيل في أشكال غاوس لا تتفق مع الصيغة. فالشكل 4.11 يعلّم ارتفاع المنحنيات عند $D = D_0$ بالقيمة 0.667، لكن $e^{-1/2} \approx 0.607$. وتذكر تسمية الشكل 4.12 الرتبة «$n = 2$»، مع أن مرشح غاوس لا رتبة له؛ والمعتبر هو ترددات القطع 5 و 15 و 30 و 80 و 230 فقط. أما الشكل الثاني الذي يحمل الرقم 4.12، مع $\sigma = 0.5, 1, 2$، فيزداد تشويشه **كلما زادت** $\sigma$، لأن $\sigma$ هناك هي عرض قناع غاوس **المكاني**. وفي صيغة المجال الترددي تكون $\sigma = D_0$ هي عرض $H$، و $D_0$ **الأكبر** تُبقي ترددات أكثر، فيكون التشويش **أقل**: فدالة غاوس العريضة في أحد المجالين ضيقة في المجال الآخر (Gonzalez و Woods، الفصل 4).</Ar>
+
+</Callout>
+
+### Gaussian high-pass filter (GHPF)
+
+<Ar>مرشح غاوس للتمرير المرتفع (GHPF)</Ar>
+
+A Gaussian high-pass filter enhances edges and fine details by removing the smooth, low-frequency components and keeping the sharp, high-frequency information. It is built from the same Gaussian but acts inversely to the GLPF:
+
+<Ar>يُبرز مرشح غاوس للتمرير المرتفع الحوافَ والتفاصيل الدقيقة بإزالة المركبات الملساء منخفضة التردد والإبقاء على المعلومات الحادة مرتفعة التردد. وهو مبني على دالة غاوس نفسها، لكنه يعمل عكس مرشح غاوس للتمرير المنخفض:</Ar>
+
+$$
+H(u,v) = 1 - e^{-D^2(u,v)/2D_0^2}
+$$
+
+where $D(u,v)$ is the distance from the centre of the frequency plane and $D_0$ is the cutoff, which controls how much is removed. Figure 4.14 turns a portrait into a line drawing of its edges, and Figure 4.15 ($D_0 = 15, 30, 80$) gives the cleanest edges of the three high-pass families, again with no ringing.
+
+<Ar>حيث $D(u,v)$ المسافة من مركز المستوى الترددي، و $D_0$ تردد القطع الذي يتحكم في مقدار ما يُزال. ويحوّل الشكل 4.14 صورة شخصية إلى رسم خطي لحوافها، ويعطي الشكل 4.15 ($D_0 = 15, 30, 80$) أنظف حواف بين عائلات التمرير المرتفع الثلاث، ومرة أخرى بلا تموج حلقي.</Ar>
+
+### Worked example: H at a few distances
+
+<Ar>مثال محلول: قيم H عند بضع مسافات</Ar>
+
+Take an $8 \times 8$ spectrum ($M = N = 8$, with $u$ and $v$ counted from 0, so the centre is $(4,4)$), a cutoff $D_0 = 2$ and, for Butterworth, the order $n = 2$. For each point, first compute $D(u,v) = \sqrt{(u-4)^2 + (v-4)^2}$, then $H$:
+
+<Ar>لنأخذ طيفًا أبعاده $8 \times 8$ ($M = N = 8$، مع عدّ $u$ و $v$ ابتداءً من 0، فيكون المركز $(4,4)$)، وتردد قطع $D_0 = 2$، والرتبة $n = 2$ لمرشح بترورث. احسب لكل نقطة أولًا $D(u,v) = \sqrt{(u-4)^2 + (v-4)^2}$، ثم $H$:</Ar>
+
+| $(u, v)$ | $D(u,v)$ | ILPF <Ar>المثالي (ILPF)</Ar> | BLPF, $n = 2$ <Ar>بترورث (BLPF)، $n = 2$</Ar> | GLPF <Ar>غاوس (GLPF)</Ar> |
+|---|---|---|---|---|
+| $(4, 4)$ | $0$ | $1$ | $1$ | $1$ |
+| $(5, 5)$ | $\sqrt{2} \approx 1.41$ | $1$ | $1/(1 + 0.25) = 0.8$ | $e^{-0.25} \approx 0.78$ |
+| $(4, 6)$ | $2 = D_0$ | $1$ | $1/(1 + 1) = 0.5$ | $e^{-0.5} \approx 0.61$ |
+| $(6, 6)$ | $\sqrt{8} \approx 2.83$ | $0$ | $1/(1 + 4) = 0.2$ | $e^{-1} \approx 0.37$ |
+| $(0, 4)$ | $4$ | $0$ | $1/(1 + 16) \approx 0.06$ | $e^{-2} \approx 0.14$ |
+
+The bracket of the Butterworth filter is $(D/D_0)^4$: $(1.41/2)^4 = 0.25$, $(2.83/2)^4 = 4$, $(4/2)^4 = 16$. The Gaussian's exponent is $-D^2/8$. Three things to notice: the ideal filter jumps from 1 to 0 between $D = 2$ and $D = 2.83$; the Butterworth filter passes exactly 0.5 at $D_0$; and the Gaussian falls more gently, still passing 0.14 at twice the cutoff. The high-pass versions are 1 minus these: at $(6,6)$, the IHPF gives 1, the BHPF $0.8$ and the GHPF $1 - 0.37 \approx 0.63$.
+
+<Ar>ما بين قوسي مرشح بترورث هو $(D/D_0)^4$: أي $(1.41/2)^4 = 0.25$، و $(2.83/2)^4 = 4$، و $(4/2)^4 = 16$. وأُس دالة غاوس هو $-D^2/8$. ولاحظ ثلاثة أمور: يقفز المرشح المثالي من 1 إلى 0 بين $D = 2$ و $D = 2.83$؛ ويمرر مرشح بترورث 0.5 بالضبط عند $D_0$؛ أما دالة غاوس فتهبط بلطف أكبر، فما زالت تمرر 0.14 عند ضعف تردد القطع. ونسخ التمرير المرتفع هي 1 ناقص هذه القيم: فعند $(6,6)$ يعطي المرشح المثالي للتمرير المرتفع 1، ومرشح بترورث $0.8$، ومرشح غاوس $1 - 0.37 \approx 0.63$.</Ar>
+
+### Comparing the three families
+
+<Ar>مقارنة العائلات الثلاث</Ar>
+
+| Property <Ar>الخاصية</Ar> | Ideal <Ar>المثالي</Ar> | Butterworth <Ar>بترورث</Ar> | Gaussian <Ar>غاوس</Ar> |
+|---|---|---|---|
+| Low-pass $H$ <Ar>دالة التمرير المنخفض $H$</Ar> | 1 if $D \le D_0$, else 0 <Ar>1 إذا كان $D \le D_0$، وإلا 0</Ar> | $1/\left(1 + (D/D_0)^{2n}\right)$ | $e^{-D^2/2D_0^2}$ |
+| Transition <Ar>الانتقال</Ar> | Sharp cutoff <Ar>قطع حاد</Ar> | Smooth, adjustable <Ar>سلس وقابل للضبط</Ar> | Very smooth <Ar>سلس جدًا</Ar> |
+| Order parameter $n$ <Ar>معامل الرتبة $n$</Ar> | None <Ar>لا يوجد</Ar> | Yes <Ar>يوجد</Ar> | None <Ar>لا يوجد</Ar> |
+| Value at $D = D_0$ <Ar>القيمة عند $D = D_0$</Ar> | 1 (the last frequency kept) <Ar>1 (آخر تردد يُبقى عليه)</Ar> | 0.5 | $\approx 0.61$ |
+| Ringing artefacts <Ar>تشوّهات التموج الحلقي</Ar> | High <Ar>مرتفعة</Ar> | Low, growing with $n$ <Ar>منخفضة، وتزداد بزيادة $n$</Ar> | Very low (none in theory) <Ar>منخفضة جدًا (منعدمة نظريًا)</Ar> |
+| Computation <Ar>الحساب</Ar> | Simple <Ar>بسيط</Ar> | Moderate <Ar>متوسط</Ar> | Simple <Ar>بسيط</Ar> |
+| Use case <Ar>الاستخدام</Ar> | Theoretical analysis <Ar>التحليل النظري</Ar> | Practical applications <Ar>التطبيقات العملية</Ar> | Natural-looking results <Ar>نتائج طبيعية المظهر</Ar> |
+
+Every high-pass filter is obtained from its low-pass partner in the same way:
+
+<Ar>ويُشتق كل مرشح تمرير مرتفع من نظيره للتمرير المنخفض بالطريقة نفسها:</Ar>
+
+$$
+H_{\text{HP}}(u,v) = 1 - H_{\text{LP}}(u,v)
+$$
+
+## General steps of frequency domain filtering
+
+<Ar>الخطوات العامة للترشيح في المجال الترددي</Ar>
+
+<Walkthrough id="ip4-steps" expect="flow, shift-back, result" />
+
+The book's general recipe has six numbered steps, the fifth of which does two things (multiply, then transform back). Written out one action per step:
+
+<Ar>للوصفة العامة في الكتاب ست خطوات مرقّمة، تؤدي الخامسة منها عملين (الضرب، ثم التحويل المعكوس). وإذا كتبناها بعمل واحد في كل خطوة كانت:</Ar>
+
+<Steps>
+
+1. **Convert** the image to grayscale (if it is RGB).
+   <Ar>**حوّل** الصورة إلى صورة رمادية (grayscale) (إذا كانت RGB).</Ar>
+2. Compute its **Fourier transform**, $F(u,v)$.
+   <Ar>احسب **تحويل فورييه** لها، $F(u,v)$.</Ar>
+3. **Shift** the origin to the centre with `fftshift`.
+   <Ar>**انقل** نقطة الأصل إلى المركز باستخدام `fftshift`.</Ar>
+4. **Construct the filter** $H$ (ideal, Butterworth or Gaussian) with the formulas above.
+   <Ar>**ابنِ المرشح** $H$ (مثاليًا أو بترورث أو غاوس) بالصيغ السابقة.</Ar>
+5. **Multiply**: $G(u,v) = H(u,v) \cdot F(u,v)$.
+   <Ar>**اضرب**: $G(u,v) = H(u,v) \cdot F(u,v)$.</Ar>
+6. Take the **inverse Fourier transform** to get the filtered image $g(x,y)$, undoing the shift first with `ifftshift`.
+   <Ar>خذ **تحويل فورييه المعكوس** لتحصل على الصورة المرشَّحة $g(x,y)$، بعد إلغاء الإزاحة أولًا باستخدام `ifftshift`.</Ar>
+7. **Normalise** and **display** the result.
+   <Ar>**طبّع (normalize)** الناتج ثم **اعرضه**.</Ar>
+
+</Steps>
+
+<Callout type="warning" title="Check the source" titleAr="راجِع المصدر">
+
+Neither of the book's step lists undoes the shift. If the spectrum was centred with `fftshift` in step 3, it must be shifted back with `ifftshift` before `ifft2`; Gonzalez and Woods do the equivalent by multiplying the result by $(-1)^{x+y}$ after the inverse transform. Skipping it returns $g(x,y)\,(-1)^{x+y}$ instead of $g(x,y)$ (for even $M$ and $N$): the real part is covered by a checkerboard of alternating signs. Displaying `abs(...)` hides the mistake, because $|g\,(-1)^{x+y}| = |g|$, but it also turns every negative value of a high-pass result positive.
+
+<Ar>لا تلغي أيٌّ من قائمتي الخطوات في الكتاب الإزاحةَ. فإذا وُسّط الطيف باستخدام `fftshift` في الخطوة 3، وجب إرجاعه باستخدام `ifftshift` قبل `ifft2`؛ ويفعل Gonzalez و Woods ما يكافئ ذلك بضرب الناتج في $(-1)^{x+y}$ بعد التحويل المعكوس. وإغفال ذلك يعيد $g(x,y)\,(-1)^{x+y}$ بدلًا من $g(x,y)$ (عندما تكون $M$ و $N$ زوجيتين): فيغطي الجزءَ الحقيقي نمطُ رقعة شطرنج من إشارات متناوبة. وعرض `abs(...)` يخفي الخطأ، لأن $|g\,(-1)^{x+y}| = |g|$، لكنه يحوّل أيضًا كل قيمة سالبة في ناتج التمرير المرتفع إلى قيمة موجبة.</Ar>
+
+</Callout>
+
+The book's **REMEMBER** page then plots the filters as 3-D meshes: the ideal low-pass filter is a cylinder and the Gaussian low-pass filter a smooth bell, while the ideal and Gaussian high-pass filters are the same shapes turned upside down, a flat plane at 1 with a well at the centre (sharp-walled or bell-shaped). Plotting $H$ with `mesh` in MATLAB is a quick check that the filter is the one you meant.
+
+<Ar>ثم ترسم صفحة **REMEMBER** في الكتاب المرشحات رسومًا شبكية ثلاثية الأبعاد: فمرشح التمرير المنخفض المثالي أسطوانة، ومرشح غاوس للتمرير المنخفض جرس أملس، أما مرشحا التمرير المرتفع المثالي وغاوس فهما الشكلان نفساهما مقلوبين: مستوٍ أفقي عند 1 في مركزه بئر (ذات جدران حادة أو على شكل جرس). ورسم $H$ باستخدام `mesh` في MATLAB طريقة سريعة للتأكد من أن المرشح هو ما قصدته.</Ar>
+
+Finally the book lists the **steps to apply filtering** in a program: read an image; save its size; take its Fourier transform and shift the low frequencies to the centre; assign the cutoff frequency $D_0$; design the filter (high-pass or low-pass); multiply the transformed image by the filter; take the inverse Fourier transform; display the result. The code below follows those eight steps:
+
+<Ar>وأخيرًا يسرد الكتاب **خطوات تطبيق الترشيح** في برنامج: اقرأ الصورة؛ احفظ أبعادها؛ خذ تحويل فورييه لها وانقل الترددات المنخفضة إلى المركز؛ حدّد تردد القطع $D_0$؛ صمّم المرشح (تمرير مرتفع أو منخفض)؛ اضرب الصورة المحوَّلة في المرشح؛ خذ تحويل فورييه المعكوس؛ اعرض الناتج. وتتبع الشيفرة التالية هذه الخطوات الثماني:</Ar>
+
+```matlab title="freq_filter_book.m"
+f = imread('cameraman.tif');                 % Step 1: read the image
+if size(f, 3) == 3, f = rgb2gray(f); end     %         grayscale if it is RGB
+f = im2double(f);
+[M, N] = size(f);                            % Step 2: save its size
+F = fftshift(fft2(f));                       % Step 3: FFT, low frequencies to the centre
+D0 = 30;                                     % Step 4: cutoff frequency
+[V, U] = meshgrid(0:N-1, 0:M-1);             % Step 5: D(u,v), then the filter
+D = sqrt((U - M/2).^2 + (V - N/2).^2);
+H = double(D <= D0);                         %         ideal low-pass
+% H = 1 ./ (1 + (D ./ D0).^(2*2));           %         Butterworth low-pass, n = 2
+% H = exp(-D.^2 ./ (2*D0^2));                %         Gaussian low-pass
+% H = 1 - H;                                 %         any of them as high-pass
+figure, mesh(H)                              %         the REMEMBER plot
+G = H .* F;                                  % Step 6: multiply
+g = real(ifft2(ifftshift(G)));               % Step 7: inverse FFT, after undoing the shift
+figure, imshow(g, [])                        % Step 8: display ([] normalises to the full range)
+```
+
+The same in Python with NumPy:
+
+<Ar>والخطوات نفسها في Python باستخدام NumPy:</Ar>
+
+```python title="freq_filter_book.py"
+import numpy as np
+import matplotlib.pyplot as plt
+from skimage import color, data, img_as_float
+
+f = data.camera()                                 # Step 1: read the image
+if f.ndim == 3:
+    f = color.rgb2gray(f)                         #         grayscale if it is RGB
+f = img_as_float(f)
+M, N = f.shape                                    # Step 2: save its size
+F = np.fft.fftshift(np.fft.fft2(f))               # Step 3: FFT, low frequencies to the centre
+D0 = 30                                           # Step 4: cutoff frequency
+u = np.arange(M)[:, None] - M / 2                 # Step 5: D(u, v), then the filter
+v = np.arange(N)[None, :] - N / 2
+D = np.sqrt(u**2 + v**2)
+H = (D <= D0).astype(float)                       #         ideal low-pass
+# H = 1 / (1 + (D / D0) ** (2 * 2))               #         Butterworth low-pass, n = 2
+# H = np.exp(-D**2 / (2 * D0**2))                 #         Gaussian low-pass
+# H = 1 - H                                       #         any of them as high-pass
+G = H * F                                         # Step 6: multiply
+g = np.real(np.fft.ifft2(np.fft.ifftshift(G)))    # Step 7: inverse FFT, after undoing the shift
+plt.imshow(g, cmap="gray"); plt.show()            # Step 8: display (imshow normalises)
+```
+
+The chapter ends with the same idea on a real photograph: with a circular mask that keeps the centre of the spectrum, the low-pass result is a blurred but recognisable building; with the opposite mask, which removes the centre, the high-pass result keeps only the edges and fine texture, on a dark background.
+
+<Ar>ويختم الفصل بالفكرة نفسها على صورة فوتوغرافية حقيقية: فمع قناع دائري يُبقي مركز الطيف يكون ناتج التمرير المنخفض مبنًى ضبابيًا لكن يمكن التعرف عليه؛ ومع القناع المعاكس الذي يحذف المركز لا يُبقي ناتج التمرير المرتفع إلا الحواف والنسيج الدقيق على خلفية داكنة.</Ar>
+
+<Takeaways>
+
+- **Frequency** in an image is the rate of change of the pixel values; the Fourier transform takes an image to the frequency domain and the inverse transform brings it back.
+  <Ar>**التردد** في الصورة هو معدل تغيّر قيم البكسلات؛ وتحويل فورييه ينقل الصورة إلى المجال الترددي، والتحويل المعكوس يعيدها.</Ar>
+- The DFT turns $N$ samples into $N$ complex weights; $1/N$ (or $1/MN$) appears exactly once, and with it in the forward transform $F(0,0)$ is the **mean**.
+  <Ar>يحوّل تحويل DFT عدد $N$ من العينات إلى $N$ وزنًا مركبًا؛ ويظهر المعامل $1/N$ (أو $1/MN$) مرة واحدة فقط، وعندما يكون في التحويل الأمامي تكون $F(0,0)$ هي **المتوسط**.</Ar>
+- Multiply by $(-1)^{x+y}$, or use `fftshift`, to centre the spectrum: low frequencies in the middle, high frequencies toward the edges; magnitude = how strong, phase = where.
+  <Ar>اضرب في $(-1)^{x+y}$، أو استخدم `fftshift`، لتوسيط الطيف: الترددات المنخفضة في المنتصف والمرتفعة نحو الأطراف؛ والمقدار = مدى القوة، والطور = الموضع.</Ar>
+- **Convolution ↔ multiplication**: for a 512 × 512 image the frequency route costs about 55 operations per pixel whatever the mask, so it wins from about 9 × 9 upward.
+  <Ar>**الالتفاف ↔ الضرب**: لصورة 512 × 512 يكلّف الطريق الترددي نحو 55 عملية لكل بكسل أيًّا كان القناع، فيتفوق من نحو 9 × 9 فما فوق.</Ar>
+- Filter with $G = HF$ on the centred spectrum; $H$ depends on $D(u,v)$ and the cutoff $D_0$. **Ideal** filters cut sharply and **ring**; **Butterworth** passes 0.5 at $D_0$ with steepness set by $n$; **Gaussian** passes 0.61 at $D_0$ and never rings.
+  <Ar>رشّح بالعلاقة $G = HF$ على الطيف الموسَّط؛ وتعتمد $H$ على $D(u,v)$ وتردد القطع $D_0$. فالمرشحات **المثالية** تقطع بحدة وتُحدث **تموجًا حلقيًا**؛ ومرشح **بترورث** يمرر 0.5 عند $D_0$ وتحدد $n$ حدّته؛ ومرشح **غاوس** يمرر 0.61 عند $D_0$ ولا يُحدث تموجًا أبدًا.</Ar>
+- Every high-pass filter is $1 -$ its low-pass partner, and the general steps end with `ifftshift`, the inverse FFT, and normalising for display.
+  <Ar>كل مرشح تمرير مرتفع يساوي $1$ ناقص نظيره للتمرير المنخفض، وتنتهي الخطوات العامة بالدالة `ifftshift` ثم التحويل المعكوس ثم التطبيع للعرض.</Ar>
+
+</Takeaways>
+
+## Practice
+
+<Ar>تدريب</Ar>
+
+<Exercise title="Three filters at one point" titleAr="ثلاثة مرشحات عند نقطة واحدة" level="easy">
+
+A $256 \times 256$ image is filtered with cutoff $D_0 = 30$. For the frequency $(u, v) = (148, 113)$, compute $D(u,v)$ and the value of the ILPF, the BLPF with $n = 2$ and the GLPF. What do the three high-pass filters give there?
+
+<Ar>رُشّحت صورة أبعادها $256 \times 256$ بتردد قطع $D_0 = 30$. احسب عند التردد $(u, v) = (148, 113)$ قيمة $D(u,v)$، وقيمة المرشح المثالي ومرشح بترورث ($n = 2$) ومرشح غاوس للتمرير المنخفض. وماذا تعطي مرشحات التمرير المرتفع الثلاثة عند هذه النقطة؟</Ar>
+
+<Solution>
+
+The centre is $(128, 128)$, so $D = \sqrt{20^2 + (-15)^2} = 25$. Since $25 \le 30$, the ILPF gives 1. BLPF: $(25/30)^4 \approx 0.48$, so $H = 1/1.48 \approx 0.67$. GLPF: $e^{-625/1800} = e^{-0.35} \approx 0.71$. The high-pass filters give $1 - H$: 0, about 0.33 and about 0.29.
+
+<Ar>المركز هو $(128, 128)$، إذن $D = \sqrt{20^2 + (-15)^2} = 25$. ولأن $25 \le 30$ يعطي المرشح المثالي 1. ومرشح بترورث: $(25/30)^4 \approx 0.48$، إذن $H = 1/1.48 \approx 0.67$. ومرشح غاوس: $e^{-625/1800} = e^{-0.35} \approx 0.71$. وتعطي مرشحات التمرير المرتفع $1 - H$: أي 0، ونحو 0.33، ونحو 0.29.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="When does the frequency domain pay off?" titleAr="متى يكون المجال الترددي مجديًا؟" level="medium">
+
+Using the count $m^2$ against $3\log_2(MN) + 1$ operations per pixel, find the smallest odd mask size for which frequency domain filtering is cheaper on a $1024 \times 1024$ image. About how many times cheaper is it for a $15 \times 15$ mask?
+
+<Ar>باستخدام المقارنة بين $m^2$ و $3\log_2(MN) + 1$ عملية لكل بكسل، أوجد أصغر حجم فردي للقناع يكون عنده الترشيح في المجال الترددي أرخص لصورة أبعادها $1024 \times 1024$. وكم مرة تقريبًا يكون أرخص مع قناع $15 \times 15$؟</Ar>
+
+<Solution>
+
+$MN = 2^{20}$, so $\log_2(MN) = 20$ and the frequency route costs $3 \cdot 20 + 1 = 61$ operations per pixel. A $7 \times 7$ mask costs 49 (still cheaper in space) and a $9 \times 9$ mask 81, so **9 × 9** is the smallest odd size for which the frequency domain wins. For $15 \times 15$: $225 / 61 \approx 3.7$ times cheaper.
+
+<Ar>$MN = 2^{20}$، إذن $\log_2(MN) = 20$، ويكلّف الطريق الترددي $3 \cdot 20 + 1 = 61$ عملية لكل بكسل. ويكلّف القناع $7 \times 7$ عدد 49 عملية (فما زال المكاني أرخص)، والقناع $9 \times 9$ عدد 81، إذن **9 × 9** هو أصغر حجم فردي يتفوق عنده المجال الترددي. ومع القناع $15 \times 15$: يكون أرخص بنحو $225 / 61 \approx 3.7$ مرة.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Choosing the Butterworth order" titleAr="اختيار رتبة مرشح بترورث" level="hard">
+
+A BLPF has $D_0 = 40$. Find the smallest order $n$ for which it passes less than 1 % at $D = 80$. What is its value at $D = 40$ for that order, and what is the price of choosing a high order?
+
+<Ar>مرشح بترورث للتمرير المنخفض قيمة $D_0$ فيه 40. أوجد أصغر رتبة $n$ يمرر عندها أقل من 1 % عند $D = 80$. وما قيمته عند $D = 40$ لهذه الرتبة؟ وما ثمن اختيار رتبة مرتفعة؟</Ar>
+
+<Solution>
+
+At $D = 80$, $D/D_0 = 2$ and $H = 1/(1 + 2^{2n})$. We need $2^{2n} > 99$. For $n = 3$, $2^6 = 64$ and $H = 1/65 \approx 0.015$, still above 1 %; for $n = 4$, $2^8 = 256$ and $H = 1/257 \approx 0.004$. So $n = 4$. At $D = 40 = D_0$ it passes 0.5, as every Butterworth filter does. The price: a higher order means a steeper filter, closer to the ideal one, so the ringing grows.
+
+<Ar>عند $D = 80$ يكون $D/D_0 = 2$، و $H = 1/(1 + 2^{2n})$. فنحتاج إلى $2^{2n} > 99$. فعند $n = 3$ يكون $2^6 = 64$ و $H = 1/65 \approx 0.015$، وهي ما زالت أكبر من 1 %؛ وعند $n = 4$ يكون $2^8 = 256$ و $H = 1/257 \approx 0.004$. إذن $n = 4$. وعند $D = 40 = D_0$ يمرر 0.5، كما يفعل كل مرشح بترورث. أما الثمن: فالرتبة الأعلى تعني مرشحًا أكثر حدّة وأقرب إلى المرشح المثالي، فيزداد التموج الحلقي.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "Roughly, what does frequency describe in an image?",
+      qAr: "بصورة تقريبية، ماذا يصف التردد في الصورة؟",
+      options: ["The number of pixels", "The rate of change of the pixel values", "The brightest grey level", "The number of colours"],
+      optionsAr: ["عدد البكسلات", "معدل تغيّر قيم البكسلات", "أسطع مستوى رمادي", "عدد الألوان"],
+      answer: 1,
+      explain: "Smooth areas change slowly (low frequency); edges, fine texture and noise change quickly (high frequency).",
+      explainAr: "المناطق الملساء تتغير ببطء (تردد منخفض)، أما الحواف والنسيج الدقيق والضوضاء فتتغير بسرعة (تردد مرتفع)."
+    },
+    {
+      q: "With the book's 1-D DFT (no 1/N in the forward transform), what is F[0] for f = [4, 2, 0, 2]?",
+      qAr: "باستخدام تحويل DFT أحادي البعد كما في الكتاب (دون 1/N في التحويل الأمامي)، ما قيمة F[0] للإشارة f = [4, 2, 0, 2]؟",
+      options: ["2", "4", "8", "0"],
+      optionsAr: ["2", "4", "8", "0"],
+      answer: 2,
+      explain: "Every term uses e^0 = 1, so F[0] = 4 + 2 + 0 + 2 = 8: the sum, N times the mean of 2.",
+      explainAr: "كل حد يستخدم e^0 = 1، إذن F[0] = 4 + 2 + 0 + 2 = 8: أي المجموع، وهو N مضروبًا في المتوسط 2."
+    },
+    {
+      q: "What does multiplying an image by (-1)^(x+y) before the transform do?",
+      qAr: "ماذا يفعل ضرب الصورة في (-1)^(x+y) قبل التحويل؟",
+      options: ["It removes the noise", "It moves the DC term to (M/2, N/2), the centre of the spectrum", "It doubles every frequency", "It makes the transform real"],
+      optionsAr: ["يزيل الضوضاء", "ينقل المركبة المستمرة إلى (M/2, N/2)، أي مركز الطيف", "يضاعف كل تردد", "يجعل التحويل حقيقي القيم"],
+      answer: 1,
+      explain: "It shifts the whole transform by (M/2, N/2), like fftshift, so the low frequencies sit in the middle.",
+      explainAr: "يزيح التحويل كله بمقدار (M/2, N/2)، مثل fftshift، فتستقر الترددات المنخفضة في المنتصف."
+    },
+    {
+      q: "For a 512 × 512 image, which mask is cheaper to apply in the frequency domain than in the spatial domain?",
+      qAr: "لصورة 512 × 512، أي الأقنعة التالية يكون تطبيقه في المجال الترددي أرخص منه في المجال المكاني؟",
+      options: ["3 × 3", "5 × 5", "7 × 7", "31 × 31"],
+      optionsAr: ["3 × 3", "5 × 5", "7 × 7", "31 × 31"],
+      answer: 3,
+      explain: "The frequency route costs about 3 · 18 + 1 = 55 operations per pixel; a 31 × 31 mask needs 961, while 7 × 7 needs only 49.",
+      explainAr: "يكلّف الطريق الترددي نحو 3 · 18 + 1 = 55 عملية لكل بكسل؛ ويحتاج القناع 31 × 31 إلى 961، بينما لا يحتاج القناع 7 × 7 إلا إلى 49."
+    },
+    {
+      q: "In an 8 × 8 spectrum with D0 = 2, what is the Butterworth low-pass value (n = 2) at (u, v) = (6, 6)?",
+      qAr: "في طيف أبعاده 8 × 8 مع D0 = 2، ما قيمة مرشح بترورث للتمرير المنخفض (n = 2) عند (u, v) = (6, 6)؟",
+      options: ["0", "0.2", "0.37", "0.5"],
+      optionsAr: ["0", "0.2", "0.37", "0.5"],
+      answer: 1,
+      explain: "D = √8 ≈ 2.83, so (D/D0)^4 = 4 and H = 1/(1 + 4) = 0.2. The ideal filter gives 0 there and the Gaussian 0.37.",
+      explainAr: "D = √8 ≈ 2.83، إذن (D/D0)^4 = 4، و H = 1/(1 + 4) = 0.2. ويعطي المرشح المثالي هناك 0، ومرشح غاوس 0.37."
+    },
+    {
+      q: "Why does the Gaussian low-pass filter cause no ringing?",
+      qAr: "لماذا لا يُحدث مرشح غاوس للتمرير المنخفض تموجًا حلقيًا؟",
+      options: ["Its cutoff is sharper than the ideal one", "Its inverse Fourier transform is also a Gaussian, a single bump without rings", "Its order is n = 2", "It keeps the DC term"],
+      optionsAr: ["لأن قطعه أحدّ من قطع المرشح المثالي", "لأن تحويل فورييه المعكوس له دالة غاوس أيضًا، أي نتوء واحد بلا حلقات", "لأن رتبته n = 2", "لأنه يُبقي المركبة المستمرة"],
+      answer: 1,
+      explain: "Multiplying by H means convolving with its inverse transform; for a Gaussian that is a positive bump, so edges are softened without ripples.",
+      explainAr: "الضرب في H يعني الالتفاف مع تحويله المعكوس، وهو في حالة دالة غاوس نتوء موجب، فتُنعَّم الحواف بلا تموجات."
+    },
+    {
+      q: "The spectrum was centred with fftshift and multiplied by H. What must happen before ifft2?",
+      qAr: "وُسّط الطيف باستخدام fftshift ثم ضُرب في H. ماذا يجب أن يحدث قبل ifft2؟",
+      options: ["Another fftshift of H only", "Undo the shift with ifftshift", "Take the logarithm of the product", "Convert the image back to RGB"],
+      optionsAr: ["تطبيق fftshift مرة أخرى على H وحده", "إلغاء الإزاحة باستخدام ifftshift", "أخذ لوغاريتم حاصل الضرب", "إعادة الصورة إلى RGB"],
+      answer: 1,
+      explain: "Without ifftshift the result comes back multiplied by (-1)^(x+y), a checkerboard of signs; the book's step lists leave this out.",
+      explainAr: "دون ifftshift يعود الناتج مضروبًا في (-1)^(x+y)، أي رقعة شطرنج من الإشارات؛ وقوائم الخطوات في الكتاب تُغفل ذلك."
+    }
+  ]}
+/>

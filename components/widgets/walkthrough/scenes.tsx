@@ -10,6 +10,7 @@ import { loaders as se04 } from "./scenes/software-engineering/lecture-04";
 import { loaders as ip01 } from "./scenes/image-processing/lecture-01";
 import { loaders as ip02 } from "./scenes/image-processing/lecture-02";
 import { loaders as ip03 } from "./scenes/image-processing/lecture-03";
+import { loaders as ip04 } from "./scenes/image-processing/lecture-04";
 import { loaders as ip05 } from "./scenes/image-processing/lecture-05";
 
 /*
@@ -26,6 +27,7 @@ const SCENES: Record<WalkthroughId, React.ComponentType<SceneProps>> = {
   ...ip01,
   ...ip02,
   ...ip03,
+  ...ip04,
   ...ip05,
 };
 

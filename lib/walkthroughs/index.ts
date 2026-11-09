@@ -7,6 +7,7 @@ import * as se04 from "./software-engineering/lecture-04";
 import * as ip01 from "./image-processing/lecture-01";
 import * as ip02 from "./image-processing/lecture-02";
 import * as ip03 from "./image-processing/lecture-03";
+import * as ip04 from "./image-processing/lecture-04";
 import * as ip05 from "./image-processing/lecture-05";
 
 /*
@@ -14,7 +15,7 @@ import * as ip05 from "./image-processing/lecture-05";
  * loaders go in components/widgets/walkthrough/scenes/<subject>/lecture-NN.tsx, spread into
  * components/widgets/walkthrough/scenes.tsx (TypeScript enforces that every id has scenes).
  */
-const ALL = [...db01.all, ...se01.all, ...se02.all, ...se03.all, ...se04.all, ...ip01.all, ...ip02.all, ...ip03.all, ...ip05.all] as const;
+const ALL = [...db01.all, ...se01.all, ...se02.all, ...se03.all, ...se04.all, ...ip01.all, ...ip02.all, ...ip03.all, ...ip04.all, ...ip05.all] as const;
 
 export type WalkthroughId = (typeof ALL)[number]["id"];
 
