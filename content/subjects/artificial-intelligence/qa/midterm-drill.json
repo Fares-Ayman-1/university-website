@@ -1,0 +1,901 @@
+{
+  "title": "AI Midterm Drill",
+  "kicker": "Artificial Intelligence · Past midterm exams",
+  "heading": "Midterm Drill",
+  "lede": "Multiple-choice questions from your past AI midterm papers, one tab per paper. Pick an answer to see at once whether it is right. Each answer has a short explanation, and a tag tells you whether the answer comes from the paper or was solved here.",
+  "foot": "Questions are typed from the photos and PDFs of your midterm papers; only the multiple-choice questions are included. Where a paper shows an answer, that answer is used. Where it does not, the answer was worked out here from the slides and the course book and is tagged \"solved here\". Answers tagged \"Double-check this answer\" are less certain. Progress is saved in this browser only.",
+  "banksLabel": "Papers",
+  "unit": "papers",
+  "order": 2,
+  "source": "E:\\G3T1\\AI\\Exams\\mid2018 … mid2026 is (8 midterm papers)",
+  "banks": [
+    {
+      "id": "mid-2022",
+      "tag": "Midterm",
+      "name": "Fall 2022",
+      "scope": "9 MCQs · Models A and B",
+      "questions": [
+        {
+          "kind": "mcq",
+          "group": "Midterm Fall 2022 · Model A",
+          "text": "a sequence of actions from initial state to goal is a ......",
+          "options": [
+            "state space",
+            "path",
+            "solution",
+            "none of them"
+          ],
+          "answer": 2,
+          "why": "The mark on the paper is (b) path, but Lecture 2, slide 11 defines a solution as a sequence of actions leading from the initial state to a goal state; book p. 57 calls any action sequence a path.",
+          "ref": "Midterm Fall 2022 · Model A Q1 · solved here",
+          "check": true
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Fall 2022 · Model A",
+          "text": "Agent's behavior is described by ...... that maps any given percepts.",
+          "options": [
+            "sensors",
+            "agent function",
+            "agent program",
+            "actuators"
+          ],
+          "answer": 1,
+          "why": "Book p. 24: the agent's behavior is described by the agent function, which maps any given percept sequence to an action. The agent program is only its concrete implementation.",
+          "ref": "Midterm Fall 2022 · Model A Q2 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Fall 2022 · Model A",
+          "text": "an agent playing chess is a ......",
+          "options": [
+            "single agent",
+            "learning agent",
+            "muti agent",
+            "utility agents"
+          ],
+          "answer": 2,
+          "why": "The mark on the paper is (d) utility agents, but book p. 34 says an agent playing chess is in a two-agent environment: chess is a competitive multiagent environment.",
+          "ref": "Midterm Fall 2022 · Model A Q3 · solved here",
+          "check": true
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Fall 2022 · Model A",
+          "text": "...... environment can change while agent is deliberating.",
+          "options": [
+            "sequantional",
+            "dynamic",
+            "observable",
+            "static"
+          ],
+          "answer": 1,
+          "why": "Book p. 36: if the environment can change while an agent is deliberating, it is dynamic for that agent; otherwise it is static (Lecture 1, slides 15-21).",
+          "ref": "Midterm Fall 2022 · Model A Q4 · Model B Q4 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Fall 2022 · Model A",
+          "text": "...... just means optimizing performance measure.",
+          "options": [
+            "rationality",
+            "artificial intelligence",
+            "autonomy",
+            "none of them"
+          ],
+          "answer": 0,
+          "why": "A rational agent chooses whichever action maximizes the expected value of the performance measure (Lecture 1, slide 10; book p. 28), so rationality just means optimizing it.",
+          "ref": "Midterm Fall 2022 · Model A Q5 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Fall 2022 · Model B",
+          "text": "...... environment is easy to deal with because the agent does not think while it is deciding on an action.",
+          "options": [
+            "episodic",
+            "dynamic",
+            "static",
+            "deterministic"
+          ],
+          "answer": 2,
+          "why": "Book p. 36: static environments are easy to deal with because the agent need not keep looking at the world while it is deciding on an action, nor worry about the passage of time.",
+          "ref": "Midterm Fall 2022 · Model B Q1 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Fall 2022 · Model B",
+          "text": "Agent function maps any given percepts to represent ......",
+          "options": [
+            "sensors",
+            "agent behavior",
+            "agent program",
+            "actuators"
+          ],
+          "answer": 1,
+          "why": "Book p. 24: the agent's behavior is described by the agent function, which maps any given percept sequence to an action. Sensors and actuators are hardware, and the agent program implements the function.",
+          "ref": "Midterm Fall 2022 · Model B Q2 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Fall 2022 · Model B",
+          "text": "...... maps percept to optimal action, which handle a collection of perceived states.",
+          "options": [
+            "learning element",
+            "critic",
+            "rule based reasoning",
+            "utility agents"
+          ],
+          "answer": 2,
+          "why": "Simple reflex agents use condition-action rules: each rule matches a whole class of perceived states and maps it straight to an action (Lecture 1, slide 23; book pp. 41-42).",
+          "ref": "Midterm Fall 2022 · Model B Q3 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Fall 2022 · Model B",
+          "text": "...... is the set of nodes that have been reached not expanded.",
+          "options": [
+            "goal",
+            "interior",
+            "state space",
+            "none of them"
+          ],
+          "answer": 3,
+          "why": "Book p. 61: the set of reached but unexpanded nodes is the frontier, which is not offered. The interior is the region where every state has already been expanded.",
+          "ref": "Midterm Fall 2022 · Model B Q5 · from the paper"
+        }
+      ]
+    },
+    {
+      "id": "mid-2023",
+      "tag": "Midterm",
+      "name": "2023",
+      "scope": "10 MCQs · Model B",
+      "questions": [
+        {
+          "kind": "mcq",
+          "group": "Midterm 2023 · Model B",
+          "text": "In the context of environments, what does \"partially observable\" mean?",
+          "options": [
+            "The agent has complete knowledge about the current state.",
+            "The agent cannot sense the current state directly.",
+            "The environment is entirely predictable.",
+            "The agent's utility is fully observable."
+          ],
+          "answer": 1,
+          "why": "Book pp. 33-34: when the sensors do not give access to the complete state (noisy, inaccurate or missing data), the environment is partially observable, so the agent cannot sense the state directly.",
+          "ref": "Midterm 2023 · Model B Q1 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm 2023 · Model B",
+          "text": "What does the performance measure of an agent typically capture?",
+          "options": [
+            "The agent's internal model",
+            "The cost or effectiveness of the agent's behavior",
+            "The number of sensory inputs",
+            "The complexity of the environment"
+          ],
+          "answer": 1,
+          "why": "The performance measure evaluates the sequence of environment states that the agent's behavior produces, i.e. how well it did (Lecture 1, slide 10; book p. 27).",
+          "ref": "Midterm 2023 · Model B Q2 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm 2023 · Model B",
+          "text": "What distinguishes an autonomous agent?",
+          "options": [
+            "It always operates in fully observable environments",
+            "It can act on its own, without direct human intervention.",
+            "It can perform tasks without any predefined goals",
+            "It requires continuous human guidance to complete tasks."
+          ],
+          "answer": 1,
+          "why": "An autonomous agent relies on its own percepts and learning rather than on outside help, so its behavior can become independent of its designer's prior knowledge (book pp. 9, 29-30).",
+          "ref": "Midterm 2023 · Model B Q3 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm 2023 · Model B",
+          "text": "In bidirectional search, what is the worst-case time complexity compared to regular unidirectional search?",
+          "options": [
+            "the same",
+            "slightly better",
+            "exponentially faster",
+            "up to twice as fast"
+          ],
+          "answer": 2,
+          "why": "Book p. 77: the two searches meet in the middle, so the cost is about b^(d/2) + b^(d/2), which is exponentially less than b^d. Bidirectional search is in the book but not in the current slides.",
+          "ref": "Midterm 2023 · Model B Q4 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm 2023 · Model B",
+          "text": "Which of the following is an advantage of breadth-first search over depth-first search?",
+          "options": [
+            "space complexity",
+            "optimality",
+            "time complexity",
+            "completeness"
+          ],
+          "answer": 3,
+          "why": "BFS is complete when b is finite, while DFS fails in infinite-depth spaces (Lecture 3, slides 15 and 33). BFS is also optimal for unit step costs (slide 18), so optimality is defensible too.",
+          "ref": "Midterm 2023 · Model B Q5 · from the paper",
+          "check": true
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm 2023 · Model B",
+          "text": "What does a goal-based agent use to choose its actions?",
+          "options": [
+            "Rules.",
+            "Utility values.",
+            "Internal world model.",
+            "Progress toward goal states"
+          ],
+          "answer": 3,
+          "why": "A goal-based agent combines its world model with goal information and picks the actions that achieve the goal (Lecture 1, slide 27; book p. 45). The model alone is shared with model-based reflex agents.",
+          "ref": "Midterm 2023 · Model B Q6 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm 2023 · Model B",
+          "text": "In terms of task environments, what does \"deterministic\" mean?",
+          "options": [
+            "The environment's behaviors is unpredictable.",
+            "The environment changes over time.",
+            "The agent has limited visibility into the environment.",
+            "Every action has a unique, pre-determined outcome."
+          ],
+          "answer": 3,
+          "why": "Book p. 35: an environment is deterministic if its next state is completely determined by the current state and the action executed by the agent.",
+          "ref": "Midterm 2023 · Model B Q7 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm 2023 · Model B",
+          "text": "Which of the following search algorithms does NOT have completeness property?",
+          "options": [
+            "Breadth-first search.",
+            "Uniform-cost search",
+            "Depth-limited search.",
+            "Iterative deepening depth-first search"
+          ],
+          "answer": 2,
+          "why": "The mark on the paper is (d) iterative deepening, but Lecture 3, slide 48 lists iterative deepening as complete, while depth-limited search is complete only if the limit l is at least the solution depth d.",
+          "ref": "Midterm 2023 · Model B Q8 · solved here",
+          "check": true
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm 2023 · Model B",
+          "text": "What is the PEAS description used for?",
+          "options": [
+            "Evaluating agent performance.",
+            "Describing the agent architecture",
+            "Specifying the properties of the task environment.",
+            "Implementing the agent function"
+          ],
+          "answer": 2,
+          "why": "To design a rational agent we must first specify the task environment, and the PEAS description (Performance, Environment, Actuators, Sensors) does that (Lecture 1, slides 11 and 30; book p. 31).",
+          "ref": "Midterm 2023 · Model B Q9 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm 2023 · Model B",
+          "text": "What enables an agent to improve its performance over time?",
+          "options": [
+            "Sensors.",
+            "Effectors.",
+            "Learning element.",
+            "Performance element"
+          ],
+          "answer": 2,
+          "why": "Book p. 50: the learning element is responsible for making improvements, using the critic's feedback to change the performance element, which only selects actions (Lecture 1, slide 29).",
+          "ref": "Midterm 2023 · Model B Q10 · from the paper"
+        }
+      ]
+    },
+    {
+      "id": "mid-2024-25",
+      "tag": "Midterm · CS, SC, AI",
+      "name": "Fall 2024",
+      "scope": "15 MCQs · Models A and B",
+      "questions": [
+        {
+          "kind": "mcq",
+          "group": "Midterm Fall 2024",
+          "text": "Which component of a learning agent is responsible for suggesting actions that lead to new experiences?",
+          "options": [
+            "Performance element",
+            "Learning element",
+            "Critic",
+            "Problem generator"
+          ],
+          "answer": 3,
+          "why": "The problem generator suggests exploratory actions that lead to new and informative experiences (book p. 51; Lecture 1, slide 29). The critic gives feedback and the learning element makes improvements.",
+          "ref": "Midterm Fall 2024 · Model A Q1 · Model B Q7 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Fall 2024",
+          "text": "In the context of intelligent agents, what is meant by \"omniscience\"?",
+          "options": [
+            "The ability to learn from experience",
+            "Knowledge of the actual outcome of actions",
+            "Perfect sensor readings",
+            "Unlimited processing power"
+          ],
+          "answer": 1,
+          "why": "An omniscient agent knows the actual outcome of its actions and can act accordingly, which is impossible in reality, so rationality does not require it (book p. 29; Lecture 1, slide 10).",
+          "ref": "Midterm Fall 2024 · Model A Q2 · Model B Q13 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Fall 2024",
+          "text": "In terms of task environments, what does \"deterministic\" mean?",
+          "options": [
+            "The environment's behaviour is unpredictable",
+            "Every action has a unique, pre-determined outcome",
+            "The agent has limited visibility into the environment",
+            "The environment changes over time"
+          ],
+          "answer": 1,
+          "why": "An environment is deterministic if the next state is completely determined by the current state and the action executed, so each action has one predictable outcome (book p. 35).",
+          "ref": "Midterm Fall 2024 · Model A Q3 · Model B Q4 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Fall 2024",
+          "text": "What is the primary focus of the \"Acting rationally\" perspective in AI?",
+          "options": [
+            "Mimicking human behavior",
+            "Following logical rules",
+            "Achieving the best outcome",
+            "Processing information quickly"
+          ],
+          "answer": 2,
+          "why": "The acting-rationally approach builds rational agents, which act to achieve the best possible outcome or, when uncertain, the best expected outcome (book p. 9; Lecture 1, slide 4).",
+          "ref": "Midterm Fall 2024 · Model A Q4 · Model B Q10 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Fall 2024",
+          "text": "Which of these would be considered an actuator for an autonomous taxi driving system?",
+          "options": [
+            "GPS",
+            "Camera",
+            "Steering wheel",
+            "Speedometer"
+          ],
+          "answer": 2,
+          "why": "Actuators let the taxi act on the world, and the slides list steering, accelerator, brake and horn. GPS, cameras and the speedometer are sensors (Lecture 1, slide 12; book p. 32).",
+          "ref": "Midterm Fall 2024 · Model A Q5 · Model B Q12 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Fall 2024",
+          "text": "What is the relationship between path cost and solution optimality?",
+          "options": [
+            "They are unrelated",
+            "The lowest path cost solution is optimal",
+            "The shortest path is always optimal",
+            "The fastest solution is optimal"
+          ],
+          "answer": 1,
+          "why": "The optimal solution is defined as the path with the lowest path cost, and an optimal strategy always finds a least-cost solution (book p. 57; Lecture 3, slide 8).",
+          "ref": "Midterm Fall 2024 · Model A Q6 · Model B Q8 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Fall 2024",
+          "text": "What is the primary reason for using a systematic search strategy?",
+          "options": [
+            "To guarantee faster solutions",
+            "To ensure all possibilities are considered when needed",
+            "To reduce memory usage",
+            "To simplify problem formulation"
+          ],
+          "answer": 1,
+          "why": "Exploring the states systematically (while avoiding cycles) is what makes a search complete, so it finds a solution if one exists (book p. 65). It does not promise speed or less memory.",
+          "ref": "Midterm Fall 2024 · Model A Q7 · Model B Q14 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Fall 2024",
+          "text": "What distinguishes a fully observable environment from a partially observable one?",
+          "options": [
+            "The size of the environment",
+            "The number of agents",
+            "Whether sensors give complete access to the environment state",
+            "The speed of sensor readings"
+          ],
+          "answer": 2,
+          "why": "An environment is fully observable if the agent's sensors give it access to the complete state of the environment at each point in time; otherwise it is partially observable (book p. 33).",
+          "ref": "Midterm Fall 2024 · Model A Q8 · Model B Q2 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Fall 2024",
+          "text": "What is described as filling the gap in logical reasoning with uncertain information?",
+          "options": [
+            "Statistics",
+            "Probability",
+            "Calculus",
+            "Algorithm"
+          ],
+          "answer": 1,
+          "why": "In the thinking-rationally section the book says the theory of probability fills the gap left by logic, allowing rigorous reasoning with uncertain information (book p. 9).",
+          "ref": "Midterm Fall 2024 · Model A Q9 · Model B Q5 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Fall 2024",
+          "text": "What enables an agent to improve its performance over time?",
+          "options": [
+            "Sensors",
+            "Effectors",
+            "Learning element",
+            "Performance element"
+          ],
+          "answer": 2,
+          "why": "In a learning agent the learning element is responsible for making improvements: it uses the critic's feedback to change the performance element so it does better (book p. 50; Lecture 1, slide 29).",
+          "ref": "Midterm Fall 2024 · Model A Q10 · Model B Q3 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Fall 2024",
+          "text": "What is the main difference between a reflex agent and a planning agent?",
+          "options": [
+            "Reflex agents use more memory",
+            "Planning agents can only handle simple tasks",
+            "Reflex agents only consider current percepts while planning agents consider future consequences",
+            "Planning agents are always faster than reflex agents"
+          ],
+          "answer": 2,
+          "why": "A simple reflex agent chooses its action from the current percept only (book p. 41), while a planning or problem-solving agent plans ahead over a sequence of actions that leads to a goal (book p. 54).",
+          "ref": "Midterm Fall 2024 · Model A Q11 · Model B Q15 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Fall 2024",
+          "text": "What is the main advantage of iterative deepening search?",
+          "options": [
+            "It uses less memory than breadth-first search",
+            "It's always faster than depth-first search",
+            "It never revisits states",
+            "It requires no heuristic function"
+          ],
+          "answer": 0,
+          "why": "IDS keeps the completeness of BFS but, like DFS, needs only O(bd) memory instead of the exponential memory of BFS (Lecture 3, slides 47-48; book p. 73). It does revisit the upper levels.",
+          "ref": "Midterm Fall 2024 · Model A Q12 · Model B Q11 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Fall 2024",
+          "text": "In bidirectional search, what condition indicates a solution has been found?",
+          "options": [
+            "When the goal state is reached",
+            "When two searches meet in the middle",
+            "When all nodes are explored",
+            "When the initial state is reached backward"
+          ],
+          "answer": 1,
+          "why": "Bidirectional search runs one search forward from the start and one backward from the goal, and a solution is found when the two frontiers meet (book p. 83; not in the current slides).",
+          "ref": "Midterm Fall 2024 · Model A Q13 · Model B Q6 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Fall 2024",
+          "text": "In the vacuum world example, what determines the size of the state space?",
+          "options": [
+            "The number of actions available",
+            "The number of possible locations and dirt configurations",
+            "The cost of actions",
+            "The depth of the search tree"
+          ],
+          "answer": 1,
+          "why": "A vacuum-world state is the robot's location plus the dirt in each square, so the two-square world has 2 x 2 x 2 = 8 states (Lecture 2, slide 14; book p. 58).",
+          "ref": "Midterm Fall 2024 · Model A Q14 · Model B Q9 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Fall 2024",
+          "text": "What is the time complexity of breadth-first search?",
+          "options": [
+            "O(b^d)",
+            "O(b^m)",
+            "O(d)",
+            "O(b^(d+1))"
+          ],
+          "answer": 3,
+          "why": "The slides test for the goal on expansion and give BFS time as 1 + b + ... + b^d + b(b^d - 1) = O(b^(d+1)) (Lecture 3, slides 16 and 48). The book tests on generation and gives O(b^d) (p. 66).",
+          "ref": "Midterm Fall 2024 · Model A Q15 · Model B Q1 · solved here",
+          "check": true
+        }
+      ]
+    },
+    {
+      "id": "mid-2025-26",
+      "tag": "Midterm · CS, SC, AI",
+      "name": "Fall 2025",
+      "scope": "10 MCQs · Models A and B",
+      "questions": [
+        {
+          "kind": "mcq",
+          "group": "Midterm Fall 2025 · Model A",
+          "text": "In the context of environments, what does \"partially observable\" mean?",
+          "options": [
+            "The agent has complete knowledge about the current state.",
+            "The agent cannot sense the current state directly.",
+            "The environment is entirely predictable.",
+            "The agent's utility is fully observable."
+          ],
+          "answer": 1,
+          "why": "Partially observable means the sensors do not give the agent the complete current state, because of noisy sensors or missing data (book pp. 33-34). Complete knowledge is fully observable; predictability is about determinism.",
+          "ref": "Midterm Fall 2025 · Model A Q1 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Fall 2025 · Model A",
+          "text": "What does the performance measure of an agent typically capture?",
+          "options": [
+            "The agent's internal model",
+            "The cost or effectiveness of the agent's behavior",
+            "The number of sensory inputs",
+            "The complexity of the environment"
+          ],
+          "answer": 1,
+          "why": "The performance measure scores how desirable the agent's behaviour is, by evaluating the sequence of environment states it causes (Lecture 1, slide 10; book p. 27). It is not the agent's model, its inputs or the environment.",
+          "ref": "Midterm Fall 2025 · Model A Q2 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Fall 2025 · Model A",
+          "text": "What distinguishes an autonomous agent?",
+          "options": [
+            "It always operates in fully observable environments",
+            "It can act on its own, without direct human intervention",
+            "It can perform tasks without any predefined goals",
+            "It requires continuous human guidance to complete tasks."
+          ],
+          "answer": 1,
+          "why": "An autonomous agent acts on its own percepts and decisions instead of waiting for a human at every step (book pp. 9 and 30). Needing continuous human guidance is the opposite of autonomy.",
+          "ref": "Midterm Fall 2025 · Model A Q3 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Fall 2025 · Model A",
+          "text": "In bidirectional search, what is the worst-case time complexity compared to regular unidirectional search?",
+          "options": [
+            "the same",
+            "slightly better",
+            "exponentially faster",
+            "up to twice as fast"
+          ],
+          "answer": 2,
+          "why": "Bidirectional search runs two searches that each reach only depth d/2, so it costs O(b^(d/2)) instead of O(b^d), an exponential saving: about 50,000 times less for b = d = 10 (book pp. 77-78, not in the current slides).",
+          "ref": "Midterm Fall 2025 · Model A Q4 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Fall 2025 · Model A",
+          "text": "Which of the following is an advantage of breadth-first search over depth-first search?",
+          "options": [
+            "space complexity",
+            "optimality",
+            "time complexity",
+            "completeness"
+          ],
+          "answer": 3,
+          "why": "BFS is complete when b is finite, while DFS can fail in infinite or looping spaces (Lecture 3, slide 48). That table also gives BFS optimal and DFS not (for equal step costs), so optimality is defensible too.",
+          "ref": "Midterm Fall 2025 · Model A Q5 · solved here",
+          "check": true
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Fall 2025 · Model B",
+          "text": "What does a goal-based agent use to choose its actions?",
+          "options": [
+            "Rules.",
+            "Utility values.",
+            "Internal world model.",
+            "Progress toward goal states"
+          ],
+          "answer": 3,
+          "why": "A goal-based agent combines its world model with goal information and picks actions that lead toward desirable goal states (Lecture 1, slide 27; book p. 45). Utility values belong to utility-based agents, rules to reflex agents.",
+          "ref": "Midterm Fall 2025 · Model B Q1 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Fall 2025 · Model B",
+          "text": "In terms of task environments, what does \"deterministic\" mean?",
+          "options": [
+            "The environment's behaviour is unpredictable.",
+            "The environment changes over time.",
+            "The agent has limited visibility into the environment.",
+            "Every action has a unique, pre-determined outcome."
+          ],
+          "answer": 3,
+          "why": "An environment is deterministic when the next state is completely fixed by the current state and the action, so each action has one known outcome (book p. 35). Unpredictable is nondeterministic; limited visibility is partial observability.",
+          "ref": "Midterm Fall 2025 · Model B Q2 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Fall 2025 · Model B",
+          "text": "Which of the following search algorithms does NOT have completeness property?",
+          "options": [
+            "Breadth-first search.",
+            "Uniform-cost search",
+            "Depth-limited search.",
+            "Iterative deepening depth-first search"
+          ],
+          "answer": 2,
+          "why": "Depth-limited search is complete only if the limit l >= d; a goal below the limit is never found (Lecture 3, slide 48). Breadth-first, uniform-cost (step cost >= epsilon) and iterative deepening are all complete.",
+          "ref": "Midterm Fall 2025 · Model B Q3 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Fall 2025 · Model B",
+          "text": "What is the PEAS description used for?",
+          "options": [
+            "Evaluating agent performance.",
+            "Describing the agent architecture",
+            "Specifying the properties of the task environment.",
+            "Implementing the agent function"
+          ],
+          "answer": 2,
+          "why": "PEAS (Performance measure, Environment, Actuators, Sensors) specifies the task environment, the first step in designing an agent (Lecture 1, slide 11; book p. 31). It describes the setting, not the agent's architecture or program.",
+          "ref": "Midterm Fall 2025 · Model B Q4 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Fall 2025 · Model B",
+          "text": "What enables an agent to improve its performance over time?",
+          "options": [
+            "Sensors.",
+            "Effectors.",
+            "Learning element.",
+            "Performance element"
+          ],
+          "answer": 2,
+          "why": "The learning element is responsible for making improvements: it uses the critic's feedback to change the performance element so the agent does better (Lecture 1, slide 29; book p. 50). The performance element only selects actions.",
+          "ref": "Midterm Fall 2025 · Model B Q5 · solved here"
+        }
+      ]
+    },
+    {
+      "id": "mid-2026-is",
+      "tag": "Midterm · IS",
+      "name": "Spring 2026",
+      "scope": "16 MCQs · Models A and B",
+      "questions": [
+        {
+          "kind": "mcq",
+          "group": "Midterm Spring 2026 · IS · Model A",
+          "text": "Which of the following is an example of a fully observable environment?",
+          "options": [
+            "A poker game with hidden cards.",
+            "A chess game with visible pieces.",
+            "A maze where the agent cannot see the entire layout.",
+            "A weather prediction system."
+          ],
+          "answer": 1,
+          "why": "With all pieces visible, the sensors see the complete state of the board, so chess is fully observable (book p. 33). Hidden cards, an unseen maze layout and the weather all hide part of the state.",
+          "ref": "Midterm Spring 2026 · IS · Model A Q1 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Spring 2026 · IS · Model A",
+          "text": "In designing intelligent agents, the performance measure is:",
+          "options": [
+            "The cost of running the agent.",
+            "A quantitative measure of how well the agent is achieving its goals.",
+            "The agent's sensory input.",
+            "The number of tasks the agent can perform."
+          ],
+          "answer": 1,
+          "why": "The performance measure is the criterion of success: it scores how well the agent's behaviour achieves what is wanted, by evaluating the states it causes (Lecture 1, slide 10; book p. 27).",
+          "ref": "Midterm Spring 2026 · IS · Model A Q2 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Spring 2026 · IS · Model A",
+          "text": "In terms of task environments, what does \"deterministic\" mean?",
+          "options": [
+            "The environment's behaviour is unpredictable.",
+            "Every action has a unique, pre-determined outcome.",
+            "The agent has limited visibility into the environment.",
+            "The environment changes over time."
+          ],
+          "answer": 1,
+          "why": "An environment is deterministic when the next state is completely fixed by the current state and the action, so each action has one known outcome (book p. 35). Unpredictable is nondeterministic; limited visibility is partial observability.",
+          "ref": "Midterm Spring 2026 · IS · Model A Q3 · Model B Q7 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Spring 2026 · IS · Model A",
+          "text": "What is a task in the context of intelligent agents?",
+          "options": [
+            "A predefined set of actions the agent must perform.",
+            "Any action the agent takes in its environment.",
+            "The same as the agent's goals.",
+            "A specific and meaningful activity the agent aims to accomplish."
+          ],
+          "answer": 3,
+          "why": "A task is the specific job the agent is built to accomplish; its task environment is the problem the agent solves (book p. 30). It is not one action or a fixed action list. The slides do not define 'task' on its own.",
+          "ref": "Midterm Spring 2026 · IS · Model A Q4 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Spring 2026 · IS · Model A",
+          "text": "Which agent type only considers the current percept, ignoring previous percept history?",
+          "options": [
+            "Goal-based agent.",
+            "Model-based agent.",
+            "Utility-based agent.",
+            "Reflex agent"
+          ],
+          "answer": 3,
+          "why": "A simple reflex agent selects actions on the basis of the current percept only, ignoring the rest of the percept history (Lecture 1, slide 23; book p. 41). Model-based, goal-based and utility-based agents keep internal state.",
+          "ref": "Midterm Spring 2026 · IS · Model A Q5 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Spring 2026 · IS · Model A",
+          "text": "What distinguishes an autonomous agent?",
+          "options": [
+            "It always operates in fully observable environments.",
+            "It can perform tasks without any predefined goals.",
+            "It requires continuous human guidance to complete tasks.",
+            "It can act on its own without direct human intervention."
+          ],
+          "answer": 3,
+          "why": "An autonomous agent acts on its own percepts and decisions instead of waiting for a human at every step (book pp. 9 and 30). Needing continuous human guidance is the opposite of autonomy.",
+          "ref": "Midterm Spring 2026 · IS · Model A Q6 · Model B Q3 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Spring 2026 · IS · Model A",
+          "text": "Which of the following best describes bidirectional search?",
+          "options": [
+            "Searching from the initial and goal states simultaneously.",
+            "Searching the entire state space exhaustively",
+            "Using two different search algorithms simultaneously",
+            "None of the above"
+          ],
+          "answer": 0,
+          "why": "Bidirectional search runs a forward search from the initial state and a backward search from the goal at the same time, and stops when the two frontiers meet (book p. 77, not in the current slides).",
+          "ref": "Midterm Spring 2026 · IS · Model A Q7 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Spring 2026 · IS · Model A",
+          "text": "Which of the following best describes depth-first search?",
+          "options": [
+            "Explores paths in order of increasing depth.",
+            "Explores all nodes at a given depth before moving to the next level",
+            "Prioritizes paths that seem closest to the goal based on heuristics",
+            "Explores all neighboring nodes before progressing deeper"
+          ],
+          "answer": 0,
+          "why": "DFS expands the deepest unexpanded node first (Lecture 3, slide 20). Options b and d describe BFS and c greedy best-first search, so a is keyed by elimination, though 'increasing depth' could also be read as BFS.",
+          "ref": "Midterm Spring 2026 · IS · Model A Q8 · solved here",
+          "check": true
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Spring 2026 · IS · Model A",
+          "text": "What enables an agent to improve its performance over time?",
+          "options": [
+            "Sensors.",
+            "Effectors.",
+            "Learning element.",
+            "Performance element"
+          ],
+          "answer": 2,
+          "why": "The learning element is responsible for making improvements: it uses the critic's feedback to change the performance element so the agent does better (Lecture 1, slide 29; book p. 50). The performance element only selects actions.",
+          "ref": "Midterm Spring 2026 · IS · Model A Q9 · Model B Q10 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Spring 2026 · IS · Model A",
+          "text": "What is the PEAS description used for?",
+          "options": [
+            "Evaluating agent performance.",
+            "Describing the agent architecture",
+            "Specifying the properties of the task environment.",
+            "Implementing the agent function"
+          ],
+          "answer": 2,
+          "why": "PEAS (Performance measure, Environment, Actuators, Sensors) specifies the task environment, the first step in designing an agent (Lecture 1, slide 11; book p. 31). It describes the setting, not the agent's architecture or program.",
+          "ref": "Midterm Spring 2026 · IS · Model A Q10 · Model B Q9 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Spring 2026 · IS · Model B",
+          "text": "In the context of environments, what does \"partially observable\" mean?",
+          "options": [
+            "The agent has complete knowledge about the current state.",
+            "The agent cannot sense the current state directly.",
+            "The environment is entirely predictable.",
+            "The agent's utility is fully observable."
+          ],
+          "answer": 1,
+          "why": "Partially observable means the sensors do not give the agent the complete current state, because of noisy sensors or missing data (book pp. 33-34). Complete knowledge is fully observable; predictability is about determinism.",
+          "ref": "Midterm Spring 2026 · IS · Model B Q1 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Spring 2026 · IS · Model B",
+          "text": "What does the performance measure of an agent typically capture?",
+          "options": [
+            "The agent's internal model",
+            "The cost or effectiveness of the agent's behavior",
+            "The number of sensory inputs",
+            "The complexity of the environment"
+          ],
+          "answer": 1,
+          "why": "The performance measure scores how desirable the agent's behaviour is, by evaluating the sequence of environment states it causes (Lecture 1, slide 10; book p. 27). It is not the agent's model, its inputs or the environment.",
+          "ref": "Midterm Spring 2026 · IS · Model B Q2 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Spring 2026 · IS · Model B",
+          "text": "In bidirectional search, what is the worst-case time complexity compared to regular unidirectional search?",
+          "options": [
+            "the same",
+            "slightly better",
+            "exponentially faster",
+            "up to twice as fast"
+          ],
+          "answer": 2,
+          "why": "Bidirectional search runs two searches that each reach only depth d/2, so it costs O(b^(d/2)) instead of O(b^d), an exponential saving: about 50,000 times less for b = d = 10 (book pp. 77-78, not in the current slides).",
+          "ref": "Midterm Spring 2026 · IS · Model B Q4 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Spring 2026 · IS · Model B",
+          "text": "Which of the following is an advantage of breadth-first search over depth-first search?",
+          "options": [
+            "space complexity",
+            "optimality",
+            "time complexity",
+            "completeness"
+          ],
+          "answer": 3,
+          "why": "BFS is complete when b is finite, while DFS can fail in infinite or looping spaces (Lecture 3, slide 48). BFS is also optimal when every step costs 1, so optimality is defensible too.",
+          "ref": "Midterm Spring 2026 · IS · Model B Q5 · from the paper",
+          "check": true
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Spring 2026 · IS · Model B",
+          "text": "What does a goal-based agent use to choose its actions?",
+          "options": [
+            "Rules.",
+            "Utility values.",
+            "Internal world model.",
+            "Progress toward goal states"
+          ],
+          "answer": 3,
+          "why": "A goal-based agent combines its world model with goal information and picks actions that lead toward desirable goal states (Lecture 1, slide 27; book p. 45). Utility values belong to utility-based agents, rules to reflex agents.",
+          "ref": "Midterm Spring 2026 · IS · Model B Q6 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Spring 2026 · IS · Model B",
+          "text": "Which of the following search algorithms does NOT have completeness property?",
+          "options": [
+            "Breadth-first search.",
+            "Uniform-cost search",
+            "Depth-limited search.",
+            "Iterative deepening depth-first search"
+          ],
+          "answer": 2,
+          "why": "Depth-limited search is complete only if the limit l >= d; a goal below the limit is never found (Lecture 3, slide 48). Breadth-first, uniform-cost (step cost >= epsilon) and iterative deepening are all complete.",
+          "ref": "Midterm Spring 2026 · IS · Model B Q8 · from the paper"
+        }
+      ]
+    }
+  ]
+}
