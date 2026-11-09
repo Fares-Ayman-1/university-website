@@ -112,6 +112,14 @@ TypeScript enforces two things: every walkthrough has scenes, and every panel ha
 
 Every subject also gets a **Review** tab (flashcards from each page's `<Definition>`s, and an exam mode drawing on every `<Quiz>`), and the header has a **Ctrl+K search** over all pages, headings and definitions, in English and Arabic.
 
+The **Q&A** tab holds question drills (multiple choice and classification, with instant answers and explanations). Each drill is one JSON file in `content/subjects/<subject>/qa/`, imported from a standalone drill HTML file:
+
+```bash
+npm run import:qa -- "<drill>.html" <subject-slug> <drill-slug> --order 1
+```
+
+The import copies the questions, answer keys and explanations exactly; the site supplies the theme. Embedded images are saved to `public/qa/<subject>/<drill-slug>/`. Re-running it with the same slug replaces that drill. Progress in a drill is saved in the browser only.
+
 Code blocks support titles and line highlights: ` ```python title="bfs.py" {3,5} `.
 
 Leave a blank line before and after block components (`<Solution>`, `<Steps>`, …) so MDX doesn't wrap them in a paragraph. Write currency as `\$40`, because a bare `$` starts math.

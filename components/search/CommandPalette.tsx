@@ -2,7 +2,17 @@
 
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { BookOpen, CornerDownLeft, FlaskConical, Hash, Layers, LayoutGrid, Quote, Search } from "lucide-react";
+import {
+  BookOpen,
+  CornerDownLeft,
+  FlaskConical,
+  Hash,
+  Layers,
+  LayoutGrid,
+  MessageCircleQuestionMark,
+  Quote,
+  Search,
+} from "lucide-react";
 import { ArLine } from "@/components/mdx/Arabic";
 import { loadSearchIndex } from "@/lib/search-client";
 import { search, type PreparedDoc, type SearchKind } from "@/lib/search";
@@ -15,6 +25,7 @@ const KIND_ICON: Record<SearchKind, React.ComponentType<{ "aria-hidden"?: boolea
   heading: Hash,
   definition: Quote,
   review: Layers,
+  qa: MessageCircleQuestionMark,
 };
 
 const KIND_LABEL: Record<SearchKind, string> = {
@@ -24,6 +35,7 @@ const KIND_LABEL: Record<SearchKind, string> = {
   heading: "Heading",
   definition: "Definition",
   review: "Review",
+  qa: "Q&A",
 };
 
 export function CommandPalette({ onClose }: { onClose: () => void }) {

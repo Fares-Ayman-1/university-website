@@ -1,0 +1,2658 @@
+{
+  "title": "Operating Systems MCQ Drill",
+  "kicker": "Operating Systems · Chapters 1 & 2a",
+  "heading": "MCQ Drill",
+  "lede": "Pick an answer and see at once whether it is right. A wrong pick shows the correct choice, and the solved bank adds the explanation and slide reference.",
+  "foot": "Questions and answer keys are copied from your three PDFs as printed. Essay questions are left out. Progress is saved in this browser only.",
+  "banksLabel": "Question banks",
+  "unit": "banks",
+  "order": 1,
+  "source": "Operating Systems MCQ Drill.html",
+  "banks": [
+    {
+      "id": "solved",
+      "tag": "PDF 1",
+      "name": "Solved Question Bank",
+      "scope": "Chapters 1 & 2a, with explanations",
+      "questions": [
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "What is an operating system?",
+          "options": [
+            "interface between the hardware and application programs",
+            "collection of programs that manages hardware resources",
+            "system service provider to the application programs",
+            "all of the mentioned"
+          ],
+          "answer": 3,
+          "why": "Slide Ch1.5 & Ch1.9 define the OS as an intermediary between user/applications and hardware, allocating resources and managing hardware execution.",
+          "ref": "Ch1 Slide 5, 6, 9"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "How does the software trigger an interrupt?",
+          "options": [
+            "Sending signals to CPU through bus",
+            "Executing a special operation called system call",
+            "Executing a special program called system program",
+            "Executing a special program called interrupt trigger program"
+          ],
+          "answer": 1,
+          "why": "Slide Ch1.12 & Ch1.38 state that a trap or exception is a software-generated interrupt triggered by executing a system call (or error).",
+          "ref": "Ch1 Slide 12, 37, 38"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "How does the Hardware trigger an interrupt?",
+          "options": [
+            "Sending signals to CPU through a system bus",
+            "Executing a special program called interrupt program",
+            "Executing a special program called system program",
+            "Executing a special operation called system call"
+          ],
+          "answer": 0,
+          "why": "Hardware triggers interrupts by sending an electrical signal to the CPU via the system bus (Ch1 Slide 12, 14, 16).",
+          "ref": "Ch1 Slide 12, 14, 16"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "What is a trap/exception?",
+          "options": [
+            "hardware generated interrupt caused by an error",
+            "software generated interrupt caused by an error",
+            "user generated interrupt caused by an error"
+          ],
+          "answer": 1,
+          "why": "Slide Ch1.12 explicitly defines: “A trap or exception is a software-generated interrupt caused either by an error or a user request.”",
+          "ref": "Ch1 Slide 12"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Division by zero, accessing a protected or non existent memory address, or attempting to execute a privileged instruction from user mode are all categorized as ......",
+          "options": [
+            "errors",
+            "exceptions",
+            "interrupt handlers",
+            "all of the mentioned"
+          ],
+          "answer": 1,
+          "why": "Runtime CPU execution errors (like zero division or illegal memory access) generate software exceptions (traps) per Ch1 Slide 12 & 37.",
+          "ref": "Ch1 Slide 12, 37"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "What is an ISR?",
+          "options": [
+            "Information Service Request",
+            "Interrupt Service Request",
+            "Interrupt Service Routine",
+            "Information Service Routine"
+          ],
+          "answer": 2,
+          "why": "Slide Ch1.12 states: “Interrupt transfers control to the interrupt service routine”.",
+          "ref": "Ch1 Slide 12"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "What is an interrupt vector?",
+          "options": [
+            "It is an address that is indexed to an interrupt handler",
+            "It is a unique device number that is indexed by an address",
+            "It is a unique identity given to an interrupt",
+            "None of the mentioned"
+          ],
+          "answer": 0,
+          "why": "Slide Ch1.12 defines the interrupt vector as containing the addresses of all the service routines indexed by interrupt request.",
+          "ref": "Ch1 Slide 12"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "The interrupt vector contains ......",
+          "options": [
+            "the interrupts",
+            "the memory addresses of specialized interrupt handlers",
+            "the identifiers of interrupts",
+            "the device addresses"
+          ],
+          "answer": 1,
+          "why": "Slide Ch1.12 states: “the interrupt vector, which contains the addresses of all the service routines”.",
+          "ref": "Ch1 Slide 12"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Which operation is performed by an interrupt handler?",
+          "options": [
+            "Saving the current state of the system",
+            "Loading the interrupt handling code and executing it",
+            "Once done handling, bringing back the system to the original state it was before the interrupt occurred",
+            "All of the mentioned"
+          ],
+          "answer": 3,
+          "why": "Slides Ch1.13 & Ch1.14 depict saving CPU state/registers, processing data in the handler, and resuming the interrupted task.",
+          "ref": "Ch1 Slide 13, 14"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "The ...... determines the cause of the interrupt, performs the necessary processing and executes a return from the interrupt instruction to return the CPU to the execution state prior to the interrupt.",
+          "options": [
+            "interrupt request line",
+            "device driver",
+            "interrupt handler",
+            "all of the mentioned"
+          ],
+          "answer": 2,
+          "why": "Slide Ch1.14 flow diagram shows: “interrupt handler processes data, returns from interrupt” to resume CPU processing.",
+          "ref": "Ch1 Slide 13, 14"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "The hardware mechanism that allows a device to notify the CPU is called ......",
+          "options": [
+            "polling",
+            "interrupt",
+            "driver",
+            "controlling"
+          ],
+          "answer": 1,
+          "why": "Slide Ch1.16 explicitly states: “Device controller informs CPU that it has finished its operation by causing an interrupt.”",
+          "ref": "Ch1 Slide 16"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "In an interrupt driven input/output ......",
+          "options": [
+            "the CPU uses polling to watch the control bit constantly, looping to see if a device is ready",
+            "the CPU writes one data byte to the data register and sets a bit in control register to show that a byte is available",
+            "the CPU receives an interrupt when the device is ready for the next byte",
+            "the CPU runs a user written code and does accordingly"
+          ],
+          "answer": 2,
+          "why": "Slide Ch1.14 & Ch1.16 demonstrate that in interrupt-driven I/O, the CPU continues executing until notified by an I/O completion interrupt signal.",
+          "ref": "Ch1 Slide 14, 16"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "If one or more devices use a common set of wires to communicate with the computer system, the connection is called ......",
+          "options": [
+            "CPU",
+            "Monitor",
+            "Wirefull",
+            "Bus"
+          ],
+          "answer": 3,
+          "why": "Slide Ch1.11 shows CPUs and device controllers connecting through a “common bus providing access to shared memory”.",
+          "ref": "Ch1 Slide 11"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "A ...... is a collection of electronics that can operate a port, a bus, or a device.",
+          "options": [
+            "controller",
+            "driver",
+            "host",
+            "bus"
+          ],
+          "answer": 0,
+          "why": "Slide Ch1.16 & Ch1.22 specify that each device controller (electronic chip/board) is in charge of a particular device/bus type.",
+          "ref": "Ch1 Slide 16, 22"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "DMA is used for ......",
+          "options": [
+            "High speed devices (disks and communications network)",
+            "Low speed devices",
+            "Utilizing CPU cycles",
+            "All of the mentioned"
+          ],
+          "answer": 0,
+          "why": "Slide Ch1.26 states verbatim: “Used for high-speed I/O devices able to transmit information at close to memory speeds”.",
+          "ref": "Ch1 Slide 26"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "For large data transfers, ...... is used.",
+          "options": [
+            "dma",
+            "programmed I/O",
+            "controller register",
+            "none of the mentioned"
+          ],
+          "answer": 0,
+          "why": "Slide Ch1.26 states DMA transfers blocks of data directly to memory generating only one interrupt per block instead of per byte.",
+          "ref": "Ch1 Slide 26"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "The ...... presents a uniform device-access interface to the I/O subsystem, much as system calls provide a standard interface between the application and the operating system.",
+          "options": [
+            "Device drivers",
+            "I/O systems",
+            "Devices",
+            "Buses"
+          ],
+          "answer": 0,
+          "why": "Slide Ch1.24 states: “Device Driver for each device controller... Provides uniform interface between controller and kernel”.",
+          "ref": "Ch1 Slide 24, 47"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "A non blocking system call ......",
+          "options": [
+            "halts the execution of the application for an extended time",
+            "does not halt the execution of the application",
+            "does not block the interrupts",
+            "none of the mentioned"
+          ],
+          "answer": 1,
+          "why": "Slide Ch1.17 & Ch1.18 explain asynchronous/non-blocking I/O returns control to the user program without waiting for I/O completion.",
+          "ref": "Ch1 Slide 17, 18"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "An asynchronous call ......",
+          "options": [
+            "returns immediately, without waiting for the I/O to complete",
+            "does not return immediately and waits for the I/O to complete",
+            "consumes a lot of time",
+            "is too slow"
+          ],
+          "answer": 0,
+          "why": "Slide Ch1.18 defines asynchronous mode: “After I/O starts, control returns to user program without waiting for I/O completion.”",
+          "ref": "Ch1 Slide 18"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "A process is moved to wait queue when I/O request is made with ......",
+          "options": [
+            "non-blocking I/O",
+            "blocking I/O",
+            "asynchronous I/O",
+            "synchronous I/O"
+          ],
+          "answer": 1,
+          "why": "Slide Ch1.18 describes synchronous/blocking I/O where the wait instruction idles the process/CPU until I/O completion.",
+          "ref": "Ch1 Slide 18, 34"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "The device-status table contains ......",
+          "options": [
+            "each I/O device type",
+            "each I/O device address",
+            "each I/O device state",
+            "all of the mentioned"
+          ],
+          "answer": 3,
+          "why": "Slide Ch1.18 explicitly states: “Device-status table contains entry for each I/O device indicating its type, address, and state”.",
+          "ref": "Ch1 Slide 18"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Which hardware triggers some operation after certain programmed count?",
+          "options": [
+            "programmable interval timer",
+            "interrupt timer",
+            "programmable timer",
+            "none of the mentioned"
+          ],
+          "answer": 0,
+          "why": "Slide Ch1.45 describes the hardware Timer set to interrupt after a time period by decrementing a counter to zero.",
+          "ref": "Ch1 Slide 45"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Caching ......",
+          "options": [
+            "holds a copy of the data",
+            "is fast memory",
+            "holds the only copy of the data",
+            "holds output for a device"
+          ],
+          "answer": 0,
+          "why": "Slide Ch1.24 & Ch1.47 define caching as copying information into faster storage temporarily (holding a temporary copy).",
+          "ref": "Ch1 Slide 24, 25, 47"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Caching is ...... spooling.",
+          "options": [
+            "same as",
+            "not the same as",
+            "all of the mentioned",
+            "none of the mentioned"
+          ],
+          "answer": 1,
+          "why": "Slide Ch1.47 distinguishes buffering (temporary storage), caching (faster storage copy), and spooling (overlapping output of one job with input of another).",
+          "ref": "Ch1 Slide 47"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Spooling ......",
+          "options": [
+            "holds a copy of the data",
+            "is fast memory",
+            "holds the only copy of the data",
+            "holds output for a device"
+          ],
+          "answer": 3,
+          "why": "Slide Ch1.47 defines spooling as “the overlapping of output of one job with input of other jobs” (spooling printer jobs).",
+          "ref": "Ch1 Slide 47"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Which buffer holds the output for a device?",
+          "options": [
+            "spool",
+            "output",
+            "status",
+            "magic"
+          ],
+          "answer": 0,
+          "why": "Slide Ch1.47 identifies spooling as the buffer mechanism managing overlapping output for devices.",
+          "ref": "Ch1 Slide 47"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "A memory buffer used to accommodate a speed differential is called ......",
+          "options": [
+            "stack pointer",
+            "cache",
+            "accumulator",
+            "disk buffer"
+          ],
+          "answer": 1,
+          "why": "Slide Ch1.25 & Ch1.47 explain buffering/caching as storing data in faster memory to accommodate speed differentials between components.",
+          "ref": "Ch1 Slide 25, 47"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "CPU fetches the instruction from memory according to the value of ......",
+          "options": [
+            "program counter",
+            "status register",
+            "instruction register",
+            "program status word"
+          ],
+          "answer": 0,
+          "why": "Slide Ch1.38 defines the program counter as specifying the location of the next instruction to execute.",
+          "ref": "Ch1 Slide 38"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Which one of the following is not a secondary storage?",
+          "options": [
+            "Magnetic disks",
+            "Magnetic tapes",
+            "RAM",
+            "None of the mentioned"
+          ],
+          "answer": 2,
+          "why": "Slide Ch1.21 & Ch1.23 categorize RAM (DRAM) as volatile Main Memory (primary storage), whereas secondary storage comprises HDDs, SSDs, etc.",
+          "ref": "Ch1 Slide 21, 23"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Virtual memory uses disk space as an extension of ......",
+          "options": [
+            "secondary storage",
+            "main memory",
+            "tertiary storage",
+            "none of the mentioned"
+          ],
+          "answer": 1,
+          "why": "Slide Ch1.34 states virtual memory allows execution of processes not completely in physical main memory.",
+          "ref": "Ch1 Slide 34"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Virtual memory allows ......",
+          "options": [
+            "execution of a process that may not be completely in memory",
+            "a program to be smaller than the physical memory",
+            "a program to be larger than the secondary storage",
+            "execution of a process without being in physical memory"
+          ],
+          "answer": 0,
+          "why": "Slide Ch1.34 explicitly states: “Virtual memory allows execution of processes not completely in memory”.",
+          "ref": "Ch1 Slide 34"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "In ...... information is recorded magnetically on platters.",
+          "options": [
+            "magnetic disks",
+            "electrical disks",
+            "assemblies",
+            "cylinders"
+          ],
+          "answer": 0,
+          "why": "Slide Ch1.22 defines HDDs as: “rigid metal or glass platters covered with magnetic recording material”.",
+          "ref": "Ch1 Slide 22"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "...... tend to represent a major bottleneck in system performance.",
+          "options": [
+            "CPUs",
+            "Disks",
+            "Programs",
+            "I/O"
+          ],
+          "answer": 1,
+          "why": "Slide Ch1.43 states: “Entire speed of computer operation hinges on disk subsystem and its algorithms” due to mechanical seek latency.",
+          "ref": "Ch1 Slide 43"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Some directory information is kept in main memory or cache to ......",
+          "options": [
+            "fill up the cache",
+            "increase free space in secondary storage",
+            "decrease free space in secondary storage",
+            "speed up access"
+          ],
+          "answer": 3,
+          "why": "Slide Ch1.25 & Ch1.47 note that caching information in faster storage speeds up access compared to disk fetching.",
+          "ref": "Ch1 Slide 25, 47"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Data cannot be written to secondary storage unless written within a ......",
+          "options": [
+            "file",
+            "swap space",
+            "directory",
+            "text format"
+          ],
+          "answer": 0,
+          "why": "Slide Ch1.42 defines a file as the logical storage unit provided by the OS to abstract physical storage media.",
+          "ref": "Ch1 Slide 42"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "A file is a/an ...... data type.",
+          "options": [
+            "abstract",
+            "primitive",
+            "public",
+            "private"
+          ],
+          "answer": 0,
+          "why": "Slide Ch1.42 states: “OS provides uniform, logical view of information storage. Abstracts physical properties to logical storage unit - file”.",
+          "ref": "Ch1 Slide 42"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "The address of the next instruction to be executed by the current process is provided by the ......",
+          "options": [
+            "CPU registers",
+            "Program counter",
+            "Process stack",
+            "Pipe"
+          ],
+          "answer": 1,
+          "why": "Slide Ch1.38 defines: “Single-threaded process has one program counter specifying location of next instruction to execute”.",
+          "ref": "Ch1 Slide 38"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "A single thread of control allows the process to perform ......",
+          "options": [
+            "only one task at a time",
+            "multiple tasks at a time",
+            "only two tasks at a time",
+            "all of the mentioned"
+          ],
+          "answer": 0,
+          "why": "Slide Ch1.38 states a single-threaded process executes instructions sequentially, one at a time.",
+          "ref": "Ch1 Slide 38"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "What is the objective of multiprogramming?",
+          "options": [
+            "Have a process running at all time",
+            "Have multiple programs waiting in a queue ready to run",
+            "To increase CPU utilization",
+            "None of the mentioned"
+          ],
+          "answer": 2,
+          "why": "Slide Ch1.33 states multiprogramming organizes jobs so the CPU always has one to execute, preventing idle CPU time.",
+          "ref": "Ch1 Slide 33"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "In a multiprogramming environment ......",
+          "options": [
+            "the processor executes more than one process at a time",
+            "the programs are developed by more than one person",
+            "more than one process resides in the memory",
+            "a single user can execute many programs at the same time"
+          ],
+          "answer": 2,
+          "why": "Slide Ch1.33 & Ch1.35 explicitly state: “A subset of total jobs in system is kept in memory” (shown in memory layout slide 35).",
+          "ref": "Ch1 Slide 33, 35"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "With ...... only one process can execute at a time; meanwhile all other process are waiting for the processor. With ...... more than one process can be running simultaneously each on a different processor.",
+          "options": [
+            "Multiprocessing, Multiprogramming",
+            "Multiprogramming, Uniprocessing",
+            "Multiprogramming, Multiprocessing",
+            "Uniprogramming, Multiprocessing"
+          ],
+          "answer": 2,
+          "why": "Slides Ch1.28 & Ch1.33 contrast uniprocessor multiprogramming (interleaved execution) with multiprocessing (true simultaneous execution on multiple CPUs).",
+          "ref": "Ch1 Slide 28, 33"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "A process can be ......",
+          "options": [
+            "single threaded",
+            "multithreaded",
+            "both single threaded and multithreaded",
+            "none of the mentioned"
+          ],
+          "answer": 2,
+          "why": "Slide Ch1.38 notes that processes can be single-threaded (one program counter) or multi-threaded (one program counter per thread).",
+          "ref": "Ch1 Slide 38"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Which one of the following is not shared by threads?",
+          "options": [
+            "program counter",
+            "stack",
+            "both program counter and stack",
+            "none of the mentioned"
+          ],
+          "answer": 2,
+          "why": "Slide Ch1.38 states each thread has its own program counter and stack to maintain its distinct execution state.",
+          "ref": "Ch1 Slide 38"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "A process having multiple threads of control implies ......",
+          "options": [
+            "it can do more than one task at a time",
+            "it can do only one task at a time, but much faster",
+            "it has to use only one thread per process",
+            "none of the mentioned"
+          ],
+          "answer": 0,
+          "why": "Slide Ch1.38 explains multithreading enables a process to perform multiple tasks concurrently across different threads.",
+          "ref": "Ch1 Slide 38"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "For system protection, a process should access ......",
+          "options": [
+            "all the resources",
+            "only those resources for which it has authorization",
+            "few resources but authorization is not required",
+            "all of the mentioned"
+          ],
+          "answer": 1,
+          "why": "Slide Ch1.48 defines Protection as controlling access of processes/users to resources defined by the OS using authorization/User IDs.",
+          "ref": "Ch1 Slide 48"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "What is the main objective of protection?",
+          "options": [
+            "Ensure all objects are protected individually",
+            "Objects have different priority and thus different levels of protection",
+            "Ensure that each object is accessed correctly and only by allowed processes",
+            "None of the mentioned"
+          ],
+          "answer": 2,
+          "why": "Slide Ch1.48 states protection mechanisms control resource access and enforce user access control policies.",
+          "ref": "Ch1 Slide 48"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Reliability of files can be increased by ......",
+          "options": [
+            "keeping the files safely in the memory",
+            "making a different partition for the files",
+            "by keeping them in external storage",
+            "by keeping duplicate copies of the file"
+          ],
+          "answer": 3,
+          "why": "Slide Ch1.41 lists “Backup files onto stable (non-volatile) storage media” (duplicate copies) under file management activities.",
+          "ref": "Ch1 Slide 41"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "What is used to protect network from outside internet access?",
+          "options": [
+            "A trusted antivirus",
+            "24 hours scanning for virus",
+            "Firewall to separate trusted and untrusted network",
+            "Deny users access to websites which can potentially cause security leak"
+          ],
+          "answer": 2,
+          "why": "Slide Ch1.53 & Ch1.63 explicitly mention firewalls used to protect computers/networks from Internet attacks.",
+          "ref": "Ch1 Slide 53, 63"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "The machine containing the files is the ...... and the machine wanting to access the files is the ......",
+          "options": [
+            "master, slave",
+            "memory, user",
+            "server, client",
+            "none of the mentioned"
+          ],
+          "answer": 2,
+          "why": "Slide Ch1.56 defines client-server computing: “File-server system provides interface for clients to store and retrieve files”.",
+          "ref": "Ch1 Slide 56"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "What are the characteristics of processor in distributed system?",
+          "options": [
+            "They vary in size and function",
+            "They are same in size and function",
+            "They are manufactured with single purpose",
+            "They are real-time devices"
+          ],
+          "answer": 0,
+          "why": "Slide Ch1.55 defines distributed systems as a collection of “separate, possibly heterogeneous, systems networked together”.",
+          "ref": "Ch1 Slide 55"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "In real time operating system ......",
+          "options": [
+            "process scheduling can be done only once",
+            "all processes have the same priority",
+            "kernel is not required",
+            "a task must be serviced by its deadline period"
+          ],
+          "answer": 3,
+          "why": "Slide Ch1.64 defines RTOS: “Real-time OS has well-defined fixed time constraints. Processing must be done within constraint”.",
+          "ref": "Ch1 Slide 64"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "In a real time system the computer results ......",
+          "options": [
+            "must be produced within a specific deadline period",
+            "may be produced at any time",
+            "may be correct",
+            "all of the mentioned"
+          ],
+          "answer": 0,
+          "why": "Slide Ch1.64 states: “Correct operation only if constraints met” (deadlines strictly enforced).",
+          "ref": "Ch1 Slide 64"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "What is the main function of the command interpreter?",
+          "options": [
+            "to provide the interface between the API and application program",
+            "to handle the files in the operating system",
+            "to get and execute the next user-specified command",
+            "none of the mentioned"
+          ],
+          "answer": 2,
+          "why": "Slide Ch2a.8 states: “Command Line interpreter... Primarily fetches a command from user and executes it”.",
+          "ref": "Ch2a Slide 8"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Which one of the following errors will be handle by the operating system?",
+          "options": [
+            "lack of paper in printer",
+            "connection failure in the network",
+            "power failure",
+            "all of the mentioned"
+          ],
+          "answer": 3,
+          "why": "Slide Ch2a.6 states Error Detection handles hardware (CPU/memory), I/O device (printer/power), and network errors.",
+          "ref": "Ch2a Slide 6"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "The usual effect of abnormal termination of a program is ......",
+          "options": [
+            "core dump file generation",
+            "system crash",
+            "program switch",
+            "signal destruction"
+          ],
+          "answer": 0,
+          "why": "Slide Ch2a.21 lists process control system calls: “Dump memory if error” for post-mortem debugging.",
+          "ref": "Ch2a Slide 21"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "To access the services of the operating system, the interface is provided by the ......",
+          "options": [
+            "Library",
+            "System calls",
+            "Assembly instructions",
+            "API"
+          ],
+          "answer": 1,
+          "why": "Slide Ch2a.13 states: “System Calls: Programming interface to the services provided by the OS”.",
+          "ref": "Ch2a Slide 13"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Whenever a process needs I/O to or from a disk it issues a ......",
+          "options": [
+            "system call to the operating system",
+            "a special procedure",
+            "system call to the CPU",
+            "all of the mentioned"
+          ],
+          "answer": 0,
+          "why": "Slide Ch2a.14 & Ch2a.22 state processes request disk reading/writing via file management system calls (open, read, write).",
+          "ref": "Ch2a Slide 14, 22"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "By using the specific system call, we can ......",
+          "options": [
+            "open the file",
+            "read the file",
+            "write into the file",
+            "all of the mentioned"
+          ],
+          "answer": 3,
+          "why": "Slide Ch2a.22 lists file management calls: open, close, read, write, reposition, create, delete.",
+          "ref": "Ch2a Slide 22"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "For processes to request access to file contents, they need ......",
+          "options": [
+            "to run a separate program",
+            "special interrupts",
+            "to implement the open and close system calls",
+            "none of the mentioned"
+          ],
+          "answer": 2,
+          "why": "Slide Ch2a.14 & Ch2a.22 show file access requires opening the file first and closing it upon completion.",
+          "ref": "Ch2a Slide 14, 22"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Standard set of functions through which interacts with kernel is defined by ......",
+          "options": [
+            "system libraries",
+            "kernel code",
+            "compilers",
+            "utility programs"
+          ],
+          "answer": 0,
+          "why": "Slide Ch2a.16 states standard C libraries provide the system-call interface for programs to interact with the kernel.",
+          "ref": "Ch2a Slide 16, 17"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "In Unix, which system call creates the new process?",
+          "options": [
+            "create",
+            "fork",
+            "new",
+            "none of the mentioned"
+          ],
+          "answer": 1,
+          "why": "Slide Ch2a.25 & Ch2a.27 state Unix process creation uses the `fork()` system call.",
+          "ref": "Ch2a Slide 25, 27"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Which system call can be used by a parent process to determine the termination of child process?",
+          "options": [
+            "wait",
+            "exit",
+            "fork",
+            "get"
+          ],
+          "answer": 0,
+          "why": "Slide Ch2a.25 & Ch2a.27 state parent shell/process calls `wait()` (`WaitForSingleObject()` in Windows) to wait for child termination.",
+          "ref": "Ch2a Slide 25, 27"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "A parent process calling ...... system call will be suspended until children processes terminate.",
+          "options": [
+            "wait",
+            "fork",
+            "exit",
+            "exec"
+          ],
+          "answer": 0,
+          "why": "Slide Ch2a.27 explicitly states: “Shell waits for process to terminate” using the `wait()` system call.",
+          "ref": "Ch2a Slide 25, 27"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Which of the following system calls transforms executable binary file into a process?",
+          "options": [
+            "fork",
+            "exec",
+            "ioctl",
+            "longjmp"
+          ],
+          "answer": 1,
+          "why": "Slide Ch2a.27 states: “Executes exec() to load program into process”.",
+          "ref": "Ch2a Slide 27"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "What is Interprocess communication?",
+          "options": [
+            "allows processes to communicate and synchronize their actions when using the same address space",
+            "allows processes to communicate and synchronize their actions",
+            "allows the processes to only synchronize their actions without communication",
+            "none of the mentioned"
+          ],
+          "answer": 1,
+          "why": "Slide Ch2a.6 & Ch2a.23 state communications allow processes to exchange info and synchronize via shared memory or message passing across address spaces.",
+          "ref": "Ch2a Slide 6, 23"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Message passing system allows processes to ......",
+          "options": [
+            "communicate with each other without sharing the same address space",
+            "communicate with one another by resorting to shared data",
+            "share data",
+            "name the recipient or sender of the message"
+          ],
+          "answer": 0,
+          "why": "Slide Ch2a.6 notes message passing moves packets via OS between separate address spaces (unlike shared memory).",
+          "ref": "Ch2a Slide 6, 23"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Which of the following two operations are provided by the IPC facility?",
+          "options": [
+            "write & delete message",
+            "delete & receive message",
+            "send & delete message",
+            "receive & send message"
+          ],
+          "answer": 3,
+          "why": "Slide Ch2a.23 explicitly lists message passing operations: “send, receive messages if message passing model”.",
+          "ref": "Ch2a Slide 23"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Processes on the remote systems are identified by ......",
+          "options": [
+            "host ID",
+            "host name and identifier",
+            "identifier",
+            "process ID"
+          ],
+          "answer": 1,
+          "why": "Slide Ch2a.23 states remote message passing requires specifying the host name or process name/identifier.",
+          "ref": "Ch2a Slide 23"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Which file is a sequence of bytes organized into blocks understandable by the system’s linker?",
+          "options": [
+            "object file",
+            "source file",
+            "executable file",
+            "text file"
+          ],
+          "answer": 0,
+          "why": "Slide Ch2a.32 & Ch2a.33 define relocatable object files (`.o`) compiled from source code and processed by the linker into an executable binary.",
+          "ref": "Ch2a Slide 32, 33"
+        }
+      ]
+    },
+    {
+      "id": "chapter-2a",
+      "tag": "PDF 2",
+      "name": "Chapter 2a Question Bank",
+      "scope": "OS services and structures",
+      "questions": [
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Operating systems provide an environment for ______.",
+          "options": [
+            "only network communication",
+            "execution of programs and services to programs and users",
+            "only compiling programs",
+            "only storing files"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Which of the following is NOT a type of user interface?",
+          "options": [
+            "Graphical user interface (GUI)",
+            "Touch-screen",
+            "Memory interface",
+            "Command-line (CLI)"
+          ],
+          "answer": 2
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Which OS service loads a program into memory, runs it, and ends its execution normally or abnormally?",
+          "options": [
+            "Program execution",
+            "I/O operations",
+            "Logging",
+            "Error detection"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "A running program that needs to read from a file or a device uses which OS service?",
+          "options": [
+            "Logging",
+            "Protection",
+            "I/O operations",
+            "Resource allocation"
+          ],
+          "answer": 2
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Which of the following is a file-system manipulation service?",
+          "options": [
+            "Detecting hardware errors",
+            "Creating and deleting files and directories",
+            "Allocating CPU cycles",
+            "Authenticating users"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Processes may exchange information on the same computer or over a network using the ______ service.",
+          "options": [
+            "Error detection",
+            "Program execution",
+            "Communications",
+            "Logging"
+          ],
+          "answer": 2
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Communications between processes may be via ______.",
+          "options": [
+            "registers only",
+            "the file system only",
+            "the CPU cache only",
+            "shared memory or message passing"
+          ],
+          "answer": 3
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "In message passing, the packets are moved by ______.",
+          "options": [
+            "the loader",
+            "the user",
+            "the compiler",
+            "the operating system"
+          ],
+          "answer": 3
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Which service means the OS must be constantly aware of possible errors in the CPU, memory, I/O devices and user programs?",
+          "options": [
+            "Logging",
+            "Resource allocation",
+            "Error detection",
+            "Communications"
+          ],
+          "answer": 2
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Which OS function ensures efficient operation of the system itself through resource sharing?",
+          "options": [
+            "User interface",
+            "File manipulation",
+            "Program execution",
+            "Resource allocation"
+          ],
+          "answer": 3
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "When multiple users or jobs run concurrently, resources such as CPU cycles, main memory, file storage and I/O devices must be ______.",
+          "options": [
+            "compiled",
+            "deleted",
+            "allocated to each of them",
+            "encrypted"
+          ],
+          "answer": 2
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Which service keeps track of which users use how much and what kinds of computer resources?",
+          "options": [
+            "Communications",
+            "Protection",
+            "Error detection",
+            "Logging"
+          ],
+          "answer": 3
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Ensuring that all access to system resources is controlled is called ______.",
+          "options": [
+            "linking",
+            "emulation",
+            "protection",
+            "logging"
+          ],
+          "answer": 2
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Security of the system from outsiders requires ______.",
+          "options": [
+            "dynamic linking",
+            "swapping",
+            "user authentication",
+            "spooling"
+          ],
+          "answer": 2
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "What is the main function of the command interpreter?",
+          "options": [
+            "To provide the interface between the API and the application program",
+            "To manage memory",
+            "To handle the files in the operating system",
+            "To get and execute the next user-specified command"
+          ],
+          "answer": 3
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "A command-line interface (CLI) allows ______.",
+          "options": [
+            "direct command entry",
+            "only mouse clicks",
+            "only touch gestures",
+            "only voice commands"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Multiple flavors of command-line interpreters are called ______.",
+          "options": [
+            "shells",
+            "loaders",
+            "kernels",
+            "daemons"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "If shell commands are just names of programs, then adding new features ______.",
+          "options": [
+            "is impossible",
+            "requires modifying the shell",
+            "does not require shell modification",
+            "requires a new kernel"
+          ],
+          "answer": 2
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Bourne shell is an example of a ______.",
+          "options": [
+            "GUI",
+            "command interpreter",
+            "linker",
+            "loader"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "The GUI was invented at ______.",
+          "options": [
+            "IBM",
+            "Microsoft",
+            "Bell Labs",
+            "Xerox PARC"
+          ],
+          "answer": 3
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "In a GUI, icons represent ______.",
+          "options": [
+            "files, programs, actions, etc.",
+            "only devices",
+            "only folders",
+            "only errors"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "The Apple Mac OS X GUI is called ______.",
+          "options": [
+            "GNOME",
+            "Aqua",
+            "CDE",
+            "KDE"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Microsoft Windows is a GUI with a CLI ______ shell.",
+          "options": [
+            "“daemon”",
+            "“kernel”",
+            "“loader”",
+            "“command”"
+          ],
+          "answer": 3
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Which are GUI interfaces available on UNIX and Linux?",
+          "options": [
+            "POSIX, Java",
+            "CDE, KDE, GNOME",
+            "DLL, ABI",
+            "Aqua, Win32"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Touchscreen interfaces are based on ______.",
+          "options": [
+            "command lines only",
+            "gestures and a virtual keyboard",
+            "mouse buttons",
+            "punched cards"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "System calls are ______.",
+          "options": [
+            "a storage format",
+            "a type of virus",
+            "a hardware device",
+            "the programming interface to the services provided by the OS"
+          ],
+          "answer": 3
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "System calls are typically written in ______.",
+          "options": [
+            "a high-level language (C or C++)",
+            "only assembly",
+            "only Java",
+            "only Python"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Programs mostly access system calls through ______.",
+          "options": [
+            "a high-level Application Programming Interface (API)",
+            "direct hardware access",
+            "the bootstrap program",
+            "the loader"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Which are the three most common APIs?",
+          "options": [
+            "POSIX, DLL, ABI",
+            "Win32, DOS, Aqua",
+            "Java, KDE, GNOME",
+            "Win32, POSIX, Java API"
+          ],
+          "answer": 3
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "The POSIX API is used by ______.",
+          "options": [
+            "only Windows",
+            "virtually all versions of UNIX, Linux and Mac OS X",
+            "only the Java VM",
+            "only Arduino"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "In the C library example, the printf() library call calls the ______ system call.",
+          "options": [
+            "exec()",
+            "write()",
+            "fork()",
+            "read()"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "The system-call interface maintains a table that is indexed according to ______.",
+          "options": [
+            "the number associated with each system call",
+            "the file sizes",
+            "the program names",
+            "the user IDs"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "The caller of a system call needs to know ______.",
+          "options": [
+            "the CPU design",
+            "nothing about how it is implemented, just obey the API",
+            "how the system call is implemented",
+            "the kernel source code"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Most details of the OS interface are hidden from the programmer by the ______.",
+          "options": [
+            "bootstrap program",
+            "registry",
+            "API (managed by the run-time support library)",
+            "loader"
+          ],
+          "answer": 2
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "To access the services of the operating system, the interface is provided by the ______.",
+          "options": [
+            "system calls",
+            "assembly instructions",
+            "library",
+            "API only"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Which is NOT one of the three general methods used to pass parameters to the OS?",
+          "options": [
+            "Store the parameters in a block (table) in memory and pass its address in a register",
+            "Send the parameters by e-mail",
+            "Pass the parameters in registers",
+            "Push the parameters onto the stack"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Which parameter-passing method is the simplest?",
+          "options": [
+            "Registers",
+            "Stack",
+            "Block in memory",
+            "Network"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Which OS take the approach of storing parameters in a block (table) in memory and passing its address in a register?",
+          "options": [
+            "Only DOS",
+            "Only Windows",
+            "Only Arduino",
+            "Linux and Solaris"
+          ],
+          "answer": 3
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Which parameter-passing methods do NOT limit the number or length of parameters?",
+          "options": [
+            "Block and stack methods",
+            "Registers only",
+            "None of them",
+            "Registers and stack only"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "create process, terminate process, load, execute, wait event and allocate memory are system calls of which type?",
+          "options": [
+            "Process control",
+            "Device management",
+            "Communications",
+            "File management"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "open, close, read, write, reposition and get/set file attributes are ______ system calls.",
+          "options": [
+            "Process control",
+            "Information maintenance",
+            "File management",
+            "Protection"
+          ],
+          "answer": 2
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "request device, release device and logically attach or detach devices are ______ system calls.",
+          "options": [
+            "Protection",
+            "Communications",
+            "Device management",
+            "File management"
+          ],
+          "answer": 2
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "get time or date, set time or date and get system data are ______ system calls.",
+          "options": [
+            "Protection",
+            "Device management",
+            "Information maintenance",
+            "Process control"
+          ],
+          "answer": 2
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Create/delete communication connection and send/receive messages are ______ system calls.",
+          "options": [
+            "Protection",
+            "Process control",
+            "Communications",
+            "File management"
+          ],
+          "answer": 2
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Get and set permissions and allow or deny user access are ______ system calls.",
+          "options": [
+            "Protection",
+            "Process control",
+            "Device management",
+            "Communications"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "In the shared-memory model of communication, system calls are used to ______.",
+          "options": [
+            "load a program",
+            "send packets by the OS",
+            "compile code",
+            "create and gain access to memory regions"
+          ],
+          "answer": 3
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "The Arduino is an example of a system that is ______.",
+          "options": [
+            "single-tasking with no operating system",
+            "multitasking with a full OS",
+            "a cloud OS",
+            "a distributed OS"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "In the Arduino example, programs (sketches) are loaded via USB into ______ by the boot loader.",
+          "options": [
+            "a floppy disk",
+            "flash memory",
+            "the cache",
+            "the hard disk"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "In FreeBSD, the shell executes the ______ system call to create a process.",
+          "options": [
+            "fork()",
+            "write()",
+            "open()",
+            "exit()"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "In FreeBSD, the shell then executes ______ to load a program into the process.",
+          "options": [
+            "exec()",
+            "wait()",
+            "fork()",
+            "read()"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "In FreeBSD, a process exits with code = 0 meaning ______.",
+          "options": [
+            "the process was suspended",
+            "the process is waiting",
+            "no error",
+            "an error occurred"
+          ],
+          "answer": 2
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "In FreeBSD, a process that exits with code > 0 means ______.",
+          "options": [
+            "an error code",
+            "a new process",
+            "the shell reloaded",
+            "no error"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "A parent process calling the ______ system call will be suspended until its child processes terminate.",
+          "options": [
+            "exit",
+            "wait",
+            "exec",
+            "fork"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "System programs provide ______.",
+          "options": [
+            "only network cables",
+            "the bootstrap code",
+            "the CPU hardware",
+            "a convenient environment for program development and execution"
+          ],
+          "answer": 3
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Most users' view of the operating system is defined by ______.",
+          "options": [
+            "system programs",
+            "the kernel code",
+            "the bootstrap program",
+            "the actual system calls"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Which system program categories are listed in the chapter?",
+          "options": [
+            "Only editors",
+            "Only drivers",
+            "Only compilers",
+            "File manipulation, status information, programming language support, program loading and execution, communications, background services, application programs"
+          ],
+          "answer": 3
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "A registry is used to ______.",
+          "options": [
+            "load libraries",
+            "compile programs",
+            "create processes",
+            "store and retrieve configuration information"
+          ],
+          "answer": 3
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Background services that launch at boot time are also known as ______.",
+          "options": [
+            "services, subsystems, daemons",
+            "registries",
+            "loaders",
+            "shells"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Background services run in ______.",
+          "options": [
+            "kernel context",
+            "user context, not kernel context",
+            "the BIOS",
+            "the cache"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Application programs are ______.",
+          "options": [
+            "part of the kernel",
+            "always daemons",
+            "not typically considered part of the OS",
+            "the bootstrap program"
+          ],
+          "answer": 2
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Source code is compiled into ______ files designed to be loaded into any physical memory location.",
+          "options": [
+            "relocatable object",
+            "image",
+            "text",
+            "PDF"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "The ______ combines object files into a single binary executable file and also brings in libraries.",
+          "options": [
+            "compiler",
+            "loader",
+            "linker",
+            "shell"
+          ],
+          "answer": 2
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "The ______ brings the program from secondary storage into memory to be executed.",
+          "options": [
+            "compiler",
+            "editor",
+            "linker",
+            "loader"
+          ],
+          "answer": 3
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Relocation ______.",
+          "options": [
+            "creates a process",
+            "assigns final addresses to program parts and adjusts code and data to match",
+            "deletes the program",
+            "compresses the file"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Dynamically linked libraries (DLLs in Windows) are ______.",
+          "options": [
+            "never shared",
+            "linked into every executable",
+            "used only by Linux",
+            "loaded as needed and shared by all that use the same version"
+          ],
+          "answer": 3
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Why are applications usually operating system specific?",
+          "options": [
+            "Because compilers do not exist",
+            "Each OS provides its own unique system calls, file formats, etc.",
+            "Because of the keyboard",
+            "Because of the monitor"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "Which of the following allows an app to run on multiple operating systems?",
+          "options": [
+            "Using a different kernel",
+            "Writing it in an interpreted language like Python",
+            "Compiling it once for Windows only",
+            "Using only system calls directly"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2a",
+          "text": "The Application Binary Interface (ABI) is ______.",
+          "options": [
+            "the architecture equivalent of API, defining how binary code components interface on a given OS and architecture",
+            "a type of GUI",
+            "a storage device",
+            "a type of shell"
+          ],
+          "answer": 0
+        }
+      ]
+    },
+    {
+      "id": "chapter-1",
+      "tag": "PDF 3",
+      "name": "Chapter 1 Question Bank",
+      "scope": "Introduction",
+      "questions": [
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "An operating system is a program that acts as an intermediary between ______.",
+          "options": [
+            "the CPU and memory",
+            "a user and the computer hardware",
+            "two application programs",
+            "the compiler and the linker"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Which of the following is NOT a goal of an operating system?",
+          "options": [
+            "Execute user programs and make solving user problems easier",
+            "Make the computer system convenient to use",
+            "Use the computer hardware efficiently",
+            "Design the computer hardware"
+          ],
+          "answer": 3
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "The one program running at all times on the computer is the ______.",
+          "options": [
+            "shell",
+            "kernel",
+            "compiler",
+            "bootstrap"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "A program that ships with the operating system but is not part of the kernel is called a ______.",
+          "options": [
+            "system program",
+            "application program",
+            "middleware",
+            "driver"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Middleware is ______.",
+          "options": [
+            "a hardware component between CPU and memory",
+            "a set of software frameworks providing additional services to application developers",
+            "a type of virus",
+            "the part of the kernel that handles interrupts"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "A computer system can be divided into four components. Which is NOT one of them?",
+          "options": [
+            "Hardware",
+            "Operating system",
+            "Application programs",
+            "Network cables"
+          ],
+          "answer": 3
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "The operating system is considered a ______ and control program.",
+          "options": [
+            "resource allocator",
+            "data collector",
+            "file compressor",
+            "language translator"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "What is a bootstrap program?",
+          "options": [
+            "The first code executed when the computer system is started",
+            "A program that only restarts the system",
+            "A simple program like any other program",
+            "A program that manages files"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "The bootstrap program initializes all aspects of the system, from CPU registers to device controllers and memory contents, and then ______.",
+          "options": [
+            "shuts down",
+            "starts the operating system (loads the kernel)",
+            "starts the compiler",
+            "formats the disk"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Which of the following contains the addresses of all the interrupt service routines?",
+          "options": [
+            "Page table",
+            "Interrupt vector",
+            "System call table",
+            "File descriptor table"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "A trap (exception) is ______.",
+          "options": [
+            "a hardware interrupt from a device",
+            "a software-generated interrupt caused by an error or a user request",
+            "a disk error",
+            "a type of memory"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Modern operating systems are ______.",
+          "options": [
+            "polling driven",
+            "interrupt driven",
+            "disk driven",
+            "user driven"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "When an interrupt occurs, the operating system preserves the state of the CPU by storing ______.",
+          "options": [
+            "only the stack",
+            "the registers and the program counter",
+            "the hard disk contents",
+            "the cache only"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "A device controller informs the CPU that it has finished its operation by ______.",
+          "options": [
+            "causing an interrupt",
+            "shutting down",
+            "writing to the disk",
+            "sending an e-mail"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "The ______ presents a uniform device-access interface between the device controller and the kernel.",
+          "options": [
+            "device driver",
+            "buffer",
+            "cache",
+            "register"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Each device controller has a local ______.",
+          "options": [
+            "buffer",
+            "kernel",
+            "compiler",
+            "operating system"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "A buffer is a ______.",
+          "options": [
+            "permanent area",
+            "temporary area for data while it is being transferred",
+            "small CPU register",
+            "large disk partition"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Direct Memory Access (DMA) is used for high-speed I/O devices. How many interrupts are generated?",
+          "options": [
+            "One per byte",
+            "One per block",
+            "None",
+            "One per bit"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "The only large storage medium that the CPU can access directly is ______.",
+          "options": [
+            "hard disk",
+            "main memory",
+            "magnetic tape",
+            "optical disk"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Main memory is typically ______.",
+          "options": [
+            "nonvolatile and implemented as DRAM",
+            "volatile and implemented as DRAM",
+            "volatile and implemented as magnetic disk",
+            "nonvolatile and implemented as tape"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Which storage is the fastest in the storage hierarchy?",
+          "options": [
+            "Registers",
+            "Main memory",
+            "SSD",
+            "Magnetic tape"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Moving down the storage hierarchy (registers to tape), the capacity ______ and the speed ______.",
+          "options": [
+            "decreases, increases",
+            "increases, decreases",
+            "increases, increases",
+            "decreases, decreases"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Caching means ______.",
+          "options": [
+            "deleting unused data",
+            "copying information into a faster storage system temporarily",
+            "moving data to magnetic tape",
+            "compressing files"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "What type of memory stores data in a swap file on a hard drive?",
+          "options": [
+            "Secondary memory",
+            "Virtual memory",
+            "Low memory",
+            "RAM"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Which of the following is nonvolatile memory (NVM) that is faster than a hard disk?",
+          "options": [
+            "DRAM",
+            "Cache",
+            "SSD (solid state disk)",
+            "Register"
+          ],
+          "answer": 2
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "One kilobyte (KB) equals ______.",
+          "options": [
+            "1,000 bits",
+            "1,024 bytes",
+            "8 bits",
+            "1,024 bits"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "A byte consists of ______ bits.",
+          "options": [
+            "4",
+            "8",
+            "16",
+            "32"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "In a hard disk drive, the disk surface is logically divided into ______.",
+          "options": [
+            "tracks, which are subdivided into sectors",
+            "sectors, which are subdivided into tracks",
+            "blocks only",
+            "pages only"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Which of the following is NOT an advantage of multiprocessor systems?",
+          "options": [
+            "Increased throughput",
+            "Economy of scale",
+            "Increased reliability",
+            "Decreased CPU count"
+          ],
+          "answer": 3
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "In ______ multiprocessing, each processor performs all tasks.",
+          "options": [
+            "asymmetric",
+            "symmetric",
+            "clustered",
+            "distributed"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "In ______ multiprocessing, each processor is assigned a specific task.",
+          "options": [
+            "asymmetric",
+            "symmetric",
+            "parallel",
+            "virtual"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Asymmetric clustering has ______.",
+          "options": [
+            "all machines running applications",
+            "one machine in hot-standby mode",
+            "no shared storage",
+            "only one machine"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Multiprocessor systems are also known as ______.",
+          "options": [
+            "loosely-coupled systems",
+            "tightly-coupled (parallel) systems",
+            "distributed systems",
+            "batch systems"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "What is the objective of multiprogramming?",
+          "options": [
+            "Have a process running at all times so the CPU is always busy",
+            "Reduce the number of users",
+            "Increase memory size",
+            "Stop I/O"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "In multiprogramming, when a job has to wait (for I/O for example), the OS ______.",
+          "options": [
+            "stops the system",
+            "switches to another job",
+            "deletes the job",
+            "restarts the job"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Multitasking (timesharing) allows ______.",
+          "options": [
+            "multiple users to share a single device only",
+            "the CPU to switch between jobs so frequently that users can interact with each job while it runs",
+            "devices to run without an OS",
+            "only one process at a time"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "In a time-sharing system, response time should be ______.",
+          "options": [
+            "less than 1 second",
+            "more than 1 minute",
+            "exactly 10 seconds",
+            "not important"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "If several jobs are ready to run at the same time, the system must perform ______.",
+          "options": [
+            "swapping",
+            "CPU scheduling",
+            "spooling",
+            "caching"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "If processes don't fit in memory, ______ moves them in and out of memory to run.",
+          "options": [
+            "swapping",
+            "caching",
+            "spooling",
+            "buffering"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Dual-mode operation allows the OS to ______.",
+          "options": [
+            "run faster",
+            "protect itself and other system components",
+            "increase memory",
+            "connect to the Internet"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "When kernel code is executing, the mode bit is ______.",
+          "options": [
+            "1 (user)",
+            "0 (kernel)",
+            "undefined",
+            "2"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Privileged instructions can be executed only in ______.",
+          "options": [
+            "user mode",
+            "kernel mode",
+            "both modes",
+            "none"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "A system call changes the mode to ______, and the return from the call resets it to ______.",
+          "options": [
+            "user, kernel",
+            "kernel, user",
+            "kernel, kernel",
+            "user, user"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "The timer is used to ______.",
+          "options": [
+            "prevent an infinite loop or a process hogging resources",
+            "measure the CPU temperature",
+            "save files",
+            "speed up the disk"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "A process is ______.",
+          "options": [
+            "a passive entity stored on disk",
+            "a program in execution (an active entity)",
+            "a file",
+            "a device"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "A single-threaded process has ______.",
+          "options": [
+            "one program counter",
+            "two program counters",
+            "no program counter",
+            "a program counter per CPU"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Which is NOT a process-management activity of the OS?",
+          "options": [
+            "Creating and deleting processes",
+            "Suspending and resuming processes",
+            "Providing mechanisms for process synchronization",
+            "Mounting and unmounting disks"
+          ],
+          "answer": 3
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Which of the following is an activity of mass-storage management?",
+          "options": [
+            "Disk scheduling",
+            "Process scheduling",
+            "Thread creation",
+            "Deadlock handling"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "The overlapping of the output of one job with the input of other jobs is called ______.",
+          "options": [
+            "buffering",
+            "caching",
+            "spooling",
+            "swapping"
+          ],
+          "answer": 2
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "______ is any mechanism for controlling the access of processes or users to resources defined by the OS.",
+          "options": [
+            "Security",
+            "Protection",
+            "Virtualization",
+            "Caching"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "______ allows a user to change to an effective ID with more rights.",
+          "options": [
+            "Privilege escalation",
+            "Group ID",
+            "Multitasking",
+            "Spooling"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "In a multiprocessor environment, ______ ensures that all CPUs have the most recent value in their cache.",
+          "options": [
+            "cache coherency",
+            "spooling",
+            "swapping",
+            "paging"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "The search performance of a balanced binary search tree is ______.",
+          "options": [
+            "O(n)",
+            "O(lg n)",
+            "O(1)",
+            "O(n^2)"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "A bitmap is ______.",
+          "options": [
+            "a string of n binary digits representing the status of n items",
+            "an image file",
+            "a type of cache",
+            "a hash function"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Which computing environment places rigid time requirements on the operation of a processor or the flow of data?",
+          "options": [
+            "Traditional computing",
+            "Real-time embedded system",
+            "Client-server computing",
+            "Peer-to-peer computing"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "In a real-time OS, correct operation occurs ______.",
+          "options": [
+            "always",
+            "only if the time constraints are met",
+            "only on weekends",
+            "only with multiple CPUs"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Which operating system runs on a server and provides the capability to manage data, users, groups, etc.?",
+          "options": [
+            "Batch operating system",
+            "Network operating system",
+            "Mobile operating system",
+            "Real-time operating system"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Which operating system uses multiple central processors to serve multiple real-time applications and multiple users?",
+          "options": [
+            "Batch",
+            "Multitasking",
+            "Time-sharing",
+            "Distributed"
+          ],
+          "answer": 3
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Which of the following is NOT a type of operating system?",
+          "options": [
+            "Batch",
+            "Real-time",
+            "Sequential",
+            "Distributed"
+          ],
+          "answer": 2
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "In ______ computing, there is no distinction between clients and servers; all nodes are peers.",
+          "options": [
+            "client-server",
+            "peer-to-peer",
+            "traditional",
+            "mobile"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Which of the following is an example of peer-to-peer computing?",
+          "options": [
+            "Voice over IP such as Skype",
+            "A database server with thin clients",
+            "A file server",
+            "A mainframe with dumb terminals"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "In client-server computing, a ______ provides an interface for clients to store and retrieve files.",
+          "options": [
+            "compute-server system",
+            "file-server system",
+            "peer node",
+            "firewall"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Emulation is used when ______.",
+          "options": [
+            "the source CPU type differs from the target CPU type",
+            "both CPUs are identical",
+            "the OS is open source",
+            "the disk is full"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "The component that provides virtualization services is called the ______.",
+          "options": [
+            "VMM (virtual machine manager)",
+            "DMA",
+            "PCB",
+            "bootstrap"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Which cloud service model provides servers or storage over the Internet?",
+          "options": [
+            "SaaS",
+            "PaaS",
+            "IaaS",
+            "DRM"
+          ],
+          "answer": 2
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "A cloud that is run by a company for the company's own use is a ______ cloud.",
+          "options": [
+            "public",
+            "private",
+            "hybrid",
+            "open"
+          ],
+          "answer": 1
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Mobile operating system leaders are ______.",
+          "options": [
+            "Apple iOS and Google Android",
+            "Windows XP and Solaris",
+            "Linux and BSD",
+            "DOS and Unix"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "The GNU Public License (GPL) was started by the ______.",
+          "options": [
+            "Free Software Foundation (FSF)",
+            "IEEE",
+            "Microsoft",
+            "Apple"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Which of the following is an example of free and open-source operating systems?",
+          "options": [
+            "GNU/Linux",
+            "Windows",
+            "DOS",
+            "All proprietary systems"
+          ],
+          "answer": 0
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "In the abstract view of a computer, the operating system sits between ______.",
+          "options": [
+            "the user and the application programs",
+            "the application programs and the computer hardware",
+            "the CPU and memory",
+            "the disk and the network"
+          ],
+          "answer": 1
+        }
+      ]
+    }
+  ]
+}

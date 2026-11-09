@@ -1,0 +1,1422 @@
+{
+  "title": "OS Midterm Drill",
+  "kicker": "Operating Systems · Past midterm exams",
+  "heading": "Midterm Drill",
+  "lede": "Seven past midterm papers, one tab each. Pick an answer to see at once whether it is right. Every answer has a short explanation, and the few answers worth double-checking are flagged.",
+  "foot": "Questions are typed from the photos in your seven exam PDFs. The papers have no answer key, so the answers were worked out here. The exception is the Nov 2023 paper, where the answers circled on the paper are used. Drawing and written questions are left out. Progress is saved in this browser only.",
+  "banksLabel": "Exams",
+  "unit": "exams",
+  "order": 2,
+  "source": "OS Midterm Drill.html",
+  "banks": [
+    {
+      "id": "nov-2022-mostafa",
+      "tag": "Nov 2022",
+      "name": "Dr. Mostafa",
+      "scope": "Midterm · 5 MCQs and 5 true/false",
+      "questions": [
+        {
+          "kind": "mcq",
+          "group": "Dr. Mostafa · Q1 choose the answer",
+          "text": "......... program is loaded at power-up or reboot.",
+          "options": [
+            "Kernel",
+            "Bootstrap",
+            "Computer",
+            "Application"
+          ],
+          "answer": 1,
+          "why": "The bootstrap program is the first code that runs when the computer starts (it lives in ROM/firmware). It initializes the hardware and then loads the OS kernel.",
+          "ref": "Boot process"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Mostafa · Q1 choose the answer",
+          "text": "Software may trigger an interrupt by executing a special operation called a .........",
+          "options": [
+            "System processes",
+            "Database",
+            "System call",
+            "None of them"
+          ],
+          "answer": 2,
+          "why": "A trap (exception) is a software-generated interrupt, and a program triggers one by executing a system call. Hardware triggers interrupts by sending a signal to the CPU over the bus.",
+          "ref": "Interrupts"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Mostafa · Q1 choose the answer",
+          "text": "......... is a technology that allows operating systems to run as applications within other operating systems.",
+          "options": [
+            "Database",
+            "Virtualization",
+            "Wireless",
+            "None of them"
+          ],
+          "answer": 1,
+          "why": "Virtualization lets a guest OS run as an application inside a host OS, with a virtual machine manager (VMM) providing the service.",
+          "ref": "Virtualization"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Mostafa · Q1 choose the answer",
+          "text": "......... consists of everything below the system-call interface and above the physical hardware.",
+          "options": [
+            "The Kernel",
+            "The software",
+            "The system",
+            "None of them"
+          ],
+          "answer": 0,
+          "why": "The kernel is the core of the OS. It is the one program running at all times, and it covers everything between the system-call interface and the hardware.",
+          "ref": "Kernel"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Mostafa · Q1 choose the answer",
+          "text": "Main memory and ........ are only storage CPU can access directly.",
+          "options": [
+            "Hard disk",
+            "CD-ROM",
+            "Registers",
+            "None of them"
+          ],
+          "answer": 2,
+          "why": "The CPU can directly access only registers and main memory. Disks and CD-ROMs must be loaded into main memory first.",
+          "ref": "Storage"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Mostafa · Q2 true or false",
+          "text": "The main function of the operating system is to provide an interface between hardware and application programs used by users.",
+          "options": [
+            "True",
+            "False"
+          ],
+          "answer": 0,
+          "why": "True. The OS acts as an intermediary between the user and application programs on one side and the computer hardware on the other.",
+          "ref": "OS definition"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Mostafa · Q2 true or false",
+          "text": "Process is considered as a passive entity while program is considered as an active entity.",
+          "options": [
+            "True",
+            "False"
+          ],
+          "answer": 1,
+          "why": "False, it is the other way round. A program is passive (a file on disk) and a process is active (a program in execution).",
+          "ref": "Processes"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Mostafa · Q2 true or false",
+          "text": "The main components of a computer systems are: Processor – Registers – I/O Modules – Main Memory.",
+          "options": [
+            "True",
+            "False"
+          ],
+          "answer": 1,
+          "why": "Treated as False. A computer system is usually divided into four components: hardware, operating system, application programs and users. The list in the statement also puts registers on their own and leaves out the system bus. Check your slides if your instructor defines components differently.",
+          "ref": "Computer system structure",
+          "check": true
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Mostafa · Q2 true or false",
+          "text": "Timesharing (multitasking) is logical extension in which CPU switches jobs so frequently that users can interact with each job while it is running, creating interactive computing.",
+          "options": [
+            "True",
+            "False"
+          ],
+          "answer": 0,
+          "why": "True. This is the standard definition of timesharing (multitasking). Response time should be under one second.",
+          "ref": "Multitasking"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Mostafa · Q2 true or false",
+          "text": "Cloud computing delivers computing, storage, even apps as a service across a network.",
+          "options": [
+            "True",
+            "False"
+          ],
+          "answer": 0,
+          "why": "True. Cloud computing is a logical extension of virtualization that delivers computing, storage and even applications as a service across a network.",
+          "ref": "Cloud computing"
+        }
+      ]
+    },
+    {
+      "id": "nov-2022-shadia",
+      "tag": "Nov 2022",
+      "name": "Dr. Shadia",
+      "scope": "Midterm · 17 MCQs",
+      "questions": [
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2022",
+          "text": "To access the services of the operating system, the interface is provided by the ______.",
+          "options": [
+            "Library",
+            "System calls",
+            "Assembly instructions",
+            "API"
+          ],
+          "answer": 1,
+          "why": "System calls are the programming interface to the services of the OS. Programs usually reach them through an API.",
+          "ref": "System calls"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2022",
+          "text": "Where is the operating system placed in the memory?",
+          "options": [
+            "either low or high memory (depending on the location of interrupt vector)",
+            "in the low memory",
+            "in the high memory",
+            "none of the mentioned"
+          ],
+          "answer": 0,
+          "why": "The OS can sit in low or high memory. It depends on where the interrupt vector is located.",
+          "ref": "Memory management"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2022",
+          "text": "Swapping ______ be done when a process has pending I/O, or has to execute I/O operations only into operating system buffers.",
+          "options": [
+            "must never",
+            "maybe",
+            "can",
+            "must"
+          ],
+          "answer": 1,
+          "why": "A process with pending I/O into its own memory cannot be swapped out. If the I/O goes only into OS buffers, the swap is possible, so swapping maybe done.",
+          "ref": "Memory management"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2022",
+          "text": "The operating system is responsible for?",
+          "options": [
+            "bad-block recovery",
+            "booting from disk",
+            "disk initialization",
+            "all of the mentioned"
+          ],
+          "answer": 3,
+          "why": "Disk management includes disk initialization, booting from disk and bad-block recovery, so all three are OS responsibilities.",
+          "ref": "OS functions"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2022",
+          "text": "The ______ presents a uniform device-access interface to the I/O subsystem, much as system calls provide a standard interface between the application and the operating system.",
+          "options": [
+            "Device drivers",
+            "I/O systems",
+            "Devices",
+            "Buses"
+          ],
+          "answer": 0,
+          "why": "Each device driver hides the details of its controller and gives the I/O subsystem a uniform interface to the device.",
+          "ref": "I/O subsystem"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2022",
+          "text": "Whenever a process needs I/O to or from a disk it issues a ______.",
+          "options": [
+            "system call to the operating system",
+            "a special procedure",
+            "system call to the CPU",
+            "all of the mentioned"
+          ],
+          "answer": 0,
+          "why": "Only the OS (in kernel mode) may perform I/O, so a process asks for it with a system call to the operating system.",
+          "ref": "System calls"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2022",
+          "text": "The ______ program initializes all aspects of the system, from CPU registers to device controllers and the contents of main memory, and then starts the operating system.",
+          "options": [
+            "bootstrap",
+            "main",
+            "bootloader",
+            "rom"
+          ],
+          "answer": 0,
+          "why": "The bootstrap program initializes the CPU registers, device controllers and memory contents, and then loads and starts the OS kernel.",
+          "ref": "Boot process"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2022",
+          "text": "Which of the following programs runs all the time on the computer?",
+          "options": [
+            "compiler",
+            "assembler",
+            "text editor",
+            "kernel"
+          ],
+          "answer": 3,
+          "why": "The kernel is the one program running at all times on the computer. The other programs run only when they are needed.",
+          "ref": "Kernel"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2022",
+          "text": "Which of the following contains the addresses of all the service routines?",
+          "options": [
+            "page table",
+            "interrupt vector",
+            "system call table",
+            "file descriptor table"
+          ],
+          "answer": 1,
+          "why": "The interrupt vector holds the addresses of all the interrupt service routines, indexed by interrupt number.",
+          "ref": "Interrupts"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2022",
+          "text": "Which of the following are used by Linux kernel as data structures?",
+          "options": [
+            "Lists, Stacks, and Queues",
+            "Trees",
+            "Hash Functions and Maps",
+            "Bitmaps",
+            "All of the above"
+          ],
+          "answer": 4,
+          "why": "The Linux kernel uses all of them: linked lists, stacks and queues, balanced binary search trees, hash functions and maps, and bitmaps.",
+          "ref": "Kernel data structures"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2022",
+          "text": "Which of the following computing environments place rigid time requirements on the operation of a processor or the flow of data?",
+          "options": [
+            "traditional computing",
+            "real-time embedded system",
+            "client-server computing",
+            "peer-to-peer computing"
+          ],
+          "answer": 1,
+          "why": "A real-time embedded system has well-defined, fixed time constraints. Processing must finish within them, or the result is wrong.",
+          "ref": "Real-time systems"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2022",
+          "text": "Which is the Linux operating system?",
+          "options": [
+            "Private operating system",
+            "Windows operating system",
+            "Open-source operating system",
+            "None of these"
+          ],
+          "answer": 2,
+          "why": "Linux (GNU/Linux) is a free and open-source OS, released under the GNU Public License.",
+          "ref": "Open-source OS"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2022",
+          "text": "Which of the following operating systems do you use for a client-server network?",
+          "options": [
+            "MAC",
+            "Linux",
+            "Windows XP",
+            "Windows 2000"
+          ],
+          "answer": 3,
+          "why": "Windows 2000 is the usual keyed answer, since it had server editions built for client-server networks while XP and Mac are mainly client systems. The question is weak, because Linux can act as a server too.",
+          "ref": "Computing environments",
+          "check": true
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2022",
+          "text": "Which program runs first after booting the computer and loading the GUI?",
+          "options": [
+            "Desktop Manager",
+            "File Manager",
+            "Windows Explorer",
+            "Authentication"
+          ],
+          "answer": 3,
+          "why": "The login (authentication) step runs first, so the system knows who the user is before it shows the desktop or file manager.",
+          "ref": "Boot process"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2022",
+          "text": "Which of the following operating system runs on the server?",
+          "options": [
+            "Batch OS",
+            "Distributed OS",
+            "Real-time OS",
+            "Network OS"
+          ],
+          "answer": 3,
+          "why": "A network operating system runs on a server and gives it the ability to manage data, users, groups, security and applications.",
+          "ref": "OS types"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2022",
+          "text": "What type of memory stores data in a swap file on a hard drive?",
+          "options": [
+            "Secondary memory",
+            "Virtual memory",
+            "Low memory",
+            "RAM"
+          ],
+          "answer": 1,
+          "why": "Virtual memory lets a process run without being completely in RAM. It uses a swap file on the hard drive as an extension of main memory.",
+          "ref": "Memory management"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2022",
+          "text": "Buffer is a ______.",
+          "options": [
+            "Permanent area",
+            "Temporary area",
+            "Small area",
+            "large area"
+          ],
+          "answer": 1,
+          "why": "A buffer is a temporary area that holds data while it is being transferred between two devices, or between a device and an application.",
+          "ref": "I/O subsystem"
+        }
+      ]
+    },
+    {
+      "id": "nov-2023-shadia",
+      "tag": "Nov 2023",
+      "name": "Dr. Shadia",
+      "scope": "17 MCQs · paper says Final exam, page 3 not in the PDF",
+      "questions": [
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2023",
+          "text": "To access the services of the operating system, the interface is provided by the ______.",
+          "options": [
+            "Library",
+            "System calls",
+            "Assembly instructions",
+            "API"
+          ],
+          "answer": 1,
+          "why": "System calls are the programming interface to the services of the OS. Programs usually reach them through an API.",
+          "ref": "Circled on the paper · System calls"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2023",
+          "text": "The operating system is responsible for?",
+          "options": [
+            "bad-block recovery",
+            "booting from disk",
+            "disk initialization",
+            "all of the mentioned"
+          ],
+          "answer": 3,
+          "why": "Disk management includes disk initialization, booting from disk and bad-block recovery, so all three are OS responsibilities.",
+          "ref": "Circled on the paper · OS functions"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2023",
+          "text": "The ______ presents a uniform device-access interface to the I/O subsystem, much as system calls provide a standard interface between the application and the operating system.",
+          "options": [
+            "Device drivers",
+            "I/O systems",
+            "Devices",
+            "Buses"
+          ],
+          "answer": 0,
+          "why": "Each device driver hides the details of its controller and gives the I/O subsystem a uniform interface to the device.",
+          "ref": "Circled on the paper · I/O subsystem"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2023",
+          "text": "Whenever a process needs I/O to or from a disk it issues a ______.",
+          "options": [
+            "system call to the operating system",
+            "a special procedure",
+            "system call to the CPU",
+            "all of the mentioned"
+          ],
+          "answer": 0,
+          "why": "Only the OS (in kernel mode) may perform I/O, so a process asks for it with a system call to the operating system.",
+          "ref": "Circled on the paper · System calls"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2023",
+          "text": "The ______ program initializes all aspects of the system, from CPU registers to device controllers and the contents of main memory, and then starts the operating system.",
+          "options": [
+            "bootstrap",
+            "main",
+            "bootloader",
+            "rom"
+          ],
+          "answer": 0,
+          "why": "The bootstrap program initializes the CPU registers, device controllers and memory contents, and then loads and starts the OS kernel.",
+          "ref": "Circled on the paper · Boot process"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2023",
+          "text": "Which of the following programs runs all the time on the computer?",
+          "options": [
+            "compiler",
+            "assembler",
+            "text editor",
+            "kernel"
+          ],
+          "answer": 3,
+          "why": "The kernel is the one program running at all times on the computer. The other programs run only when they are needed.",
+          "ref": "Circled on the paper · Kernel"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2023",
+          "text": "Which of the following contains the addresses of all the service routines?",
+          "options": [
+            "page table",
+            "interrupt vector",
+            "system call table",
+            "file descriptor table"
+          ],
+          "answer": 1,
+          "why": "The interrupt vector holds the addresses of all the interrupt service routines, indexed by interrupt number.",
+          "ref": "Circled on the paper · Interrupts"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2023",
+          "text": "Which of the following are used by Linux kernel as data structures?",
+          "options": [
+            "Lists, Stacks, and Queues",
+            "Trees",
+            "Hash Functions and Maps",
+            "Bitmaps",
+            "All of the above"
+          ],
+          "answer": 4,
+          "why": "The Linux kernel uses all of them: linked lists, stacks and queues, balanced binary search trees, hash functions and maps, and bitmaps.",
+          "ref": "Circled on the paper · Kernel data structures"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2023",
+          "text": "Which of the following computing environments place rigid time requirements on the operation of a processor or the flow of data?",
+          "options": [
+            "traditional computing",
+            "real-time embedded system",
+            "client-server computing",
+            "peer-to-peer computing"
+          ],
+          "answer": 1,
+          "why": "A real-time embedded system has well-defined, fixed time constraints. Processing must finish within them, or the result is wrong.",
+          "ref": "Circled on the paper · Real-time systems"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2023",
+          "text": "Which program runs first after booting the computer and loading the GUI?",
+          "options": [
+            "Desktop Manager",
+            "File Manager",
+            "Windows Explorer",
+            "Authentication"
+          ],
+          "answer": 3,
+          "why": "The login (authentication) step runs first, so the system knows who the user is before it shows the desktop or file manager.",
+          "ref": "Circled on the paper · Boot process"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2023",
+          "text": "What type of memory stores data in a swap file on a hard drive?",
+          "options": [
+            "Secondary memory",
+            "Virtual memory",
+            "Low memory",
+            "RAM"
+          ],
+          "answer": 1,
+          "why": "Virtual memory lets a process run without being completely in RAM. It uses a swap file on the hard drive as an extension of main memory.",
+          "ref": "Circled on the paper · Memory management"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2023",
+          "text": "Buffer is a ______.",
+          "options": [
+            "Permanent area",
+            "Temporary area",
+            "Small area",
+            "large area"
+          ],
+          "answer": 1,
+          "why": "A buffer is a temporary area that holds data while it is being transferred between two devices, or between a device and an application.",
+          "ref": "Circled on the paper · I/O subsystem"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2023",
+          "text": "Which one of the following errors will be handle by the operating system?",
+          "options": [
+            "lack of paper in printer",
+            "connection failure in the network",
+            "power failure",
+            "all of the mentioned"
+          ],
+          "answer": 3,
+          "why": "Error detection is an OS service. The OS must handle hardware, I/O device and network errors, so all three examples count.",
+          "ref": "Circled on the paper · OS services"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2023",
+          "text": "If a process fails, most operating system write the error information to a ______.",
+          "options": [
+            "new file",
+            "another running process",
+            "log file",
+            "none of the mentioned"
+          ],
+          "answer": 2,
+          "why": "When a process fails, the OS writes the error information to a log file. It may also save a core dump for debugging.",
+          "ref": "Circled on the paper · OS services"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2023",
+          "text": "Cascading termination refers to the termination of all child processes if the parent process terminates ______.",
+          "options": [
+            "normally or abnormally",
+            "Abnormally",
+            "Normally",
+            "None of the mentioned"
+          ],
+          "answer": 0,
+          "why": "With cascading termination, if a parent process terminates, all of its children are terminated as well, whether the parent ended normally or abnormally.",
+          "ref": "Circled on the paper · Process termination"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2023",
+          "text": "The portion of the process scheduler in an operating system that dispatches processes is concerned with ______.",
+          "options": [
+            "assigning ready processes to waiting queue",
+            "assigning running processes to blocked queue",
+            "assigning ready processes to CPU",
+            "all of the mentioned"
+          ],
+          "answer": 2,
+          "why": "The dispatcher is the part of the scheduler that gives the CPU to the process that was selected, that is, it assigns ready processes to the CPU.",
+          "ref": "Circled on the paper · Scheduling"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2023",
+          "text": "Context switching is part of",
+          "options": [
+            "Interrupt servicing",
+            "Interrupt handling",
+            "Polling",
+            "Spooling"
+          ],
+          "answer": 1,
+          "why": "A context switch happens inside interrupt handling. The handler saves the state of the running process and reloads the state of the next one.",
+          "ref": "Circled on the paper · Context switch"
+        }
+      ]
+    },
+    {
+      "id": "nov-2024-mostafa",
+      "tag": "Nov 2024",
+      "name": "Dr. Mostafa",
+      "scope": "Midterm · 8 MCQs",
+      "questions": [
+        {
+          "kind": "mcq",
+          "group": "Dr. Mostafa · Nov 2024",
+          "text": "......... program is loaded at power-up or reboot.",
+          "options": [
+            "Kernel",
+            "Bootstrap",
+            "Computer",
+            "Application"
+          ],
+          "answer": 1,
+          "why": "The bootstrap program is the first code that runs when the computer starts (it lives in ROM/firmware). It initializes the hardware and then loads the OS kernel.",
+          "ref": "Boot process"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Mostafa · Nov 2024",
+          "text": "Software may trigger an interrupt by executing a special operation called a .........",
+          "options": [
+            "System processes",
+            "Database",
+            "System call",
+            "None of them"
+          ],
+          "answer": 2,
+          "why": "A trap (exception) is a software-generated interrupt, and a program triggers one by executing a system call. Hardware triggers interrupts by sending a signal to the CPU over the bus.",
+          "ref": "Interrupts"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Mostafa · Nov 2024",
+          "text": "......... is a technology that allows operating systems to run as applications within other operating systems.",
+          "options": [
+            "Database",
+            "Virtualization",
+            "Wireless",
+            "None of them"
+          ],
+          "answer": 1,
+          "why": "Virtualization lets a guest OS run as an application inside a host OS, with a virtual machine manager (VMM) providing the service.",
+          "ref": "Virtualization"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Mostafa · Nov 2024",
+          "text": "......... consists of everything below the system-call interface and above the physical hardware.",
+          "options": [
+            "The Kernel",
+            "The software",
+            "The system",
+            "None of them"
+          ],
+          "answer": 0,
+          "why": "The kernel is the core of the OS. It is the one program running at all times, and it covers everything between the system-call interface and the hardware.",
+          "ref": "Kernel"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Mostafa · Nov 2024",
+          "text": "Main memory and ........ are only storage CPU can access directly.",
+          "options": [
+            "Hard disk",
+            "CD-ROM",
+            "Registers",
+            "None of them"
+          ],
+          "answer": 2,
+          "why": "The CPU can directly access only registers and main memory. Disks and CD-ROMs must be loaded into main memory first.",
+          "ref": "Storage"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Mostafa · Nov 2024",
+          "text": "Purpose of Cooperating processes is ......",
+          "options": [
+            "Information Sharing",
+            "Convenience",
+            "Computation Speed-Up",
+            "All of them"
+          ],
+          "answer": 3,
+          "why": "Cooperating processes exist for information sharing, computation speed-up, modularity and convenience, so all of the options apply.",
+          "ref": "Process cooperation"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Mostafa · Nov 2024",
+          "text": "In a timeshare operating system, when the time slot assigned to a process is completed, the process switches from the current state to?",
+          "options": [
+            "Suspended state",
+            "Terminated state",
+            "Ready state",
+            "Blocked state"
+          ],
+          "answer": 2,
+          "why": "When the time slice (quantum) ends, the OS preempts the running process and puts it back in the ready queue. It is not blocked, because it is not waiting for anything, and it has not finished.",
+          "ref": "Process states"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Mostafa · Nov 2024",
+          "text": "For real time operating systems, interrupt latency should be ......",
+          "options": [
+            "Zero",
+            "minimal",
+            "maximum",
+            "None of them"
+          ],
+          "answer": 1,
+          "why": "Interrupt latency can never be exactly zero, because the CPU must finish the current instruction and save its state. A real-time OS keeps it as small and as predictable as possible.",
+          "ref": "Real-time systems"
+        }
+      ]
+    },
+    {
+      "id": "mar-2025-shadia",
+      "tag": "Mar 2025",
+      "name": "Dr. Shadia",
+      "scope": "Midterm · 16 MCQs",
+      "questions": [
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Mar 2025",
+          "text": "Which of the following is not a type of operating system?",
+          "options": [
+            "Batch Operating System",
+            "Real-time Operating System",
+            "Sequential Operating System",
+            "Distributed Operating System"
+          ],
+          "answer": 2,
+          "why": "Batch, real-time and distributed systems are all types of OS. There is no type called sequential.",
+          "ref": "OS types"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Mar 2025",
+          "text": "Multitasking in operating systems allows for:",
+          "options": [
+            "Multiple users to share a single device",
+            "A single user to perform multiple tasks at one time",
+            "Devices to run without an OS",
+            "None of the above"
+          ],
+          "answer": 1,
+          "why": "Multitasking switches the CPU between jobs so quickly that one user can run several tasks at the same time.",
+          "ref": "Multitasking"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Mar 2025",
+          "text": "In a multiprocessing system, processes:",
+          "options": [
+            "Are executed one at a time",
+            "Can share resources efficiently",
+            "Are executed in parallel",
+            "Must communicate using inter-process communication (IPC)"
+          ],
+          "answer": 2,
+          "why": "A multiprocessing system has two or more CPUs, so processes can truly run in parallel, one per CPU. Resource sharing is a benefit, but parallel execution is the defining property. Option B is also partly true, so double-check with your notes.",
+          "ref": "Multiprocessing",
+          "check": true
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Mar 2025",
+          "text": "Context switching is:",
+          "options": [
+            "The process of saving and restoring the state of a CPU so that multiple processes can share a single CPU resource",
+            "The act of switching between different applications by the user",
+            "A method of disk scheduling",
+            "None of the above"
+          ],
+          "answer": 0,
+          "why": "A context switch saves the state of the running process (into its PCB) and restores the state of another, so many processes can share one CPU.",
+          "ref": "Context switch"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Mar 2025",
+          "text": "Most operating systems (including UNIX, Linux, and Windows) identify processes according to a unique ______.",
+          "options": [
+            "Process counter",
+            "Process state",
+            "Process number",
+            "Process identifier"
+          ],
+          "answer": 3,
+          "why": "UNIX, Linux and Windows identify every process with a unique process identifier (PID).",
+          "ref": "Processes"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Mar 2025",
+          "text": "Suppose that a process is in “Blocked” state waiting for some I/O service. When the service is completed, it goes to the ....",
+          "options": [
+            "Running state",
+            "Ready state",
+            "Suspended state",
+            "Terminated state"
+          ],
+          "answer": 1,
+          "why": "When the I/O completes, a blocked process moves to the ready state and waits for the CPU. It never goes straight to running.",
+          "ref": "Process states"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Mar 2025",
+          "text": "A process stack does not contain",
+          "options": [
+            "function parameters",
+            "local variables",
+            "return addresses",
+            "PID of child process"
+          ],
+          "answer": 3,
+          "why": "The stack holds function parameters, local variables and return addresses. The PID of a child process is not part of that list.",
+          "ref": "Process memory layout"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Mar 2025",
+          "text": "If a process fails, most operating system write the error information to a",
+          "options": [
+            "log file",
+            "another running process",
+            "new file",
+            "none of the mentioned"
+          ],
+          "answer": 0,
+          "why": "When a process fails, the OS writes the error information to a log file. It may also save a core dump for debugging.",
+          "ref": "OS services"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Mar 2025",
+          "text": "In operating system, each process has its own",
+          "options": [
+            "address space and global variables",
+            "open files",
+            "pending alarms, signals and signal handlers",
+            "all of the mentioned"
+          ],
+          "answer": 3,
+          "why": "Each process has its own address space and global variables, its own open files, and its own pending alarms, signals and signal handlers, so all three apply.",
+          "ref": "Processes"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Mar 2025",
+          "text": "Which of the following Operating systems use multiple central processors to serve multiple real-time applications and multiple users?",
+          "options": [
+            "Batch Operating system",
+            "Multitasking Operating System",
+            "Time-sharing Operating System",
+            "Distributed Operating System"
+          ],
+          "answer": 3,
+          "why": "A distributed OS uses multiple central processors to serve multiple real-time applications and multiple users.",
+          "ref": "OS types"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Mar 2025",
+          "text": "Which of the following Operating systems runs on a server and provides the server the capability to manage data, users, groups, etc?",
+          "options": [
+            "Batch Operating system",
+            "Network operating system",
+            "Mobile Operating system",
+            "Real-time Operating system"
+          ],
+          "answer": 1,
+          "why": "A network operating system runs on a server and gives it the ability to manage data, users, groups, security and applications.",
+          "ref": "OS types"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Mar 2025",
+          "text": "What is a bootstrap program?",
+          "options": [
+            "It is the first code that is executed when the computer system is started",
+            "It is the program that helps in restarting the system",
+            "It is just a simple program like we have other programs in a system",
+            "All of the mentioned"
+          ],
+          "answer": 0,
+          "why": "The bootstrap program is the first code executed when the computer starts. It initializes the system and loads the OS kernel.",
+          "ref": "Boot process"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Mar 2025",
+          "text": "Instructions are executed in which state?",
+          "options": [
+            "New",
+            "Running",
+            "Waiting",
+            "Ready"
+          ],
+          "answer": 1,
+          "why": "A process executes instructions only in the running state. In ready it waits for the CPU, and in waiting it waits for an event.",
+          "ref": "Process states"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Mar 2025",
+          "text": "The ______ presents a uniform device-access interface to the I/O subsystem, much as system calls provide a standard interface between the application and the operating system.",
+          "options": [
+            "Device drivers",
+            "I/O systems",
+            "Devices",
+            "Buses"
+          ],
+          "answer": 0,
+          "why": "Each device driver hides the details of its controller and gives the I/O subsystem a uniform interface to the device.",
+          "ref": "I/O subsystem"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Mar 2025",
+          "text": "Which of the following contains the addresses of all the service routines?",
+          "options": [
+            "page table",
+            "interrupt vector",
+            "system call table",
+            "file descriptor table"
+          ],
+          "answer": 1,
+          "why": "The interrupt vector holds the addresses of all the interrupt service routines, indexed by interrupt number.",
+          "ref": "Interrupts"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Mar 2025",
+          "text": "What type of memory stores data in a swap file on a hard drive?",
+          "options": [
+            "Secondary memory",
+            "Virtual memory",
+            "Low memory",
+            "RAM"
+          ],
+          "answer": 1,
+          "why": "Virtual memory lets a process run without being completely in RAM. It uses a swap file on the hard drive as an extension of main memory.",
+          "ref": "Memory management"
+        }
+      ]
+    },
+    {
+      "id": "nov-2025-mostafa",
+      "tag": "Nov 2025",
+      "name": "Dr. Mostafa",
+      "scope": "Midterm · 9 MCQs",
+      "questions": [
+        {
+          "kind": "mcq",
+          "group": "Dr. Mostafa · Nov 2025",
+          "text": "......... program is loaded at power-up or reboot.",
+          "options": [
+            "Kernel",
+            "Bootstrap",
+            "Computer",
+            "Application"
+          ],
+          "answer": 1,
+          "why": "The bootstrap program is the first code that runs when the computer starts (it lives in ROM/firmware). It initializes the hardware and then loads the OS kernel.",
+          "ref": "Boot process"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Mostafa · Nov 2025",
+          "text": "Software may trigger an interrupt by executing a special operation called a .........",
+          "options": [
+            "System processes",
+            "Database",
+            "System call",
+            "None of them"
+          ],
+          "answer": 2,
+          "why": "A trap (exception) is a software-generated interrupt, and a program triggers one by executing a system call. Hardware triggers interrupts by sending a signal to the CPU over the bus.",
+          "ref": "Interrupts"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Mostafa · Nov 2025",
+          "text": "......... is a technology that allows operating systems to run as applications within other operating systems.",
+          "options": [
+            "Database",
+            "Virtualization",
+            "Wireless",
+            "None of them"
+          ],
+          "answer": 1,
+          "why": "Virtualization lets a guest OS run as an application inside a host OS, with a virtual machine manager (VMM) providing the service.",
+          "ref": "Virtualization"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Mostafa · Nov 2025",
+          "text": "......... consists of everything below the system-call interface and above the physical hardware.",
+          "options": [
+            "The Kernel",
+            "The software",
+            "The system",
+            "None of them"
+          ],
+          "answer": 0,
+          "why": "The kernel is the core of the OS. It is the one program running at all times, and it covers everything between the system-call interface and the hardware.",
+          "ref": "Kernel"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Mostafa · Nov 2025",
+          "text": "If processes don't fit in memory, moving them in and out to run is called.",
+          "options": [
+            "context switch",
+            "swapping",
+            "caching",
+            "Application"
+          ],
+          "answer": 1,
+          "why": "Swapping moves processes between main memory and the backing store (disk) so that more processes can run than fit in memory at once.",
+          "ref": "Memory management"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Mostafa · Nov 2025",
+          "text": "Which of the following operating systems is non interactive?",
+          "options": [
+            "Batch processing operating systems",
+            "Multi-tasking operating systems",
+            "Multi-user operating systems",
+            "Multi-programming operating systems"
+          ],
+          "answer": 0,
+          "why": "A batch system collects jobs and runs them in groups, and the user cannot interact with a job while it runs. Multitasking and multi-user systems are interactive.",
+          "ref": "OS types"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Mostafa · Nov 2025",
+          "text": "The ____ of a process contains temporary data such as function parameters, return addresses, and local variables.",
+          "options": [
+            "data section",
+            "stack",
+            "text section",
+            "None of them"
+          ],
+          "answer": 1,
+          "why": "A process in memory has a text section (code), a data section (globals), a heap, and a stack. The stack holds function parameters, return addresses and local variables.",
+          "ref": "Process memory layout"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Mostafa · Nov 2025",
+          "text": "Which of the following state transitions is NOT possible?",
+          "options": [
+            "ready to running",
+            "waiting to running",
+            "waiting to ready",
+            "running to waiting"
+          ],
+          "answer": 1,
+          "why": "After the event it was waiting for, a process goes from waiting to ready, never straight to running. Only the scheduler dispatches a ready process to the CPU.",
+          "ref": "Process states"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Mostafa · Nov 2025",
+          "text": "A blocking send() and blocking receive() is known as a(n).",
+          "options": [
+            "blocked message",
+            "synchronized message",
+            "rendezvous",
+            "asynchronous message"
+          ],
+          "answer": 2,
+          "why": "When both send() and receive() are blocking, the sender and the receiver wait for each other and meet at the exchange. This is called a rendezvous.",
+          "ref": "Message passing"
+        }
+      ]
+    },
+    {
+      "id": "nov-2025-shadia",
+      "tag": "Nov 2025",
+      "name": "Dr. Shadia",
+      "scope": "Midterm · 20 MCQs",
+      "questions": [
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2025",
+          "text": "The child process completes execution, but the parent keeps executing, then the child process is known as",
+          "options": [
+            "Orphan",
+            "Zombie",
+            "Body",
+            "Dead"
+          ],
+          "answer": 1,
+          "why": "A child that has finished while its parent keeps running, without the parent calling wait() yet, is a zombie. An orphan is a child whose parent has terminated.",
+          "ref": "Process termination"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2025",
+          "text": "To access the services of the operating system, the interface is provided by the ______.",
+          "options": [
+            "Library",
+            "System calls",
+            "Assembly instructions",
+            "API"
+          ],
+          "answer": 1,
+          "why": "System calls are the programming interface to the services of the OS. Programs usually reach them through an API.",
+          "ref": "System calls"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2025",
+          "text": "Message passing system allows processes to ______.",
+          "options": [
+            "communicate with each other without sharing the same address space",
+            "communicate with one another by resorting to shared data",
+            "share data",
+            "name the recipient or sender of the message"
+          ],
+          "answer": 0,
+          "why": "Message passing lets processes communicate and synchronize without sharing an address space, by sending and receiving messages through the OS.",
+          "ref": "Message passing"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2025",
+          "text": "The ______ presents a uniform device-access interface to the I/O subsystem, much as system calls provide a standard interface between the application and the operating system.",
+          "options": [
+            "Device drivers",
+            "I/O systems",
+            "Devices",
+            "Buses"
+          ],
+          "answer": 0,
+          "why": "Each device driver hides the details of its controller and gives the I/O subsystem a uniform interface to the device.",
+          "ref": "I/O subsystem"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2025",
+          "text": "Whenever a process needs I/O to or from a disk it issues a ______.",
+          "options": [
+            "system call to the operating system",
+            "a special procedure",
+            "system call to the CPU",
+            "all of the mentioned"
+          ],
+          "answer": 0,
+          "why": "Only the OS (in kernel mode) may perform I/O, so a process asks for it with a system call to the operating system.",
+          "ref": "System calls"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2025",
+          "text": "The link between two processes P and Q to send and receive messages is called ______.",
+          "options": [
+            "communication link",
+            "message-passing link",
+            "synchronization link",
+            "all of the mentioned"
+          ],
+          "answer": 0,
+          "why": "To send and receive messages, a communication link must exist between processes P and Q.",
+          "ref": "Message passing"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2025",
+          "text": "The ______ program initializes all aspects of the system, from CPU registers to device controllers and the contents of main memory, and then starts the operating system.",
+          "options": [
+            "bootstrap",
+            "main",
+            "bootloader",
+            "rom"
+          ],
+          "answer": 0,
+          "why": "The bootstrap program initializes the CPU registers, device controllers and memory contents, and then loads and starts the OS kernel.",
+          "ref": "Boot process"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2025",
+          "text": "Which of the following programs runs all the time on the computer?",
+          "options": [
+            "compiler",
+            "assembler",
+            "text editor",
+            "kernel"
+          ],
+          "answer": 3,
+          "why": "The kernel is the one program running at all times on the computer. The other programs run only when they are needed.",
+          "ref": "Kernel"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2025",
+          "text": "Which of the following contains the addresses of all the service routines?",
+          "options": [
+            "page table",
+            "interrupt vector",
+            "system call table",
+            "file descriptor table"
+          ],
+          "answer": 1,
+          "why": "The interrupt vector holds the addresses of all the interrupt service routines, indexed by interrupt number.",
+          "ref": "Interrupts"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2025",
+          "text": "A parent process calling ______ system call will be suspended until children processes terminate.",
+          "options": [
+            "wait",
+            "fork",
+            "exit",
+            "exec"
+          ],
+          "answer": 0,
+          "why": "A parent that calls wait() is suspended until one of its children terminates.",
+          "ref": "Process creation"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2025",
+          "text": "Which of the following computing environments place rigid time requirements on the operation of a processor or the flow of data?",
+          "options": [
+            "traditional computing",
+            "real-time embedded system",
+            "client-server computing",
+            "peer-to-peer computing"
+          ],
+          "answer": 1,
+          "why": "A real-time embedded system has well-defined, fixed time constraints. Processing must finish within them, or the result is wrong.",
+          "ref": "Real-time systems"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2025",
+          "text": "What is a Process Control Block?",
+          "options": [
+            "Process type variable",
+            "Data Structure",
+            "A secondary storage section",
+            "A Block in memory"
+          ],
+          "answer": 1,
+          "why": "The PCB is a kernel data structure that stores everything the OS needs about a process: its state, program counter, CPU registers, scheduling and memory information.",
+          "ref": "Process control block"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2025",
+          "text": "Which program runs first after booting the computer and loading the GUI?",
+          "options": [
+            "Desktop Manager",
+            "File Manager",
+            "Windows Explorer",
+            "Authentication"
+          ],
+          "answer": 3,
+          "why": "The login (authentication) step runs first, so the system knows who the user is before it shows the desktop or file manager.",
+          "ref": "Boot process"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2025",
+          "text": "What type of memory stores data in a swap file on a hard drive?",
+          "options": [
+            "Secondary memory",
+            "Virtual memory",
+            "Low memory",
+            "RAM"
+          ],
+          "answer": 1,
+          "why": "Virtual memory lets a process run without being completely in RAM. It uses a swap file on the hard drive as an extension of main memory.",
+          "ref": "Memory management"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2025",
+          "text": "What is the objective of multiprogramming?",
+          "options": [
+            "Have a process running at all time",
+            "Have multiple programs waiting in a queue ready to run",
+            "To increase CPU utilization",
+            "None of the mentioned"
+          ],
+          "answer": 2,
+          "why": "Multiprogramming keeps several jobs in memory so the CPU always has one to run. The objective is to increase CPU utilization.",
+          "ref": "Multiprogramming"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2025",
+          "text": "Buffer is a ______.",
+          "options": [
+            "Permanent area",
+            "Temporary area",
+            "Small area",
+            "large area"
+          ],
+          "answer": 1,
+          "why": "A buffer is a temporary area that holds data while it is being transferred between two devices, or between a device and an application.",
+          "ref": "I/O subsystem"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2025",
+          "text": "Which of the following is not the state of a process?",
+          "options": [
+            "New",
+            "Old",
+            "Waiting",
+            "Running"
+          ],
+          "answer": 1,
+          "why": "The process states are new, ready, running, waiting and terminated. There is no state called old.",
+          "ref": "Process states"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2025",
+          "text": "When several processes access the same data concurrently and the outcome of the execution depends on the particular order in which the access takes place is called ______.",
+          "options": [
+            "dynamic condition",
+            "race condition",
+            "essential condition",
+            "critical condition"
+          ],
+          "answer": 1,
+          "why": "This is a race condition. The result depends on the order in which the processes access the shared data.",
+          "ref": "Synchronization"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2025",
+          "text": "A process stack does not contain",
+          "options": [
+            "function parameters",
+            "local variables",
+            "return addresses",
+            "PID of child process"
+          ],
+          "answer": 3,
+          "why": "The stack holds function parameters, local variables and return addresses. The PID of a child process is not part of that list.",
+          "ref": "Process memory layout"
+        },
+        {
+          "kind": "mcq",
+          "group": "Dr. Shadia · Nov 2025",
+          "text": "The address of the next instruction to be executed by the current process is provided by the ______.",
+          "options": [
+            "CPU registers",
+            "Program counter",
+            "Process stack",
+            "Pipe"
+          ],
+          "answer": 1,
+          "why": "The program counter holds the address of the next instruction the process will execute.",
+          "ref": "CPU registers"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,3238 @@
+{
+  "title": "SWE Lecture Drill",
+  "kicker": "Software Engineering · Lectures 1–4",
+  "heading": "Lecture Drill",
+  "lede": "Practice questions written from your four lecture PDFs, one tab per chapter. Pick an answer to see at once whether it is right. For classification questions, sort every item into its category. Each answer has a short explanation and the slide it comes from.",
+  "foot": "These are practice questions written from your lecture slides, plus the non-duplicate questions from your midterm practice PDF (marked \"Practice PDF\"). They are not past exam papers. A classification question counts as correct only when every item is in the right category. Progress is saved in this browser only.",
+  "banksLabel": "Chapters",
+  "unit": "chapters",
+  "order": 1,
+  "source": "SWE-Lecture-Drill.html",
+  "banks": [
+    {
+      "id": "chapter-1",
+      "tag": "Chapter 1",
+      "name": "Introduction to Software Engineering",
+      "scope": "40 questions · 8 classification",
+      "questions": [
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "According to the slides, software is defined as:",
+          "options": [
+            "Only the computer programs written by developers",
+            "Computer programs and associated documentation",
+            "The hardware and programs that make up a computer system",
+            "Source code together with its test results"
+          ],
+          "answer": 1,
+          "why": "Software is not just the programs themselves: it also includes the associated documentation needed to set up the programs, make them operate correctly, and explain how to use the system. The common wrong idea is that software means code only.",
+          "ref": "Slide 5 · What is software"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Which statement about professional software is correct?",
+          "options": [
+            "It is usually written by a single programmer and is never changed after delivery",
+            "It is intended for use only by its own developer",
+            "It consists of the program code alone, without any associated documentation",
+            "It is usually developed by teams and maintained and changed throughout its life"
+          ],
+          "answer": 3,
+          "why": "Professional software is intended for use by someone apart from its developer, is usually developed by teams rather than individuals, and is maintained and changed throughout its life.",
+          "ref": "Slide 5 · Professional software"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "...... is the attribute of good software that requires it to meet changing needs so that future upgrades can be made easily, quickly, and cheaply.",
+          "options": [
+            "Maintainability",
+            "Efficiency",
+            "Dependability",
+            "Acceptability"
+          ],
+          "answer": 0,
+          "why": "Maintainability is about coping with changing needs: upgrades must be easy, quick and cheap. Dependability is about trust and safety, efficiency about resource use, and acceptability about user acceptance.",
+          "ref": "Slide 6 · Software attributes"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "A hospital's monitoring software crashes, and the failure causes physical and economic damage. Which attribute of good software was missing?",
+          "options": [
+            "Efficiency",
+            "Acceptability",
+            "Dependability",
+            "Maintainability"
+          ],
+          "answer": 2,
+          "why": "Dependable software must be trustworthy and must not cause physical or economic damage in case of system failure.",
+          "ref": "Slide 6 · Software attributes"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Users refuse to adopt a system because it is hard to understand, awkward to use, and cannot work with the other systems they already use. Which attribute does the system lack?",
+          "options": [
+            "Dependability",
+            "Acceptability",
+            "Efficiency",
+            "Maintainability"
+          ],
+          "answer": 1,
+          "why": "Acceptability means the software must be accepted by the users it was designed for, which requires it to be understandable, usable and compatible with other systems.",
+          "ref": "Slide 6 · Software attributes"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Which of the following is NOT one of the four important attributes that professional software must have?",
+          "options": [
+            "Efficiency",
+            "Maintainability",
+            "Acceptability",
+            "Scalability"
+          ],
+          "answer": 3,
+          "why": "The four attributes on the slide are maintainability, dependability, efficiency and acceptability. Scalability is not one of them.",
+          "ref": "Slide 6 · Software attributes"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Software engineering is an engineering discipline concerned with all aspects of ...... using systematic, well-defined scientific techniques.",
+          "options": [
+            "software production",
+            "computer hardware manufacturing",
+            "programming language theory",
+            "network administration"
+          ],
+          "answer": 0,
+          "why": "Software engineering covers all aspects of software production, not only coding, and it applies systematic, well-defined scientific techniques to produce effective and reliable software.",
+          "ref": "Slide 7 · Software engineering"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "According to the comparison table, which statement describes a software engineer rather than a software developer?",
+          "options": [
+            "Primarily a solitary activity",
+            "Uses ready-made tools to build applications",
+            "Tends to do everything an engineer does, but on a limited scale",
+            "Creates tools and solutions to support software development"
+          ],
+          "answer": 3,
+          "why": "A software engineer creates tools and solutions to support software development. Working alone, using ready-made tools and working on a limited scale describe the software developer.",
+          "ref": "Slide 8 · Engineer vs developer"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "A freelancer works alone, writes a complete small program, and builds it with ready-made tools. According to the comparison on the slides, which role does this match best?",
+          "options": [
+            "Software engineer",
+            "System engineer",
+            "Computer scientist",
+            "Software developer"
+          ],
+          "answer": 3,
+          "why": "The slide describes the software developer as primarily solitary, writing a complete program and using ready-made tools. The software engineer mainly works in a team and works with other components of the hardware and software system.",
+          "ref": "Slide 8 · Engineer vs developer"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "How do the slides relate software engineering to system engineering?",
+          "options": [
+            "Software engineering and system engineering are the same discipline under two names",
+            "Software engineering is part of the system engineering process and is concerned with developing the software",
+            "System engineering is part of software engineering and is concerned only with hardware",
+            "Software engineering covers hardware, human work and procedures, while system engineering covers only software"
+          ],
+          "answer": 1,
+          "why": "System engineering covers all aspects of computer-based systems (hardware, software, human work and procedures). Software engineering is only the part of that process concerned with developing the software.",
+          "ref": "Slide 9 · Software vs system engineering"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Which statement correctly contrasts computer science with software engineering?",
+          "options": [
+            "Computer science focuses on theory and fundamentals; software engineering on the practicalities of delivering useful software",
+            "Computer science is concerned with the practicalities of delivering useful software, while software engineering focuses on theory",
+            "Computer science covers hardware, human work and procedures, while software engineering covers only programming languages",
+            "Computer science and software engineering both focus only on the theory and fundamentals of computing"
+          ],
+          "answer": 0,
+          "why": "Computer science deals with theory and fundamentals (programming languages, graphics, AI and machine learning), whereas software engineering is concerned with the practicalities of developing and delivering useful software.",
+          "ref": "Slide 9 · Computer science vs SE"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Businesses now need new features deployed in days or weeks, not months. Which key challenge facing software development does this describe?",
+          "options": [
+            "Heterogeneity",
+            "Trust",
+            "Delivery on time",
+            "Efficiency"
+          ],
+          "answer": 2,
+          "why": "Delivery on time is the challenge of reduced delivery times: developing techniques that lead to faster delivery of software. Heterogeneity is about diverse platforms and trust is about trustworthy software.",
+          "ref": "Slide 10 · Key challenges"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "The challenge of developing robust techniques to prove software reliability and safety to users, because bugs can be costly in terms of both human lives and money, is called:",
+          "options": [
+            "Heterogeneity",
+            "Delivery on time",
+            "Acceptability",
+            "Trust"
+          ],
+          "answer": 3,
+          "why": "The three key challenges on the slide are heterogeneity, delivery on time and trust. Trust is about developing trustworthy software whose reliability and safety can be shown.",
+          "ref": "Slide 10 · Key challenges"
+        },
+        {
+          "kind": "sort",
+          "group": "Chapter 1",
+          "text": "Classify each statement as describing a generic product or a customized product.",
+          "categories": [
+            "Generic product",
+            "Customized product"
+          ],
+          "items": [
+            {
+              "text": "Sold on the open market to any customer able to buy it",
+              "category": 0
+            },
+            {
+              "text": "Has a large number of users",
+              "category": 0
+            },
+            {
+              "text": "Marketing is required",
+              "category": 0
+            },
+            {
+              "text": "Development cost is usually not high",
+              "category": 0
+            },
+            {
+              "text": "Specially built for a particular customer",
+              "category": 1
+            },
+            {
+              "text": "Has limited users",
+              "category": 1
+            },
+            {
+              "text": "Quality is the main criterion",
+              "category": 1
+            },
+            {
+              "text": "Development cost is high (single customer)",
+              "category": 1
+            },
+            {
+              "text": "An admission and registration system built for one university",
+              "category": 1
+            },
+            {
+              "text": "Requirements are set by a contract between the customer and the developer",
+              "category": 1
+            }
+          ],
+          "why": "Generic products are built for the open market and shared by many users, so cost per product is low and marketing is needed. Customized products are built for one specific customer, so users are few, quality is the main criterion and cost is high.",
+          "ref": "Slides 11-13 · Generic vs customized"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Which of the following is an example of a customized product?",
+          "options": [
+            "A word processor",
+            "An air traffic control system",
+            "A drawing package",
+            "A project-management tool"
+          ],
+          "answer": 1,
+          "why": "Customized products are built for a specific customer, such as air traffic control systems or a university admission and registration system. Word processors, drawing packages, databases and project-management tools are generic products.",
+          "ref": "Slide 12 · Generic vs customized"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "For generic products, the specifications are produced internally by ......",
+          "options": [
+            "the customer who orders the product",
+            "a contract between the customer and the developer",
+            "the marketing department of the product company",
+            "the end users of the system"
+          ],
+          "answer": 2,
+          "why": "Generic product specifications come from the marketing department of the product company. For custom software, the specifications follow a contract between customer and developer.",
+          "ref": "Slide 13 · Generic vs customized"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Complete the sentence: in generic software, needs and updates are defined by ......, whereas in custom software the time, budget and needs are defined by ......",
+          "options": [
+            "market demand; the customer",
+            "the customer; market demand",
+            "the developer; the marketing department",
+            "the government; the developer"
+          ],
+          "answer": 0,
+          "why": "Generic software follows market demand and future updates, while custom software is done according to the time, budget and needs set by the customer.",
+          "ref": "Slide 13 · Generic vs customized"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Among the four fundamental activities common to all software processes, design and implementation are both part of ......",
+          "options": [
+            "Specification",
+            "Validation",
+            "Evolution",
+            "Development"
+          ],
+          "answer": 3,
+          "why": "Development is where the software is designed and programmed. The slide writes Development as [Design, Implementation], and it is the production of the software.",
+          "ref": "Slides 14-15 · Process activities"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "In a meeting, customers and engineers decide what the system should do and which constraints apply to its operation. Which fundamental software process activity is this?",
+          "options": [
+            "Development",
+            "Specification",
+            "Validation",
+            "Evolution"
+          ],
+          "answer": 1,
+          "why": "Specification is where customers and engineers define the software to be produced and the constraints on its operation (what the system should do and its development constraints).",
+          "ref": "Slide 15 · Process activities"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Testers evaluate the finished system to confirm that it meets the customer's requirements. Which software process activity is this?",
+          "options": [
+            "Specification",
+            "Development",
+            "Validation",
+            "Evolution"
+          ],
+          "answer": 2,
+          "why": "Validation is where the software is evaluated to confirm that it meets the customer's requirements.",
+          "ref": "Slide 15 · Process activities"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "After release, a company modifies its system to reflect the changing demands of its users. Which software process activity is this?",
+          "options": [
+            "Evolution",
+            "Specification",
+            "Development",
+            "Validation"
+          ],
+          "answer": 0,
+          "why": "Evolution is where the software is updated to reflect changing demands, after it has been produced and delivered.",
+          "ref": "Slide 15 · Process activities"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Roughly what proportion of software costs is development cost and what proportion is testing cost?",
+          "options": [
+            "40% development and 60% testing",
+            "50% development and 50% testing",
+            "80% development and 20% testing",
+            "60% development and 40% testing"
+          ],
+          "answer": 3,
+          "why": "The slide states that roughly 60% of software costs are development costs and 40% are testing costs. The common mistake is to reverse the two figures.",
+          "ref": "Slide 16 · Software costs"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "For custom software, ...... costs often exceed development costs.",
+          "options": [
+            "Specification",
+            "Evolution",
+            "Validation",
+            "Marketing"
+          ],
+          "answer": 1,
+          "why": "For custom software, the costs of evolving (changing) the software after it has gone into use often exceed the cost of developing it.",
+          "ref": "Slide 16 · Software costs"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "According to the slides, the key factor in choosing software engineering methods and techniques is ......",
+          "options": [
+            "the size of the development company",
+            "the programming language the team prefers",
+            "the type of application being developed",
+            "the number of developers available"
+          ],
+          "answer": 2,
+          "why": "There are no universal methods suitable for all systems and all companies, so you cannot say one method is better than another. The key factor is the type of application being developed.",
+          "ref": "Slide 17 · Methods and techniques"
+        },
+        {
+          "kind": "sort",
+          "group": "Chapter 1",
+          "text": "Classify each example under the type of application it represents.",
+          "categories": [
+            "Stand-alone application",
+            "Embedded control system",
+            "Interactive transaction-based application",
+            "Batch processing system"
+          ],
+          "items": [
+            {
+              "text": "Photo manipulation software",
+              "category": 0
+            },
+            {
+              "text": "Office applications on a PC",
+              "category": 0
+            },
+            {
+              "text": "Software that controls anti-lock braking in a car",
+              "category": 1
+            },
+            {
+              "text": "Software in a microwave oven that controls the cooking process",
+              "category": 1
+            },
+            {
+              "text": "An e-commerce application such as Amazon",
+              "category": 2
+            },
+            {
+              "text": "An online banking system",
+              "category": 2
+            },
+            {
+              "text": "A periodic phone billing system",
+              "category": 3
+            }
+          ],
+          "why": "Stand-alone applications run on a local computer without a network. Embedded control systems manage hardware devices. Interactive transaction-based applications let users work with a remote system in real time. Batch processing systems handle large batches of data rather than real time.",
+          "ref": "Slides 18-19 · Application types"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Which feature distinguishes batch processing systems from interactive transaction-based applications?",
+          "options": [
+            "Batch systems process data in large batches rather than in real time",
+            "Batch systems let users make queries and receive immediate responses",
+            "Batch systems run on a remote system that users access from their own PCs",
+            "Batch systems are designed to control and manage hardware devices"
+          ],
+          "answer": 0,
+          "why": "Batch processing systems handle large numbers of individual inputs to create outputs, rather than in real time. Real-time interaction with a remote system describes interactive transaction-based applications, and controlling hardware describes embedded control systems.",
+          "ref": "Slide 19 · Application types"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "A wearable device measures a patient's heart rate and oxygen saturation and sends the readings to another system for analysis. Which type of application is this?",
+          "options": [
+            "Embedded control system",
+            "Entertainment system",
+            "Interactive transaction-based application",
+            "Data collection system"
+          ],
+          "answer": 3,
+          "why": "Data collection systems gather data from sources through sensors and transmit it to other systems for processing or analysis. Healthcare monitoring with wearable devices is one of the slide's examples.",
+          "ref": "Slide 20 · Application types"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Systems developed by scientists and engineers to model physical processes or situations that include many separate, interacting objects are called:",
+          "options": [
+            "Systems of systems",
+            "Systems for modelling and simulation",
+            "Entertainment systems",
+            "Data collection systems"
+          ],
+          "answer": 1,
+          "why": "Systems for modelling and simulation model physical processes or situations with many separate, interacting objects. Systems of systems, by contrast, are composed of a number of other software systems.",
+          "ref": "Slide 21 · Application types"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Which statement about cloud computing is correct according to the slides?",
+          "options": [
+            "Applications run on the user's own PC and the software is purchased once",
+            "Applications run remotely on the 'cloud' and users buy a permanent copy of the software",
+            "Applications run remotely on the 'cloud' and users pay according to use rather than buying software",
+            "Applications are limited to stand-alone systems that need no network connection"
+          ],
+          "answer": 2,
+          "why": "Cloud computing is an approach where applications run remotely on the 'cloud', and users do not buy the software but pay according to use.",
+          "ref": "Slide 22 · SE and the web"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Engineers should normally respect the confidentiality of their employers or clients ......",
+          "options": [
+            "whether or not a formal confidentiality agreement has been signed",
+            "only if a formal confidentiality agreement has been signed",
+            "only while the project is still under development",
+            "only for information that is protected by a patent"
+          ],
+          "answer": 0,
+          "why": "Confidentiality means keeping sensitive information private and protected from unauthorized parties, and the duty applies even when no formal agreement has been signed.",
+          "ref": "Slide 24 · Professional responsibility"
+        },
+        {
+          "kind": "sort",
+          "group": "Chapter 1",
+          "text": "Classify each situation under the issue of professional responsibility it illustrates.",
+          "categories": [
+            "Confidentiality",
+            "Competence",
+            "Intellectual property rights",
+            "Computer misuse"
+          ],
+          "items": [
+            {
+              "text": "Keeping a client's sensitive information away from unauthorized people",
+              "category": 0
+            },
+            {
+              "text": "Being honest about your abilities, skills and qualifications",
+              "category": 1
+            },
+            {
+              "text": "Declining a job that is beyond your current expertise",
+              "category": 1
+            },
+            {
+              "text": "Knowing the local laws on patents and copyright",
+              "category": 2
+            },
+            {
+              "text": "Protecting the intellectual property of your employer and clients",
+              "category": 2
+            },
+            {
+              "text": "Spreading viruses",
+              "category": 3
+            },
+            {
+              "text": "Playing games on an employer's machine",
+              "category": 3
+            }
+          ],
+          "why": "Confidentiality protects sensitive information, competence means not misrepresenting your skills or accepting work beyond them, intellectual property rights concern patents and copyright, and computer misuse ranges from trivial (games) to very serious (viruses).",
+          "ref": "Slides 24-25 · Professional responsibility"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "The ACM/IEEE Code of Ethics contains ...... Principles related to the behavior of and decisions made by professional software engineers.",
+          "options": [
+            "Six",
+            "Eight",
+            "Ten",
+            "Twelve"
+          ],
+          "answer": 1,
+          "why": "The code contains eight principles: Public, Client and Employer, Product, Judgment, Management, Profession, Colleagues and Self.",
+          "ref": "Slides 26-27 · ACM/IEEE code"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Which principle of the ACM/IEEE code says that software engineers shall participate in lifelong learning regarding the practice of their profession?",
+          "options": [
+            "COLLEAGUES",
+            "PROFESSION",
+            "SELF",
+            "JUDGMENT"
+          ],
+          "answer": 2,
+          "why": "The SELF principle covers lifelong learning and promoting an ethical approach to the practice of the profession. PROFESSION is about advancing the integrity and reputation of the profession, and COLLEAGUES is about being fair to and supportive of colleagues.",
+          "ref": "Slide 27 · ACM/IEEE code"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Which of these is NOT an issue of professional responsibility?",
+          "options": [
+            "Competence",
+            "Intellectual property",
+            "Profit maximisation",
+            "Confidentiality"
+          ],
+          "answer": 2,
+          "why": "The four professional-responsibility issues are confidentiality, competence, intellectual property rights and computer misuse. Profit maximisation is not one of them.",
+          "ref": "Practice PDF · Professional responsibility"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 1",
+          "text": "Which of the following is NOT a key challenge facing software engineering?",
+          "options": [
+            "Trust",
+            "Reducing hardware prices",
+            "Delivery",
+            "Heterogeneity"
+          ],
+          "answer": 1,
+          "why": "The three key challenges are heterogeneity (diverse platforms), delivery on time and trust. Reducing hardware prices is not a software engineering challenge.",
+          "ref": "Practice PDF · Key challenges"
+        },
+        {
+          "kind": "sort",
+          "group": "Chapter 1",
+          "text": "Which attribute of good professional software does each requirement describe? (part 1 of 3)",
+          "categories": [
+            "Maintainability",
+            "Dependability",
+            "Efficiency",
+            "Acceptability"
+          ],
+          "items": [
+            {
+              "text": "The software should be able to run on Windows, macOS, and Linux.",
+              "category": 3
+            },
+            {
+              "text": "The software must not crash when handling large datasets.",
+              "category": 1
+            },
+            {
+              "text": "Future changes in the tax rules should be implemented with minimal cost and time.",
+              "category": 0
+            },
+            {
+              "text": "The application must respond to user actions within 2 seconds.",
+              "category": 2
+            },
+            {
+              "text": "The interface should be simple and easy to use for non-technical users.",
+              "category": 3
+            }
+          ],
+          "why": "Maintainability is changing the software cheaply and quickly. Dependability is being trustworthy and not causing damage on failure. Efficiency is speed and careful use of memory and processor time. Acceptability is being understandable, usable and compatible with other systems.",
+          "ref": "Practice PDF · Software attributes"
+        },
+        {
+          "kind": "sort",
+          "group": "Chapter 1",
+          "text": "Which attribute of good professional software does each requirement describe? (part 2 of 3)",
+          "categories": [
+            "Maintainability",
+            "Dependability",
+            "Efficiency",
+            "Acceptability"
+          ],
+          "items": [
+            {
+              "text": "In case of failure, the software must not cause economic damage.",
+              "category": 1
+            },
+            {
+              "text": "The program must use as little memory and processor time as possible.",
+              "category": 2
+            },
+            {
+              "text": "New features must be easy to add in the next upgrade.",
+              "category": 0
+            },
+            {
+              "text": "The system must be compatible with the other systems used in the hospital.",
+              "category": 3
+            },
+            {
+              "text": "Medical-device software must never cause physical harm if it fails.",
+              "category": 1
+            }
+          ],
+          "why": "Failure damage points to dependability, careful resource use to efficiency, easy upgrades to maintainability, and compatibility with other systems to acceptability.",
+          "ref": "Practice PDF · Software attributes"
+        },
+        {
+          "kind": "sort",
+          "group": "Chapter 1",
+          "text": "Which attribute of good professional software does each requirement describe? (part 3 of 3)",
+          "categories": [
+            "Maintainability",
+            "Dependability",
+            "Efficiency",
+            "Acceptability"
+          ],
+          "items": [
+            {
+              "text": "The report module must not exhaust the server's memory.",
+              "category": 2
+            },
+            {
+              "text": "Developers must be able to modify the code quickly when business rules change.",
+              "category": 0
+            },
+            {
+              "text": "Users should understand how to use the system without long training.",
+              "category": 3
+            },
+            {
+              "text": "The software must be trustworthy for its users.",
+              "category": 1
+            },
+            {
+              "text": "The program should not waste CPU cycles.",
+              "category": 2
+            }
+          ],
+          "why": "Memory and CPU use is efficiency, quick modification is maintainability, understandable and usable is acceptability, and trustworthy is dependability.",
+          "ref": "Practice PDF · Software attributes"
+        },
+        {
+          "kind": "sort",
+          "group": "Chapter 1",
+          "text": "Classify each example by application type.",
+          "categories": [
+            "Entertainment system",
+            "System of systems",
+            "Data collection system",
+            "Modelling and simulation system"
+          ],
+          "items": [
+            {
+              "text": "A personal video game",
+              "category": 0
+            },
+            {
+              "text": "A system composed of a number of other software systems",
+              "category": 1
+            },
+            {
+              "text": "Soil-moisture sensors in a farm sending data to a server",
+              "category": 2
+            }
+          ],
+          "why": "Entertainment systems are for personal use and intended to entertain. A system of systems is composed of a number of other software systems. Data collection systems gather data through sensors and send it to other systems for processing.",
+          "ref": "Practice PDF · Application types"
+        },
+        {
+          "kind": "sort",
+          "group": "Chapter 1",
+          "text": "Which professional-responsibility issue does each action violate?",
+          "categories": [
+            "Confidentiality",
+            "Competence",
+            "Intellectual property rights",
+            "Computer misuse"
+          ],
+          "items": [
+            {
+              "text": "An engineer accepts a task far beyond his skills.",
+              "category": 1
+            },
+            {
+              "text": "An engineer tells a competitor about a client's private data.",
+              "category": 0
+            },
+            {
+              "text": "Copying licensed code into a product without permission.",
+              "category": 2
+            },
+            {
+              "text": "Using a patented algorithm without a licence.",
+              "category": 2
+            }
+          ],
+          "why": "Competence means not accepting work beyond your skills. Confidentiality means not leaking sensitive information. Intellectual property rights cover copyright and patents.",
+          "ref": "Practice PDF · Professional responsibility"
+        }
+      ]
+    },
+    {
+      "id": "chapter-2",
+      "tag": "Chapter 2",
+      "name": "Software Processes",
+      "scope": "44 questions · 5 classification",
+      "questions": [
+        {
+          "kind": "mcq",
+          "group": "Chapter 2",
+          "text": "According to the lecture, a software process is ......",
+          "options": [
+            "a collection of programming tools used to write and compile a software product",
+            "a set of related activities that leads to the production of a software product",
+            "the finished executable product that is delivered to the customer",
+            "the group of people who maintain a software product after release"
+          ],
+          "answer": 1,
+          "why": "The slides define a software process as a set of related activities that leads to the production of a software product. It is about activities, not the tools, the finished product or the people.",
+          "ref": "Slide 3 · Software process"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2",
+          "text": "All software processes must include four fundamental activities. Which of the following is NOT one of them?",
+          "options": [
+            "Software specification",
+            "Software validation (testing)",
+            "Software design and implementation",
+            "Software marketing and sales"
+          ],
+          "answer": 3,
+          "why": "The four fundamental activities are specification, design and implementation, validation (testing) and evolution (maintenance). Marketing and sales is not one of them.",
+          "ref": "Slide 3 · Fundamental activities"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2",
+          "text": "A bank delivered its loan system last year. New regulations now force the bank to modify the system so that it keeps meeting its customers' changing needs. Which fundamental software process activity does this describe?",
+          "options": [
+            "Software evolution (maintenance)",
+            "Software specification",
+            "Software validation (testing)",
+            "Software design and implementation"
+          ],
+          "answer": 0,
+          "why": "In software evolution (maintenance) the software must evolve to meet changing customer needs. Specification defines functionality and constraints, and validation checks that the software does what the customer wants.",
+          "ref": "Slide 3 · Fundamental activities"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2",
+          "text": "In the software ...... activity, the functionality of the software and the constraints on its operation must be defined.",
+          "options": [
+            "validation (testing)",
+            "design and implementation",
+            "specification",
+            "evolution (maintenance)"
+          ],
+          "answer": 2,
+          "why": "Software specification is the activity in which the functionality and the constraints on operation are defined. Design and implementation then produces software that meets that specification.",
+          "ref": "Slide 3 · Fundamental activities"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2",
+          "text": "The outcome of the architectural design activity may be a model of the software architecture. In a process description, such an outcome of a process activity is called a ......",
+          "options": [
+            "role",
+            "order",
+            "product",
+            "pre-condition"
+          ],
+          "answer": 2,
+          "why": "Products are the outcomes of a process activity. Roles reflect the responsibilities of the people involved, and pre- and post-conditions are statements that are true before and after an activity.",
+          "ref": "Slide 4 · Process descriptions"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2",
+          "text": "A project team plans all of its process activities in advance and measures progress against that plan. This is characteristic of a ......",
+          "options": [
+            "plan-driven process",
+            "agile process",
+            "change-tolerant process",
+            "throw-away process"
+          ],
+          "answer": 0,
+          "why": "In plan-driven processes all activities are planned in advance and progress is measured against the plan. In agile processes planning is incremental.",
+          "ref": "Slide 5 · Process categories"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2",
+          "text": "Which of the following statements about plan-driven and agile processes agrees with the slides?",
+          "options": [
+            "Plan-driven processes are the right choice for every type of software.",
+            "Agile processes plan every activity in advance and measure progress against that plan.",
+            "A project must choose exactly one approach and may never combine them.",
+            "Each approach suits different software, so a balance between them is generally needed."
+          ],
+          "answer": 3,
+          "why": "The slides say each approach is suitable for different types of software, so you generally need a balance, and there are no right or wrong software processes.",
+          "ref": "Slide 5 · Process categories"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2",
+          "text": "According to the slides, how are most large systems developed in practice?",
+          "options": [
+            "By strictly following only the waterfall model from the first phase to the last",
+            "By using a process that incorporates elements from all of these process models",
+            "Only by assembling reusable components, with no new development at all",
+            "By using agile processes only, with no advance planning"
+          ],
+          "answer": 1,
+          "why": "Most large systems use a process that mixes elements from the waterfall, incremental and reuse-oriented models rather than one model in pure form.",
+          "ref": "Slide 6 · Process models"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2",
+          "text": "Which statement about the software process models is correct?",
+          "options": [
+            "Incremental development may be plan-driven or agile, but it is mostly agile.",
+            "The waterfall model may be plan-driven or agile, but it is mostly agile.",
+            "Reuse-oriented engineering is always plan-driven and never agile.",
+            "Incremental development is always plan-driven, with separate and distinct phases."
+          ],
+          "answer": 0,
+          "why": "Incremental development interleaves specification, development and validation and is mostly agile. The waterfall model is plan-driven, while reuse-oriented engineering may be either plan-driven or agile.",
+          "ref": "Slide 6 · Process models"
+        },
+        {
+          "kind": "sort",
+          "group": "Chapter 2",
+          "text": "Classify each statement by the software process model it describes.",
+          "categories": [
+            "Waterfall model",
+            "Incremental development",
+            "Reuse-oriented software engineering"
+          ],
+          "items": [
+            {
+              "text": "Plan-driven model with separate and distinct phases",
+              "category": 0
+            },
+            {
+              "text": "Mostly used for large systems engineering projects at several sites",
+              "category": 0
+            },
+            {
+              "text": "Each version adds functionality to the previous version",
+              "category": 1
+            },
+            {
+              "text": "Produces initial, intermediate and final versions of the system",
+              "category": 1
+            },
+            {
+              "text": "The system is assembled from existing configurable components",
+              "category": 2
+            },
+            {
+              "text": "Includes Component Analysis and Requirements Modification steps",
+              "category": 2
+            },
+            {
+              "text": "The customer wants a working version early and gives feedback on every version",
+              "category": 1
+            }
+          ],
+          "why": "The waterfall model is plan-driven with distinct phases and suits large multi-site projects. Incremental development builds a series of versions that each add functionality, and reuse-oriented engineering assembles the system from existing components.",
+          "ref": "Slides 6-23 · Process models"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2",
+          "text": "In the waterfall model diagram, which phase comes immediately after System and Software Design?",
+          "options": [
+            "Requirements Definition",
+            "Integration and System Testing",
+            "Operation and Maintenance",
+            "Implementation and Unit Testing"
+          ],
+          "answer": 3,
+          "why": "The phases run Requirements Definition, System and Software Design, Implementation and Unit Testing, Integration and System Testing, then Operation and Maintenance.",
+          "ref": "Slide 8 · Waterfall diagram"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2",
+          "text": "Why is the waterfall model described as easy to manage?",
+          "options": [
+            "Because the customer can change the requirements at any point during the project",
+            "Because documents from each phase make progress visible against the plan",
+            "Because working software is produced from the very first phase of the project",
+            "Because all phases are carried out at the same time by separate teams"
+          ],
+          "answer": 1,
+          "why": "Each phase produces documents, which makes the process visible so managers can monitor progress against the development plan. The phases are completed one at a time, not at the same time.",
+          "ref": "Slides 9-10 · Waterfall advantages"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2",
+          "text": "Halfway through the design phase of a waterfall project, the customer asks for a major change to the requirements that were agreed in the contract. Which waterfall disadvantage does this illustrate?",
+          "options": [
+            "No working software is produced until late stages",
+            "Costs of producing and approving documents",
+            "There is no chance to change customer requirements (contract)",
+            "The process is too complex for most teams to understand and implement"
+          ],
+          "answer": 2,
+          "why": "Once the requirements are fixed by the contract, the waterfall model gives no chance to change them. Waterfall is actually simple and easy to understand and implement, so the last option is wrong.",
+          "ref": "Slides 9-10 · Waterfall disadvantages"
+        },
+        {
+          "kind": "sort",
+          "group": "Chapter 2",
+          "text": "Classify each statement about the waterfall model as an advantage or a disadvantage.",
+          "categories": [
+            "Advantage",
+            "Disadvantage"
+          ],
+          "items": [
+            {
+              "text": "Simple and easy to understand and implement",
+              "category": 0
+            },
+            {
+              "text": "Phases are clearly defined and completed one at a time",
+              "category": 0
+            },
+            {
+              "text": "No working software is produced until late stages",
+              "category": 1
+            },
+            {
+              "text": "It takes a lot of time to produce the final software product",
+              "category": 1
+            },
+            {
+              "text": "Costs of producing and approving documents",
+              "category": 1
+            }
+          ],
+          "why": "Waterfall is simple and its phases are clearly defined, but producing documents is costly and no working software appears until the late stages, so the final product takes a long time.",
+          "ref": "Slides 9-10 · Waterfall pros and cons"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2",
+          "text": "According to the slides, which project is best suited to the waterfall model?",
+          "options": [
+            "A new mobile app whose features will only be decided after users try early working versions",
+            "A product whose customer expects to revise the requirements every few weeks",
+            "A small system with vague requirements that must reach the market as fast as possible",
+            "A project with well-understood, stable requirements and no pressure on delivery time"
+          ],
+          "answer": 3,
+          "why": "The waterfall model should only be used when the requirements are very well understood, unlikely to change, and the delivery time is not a problem.",
+          "ref": "Slide 11 · When to use waterfall"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2",
+          "text": "Incremental development is based on the idea of developing an initial implementation, exposing this to ...... and evolving it through several versions until a suitable system has been developed.",
+          "options": [
+            "the project manager's review",
+            "automated testing tools",
+            "user comment",
+            "the development team's own estimates"
+          ],
+          "answer": 2,
+          "why": "The initial implementation is exposed to user comment and then evolved through several versions, which is how the customer influences the system.",
+          "ref": "Slide 13 · Incremental development"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2",
+          "text": "In the incremental development diagram, the specification, development and validation activities are grouped together and described as ...... activities.",
+          "options": [
+            "concurrent",
+            "sequential",
+            "optional",
+            "independent"
+          ],
+          "answer": 0,
+          "why": "The diagram labels the box containing specification, development and validation as concurrent activities, because they are interleaved rather than carried out one after another.",
+          "ref": "Slide 14 · Incremental diagram"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2",
+          "text": "In the incremental development diagram, the Outline Description is the input to which box?",
+          "options": [
+            "Specification",
+            "Development",
+            "Validation",
+            "Initial Version"
+          ],
+          "answer": 1,
+          "why": "The arrow from Outline Description leads into Development, which is connected to Specification and Validation. The versions (initial, intermediate, final) are outputs of the concurrent activities.",
+          "ref": "Slide 14 · Incremental diagram"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2",
+          "text": "Compared to the waterfall model, why is the cost of accommodating changing customer requirements reduced in incremental development?",
+          "options": [
+            "The amount of analysis and documentation that has to be redone is much less",
+            "The requirements are fixed in a contract and cannot be changed during development",
+            "No documentation is ever produced for any increment",
+            "The customer is not allowed to see the system until the end"
+          ],
+          "answer": 0,
+          "why": "A change affects only part of the system, so much less analysis and documentation has to be redone than in the waterfall model.",
+          "ref": "Slide 15 · Incremental benefits"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2",
+          "text": "During incremental development, a customer evaluates an early increment and finds that it does not deliver what is required. According to the slides, what has to be changed?",
+          "options": [
+            "The entire system must be re-specified and redeveloped from the very beginning",
+            "Nothing can change, because changes are only allowed after final delivery",
+            "Only the documentation that was written for the earlier phases",
+            "Only the current increment, and possibly functionality for later increments"
+          ],
+          "answer": 3,
+          "why": "Because the customer gives feedback early, only the current increment has to be changed and, possibly, new functionality defined for later increments. This is why customer feedback is easier to get.",
+          "ref": "Slide 16 · Incremental benefits"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2",
+          "text": "One problem of incremental development is that the process is not visible. Why?",
+          "options": [
+            "Because customers are never shown any version of the system until the process ends",
+            "Because every phase must be fully documented and approved by managers before the next phase can start",
+            "Because managers need regular deliverables, and documenting every version is not cost-effective",
+            "Because the system is assembled from COTS components"
+          ],
+          "answer": 2,
+          "why": "Managers need regular deliverables to measure progress, but when systems are developed quickly it is not cost-effective to produce documents for every version. The second option describes the waterfall model.",
+          "ref": "Slide 17 · Incremental problems"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2",
+          "text": "System structure tends to degrade as new increments are added, unless time and money are spent on ......",
+          "options": [
+            "writing prototypes of the whole system",
+            "refactoring to improve the software",
+            "producing throw-away versions",
+            "adding more COTS components"
+          ],
+          "answer": 1,
+          "why": "Regular change tends to corrupt the structure, so refactoring is needed to keep further changes from becoming increasingly difficult and costly.",
+          "ref": "Slide 17 · Incremental problems"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2",
+          "text": "According to the 'Waterfall vs Agile [risk & Value]' diagram, which statement is correct?",
+          "options": [
+            "Agile delivers value only once, at a single release at the end of the project",
+            "Waterfall releases value several times, once after each define-build cycle during the project",
+            "In waterfall the risk is highest at the start and falls steadily until the release",
+            "Waterfall delivers value only at the final release; agile delivers value at each release"
+          ],
+          "answer": 3,
+          "why": "Waterfall runs define, build and release once, and its risk rises sharply near the single release. Agile repeats define-build-release cycles, so value is delivered after each release.",
+          "ref": "Slide 18 · Waterfall vs agile"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2",
+          "text": "In reuse-oriented software engineering, the reusable components are called ......",
+          "options": [
+            "COTS (commercial off-the-shelf systems)",
+            "increments",
+            "prototypes",
+            "throw-away modules"
+          ],
+          "answer": 0,
+          "why": "The slides say these reusable components are called COTS, or commercial off-the-shelf systems. The process integrates them into a system instead of developing them from scratch.",
+          "ref": "Slide 20 · Reuse-oriented"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2",
+          "text": "In the reuse-oriented software engineering diagram, which activity comes immediately after Component Analysis?",
+          "options": [
+            "System Design with Reuse",
+            "Development and Integration",
+            "Requirements Modification",
+            "System Validation"
+          ],
+          "answer": 2,
+          "why": "The sequence is Requirements Specification, Component Analysis, Requirements Modification, System Design with Reuse, Development and Integration, then System Validation.",
+          "ref": "Slide 21 · Reuse diagram"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2",
+          "text": "Which of the following is NOT one of the three types of software component that may be used in a reuse-oriented process?",
+          "options": [
+            "Stand-alone application systems (COTS) configured for use in a particular environment",
+            "Throw-away prototypes built during requirements engineering",
+            "Collections of objects developed as a package for a component framework such as .NET or J2EE",
+            "Web services developed to service standards and available for remote invocation"
+          ],
+          "answer": 1,
+          "why": "The three types are stand-alone application systems (COTS), collections of objects packaged for a framework such as .NET or J2EE, and web services. Throw-away prototypes are not reusable components.",
+          "ref": "Slide 22 · Reusable components"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2",
+          "text": "Which of the following is an advantage of reuse-oriented software engineering?",
+          "options": [
+            "It gives the team complete control over how the reused elements evolve over time",
+            "It guarantees that requirements never have to be compromised",
+            "It produces a system that exactly matches the real needs of all its users",
+            "It reduces the amount of software to be developed, reducing cost and risks"
+          ],
+          "answer": 3,
+          "why": "Reuse reduces the software to be developed, which reduces cost and risks and leads to faster delivery. Loss of control over evolution and requirements compromises are disadvantages.",
+          "ref": "Slide 23 · Reuse advantages"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2",
+          "text": "Which of the following is a disadvantage of reuse-oriented software engineering?",
+          "options": [
+            "Loss of control over the evolution of reused system elements",
+            "More software has to be developed from scratch, which raises the cost",
+            "Delivery of the software becomes slower",
+            "The risks of development always increase"
+          ],
+          "answer": 0,
+          "why": "With reused components the team loses control over how those elements evolve. The slides also list inevitable requirements compromises, which may give a system that does not meet users' real needs.",
+          "ref": "Slide 23 · Reuse disadvantages"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2",
+          "text": "Change leads to ......, so the costs of change include re-analyzing requirements as well as the cost of implementing new functionality.",
+          "options": [
+            "prototyping",
+            "integration",
+            "rework",
+            "refactoring"
+          ],
+          "answer": 2,
+          "why": "Change leads to rework, such as re-analyzing requirements, and this is added to the cost of implementing the new functionality.",
+          "ref": "Slide 25 · Coping with change"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2",
+          "text": "A company moves its application from one platform to another, and the application has to be modified to run there. Which source of change listed in the slides does this illustrate?",
+          "options": [
+            "Business changes leading to new requirements",
+            "Changing platforms requiring application changes",
+            "New technologies opening up possibilities for improving implementations",
+            "A shift from plan-driven to agile processes"
+          ],
+          "answer": 1,
+          "why": "The slides give three reasons why change is inevitable: business changes, new technologies, and changing platforms that require application changes.",
+          "ref": "Slide 25 · Coping with change"
+        },
+        {
+          "kind": "sort",
+          "group": "Chapter 2",
+          "text": "Classify each description as change avoidance or change tolerance.",
+          "categories": [
+            "Change avoidance",
+            "Change tolerance"
+          ],
+          "items": [
+            {
+              "text": "Activities predict possible changes before significant rework is required",
+              "category": 0
+            },
+            {
+              "text": "A prototype is developed to show key features of the system to customers",
+              "category": 0
+            },
+            {
+              "text": "The process is designed so changes can be accommodated at a relatively low cost",
+              "category": 1
+            },
+            {
+              "text": "Proposed changes are implemented in increments that have not yet been developed",
+              "category": 1
+            }
+          ],
+          "why": "Change avoidance predicts changes before rework is needed, for example with a prototype. Change tolerance designs the process so changes can be absorbed cheaply, normally through incremental development.",
+          "ref": "Slide 26 · Reducing rework"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2",
+          "text": "System prototyping means that a version of the system, or part of it, is developed quickly to check the customer's requirements and the ...... of some design decisions.",
+          "options": [
+            "feasibility",
+            "documentation",
+            "market price",
+            "maintenance schedule"
+          ],
+          "answer": 0,
+          "why": "A quickly developed version is used to check the customer's requirements and the feasibility of some design decisions, which supports change avoidance.",
+          "ref": "Slide 27 · System prototyping"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2",
+          "text": "Which way of coping with changing requirements supports both change avoidance and change tolerance?",
+          "options": [
+            "System prototyping",
+            "Freezing the requirements once the contract is signed",
+            "Incremental delivery",
+            "Reuse-oriented development"
+          ],
+          "answer": 2,
+          "why": "Incremental delivery, where increments are delivered to the customer for comment and experimentation, supports both change avoidance and change tolerance. System prototyping supports change avoidance.",
+          "ref": "Slide 27 · Coping with requirements"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2",
+          "text": "A prototype is ......",
+          "options": [
+            "the final, fully documented version of the system that is delivered to every customer",
+            "an initial version of a system used to demonstrate concepts and try out design options",
+            "a document that defines the constraints on the operation of the software being built",
+            "a set of test cases that validates the software against its specification"
+          ],
+          "answer": 1,
+          "why": "A prototype is an initial version of a software system used to demonstrate concepts, try out design options, and find out more about the problem and its possible solutions.",
+          "ref": "Slide 28 · Prototype definition"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2",
+          "text": "A team builds a small database design and tests it to check that it supports efficient data access for the most common user queries. Which use of a prototype is this?",
+          "options": [
+            "Requirements gathering and validation in the requirements engineering process",
+            "Delivering an increment for use by end-users",
+            "Component analysis in a reuse-oriented process",
+            "Exploring options in a design process"
+          ],
+          "answer": 3,
+          "why": "The slides use this database example for prototypes in design processes, to explore options and support user interface design. In requirements engineering, prototypes help gather and validate requirements.",
+          "ref": "Slide 28 · Prototype uses"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2",
+          "text": "In the prototype development process diagram, the activity Define Prototype Functionality produces which product?",
+          "options": [
+            "Outline Definition",
+            "Prototyping Plan",
+            "Executable Prototype",
+            "Evaluation Report"
+          ],
+          "answer": 0,
+          "why": "Establish Prototype Objectives gives a Prototyping Plan, Define Prototype Functionality gives an Outline Definition, Develop Prototype gives an Executable Prototype, and Evaluate Prototype gives an Evaluation Report.",
+          "ref": "Slide 29 · Prototype process"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2",
+          "text": "Which statement about developing a prototype agrees with the slides?",
+          "options": [
+            "It should concentrate on areas of the product that are already well understood.",
+            "It must include complete error checking and recovery.",
+            "It should focus on areas of the product that are not well understood.",
+            "It should focus on non-functional requirements such as reliability and security."
+          ],
+          "answer": 2,
+          "why": "Functionality may be left out to cut cost and speed delivery, so the prototype focuses on areas that are not well understood. Error checking may be omitted, and the focus is on functional rather than non-functional requirements.",
+          "ref": "Slide 30 · Prototype development"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2",
+          "text": "Which of the following is NOT a reason given for discarding prototypes after development?",
+          "options": [
+            "It may be impossible to adjust the system to meet non-functional requirements",
+            "Prototypes are normally fully documented, which makes them costly to keep",
+            "The prototype structure is usually degraded through rapid change",
+            "The prototype probably will not meet normal organizational quality standards"
+          ],
+          "answer": 1,
+          "why": "Prototypes are normally undocumented, not fully documented. The other three are reasons the slides give for treating prototypes as throw-away.",
+          "ref": "Slide 31 · Throw-away prototypes"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2",
+          "text": "In incremental delivery, how are the user requirements assigned to increments?",
+          "options": [
+            "All requirements are delivered together in one single final increment at the end",
+            "The lowest priority requirements go into the early increments",
+            "Requirements are assigned to increments at random",
+            "They are prioritised, and the highest priority ones go in the early increments"
+          ],
+          "answer": 3,
+          "why": "User requirements are prioritised and the highest priority requirements are included in early increments. New increments are then integrated with the existing ones so functionality improves with each delivery.",
+          "ref": "Slide 32 · Incremental delivery"
+        },
+        {
+          "kind": "sort",
+          "group": "Chapter 2",
+          "text": "Classify each statement as incremental development or incremental delivery.",
+          "categories": [
+            "Incremental development",
+            "Incremental delivery"
+          ],
+          "items": [
+            {
+              "text": "Each increment is shown to customers for comment without being deployed",
+              "category": 0
+            },
+            {
+              "text": "The normal approach used in agile methods",
+              "category": 0
+            },
+            {
+              "text": "An increment is deployed for use by end-users",
+              "category": 1
+            },
+            {
+              "text": "Gives a more realistic evaluation of the practical use of the software",
+              "category": 1
+            },
+            {
+              "text": "Difficult to implement for replacement systems",
+              "category": 1
+            }
+          ],
+          "why": "Incremental development exposes increments to customers for comment without deploying them and is the normal agile approach. Incremental delivery deploys increments to end-users, which gives more realistic evaluation but is hard for replacement systems.",
+          "ref": "Slide 33 · Development vs delivery"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2",
+          "text": "In the incremental delivery diagram, what happens after Deploy Increment when the answer to 'System Incomplete?' is yes?",
+          "options": [
+            "The process returns to Develop System Increment",
+            "The process goes to Final System",
+            "The process returns to Define Outline Requirements",
+            "The process returns to Design System Architecture"
+          ],
+          "answer": 0,
+          "why": "If the system is incomplete, the process loops back to Develop System Increment; only when the system is complete does it lead to the Final System. The flow is Define Outline Requirements, Assign Requirements to Increments, Design System Architecture, Develop, Validate Increment, Integrate Increment, Validate System, Deploy Increment.",
+          "ref": "Slide 34 · Incremental delivery diagram"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2",
+          "text": "Why should prototypes be thrown away?",
+          "options": [
+            "They are normally undocumented",
+            "They are too expensive to build",
+            "They always meet quality standards",
+            "They have perfect structure"
+          ],
+          "answer": 0,
+          "why": "Prototypes are normally undocumented. Their structure is also degraded by rapid change, they may not meet non-functional requirements, and they will probably not meet organizational quality standards.",
+          "ref": "Practice PDF · Prototyping"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 2",
+          "text": "A disadvantage of reuse-oriented software is:",
+          "options": [
+            "Slower delivery",
+            "Requirements compromises are inevitable",
+            "Higher risk because everything is new",
+            "More software has to be developed"
+          ],
+          "answer": 1,
+          "why": "With reuse, requirements compromises are inevitable, and the team loses control over how the reused elements evolve. Reuse reduces the software to be developed, so delivery is faster, not slower.",
+          "ref": "Practice PDF · Reuse-oriented"
+        },
+        {
+          "kind": "sort",
+          "group": "Chapter 2",
+          "text": "Classify each description by the type of reusable component.",
+          "categories": [
+            "Stand-alone application (COTS)",
+            "Collection of objects for a framework",
+            "Web service"
+          ],
+          "items": [
+            {
+              "text": "A package of objects integrated with .NET or J2EE.",
+              "category": 1
+            },
+            {
+              "text": "A stand-alone application configured for a particular environment.",
+              "category": 0
+            },
+            {
+              "text": "A component developed to service standards and available for remote invocation.",
+              "category": 2
+            }
+          ],
+          "why": "The three types of reusable component are stand-alone application systems (COTS), collections of objects developed as a package for a framework such as .NET or J2EE, and web services.",
+          "ref": "Practice PDF · Reusable components"
+        }
+      ]
+    },
+    {
+      "id": "chapter-3",
+      "tag": "Chapter 3",
+      "name": "Agile Software Development",
+      "scope": "41 questions · 6 classification",
+      "questions": [
+        {
+          "kind": "mcq",
+          "group": "Chapter 3",
+          "text": "In plan-driven methods, changes to requirements during the project often lead to ......",
+          "options": [
+            "faster delivery to the customer",
+            "costly rework",
+            "earlier customer feedback",
+            "less need for planning"
+          ],
+          "answer": 1,
+          "why": "Slide 6 states that changes often lead to costly rework in plan-driven methods. The common wrong idea is that a detailed plan makes change easy to absorb; it actually makes change expensive.",
+          "ref": "Slide 6 · Plan-driven problems"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 3",
+          "text": "Traditional (plan-driven) software development assumes that requirements can be ......",
+          "options": [
+            "defined early and remain stable",
+            "discovered gradually and changed often",
+            "left undefined until the final release",
+            "renegotiated at the start of every iteration"
+          ],
+          "answer": 0,
+          "why": "Plan-driven development assumes requirements are defined early and stay stable, which is why it needs extensive planning up front. Agile methods assume the opposite: requirements will change.",
+          "ref": "Slide 7 · Plan-driven development"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 3",
+          "text": "Which of the following is NOT a characteristic of traditional plan-driven development?",
+          "options": [
+            "Extensive planning and documentation are required before development begins",
+            "Changes during development are often expensive and time-consuming",
+            "Long development cycles delay software delivery and business value",
+            "Customer feedback arrives continuously throughout development"
+          ],
+          "answer": 3,
+          "why": "In plan-driven development customer feedback usually comes late in the project. Continuous customer feedback is an agile characteristic.",
+          "ref": "Slide 7 · Plan-driven development"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 3",
+          "text": "According to the slides, why was agile created?",
+          "options": [
+            "Because plan-driven methods are bad and always fail",
+            "Because documentation is no longer needed in software projects",
+            "Because software development itself is unpredictable",
+            "Because customers refuse to take part in projects"
+          ],
+          "answer": 2,
+          "why": "The slide says agile was not created because plan-driven methods are 'bad'; it was created because software development itself is unpredictable. Do not confuse this with the idea that agile rejects planning outright.",
+          "ref": "Slide 7 · Why agile"
+        },
+        {
+          "kind": "sort",
+          "group": "Chapter 3",
+          "text": "Classify each statement as describing plan-driven (traditional) development or agile development.",
+          "categories": [
+            "Plan-driven (traditional)",
+            "Agile"
+          ],
+          "items": [
+            {
+              "text": "Assumes requirements are defined early and remain stable",
+              "category": 0
+            },
+            {
+              "text": "Requires extensive planning and documentation before development begins",
+              "category": 0
+            },
+            {
+              "text": "Customer feedback usually comes late in the project",
+              "category": 0
+            },
+            {
+              "text": "Changes during development are often expensive and time-consuming",
+              "category": 0
+            },
+            {
+              "text": "Software is released in small, working increments",
+              "category": 1
+            },
+            {
+              "text": "Customers are closely involved throughout development",
+              "category": 1
+            },
+            {
+              "text": "Teams are empowered to self-organize",
+              "category": 1
+            },
+            {
+              "text": "Requirements are expected to change, so the design accommodates change",
+              "category": 1
+            }
+          ],
+          "why": "Plan-driven development assumes stable requirements, plans and documents up front, and gets feedback late. Agile expects change and relies on increments, customer involvement and self-organizing teams.",
+          "ref": "Slides 7, 10-11 · Plan-driven vs agile"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 3",
+          "text": "The Agile Manifesto values working software over ......",
+          "options": [
+            "process and tools",
+            "comprehensive documents",
+            "contract negotiation",
+            "following a plan"
+          ],
+          "answer": 1,
+          "why": "The four pairs are: individuals and interactions over process and tools, working software over comprehensive documents, customer collaboration over contract negotiation, and responding to change over following a plan.",
+          "ref": "Slide 8 · Agile Manifesto"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 3",
+          "text": "Which of the following is NOT one of the key agile principles presented in the lecture?",
+          "options": [
+            "Follow the original plan strictly",
+            "Maintain simplicity",
+            "Continued improvement",
+            "Customer involvement"
+          ],
+          "answer": 0,
+          "why": "The six key principles are customer involvement, incremental delivery, people not process, embrace change, maintain simplicity and continued improvement. Following a plan is what the manifesto values less than responding to change.",
+          "ref": "Slides 9-11 · Agile principles"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 3",
+          "text": "A team releases the software in small working increments, based on the customer's priorities, instead of waiting to deliver everything at once. Which agile principle does this show?",
+          "options": [
+            "Customer involvement",
+            "Maintain simplicity",
+            "People, not process",
+            "Incremental delivery"
+          ],
+          "answer": 3,
+          "why": "Incremental delivery means the software is developed and released in small, working increments rather than all at once. Customer involvement is about the customer giving continuous feedback throughout development.",
+          "ref": "Slide 10 · Agile principles"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 3",
+          "text": "The agile principle 'People, not process' means that ......",
+          "options": [
+            "a single fixed process must be followed exactly by every team member in every project",
+            "the customer decides how the developers should work on each task each day",
+            "teams use their skills, choose how they work and self-organize",
+            "managers assign every task to individual programmers and check progress daily"
+          ],
+          "answer": 2,
+          "why": "This principle lets the development team use its skills and choose how it works; teams self-organize and work together. It does not mean ignoring people, and it is the opposite of a rigid prescribed process.",
+          "ref": "Slide 10 · Agile principles"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 3",
+          "text": "Which agile principle tells the team to expect the system requirements to change and to design the system to accommodate these changes?",
+          "options": [
+            "Maintain simplicity",
+            "Embrace change",
+            "Continued improvement",
+            "Customer involvement"
+          ],
+          "answer": 1,
+          "why": "'Embrace change' means expecting requirements to change and designing the system to accommodate them. 'Continued improvement' is about regularly evaluating and adjusting the team's own practices.",
+          "ref": "Slide 11 · Agile principles"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 3",
+          "text": "In Extreme Programming (XP), increments are delivered to customers every ......",
+          "options": [
+            "2 weeks",
+            "4 weeks",
+            "3 months",
+            "6 months"
+          ],
+          "answer": 0,
+          "why": "Slide 14 says XP delivers increments to customers every 2 weeks, while new versions may be built several times per day. The 2-4 week range belongs to Scrum sprints.",
+          "ref": "Slide 14 · XP basics"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 3",
+          "text": "In XP, a new build of the software is accepted only if ......",
+          "options": [
+            "the customer has signed off the documentation",
+            "it was produced by a pair of programmers",
+            "all tests run successfully",
+            "it adds at least one new user story"
+          ],
+          "answer": 2,
+          "why": "XP requires all tests to be run for every build, and the build is accepted only if the tests run successfully. Pair programming is a practice, but it is not the acceptance rule.",
+          "ref": "Slide 14 · XP basics"
+        },
+        {
+          "kind": "sort",
+          "group": "Chapter 3",
+          "text": "Classify each statement as describing Extreme Programming (XP) or Scrum.",
+          "categories": [
+            "Extreme Programming (XP)",
+            "Scrum"
+          ],
+          "items": [
+            {
+              "text": "The software is constantly refactored",
+              "category": 0
+            },
+            {
+              "text": "Pair programming is one of its practices",
+              "category": 0
+            },
+            {
+              "text": "Requirements are written as user stories on cards",
+              "category": 0
+            },
+            {
+              "text": "A build is accepted only if all tests run successfully",
+              "category": 0
+            },
+            {
+              "text": "Work is organized in sprints of normally 2-4 weeks",
+              "category": 1
+            },
+            {
+              "text": "Planning starts from the product backlog",
+              "category": 1
+            },
+            {
+              "text": "A Scrum master protects the team from external distractions",
+              "category": 1
+            },
+            {
+              "text": "Does not prescribe programming practices; gives a management framework",
+              "category": 1
+            }
+          ],
+          "why": "XP is a technical agile method with concrete practices such as pair programming, refactoring and tested builds. Scrum is a management framework built around sprints, the product backlog and the Scrum master.",
+          "ref": "Slides 14-17, 22, 26, 30-36 · XP vs Scrum"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 3",
+          "text": "In the XP release cycle, which activity comes immediately after 'Plan release'?",
+          "options": [
+            "Select user stories for this release",
+            "Break down stories to tasks",
+            "Release software",
+            "Develop/integrate/test software"
+          ],
+          "answer": 3,
+          "why": "The cycle is: select user stories, break down stories to tasks, plan release, develop/integrate/test software, release software, evaluate system, then back to selecting stories. Release software comes after development and testing.",
+          "ref": "Slide 15 · XP release cycle"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 3",
+          "text": "In the story format 'As a ..., I want ..., so that ...', the 'so that' part states ......",
+          "options": [
+            "why the user wants the feature, that is, the benefit it brings",
+            "the end user of the required feature",
+            "the action the user wants to perform once the feature is live",
+            "the implementation tasks needed to build the feature"
+          ],
+          "answer": 0,
+          "why": "'As a' names the end user, 'I want' states what the user wants to do once the feature is live (usually a verb), and 'so that' gives the reason or benefit.",
+          "ref": "Slide 16 · User stories"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 3",
+          "text": "Which of the following is a story rather than a task?",
+          "options": [
+            "Create new db to store wishlist items",
+            "As a customer, I want to be able to save a product in my wishlist so that I can view it again later",
+            "Put 'Add to wishlist' button on each product page",
+            "Add 'View wishlist' link to homepage"
+          ],
+          "answer": 1,
+          "why": "A story is an individual feature or requirement the client wants and is written in the 'As a / I want / so that' format. The other options are implementation tasks into which stories are broken down.",
+          "ref": "Slide 16 · Stories vs tasks"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 3",
+          "text": "In XP, who is responsible for making decisions on requirements?",
+          "options": [
+            "The Scrum master, who facilitates the team",
+            "A pair of programmers chosen dynamically for the sprint",
+            "The project manager, who plans the whole release",
+            "A customer or user who is part of the XP team"
+          ],
+          "answer": 3,
+          "why": "In XP a customer or user is part of the XP team and is responsible for making decisions on requirements. The Scrum master is a Scrum role, not an XP one.",
+          "ref": "Slide 17 · User stories"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 3",
+          "text": "In XP, user stories are written on cards and the development team ......",
+          "options": [
+            "hands them to the Scrum master to be ordered in a product backlog",
+            "turns them into comprehensive documents before any coding starts",
+            "breaks them into implementation tasks used for schedule and cost estimates",
+            "discards them once the release plan has been approved by management"
+          ],
+          "answer": 2,
+          "why": "The team breaks story cards down into implementation tasks, and these tasks are the basis of the schedule and cost estimates. The customer then chooses stories for the next release using priorities and those estimates.",
+          "ref": "Slide 17 · User stories"
+        },
+        {
+          "kind": "sort",
+          "group": "Chapter 3",
+          "text": "Classify each responsibility by who carries it out.",
+          "categories": [
+            "Customer",
+            "Development team",
+            "Scrum master"
+          ],
+          "items": [
+            {
+              "text": "Chooses the stories for the next release based on priorities",
+              "category": 0
+            },
+            {
+              "text": "Can introduce new requirements at the start of a sprint",
+              "category": 0
+            },
+            {
+              "text": "Breaks user stories down into implementation tasks",
+              "category": 1
+            },
+            {
+              "text": "Organizes itself to develop the software during the sprint",
+              "category": 1
+            },
+            {
+              "text": "Arranges daily meetings",
+              "category": 2
+            },
+            {
+              "text": "Tracks the backlog and measures progress against it",
+              "category": 2
+            },
+            {
+              "text": "Protects the team from external distractions",
+              "category": 2
+            }
+          ],
+          "why": "The customer decides on stories and priorities and can add requirements at the sprint start. The development team breaks stories into tasks and organizes its own work. The Scrum master facilitates: meetings, backlog tracking, progress and protecting the team.",
+          "ref": "Slides 17, 34-36 · Roles"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 3",
+          "text": "Which of the following is NOT an XP practice shown in the lecture?",
+          "options": [
+            "Product backlog",
+            "Collective ownership",
+            "Continuous integration",
+            "Coding standard"
+          ],
+          "answer": 0,
+          "why": "Collective ownership, continuous integration and coding standard are all on the XP practices diagram. The product backlog belongs to Scrum.",
+          "ref": "Slides 19-20 · XP practices"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 3",
+          "text": "Refactoring is the practice of ......",
+          "options": [
+            "adding new features to existing code to satisfy new user stories from the customer",
+            "improving the internal structure of existing code without changing its external behavior",
+            "rewriting the whole system from scratch in every single iteration of the project",
+            "removing tests that slow down the build so that releases are faster"
+          ],
+          "answer": 1,
+          "why": "Refactoring changes the internal structure of code only; the external behavior stays the same. Adding features changes behavior, so it is not refactoring.",
+          "ref": "Slide 22 · Refactoring"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 3",
+          "text": "Why does XP suggest that the software should be constantly refactored?",
+          "options": [
+            "Because plan-driven methods require code to be reorganised before every release",
+            "Because customers ask for cleaner code in every user story they write",
+            "Because refactoring removes the need to test each build before it is accepted",
+            "Because incremental development tends to degrade the software structure"
+          ],
+          "answer": 3,
+          "why": "Developers solve problems as they arise, which can cause duplicated code, inappropriate reuse of components and gradual degradation of the structure. Constant refactoring counters this so changes stay easy to implement.",
+          "ref": "Slide 22 · Refactoring"
+        },
+        {
+          "kind": "sort",
+          "group": "Chapter 3",
+          "text": "Classify each statement as describing pair programming or refactoring.",
+          "categories": [
+            "Pair programming",
+            "Refactoring"
+          ],
+          "items": [
+            {
+              "text": "Two people work together at a single computer",
+              "category": 0
+            },
+            {
+              "text": "Each line of code is looked at by more than one person",
+              "category": 0
+            },
+            {
+              "text": "Pairs are created dynamically so everyone works with everyone",
+              "category": 0
+            },
+            {
+              "text": "Spreads knowledge and common ownership of code across the team",
+              "category": 0
+            },
+            {
+              "text": "Improves internal structure without changing external behavior",
+              "category": 1
+            },
+            {
+              "text": "Reorganizing a class hierarchy to remove duplicate code",
+              "category": 1
+            },
+            {
+              "text": "Cleanup and renaming of attributes and methods",
+              "category": 1
+            },
+            {
+              "text": "Improves understandability, reducing the need for documentation",
+              "category": 1
+            }
+          ],
+          "why": "Pair programming is about how people work (two at one computer, informal review, shared knowledge). Refactoring is about changing the code's internal structure while behavior stays the same.",
+          "ref": "Slides 22-23, 26-27 · Pair programming vs refactoring"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 3",
+          "text": "Which of the following is NOT an example of refactoring given in the slides?",
+          "options": [
+            "Reorganizing a class hierarchy to remove duplicate code",
+            "Cleaning up and renaming attributes and methods",
+            "Adding a new feature requested by the customer",
+            "Replacing code with calls to methods defined in a program library"
+          ],
+          "answer": 2,
+          "why": "Refactoring does not change external behavior, so adding a new feature is not refactoring. The other three are the slide's examples.",
+          "ref": "Slide 23 · Refactoring"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 3",
+          "text": "Two people working at a single computer will add as much functionality as two working separately, except that the result will be much higher in ......",
+          "options": [
+            "quality",
+            "speed",
+            "documentation",
+            "cost"
+          ],
+          "answer": 0,
+          "why": "Slide 26 claims pair programming adds as much functionality as two people working separately but with much higher quality, because it acts as a review process.",
+          "ref": "Slide 26 · Pair programming"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 3",
+          "text": "How are pairs formed in pair programming?",
+          "options": [
+            "The same two people always work together for the whole project",
+            "Pairs are created dynamically so all team members work together",
+            "The Scrum master assigns permanent pairs at the start of the project",
+            "The customer chooses who works with whom in each release"
+          ],
+          "answer": 1,
+          "why": "The same pairs do not always program together; pairs are created dynamically so that everyone works with everyone during development. This spreads knowledge across the team.",
+          "ref": "Slide 27 · Pair programming"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 3",
+          "text": "Why is pair programming described as an informal review process?",
+          "options": [
+            "The customer inspects the code at the end of each sprint",
+            "A separate reviewer reads all code after the project is finished",
+            "Each line of code is looked at by more than one person",
+            "The pair writes comprehensive documents for every module"
+          ],
+          "answer": 2,
+          "why": "Because two people work on the same code, each line is looked at by more than one person, which acts as an informal review. This also helps develop common ownership of the code.",
+          "ref": "Slide 27 · Pair programming"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 3",
+          "text": "Scrum is best described as ......",
+          "options": [
+            "a set of programming practices such as pair programming and test-first development",
+            "a plan-driven method that fixes requirements before development begins",
+            "a technique for improving the internal structure of existing code",
+            "a general agile method that focuses on managing iterative development"
+          ],
+          "answer": 3,
+          "why": "Scrum is a general agile method focused on managing iterative development rather than on specific agile practices. Pair programming and test-first development are technical practices that Scrum does not prescribe.",
+          "ref": "Slide 30 · Scrum overview"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 3",
+          "text": "Scrum can be used together with more technical agile approaches such as XP because Scrum ......",
+          "options": [
+            "does not prescribe programming practices, so it provides a management framework",
+            "requires pair programming and test-first development to be used in every sprint",
+            "is itself a set of technical practices such as refactoring and coding standards",
+            "removes the need for customers to take part in the project"
+          ],
+          "answer": 0,
+          "why": "Scrum does not prescribe programming practices, so it can provide a management framework on top of technical approaches such as XP.",
+          "ref": "Slide 30 · Scrum vs XP"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 3",
+          "text": "Which of the following lists the three phases of Scrum?",
+          "options": [
+            "Requirements, design, implementation, testing",
+            "Outline planning and architectural design, sprint cycles, project closure",
+            "Backlog creation, sprint review, maintenance and support",
+            "Assess, select, review"
+          ],
+          "answer": 1,
+          "why": "The Scrum process diagram shows outline planning and architectural design, then the sprint cycles, then project closure. Assess, select, develop and review are the activities inside one sprint cycle.",
+          "ref": "Slide 31 · Scrum process"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 3",
+          "text": "What happens in the project closure phase of Scrum?",
+          "options": [
+            "The product backlog is created and priorities and risks are reviewed",
+            "The team is isolated from the customer in order to develop the software",
+            "The customer introduces new requirements and the next sprint begins",
+            "The project is wrapped up, user manuals are completed and lessons learned are assessed"
+          ],
+          "answer": 3,
+          "why": "Project closure wraps up the project, completes required documentation such as user manuals, and assesses the lessons learned from the project.",
+          "ref": "Slide 31 · Scrum process"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 3",
+          "text": "Which is the correct order of the activities in a Scrum sprint cycle?",
+          "options": [
+            "Select, Assess, Develop, Review",
+            "Assess, Develop, Select, Review",
+            "Assess, Select, Develop, Review",
+            "Select, Develop, Assess, Review"
+          ],
+          "answer": 2,
+          "why": "The sprint cycle diagram runs Assess, Select, Develop, Review, and then the next cycle begins. Priorities and risks are assessed before the team selects the features to develop.",
+          "ref": "Slide 31 · Sprint cycle"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 3",
+          "text": "Sprints in Scrum are fixed length, normally ......",
+          "options": [
+            "2-4 weeks",
+            "1-2 days",
+            "2-4 months",
+            "6-12 months"
+          ],
+          "answer": 0,
+          "why": "Sprints are fixed length, normally 2-4 weeks, and correspond to the development iteration of a release.",
+          "ref": "Slides 32, 34 · Sprint cycle"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 3",
+          "text": "The starting point for planning a sprint is the ......, which is the list of work to be done on the project.",
+          "options": [
+            "sprint review",
+            "product backlog",
+            "release plan",
+            "Scrum master's log"
+          ],
+          "answer": 1,
+          "why": "The product backlog is the list of work to be done on the project and is the starting point for sprint planning.",
+          "ref": "Slides 32, 34 · Product backlog"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 3",
+          "text": "At the start of a sprint, the customer wants to add a new requirement to the work. In which activity of the sprint cycle can this happen?",
+          "options": [
+            "Review",
+            "Develop, while the team works in isolation",
+            "Assess",
+            "Project closure"
+          ],
+          "answer": 2,
+          "why": "During the sprint assessment, priorities and risks are reviewed and the customer is closely involved and can introduce new requirements or tasks at the start of each sprint. During development the team is isolated from the customer.",
+          "ref": "Slides 32, 34 · Sprint assessment"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 3",
+          "text": "Who is involved in the selection phase of a sprint?",
+          "options": [
+            "Only the Scrum master, who then reports to the team",
+            "Only the customer, who selects every feature alone",
+            "Only the stakeholders who attend the sprint review",
+            "All of the project team, working with the customer"
+          ],
+          "answer": 3,
+          "why": "The selection phase involves all of the project team, who work with the customer to select the features and functionality to be developed during the sprint.",
+          "ref": "Slides 33-34 · Sprint selection"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 3",
+          "text": "During the development stage of a sprint, all communications with the customer and the organization are channeled through the ......, whose role is to protect the team from external distractions.",
+          "options": [
+            "Scrum master",
+            "project manager",
+            "customer representative",
+            "stakeholder"
+          ],
+          "answer": 0,
+          "why": "While the team develops the software it is isolated from the customer and the organization, and the Scrum master channels all communication and protects the team from external distractions. Scrum deliberately avoids the term 'project manager'.",
+          "ref": "Slide 35 · Scrum master"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 3",
+          "text": "Why is the term 'project manager' intentionally avoided in Scrum?",
+          "options": [
+            "Because Scrum projects do not need anyone to talk to the customer",
+            "Because the customer manages the project instead",
+            "Because the whole team should be empowered to make decisions",
+            "Because the product backlog replaces all management tasks"
+          ],
+          "answer": 2,
+          "why": "The idea behind Scrum is that the whole team should be empowered to make decisions. The Scrum master is therefore a facilitator, not a manager.",
+          "ref": "Slide 36 · Scrum master"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 3",
+          "text": "Which of the following is NOT a task of the Scrum master as a facilitator?",
+          "options": [
+            "Arranges daily meetings",
+            "Decides alone which features the team must build",
+            "Measures progress against the backlog",
+            "Communicates with customers and management outside the team"
+          ],
+          "answer": 1,
+          "why": "The Scrum master arranges daily meetings, tracks the backlog, records decisions, measures progress against the backlog and communicates with people outside the team. Decisions are made by the whole empowered team, not by the Scrum master alone.",
+          "ref": "Slide 36 · Scrum master"
+        },
+        {
+          "kind": "sort",
+          "group": "Chapter 3",
+          "text": "Classify each practice or element as Extreme Programming (XP) or Scrum.",
+          "categories": [
+            "Extreme Programming (XP)",
+            "Scrum"
+          ],
+          "items": [
+            {
+              "text": "Test-driven development",
+              "category": 0
+            },
+            {
+              "text": "Continuous integration",
+              "category": 0
+            },
+            {
+              "text": "Small releases; new versions may be built several times per day",
+              "category": 0
+            },
+            {
+              "text": "Sprint review at the end of each cycle, presented to stakeholders",
+              "category": 1
+            }
+          ],
+          "why": "XP is a set of technical practices such as test-driven development, continuous integration and small releases. Scrum is a management framework built around sprints, the product backlog, the Scrum master and sprint reviews.",
+          "ref": "Practice PDF · XP vs Scrum"
+        },
+        {
+          "kind": "sort",
+          "group": "Chapter 3",
+          "text": "Classify each item from the Agile Manifesto as valued more or valued less.",
+          "categories": [
+            "Valued more",
+            "Valued less"
+          ],
+          "items": [
+            {
+              "text": "Working software",
+              "category": 0
+            },
+            {
+              "text": "Comprehensive documents",
+              "category": 1
+            },
+            {
+              "text": "Individuals and interactions",
+              "category": 0
+            },
+            {
+              "text": "Process and tools",
+              "category": 1
+            },
+            {
+              "text": "Customer collaboration",
+              "category": 0
+            },
+            {
+              "text": "Contract negotiation",
+              "category": 1
+            },
+            {
+              "text": "Responding to change",
+              "category": 0
+            },
+            {
+              "text": "Following a plan",
+              "category": 1
+            }
+          ],
+          "why": "The manifesto prefers individuals and interactions over process and tools, working software over comprehensive documents, customer collaboration over contract negotiation, and responding to change over following a plan.",
+          "ref": "Practice PDF · Agile Manifesto"
+        }
+      ]
+    },
+    {
+      "id": "chapter-4",
+      "tag": "Chapter 4",
+      "name": "Requirements Engineering",
+      "scope": "51 questions · 12 classification",
+      "questions": [
+        {
+          "kind": "mcq",
+          "group": "Chapter 4",
+          "text": "According to the slides, a system stakeholder is ......",
+          "options": [
+            "any person or organization who is affected by the system being developed",
+            "only the people who write the code for the system",
+            "only the people who pay for the work",
+            "only the end users who operate the system daily"
+          ],
+          "answer": 0,
+          "why": "A stakeholder is any person or organization affected by the system being developed. System owners (who pay) and end users (who use it) are only two of the five stakeholder types, so the narrower definitions are wrong.",
+          "ref": "Slide 5 · Stakeholders"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 4",
+          "text": "A government agency that regulates the field in which a new system will operate is best classified as which stakeholder type?",
+          "options": [
+            "System owners",
+            "End users",
+            "System managers",
+            "External stakeholders"
+          ],
+          "answer": 3,
+          "why": "External stakeholders are those outside the project such as marketing people and the government. System owners are the people paying for the work, and end users are the people who will use the system.",
+          "ref": "Slide 5 · Stakeholders"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 4",
+          "text": "Which definition of a requirement matches the slides?",
+          "options": [
+            "A test case used to check that the code runs correctly",
+            "A list of the programming languages the team prefers to use",
+            "A function, constraint, or other property that the system must provide to fill the needs of its intended users",
+            "A schedule of project milestones agreed with the customer"
+          ],
+          "answer": 2,
+          "why": "A requirement is a function, constraint, or other property that the system must provide to fill the needs of the system's intended user(s).",
+          "ref": "Slide 6 · Requirement definition"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 4",
+          "text": "Requirements engineering is the process of establishing the ...... that a customer requires from a system and the ...... under which it operates and is developed.",
+          "options": [
+            "tests; deadlines",
+            "services; constraints",
+            "costs; risks",
+            "interfaces; programming languages"
+          ],
+          "answer": 1,
+          "why": "The slide defines requirements engineering as establishing the services a customer requires from a system and the constraints under which it operates and is developed.",
+          "ref": "Slide 6 · Requirements engineering"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 4",
+          "text": "Requirements are classified as user vs. system requirements based on ......, whereas they are classified as functional vs. non-functional based on ......",
+          "options": [
+            "the nature of the requirements; the level of detail",
+            "the stakeholder who pays for the work; the development process used",
+            "the programming language used; the system architecture",
+            "the level of detail used to describe them; the nature of the requirements"
+          ],
+          "answer": 3,
+          "why": "User/system requirements differ in level of detail (general vs. specific). Functional/non-functional requirements differ in their nature (what the system does vs. how it works). Students often swap the two bases.",
+          "ref": "Slides 7, 10 · Classifying requirements"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 4",
+          "text": "Which description matches user requirements?",
+          "options": [
+            "A structured document of detailed technical specifications of the system's functions and operational constraints",
+            "Natural-language statements plus diagrams of what services the system is expected to provide and the constraints under which it must operate",
+            "An executable model of the system used to check the requirements",
+            "A list of the errors and ambiguities found when reviewing the requirements document"
+          ],
+          "answer": 1,
+          "why": "User requirements are general statements in natural language plus diagrams of what services the system should provide and its constraints. Option (a) describes system requirements, which are specific and technical.",
+          "ref": "Slide 7 · User requirements"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 4",
+          "text": "In the MHC-PMS example, the Business Requirement Specification (BRS) and the System Requirement Specification (SRS) differ in that ......",
+          "options": [
+            "the BRS defines 'what' the system should do from a business perspective, while the SRS specifies 'how' the system will achieve those goals technically",
+            "the BRS specifies 'how' the system works technically, while the SRS defines 'what' the business needs",
+            "the BRS is written only by the developers, while the SRS is written only by the customers",
+            "the BRS lists only non-functional requirements, while the SRS lists only functional requirements"
+          ],
+          "answer": 0,
+          "why": "The BRS (user requirement definition) answers 'what' from a business perspective; the SRS (system requirements specification) answers 'how' technically. Option (b) swaps the two.",
+          "ref": "Slide 8 · BRS vs SRS"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 4",
+          "text": "Which of the following groups reads system requirements but is NOT listed as a reader of user requirements?",
+          "options": [
+            "Client managers",
+            "System architects",
+            "Software developers",
+            "System end-users"
+          ],
+          "answer": 2,
+          "why": "User requirements are read by client managers, system end-users, client engineers, contractor managers and system architects. System requirements are read by end-users, client engineers, system architects and software developers, so only software developers are exclusive to system requirements.",
+          "ref": "Slide 9 · Requirements readers"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 4",
+          "text": "Using the phrasing rule from the slides (functional = noun + verb, non-functional = structured with an adverb), which statement is a non-functional requirement?",
+          "options": [
+            "The system prints an invoice.",
+            "The system prints invoices quickly.",
+            "The user searches the appointment list.",
+            "The system generates a daily report."
+          ],
+          "answer": 1,
+          "why": "'Quickly' is an adverb describing how the system works, so the statement is non-functional. The other statements only say what the system does (noun + verb).",
+          "ref": "Slide 10 · Functional vs non-functional"
+        },
+        {
+          "kind": "sort",
+          "group": "Chapter 4",
+          "text": "Classify each statement as describing a functional requirement or a non-functional requirement.",
+          "categories": [
+            "Functional requirement",
+            "Non-functional requirement"
+          ],
+          "items": [
+            {
+              "text": "Something the system must do (the 'what')",
+              "category": 0
+            },
+            {
+              "text": "Generally phrased with noun + verb",
+              "category": 0
+            },
+            {
+              "text": "Specifies inputs, outputs and behavioral relationships between them",
+              "category": 0
+            },
+            {
+              "text": "May state what the system should not do",
+              "category": 0
+            },
+            {
+              "text": "Describes how the system works (the 'how')",
+              "category": 1
+            },
+            {
+              "text": "Structured with an adverb, e.g. 'prints invoices quickly'",
+              "category": 1
+            },
+            {
+              "text": "Often applies to the system as a whole rather than to single features",
+              "category": 1
+            },
+            {
+              "text": "May be more critical: if unmet, the system may be useless",
+              "category": 1
+            }
+          ],
+          "why": "Functional requirements say what services the system provides and how it reacts to inputs; non-functional requirements describe properties and constraints (how the system works), usually of the whole system.",
+          "ref": "Slides 10, 11, 15 · Functional vs non-functional"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 4",
+          "text": "Functional requirements are sometimes called ...... requirements because they specify the inputs to the system, the outputs from the system, and the behavioral relationships between them.",
+          "options": [
+            "quality attribute",
+            "organizational",
+            "legislative",
+            "behavioral / operational"
+          ],
+          "answer": 3,
+          "why": "Functional requirements are also called behavioral / operational requirements because they specify inputs, outputs and the behavioral relationships between them. 'Quality attributes' refers to non-functional product requirements.",
+          "ref": "Slide 11 · Functional requirements"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 4",
+          "text": "Which statement about functional requirements is correct?",
+          "options": [
+            "They may state what the system should not do.",
+            "They apply only to the system as a whole rather than to individual services.",
+            "They are the same for every type of software and every group of users.",
+            "They describe only properties such as reliability and response time."
+          ],
+          "answer": 0,
+          "why": "Functional requirements may state what the system should not do, and they depend on the type of software, expected users and type of system. Applying to the whole system and describing properties like reliability are characteristics of non-functional requirements.",
+          "ref": "Slide 11 · Functional requirements"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 4",
+          "text": "Which of these MHC-PMS requirements is given on the slides as a functional requirement?",
+          "options": [
+            "Downtime within normal working hours shall not exceed five seconds in any one day.",
+            "Users shall authenticate themselves using their health authority identity card.",
+            "A user shall be able to search the appointment lists for all clinics.",
+            "The system shall implement patient privacy provisions as set out in HStan-03-2006-priv."
+          ],
+          "answer": 2,
+          "why": "Searching the appointment lists is a service the system must provide (a functional requirement). The other three are the slide's non-functional examples: product, organizational and external.",
+          "ref": "Slides 12, 19 · MHC-PMS examples"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 4",
+          "text": "One requirement in a specification says reports are generated automatically after 17.30, while another says the same reports must be generated at 16.00. Which property of the specification is violated?",
+          "options": [
+            "Completeness",
+            "Realism",
+            "Validity",
+            "Consistency"
+          ],
+          "answer": 3,
+          "why": "Consistency means requirements should not have contradictory definitions. Completeness would be violated if a required service were missing altogether.",
+          "ref": "Slide 13 · Completeness and consistency"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 4",
+          "text": "Which reason do the slides give for why it is practically impossible to achieve complete and consistent requirements for large, complex systems?",
+          "options": [
+            "It is easy to make mistakes and omissions when writing specifications.",
+            "Natural language cannot be used to describe functional requirements.",
+            "Non-functional requirements are never documented for large systems.",
+            "Customers refuse to take part in requirements reviews."
+          ],
+          "answer": 0,
+          "why": "The slides give two reasons: it is easy to make mistakes and omissions when writing specifications, and there are many stakeholders in a large system.",
+          "ref": "Slide 13 · Completeness and consistency"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 4",
+          "text": "Unlike functional requirements, non-functional requirements often apply to ......",
+          "options": [
+            "individual features or services only",
+            "the system or software as a whole",
+            "the user interface screens only",
+            "the testing phase only"
+          ],
+          "answer": 1,
+          "why": "Non-functional requirements (properties such as reliability, constraints such as response time) often apply to the whole system rather than to individual features or services.",
+          "ref": "Slide 15 · Non-functional requirements"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 4",
+          "text": "A hospital system provides every feature the staff asked for, but it is so slow that the staff stop using it. Which statement from the slides does this illustrate?",
+          "options": [
+            "Functional requirements may state what the system should not do.",
+            "Requirements engineering is an iterative process.",
+            "Non-functional requirements may be more critical than functional ones; if unmet, the system may be useless.",
+            "User requirements focus on how the system will do it."
+          ],
+          "answer": 2,
+          "why": "The slides say non-functional requirements (such as response time) may be more critical than functional requirements; if they are not met the system may be useless. Option (d) is wrong because user requirements focus on what the system should do.",
+          "ref": "Slide 15 · Non-functional requirements"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 4",
+          "text": "Which of the following is NOT one of the three classifications of non-functional requirements?",
+          "options": [
+            "Product requirements",
+            "Organizational requirements",
+            "External requirements",
+            "User requirements"
+          ],
+          "answer": 3,
+          "why": "Non-functional requirements are classified as product, organizational and external. User requirements belong to the other classification (by level of detail), not to the non-functional one.",
+          "ref": "Slides 16-17 · NFR classification"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 4",
+          "text": "A new law requires a system to follow government privacy regulations. Which type of non-functional requirement does this create?",
+          "options": [
+            "External requirement",
+            "Product requirement",
+            "Organizational requirement",
+            "Usability requirement"
+          ],
+          "answer": 0,
+          "why": "External requirements come from outside the system, from factors like government laws or regulations and industry standards. Organizational requirements come from internal policies and procedures.",
+          "ref": "Slides 16, 19 · NFR classification"
+        },
+        {
+          "kind": "sort",
+          "group": "Chapter 4",
+          "text": "Classify each MHC-PMS style requirement as a product, organizational or external non-functional requirement.",
+          "categories": [
+            "Product requirement",
+            "Organizational requirement",
+            "External requirement"
+          ],
+          "items": [
+            {
+              "text": "Downtime in working hours shall not exceed five seconds in any one day",
+              "category": 0
+            },
+            {
+              "text": "The delivered product must meet execution speed requirements",
+              "category": 0
+            },
+            {
+              "text": "Users must authenticate with their health authority identity card",
+              "category": 1
+            },
+            {
+              "text": "Derived from internal policies and procedures of the developer's organization",
+              "category": 1
+            },
+            {
+              "text": "Patient privacy provisions as set out in HStan-03-2006-priv",
+              "category": 2
+            },
+            {
+              "text": "Comes from government laws or industry standards",
+              "category": 2
+            }
+          ],
+          "why": "Product requirements say how the delivered product must behave; organizational ones come from internal policies and procedures; external ones come from outside the system (laws, regulations, standards).",
+          "ref": "Slides 16, 19 · NFR classification"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 4",
+          "text": "In the hierarchy of non-functional requirements, which of the following is a sub-type of Efficiency requirements?",
+          "options": [
+            "Security requirements",
+            "Usability requirements",
+            "Performance requirements",
+            "Dependability requirements"
+          ],
+          "answer": 2,
+          "why": "Efficiency requirements split into Performance and Space requirements. Usability, Dependability and Security sit directly under Product requirements, not under Efficiency.",
+          "ref": "Slide 17 · NFR hierarchy"
+        },
+        {
+          "kind": "sort",
+          "group": "Chapter 4",
+          "text": "In the non-functional requirements hierarchy, place each requirement type under its parent category.",
+          "categories": [
+            "Product requirements",
+            "Organizational requirements",
+            "External requirements"
+          ],
+          "items": [
+            {
+              "text": "Dependability requirements",
+              "category": 0
+            },
+            {
+              "text": "Performance requirements",
+              "category": 0
+            },
+            {
+              "text": "Environmental requirements",
+              "category": 1
+            },
+            {
+              "text": "Development requirements",
+              "category": 1
+            },
+            {
+              "text": "Regulatory requirements",
+              "category": 2
+            },
+            {
+              "text": "Ethical requirements",
+              "category": 2
+            }
+          ],
+          "why": "Under Product: usability, efficiency (performance, space), dependability, security. Under Organizational: environmental, operational, development. Under External: regulatory, ethical, legislative.",
+          "ref": "Slide 17 · NFR hierarchy"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 4",
+          "text": "Which measure is listed on the slides for specifying the reliability of a system?",
+          "options": [
+            "Training time",
+            "Mean time to failure",
+            "Number of ROM chips",
+            "Screen refresh time"
+          ],
+          "answer": 1,
+          "why": "Reliability is measured by mean time to failure, probability of unavailability, rate of failure occurrence and availability. Training time measures ease of use, ROM chips measure size and screen refresh time measures speed.",
+          "ref": "Slide 20 · NFR metrics"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 4",
+          "text": "Requirements engineering is a(n) ...... process in which the activities are interleaved.",
+          "options": [
+            "iterative",
+            "strictly linear",
+            "one-time",
+            "fully automated"
+          ],
+          "answer": 0,
+          "why": "The slides stress that requirements engineering is iterative: feasibility study, elicitation and analysis, specification and validation overlap and feed back into each other rather than running once in a straight line.",
+          "ref": "Slide 22 · RE process"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 4",
+          "text": "The final output of requirements engineering, created after completing specification and validation, is the ......",
+          "options": [
+            "feasibility report",
+            "system models",
+            "prototype",
+            "requirements document"
+          ],
+          "answer": 3,
+          "why": "The requirements document is the final output created after specification and validation. The feasibility report and system models are intermediate outputs of other activities.",
+          "ref": "Slides 22, 24 · RE process"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 4",
+          "text": "Before any requirements are gathered, a company wants a relatively cheap and quick check of whether the proposed system is worthwhile, fits the budget and can be integrated with the systems already in use. Which activity is this?",
+          "options": [
+            "Requirements validation",
+            "Requirements specification",
+            "Feasibility study",
+            "Requirements elicitation and analysis"
+          ],
+          "answer": 2,
+          "why": "A feasibility study decides whether the system is worthwhile and can be engineered with current software and hardware, within budget, and integrated with other systems. It should be relatively cheap and quick.",
+          "ref": "Slide 23 · Feasibility study"
+        },
+        {
+          "kind": "sort",
+          "group": "Chapter 4",
+          "text": "Assign each description to the requirements engineering activity it belongs to.",
+          "categories": [
+            "Feasibility study",
+            "Elicitation and analysis",
+            "Requirements specification",
+            "Requirements validation"
+          ],
+          "items": [
+            {
+              "text": "Decide if the system is worthwhile and buildable with current technology",
+              "category": 0
+            },
+            {
+              "text": "Check if the system can be integrated with other systems in use",
+              "category": 0
+            },
+            {
+              "text": "Draw out the requirements from stakeholders",
+              "category": 1
+            },
+            {
+              "text": "Work with customers to learn the application domain and hardware constraints",
+              "category": 1
+            },
+            {
+              "text": "Formally organize collected requirements into a clear, structured document",
+              "category": 2
+            },
+            {
+              "text": "Write down the user and system requirements in a requirements document",
+              "category": 2
+            },
+            {
+              "text": "Review the specification for errors, ambiguities, omissions and conflicts",
+              "category": 3
+            },
+            {
+              "text": "Customers and developers read the document in detail and negotiate problems",
+              "category": 3
+            },
+            {
+              "text": "Prioritize requirements and resolve conflicts between them",
+              "category": 1
+            },
+            {
+              "text": "Group related requirements into clusters",
+              "category": 1
+            }
+          ],
+          "why": "Feasibility decides if the project is worthwhile; elicitation draws requirements out of stakeholders; specification writes them down in a structured document; validation checks that document for errors and conflicts.",
+          "ref": "Slides 23, 24, 31, 32 · RE activities"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 4",
+          "text": "What is the correct order of the four activities in the requirements elicitation and analysis process?",
+          "options": [
+            "Classification and organization, Discovery, Prioritization and negotiation, Specification",
+            "Discovery, Classification and organization, Prioritization and negotiation, Specification",
+            "Discovery, Prioritization and negotiation, Classification and organization, Specification",
+            "Specification, Discovery, Classification and organization, Prioritization and negotiation"
+          ],
+          "answer": 1,
+          "why": "The slide numbers them: 1 Requirements discovery, 2 Classification and organization, 3 Prioritization and negotiation, 4 Requirements specification (then the cycle repeats).",
+          "ref": "Slide 26 · Elicitation and analysis"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 4",
+          "text": "Two stakeholders ask for conflicting requirements, so the team ranks the requirements and negotiates about cost and timeline. Which step of elicitation and analysis is this?",
+          "options": [
+            "Requirements prioritization and negotiation",
+            "Requirements discovery",
+            "Requirements classification and organization",
+            "Requirements specification"
+          ],
+          "answer": 0,
+          "why": "Prioritizing requirements based on customer needs, resolving conflicts, and negotiating about requirements, project cost and timeline is step 3. Discovery is only interacting with stakeholders to find their requirements.",
+          "ref": "Slide 26 · Elicitation and analysis"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 4",
+          "text": "A requirements engineering team interviews stakeholders with no predefined agenda and explores various issues as they come up. This is a(n) ...... interview.",
+          "options": [
+            "closed",
+            "scripted",
+            "ethnographic",
+            "open"
+          ],
+          "answer": 3,
+          "why": "Open interviews have no predefined agenda, while closed interviews are based on a pre-determined list of questions. In practice interviews are normally a mixture of both.",
+          "ref": "Slide 28 · Interviewing"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 4",
+          "text": "Which of the following is NOT something a scenario should include, according to the slides?",
+          "options": [
+            "A description of the starting situation",
+            "A description of what can go wrong",
+            "The project budget and development timeline",
+            "A description of the state when the scenario finishes"
+          ],
+          "answer": 2,
+          "why": "A scenario should include the starting situation, the normal flow of events, what can go wrong, information about other concurrent activities and the state when it finishes. Budget and timeline are not part of a scenario.",
+          "ref": "Slide 29 · Scenarios"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 4",
+          "text": "Staff find it hard to explain what they do, so an analyst spends considerable time in their working environment observing how they actually work. Which elicitation technique is this?",
+          "options": [
+            "Interviewing",
+            "Ethnography",
+            "Scenarios",
+            "Prototyping"
+          ],
+          "answer": 1,
+          "why": "In ethnography the analyst immerses himself in the working environment and observes how people actually work. It helps discover implicit requirements that people struggle to explain in interviews.",
+          "ref": "Slide 30 · Ethnography"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 4",
+          "text": "During requirements validation, which check asks whether the requirements can be implemented given the available budget and technology?",
+          "options": [
+            "Realism",
+            "Validity",
+            "Completeness",
+            "Consistency"
+          ],
+          "answer": 0,
+          "why": "Realism checks implementability with the available budget and technology. Validity asks if the functions best support the customer's needs, consistency asks about conflicts, and completeness asks whether all required functions are included.",
+          "ref": "Slide 32 · Requirements validation"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 4",
+          "text": "A team builds an executable model of the system and lets customers try it to check the requirements. Which validation technique is this?",
+          "options": [
+            "Requirements reviews",
+            "Ethnography",
+            "Prototyping",
+            "Interviewing"
+          ],
+          "answer": 2,
+          "why": "Prototyping means using an executable model of the system to check requirements. Requirements reviews, by contrast, are a systematic manual analysis of the requirements. Ethnography and interviewing are elicitation techniques.",
+          "ref": "Slide 33 · Validation techniques"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 4",
+          "text": "If a project has a large number of requirements, what do the slides say about the software requirements document?",
+          "options": [
+            "The user requirements may be omitted from the document.",
+            "The document must always be a single file to stay consistent.",
+            "Non-functional requirements may be left out.",
+            "The detailed system requirements may be presented in a separate document."
+          ],
+          "answer": 3,
+          "why": "The document should include both user and system requirements, but when there are many requirements the detailed system requirements may be presented in a separate document.",
+          "ref": "Slide 34 · Requirements document"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 4",
+          "text": "Which user of the requirements document uses it to develop validation tests for the system?",
+          "options": [
+            "System customers",
+            "System test engineers",
+            "System maintenance engineers",
+            "Managers"
+          ],
+          "answer": 1,
+          "why": "System test engineers use the requirements to develop validation tests. Customers check that the requirements meet their needs, managers plan the bid and development process, and maintenance engineers use the requirements to understand the relationships between the system's parts.",
+          "ref": "Slide 35 · Requirements document users"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 4",
+          "text": "Which of these is a non-functional requirement?",
+          "options": [
+            "The application must respond within 2 seconds",
+            "A user shall be able to search appointment lists",
+            "The system shall print an invoice",
+            "The system shall generate a daily list of patients"
+          ],
+          "answer": 0,
+          "why": "A response-time limit describes how well the system works, so it is non-functional. The other three describe services the system provides.",
+          "ref": "Practice PDF · Non-functional requirements"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 4",
+          "text": "Stakeholders who are paying for the work are called:",
+          "options": [
+            "External stakeholders",
+            "End users",
+            "System managers",
+            "System owners"
+          ],
+          "answer": 3,
+          "why": "System owners are the stakeholders who pay for the work. End users use the system, and external stakeholders, such as the government or marketing people, are outside the project.",
+          "ref": "Practice PDF · Stakeholders"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 4",
+          "text": "Ethnography is effective for:",
+          "options": [
+            "Understanding existing processes and implicit requirements",
+            "Identifying brand-new features",
+            "Writing the SRS",
+            "Running regression tests"
+          ],
+          "answer": 0,
+          "why": "Ethnography means observing how people really work, so it is effective for understanding existing processes and the implicit social and organizational requirements that people struggle to explain. It is less effective for brand-new features.",
+          "ref": "Practice PDF · Ethnography"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 4",
+          "text": "Which of the following is a requirements validation check?",
+          "options": [
+            "Realism",
+            "Refactoring",
+            "Sprinting",
+            "Elicitation"
+          ],
+          "answer": 0,
+          "why": "The validation checks are validity, consistency, completeness and realism. Refactoring and sprinting are agile terms, and elicitation is a different requirements engineering activity.",
+          "ref": "Practice PDF · Validation checks"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 4",
+          "text": "Closed interviews are based on:",
+          "options": [
+            "Building a prototype",
+            "Observing users at work",
+            "A pre-determined list of questions",
+            "Free discussion of various issues"
+          ],
+          "answer": 2,
+          "why": "Closed interviews use a pre-determined list of questions. Open interviews have no agenda and explore issues freely. In practice interviews are normally a mixture of both.",
+          "ref": "Practice PDF · Interviews"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 4",
+          "text": "The official statement of what is required of the system developers is the:",
+          "options": [
+            "Sprint backlog",
+            "Prototype",
+            "SRS (software requirements document)",
+            "Test plan"
+          ],
+          "answer": 2,
+          "why": "The software requirements document (SRS) is the official statement of what is required of the system developers. It includes both the user requirements and the system requirements.",
+          "ref": "Practice PDF · Requirements document"
+        },
+        {
+          "kind": "mcq",
+          "group": "Chapter 4",
+          "text": "Which is a requirements validation technique?",
+          "options": [
+            "Sprint review",
+            "Pair programming",
+            "Cloud deployment",
+            "Requirements reviews"
+          ],
+          "answer": 3,
+          "why": "Requirements reviews (a systematic manual analysis of the requirements) and prototyping are the two validation techniques in the lecture. The other options belong to other areas.",
+          "ref": "Practice PDF · Validation techniques"
+        },
+        {
+          "kind": "sort",
+          "group": "Chapter 4",
+          "text": "Classify each requirement as functional or non-functional. (part 1 of 3)",
+          "categories": [
+            "Functional requirement",
+            "Non-functional requirement"
+          ],
+          "items": [
+            {
+              "text": "Withdrawing money from the bank account.",
+              "category": 0
+            },
+            {
+              "text": "Completion of a transaction in less than 1 second.",
+              "category": 1
+            },
+            {
+              "text": "Verifying the bank balance.",
+              "category": 0
+            },
+            {
+              "text": "Extending the system by providing more tellers for customers.",
+              "category": 1
+            },
+            {
+              "text": "The system shall generate monthly sales reports including total revenue and customer summaries.",
+              "category": 0
+            },
+            {
+              "text": "The system shall be available 99.9% of the time.",
+              "category": 1
+            }
+          ],
+          "why": "A functional requirement is a service or action the system performs (verb + noun). A non-functional requirement is a quality or constraint on the system, such as speed, availability, capacity, security, usability, legal rules or the development process.",
+          "ref": "Practice PDF · Functional vs non-functional"
+        },
+        {
+          "kind": "sort",
+          "group": "Chapter 4",
+          "text": "Classify each requirement as functional or non-functional. (part 2 of 3)",
+          "categories": [
+            "Functional requirement",
+            "Non-functional requirement"
+          ],
+          "items": [
+            {
+              "text": "A student can register in a course.",
+              "category": 0
+            },
+            {
+              "text": "The system shall support 10,000 concurrent users.",
+              "category": 1
+            },
+            {
+              "text": "The system sends an e-mail notification when a reserved book is ready for pickup.",
+              "category": 0
+            },
+            {
+              "text": "All passwords must be stored in encrypted form.",
+              "category": 1
+            },
+            {
+              "text": "The interface should be easy to use for novice users.",
+              "category": 1
+            },
+            {
+              "text": "Upgrading the hardware should be done within 3 hours.",
+              "category": 1
+            }
+          ],
+          "why": "Registering and notifying are services the system performs. Capacity, security, usability and a time limit on hardware upgrades are qualities or constraints, so they are non-functional.",
+          "ref": "Practice PDF · Functional vs non-functional"
+        },
+        {
+          "kind": "sort",
+          "group": "Chapter 4",
+          "text": "Classify each requirement as functional or non-functional. (part 3 of 3)",
+          "categories": [
+            "Functional requirement",
+            "Non-functional requirement"
+          ],
+          "items": [
+            {
+              "text": "The customer can cancel his registration.",
+              "category": 0
+            },
+            {
+              "text": "The system must comply with national data-protection laws.",
+              "category": 1
+            },
+            {
+              "text": "Each staff member shall be uniquely identified by an eight-digit employee number.",
+              "category": 0
+            },
+            {
+              "text": "The system shall be developed using the Java language.",
+              "category": 1
+            },
+            {
+              "text": "The system shall generate each day a list of patients expected to attend appointments.",
+              "category": 0
+            }
+          ],
+          "why": "Cancelling a registration and generating a daily list are services. Legal compliance and the choice of programming language are constraints. In the lecture, the eight-digit employee number is listed as a functional requirement (an identification service).",
+          "ref": "Practice PDF · Functional vs non-functional"
+        },
+        {
+          "kind": "sort",
+          "group": "Chapter 4",
+          "text": "Classify each non-functional requirement as product, organizational or external. (part 1 of 2)",
+          "categories": [
+            "Product requirement",
+            "Organizational requirement",
+            "External requirement"
+          ],
+          "items": [
+            {
+              "text": "The system must process at least 100 transactions per second.",
+              "category": 0
+            },
+            {
+              "text": "The system must follow the company's coding standards.",
+              "category": 1
+            },
+            {
+              "text": "The system must comply with national privacy legislation.",
+              "category": 2
+            },
+            {
+              "text": "The system must fail no more than once per 1000 hours of operation.",
+              "category": 0
+            },
+            {
+              "text": "The customer's policy requires the project to be delivered with an agile process.",
+              "category": 1
+            }
+          ],
+          "why": "Product requirements describe how the delivered product must behave (speed, reliability, usability). Organizational requirements come from the policies and procedures of the customer's or developer's organization. External requirements come from outside, such as laws and regulations.",
+          "ref": "Practice PDF · Non-functional types"
+        },
+        {
+          "kind": "sort",
+          "group": "Chapter 4",
+          "text": "Classify each non-functional requirement as product, organizational or external. (part 2 of 2)",
+          "categories": [
+            "Product requirement",
+            "Organizational requirement",
+            "External requirement"
+          ],
+          "items": [
+            {
+              "text": "The system must interoperate with the existing national ID system.",
+              "category": 2
+            },
+            {
+              "text": "The user interface must be usable by novices.",
+              "category": 0
+            },
+            {
+              "text": "The system must respect medical-ethics regulations.",
+              "category": 2
+            },
+            {
+              "text": "The system must be implemented in the language mandated by the company development policy.",
+              "category": 1
+            },
+            {
+              "text": "The login screen must load in under 1 second.",
+              "category": 0
+            }
+          ],
+          "why": "Interoperability with other systems and ethics regulations come from outside the project. A company-mandated language is organizational policy. Usability and load time describe the delivered product.",
+          "ref": "Practice PDF · Non-functional types"
+        },
+        {
+          "kind": "sort",
+          "group": "Chapter 4",
+          "text": "Classify each person or group by stakeholder type.",
+          "categories": [
+            "System owners",
+            "End users",
+            "System managers",
+            "Project groups",
+            "External stakeholders"
+          ],
+          "items": [
+            {
+              "text": "The hospital board that pays for the work.",
+              "category": 0
+            },
+            {
+              "text": "Medical receptionists who use the system every day.",
+              "category": 1
+            },
+            {
+              "text": "Testers and software engineers building the system.",
+              "category": 3
+            },
+            {
+              "text": "Marketing people.",
+              "category": 4
+            },
+            {
+              "text": "Training personnel involved in the project.",
+              "category": 3
+            }
+          ],
+          "why": "System owners pay for the work, end users use the system, and project groups are the people involved in developing it. External stakeholders are outside the organization, for example the government or marketing people.",
+          "ref": "Practice PDF · Stakeholders"
+        },
+        {
+          "kind": "sort",
+          "group": "Chapter 4",
+          "text": "Classify each description as user requirements (BRS) or system requirements (SRS).",
+          "categories": [
+            "User requirements / BRS",
+            "System requirements / SRS"
+          ],
+          "items": [
+            {
+              "text": "A structured document with detailed descriptions of functions, services and operational constraints.",
+              "category": 1
+            },
+            {
+              "text": "Defines what should be implemented.",
+              "category": 1
+            },
+            {
+              "text": "Focuses on what the system should do for the users.",
+              "category": 0
+            }
+          ],
+          "why": "User requirements (BRS) describe, from the user's view, what the system should do. System requirements (SRS) are the detailed, structured specification of what should be implemented.",
+          "ref": "Practice PDF · User vs system requirements"
+        },
+        {
+          "kind": "sort",
+          "group": "Chapter 4",
+          "text": "Classify each question or problem under the validation check it belongs to.",
+          "categories": [
+            "Validity",
+            "Consistency",
+            "Completeness",
+            "Realism"
+          ],
+          "items": [
+            {
+              "text": "Are there any conflicts between requirements?",
+              "category": 1
+            },
+            {
+              "text": "Are all functions required by the customer included?",
+              "category": 2
+            },
+            {
+              "text": "Does the system provide the functions that best support the customer's needs?",
+              "category": 0
+            },
+            {
+              "text": "The 'print report' function that the customer needs was left out.",
+              "category": 2
+            },
+            {
+              "text": "A requirement needs a technology that does not exist yet.",
+              "category": 3
+            }
+          ],
+          "why": "Validity asks whether these are the right functions. Consistency asks whether any requirements conflict. Completeness asks whether anything is missing. Realism asks whether it can be built with the budget and technology available.",
+          "ref": "Practice PDF · Validation checks"
+        }
+      ]
+    }
+  ]
+}

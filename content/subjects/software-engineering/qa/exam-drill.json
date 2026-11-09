@@ -1,0 +1,2536 @@
+{
+  "title": "SWE Exam Drill",
+  "kicker": "Software Engineering · Midterms and quizzes",
+  "heading": "Exam Drill",
+  "lede": "Questions from your Software Engineering midterms, resit midterms and quizzes, one tab per paper. Pick an answer to see at once whether it is right. Each answer has a short explanation, and a tag tells you whether the answer comes from the paper or was solved here.",
+  "foot": "Questions are typed from your exam papers and quizzes. Where a paper shows an answer key or a marked answer, that answer is used. Where it does not, the answer was worked out here and is tagged \"solved here\". Answers tagged \"Double-check this answer\" are less certain. Written and drawing questions are left out. Progress is saved in this browser only.",
+  "banksLabel": "Papers",
+  "unit": "papers",
+  "order": 2,
+  "source": "swe-mid-drill.html",
+  "banks": [
+    {
+      "id": "mid-2024-25",
+      "tag": "Midterm",
+      "name": "Nov 2024",
+      "scope": "10 questions · Models A and B",
+      "questions": [
+        {
+          "kind": "mcq",
+          "group": "Midterm Nov 2024",
+          "text": "The system must provide the client with the most recent edition of the publication.",
+          "options": [
+            "Functional requirement",
+            "Non-Functional requirement"
+          ],
+          "answer": 0,
+          "why": "Providing the most recent edition is a service the system performs for the client, so it is a functional requirement.",
+          "ref": "Midterm Nov 2024 · Model A · Q1 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Nov 2024",
+          "text": "MS office and photoshop are examples of:",
+          "options": [
+            "Device driver",
+            "System software",
+            "Application software",
+            "Operating system"
+          ],
+          "answer": 2,
+          "why": "MS Office and Photoshop are programs that users run to do their own tasks, which makes them application software.",
+          "ref": "Midterm Nov 2024 · Model A · Q2 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Nov 2024",
+          "text": "What is the meaning of requirement elicitation in software engineering?",
+          "options": [
+            "Gathering of requirement",
+            "Understanding of requirement",
+            "Getting the requirements from client",
+            "All of the previous"
+          ],
+          "answer": 3,
+          "why": "Elicitation covers gathering the requirements, understanding them and getting them from the client, so all of the options apply.",
+          "ref": "Midterm Nov 2024 · Model A · Q3 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Nov 2024",
+          "text": "What is the main advantage of the incremental model?",
+          "options": [
+            "Low initial cost",
+            "High flexibility for changes",
+            "Quick project completion",
+            "Focus on documentation"
+          ],
+          "answer": 1,
+          "why": "Incremental development lowers the cost of accommodating changing requirements, so it is flexible when requirements change.",
+          "ref": "Midterm Nov 2024 · Model A · Q4 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Nov 2024",
+          "text": "When a fork is used, only one of the paths is followed?",
+          "options": [
+            "True",
+            "False"
+          ],
+          "answer": 1,
+          "why": "False. A fork in an activity diagram splits the flow into parallel paths and all of them are followed. A decision node is the one that follows only one path.",
+          "ref": "Midterm Nov 2024 · Model A · Q5 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Nov 2024",
+          "text": "Upgrading the hardware should be done within 3 hours.",
+          "options": [
+            "Functional requirement",
+            "Non-Functional requirement"
+          ],
+          "answer": 1,
+          "why": "A time limit on upgrading the hardware is a constraint on the system, not a service it provides, so it is non-functional.",
+          "ref": "Midterm Nov 2024 · Model B · Q1 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Nov 2024",
+          "text": "Which of the following represents the software development process",
+          "options": [
+            "Analysis>Design>Coding>Testing>Operation and maintainance.",
+            "Analysis>Design>Coding>Operation and maintainance>Testing.",
+            "Design>Analysis>Coding>Operation and maintainance>Testing.",
+            "Design>Analysis>Coding>Testing>Operation and maintainance."
+          ],
+          "answer": 0,
+          "why": "The usual order is analysis, design, coding, testing, and then operation and maintenance.",
+          "ref": "Midterm Nov 2024 · Model B · Q2 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Nov 2024",
+          "text": "What is the primary characteristic of the Prototype model?",
+          "options": [
+            "Sequential development",
+            "Risk management",
+            "Minimal documentation",
+            "Quick creation of a model to visualize requirements"
+          ],
+          "answer": 3,
+          "why": "The prototype model quickly builds a model of the system so that users and developers can visualize and refine the requirements.",
+          "ref": "Midterm Nov 2024 · Model B · Q3 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Nov 2024",
+          "text": "What elements of a use case diagram may be generalized?",
+          "options": [
+            "Use cases and actors",
+            "Use cases, actors, and associations",
+            "Use cases only",
+            "Dependencies such as Include and Extend"
+          ],
+          "answer": 0,
+          "why": "In a use case diagram, generalization applies to use cases and to actors. Associations and the include/extend dependencies are not generalized.",
+          "ref": "Midterm Nov 2024 · Model B · Q4 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Nov 2024",
+          "text": "SRS is a document created after the requirements are collected from various stakeholders.",
+          "options": [
+            "True",
+            "False"
+          ],
+          "answer": 0,
+          "why": "True. The software requirements specification (SRS) is written after the requirements have been gathered and analysed.",
+          "ref": "Midterm Nov 2024 · Model B · Q5 · from the paper"
+        }
+      ]
+    },
+    {
+      "id": "resit-2024-25",
+      "tag": "Resit midterm",
+      "name": "2024-25",
+      "scope": "5 questions · second sitting",
+      "questions": [
+        {
+          "kind": "mcq",
+          "group": "Resit midterm 2024-25",
+          "text": "Prototyping is used to",
+          "options": [
+            "Refine and establish requirements gathering",
+            "Expand design details",
+            "Test the software as an end product",
+            "None of these"
+          ],
+          "answer": 0,
+          "why": "A prototype is an early, partial version built so users can try it, which helps elicit and validate requirements. It is not a way to expand design details or to test the finished product.",
+          "ref": "Resit Nov 2024 · Q1.1 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Resit midterm 2024-25",
+          "text": "........ help discover implicit system requirements that reflect the actual ways that people work.",
+          "options": [
+            "Interviews",
+            "Ethnography",
+            "Use cases",
+            "Scenarios"
+          ],
+          "answer": 1,
+          "why": "Ethnography means observing people in their real working environment, so it exposes implicit requirements that users do not think to state in interviews.",
+          "ref": "Resit Nov 2024 · Q1.2 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Resit midterm 2024-25",
+          "text": "The functional requirements that provide a more detailed description of the functionality to be provided are categorized as",
+          "options": [
+            "User requirements",
+            "System requirements",
+            "Customer requirements",
+            "Developer requirements"
+          ],
+          "answer": 1,
+          "why": "System requirements are the detailed, precise description of what the system must do. User requirements are the higher-level statements written for customers in natural language.",
+          "ref": "Resit Nov 2024 · Q1.3 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Resit midterm 2024-25",
+          "text": "The system development process that focuses on integrating existing components into a system rather than developing them from scratch",
+          "options": [
+            "The waterfall model",
+            "Prototyping model",
+            "The reuse-oriented model",
+            "The incremental model"
+          ],
+          "answer": 2,
+          "why": "The reuse-oriented (component-based) process builds the system by assembling existing components or COTS systems instead of coding everything new.",
+          "ref": "Resit Nov 2024 · Q1.4 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Resit midterm 2024-25",
+          "text": "MS office and photoshop are examples of:",
+          "options": [
+            "Device driver",
+            "System software",
+            "Application software",
+            "Operating system"
+          ],
+          "answer": 2,
+          "why": "They are programs that users run to do tasks (documents, image editing), which makes them application software. System software and operating systems manage the hardware.",
+          "ref": "Resit Nov 2024 · Q1.5 · solved here"
+        }
+      ]
+    },
+    {
+      "id": "mid-2025-26",
+      "tag": "Midterm",
+      "name": "Nov 2025",
+      "scope": "10 questions · Models A and B",
+      "questions": [
+        {
+          "kind": "mcq",
+          "group": "Midterm Nov 2025",
+          "text": "Which software attribute ensures that users can understand and use the system easily?",
+          "options": [
+            "Maintainability",
+            "Acceptability",
+            "Efficiency",
+            "Dependability"
+          ],
+          "answer": 1,
+          "why": "In the essential attributes of good software, acceptability means the software is understandable, usable and compatible with the systems its users already use. Maintainability is about evolving it, efficiency about resource use, dependability about trust and safety.",
+          "ref": "Midterm Nov 2025 Model A · Q1.1 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Nov 2025",
+          "text": "A disadvantage of reuse-oriented software is:",
+          "options": [
+            "Lack of reusable components",
+            "Total control over system evolution",
+            "Lack of integration possibilities",
+            "Requirements compromises"
+          ],
+          "answer": 3,
+          "why": "Reuse often forces you to compromise the requirements to fit the available components, and you lose control over how the reused parts evolve. Total control is the opposite of the real drawback.",
+          "ref": "Midterm Nov 2025 Model A · Q1.2 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Nov 2025",
+          "text": "Change tolerance refers to:",
+          "options": [
+            "Accepting changes easily and cheaply",
+            "Difficult to update",
+            "Fixing requirements permanently",
+            "Updating only after release"
+          ],
+          "answer": 0,
+          "why": "Change tolerance means the process is designed so that changes can be accommodated at relatively low cost, for example by delaying decisions or using incremental delivery. Freezing requirements is the opposite idea.",
+          "ref": "Midterm Nov 2025 Model A · Q1.3 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Nov 2025",
+          "text": "The system shall generate monthly sales reports including total revenue and customer summaries.",
+          "options": [
+            "Functional",
+            "Non-Functional"
+          ],
+          "answer": 0,
+          "why": "The statement describes a specific service the system must provide (generating a report), which makes it a functional requirement. Non-functional requirements describe qualities such as speed, security or reliability. The paper prints no explicit question, only these two options.",
+          "ref": "Midterm Nov 2025 Model A · Q1.4 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Nov 2025",
+          "text": "In a use case diagram, the \"extend\" relationship is used when:",
+          "options": [
+            "One use case always uses another",
+            "Additional behavior occurs under certain conditions",
+            "Two actors share the same goal",
+            "A use case replaces another"
+          ],
+          "answer": 1,
+          "why": "Extend adds optional behavior to a base use case only when a condition is met. Behavior that is always used is modelled with include.",
+          "ref": "Midterm Nov 2025 Model A · Q1.5 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Nov 2025",
+          "text": "Which of the following best defines software engineering?",
+          "options": [
+            "Writing code only",
+            "Managing software projects only",
+            "Applying systematic methods to software development",
+            "Testing software only"
+          ],
+          "answer": 2,
+          "why": "Software engineering is an engineering discipline covering all aspects of software production using systematic methods. Coding, project management and testing are only parts of it.",
+          "ref": "Midterm Nov 2025 Model B · Q1.1 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Nov 2025",
+          "text": "The Waterfall Model is best described as:",
+          "options": [
+            "Iterative and adaptive",
+            "Based on continuous delivery",
+            "Plan-driven with distinct phases",
+            "Without documentation"
+          ],
+          "answer": 2,
+          "why": "Waterfall is a plan-driven process with separate, sequential phases (requirements, design, implementation, testing, maintenance), and each phase produces documents. It is neither iterative nor undocumented.",
+          "ref": "Midterm Nov 2025 Model B · Q1.2 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Nov 2025",
+          "text": "Which process model is most suitable when requirements are unclear at the start?",
+          "options": [
+            "Waterfall",
+            "Reuse-oriented",
+            "Plan-driven",
+            "Agile"
+          ],
+          "answer": 3,
+          "why": "Agile (incremental) development copes with changing or unclear requirements by delivering in small steps and getting feedback. Waterfall and other plan-driven processes need stable requirements up front.",
+          "ref": "Midterm Nov 2025 Model B · Q1.3 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Nov 2025",
+          "text": "In requirements engineering, what is elicitation?",
+          "options": [
+            "Checking code",
+            "Gathering user needs",
+            "Designing architecture",
+            "Testing system modules"
+          ],
+          "answer": 1,
+          "why": "Requirements elicitation (discovery) is the activity of finding out what stakeholders and users need, through interviews, observation, scenarios and similar techniques.",
+          "ref": "Midterm Nov 2025 Model B · Q1.4 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Midterm Nov 2025",
+          "text": "Which statement about actors is true?",
+          "options": [
+            "They must always be humans",
+            "They represent internal processes",
+            "They are parts of the system",
+            "They can be people or external systems"
+          ],
+          "answer": 3,
+          "why": "An actor is anything outside the system that interacts with it: a person, another system or a device. Actors are never part of the system and are not internal processes.",
+          "ref": "Midterm Nov 2025 Model B · Q1.5 · solved here"
+        }
+      ]
+    },
+    {
+      "id": "resit-2025-26",
+      "tag": "Resit midterm",
+      "name": "2025-26",
+      "scope": "5 questions · second sitting",
+      "questions": [
+        {
+          "kind": "mcq",
+          "group": "Resit midterm 2025-26",
+          "text": "A functional requirement example is:?",
+          "options": [
+            "The system shall print invoices.",
+            "The system shall be fast.",
+            "The system shall be secure.",
+            "The system shall use MySQL."
+          ],
+          "answer": 0,
+          "why": "A functional requirement states a service or function the system provides (printing invoices). Fast, secure and MySQL describe qualities or constraints, so they are non-functional.",
+          "ref": "Resit 2025-26 · Q1.1 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Resit midterm 2025-26",
+          "text": "Software engineering differs from computer science because it focuses on:",
+          "options": [
+            "Theoretical foundations",
+            "Hardware integration",
+            "Practical software development",
+            "Artificial intelligence"
+          ],
+          "answer": 2,
+          "why": "Computer science covers theory and fundamentals of computation. Software engineering is concerned with the practical problems of producing useful software.",
+          "ref": "Resit 2025-26 · Q1.2 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Resit midterm 2025-26",
+          "text": "Confidentiality in software engineering means keeping sensitive information private.",
+          "options": [
+            "True",
+            "False"
+          ],
+          "answer": 0,
+          "why": "Confidentiality is an ethical responsibility of engineers: keep employers' and clients' sensitive information private, whether or not a formal agreement exists.",
+          "ref": "Resit 2025-26 · Q1.3 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Resit midterm 2025-26",
+          "text": "Consistent requirements mean:",
+          "options": [
+            "No contradictions",
+            "No repetitions",
+            "All by one author",
+            "Incomplete documentation"
+          ],
+          "answer": 0,
+          "why": "Requirements are consistent when no two of them conflict. Not repeating things or having one author is unrelated, and incomplete documentation is the opposite of completeness.",
+          "ref": "Resit 2025-26 · Q1.4 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Resit midterm 2025-26",
+          "text": "The four fundamental activities of a software process are:",
+          "options": [
+            "Analysis, Coding, Deployment, Maintenance",
+            "Specification, Design & Implementation, Validation, Evolution",
+            "Planning, Analysis, Design, Coding",
+            "Planning, Testing, Documentation, Maintenance"
+          ],
+          "answer": 1,
+          "why": "The four basic activities common to all software processes are specification, design and implementation, validation, and evolution.",
+          "ref": "Resit 2025-26 · Q1.5 · from the paper"
+        }
+      ]
+    },
+    {
+      "id": "quiz-2025",
+      "tag": "Quiz with answers",
+      "name": "Quiz 2025",
+      "scope": "15 questions · software testing",
+      "questions": [
+        {
+          "kind": "mcq",
+          "group": "Quiz 2025",
+          "text": "...... is a system test that forces the software to fail in a variety of ways and verifies that recovery is properly performed.",
+          "options": [
+            "User testing",
+            "Recovery testing",
+            "Security testing",
+            "Development testing"
+          ],
+          "answer": 1,
+          "why": "Recovery testing forces the software to fail in different ways and checks that it recovers properly.",
+          "ref": "Quiz 2025 · Q1 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Quiz 2025",
+          "text": "Cyclomatic complexity is equal to",
+          "options": [
+            "Number of paths",
+            "Number of edges",
+            "Number of independent paths",
+            "None of them"
+          ],
+          "answer": 2,
+          "why": "Cyclomatic complexity is the number of independent paths through the program, which is also the number of test cases needed to run every statement at least once.",
+          "ref": "Quiz 2025 · Q2 and Q8 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Quiz 2025",
+          "text": "Which testing ensures the system meets stakeholder requirements?",
+          "options": [
+            "User testing",
+            "Release testing",
+            "Development testing",
+            "None of them"
+          ],
+          "answer": 1,
+          "why": "Release testing checks that the system meets the requirements of the stakeholders before it is released.",
+          "ref": "Quiz 2025 · Q3 and Q7 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Quiz 2025",
+          "text": "The testing that focus on discovering bugs in the system",
+          "options": [
+            "Release testing",
+            "User testing",
+            "System testing",
+            "Integration testing"
+          ],
+          "answer": 2,
+          "why": "Per the quiz key, system testing is the testing that focuses on discovering bugs in the system. Release testing instead checks the system against the requirements.",
+          "ref": "Quiz 2025 · Q4, Q6, Q12 and Q15 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Quiz 2025",
+          "text": "The testing used to verify that protection mechanisms built into a system will protect it from improper access",
+          "options": [
+            "User testing",
+            "Recovery testing",
+            "Security testing",
+            "Development testing"
+          ],
+          "answer": 2,
+          "why": "Security testing verifies that the protection mechanisms built into the system will protect it from improper access.",
+          "ref": "Quiz 2025 · Q5 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Quiz 2025",
+          "text": "Cyclomatic complexity can be computed using",
+          "options": [
+            "E-N+1",
+            "Number of edges",
+            "E-N+2",
+            "Number of paths"
+          ],
+          "answer": 2,
+          "why": "For a control flow graph with E edges and N nodes, V(G) = E − N + 2.",
+          "ref": "Quiz 2025 · Q9 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Quiz 2025",
+          "text": "Which testing ensures that the system meets its requirements and is good enough for external use?",
+          "options": [
+            "User testing",
+            "Release testing",
+            "Development testing",
+            "None of them"
+          ],
+          "answer": 1,
+          "why": "Release testing checks that the system meets its requirements and is good enough to be released for external use.",
+          "ref": "Quiz 2025 · Q10 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Quiz 2025",
+          "text": "...... is conducted at the developer's site by a customer",
+          "options": [
+            "User testing",
+            "Recovery testing",
+            "Alpha testing",
+            "Beta testing"
+          ],
+          "answer": 2,
+          "why": "Alpha testing is done at the developer's site with a customer. Beta testing is done at the customer's site by the end user.",
+          "ref": "Quiz 2025 · Q11 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Quiz 2025",
+          "text": "There are several different basis sets for the given control flow graph",
+          "options": [
+            "True",
+            "False"
+          ],
+          "answer": 0,
+          "why": "True. A control flow graph can have several different basis sets of independent paths, although each basis set has the same size.",
+          "ref": "Quiz 2025 · Q13 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Quiz 2025",
+          "text": "Cyclomatic complexity can be computed using",
+          "options": [
+            "E-N+1",
+            "P+1",
+            "Number of edges",
+            "Number of paths"
+          ],
+          "answer": 1,
+          "why": "V(G) = P + 1, where P is the number of predicate (decision) nodes.",
+          "ref": "Quiz 2025 · Q14 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Quiz 2025",
+          "text": "...... is conducted at customer sites by the end-user of the software",
+          "options": [
+            "Integration testing",
+            "Security testing",
+            "Alpha testing",
+            "Beta testing"
+          ],
+          "answer": 3,
+          "why": "Beta testing is done at the customer's site by the end user. Alpha testing is done at the developer's site.",
+          "ref": "Quiz 2025 · Q16 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Quiz 2025",
+          "text": "The number of regions for the following control flow graph is equal to ......",
+          "image": "/qa/software-engineering/exam-drill/quiz-2025-q12.jpg",
+          "alt": "Control flow graph with six nodes: 1 goes to 2 and 3, 3 goes to 4 and 5, and 2, 4 and 5 all go to 6",
+          "options": [
+            "2",
+            "4",
+            "3",
+            "6"
+          ],
+          "answer": 2,
+          "why": "The number of regions equals V(G) = E − N + 2. This graph has 7 edges and 6 nodes, so V(G) = 7 − 6 + 2 = 3.",
+          "ref": "Quiz 2025 · Q17 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Quiz 2025",
+          "text": "The number of independent paths for the following control flow graph is equal to ......",
+          "image": "/qa/software-engineering/exam-drill/quiz-2025-q13.jpg",
+          "alt": "Control flow graph with nodes 1,2 then 3, 4, 5, 6, 7, 8 and 9, with a loop from 7 back to 1,2",
+          "options": [
+            "3",
+            "4",
+            "5",
+            "6"
+          ],
+          "answer": 1,
+          "why": "V(G) = E − N + 2. Here E = 10 and N = 8, so V(G) = 10 − 8 + 2 = 4. The decision nodes 3, 5 and 7 give the same result: 3 + 1 = 4.",
+          "ref": "Quiz 2025 · Q18 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Quiz 2025",
+          "text": "The number of independent paths for the following control flow graph is equal to ......",
+          "image": "/qa/software-engineering/exam-drill/quiz-2025-q14.jpg",
+          "alt": "Control flow graph with seven numbered nodes, with loops around nodes 2 to 5 and a branch from node 1 to node 7",
+          "options": [
+            "3",
+            "4",
+            "5",
+            "6"
+          ],
+          "answer": 1,
+          "why": "V(G) = E − N + 2. Counting 9 edges and 7 nodes gives 9 − 7 + 2 = 4, which matches the quiz key.",
+          "ref": "Quiz 2025 · Q19 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Quiz 2025",
+          "text": "The number of independent paths for the following control flow graph is equal to ......",
+          "image": "/qa/software-engineering/exam-drill/quiz-2025-q15.png",
+          "alt": "Control flow graph with nodes a, b, c, c, e and f, where a branches to b and to two c nodes and several nodes lead to f",
+          "options": [
+            "7",
+            "4",
+            "5",
+            "6"
+          ],
+          "answer": 2,
+          "why": "V(G) = E − N + 2. Counting 9 edges and 6 nodes gives 9 − 6 + 2 = 5, which matches the quiz key.",
+          "ref": "Quiz 2025 · Q20 · from the paper"
+        }
+      ]
+    },
+    {
+      "id": "dept-quizzes",
+      "tag": "Quiz",
+      "name": "Department quizzes",
+      "scope": "15 questions · AI, CS, IS, SC",
+      "questions": [
+        {
+          "kind": "mcq",
+          "group": "Department quizzes",
+          "text": "Which testing ensures the system meets stakeholder requirements?",
+          "options": [
+            "User testing",
+            "Release testing",
+            "Development testing",
+            "None of them"
+          ],
+          "answer": 1,
+          "why": "Release testing checks that a complete release of the system delivers its specified requirements and is good enough to be used outside the development team. Development testing is done by the developers to find bugs, and user testing is done by users in their own environment.",
+          "ref": "Quiz AI · Q2 / Quiz CS · Q3 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Department quizzes",
+          "text": "The testing that focus on discovering bugs in the system",
+          "options": [
+            "Release testing",
+            "User testing",
+            "System testing",
+            "Integration testing"
+          ],
+          "answer": 2,
+          "why": "System testing integrates the components and tests the whole system to discover bugs (defect testing). Release testing checks requirements and user testing checks the system in the user's own environment. The answer key of all four departments gives System testing.",
+          "ref": "Quiz AI · Q3 / Quiz CS · Q2 / Quiz IS · Q5 / Quiz SC · Q4 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Department quizzes",
+          "text": "........ is a system test that forces the software to fail",
+          "options": [
+            "User testing",
+            "Recovery testing",
+            "Security testing",
+            "Development testing"
+          ],
+          "answer": 1,
+          "why": "Recovery testing forces the software to fail in a variety of ways and then verifies that recovery is performed properly.",
+          "ref": "Quiz AI · Q4 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Department quizzes",
+          "text": "Cyclomatic complexity is equal to",
+          "options": [
+            "Number of paths",
+            "Number of edges",
+            "Number of independent paths",
+            "None of them"
+          ],
+          "answer": 2,
+          "why": "Cyclomatic complexity V(G) gives the number of linearly independent paths through the program (the size of a basis set), not the total number of paths or edges.",
+          "ref": "Quiz AI · Q5 / Quiz CS · Q5 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Department quizzes",
+          "text": "The testing used to verify that protection mechanisms built into a system will protect it from improper access",
+          "options": [
+            "User testing",
+            "Recovery testing",
+            "Security testing",
+            "Development testing"
+          ],
+          "answer": 2,
+          "why": "Security testing checks that the protection mechanisms built into the system will actually protect it from improper access or penetration.",
+          "ref": "Quiz CS · Q1 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Department quizzes",
+          "text": "Cyclomatic complexity can be computed using",
+          "options": [
+            "E-N+1",
+            "Number of edges",
+            "E-N+2",
+            "Number of paths"
+          ],
+          "answer": 2,
+          "why": "V(G) = E - N + 2 (edges minus nodes plus 2). E-N+1 is a common mistake; the correct constant is +2. (Same stem as the Quiz SC question, but that one has P+1 among its options.)",
+          "ref": "Quiz IS · Q1 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Department quizzes",
+          "text": "Cyclomatic complexity can be computed using",
+          "options": [
+            "E-N+1",
+            "P+1",
+            "Number of edges",
+            "Number of paths"
+          ],
+          "answer": 1,
+          "why": "V(G) = P + 1, where P is the number of predicate (decision) nodes. The edge formula is E - N + 2, not E - N + 1, so E-N+1 is wrong. (Same stem as the Quiz IS question, but that one has E-N+2 among its options.)",
+          "ref": "Quiz SC · Q3 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Department quizzes",
+          "text": "Which testing ensures that the system meets its requirements and is good enough for external use?",
+          "options": [
+            "User testing",
+            "Release testing",
+            "Development testing",
+            "None of them"
+          ],
+          "answer": 1,
+          "why": "Release testing tests a release intended for use outside the development team, to convince the supplier that it meets its requirements and is good enough for external use.",
+          "ref": "Quiz IS · Q3 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Department quizzes",
+          "text": "....... is conducted at the developer's site by a customer",
+          "options": [
+            "User testing",
+            "Recovery testing",
+            "Alpha testing",
+            "Beta testing"
+          ],
+          "answer": 2,
+          "why": "Alpha testing is done at the developer's site, with a customer or user working while the developer watches. Beta testing takes place at the customer's own site. (The photo prints 'Aplha', an obvious typo.)",
+          "ref": "Quiz IS · Q4 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Department quizzes",
+          "text": "........ is conducted at customer sites by the end-user of the software",
+          "options": [
+            "Integration testing",
+            "Security testing",
+            "Alpha testing",
+            "Beta testing"
+          ],
+          "answer": 3,
+          "why": "Beta testing is done at customer sites by the end users in their real environment, without the developer present. Alpha testing is done at the developer's site. (The photo prints 'Aplha', an obvious typo.)",
+          "ref": "Quiz SC · Q5 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Department quizzes",
+          "text": "There are several different basis sets for the given control flow graph",
+          "options": [
+            "True",
+            "False"
+          ],
+          "answer": 0,
+          "why": "A basis set is any set of V(G) linearly independent paths, so it is not unique: whenever V(G) is greater than 1 there are several different basis sets. Check: the question refers to a control flow graph that is not shown with it in the photo (probably the CFG of the previous question in Quiz SC); the answer is marked True.",
+          "ref": "Quiz SC · Q2 · from the paper",
+          "check": true
+        },
+        {
+          "kind": "mcq",
+          "group": "Department quizzes",
+          "text": "The number of independent paths for the following control flow graph is equal to [Graph description: 8 nodes, where \"1,2\" is one merged node, and 10 edges: (1,2)->3; 3->4; 3->5; 5->6; 5->7; 7->8; 7->(1,2) (back edge forming a loop); 4->9; 6->9; 8->9. Decision nodes: 3, 5 and 7.]",
+          "options": [
+            "3",
+            "4",
+            "5",
+            "6"
+          ],
+          "answer": 1,
+          "why": "V(G) = E - N + 2 = 10 - 8 + 2 = 4. Using decision nodes: 3 predicates + 1 = 4. Check: graph was transcribed from the photo into words; the answer key (WhatsApp message) gives 4, which matches.",
+          "ref": "Quiz AI · Q1 · from the paper",
+          "check": true
+        },
+        {
+          "kind": "mcq",
+          "group": "Department quizzes",
+          "text": "The number of independent paths for the following control flow graph is equal to [Graph description: 6 nodes (a, b, c, d, e, f) and 9 edges: a->b; a->c; a->d; b->e; e->b (loop back); e->a (loop back); e->f; c->f; d->f. Decision nodes: a (3 outgoing edges) and e (3 outgoing edges).]",
+          "options": [
+            "4",
+            "5",
+            "6",
+            "7"
+          ],
+          "answer": 1,
+          "why": "V(G) = E - N + 2 = 9 - 6 + 2 = 5. Using decision nodes: a and e each have 3 outgoing edges, so each counts as 2 predicates, giving 4 + 1 = 5. Check: graph was transcribed from the photo into words; the answer 5 is ticked on the photo and matches.",
+          "ref": "Quiz CS · Q4 · from the paper",
+          "check": true
+        },
+        {
+          "kind": "mcq",
+          "group": "Department quizzes",
+          "text": "The number of independent paths for the following control flow graph is equal to [Graph description: 7 nodes (1 to 7) and 9 edges: 1->2; 1->7; 2->3; 2->6; 3->4; 3->5; 4->5; 5->2 (loop back); 6->1 (loop back). Decision nodes: 1, 2 and 3 (two outgoing edges each); node 7 is the exit.]",
+          "options": [
+            "3",
+            "4",
+            "5",
+            "6"
+          ],
+          "answer": 1,
+          "why": "V(G) = E - N + 2 = 9 - 7 + 2 = 4. Using decision nodes: 3 predicates (1, 2, 3) + 1 = 4. Check: graph was transcribed from the photo into words; the answer key (WhatsApp message) gives 4, which matches.",
+          "ref": "Quiz IS · Q2 · from the paper",
+          "check": true
+        },
+        {
+          "kind": "mcq",
+          "group": "Department quizzes",
+          "text": "The number of regions for the following control flow graph is equal to [Graph description: 6 nodes and 7 edges: 1->2; 1->3; 2->6; 3->4; 3->5; 4->6; 5->6. Node 1 branches to 2 and 3, node 3 branches to 4 and 5, and 2, 4 and 5 all join at node 6.]",
+          "options": [
+            "2",
+            "4",
+            "3",
+            "6"
+          ],
+          "answer": 2,
+          "why": "Regions (including the outer region) equal V(G) = E - N + 2 = 7 - 6 + 2 = 3: two enclosed areas (1-2-6-4-3 and 3-4-6-5) plus the outside area. Check: graph was transcribed from the photo into words; the answer 3 is ticked on the photo and matches.",
+          "ref": "Quiz SC · Q1 · from the paper",
+          "check": true
+        }
+      ]
+    },
+    {
+      "id": "platform-quiz-1",
+      "tag": "Platform quiz",
+      "name": "Quiz 1",
+      "scope": "60 questions · lectures 1-4",
+      "questions": [
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "During a requirements meeting, an analyst asks open-ended questions like “What difficulties do you face while using the current system?” This technique primarily represents:",
+          "options": [
+            "Observation",
+            "Scenario building",
+            "Interview",
+            "Prototyping"
+          ],
+          "answer": 2,
+          "why": "Asking stakeholders open-ended questions directly is interviewing, a core elicitation technique. Observation (ethnography) would mean watching people work instead of asking them.",
+          "ref": "Compilation p1; Three-lectures set p6 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "The system shall allow authorized users to reset their passwords through email verification.",
+          "options": [
+            "Non-Functional",
+            "Functional"
+          ],
+          "answer": 1,
+          "why": "It states a service the system must provide (resetting a password), so it is a functional requirement. Non-functional requirements describe qualities or constraints such as speed or security level.",
+          "ref": "Compilation p1; model13 Q10; model19 Q9; Three-lectures set p6 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "A key benefit of incremental development is:",
+          "options": [
+            "Slower delivery",
+            "More difficulty getting customer feedback",
+            "Higher documentation cost",
+            "Reduced cost of accommodating change"
+          ],
+          "answer": 3,
+          "why": "Because the system is built and delivered in small increments, changing requirements affect less work already done, so the cost of accommodating change is reduced.",
+          "ref": "Compilation p1; Three-lectures set p5 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "Which ethical principle requires software engineers to be honest about their abilities, skills, and qualifications?",
+          "options": [
+            "Intellectual Property Rights",
+            "Competence",
+            "Confidentiality",
+            "Completeness"
+          ],
+          "answer": 1,
+          "why": "Under the competence principle, engineers must not misrepresent their level of competence or knowingly accept work beyond their ability.",
+          "ref": "Compilation p1; Three-lectures set p1 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "Batch processing systems process data in real time.",
+          "options": [
+            "False",
+            "True"
+          ],
+          "answer": 0,
+          "why": "Batch systems process data in large groups (batches) without user interaction, so they are not real-time. Real-time interaction belongs to interactive transaction-based systems.",
+          "ref": "Compilation p2; model13 Q4; Three-lectures set p7 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "A non-functional requirement example is:",
+          "options": [
+            "“The user can login.”",
+            "“System stores data.”",
+            "“System responds within 2 seconds.”",
+            "“System prints reports.”"
+          ],
+          "answer": 2,
+          "why": "A response-time limit is a performance constraint on how the system works, not a function it offers, so it is non-functional. The other options describe functions.",
+          "ref": "Compilation p2; model13 Q8; Three-lectures set p3 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "A developer needs detailed descriptions of every input, output, and process in the system. Which type of requirements document should they refer to?",
+          "options": [
+            "User requirements",
+            "System requirements",
+            "Stakeholder report",
+            "Business requirements"
+          ],
+          "answer": 1,
+          "why": "System requirements are the detailed descriptions of the system's functions, inputs, outputs and constraints, written for developers. User requirements are higher-level statements for customers.",
+          "ref": "Compilation p2; Three-lectures set p6 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "What is software composed of?",
+          "options": [
+            "Data and servers",
+            "Only programs",
+            "Only hardware",
+            "Programs and associated documentation"
+          ],
+          "answer": 3,
+          "why": "Software is not just code: it also includes the documentation and configuration data needed to install, use and maintain the programs.",
+          "ref": "Compilation p2; Three-lectures set p1 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "Which is customized software?",
+          "options": [
+            "University registration system",
+            "Microsoft Word",
+            "Drawing software",
+            "Database management tool"
+          ],
+          "answer": 0,
+          "why": "Customized (bespoke) software is built for one particular customer, like a university registration system. The other options are generic products sold to many customers.",
+          "ref": "Compilation p2; model20 Q10; Three-lectures set p5 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "The software must follow government privacy regulations.",
+          "options": [
+            "Product",
+            "Organizational",
+            "External"
+          ],
+          "answer": 2,
+          "why": "External requirements come from outside the system and the development organization, such as laws, regulations and legal constraints.",
+          "ref": "Compilation p3; Three-lectures set p7 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "A disadvantage of the waterfall model is:",
+          "options": [
+            "Difficult to manage",
+            "Fast but costly",
+            "Too flexible",
+            "No working software until late"
+          ],
+          "answer": 3,
+          "why": "The phases run one after another, so the customer sees no working software until the whole system is built, and late changes are costly.",
+          "ref": "Compilation p3; Three-lectures set p2 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "Stakeholders include:",
+          "options": [
+            "Anyone affected by the system",
+            "Only developers",
+            "Only end users",
+            "Only customers"
+          ],
+          "answer": 0,
+          "why": "A stakeholder is anyone who is affected by the system in some way, including end users, managers, customers and others, not just one group.",
+          "ref": "Compilation p3; model20 Q6; Three-lectures set p2 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "Which of the following best describes a scenario?",
+          "options": [
+            "A list of system requirements",
+            "A step-by-step description of how a user performs a task",
+            "A data flow diagram",
+            "A test case"
+          ],
+          "answer": 1,
+          "why": "A scenario is a story-like description of a real situation in which a user carries out a task with the system, step by step. It is used to elicit and explain requirements.",
+          "ref": "Compilation p3; Three-lectures set p8 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "The four fundamental activities of a software process are:",
+          "options": [
+            "Specification, Design & Implementation, Validation, Evolution",
+            "Analysis, Coding, Deployment, Maintenance",
+            "Planning, Testing, Documentation, Maintenance",
+            "Planning, Analysis, Design, Coding"
+          ],
+          "answer": 0,
+          "why": "Every software process includes specification, design and implementation, validation, and evolution, however they are arranged.",
+          "ref": "Compilation p3-4; Three-lectures set p1 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "Generic products are developed for a specific customer.",
+          "options": [
+            "True",
+            "False"
+          ],
+          "answer": 1,
+          "why": "Generic products are developed for sale to a wide range of customers. Software built for one specific customer is customized (bespoke) software.",
+          "ref": "Compilation p4; Three-lectures set p5 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "The purpose of a feasibility study is to:",
+          "options": [
+            "Write functional requirements",
+            "Conduct testing",
+            "Validate user interfaces",
+            "Check if the system can be developed within current budget and technology"
+          ],
+          "answer": 3,
+          "why": "A feasibility study decides whether the proposed system is worth building, given the available budget, technology and time, before detailed requirements work starts.",
+          "ref": "Compilation p4; model19 Q10; Three-lectures set p7 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "Requirements elicitation involves:",
+          "options": [
+            "Working with stakeholders to discover needs",
+            "Testing the system",
+            "Writing code",
+            "Debugging"
+          ],
+          "answer": 0,
+          "why": "Elicitation (discovery) means working with stakeholders to find out what the system should do and what constraints it has.",
+          "ref": "Compilation p4; model20 Q8; Three-lectures set p4 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "Dependability refers to how easily software can be modified to meet new needs.",
+          "options": [
+            "False",
+            "True"
+          ],
+          "answer": 0,
+          "why": "Ease of modification is maintainability. Dependability is about trustworthiness: reliability, security and safety.",
+          "ref": "Compilation p4-5; Three-lectures set p7 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "A safety-critical system, such as an aircraft control program, must go through strict design and testing phases before release.",
+          "options": [
+            "Plan-driven process",
+            "Agile software process"
+          ],
+          "answer": 0,
+          "why": "Safety-critical systems need detailed upfront planning, specification and thorough testing, which a plan-driven process provides.",
+          "ref": "Compilation p5; model20 Q4; Three-lectures set p6 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "Which type of software runs independently without a network?",
+          "options": [
+            "Embedded",
+            "Transaction-based",
+            "Web-based",
+            "Stand-alone"
+          ],
+          "answer": 3,
+          "why": "Stand-alone applications run on a local computer and do not need a network connection. Web-based and transaction-based systems depend on one.",
+          "ref": "Compilation p5; Three-lectures set p4 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "Confidentiality in software engineering means keeping sensitive information private.",
+          "options": [
+            "False",
+            "True"
+          ],
+          "answer": 1,
+          "why": "Confidentiality is a professional ethics principle: engineers respect the confidentiality of employers and clients and do not disclose sensitive information.",
+          "ref": "Compilation p5; Three-lectures set p2 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "The goal of software evolution is to:",
+          "options": [
+            "Develop new software from scratch",
+            "Test software",
+            "Stop software updates",
+            "Modify software to meet changing user needs"
+          ],
+          "answer": 3,
+          "why": "Software must change after delivery to keep up with new customer and market needs, so evolution means modifying existing software to meet changing needs.",
+          "ref": "Compilation p5; Three-lectures set p6 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "Which is an example of a generic product?",
+          "options": [
+            "Word processor",
+            "Air traffic control system",
+            "Admission system for a university",
+            "Banking software for one client"
+          ],
+          "answer": 0,
+          "why": "A word processor is sold to many customers on the open market, so it is a generic product. The other options are built for one specific customer or organization.",
+          "ref": "Compilation p5; model19 Q2; model20 Q1; Three-lectures set p5 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "The main goal of software engineering is to produce:",
+          "options": [
+            "Complex software",
+            "Reliable and effective software",
+            "Fast software",
+            "Cheap software"
+          ],
+          "answer": 1,
+          "why": "Software engineering aims at professional software that is reliable and effective, not simply fast, cheap or complex.",
+          "ref": "Compilation p6; Three-lectures set p3 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "Incremental delivery provides:",
+          "options": [
+            "All functionality at once",
+            "Increased total risk",
+            "No prototypes",
+            "Value to customers earlier"
+          ],
+          "answer": 3,
+          "why": "With incremental delivery the most important functions are delivered first, so customers get value early and can give feedback while development continues.",
+          "ref": "Compilation p6; model13 Q6; Three-lectures set p4 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "Data collection systems are characterized by:",
+          "options": [
+            "Use of sensors to collect data",
+            "Manual data entry",
+            "Lack of automation",
+            "Weak environmental tolerance"
+          ],
+          "answer": 0,
+          "why": "Data collection systems gather data from the environment automatically using sensors, then send it to other systems for processing.",
+          "ref": "Compilation p6; model19 Q7; Three-lectures set p4 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "Coping with change involves:",
+          "options": [
+            "Document freezing",
+            "Ignoring changes",
+            "Late refactoring",
+            "Change avoidance and change tolerance"
+          ],
+          "answer": 3,
+          "why": "Process activities can reduce the need for rework (change avoidance, for example with prototyping) or make changes cheaper to absorb (change tolerance, for example with incremental delivery).",
+          "ref": "Compilation p6; Three-lectures set p4 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "System engineering includes hardware, software, and human work.",
+          "options": [
+            "True",
+            "False"
+          ],
+          "answer": 0,
+          "why": "System engineering covers the whole system, including hardware, software and the human and organizational processes around them. Software engineering is only one part of it.",
+          "ref": "Compilation p6-7; Three-lectures set p6 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "Incremental development allows:",
+          "options": [
+            "Delayed testing",
+            "Late feedback",
+            "Complete specification first",
+            "Early customer feedback"
+          ],
+          "answer": 3,
+          "why": "Customers can try each increment as it is delivered and give feedback early. A complete upfront specification and late feedback are features of plan-driven development.",
+          "ref": "Compilation p7; Three-lectures set p3 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "Reuse-oriented software engineering focuses on:",
+          "options": [
+            "Avoiding component use",
+            "Creating all components from scratch",
+            "Integrating existing components",
+            "Discarding previous systems"
+          ],
+          "answer": 2,
+          "why": "Reuse-oriented development builds systems by integrating existing components or systems, rather than writing everything from scratch.",
+          "ref": "Compilation p7; model19 Q6; Three-lectures set p3 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "The waterfall model allows frequent changes to requirements during development.",
+          "options": [
+            "True",
+            "False"
+          ],
+          "answer": 1,
+          "why": "In waterfall the requirements are fixed early and each phase must finish before the next, so changing requirements later is difficult and costly.",
+          "ref": "Compilation p7; model13 Q7; Three-lectures set p8 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "Which software attribute ensures that users can understand and use the system easily?",
+          "options": [
+            "Acceptability",
+            "Dependability",
+            "Efficiency",
+            "Maintainability"
+          ],
+          "answer": 0,
+          "why": "Acceptability means the software is understandable, usable and compatible with the other systems its users use, so that its intended users will accept it.",
+          "ref": "Compilation p7; Three-lectures set p2 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "The response time of any query shall not exceed 2 seconds.",
+          "options": [
+            "Product",
+            "External",
+            "Organizational"
+          ],
+          "answer": 0,
+          "why": "A performance limit on how the delivered product behaves is a product requirement. Organizational requirements come from company policies and external ones from outside the organization.",
+          "ref": "Compilation p7-8; model13 Q2; model20 Q7; Three-lectures set p7 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "Software engineering differs from computer science because it focuses on:",
+          "options": [
+            "Artificial intelligence",
+            "Hardware integration",
+            "Practical software development",
+            "Theoretical foundations"
+          ],
+          "answer": 2,
+          "why": "Computer science deals with theory and fundamentals of computing, while software engineering deals with the practical problems of producing useful software.",
+          "ref": "Compilation p8; Three-lectures set p3 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "A software company develops an accounting program and sells the same version to many businesses without major changes. This software is:",
+          "options": [
+            "Customized software",
+            "Embedded software",
+            "Generic software",
+            "Open-source software"
+          ],
+          "answer": 2,
+          "why": "The same product sold to many customers without major changes is a generic product. Customized software is built to one customer's specification.",
+          "ref": "Compilation p8; Three-lectures set p1 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "One of the ethical responsibilities of software engineers is:",
+          "options": [
+            "Respect confidentiality",
+            "Misuse employer’s computer",
+            "Disclose confidential information",
+            "Avoid testing"
+          ],
+          "answer": 0,
+          "why": "Engineers must respect the confidentiality of employers and clients. Misusing computers and disclosing confidential information are violations of professional ethics.",
+          "ref": "Compilation p8; Three-lectures set p4 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "Incremental development means:",
+          "options": [
+            "Has no customer involvement",
+            "Developed by many teams",
+            "System is developed all at once",
+            "Delivered in versions that add functionality"
+          ],
+          "answer": 3,
+          "why": "In incremental development the system is delivered as a series of versions (increments), each adding functionality to the previous one.",
+          "ref": "Compilation p8-9; model13 Q1; model20 Q2; Three-lectures set p3 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "Ethnography means:",
+          "options": [
+            "Creating prototypes",
+            "Writing reports",
+            "Observing real work environments",
+            "Interviewing stakeholders remotely"
+          ],
+          "answer": 2,
+          "why": "Ethnography is an elicitation technique in which the analyst observes how people actually work in their real environment, which reveals requirements that people may not think to state.",
+          "ref": "Compilation p9; Three-lectures set p4 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "What is the primary characteristic of the Prototype model?",
+          "options": [
+            "Sequential development",
+            "Risk management",
+            "Quick creation of a model to visualize requirements",
+            "Minimal documentation"
+          ],
+          "answer": 2,
+          "why": "Prototyping quickly builds a working model so users and developers can see and refine the requirements through feedback.",
+          "ref": "Compilation p9; model19 Q1; Three-lectures set p6 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "A drawback of incremental development is:",
+          "options": [
+            "Lack of customer involvement",
+            "Inflexibility to change",
+            "System structure degradation over time",
+            "Excessive planning requirements"
+          ],
+          "answer": 2,
+          "why": "As new increments are added, regular change tends to corrupt the structure of the system unless time is spent on refactoring.",
+          "ref": "Compilation p9; Three-lectures set p6 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "The system must integrate with the existing accounting software used by the company.",
+          "options": [
+            "External",
+            "Product",
+            "Organizational"
+          ],
+          "answer": 2,
+          "why": "The need to work with the company's existing systems comes from the organization's own policies and environment, so it is an organizational requirement, not an external one (external means laws, regulators or other outside bodies).",
+          "ref": "Compilation p9-10 (yellow highlight, handwritten warning not to answer External); model19 Q8; Three-lectures set p7 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "Functional requirements specify:",
+          "options": [
+            "How the system performs",
+            "Hardware needs",
+            "System limitations",
+            "What the system should do"
+          ],
+          "answer": 3,
+          "why": "Functional requirements describe the services the system should provide and how it should react to inputs. How well it performs and its limits are non-functional.",
+          "ref": "Compilation p10; Three-lectures set p2 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "A startup continuously updates its web application to meet changing market needs and customer ideas.",
+          "options": [
+            "Plan-driven process",
+            "Agile software process"
+          ],
+          "answer": 1,
+          "why": "Frequent small updates in response to changing needs and customer ideas is the typical agile approach. Plan-driven processes plan everything in advance.",
+          "ref": "Compilation p10; Three-lectures set p7 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "Which of the following is not an attribute of good software?",
+          "options": [
+            "Efficiency",
+            "Dependability",
+            "Complexity",
+            "Maintainability"
+          ],
+          "answer": 2,
+          "why": "The essential attributes of good software are maintainability, dependability and security, efficiency, and acceptability. Complexity is not a desirable attribute.",
+          "ref": "Compilation p10; Three-lectures set p7 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "Agile processes are:",
+          "options": [
+            "Fixed and rigid",
+            "Document-heavy",
+            "Incremental and adaptive",
+            "Used only in large systems"
+          ],
+          "answer": 2,
+          "why": "Agile methods develop the software in increments and adapt to changing requirements. They minimize documentation and are best suited to small and medium-sized systems.",
+          "ref": "Compilation p10-11; Three-lectures set p1 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "A functional requirement example is:",
+          "options": [
+            "“The system shall use MySQL.”",
+            "“The system shall be fast.”",
+            "“The system shall print invoices.”",
+            "“The system shall be secure.”"
+          ],
+          "answer": 2,
+          "why": "Printing invoices is a service the system provides, so it is functional. The others describe technology choices or quality properties, which are non-functional.",
+          "ref": "Compilation p11; Three-lectures set p3 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "Complete requirements mean:",
+          "options": [
+            "Unstructured ideas",
+            "Just diagrams provided",
+            "Only key functions defined",
+            "All required services defined"
+          ],
+          "answer": 3,
+          "why": "Completeness means the requirements define all the services and constraints the users need, with nothing left out.",
+          "ref": "Compilation p13; model13 Q5; Three-lectures set p1 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "Requirements engineering is about:",
+          "options": [
+            "Testing only",
+            "Deployment",
+            "Defining and managing what the system must do",
+            "Coding"
+          ],
+          "answer": 2,
+          "why": "Requirements engineering is the process of establishing and managing the services the system should provide and the constraints under which it operates.",
+          "ref": "Compilation p13; model13 Q9; Three-lectures set p1 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "Consistent requirements mean:",
+          "options": [
+            "No contradictions",
+            "All by one author",
+            "Incomplete documentation",
+            "No repetitions"
+          ],
+          "answer": 0,
+          "why": "Consistency means there are no conflicts or contradictions in the descriptions of the system's services and constraints.",
+          "ref": "Compilation p13; Three-lectures set p2 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "Requirements validation checks for:",
+          "options": [
+            "Syntax errors",
+            "Validity, consistency, completeness, realism",
+            "Deployment issues",
+            "Cost estimation"
+          ],
+          "answer": 1,
+          "why": "Validation checks that the requirements really define what the customer wants: they must be valid, consistent, complete and realistic (and verifiable).",
+          "ref": "Compilation p13; Three-lectures set p5 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "A scenario in requirements elicitation describes:",
+          "options": [
+            "The system’s architecture",
+            "The project schedule",
+            "A real-life situation of system use",
+            "The test plan"
+          ],
+          "answer": 2,
+          "why": "A scenario describes a real-life example of how the system might be used, which helps stakeholders explain what they need.",
+          "ref": "Compilation p14; Three-lectures set p7-8 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "The Waterfall Model is best described as:",
+          "options": [
+            "Based on continuous delivery",
+            "Iterative and adaptive",
+            "Without documentation",
+            "Plan-driven with distinct phases"
+          ],
+          "answer": 3,
+          "why": "Waterfall is a plan-driven process with separate, sequential phases (requirements, design, implementation, testing, maintenance), each producing documents.",
+          "ref": "Compilation p14; model13 Q3; model20 Q3; Three-lectures set p4 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "The Software Requirements Document is also called:",
+          "options": [
+            "PRD",
+            "SRS",
+            "URS",
+            "BRD"
+          ],
+          "answer": 1,
+          "why": "The software requirements document is known as the SRS (Software Requirements Specification), the official statement of what the developers should implement.",
+          "ref": "Compilation p15; model20 Q5; Three-lectures set p5 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "Embedded systems are designed to:",
+          "options": [
+            "Operate independently",
+            "Entertain users",
+            "Process data batches",
+            "Control hardware devices"
+          ],
+          "answer": 3,
+          "why": "Embedded systems are software built into a device (such as a car braking system or microwave oven) to control that hardware.",
+          "ref": "Compilation p11 (screenshot, option d selected); Three-lectures set p7 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "The Waterfall Model is best suited for:",
+          "options": [
+            "Changing requirements",
+            "Small projects",
+            "Research prototypes",
+            "Stable and well-understood requirements"
+          ],
+          "answer": 3,
+          "why": "Waterfall works when the requirements are well understood and unlikely to change, since each phase must finish before the next one starts.",
+          "ref": "Compilation p11 (screenshot); model19 Q3; Three-lectures set p2 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "A disadvantage of reuse-oriented software is:",
+          "options": [
+            "Total control over system evolution",
+            "Lack of reusable components",
+            "Lack of integration possibilities",
+            "Requirements compromises"
+          ],
+          "answer": 3,
+          "why": "Reused components were not built for this system, so the requirements often have to be compromised to fit what is available. Control over the system's evolution is also partly lost.",
+          "ref": "Compilation p12 (screenshot); model19 Q4; Three-lectures set p5 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "Product requirements specify:",
+          "options": [
+            "Organizational procedures",
+            "External legal factors",
+            "Project deadlines",
+            "Quality attributes such as reliability and speed"
+          ],
+          "answer": 3,
+          "why": "Product requirements say how the delivered product must behave, such as its speed, reliability and usability. Organizational and external requirements cover company policy and outside factors like laws.",
+          "ref": "Compilation p12 (screenshot, option d selected); model20 Q9; Three-lectures set p5 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "In a plan-driven process:",
+          "options": [
+            "Customers change requirements frequently",
+            "None of the above",
+            "Everything is planned in advance",
+            "Plans evolve continuously"
+          ],
+          "answer": 2,
+          "why": "In a plan-driven process all activities are planned in advance and progress is measured against that plan. Plans that evolve and frequently changing requirements describe agile development.",
+          "ref": "Compilation p12 (screenshot, option c selected); Three-lectures set p1 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "Which type of application allows real-time interaction with remote systems?",
+          "options": [
+            "Simulation system",
+            "Interactive transaction-based system",
+            "Batch processing system",
+            "Data collection system"
+          ],
+          "answer": 1,
+          "why": "Interactive transaction-based systems (online banking, booking and e-commerce) let users interact with a remote system and get immediate responses.",
+          "ref": "Compilation p14 (screenshot); model19 Q5; Three-lectures set p2 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 1",
+          "text": "Non-functional requirements specify:",
+          "options": [
+            "Software functions",
+            "Business rules",
+            "Algorithms",
+            "System properties and constraints"
+          ],
+          "answer": 3,
+          "why": "Non-functional requirements are constraints and properties of the system as a whole, such as performance, reliability, security and standards, rather than individual functions.",
+          "ref": "Compilation p15 (screenshot, option d selected); Three-lectures set p3 · solved here"
+        }
+      ]
+    },
+    {
+      "id": "platform-quiz-2",
+      "tag": "Platform quiz",
+      "name": "Quiz 2",
+      "scope": "58 questions · system modelling",
+      "questions": [
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "In a Class Diagram, which relationship indicates strong ownership where the part cannot exist without the whole?",
+          "options": [
+            "Aggregation",
+            "Composition",
+            "Dependency",
+            "Generalization"
+          ],
+          "answer": 1,
+          "why": "Composition is the strong whole-part relationship: when the whole is destroyed its parts are destroyed with it. Aggregation is the weaker form where the parts can exist on their own.",
+          "ref": "Compilation p4; Unsolved p1 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "What does a Use Case diagram mainly describe?",
+          "options": [
+            "Internal system algorithms",
+            "User interactions with the system",
+            "Database schema",
+            "Network communication"
+          ],
+          "answer": 1,
+          "why": "A use case diagram shows the actors and the functions (use cases) they use, i.e. what the system does for its users, not how it works inside.",
+          "ref": "Compilation p5; Unsolved p1; M 12, M 4 screenshots · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "What happens when a process reaches a Final Node?",
+          "options": [
+            "Only the current flow ends",
+            "All flows in the activity terminate",
+            "A decision must be taken",
+            "A new activity starts"
+          ],
+          "answer": 1,
+          "why": "The (Activity) Final Node ends the whole activity: every flow that is still running is stopped. Only a Flow Final Node ends just its own flow.",
+          "ref": "Compilation p3; Unsolved p1; M 1, M 10 screenshots · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "In a Class Diagram, what does multiplicity indicate?",
+          "options": [
+            "Number of attributes in a class",
+            "Number of operations in a class",
+            "Number of instances that can participate in a relationship",
+            "Number of packages in a diagram"
+          ],
+          "answer": 2,
+          "why": "Multiplicity (such as 1, 0..1, 1..*) states how many objects of one class can be linked to an object of the other class in an association.",
+          "ref": "Compilation p8; Unsolved p1; M 3, M 5, M 12 screenshots · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "Who is an actor in a Use Case diagram?",
+          "options": [
+            "A class inside the system",
+            "Anyone or anything outside the system that interacts with it",
+            "The database engine",
+            "Only human users"
+          ],
+          "answer": 1,
+          "why": "An actor is any external role that interacts with the system: a person, another system or a device. It lives outside the system boundary and is not limited to humans.",
+          "ref": "Compilation p12; Unsolved p1; M 6, M 11 screenshots · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "What does the system boundary represent?",
+          "options": [
+            "Hardware limits",
+            "Scope of what is inside vs. outside the system",
+            "Sequence of operations",
+            "Object relationships"
+          ],
+          "answer": 1,
+          "why": "The system boundary is the box drawn around the use cases. It separates what the system does (inside) from the actors and external things (outside).",
+          "ref": "Compilation p6; Unsolved p1; M 3, M 14 screenshots · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "What is the purpose of the «include» relationship?",
+          "options": [
+            "To show optional behavior",
+            "To show repeated behavior",
+            "To extract common behavior into a shared use case",
+            "To merge diagrams"
+          ],
+          "answer": 2,
+          "why": "«include» pulls behavior that several use cases have in common into one shared use case, and the base use case always uses it. Optional behavior is the job of «extend».",
+          "ref": "Compilation p4; Unsolved p1; M 2, M 4, M 5 screenshots · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "In a Class Diagram, which of the following can be shown inside the class box?",
+          "options": [
+            "Class name only",
+            "Attributes and methods only",
+            "Class name, attributes, and methods",
+            "Class name and relationships only"
+          ],
+          "answer": 2,
+          "why": "A class box is split into three compartments: the class name, its attributes and its operations (methods). Relationships are drawn as lines between boxes, not inside them.",
+          "ref": "Compilation p12; Unsolved p1; M 6, M 13 screenshots · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "What does the «extend» relationship express?",
+          "options": [
+            "Always required steps",
+            "Optional or conditional behavior",
+            "Database connections",
+            "Class inheritance"
+          ],
+          "answer": 1,
+          "why": "«extend» adds optional or conditional behavior to a base use case, used only when a condition holds. Behavior that is always required uses «include».",
+          "ref": "Unsolved p1 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "A Flow Final Node is most useful when:",
+          "options": [
+            "You want to stop all parallel activities",
+            "You want to end one branch of a decision",
+            "You need to synchronize concurrent flows",
+            "You want to start multiple actions"
+          ],
+          "answer": 1,
+          "why": "A Flow Final Node ends only the flow that reaches it, so it closes one branch (for example one outcome of a decision) while the other flows carry on.",
+          "ref": "Compilation p14; Unsolved p2; M 11 screenshot · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "What does generalization between actors represent?",
+          "options": [
+            "Hardware implementation",
+            "A “partof” relationship",
+            "An “isa” relationship",
+            "A sequence of actions"
+          ],
+          "answer": 2,
+          "why": "Generalization between actors is an is-a (inheritance) relationship: the child actor inherits the behavior of the parent actor and can add more.",
+          "ref": "Compilation p15; Unsolved p2; M 16 screenshot · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "If a class Order has a multiplicity of 1 for its relationship with Customer, this means:",
+          "options": [
+            "Each order can belong to multiple customers",
+            "Each order must belong to exactly one customer",
+            "Each customer can have zero orders",
+            "Each order may or may not belong to a customer"
+          ],
+          "answer": 1,
+          "why": "A multiplicity of 1 on the Customer end means every Order is linked to one and only one Customer (mandatory, and not more than one).",
+          "ref": "Compilation p13; Unsolved p2; M 9, M 14, M 16 screenshots · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "What does an Activity Diagram model?",
+          "options": [
+            "Static relationships",
+            "Step by step process flow",
+            "Database structure",
+            "System architecture"
+          ],
+          "answer": 1,
+          "why": "An activity diagram models the step-by-step flow of a process or workflow: actions, decisions, parallel flows and where it starts and ends.",
+          "ref": "Compilation p6; Unsolved p2; M 3, M 10 screenshots · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "What does a diamond symbol represent in an Activity Diagram?",
+          "options": [
+            "Start node",
+            "End node",
+            "Decision/Merge",
+            "Synchronization"
+          ],
+          "answer": 2,
+          "why": "A diamond is a decision node (one flow in, several guarded flows out) or a merge node (several flows in, one out). Synchronization uses a thick bar (fork/join).",
+          "ref": "Compilation p11; Unsolved p2; M 14 screenshot · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "Which statement about Flow Final Node is correct?",
+          "options": [
+            "It ends the whole process",
+            "It sends control to all other flows",
+            "It terminates only the path that arrives",
+            "It is represented by a filled circle"
+          ],
+          "answer": 2,
+          "why": "A Flow Final Node (circle with an X) kills only the flow that reaches it. The filled circle inside a ring is the Final Node that ends the whole activity.",
+          "ref": "Compilation p8; Unsolved p2; M 12 screenshot · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "What do fork and join bars represent?",
+          "options": [
+            "Messages",
+            "Attributes",
+            "Parallel execution paths",
+            "Loops"
+          ],
+          "answer": 2,
+          "why": "A fork splits one flow into concurrent flows and a join waits for all of them and merges them again, so the bars show parallel execution paths.",
+          "ref": "Compilation p6; Unsolved p2; M 4, M 9, M 10 screenshots · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "Which diagram uses swimlanes?",
+          "options": [
+            "Use Case Diagram",
+            "Activity Diagram",
+            "Class Diagram",
+            "State Diagram"
+          ],
+          "answer": 1,
+          "why": "Swimlanes (partitions) are a feature of activity diagrams. They group actions by the person, role or department responsible for them.",
+          "ref": "Compilation p7; Unsolved p2; M 8 PDF p2; M 3, M 6, M 14 screenshots · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "In a Class Diagram, if a class “Department” is associated with “Employee” with multiplicity 1..5, it means:",
+          "options": [
+            "Each department has exactly 5 employees",
+            "Each department has between 1 and 5 employees",
+            "Each employee can belong to 1–5 departments",
+            "There are 1–5 departments in total"
+          ],
+          "answer": 1,
+          "why": "The multiplicity written at the Employee end describes how many employees one department has. 1..5 is a range: at least 1 and at most 5.",
+          "ref": "Compilation p13; Unsolved p2; M 7, M 9, M 11, M 16 screenshots · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "What does a State Machine Diagram show?",
+          "options": [
+            "How objects change state in response to events",
+            "Database transactions",
+            "System hardware",
+            "Code structure"
+          ],
+          "answer": 0,
+          "why": "A state machine diagram shows the states an object can be in and how events cause transitions between those states over its life.",
+          "ref": "Compilation p1; Unsolved p3; M 1, M 2, M 9, M 12 screenshots · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "What triggers a transition between states?",
+          "options": [
+            "An attribute",
+            "An event (trigger)",
+            "A sequence number",
+            "A loop"
+          ],
+          "answer": 1,
+          "why": "A transition fires when its triggering event occurs (and its guard, if there is one, is true).",
+          "ref": "Compilation p3; Unsolved p3; M 1, M 4, M 10, M 12, M 15 screenshots · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "Which node in an Activity Diagram splits one flow into multiple concurrent flows?",
+          "options": [
+            "Fork Node",
+            "Join Node",
+            "Merge Node",
+            "Final Node"
+          ],
+          "answer": 0,
+          "why": "A fork node takes one incoming flow and starts several flows that run in parallel. A join node does the opposite and waits for all of them.",
+          "ref": "Compilation p1; Unsolved p3; M 8 PDF p4; M 1, M 16 screenshots · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "What are Entry/Exit activities in a state diagram?",
+          "options": [
+            "Operations that occur when entering/leaving a state",
+            "Database operations",
+            "Class methods",
+            "Server events"
+          ],
+          "answer": 0,
+          "why": "An entry action runs every time the state is entered and an exit action runs every time it is left, whichever transition is used.",
+          "ref": "Compilation p12; Unsolved p3; M 6, M 13, M 15 screenshots · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "In an Activity Diagram, reaching any Final Node ends the entire activity.",
+          "options": [
+            "True",
+            "False"
+          ],
+          "answer": 0,
+          "why": "The platform key is True: in this course the Final Node (Activity Final) ends all flows of the activity. Note that a Flow Final Node ends only its own flow, so the word 'any' makes the statement loose.",
+          "ref": "Compilation p7; Unsolved p3; M 3 screenshot (green tick on True); M 6, M 7 screenshots (False marked wrong) · from the paper",
+          "check": true
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "What does a guard condition represent?",
+          "options": [
+            "A message type",
+            "A condition that must be true to follow a transition",
+            "A loop indicator",
+            "A class constructor"
+          ],
+          "answer": 1,
+          "why": "A guard is a Boolean condition written in square brackets; the transition (or alt branch) can be followed only when the guard is true.",
+          "ref": "Compilation p12; Unsolved p3; M 6, M 7, M 10 screenshots · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "When a class “Library” has a multiplicity of 1..* with class “Book,” this means:",
+          "options": [
+            "A library may have no books",
+            "A library must have at least one book",
+            "A library has exactly one book",
+            "Each book belongs to multiple libraries"
+          ],
+          "answer": 1,
+          "why": "1..* means one or more: the lower bound is 1 and there is no upper limit, so a library always has at least one book.",
+          "ref": "Compilation p13; Unsolved p3; M 8 PDF p3; M 12, M 15 screenshots · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "In a sequence diagram, what does a lifeline represent?",
+          "options": [
+            "A data store",
+            "A class diagram",
+            "The existence of an object over time",
+            "A use case"
+          ],
+          "answer": 2,
+          "why": "A lifeline is the dashed vertical line under an object or actor box. It shows that the participant exists, and when it takes part, over time.",
+          "ref": "Compilation p15; Unsolved p3; M 12, M 14, M 16 screenshots · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "When two actors share similar responsibilities, you represent their relationship using:",
+          "options": [
+            "Include",
+            "Extend",
+            "Generalization",
+            "Dependency"
+          ],
+          "answer": 2,
+          "why": "Actors with common behavior are related by generalization: a general actor holds the shared responsibilities and the specialised actors inherit them.",
+          "ref": "Compilation p12; Unsolved p3; M 6, M 10, M 11 screenshots · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "Which of the following will cause the entire activity to stop immediately?",
+          "options": [
+            "Flow Final Node",
+            "Decision Node",
+            "Final Node",
+            "Merge Node"
+          ],
+          "answer": 2,
+          "why": "Reaching the Final Node (Activity Final) terminates the whole activity. A Flow Final Node only ends its own flow, and decision and merge nodes only route flows.",
+          "ref": "Compilation p2; Unsolved p4; M 1, M 9, M 11 screenshots · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "What does a synchronous message mean?",
+          "options": [
+            "The sender does not wait",
+            "The receiver rejects it",
+            "The sender waits for a response",
+            "It is broadcast to all lifelines"
+          ],
+          "answer": 2,
+          "why": "With a synchronous call the sender is blocked until the receiver finishes and sends a reply (return). It is drawn with a solid line and a filled arrowhead.",
+          "ref": "Compilation p13; Unsolved p4; M 9, M 10 screenshots · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "Which of the following is NOT part of an Activity Diagram?",
+          "options": [
+            "Actions",
+            "Swimlanes",
+            "Communication paths",
+            "Decision Nodes"
+          ],
+          "answer": 2,
+          "why": "Actions, swimlanes and decision nodes are activity diagram elements. Communication paths belong to other diagrams (for example communication or deployment diagrams).",
+          "ref": "Compilation p6; Unsolved p4; M 3, M 13 screenshots · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "Multiple Initial Nodes in an Activity Diagram are not allowed.",
+          "options": [
+            "True",
+            "False"
+          ],
+          "answer": 1,
+          "why": "UML allows more than one initial node in an activity; each one starts its own concurrent flow, so the statement is false.",
+          "ref": "Compilation p10; Unsolved p4; M 8 PDF p5; M 4, M 7, M 15 screenshots · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "What does an asynchronous message mean?",
+          "options": [
+            "The sender continues without waiting",
+            "The sender must wait",
+            "The message loops",
+            "The message returns immediately"
+          ],
+          "answer": 0,
+          "why": "With an asynchronous message the sender sends it and carries on straight away without waiting for a reply. It is drawn with an open arrowhead.",
+          "ref": "Compilation p5; Unsolved p4; M 8 PDF p3 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "What is shown along the vertical axis in a sequence diagram?",
+          "options": [
+            "Order of objects",
+            "Time progression",
+            "Data types",
+            "System boundaries"
+          ],
+          "answer": 1,
+          "why": "Time runs downward along the lifelines, so messages higher up happen earlier. The horizontal axis is used to place the participating objects.",
+          "ref": "Compilation p14; Unsolved p4; M 12, M 15, M 16 screenshots · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "What is a System Sequence Diagram (SSD)?",
+          "options": [
+            "A class hierarchy",
+            "A system view showing actors and system events",
+            "A state machine",
+            "Hardware specification"
+          ],
+          "answer": 1,
+          "why": "An SSD treats the whole system as one black box and shows the events that actors send to it and the responses for one scenario.",
+          "ref": "Compilation p3; Unsolved p4; M 1, M 5, M 9, M 16 screenshots · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "What do class diagrams represent?",
+          "options": [
+            "Database tables",
+            "Dynamic behavior",
+            "Static structure of the system",
+            "Test cases"
+          ],
+          "answer": 2,
+          "why": "Class diagrams show the static structure of the system: its classes, their attributes and operations, and the relationships between them. Dynamic behavior is shown by sequence, activity and state diagrams.",
+          "ref": "Unsolved p4; M 13 screenshot (green tick) · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "An Activity Diagram may contain more than one Final Node.",
+          "options": [
+            "True",
+            "False"
+          ],
+          "answer": 0,
+          "why": "An activity can end in several places, for example one final node per possible outcome, so more than one Final Node is allowed.",
+          "ref": "Compilation p10; Unsolved p4; M 4, M 7 screenshots · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "What is a class?",
+          "options": [
+            "An instance",
+            "A blueprint defining similar objects",
+            "A message",
+            "A loop structure"
+          ],
+          "answer": 1,
+          "why": "A class is a template that defines the attributes and operations shared by a set of similar objects. An instance (object) is one concrete thing built from it.",
+          "ref": "Compilation p7; Unsolved p4; M 3, M 16 screenshots · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "In an alt fragment, the conditions that control which path is taken are called:",
+          "options": [
+            "Guards",
+            "Loops",
+            "Messages",
+            "Lifelines"
+          ],
+          "answer": 0,
+          "why": "Each operand of an alt fragment has a guard in square brackets. The operand whose guard is true is executed.",
+          "ref": "Compilation p13; Unsolved p5; M 8 PDF p2 · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "What is an attribute in a class?",
+          "options": [
+            "A message between objects",
+            "A property that stores data",
+            "A process",
+            "A state"
+          ],
+          "answer": 1,
+          "why": "An attribute is a named property of a class that holds data (for example name or price). The behaviors of a class are its operations (methods).",
+          "ref": "Compilation p14; Unsolved p5; M 10 screenshot · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "What is an association?",
+          "options": [
+            "An inheritance relationship",
+            "A relationship between classes",
+            "A data type",
+            "A UML note"
+          ],
+          "answer": 1,
+          "why": "An association is a structural link between classes, drawn as a line (often with multiplicities) showing that their objects are connected. Inheritance is generalization, not association.",
+          "ref": "Compilation p4-p5; Unsolved p5; M 8 PDF p2; M 12, M 13 screenshots · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "A Flow Final Node ends only the flow that reaches it, not the whole activity.",
+          "options": [
+            "True",
+            "False"
+          ],
+          "answer": 0,
+          "why": "True. A Flow Final Node ends just its own flow while other flows continue. Only the Final Node ends the whole activity.",
+          "ref": "Compilation p5; Unsolved p5; M 8 PDF p4; M 11 screenshot · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "What is aggregation?",
+          "options": [
+            "Strong ownership",
+            "Inheritance",
+            "Weak “whole–part” relationship",
+            "Sequence of states"
+          ],
+          "answer": 2,
+          "why": "Aggregation is a weak whole-part relationship (hollow diamond): the part can exist without the whole. Strong ownership is composition.",
+          "ref": "Compilation p14; Unsolved p5; M 11, M 12 screenshots · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "What is composition?",
+          "options": [
+            "A weak connection",
+            "Optional association",
+            "Strong ownership: part cannot exist without whole",
+            "Actor communication"
+          ],
+          "answer": 2,
+          "why": "Composition (filled diamond) is strong ownership: the part belongs to exactly one whole and is destroyed when the whole is destroyed.",
+          "ref": "Compilation p11; Unsolved p5; M 11, M 15 screenshots · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "You can use multiple Final Nodes to represent different possible outcomes of a process.",
+          "options": [
+            "True",
+            "False"
+          ],
+          "answer": 0,
+          "why": "True. Several final nodes can be used so that each possible outcome of the process has its own end point.",
+          "ref": "Compilation p3, p7; Unsolved p5; M 1, M 3, M 11 screenshots · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "If an Activity Diagram of a library borrowing process shows two parallel flows after Search Book which UML element is required?",
+          "options": [
+            "Decision Node",
+            "Join Node",
+            "Fork Node",
+            "Merge Node"
+          ],
+          "answer": 2,
+          "why": "Splitting one flow into two parallel flows needs a fork node. A join would only be needed later to bring them back together.",
+          "ref": "Unsolved p5; M 16 screenshot (green tick) · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "Which relationship in a Use Case Diagram indicates that one use case always uses the behavior of another?",
+          "options": [
+            "Generalization",
+            "Association",
+            "Include",
+            "Extend"
+          ],
+          "answer": 2,
+          "why": "«include» means the base use case always uses the behavior of the included use case. «extend» adds optional behavior.",
+          "ref": "Compilation p15; Unsolved p5; M 13, M 14 screenshots · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "In a Sequence Diagram, a self-message occurs when:",
+          "options": [
+            "An object sends a message to another object",
+            "An object sends a message to itself",
+            "An actor sends a message to an object",
+            "A message is returned from an object"
+          ],
+          "answer": 1,
+          "why": "A self-message is an arrow that leaves a lifeline and returns to the same lifeline: the object calls one of its own operations. (The yellow highlight on p4 of the compilation is on the wrong option; the platform marks this one correct.)",
+          "ref": "Compilation p4; Unsolved p6; M 6, M 15 screenshots (green tick) · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "In an Activity Diagram, the node used to bring parallel flows back into a single flow is:",
+          "options": [
+            "Fork",
+            "Merge",
+            "Join",
+            "Decision"
+          ],
+          "answer": 2,
+          "why": "A join node waits until all parallel flows arrive and then continues as one flow. A merge node only combines alternative flows and does not synchronize.",
+          "ref": "Compilation p13; Unsolved p6; M 9 screenshot · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "In a Sequence Diagram, which type of message allows an object to call a method in another object and wait for a response?",
+          "options": [
+            "Synchronous message",
+            "Asynchronous message",
+            "Return message",
+            "Create message"
+          ],
+          "answer": 0,
+          "why": "A synchronous message is a call after which the sender waits for the receiver to finish and reply.",
+          "ref": "Compilation p4; Unsolved p6; M 2, M 6 screenshots · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "What is the main purpose of the Final Node in an Activity Diagram?",
+          "options": [
+            "Ends only one flow",
+            "Stops the entire activity",
+            "Creates a parallel flow",
+            "Starts a new activity"
+          ],
+          "answer": 1,
+          "why": "The Final Node marks the end of the whole activity: when a flow reaches it, all remaining flows stop.",
+          "ref": "Compilation p9; Unsolved p6; M 4, M 16 screenshots · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "In an Activity Diagram, which element terminates only the specific flow reaching it, not the entire activity?",
+          "options": [
+            "Initial Node",
+            "Decision Node",
+            "Flow Final Node",
+            "Final Node"
+          ],
+          "answer": 2,
+          "why": "The Flow Final Node (circle with an X) ends only its own flow. The Final Node ends the entire activity.",
+          "ref": "Compilation p7; Unsolved p6; M 4, M 9, M 14 screenshots · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "A transition defined as event [guard] means that the transition occurs only when:",
+          "options": [
+            "The guard is true",
+            "The activity completes",
+            "The event occurs and the guard is true",
+            "No event is triggered"
+          ],
+          "answer": 2,
+          "why": "Both parts must hold: the named event has to occur and the guard condition has to be true at that moment.",
+          "ref": "Compilation p5; Unsolved p6; M 6, M 14 screenshots · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "Use Case Modelling is particularly effective because it:",
+          "options": [
+            "Specifies low-level implementation logic",
+            "Focuses on what the system should do from a user’s perspective",
+            "Eliminates the need for testing scenarios",
+            "Automatically generates activity diagrams"
+          ],
+          "answer": 1,
+          "why": "Use case modelling describes the required behavior from the user's point of view (what the system does, not how), which makes it easy to discuss with stakeholders. It does not replace testing or generate other diagrams.",
+          "ref": "Unsolved p6 · solved here"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "In a Sequence Diagram, which fragment represents a choice between two or more possible message flows?",
+          "options": [
+            "Loop Fragment",
+            "Alternative Fragment (alt)",
+            "Optional Fragment",
+            "Parallel Fragment"
+          ],
+          "answer": 1,
+          "why": "The alt fragment holds two or more operands guarded by conditions, and only one of them runs (like if/else). Loop repeats and par runs in parallel.",
+          "ref": "Compilation p2; Unsolved p6; M 1, M 14, M 15 screenshots · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "Which of the following correctly matches use case relationships?",
+          "options": [
+            "Include → adds optional behavior",
+            "Extend → always executed when base case runs",
+            "Extend → adds conditional behavior to base case",
+            "Generalization → merges two unrelated use cases"
+          ],
+          "answer": 2,
+          "why": "«extend» adds conditional (optional) behavior to a base use case. «include» is always executed, and generalization links a specialised use case to a general one, not unrelated ones.",
+          "ref": "Compilation p2; Unsolved p6; M 8 PDF p4; M 1, M 5, M 13 screenshots · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "Which scenario is best represented using swim-lanes in Activity Diagrams?",
+          "options": [
+            "A user logging into a system with multiple steps",
+            "Multiple roles performing different parts of the same workflow",
+            "Sequential tasks performed by a single role",
+            "Static relationships between actors"
+          ],
+          "answer": 1,
+          "why": "Swimlanes divide an activity diagram by who is responsible, so they fit a workflow in which several roles each do part of the work.",
+          "ref": "Compilation p12; Unsolved p7; M 8 PDF p3; M 10, M 11, M 15 screenshots · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "In a State Diagram, which action continues to run while the system remains in that state?",
+          "options": [
+            "Entry Action",
+            "Do Activity",
+            "Exit Action",
+            "Send Event"
+          ],
+          "answer": 1,
+          "why": "The do activity starts after the entry action and keeps running as long as the object stays in the state. Entry and exit actions run once, on entering and leaving.",
+          "ref": "Compilation p9; Unsolved p7; M 4, M 7, M 10, M 14 screenshots · from the paper"
+        },
+        {
+          "kind": "mcq",
+          "group": "Platform quiz 2",
+          "text": "In a Sequence Diagram, what does a dashed arrow usually represent?",
+          "options": [
+            "Synchronous message",
+            "Asynchronous message",
+            "Return message",
+            "Self-message"
+          ],
+          "answer": 2,
+          "why": "A dashed arrow with an open head is a return message (the reply to a call). Synchronous calls use a solid line with a filled head, asynchronous ones a solid line with an open head.",
+          "ref": "Compilation p2; Unsolved p7; M 1, M 15 screenshots · from the paper"
+        }
+      ]
+    }
+  ]
+}

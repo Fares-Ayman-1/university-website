@@ -1,6 +1,7 @@
 import "server-only";
 import { COLLECTION_META, getCollection, getSubjects, itemHref } from "@/lib/content";
 import { getStudyData } from "@/lib/study-index";
+import { getDrills } from "@/lib/qa";
 import type { SearchDoc } from "@/lib/search";
 
 /** Every searchable thing on the site, built at build time into /search-index.json. */
@@ -74,6 +75,17 @@ export function buildSearchIndex(): SearchDoc[] {
         topics: ["exam", "quiz", "test", "review"],
       },
     );
+
+    for (const drill of getDrills(subject.slug)) {
+      docs.push({
+        kind: "qa",
+        title: drill.title,
+        context: `${subject.title} · ${drill.questionCount} questions`,
+        href: `${subjectHref}qa/${drill.slug}/`,
+        text: drill.lede,
+        topics: ["q&a", "questions", "mcq", "drill", "practice", ...drill.banks.map((bank) => `${bank.tag} ${bank.name}`)],
+      });
+    }
   }
 
   return docs;

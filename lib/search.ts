@@ -3,7 +3,7 @@
  * palette (components/search/CommandPalette.tsx). Client-safe: no Node APIs here.
  */
 
-export type SearchKind = "subject" | "lecture" | "section" | "heading" | "definition" | "review";
+export type SearchKind = "subject" | "lecture" | "section" | "heading" | "definition" | "review" | "qa";
 
 export type SearchDoc = {
   kind: SearchKind;
@@ -62,6 +62,7 @@ const KIND_BONUS: Record<SearchKind, number> = {
   lecture: 4,
   section: 4,
   review: 3,
+  qa: 3,
   definition: 2,
   heading: 0,
 };

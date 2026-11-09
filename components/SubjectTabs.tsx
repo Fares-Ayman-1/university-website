@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { m } from "framer-motion";
-import { BookOpen, FlaskConical, GraduationCap, LayoutGrid } from "lucide-react";
+import { BookOpen, FlaskConical, GraduationCap, LayoutGrid, MessageCircleQuestionMark } from "lucide-react";
 import { MotionRoot } from "@/components/motion/MotionRoot";
 import { DUR, EASE } from "@/lib/motion";
 import styles from "./SubjectTabs.module.css";
@@ -12,10 +12,13 @@ export function SubjectTabs({
   subject,
   lectureCount,
   sectionCount,
+  qaCount,
 }: {
   subject: string;
   lectureCount: number;
   sectionCount: number;
+  /** Q&A drills in this subject */
+  qaCount: number;
 }) {
   const pathname = usePathname();
   const base = `/subjects/${subject}/`;
@@ -25,6 +28,8 @@ export function SubjectTabs({
     { href: `${base}sections/`, label: "Sections", icon: FlaskConical, kind: "sections", count: sectionCount, prefix: false },
     // Stays active on its sub-pages (flashcards, exam).
     { href: `${base}review/`, label: "Review", icon: GraduationCap, kind: undefined, count: undefined, prefix: true },
+    // Stays active on each drill's page.
+    { href: `${base}qa/`, label: "Q&A", icon: MessageCircleQuestionMark, kind: undefined, count: qaCount, prefix: true },
   ];
   const normalized = pathname.endsWith("/") ? pathname : `${pathname}/`;
 

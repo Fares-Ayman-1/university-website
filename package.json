@@ -11,7 +11,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "check:arabic": "node scripts/check-arabic.mjs"
+    "check:arabic": "node scripts/check-arabic.mjs",
+    "import:qa": "node scripts/import-qa.mjs"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.3.0",
