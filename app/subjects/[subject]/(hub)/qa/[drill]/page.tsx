@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { QaDrill } from "@/components/qa/QaDrill";
-import { getSubject } from "@/lib/content";
+import { getSubject, getSubjects } from "@/lib/content";
 import { getDrill, getDrills } from "@/lib/qa";
 import styles from "@/components/review/Review.module.css";
 
@@ -11,8 +11,13 @@ type Props = { params: Promise<{ subject: string; drill: string }> };
 
 export const dynamicParams = false;
 
-export function generateStaticParams({ params }: { params: { subject: string } }) {
-  return getDrills(params.subject).map((drill) => ({ drill: drill.slug }));
+// Every subject × drill pair, whatever the parent segment passes in. Returning [] for a subject
+// without drills makes Next 15 pass that subject through with no `drill`, decide the route's params
+// are incomplete, and skip prerendering it entirely, so every drill would 404 in production.
+export function generateStaticParams() {
+  return getSubjects().flatMap((subject) =>
+    getDrills(subject.slug).map((drill) => ({ subject: subject.slug, drill: drill.slug })),
+  );
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
