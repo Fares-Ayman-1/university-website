@@ -1,0 +1,2453 @@
+{
+  "title": "AI Lecture Drill",
+  "kicker": "Artificial Intelligence · Lectures 1–3",
+  "heading": "Lecture Drill",
+  "lede": "Practice questions written from your three lecture PDFs and the course book, one tab per lecture. Pick an answer to see at once whether it is right. For classification questions, sort every item into its category. Each answer has a short explanation and the slide or book page it comes from.",
+  "foot": "These are practice questions written from your lecture slides and the AI301 course book (marked \"Book\"). They are not past exam papers. A classification question counts as correct only when every item is in the right category. Progress is saved in this browser only.",
+  "banksLabel": "Lectures",
+  "unit": "lectures",
+  "order": 1,
+  "source": "AI Lec 1-3 slides and 3rd_Artificial_Intelligence_Book.pdf (Ch 1-3)",
+  "banks": [
+    {
+      "id": "lecture-1",
+      "tag": "Lecture 1",
+      "name": "Introduction to AI and Intelligent Agents",
+      "scope": "45 questions · 7 classification",
+      "questions": [
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "Which of the following is NOT one of the four categories of AI definitions shown on the slide?",
+          "options": [
+            "Systems that think like humans",
+            "Systems that act rationally",
+            "Systems that learn like humans",
+            "Systems that think rationally"
+          ],
+          "answer": 2,
+          "why": "The slide's table has four cells: think like humans, think rationally, act like humans and act rationally. Learning is not one of the four categories.",
+          "ref": "Slide 3 · Definitions of AI"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "The book builds its four approaches to AI from two dimensions. Which two?",
+          "options": [
+            "Human vs. rational, and thought vs. behavior",
+            "Symbolic vs. neural, and online vs. offline",
+            "Human vs. machine, and learning vs. reasoning",
+            "Static vs. dynamic, and single vs. multiagent"
+          ],
+          "answer": 0,
+          "why": "Some define intelligence by fidelity to human performance and others by rationality; some focus on internal thought, others on external behavior. Crossing these two dimensions gives the four approaches.",
+          "ref": "Book p. 7 · Four AI approaches"
+        },
+        {
+          "kind": "sort",
+          "group": "Lecture 1",
+          "text": "Classify each description under the AI approach it belongs to.",
+          "categories": [
+            "Acting humanly",
+            "Thinking humanly",
+            "Thinking rationally",
+            "Acting rationally"
+          ],
+          "items": [
+            {
+              "text": "The Turing test approach",
+              "category": 0
+            },
+            {
+              "text": "Proposed by Alan Turing in 1950 to avoid the vague question 'Can a machine think?'",
+              "category": 0
+            },
+            {
+              "text": "The cognitive modeling approach",
+              "category": 1
+            },
+            {
+              "text": "Studies the mind through introspection, psychological experiments and brain imaging",
+              "category": 1
+            },
+            {
+              "text": "The 'laws of thought' approach",
+              "category": 2
+            },
+            {
+              "text": "Began with Aristotle's attempt to codify 'right thinking'",
+              "category": 2
+            },
+            {
+              "text": "The rational agent approach",
+              "category": 3
+            },
+            {
+              "text": "Acts to achieve the best outcome or, when uncertain, the best expected outcome",
+              "category": 3
+            }
+          ],
+          "why": "Acting humanly is the Turing test; thinking humanly is cognitive modeling via introspection, experiments and brain imaging. Thinking rationally is the laws-of-thought approach from Aristotle; acting rationally is the rational agent approach.",
+          "ref": "Book pp. 7-9 · Four AI approaches"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "For the Turing test a machine needs natural language processing, knowledge representation, automated reasoning and machine learning. What else is needed to pass the total Turing test?",
+          "options": [
+            "Theorem proving and symbolic mathematics",
+            "Planning and expert systems",
+            "Search and game playing",
+            "Computer vision and robotics"
+          ],
+          "answer": 3,
+          "why": "For the total Turing test a robot also needs computer vision and speech recognition to perceive the world, and robotics to manipulate objects and move about.",
+          "ref": "Book p. 8 · Total Turing test"
+        },
+        {
+          "kind": "sort",
+          "group": "Lecture 1",
+          "text": "Classify each question under the foundation discipline of AI that asks it.",
+          "categories": [
+            "Philosophy",
+            "Mathematics",
+            "Economics"
+          ],
+          "items": [
+            {
+              "text": "Where does knowledge come from?",
+              "category": 0
+            },
+            {
+              "text": "How does the mind arise from a physical brain?",
+              "category": 0
+            },
+            {
+              "text": "How does knowledge lead to action?",
+              "category": 0
+            },
+            {
+              "text": "What can be computed?",
+              "category": 1
+            },
+            {
+              "text": "How do we reason with uncertain information?",
+              "category": 1
+            },
+            {
+              "text": "How should we make decisions in accordance with our preferences?",
+              "category": 2
+            },
+            {
+              "text": "How should we decide when others may not cooperate?",
+              "category": 2
+            },
+            {
+              "text": "How should we plan when the payoff may be far in the future?",
+              "category": 2
+            }
+          ],
+          "why": "Philosophy asks where knowledge comes from, how the mind arises and how knowledge leads to action. Mathematics asks what can be computed and how to reason with uncertainty. Economics asks about preferences, uncooperative others and distant payoffs.",
+          "ref": "Book p. 10 · Foundations of AI"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "The book says knowledge has some less desirable properties. Which of the following is NOT one of them?",
+          "options": [
+            "It is huge",
+            "It is easy to modify and correct",
+            "It is constantly varying",
+            "It is difficult to characterize correctly"
+          ],
+          "answer": 1,
+          "why": "The listed properties are: huge, difficult to characterize correctly, constantly varying, organized by its application, and complicated. Being easy to modify is a goal for how an AI technique represents knowledge.",
+          "ref": "Book p. 15 · AI techniques"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "In the first tic-tac-toe approach, BOARD has nine squares, each holding 0 (blank), 1 (X) or 2 (O). How many elements does MOVETABLE have?",
+          "options": [
+            "512",
+            "6,561",
+            "19,683",
+            "362,880"
+          ],
+          "answer": 2,
+          "why": "Each of the 9 squares has 3 possible values, so there are 3^9 = 19,683 possible boards, one MOVETABLE entry each. 512 would be 2^9 and 6,561 only 3^8.",
+          "ref": "Book p. 16 · Tic-tac-toe first approach"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "On the slides, an agent is defined as an entity that ......",
+          "options": [
+            "perceives and acts",
+            "learns and plans",
+            "thinks like a human",
+            "maximizes its utility"
+          ],
+          "answer": 0,
+          "why": "The slide defines an agent simply as an entity that perceives and acts. Thinking like a human or maximizing utility describe particular approaches or agent types, not the general definition.",
+          "ref": "Slide 4 · Rational agents"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "Abstractly, an agent is a function f : P* → A. What does P* stand for?",
+          "options": [
+            "The set of possible actions",
+            "The set of percept histories",
+            "The fixed performance measure",
+            "The physical architecture"
+          ],
+          "answer": 1,
+          "why": "The agent function maps percept histories to actions. So P* is the set of all percept sequences, and A is the set of actions.",
+          "ref": "Slide 4 · Agent function"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "The slides warn that computational limitations make perfect rationality unachievable. What do they conclude we should do?",
+          "options": [
+            "Build an agent that knows every outcome ahead of time",
+            "Store the whole agent function as a lookup table",
+            "Let the agent choose its own performance measure",
+            "Design the best program for given machine resources"
+          ],
+          "answer": 3,
+          "why": "Because perfect rationality is out of reach, the aim becomes the best program for the given machine resources. Knowing every outcome would be omniscience, which rationality does not require.",
+          "ref": "Slide 4 · Limits of rationality"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "The agent ...... runs on the physical architecture to produce the agent function f.",
+          "options": [
+            "program",
+            "function",
+            "environment",
+            "percept"
+          ],
+          "answer": 0,
+          "why": "The agent function is the abstract mapping from percept histories to actions. The agent program is the concrete thing that runs on the architecture and produces that function.",
+          "ref": "Slide 7 · Agent function vs program"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "According to the book, an agent's choice of action at any time can depend on ......",
+          "options": [
+            "only its current percept, never any earlier ones",
+            "anything in the environment, perceived or not",
+            "built-in knowledge and the whole percept sequence",
+            "the actual outcomes its future actions will have"
+          ],
+          "answer": 2,
+          "why": "The percept sequence is the complete history of percepts. An action can depend on built-in knowledge and the whole percept sequence to date, but not on anything the agent has not perceived.",
+          "ref": "Book p. 24 · Percepts and percept sequences"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "In the vacuum-cleaner world, which of the following is NOT one of the agent's actions?",
+          "options": [
+            "Suck",
+            "NoOp",
+            "Left",
+            "Clean"
+          ],
+          "answer": 3,
+          "why": "The actions are Left, Right, Suck and NoOp. Clean is a value of the square's contents in a percept such as [A, Clean], not an action.",
+          "ref": "Slide 8 · Vacuum-cleaner world"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "What input does the `REFLEX-VACUUM-AGENT` function receive each time it is called?",
+          "options": [
+            "The whole percept sequence received so far",
+            "Only the current percept [location, status]",
+            "A table of all possible percept sequences",
+            "The task's performance measure and its goals"
+          ],
+          "answer": 1,
+          "why": "The function takes one percept, [location, status], and decides from it alone. The table above it lists percept sequences, but this small program does not need the history.",
+          "ref": "Slide 9 · Vacuum-cleaner agent"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "`REFLEX-VACUUM-AGENT` receives the percept [B, Clean]. Which action does it return?",
+          "options": [
+            "Left",
+            "Right",
+            "Suck",
+            "NoOp"
+          ],
+          "answer": 0,
+          "why": "Status is not Dirty, so it does not Suck. Location is not A, so it does not move Right. Location is B, so the function returns Left.",
+          "ref": "Slide 24 · Reflex vacuum agent"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "A fixed ...... evaluates the environment sequence.",
+          "options": [
+            "agent program",
+            "condition-action rule",
+            "performance measure",
+            "percept sequence"
+          ],
+          "answer": 2,
+          "why": "The performance measure scores the sequence of environment states that the agent's actions cause. It is fixed in advance by the designer, not chosen by the agent.",
+          "ref": "Slide 10 · Performance measure"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "Which of these is suggested on the slide as a possible performance measure for the vacuum world?",
+          "options": [
+            "One point for every Suck action it performs",
+            "One point per square cleaned up in time T",
+            "One point for every move it makes between squares",
+            "One point for each percept it receives in time T"
+          ],
+          "answer": 1,
+          "why": "The slide suggests one point per square cleaned up in time T, one point per clean square per time step minus one per move, or a penalty for more than k dirty squares.",
+          "ref": "Slide 10 · Performance measure examples"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "A vacuum agent is scored by the amount of dirt it cleans up in one eight-hour shift. What problem does the book point out?",
+          "options": [
+            "It cannot perceive whether its current square is dirty",
+            "It would be rewarded for staying in one square",
+            "It needs an infinitely large lookup table",
+            "It can score by dumping dirt and cleaning it again"
+          ],
+          "answer": 3,
+          "why": "A rational agent maximizes exactly what you ask for, so it could clean, dump the dirt, and clean again. Measure what you want in the environment, such as clean squares per time step, not how the agent should behave.",
+          "ref": "Book p. 27 · Designing performance measures"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "A rational agent chooses whichever action maximizes the ...... value of the performance measure, given the percept sequence to date.",
+          "options": [
+            "expected",
+            "actual",
+            "average past",
+            "worst-case"
+          ],
+          "answer": 0,
+          "why": "Rationality uses the expected value, because the agent cannot know actual outcomes in advance. That is why the slide says rational does not mean successful.",
+          "ref": "Slide 10 · Rational agent definition"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "What is rational at any given time depends on four things. Which of the following is NOT one of them?",
+          "options": [
+            "The performance measure that defines success",
+            "The agent's prior knowledge of the environment",
+            "The actual outcome of the agent's actions",
+            "The agent's percept sequence to date"
+          ],
+          "answer": 2,
+          "why": "The four are the performance measure, prior knowledge, the actions the agent can perform, and the percept sequence to date. Knowing actual outcomes would need omniscience, which is impossible in reality.",
+          "ref": "Book p. 28 · What rationality depends on"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "The slide says a rational agent is not clairvoyant. What reason does it give?",
+          "options": [
+            "Percepts may not supply all relevant information",
+            "Action outcomes may not be as expected",
+            "The performance measure may change over time",
+            "The agent may have too few actuators"
+          ],
+          "answer": 1,
+          "why": "Not clairvoyant means action outcomes may not be as expected. Missing information in the percepts is the slide's reason for a different point: rational does not mean omniscient.",
+          "ref": "Slide 10 · Rational vs clairvoyant"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "The slide says Rational ⇒ three things. Which of the following is NOT one of them?",
+          "options": [
+            "Exploration",
+            "Learning",
+            "Autonomy",
+            "Omniscience"
+          ],
+          "answer": 3,
+          "why": "The slide states Rational ⇒ exploration, learning, autonomy. Omniscience is the opposite point: a rational agent is not omniscient, because its percepts may not supply all relevant information.",
+          "ref": "Slide 10 · What rationality implies"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "PEAS is used to specify a task environment. What do its letters stand for?",
+          "options": [
+            "Performance, Environment, Actuators, Sensors",
+            "Percept sequence, Environment, Actions, States",
+            "Performance, Evaluation, Agent program, Sensors",
+            "Percepts, Effectors, Agent function, Search"
+          ],
+          "answer": 0,
+          "why": "PEAS lists the Performance measure, Environment, Actuators and Sensors. To design a rational agent, we must first specify this task environment.",
+          "ref": "Slide 11 · PEAS task environment"
+        },
+        {
+          "kind": "sort",
+          "group": "Lecture 1",
+          "text": "Classify each item from the automated taxi's PEAS description.",
+          "categories": [
+            "Performance measure",
+            "Environment",
+            "Actuators",
+            "Sensors"
+          ],
+          "items": [
+            {
+              "text": "Safety",
+              "category": 0
+            },
+            {
+              "text": "Legality",
+              "category": 0
+            },
+            {
+              "text": "Traffic",
+              "category": 1
+            },
+            {
+              "text": "Weather",
+              "category": 1
+            },
+            {
+              "text": "Brake",
+              "category": 2
+            },
+            {
+              "text": "Speaker/display",
+              "category": 2
+            },
+            {
+              "text": "Keyboard",
+              "category": 3
+            },
+            {
+              "text": "GPS",
+              "category": 3
+            }
+          ],
+          "why": "Safety and legality judge the taxi, and traffic and weather are what it drives in. The brake and speaker/display act on the world, while the keyboard and GPS bring information in, so they are sensors.",
+          "ref": "Slide 12 · PEAS for automated taxi"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "Which of these is listed as an actuator of the internet shopping agent?",
+          "options": [
+            "HTML pages",
+            "Vendors and shippers",
+            "Fill in form",
+            "Price and quality"
+          ],
+          "answer": 2,
+          "why": "The actuators are display to user, follow URL and fill in form. HTML pages are its sensors, vendors and shippers its environment, and price and quality its performance measure.",
+          "ref": "Slide 14 · Internet shopping agent"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "Which of these belongs to the performance measure of the internet shopping agent?",
+          "options": [
+            "Following URLs",
+            "Current WWW sites",
+            "HTML scripts",
+            "Appropriateness"
+          ],
+          "answer": 3,
+          "why": "The performance measure is price, quality, appropriateness and efficiency. Following URLs is an actuator, WWW sites are its environment, and scripts are part of the HTML pages it senses.",
+          "ref": "Slide 14 · Internet shopping agent"
+        },
+        {
+          "kind": "sort",
+          "group": "Lecture 1",
+          "text": "Using the slides' environment types table, classify each entry.",
+          "categories": [
+            "Yes",
+            "No",
+            "Semi or Partly"
+          ],
+          "items": [
+            {
+              "text": "Solitaire: observable?",
+              "category": 0
+            },
+            {
+              "text": "Solitaire: deterministic?",
+              "category": 0
+            },
+            {
+              "text": "Internet shopping: discrete?",
+              "category": 0
+            },
+            {
+              "text": "Backgammon: deterministic?",
+              "category": 1
+            },
+            {
+              "text": "Backgammon: single-agent?",
+              "category": 1
+            },
+            {
+              "text": "Internet shopping: observable?",
+              "category": 1
+            },
+            {
+              "text": "Internet shopping: static?",
+              "category": 2
+            },
+            {
+              "text": "Internet shopping: deterministic?",
+              "category": 2
+            }
+          ],
+          "why": "In the table, Solitaire is Yes for observable and deterministic, and shopping is Yes for discrete. Backgammon is No for deterministic and single-agent, shopping is No for observable, and shopping is Partly deterministic and Semi static.",
+          "ref": "Slide 21 · Environment types table"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "In the slides' environment table, how many of the four environments (Solitaire, Backgammon, Internet shopping, Taxi) are episodic?",
+          "options": [
+            "Only Solitaire",
+            "None of them",
+            "Solitaire and Backgammon",
+            "All four"
+          ],
+          "answer": 1,
+          "why": "The Episodic row reads No for all four. Even Solitaire, which is Yes for observable, deterministic, static and discrete, is not episodic.",
+          "ref": "Slide 18 · Episodic environments"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "In the slides' environment table, which environment is marked single-agent 'except auctions'?",
+          "options": [
+            "Internet shopping",
+            "Backgammon",
+            "Solitaire",
+            "Taxi"
+          ],
+          "answer": 0,
+          "why": "Internet shopping is marked Yes for single-agent, with auctions noted as the exception. Solitaire is single-agent with no exception, while Backgammon and Taxi are No.",
+          "ref": "Slide 21 · Single-agent environments"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "In the slides' environment table, which environment gets No in every row (observable, deterministic, episodic, static, discrete, single-agent)?",
+          "options": [
+            "Solitaire",
+            "Backgammon",
+            "Internet shopping",
+            "Taxi"
+          ],
+          "answer": 3,
+          "why": "Taxi is No in all six rows. Backgammon is Yes for observable and discrete, and internet shopping is Yes for discrete and single-agent.",
+          "ref": "Slide 21 · Environment types table"
+        },
+        {
+          "kind": "sort",
+          "group": "Lecture 1",
+          "text": "The slides describe what the real world is like. Classify each property.",
+          "categories": [
+            "True of the real world",
+            "Not true of the real world"
+          ],
+          "items": [
+            {
+              "text": "Partially observable",
+              "category": 0
+            },
+            {
+              "text": "Stochastic",
+              "category": 0
+            },
+            {
+              "text": "Sequential",
+              "category": 0
+            },
+            {
+              "text": "Continuous",
+              "category": 0
+            },
+            {
+              "text": "Deterministic",
+              "category": 1
+            },
+            {
+              "text": "Episodic",
+              "category": 1
+            },
+            {
+              "text": "Static",
+              "category": 1
+            },
+            {
+              "text": "Single-agent",
+              "category": 1
+            }
+          ],
+          "why": "The slide says the real world is partially observable, stochastic, sequential, dynamic, continuous and multi-agent. So deterministic, episodic, static and single-agent do not describe it.",
+          "ref": "Slide 21 · The real world"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "The slides state that the environment type largely determines the ......",
+          "options": [
+            "performance measure",
+            "percept sequence",
+            "agent design",
+            "number of sensors"
+          ],
+          "answer": 2,
+          "why": "After classifying the example environments, the slide concludes that the environment type largely determines the agent design. The book agrees that the task environment affects the design of the agent program.",
+          "ref": "Slide 21 · Environment and design"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "A weather model says 'there's a 25% chance of rain tomorrow'. In the book's terms, this model is ......",
+          "options": [
+            "stochastic",
+            "nondeterministic",
+            "deterministic",
+            "semi-dynamic"
+          ],
+          "answer": 0,
+          "why": "The book calls a model stochastic when it explicitly deals with probabilities. Saying only 'there's a chance of rain', without numbers, would make it nondeterministic.",
+          "ref": "Book p. 35 · Stochastic vs nondeterministic"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "The environment itself does not change with the passage of time, but the agent's performance score does, as in chess played with a clock. The book calls this environment ......",
+          "options": [
+            "dynamic",
+            "semi-dynamic",
+            "static",
+            "nondeterministic"
+          ],
+          "answer": 1,
+          "why": "Semi-dynamic means the environment stays the same over time while the performance score changes. Taxi driving is dynamic, and crossword puzzles are static.",
+          "ref": "Book p. 36 · Static vs dynamic"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "The slides list four basic agent types in order of increasing generality. Which order is correct?",
+          "options": [
+            "Simple reflex, goal-based, reflex with state, utility-based",
+            "Reflex with state, simple reflex, utility-based, goal-based",
+            "Simple reflex, reflex with state, utility-based, goal-based",
+            "Simple reflex, reflex with state, goal-based, utility-based"
+          ],
+          "answer": 3,
+          "why": "The order is simple reflex, reflex with state, goal-based, then utility-based. Each adds to the one before: internal state, then goals, then a utility measure of how happy a state makes the agent.",
+          "ref": "Slide 22 · Agent types"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "According to the slides, all four basic agent types can be turned into ......",
+          "options": [
+            "utility-based agents",
+            "table-driven agents",
+            "learning agents",
+            "omniscient agents"
+          ],
+          "answer": 2,
+          "why": "The slide says all these can be turned into learning agents. The book adds that any type, model-based, goal-based or utility-based, can be built as a learning agent or not.",
+          "ref": "Slide 22 · Agent types"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "Which agent type has no internal State in its diagram, so it picks an action only from what the world is like now?",
+          "options": [
+            "Simple reflex agent",
+            "Reflex agent with state",
+            "Goal-based agent",
+            "Utility-based agent"
+          ],
+          "answer": 0,
+          "why": "In the simple reflex diagram, sensors give what the world is like now and condition-action rules pick the action. The other three diagrams all add a State oval and a model of how the world evolves.",
+          "ref": "Slide 23 · Simple reflex agents"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "A simple reflex vacuum agent ignores its percept history. In the two-square world, this cuts the number of relevant percept sequences from 4^T to ......",
+          "options": [
+            "2",
+            "4",
+            "8",
+            "T"
+          ],
+          "answer": 1,
+          "why": "Only the current percept matters, and a percept is one of 2 locations times 2 statuses, so just 4 cases remain. This is why the reflex program is so much smaller than the table.",
+          "ref": "Book p. 41 · Simple reflex agents"
+        },
+        {
+          "kind": "sort",
+          "group": "Lecture 1",
+          "text": "Each box or oval below first appears in the diagram of which agent type?",
+          "categories": [
+            "Simple reflex",
+            "Reflex with state",
+            "Goal-based",
+            "Utility-based"
+          ],
+          "items": [
+            {
+              "text": "Condition-action rules",
+              "category": 0
+            },
+            {
+              "text": "What the world is like now",
+              "category": 0
+            },
+            {
+              "text": "State",
+              "category": 1
+            },
+            {
+              "text": "How the world evolves",
+              "category": 1
+            },
+            {
+              "text": "Goals",
+              "category": 2
+            },
+            {
+              "text": "What it will be like if I do action A",
+              "category": 2
+            },
+            {
+              "text": "Utility",
+              "category": 3
+            },
+            {
+              "text": "How happy I will be in such a state",
+              "category": 3
+            }
+          ],
+          "why": "Simple reflex uses condition-action rules on what the world is like now. Reflex with state adds State and how the world evolves. Goal-based adds Goals and what happens after action A; utility-based adds Utility and how happy a state is.",
+          "ref": "Slides 23-28 · Agent type diagrams"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "In the vacuum agent with state, each call first increments `last_A` and `last_B`. The agent is in square A, the square is clean, and after incrementing, `last_B` is 2. What does it return?",
+          "options": [
+            "Suck",
+            "Right",
+            "Left",
+            "NoOp"
+          ],
+          "answer": 3,
+          "why": "The status is not Dirty, so it does not Suck. At A it returns Right only if `last_B` > 3; since 2 is not greater than 3, it returns NoOp.",
+          "ref": "Slide 26 · Reflex agent with state"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "Knowledge of how the world works, covering both the effects of the agent's actions and how the world evolves on its own, is called the ......",
+          "options": [
+            "sensor model",
+            "transition model",
+            "utility function",
+            "performance standard"
+          ],
+          "answer": 1,
+          "why": "This is the transition model. The sensor model is the other kind: how the state of the world shows up in the percepts. Together they let a model-based agent keep track of the world.",
+          "ref": "Book p. 44 · Transition and sensor models"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "A taxi has two conflicting goals, speed and safety, and cannot fully meet both. Which agent type can still make a rational decision here?",
+          "options": [
+            "Goal-based agent",
+            "Simple reflex agent",
+            "Utility-based agent",
+            "Model-based reflex agent"
+          ],
+          "answer": 2,
+          "why": "Goals give only a crude binary distinction between happy and unhappy states. When goals conflict, a utility function specifies the right tradeoff, so a utility-based agent can still decide rationally.",
+          "ref": "Book p. 48 · Utility-based agents"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "In the learning agent diagram, the learning element sends ...... to the performance element and receives ...... from it.",
+          "options": [
+            "changes; knowledge",
+            "feedback; learning goals",
+            "knowledge; changes",
+            "learning goals; feedback"
+          ],
+          "answer": 0,
+          "why": "The arrow from the learning element to the performance element is labeled changes, and the one back is labeled knowledge. Feedback comes from the critic; learning goals go to the problem generator.",
+          "ref": "Slide 29 · Learning agents"
+        },
+        {
+          "kind": "sort",
+          "group": "Lecture 1",
+          "text": "Classify each description under the learning agent component it describes.",
+          "categories": [
+            "Critic",
+            "Learning element",
+            "Performance element",
+            "Problem generator"
+          ],
+          "items": [
+            {
+              "text": "Tells how well the agent is doing with respect to a fixed performance standard",
+              "category": 0
+            },
+            {
+              "text": "Needed because the percepts themselves give no indication of success",
+              "category": 0
+            },
+            {
+              "text": "Responsible for making improvements",
+              "category": 1
+            },
+            {
+              "text": "Decides how the performance element should be modified to do better",
+              "category": 1
+            },
+            {
+              "text": "Responsible for selecting external actions",
+              "category": 2
+            },
+            {
+              "text": "What was previously considered the entire agent",
+              "category": 2
+            },
+            {
+              "text": "Suggests actions that lead to new and informative experiences",
+              "category": 3
+            },
+            {
+              "text": "Proposes exploratory actions that may be suboptimal in the short run",
+              "category": 3
+            }
+          ],
+          "why": "The critic judges the agent against a fixed performance standard, since percepts alone do not show success. The learning element makes improvements, the performance element selects actions, and the problem generator suggests exploration.",
+          "ref": "Book pp. 50-51 · Learning agent components"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "Which statement matches the summary slide?",
+          "options": [
+            "The performance measure evaluates the percept sequence",
+            "A perfectly rational agent maximizes actual performance",
+            "Agent functions run on the physical architecture",
+            "Agent programs implement (some) agent functions"
+          ],
+          "answer": 3,
+          "why": "The summary says agent programs implement (some) agent functions. The performance measure evaluates the environment sequence, not the percept sequence, and perfect rationality maximizes expected performance.",
+          "ref": "Slide 30 · Lecture summary"
+        }
+      ]
+    },
+    {
+      "id": "lecture-2",
+      "tag": "Lecture 2",
+      "name": "Problem Solving and Search",
+      "scope": "36 questions · 6 classification",
+      "questions": [
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "When the correct action is not immediately obvious, an agent that plans ahead by considering a sequence of actions forming a path to a goal state is called a ......, and its computational process is called .......",
+          "options": [
+            "planning agent; search",
+            "problem-solving agent; search",
+            "problem-solving agent; execution",
+            "planning agent; execution"
+          ],
+          "answer": 1,
+          "why": "The book calls an agent that plans a path of actions to a goal a problem-solving agent, and its computational process search. Planning agents are the ones that use factored or structured state representations.",
+          "ref": "Book p. 54 · Problem-solving agents"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "In SIMPLE-PROBLEM-SOLVING-AGENT, the agent calls FORMULATE-GOAL, FORMULATE-PROBLEM and SEARCH only when .......",
+          "options": [
+            "a new percept reaches the agent",
+            "the goal test on the state succeeds",
+            "the current state has changed",
+            "its action sequence seq is empty"
+          ],
+          "answer": 3,
+          "why": "The formulate-and-search block sits inside \"if seq is empty\". Otherwise the agent just takes the next action with RECOMMENDATION and shortens seq with REMAINDER. A percept arrives on every call, so it is not the trigger.",
+          "ref": "Slide 3 · Problem-solving agent"
+        },
+        {
+          "kind": "sort",
+          "group": "Lecture 2",
+          "text": "Classify each step of the Romania trip into the phase of the book's four-phase problem-solving process.",
+          "categories": [
+            "Goal formulation",
+            "Problem formulation",
+            "Search",
+            "Execution"
+          ],
+          "items": [
+            {
+              "text": "The agent adopts the goal of reaching Bucharest",
+              "category": 0
+            },
+            {
+              "text": "Limits the objectives and actions to be considered",
+              "category": 0
+            },
+            {
+              "text": "Describes the states and actions needed to reach the goal",
+              "category": 1
+            },
+            {
+              "text": "Models travel between adjacent cities, where only the current city changes",
+              "category": 1
+            },
+            {
+              "text": "Simulates sequences of actions in the model before acting",
+              "category": 2
+            },
+            {
+              "text": "May explore many unsuccessful sequences before finding a solution",
+              "category": 2
+            },
+            {
+              "text": "Carries out the solution's actions one by one",
+              "category": 3
+            },
+            {
+              "text": "Follows a fixed action sequence in a fully observable, deterministic, known world",
+              "category": 3
+            }
+          ],
+          "why": "The four phases run in order: adopt a goal, build an abstract model of the states and actions, simulate action sequences until a solution is found, then execute that solution step by step.",
+          "ref": "Book pp. 55-56 · Problem-solving process"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "In a fully observable, deterministic, known environment with a correct model, the agent can ignore its percepts while it executes the solution. The book calls this .......",
+          "options": [
+            "an open-loop system",
+            "a closed-loop system",
+            "a contingency plan",
+            "an exploration problem"
+          ],
+          "answer": 0,
+          "why": "If the model is correct, the agent can execute the fixed action sequence without looking at percepts: an open-loop system. A closed-loop system, which adapts based on percepts, is safer in uncertain or nondeterministic environments.",
+          "ref": "Book p. 56 · Open-loop execution"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "On the Romania slide, the problem is formulated with states as ...... and actions as .......",
+          "options": [
+            "road distances; choose a goal city",
+            "sequences of cities; drive between cities",
+            "various cities; drive between cities",
+            "various cities; fly out of Bucharest"
+          ],
+          "answer": 2,
+          "why": "The slide formulates the problem with states as various cities and actions as driving between cities. A sequence of cities such as Arad, Sibiu, Fagaras, Bucharest is the solution, not a state.",
+          "ref": "Slide 4 · Romania formulation"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "Using the Romania map, the successor function S(Arad) contains action–state pairs that lead to which cities?",
+          "options": [
+            "Zerind, Sibiu and Timisoara",
+            "Zerind, Oradea and Sibiu",
+            "Sibiu, Fagaras and Timisoara",
+            "Timisoara, Lugoj and Zerind"
+          ],
+          "answer": 0,
+          "why": "Arad has three roads on the map: to Zerind (75), Sibiu (140) and Timisoara (118). Oradea, Fagaras and Lugoj can only be reached through one of those cities, so they are not successors of Arad.",
+          "ref": "Slide 5 · Romania road map"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "Using the road distances on the Romania map, what is the path cost of the solution Arad, Sibiu, Fagaras, Bucharest?",
+          "options": [
+            "418",
+            "310",
+            "239",
+            "450"
+          ],
+          "answer": 3,
+          "why": "Path cost is additive: Arad to Sibiu is 140, Sibiu to Fagaras is 99 and Fagaras to Bucharest is 211, so 140 + 99 + 211 = 450. 418 is the cost of the other route, through Rimnicu Vilcea and Pitesti.",
+          "ref": "Slide 5 · Romania path cost"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "If the path cost is the number of actions executed, what is the cost of the solution Arad, Sibiu, Fagaras, Bucharest?",
+          "options": [
+            "4",
+            "3",
+            "450",
+            "2"
+          ],
+          "answer": 1,
+          "why": "The solution visits four cities but needs only three drives: Arad to Sibiu, Sibiu to Fagaras and Fagaras to Bucharest. Counting one per action gives 3; 450 would be the cost in road distance.",
+          "ref": "Slide 11 · Path cost"
+        },
+        {
+          "kind": "sort",
+          "group": "Lecture 2",
+          "text": "Classify each description into the problem type it belongs to.",
+          "categories": [
+            "Single-state problem",
+            "Conformant problem",
+            "Contingency problem",
+            "Exploration problem"
+          ],
+          "items": [
+            {
+              "text": "Deterministic, fully observable",
+              "category": 0
+            },
+            {
+              "text": "Agent knows exactly which state it will be in",
+              "category": 0
+            },
+            {
+              "text": "Non-observable",
+              "category": 1
+            },
+            {
+              "text": "Agent may have no idea where it is; solution (if any) is a sequence",
+              "category": 1
+            },
+            {
+              "text": "Nondeterministic and/or partially observable",
+              "category": 2
+            },
+            {
+              "text": "Solution is a contingent plan or a policy",
+              "category": 2
+            },
+            {
+              "text": "Unknown state space",
+              "category": 3
+            },
+            {
+              "text": "Also called an \"online\" problem",
+              "category": 3
+            }
+          ],
+          "why": "Single-state problems are deterministic and fully observable; conformant ones are non-observable; contingency problems are nondeterministic or partially observable and rely on percepts; exploration problems have an unknown state space.",
+          "ref": "Slide 6 · Problem types"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "A vacuum robot has no sensors at all, so it cannot tell where it is or which squares are dirty, but its actions always work. Which problem type is this?",
+          "options": [
+            "Single-state problem",
+            "Exploration problem",
+            "Conformant problem",
+            "Contingency problem"
+          ],
+          "answer": 2,
+          "why": "A non-observable environment gives a conformant problem: the agent may have no idea where it is, yet its solution, if any, is still a sequence. Contingency problems need percepts that provide new information.",
+          "ref": "Slide 6 · Non-observable problems"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "Which statement matches the slide's description of a contingency problem?",
+          "options": [
+            "The agent knows exactly which state it will be in",
+            "The state space itself is unknown to the agent",
+            "The solution is a fixed sequence found before acting",
+            "Search and execution are often interleaved"
+          ],
+          "answer": 3,
+          "why": "In a contingency problem, percepts provide new information about the current state, so the agent often interleaves search and execution. Knowing the exact state is single-state; an unknown state space is exploration.",
+          "ref": "Slide 6 · Contingency problem"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "In the single-state vacuum world, the agent starts in state #5 (robot in the left square, which is clean; the right square is dirty). What is the shortest solution?",
+          "options": [
+            "[Right, Suck]",
+            "[Suck, Right]",
+            "[Right, Suck, Left, Suck]",
+            "[Left, Suck]"
+          ],
+          "answer": 0,
+          "why": "The only dirt is in the right square: Right leads to #6 and Suck cleans it, reaching goal #8 in 2 actions. [Right, Suck, Left, Suck] also ends clean (#7) but is longer; it is the conformant solution for an unknown start.",
+          "ref": "Slide 8 · Single-state vacuum world"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "In the single-state vacuum world, the robot starts in the left square and both squares are dirty (state #1). What is the shortest solution?",
+          "options": [
+            "[Right, Suck, Left]",
+            "[Right, Suck]",
+            "[Suck, Right, Suck]",
+            "[Suck, Right]"
+          ],
+          "answer": 2,
+          "why": "Suck cleans the left square (state #5), Right moves to the dirty right square (#6), and Suck cleans it (#8), so 3 actions. Each of the other options leaves one of the two squares dirty.",
+          "ref": "Slide 13 · Vacuum state space graph"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "In the conformant vacuum world, the agent may start in any of the states {1, 2, 3, 4, 5, 6, 7, 8}, and Right leads to {2, 4, 6, 8}. If it then does Suck, which set of states can it be in?",
+          "options": [
+            "{2, 4, 6, 8}",
+            "{4, 8}",
+            "{7, 8}",
+            "{8}"
+          ],
+          "answer": 1,
+          "why": "After Right the robot is in the right square, and Suck cleans that square: #2 becomes #4, #6 becomes #8, and #4 and #8 stay the same. The left square may still be dirty, so the set is {4, 8}.",
+          "ref": "Slides 8, 13 · Conformant vacuum world"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "The conformant solution [Right, Suck, Left, Suck] works whatever the start state. In which state does the agent always end?",
+          "options": [
+            "#7 (robot left, both squares clean)",
+            "#8 (robot right, both squares clean)",
+            "#3 (robot left, left square dirty)",
+            "#5 (robot left, right square dirty)"
+          ],
+          "answer": 0,
+          "why": "Right then Suck leaves the right square clean whatever the start. Left moves the robot into the left square, and the last Suck cleans it. So every start ends in #7: robot on the left, no dirt.",
+          "ref": "Slides 9, 13 · Conformant vacuum world"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "In the contingency vacuum world, Murphy's Law says Suck can dirty a clean carpet, and sensing is local (dirt and location only), so the agent cannot see the other square. Starting in #5, what solution do the slides give?",
+          "options": [
+            "[Right, Suck]",
+            "[Right, if clean then Suck]",
+            "[Right, Suck, Left, Suck]",
+            "[Right, if dirt then Suck]"
+          ],
+          "answer": 3,
+          "why": "The agent cannot sense the right square until it gets there, and Suck can dirty a clean carpet. So it moves Right and sucks only if it perceives dirt. Sucking a clean square, or a fixed sequence, can leave dirt behind.",
+          "ref": "Slide 10 · Contingency vacuum world"
+        },
+        {
+          "kind": "sort",
+          "group": "Lecture 2",
+          "text": "Classify each example into the part of the single-state problem formulation it belongs to.",
+          "categories": [
+            "Initial state",
+            "Successor function (actions)",
+            "Goal test",
+            "Path cost"
+          ],
+          "items": [
+            {
+              "text": "\"at Arad\"",
+              "category": 0
+            },
+            {
+              "text": "S(Arad) = {⟨Arad → Zerind, Zerind⟩, ...}",
+              "category": 1
+            },
+            {
+              "text": "Vacuum world: Left, Right, Suck, NoOp",
+              "category": 1
+            },
+            {
+              "text": "x = \"at Bucharest\"",
+              "category": 2
+            },
+            {
+              "text": "Vacuum world: no dirt",
+              "category": 2
+            },
+            {
+              "text": "Sum of distances",
+              "category": 3
+            },
+            {
+              "text": "Number of actions executed",
+              "category": 3
+            }
+          ],
+          "why": "A problem has four items: the initial state (at Arad), a successor function giving the actions and their results, a goal test such as x = \"at Bucharest\" or no dirt, and an additive path cost such as total distance.",
+          "ref": "Slides 11-16 · Problem formulation"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "On the slides, the successor function S(x) returns .......",
+          "options": [
+            "a single next state",
+            "a set of action–state pairs",
+            "a sequence of actions to the goal",
+            "the step cost of each action"
+          ],
+          "answer": 1,
+          "why": "S(x) is a set of action–state pairs, e.g. S(Arad) = {⟨Arad → Zerind, Zerind⟩, ...}: each action with the state it leads to. A sequence of actions to the goal is a solution, not the successor function.",
+          "ref": "Slide 11 · Successor function"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "The goal test NoDirt(x) is an example of ...... goal test, while x = \"at Bucharest\" is an example of ...... goal test.",
+          "options": [
+            "an explicit; an implicit",
+            "an additive; an explicit",
+            "an implicit; an explicit",
+            "an implicit; an additive"
+          ],
+          "answer": 2,
+          "why": "The slide gives x = \"at Bucharest\" as the explicit example and NoDirt(x) as the implicit one, since it describes a condition rather than naming one state. Additive describes path cost, not goal tests.",
+          "ref": "Slide 11 · Goal test"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "In the problem formulation, the step cost c(x, a, y) is assumed to be .......",
+          "options": [
+            "greater than or equal to 0",
+            "exactly 1 for every action",
+            "less than or equal to 0",
+            "equal to the distance left"
+          ],
+          "answer": 0,
+          "why": "Slide 11 says c(x, a, y) is the step cost, assumed to be ≥ 0, and path cost is additive, so it sums these step costs. A cost of 1 per move is only one example (8-puzzle); the vacuum world even gives NoOp a cost of 0.",
+          "ref": "Slide 11 · Step cost"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "According to the slides, a solution is .......",
+          "options": [
+            "every state that is reachable from the initial state",
+            "the goal state together with its path cost",
+            "a set of action–state pairs for each state",
+            "an action sequence from the initial state to a goal"
+          ],
+          "answer": 3,
+          "why": "A solution is a sequence of actions leading from the initial state to a goal state, like Arad, Sibiu, Fagaras, Bucharest. Action–state pairs come from the successor function, not from the solution.",
+          "ref": "Slide 11 · Definition of solution"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "In the book's search problem, Result(Arad, To_Zerind) = Zerind is an example of which component?",
+          "options": [
+            "Action cost",
+            "Transition model",
+            "Actions",
+            "Goal states"
+          ],
+          "answer": 1,
+          "why": "The transition model defines the result of actions: doing To_Zerind in Arad gives Zerind. Actions(Arad) = {To_Sibiu, To_Timisoara, To_Zerind} is the actions component, which only lists the possible moves.",
+          "ref": "Book p. 57 · Transition model"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "When the state space is abstracted for problem solving, an (abstract) state is .......",
+          "options": [
+            "a complex combination of real actions",
+            "a set of real paths that are solutions",
+            "a set of real states",
+            "one exact real-world situation"
+          ],
+          "answer": 2,
+          "why": "Slide 12 defines an abstract state as a set of real states, such as all real situations \"in Arad\". A complex combination of real actions is an abstract action, and a set of real solution paths is an abstract solution.",
+          "ref": "Slide 12 · Abstract states"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "For guaranteed realizability of the abstract action \"Arad → Zerind\", ...... real state \"in Arad\" must get to ...... real state \"in Zerind\".",
+          "options": [
+            "any; some",
+            "some; any",
+            "some; some",
+            "any; every"
+          ],
+          "answer": 0,
+          "why": "Whatever real situation the agent is in within Arad, the action must reach at least one real situation in Zerind: any to some. It does not have to reach every real state in Zerind.",
+          "ref": "Slide 12 · Guaranteed realizability"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "The book says a good abstraction has validity and usefulness. Validity means .......",
+          "options": [
+            "each abstract action is easy to carry out in reality",
+            "the model keeps every real-world detail",
+            "every abstract state is one real state",
+            "any abstract solution expands into a real solution"
+          ],
+          "answer": 3,
+          "why": "Validity means any abstract solution can be expanded into a real-world solution. Easy-to-carry-out abstract actions describe usefulness. Keeping every detail is the opposite of abstraction and makes problems unsolvable.",
+          "ref": "Book p. 57 · Good abstraction"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "How many states does the two-cell vacuum world have?",
+          "options": [
+            "4",
+            "6",
+            "8",
+            "16"
+          ],
+          "answer": 2,
+          "why": "The robot can be in either of 2 squares, and each square can be dirty or clean, giving 2 × 2 × 2 = 8 states. The slide numbers them 1 to 8, and the book also gives 8 states for the two-cell version.",
+          "ref": "Slide 7 · Vacuum world states"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "In the vacuum world formulation, the states are integer dirt and robot locations. Which detail is deliberately ignored?",
+          "options": [
+            "Which square the robot is in",
+            "How much dirt is in a square",
+            "Whether the left square is dirty",
+            "Whether the right square is dirty"
+          ],
+          "answer": 1,
+          "why": "The states keep only where the robot is and where the dirt is; dirt amounts are ignored. This is abstraction: details that do not matter for reaching the goal are left out of the state.",
+          "ref": "Slide 14 · Vacuum state abstraction"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "Which of the following is NOT one of the vacuum world actions on the slides?",
+          "options": [
+            "NoOp",
+            "Suck",
+            "Left",
+            "Up"
+          ],
+          "answer": 3,
+          "why": "The vacuum world actions are Left, Right, Suck and NoOp. Moving up belongs to the 8-puzzle, whose actions move the blank left, right, up or down.",
+          "ref": "Slide 15 · Vacuum world actions"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "The vacuum world goal test is \"no dirt\". How many of the 8 states pass this goal test?",
+          "options": [
+            "2",
+            "1",
+            "4",
+            "8"
+          ],
+          "answer": 0,
+          "why": "No dirt only requires both squares to be clean; it does not fix the robot's location. So there are 2 goal states: #7 with the robot on the left and #8 with the robot on the right.",
+          "ref": "Slide 16 · Vacuum world goal test"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "Using the vacuum world path cost (1 per action, 0 for NoOp), what is the cost of the action sequence [Left, Suck, NoOp, NoOp]?",
+          "options": [
+            "4",
+            "3",
+            "2",
+            "0"
+          ],
+          "answer": 2,
+          "why": "Left and Suck cost 1 each, and each NoOp costs 0, so the total is 1 + 1 + 0 + 0 = 2. Counting NoOp like a normal action would wrongly give 4.",
+          "ref": "Slide 17 · Vacuum world path cost"
+        },
+        {
+          "kind": "sort",
+          "group": "Lecture 2",
+          "text": "In the vacuum world state space graph, classify each state by what the Suck action does there.",
+          "categories": [
+            "Suck leads to a different state",
+            "Suck is a self-loop (no change)"
+          ],
+          "items": [
+            {
+              "text": "#1: robot in left square, both squares dirty",
+              "category": 0
+            },
+            {
+              "text": "#2: robot in right square, both squares dirty",
+              "category": 0
+            },
+            {
+              "text": "#3: robot in left square, only the left square dirty",
+              "category": 0
+            },
+            {
+              "text": "#6: robot in right square, only the right square dirty",
+              "category": 0
+            },
+            {
+              "text": "#4: robot in right square, only the left square dirty",
+              "category": 1
+            },
+            {
+              "text": "#5: robot in left square, only the right square dirty",
+              "category": 1
+            },
+            {
+              "text": "#7: robot in left square, both squares clean",
+              "category": 1
+            },
+            {
+              "text": "#8: robot in right square, both squares clean",
+              "category": 1
+            }
+          ],
+          "why": "In the graph, Suck changes the state only when the robot's own square is dirty, because it cleans that square. When the robot's square is already clean, Suck is drawn as a self-loop back to the same state.",
+          "ref": "Slide 13 · Vacuum state space graph"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "The 8-puzzle start state on the slides is 7 2 4 / 5 _ 6 / 8 3 1, with the blank (_) in the centre. If the action \"move blank up\" is applied, which tile moves?",
+          "options": [
+            "Tile 5",
+            "Tile 2",
+            "Tile 3",
+            "Tile 6"
+          ],
+          "answer": 1,
+          "why": "Actions move the blank. The square above the centre holds tile 2, so moving the blank up swaps them: tile 2 slides down and the new state is 7 _ 4 / 5 2 6 / 8 3 1.",
+          "ref": "Slide 20 · 8-puzzle actions"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "In the 8-puzzle goal state 1 2 3 / 4 5 6 / 7 8 _, the blank is in the bottom-right corner. How many of the four actions (move blank left, right, up, down) can be applied?",
+          "options": [
+            "4",
+            "1",
+            "3",
+            "2"
+          ],
+          "answer": 3,
+          "why": "From the bottom-right corner the blank can only move up (swapping with 6) or left (swapping with 8). Moving right or down would leave the board, so 2 actions apply. From the centre all 4 would.",
+          "ref": "Slide 20 · Blank moves"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "The 8-puzzle slides end with a note about the n-puzzle family. What does the note say?",
+          "options": [
+            "Finding an optimal solution is NP-hard",
+            "Tiles can rest between two squares",
+            "The path cost is 0 for every move",
+            "States must use real-valued coordinates"
+          ],
+          "answer": 0,
+          "why": "The note says the optimal solution of the n-puzzle family is NP-hard. The puzzle ignores intermediate tile positions and costs 1 per move, and real-valued coordinates belong to robotic assembly.",
+          "ref": "Slide 22 · n-puzzle note"
+        },
+        {
+          "kind": "sort",
+          "group": "Lecture 2",
+          "text": "Classify each part of the 8-puzzle and robotic assembly formulations.",
+          "categories": [
+            "States",
+            "Actions",
+            "Goal test",
+            "Path cost"
+          ],
+          "items": [
+            {
+              "text": "8-puzzle: integer locations of tiles",
+              "category": 0
+            },
+            {
+              "text": "Assembly: real-valued coordinates of robot joint angles and object parts",
+              "category": 0
+            },
+            {
+              "text": "8-puzzle: move blank left, right, up, down",
+              "category": 1
+            },
+            {
+              "text": "Assembly: continuous motions of robot joints",
+              "category": 1
+            },
+            {
+              "text": "8-puzzle: equals the given goal state",
+              "category": 2
+            },
+            {
+              "text": "Assembly: complete assembly with no robot included",
+              "category": 2
+            },
+            {
+              "text": "8-puzzle: 1 per move",
+              "category": 3
+            },
+            {
+              "text": "Assembly: time to execute",
+              "category": 3
+            }
+          ],
+          "why": "Both examples use the same four parts. The 8-puzzle has integer tile locations, blank moves, a given goal state and 1 per move; robotic assembly has real-valued joint angles, continuous joint motions, a finished assembly and time.",
+          "ref": "Slides 22-23 · Example formulations"
+        },
+        {
+          "kind": "sort",
+          "group": "Lecture 2",
+          "text": "Classify each item as part of a standardized problem or a real-world problem, as the book groups them.",
+          "categories": [
+            "Standardized problem",
+            "Real-world problem"
+          ],
+          "items": [
+            {
+              "text": "Grid world: the agent moves to adjacent square cells",
+              "category": 0
+            },
+            {
+              "text": "Obstacles (walls) prevent entry into some cells",
+              "category": 0
+            },
+            {
+              "text": "Vacuum world where every cell must end up clean",
+              "category": 0
+            },
+            {
+              "text": "Route finding between cities or airports",
+              "category": 1
+            },
+            {
+              "text": "States hold a location plus the current time",
+              "category": 1
+            },
+            {
+              "text": "Action costs may include money, waiting and comfort",
+              "category": 1
+            },
+            {
+              "text": "Used for airline planning and network routing",
+              "category": 1
+            }
+          ],
+          "why": "The book's standardized problems are the grid world and its vacuum world example. Route finding is a real-world problem: its states add the current time, its costs include money and comfort, and it is used in airline planning.",
+          "ref": "Book pp. 58-59 · Example problems"
+        }
+      ]
+    },
+    {
+      "id": "lecture-3",
+      "tag": "Lecture 3",
+      "name": "Uninformed Search Strategies",
+      "scope": "46 questions · 8 classification",
+      "questions": [
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "Tree search is an offline, simulated exploration of the state space that generates successors of already-explored states. Generating these successors is also called ...... states.",
+          "options": [
+            "testing",
+            "expanding",
+            "formulating",
+            "repeating"
+          ],
+          "answer": 1,
+          "why": "The slide says tree search works by generating successors of already-explored states, also known as expanding states. Goal testing only checks a state; it does not create any successors.",
+          "ref": "Slide 2 · Tree search algorithms"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "In the Romania tree search, expanding Sibiu generates a child node for Arad, the city the search started from. What does this show?",
+          "options": [
+            "Arad must be the goal state of this problem",
+            "The search tree is identical to the state space",
+            "Sibiu is a dead end with no other successors",
+            "One state can appear in more than one tree node"
+          ],
+          "answer": 3,
+          "why": "The state space is the set of states, while the search tree is what the algorithm builds, so one state (Arad) can appear in several nodes via different paths. The book notes the cycle Arad, Sibiu, Arad can never be an optimal path.",
+          "ref": "Book pp. 59-60 · State space vs tree"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "In the Romania search tree, Arad is expanded first and then Sibiu. How many unexpanded nodes (the frontier) are there now?",
+          "options": [
+            "3",
+            "4",
+            "6",
+            "7"
+          ],
+          "answer": 2,
+          "why": "Arad's children are Sibiu, Timisoara and Zerind. Expanding Sibiu adds Arad, Fagaras, Oradea and Rimnicu Vilcea, so the frontier is Timisoara, Zerind and those four: six nodes. Sibiu itself is now expanded.",
+          "ref": "Book p. 61 · Expanding nodes, frontier"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "According to the slides, which of the following is NOT part of a node in the search tree?",
+          "options": [
+            "A pointer to its parent",
+            "Its depth in the tree",
+            "Its path cost g(x)",
+            "The branching factor b"
+          ],
+          "answer": 3,
+          "why": "A node is a data structure that includes its parent, children, depth and path cost g(x), along with its state and action. The branching factor b describes the whole tree and is used to measure complexity.",
+          "ref": "Slide 6 · States vs nodes"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "A node n has depth 3 and path cost 10. EXPAND creates a child s of n using an action whose step cost is 4. What are DEPTH[s] and PATH-COST[s]?",
+          "options": [
+            "4 and 14",
+            "3 and 14",
+            "4 and 10",
+            "4 and 4"
+          ],
+          "answer": 0,
+          "why": "EXPAND sets DEPTH[s] = DEPTH[node] + 1 = 4 and PATH-COST[s] = PATH-COST[node] + STEP-COST = 10 + 4 = 14. A child is always one level deeper, and its path cost adds the new step to the parent's cost.",
+          "ref": "Slide 7 · General tree search"
+        },
+        {
+          "kind": "sort",
+          "group": "Lecture 3",
+          "text": "Classify each description as belonging to a state or to a node.",
+          "categories": [
+            "State",
+            "Node"
+          ],
+          "items": [
+            {
+              "text": "A (representation of a) physical configuration",
+              "category": 0
+            },
+            {
+              "text": "What the goal test checks",
+              "category": 0
+            },
+            {
+              "text": "Can appear many times in one search tree via different paths",
+              "category": 0
+            },
+            {
+              "text": "Has a parent and children",
+              "category": 1
+            },
+            {
+              "text": "Has a depth",
+              "category": 1
+            },
+            {
+              "text": "Has a path cost g(x)",
+              "category": 1
+            },
+            {
+              "text": "Records the action that generated it",
+              "category": 1
+            },
+            {
+              "text": "A data structure created by the EXPAND function",
+              "category": 1
+            }
+          ],
+          "why": "A state is a physical configuration, and states do not have parents, children, depth or path cost. A node is a search-tree data structure built by EXPAND that stores those fields and points to a state, so one state can sit in many nodes.",
+          "ref": "Slides 6-7 · States vs nodes"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "Following the ...... pointers back from a goal node recovers the whole path from the initial state, which is the solution.",
+          "options": [
+            "ACTION",
+            "PARENT",
+            "STATE",
+            "PATH-COST"
+          ],
+          "answer": 1,
+          "why": "Each node stores the node that generated it in PARENT, so walking these pointers back from the goal gives the full path. ACTION holds only the last action, and PATH-COST holds only the total cost g.",
+          "ref": "Book p. 63 · Search data structures"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "In the slides' general TREE-SEARCH, at what moment is the goal test applied to a node?",
+          "options": [
+            "When it is removed from the front of the fringe",
+            "When EXPAND first generates it as a successor",
+            "When it is first inserted at the back of the fringe",
+            "Only after the fringe has become empty"
+          ],
+          "answer": 0,
+          "why": "The loop takes a node with REMOVE-FRONT, runs GOAL-TEST on its state, and expands it only if the test fails. Testing nodes as soon as they are generated is a later modification the slides mention for BFS.",
+          "ref": "Slide 7 · General tree search"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "A search strategy is defined by picking the ......",
+          "options": [
+            "goal test to apply",
+            "maximum depth of the tree",
+            "order of node expansion",
+            "initial state to start from"
+          ],
+          "answer": 2,
+          "why": "The slides define a strategy by the order of node expansion: BFS, UCS and DFS, for example, differ in which fringe node they pick next. The initial state and the goal test come from the problem, not from the strategy.",
+          "ref": "Slide 8 · Search strategies"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "When time and space complexity are measured, what does d stand for?",
+          "options": [
+            "The depth of the least-cost solution",
+            "The maximum depth of the state space",
+            "The maximum branching factor of the tree",
+            "The depth limit given to the search"
+          ],
+          "answer": 0,
+          "why": "The slides define d as the depth of the least-cost solution. The maximum depth of the state space is m (which may be infinite), b is the maximum branching factor, and l is the limit used by depth-limited search.",
+          "ref": "Slide 8 · Search strategies"
+        },
+        {
+          "kind": "sort",
+          "group": "Lecture 3",
+          "text": "Classify each statement by the evaluation criterion it describes.",
+          "categories": [
+            "Completeness",
+            "Time complexity",
+            "Space complexity",
+            "Optimality"
+          ],
+          "items": [
+            {
+              "text": "Does it always find a solution if one exists?",
+              "category": 0
+            },
+            {
+              "text": "In an infinite space with no solution, the search can never stop with certainty",
+              "category": 0
+            },
+            {
+              "text": "Number of nodes generated or expanded",
+              "category": 1
+            },
+            {
+              "text": "IDS generates (d+1)b^0 + db^1 + (d-1)b^2 + ... + b^d nodes",
+              "category": 1
+            },
+            {
+              "text": "Maximum number of nodes in memory",
+              "category": 2
+            },
+            {
+              "text": "DFS needs only O(bm), i.e., linear space",
+              "category": 2
+            },
+            {
+              "text": "Does it always find a least-cost solution?",
+              "category": 3
+            },
+            {
+              "text": "UCS expands nodes in increasing order of g(n)",
+              "category": 3
+            }
+          ],
+          "why": "Completeness asks whether a solution is always found, time counts nodes generated or expanded, space is the most nodes held in memory, and optimality asks whether the least-cost solution is found. UCS is optimal because it expands in increasing g(n).",
+          "ref": "Slide 8, Book p. 65 · Evaluation criteria"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "What makes a search strategy uninformed?",
+          "options": [
+            "It always expands the deepest node first",
+            "It keeps no record of the states it has visited",
+            "It works only when every step cost equals 1",
+            "It uses only what the problem definition gives"
+          ],
+          "answer": 3,
+          "why": "Uninformed strategies use only the information available in the problem definition. The book adds that such blind search has no knowledge of how close a state is to the goal. All five strategies in this lecture are uninformed.",
+          "ref": "Slide 9 · Uninformed search strategies"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "Which of the following is NOT one of the uninformed search strategies listed in the lecture?",
+          "options": [
+            "Uniform-cost search",
+            "Depth-limited search",
+            "Greedy best-first search",
+            "Iterative deepening search"
+          ],
+          "answer": 2,
+          "why": "The slides list breadth-first, uniform-cost, depth-first, depth-limited and iterative deepening search. Greedy best-first search uses a heuristic h(n) that estimates the distance to the goal, so it is an informed strategy.",
+          "ref": "Slide 9 · Uninformed search strategies"
+        },
+        {
+          "kind": "sort",
+          "group": "Lecture 3",
+          "text": "Classify each description by the search strategy it describes.",
+          "categories": [
+            "Breadth-first",
+            "Uniform-cost",
+            "Depth-first",
+            "Iterative deepening"
+          ],
+          "items": [
+            {
+              "text": "Expand the shallowest unexpanded node",
+              "category": 0
+            },
+            {
+              "text": "Explores every node at depth d before any node at depth d+1",
+              "category": 0
+            },
+            {
+              "text": "Expand the least-cost unexpanded node",
+              "category": 1
+            },
+            {
+              "text": "Spreads out in waves of uniform path cost",
+              "category": 1
+            },
+            {
+              "text": "Expand the deepest unexpanded node",
+              "category": 2
+            },
+            {
+              "text": "Can be written as best-first search with f(n) = -depth(n)",
+              "category": 2
+            },
+            {
+              "text": "Runs depth-limited search with limits 0, 1, 2, ... until the result is not cutoff",
+              "category": 3
+            },
+            {
+              "text": "Combines the benefits of depth-first and breadth-first search",
+              "category": 3
+            }
+          ],
+          "why": "BFS expands the shallowest node, UCS the least-cost node and DFS the deepest node. IDS repeats depth-limited search with growing limits, so it keeps the modest memory of DFS while gaining the benefits of BFS.",
+          "ref": "Slides 10-38, Book pp. 66-73 · Strategy definitions"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "Breadth-first search is complete provided that ......",
+          "options": [
+            "every step cost equals 1",
+            "the branching factor b is finite",
+            "the maximum depth m of the space is finite",
+            "a depth limit l ≥ d is chosen"
+          ],
+          "answer": 1,
+          "why": "The slides give BFS as complete if b is finite: it searches level by level, so it reaches the shallowest goal at depth d. A step cost of 1 is the condition for BFS to be optimal, not for it to be complete.",
+          "ref": "Slide 15 · Properties of BFS"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "The slides count BFS time as 1 + b + b^2 + ... + b^d + b(b^d - 1). How many nodes is that for b = 2 and d = 2?",
+          "options": [
+            "6",
+            "7",
+            "8",
+            "13"
+          ],
+          "answer": 3,
+          "why": "1 + 2 + 4 = 7 nodes down to depth 2, and the extra term b(b^d - 1) = 2 × (4 - 1) = 6. The total is 7 + 6 = 13. This sum grows as O(b^(d+1)), exponential in d.",
+          "ref": "Slide 16 · BFS time"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "The slides call space the big problem of BFS. If nodes are generated at 100MB/sec, how much memory fills up in 24 hours?",
+          "options": [
+            "864GB",
+            "8640GB",
+            "2400GB",
+            "86,400GB"
+          ],
+          "answer": 1,
+          "why": "24 hours is 86,400 seconds, and 86,400 × 100MB = 8,640,000MB, about 8640GB. Because BFS keeps every node in memory, its O(b^(d+1)) space runs out long before its time does.",
+          "ref": "Slide 18 · Properties of BFS"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "A tree has root S with children A and B. A has children C and D; B has children E and G. The goal is G. Children are generated in alphabetical order, and the goal test is applied when a node is removed from the fringe. In what order does breadth-first search remove nodes?",
+          "options": [
+            "S, A, B, C, D, E, G",
+            "S, A, C, D, B, E, G",
+            "S, A, B, C, D, G",
+            "S, B, E, G"
+          ],
+          "answer": 0,
+          "why": "The FIFO fringe puts new successors at the end, so depth 1 (A, B) is removed before depth 2 (C, D, E, G). G is tested only when it reaches the front, after C, D and E. S, A, C, D, B, E, G is depth-first order.",
+          "ref": "Slides 10-13 · Breadth-first search"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "The slides note that BFS can be modified to apply the goal test when a node is ......",
+          "options": [
+            "expanded",
+            "removed from the fringe",
+            "generated",
+            "added to the closed set"
+          ],
+          "answer": 2,
+          "why": "In the basic TREE-SEARCH the goal test runs only when a node is removed from the fringe to be expanded. Testing each node as soon as it is generated is what the book calls the early goal test for BFS.",
+          "ref": "Slide 47 · BFS goal test"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "Uniform-cost search is complete provided that ......",
+          "options": [
+            "the maximum depth m is finite",
+            "all step costs are exactly 1",
+            "a depth limit l ≥ d is set",
+            "every step cost is at least ε"
+          ],
+          "answer": 3,
+          "why": "The slides say UCS is complete if every step cost is at least some small positive ε. The book adds that UCS is then never trapped in an infinite path. Equal step costs are not needed, since UCS handles varying costs.",
+          "ref": "Slide 19 · Uniform-cost search"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "In the uniform-cost search complexity O(b^⌈C*/ε⌉), what is C*?",
+          "options": [
+            "The cost of the optimal solution",
+            "The cheapest single step cost",
+            "The depth of the shallowest goal",
+            "The number of nodes in the fringe"
+          ],
+          "answer": 0,
+          "why": "C* is the cost of the optimal solution and ε is the minimum step cost. UCS time and space both count the nodes with g ≤ C*, which gives the bound O(b^⌈C*/ε⌉) instead of one based on d.",
+          "ref": "Slide 19 · Uniform-cost search"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "A robot moves on a grid where every move costs exactly 1. Which strategy is uniform-cost search equivalent to here?",
+          "options": [
+            "Depth-first search",
+            "Breadth-first search",
+            "Depth-limited search",
+            "Iterative deepening search"
+          ],
+          "answer": 1,
+          "why": "When all step costs are equal, the path cost g grows with depth, so the least-cost node is also the shallowest node. The slides state that UCS is equivalent to breadth-first search if step costs are all equal.",
+          "ref": "Slide 19 · Uniform-cost search"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "S leads to A (cost 3) and B (cost 1). B leads to C (cost 1) and D (cost 5). A leads to G (cost 4). C leads to G (cost 7). D has no successors, and G is the goal. Uniform-cost search applies the goal test when a node is removed from the fringe. In what order are nodes removed?",
+          "options": [
+            "S, A, B, C, D, G",
+            "S, B, C, G",
+            "S, B, C, A, D, G",
+            "S, B, C, A, G"
+          ],
+          "answer": 2,
+          "why": "Path costs: B 1, C 2, A 3, D 6, G via A 7, G via C 9. UCS always removes the lowest g, so D (6) comes out before G (7). G is returned with cost 7 via S, A, G; the costlier G (9) is never removed.",
+          "ref": "Slide 19 · Uniform-cost search"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "S leads to A (cost 1) and B (cost 5). A leads to C (cost 2) and G (cost 9). B leads to C (cost 2) and G (cost 2). C leads to G (cost 3). G is the goal, tested when a node is removed from the fringe. Which path does uniform-cost search return?",
+          "options": [
+            "S → B → G",
+            "S → A → G",
+            "S → B → C → G",
+            "S → A → C → G"
+          ],
+          "answer": 3,
+          "why": "UCS removes A (1), C (3) and B (5), then the goal G with cost 6 via A and C, ahead of the G nodes costing 7 (S, B, G) and 10 (S, A, G). The paths with fewer steps cost more.",
+          "ref": "Slide 19 · Uniform-cost search"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "In the book's uniform-cost example from Sibiu to Bucharest, Bucharest is first generated through Fagaras with cost 310 and later through Rimnicu Vilcea and Pitesti with cost 278. If the goal test were applied when a node is generated, which cost would be returned?",
+          "options": [
+            "278",
+            "310",
+            "177",
+            "211"
+          ],
+          "answer": 1,
+          "why": "Bucharest is generated first via Fagaras (99 + 211 = 310), so a goal test at generation would stop there. Testing at expansion lets UCS find the cheaper path 80 + 97 + 101 = 278 before Bucharest is expanded.",
+          "ref": "Book pp. 68-69 · Uniform-cost example"
+        },
+        {
+          "kind": "sort",
+          "group": "Lecture 3",
+          "text": "Classify each strategy or description by the fringe (frontier) data structure it uses.",
+          "categories": [
+            "FIFO queue",
+            "LIFO queue (stack)",
+            "Queue ordered by path cost"
+          ],
+          "items": [
+            {
+              "text": "Breadth-first search",
+              "category": 0
+            },
+            {
+              "text": "New successors go at the end",
+              "category": 0
+            },
+            {
+              "text": "Depth-first search",
+              "category": 1
+            },
+            {
+              "text": "Successors are put at the front",
+              "category": 1
+            },
+            {
+              "text": "Each depth-limited search inside IDS",
+              "category": 1
+            },
+            {
+              "text": "Uniform-cost search",
+              "category": 2
+            },
+            {
+              "text": "The node with the lowest g(n) is removed first",
+              "category": 2
+            }
+          ],
+          "why": "BFS uses a FIFO queue, so new successors go at the end. DFS and its depth-limited form, which IDS runs, use a LIFO queue that puts successors at the front. UCS keeps the fringe ordered by path cost, lowest first.",
+          "ref": "Slides 10-20 · Fringe implementations"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "Depth-first search fails in infinite-depth spaces and in spaces with loops. What modification do the slides suggest?",
+          "options": [
+            "Avoid repeated states along the path, so it is complete in finite spaces",
+            "Put successors at the end of the fringe, so it is complete in all spaces",
+            "Order the fringe by path cost, so it always finds the cheapest solution",
+            "Set a depth limit l smaller than d, so it never goes too deep"
+          ],
+          "answer": 0,
+          "why": "The slides fix DFS by avoiding repeated states along the current path, which makes it complete in finite spaces. It is still incomplete in infinite spaces, and a limit l smaller than d would cut off every solution.",
+          "ref": "Slide 33 · Properties of DFS"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "DFS time is O(b^m), which is terrible if m is much larger than d. When do the slides say DFS may be much faster than breadth-first search?",
+          "options": [
+            "When the state space has loops",
+            "When m is much larger than d",
+            "When the step costs are different",
+            "When solutions are dense"
+          ],
+          "answer": 3,
+          "why": "If solutions are dense, DFS is likely to hit one soon while diving deep, so the slides say it may be much faster than BFS. With loops, or with m much larger than d, DFS does badly instead.",
+          "ref": "Slide 34 · Properties of DFS"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "A search tree has b = 2, the least-cost solution at d = 3, and maximum depth m = 5. Using the slides' summary table, what is the worst-case time of depth-first search?",
+          "options": [
+            "10",
+            "16",
+            "32",
+            "64"
+          ],
+          "answer": 2,
+          "why": "The table gives DFS time as b^m = 2^5 = 32, because DFS may explore all the way down to the maximum depth m. The value 16 is b^(d+1), the BFS time, and 10 is bm, the DFS space.",
+          "ref": "Slide 48 · Summary of algorithms"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "In the slides' DFS example on the binary tree (A; B, C; D, E, F, G; H to O), nodes A, B, D, H and I have been expanded, and H and I had no successors. Which node is expanded next?",
+          "options": [
+            "C",
+            "E",
+            "J",
+            "F"
+          ],
+          "answer": 1,
+          "why": "The LIFO fringe now holds E (the sibling of D) at the front and C behind it. DFS backs up to the deepest unexpanded node, E. J and K are not generated until E is expanded, and C waits until B's subtree is done.",
+          "ref": "Slides 24-25 · Depth-first search"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "Root A has children B and C. B has children D and E; C has children F and G. D, E, F and G have no successors, and F is the goal. Successors go on the front of the fringe so that the alphabetically first child is removed first, and the goal test is applied when a node is removed. In what order does DFS remove nodes until it finds F?",
+          "options": [
+            "A, B, D, E, C, F",
+            "A, B, C, D, E, F",
+            "A, B, D, E, F",
+            "A, C, G, F"
+          ],
+          "answer": 0,
+          "why": "DFS follows B down to D, backs up to E, and only then returns to C, whose first child F is the goal. A, B, C, D, E, F is breadth-first order, and F cannot be reached without expanding its parent C.",
+          "ref": "Slides 20-31 · Depth-first search"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "In the DFS example, nodes such as D, H and I are shown in black once E is selected. Why does this keep depth-first search's memory small?",
+          "options": [
+            "They are stored in a closed set for repeated-state checks",
+            "They are re-expanded on the next iteration with a deeper limit",
+            "Explored nodes with nothing left on the fringe are dropped",
+            "They move to the back of a FIFO queue to wait"
+          ],
+          "answer": 2,
+          "why": "The book notes that expanded nodes with no descendants in the frontier can be discarded. So the DFS frontier stays a thin radius instead of BFS's expanding sphere, which gives DFS its O(bm) linear space.",
+          "ref": "Book pp. 70-71 · DFS memory"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "Depth-limited search with limit l = 2 runs on the slides' binary tree, where A is at depth 0 and H to O are at depth 3. The only goal is K, at depth 3. What does DEPTH-LIMITED-SEARCH return?",
+          "options": [
+            "cutoff",
+            "failure",
+            "the node K",
+            "the node E"
+          ],
+          "answer": 0,
+          "why": "Nodes at depth 2 are treated as having no successors, so K is never generated. Each depth-2 node returns cutoff, and RECURSIVE-DLS passes cutoff up instead of failure, meaning a solution may lie deeper.",
+          "ref": "Slide 37 · Depth-limited search"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "DEPTH-LIMITED-SEARCH can return a solution, failure or cutoff. What does failure mean, as opposed to cutoff?",
+          "options": [
+            "A goal may exist deeper than the limit l",
+            "The depth limit l was reached somewhere",
+            "The goal was found exactly at depth l",
+            "No solution exists at any depth at all"
+          ],
+          "answer": 3,
+          "why": "Failure means the search ran out of nodes without hitting the limit, proving there is no solution at any depth. Cutoff means the limit stopped the search, so a deeper solution is still possible and IDS tries a bigger limit.",
+          "ref": "Book p. 74 · Depth-limited search results"
+        },
+        {
+          "kind": "sort",
+          "group": "Lecture 3",
+          "text": "Using the slides, classify each case as complete or not complete.",
+          "categories": [
+            "Complete",
+            "Not complete"
+          ],
+          "items": [
+            {
+              "text": "BFS on a problem where every state has at most 4 successors",
+              "category": 0
+            },
+            {
+              "text": "Uniform-cost search where every step cost is at least 1",
+              "category": 0
+            },
+            {
+              "text": "Iterative deepening search",
+              "category": 0
+            },
+            {
+              "text": "Depth-limited search with l = 6 when the shallowest goal is at d = 4",
+              "category": 0
+            },
+            {
+              "text": "DFS that avoids repeated states along the path, in a finite space",
+              "category": 0
+            },
+            {
+              "text": "Depth-limited search with l = 3 when the shallowest goal is at d = 5",
+              "category": 1
+            },
+            {
+              "text": "Depth-first search in a state space with infinite-depth paths",
+              "category": 1
+            },
+            {
+              "text": "Depth-first search in a space with loops and no repeated-state check",
+              "category": 1
+            }
+          ],
+          "why": "BFS (finite b), UCS (step cost ≥ ε) and IDS are complete, and DLS is complete only if l ≥ d. Plain DFS fails in infinite-depth spaces and spaces with loops, but avoiding repeated states along the path makes it complete in finite spaces.",
+          "ref": "Slides 33, 48 · Summary of algorithms"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "Root A has children B and C; B has children D and E; C has children F and G. The goal is E. Children are taken in alphabetical order. Which sequence lists the nodes that iterative deepening search goal-tests, iteration by iteration?",
+          "options": [
+            "A, B, C, D, E",
+            "A; A, B, C; A, B, D, E",
+            "A, B, D, E",
+            "A; A, B, C; A, B, C, D, E"
+          ],
+          "answer": 1,
+          "why": "Limit 0 tests only A, limit 1 tests A, B, C, and limit 2 runs depth-first: A, B, D, then the goal E. Each iteration restarts from the root. A, B, C, D, E is breadth-first order, and A, B, D, E is a single DFS.",
+          "ref": "Slides 39-41 · Iterative deepening search"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "On the slides' binary tree, iterative deepening search looks for the goal M, which is at depth 3. With which depth limit is M found, and on which iteration?",
+          "options": [
+            "Limit 3, on the 3rd iteration",
+            "Limit 4, on the 4th iteration",
+            "Limit 3, on the 4th iteration",
+            "Limit 2, on the 3rd iteration"
+          ],
+          "answer": 2,
+          "why": "IDS starts at limit 0, so limits 0, 1, 2 and 3 are the 1st to 4th iterations. M at depth 3 is first reachable with limit 3, the fourth depth-limited search. The book's Figure 3.13 also finds M on the fourth iteration.",
+          "ref": "Book pp. 74-76 · IDS iterations"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "The slides count IDS nodes as (d+1)b^0 + db^1 + (d-1)b^2 + ... + b^d. For b = 10 and d = 5, the term for depth 2 is ......",
+          "options": [
+            "100",
+            "400",
+            "500",
+            "3,000"
+          ],
+          "answer": 1,
+          "why": "Depth-2 nodes are generated d - 1 = 4 times, once in each iteration with limit 2 to 5, so the term is 4 × 10^2 = 400. This matches the slide's sum 50 + 400 + 3,000 + 20,000 + 100,000 = 123,450.",
+          "ref": "Slide 47 · Properties of IDS"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "For b = 10 and d = 5 with the solution at the far right leaf, the slides give N(IDS) = 123,450 but N(BFS) = 1,111,100. Why does IDS do better here?",
+          "options": [
+            "IDS does not expand the other nodes at depth d",
+            "IDS never re-generates the upper levels",
+            "IDS orders its fringe by path cost",
+            "IDS keeps every node it generates in memory at once"
+          ],
+          "answer": 0,
+          "why": "BFS expands nodes at depth d and so generates many depth d+1 nodes (the 999,990 term), while IDS stops at depth d. IDS does re-generate upper levels, but most nodes are at the bottom, so the repeats cost little.",
+          "ref": "Slide 47 · IDS vs BFS"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "A puzzle's state space is far too large to fit in memory, and the depth of the solution is unknown. Which uninformed method does the book call the preferred choice here?",
+          "options": [
+            "Breadth-first search",
+            "Uniform-cost search",
+            "Depth-limited search",
+            "Iterative deepening search"
+          ],
+          "answer": 3,
+          "why": "The book says iterative deepening is the preferred uninformed method when the state space is larger than memory and the solution depth is unknown. BFS and UCS need exponential memory, and DLS needs a good limit in advance.",
+          "ref": "Book p. 75 · Iterative deepening"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "A problem has b = 2, d = 3 and m = 5. Using the space row of the slides' summary table, what are the space needs of iterative deepening and of breadth-first search?",
+          "options": [
+            "10 and 16",
+            "6 and 8",
+            "6 and 16",
+            "8 and 16"
+          ],
+          "answer": 2,
+          "why": "IDS space is bd = 2 × 3 = 6, while BFS space is b^(d+1) = 2^4 = 16. The value 10 is bm, the space of depth-first search, which depends on the maximum depth m instead of d.",
+          "ref": "Slide 48 · Summary of algorithms"
+        },
+        {
+          "kind": "sort",
+          "group": "Lecture 3",
+          "text": "Using the space row of the slides' summary table, classify each strategy's memory use.",
+          "categories": [
+            "Linear space",
+            "Exponential space"
+          ],
+          "items": [
+            {
+              "text": "Breadth-first search",
+              "category": 1
+            },
+            {
+              "text": "Uniform-cost search",
+              "category": 1
+            },
+            {
+              "text": "Depth-first search",
+              "category": 0
+            },
+            {
+              "text": "Depth-limited search",
+              "category": 0
+            },
+            {
+              "text": "Iterative deepening search",
+              "category": 0
+            }
+          ],
+          "why": "DFS needs bm, DLS bl and IDS bd, so each grows only linearly with depth. BFS needs b^(d+1) because it keeps every node in memory, and UCS needs b^⌈C*/ε⌉; both grow exponentially.",
+          "ref": "Slide 48 · Summary of algorithms"
+        },
+        {
+          "kind": "sort",
+          "group": "Lecture 3",
+          "text": "Using the slides' conditions, classify each case as optimal or not optimal.",
+          "categories": [
+            "Optimal",
+            "Not optimal"
+          ],
+          "items": [
+            {
+              "text": "BFS when every step costs 1",
+              "category": 0
+            },
+            {
+              "text": "Uniform-cost search",
+              "category": 0
+            },
+            {
+              "text": "Uniform-cost search when all step costs are equal",
+              "category": 0
+            },
+            {
+              "text": "Iterative deepening search when every step costs 1",
+              "category": 0
+            },
+            {
+              "text": "BFS when step costs differ from step to step",
+              "category": 1
+            },
+            {
+              "text": "Depth-first search",
+              "category": 1
+            },
+            {
+              "text": "Depth-limited search",
+              "category": 1
+            }
+          ],
+          "why": "UCS is always optimal because it expands nodes in increasing g(n). BFS and IDS are optimal only when each step costs 1. DFS and DLS are not optimal: they return the first solution found, regardless of its cost.",
+          "ref": "Slide 48 · Summary of algorithms"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "In the slides' repeated-states example, states A, B, C and D form a chain, and each state has two different actions leading to the next state. If tree search does not detect repeated states, how many nodes for state D appear in the search tree?",
+          "options": [
+            "3",
+            "4",
+            "6",
+            "8"
+          ],
+          "answer": 3,
+          "why": "The tree doubles at each level: A has 2 B nodes, these have 4 C nodes, and those have 8 D nodes. Only four states exist, so failing to detect repeated states turns a linear problem into an exponential one.",
+          "ref": "Slide 49 · Repeated states"
+        },
+        {
+          "kind": "sort",
+          "group": "Lecture 3",
+          "text": "Classify each statement as describing tree search or graph search.",
+          "categories": [
+            "Tree search",
+            "Graph search"
+          ],
+          "items": [
+            {
+              "text": "May expand the same state many times through different paths",
+              "category": 0
+            },
+            {
+              "text": "Can turn a linear problem into an exponential one",
+              "category": 0
+            },
+            {
+              "text": "How DFS is usually implemented, without storing visited states",
+              "category": 0
+            },
+            {
+              "text": "Keeps a closed set of states",
+              "category": 1
+            },
+            {
+              "text": "Expands a node only if its state is not yet in closed",
+              "category": 1
+            },
+            {
+              "text": "Can be exponentially more efficient on problems with repeated states",
+              "category": 1
+            }
+          ],
+          "why": "GRAPH-SEARCH keeps a closed set and skips any node whose state is already in it, so it can be exponentially more efficient. Plain tree search does not detect repeated states; the book notes DFS is usually run this way.",
+          "ref": "Slides 49-51 · Tree vs graph search"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "According to the slides' summary, iterative deepening search uses ......",
+          "options": [
+            "only linear space and not much more time than the others",
+            "exponential space but much less time than breadth-first",
+            "linear space but far more time than any other method",
+            "constant space and the same time as depth-first search"
+          ],
+          "answer": 0,
+          "why": "The summary says IDS uses only linear space, O(bd), and not much more time than other uninformed algorithms, since its time is still O(b^d). Repeating the upper levels adds only a small amount of work.",
+          "ref": "Slide 51 · Lecture summary"
+        }
+      ]
+    }
+  ]
+}
