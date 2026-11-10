@@ -658,7 +658,7 @@
         {
           "kind": "mcq",
           "group": "Lecture 2",
-          "text": "In MATLAB, `immultiply(b, 0.5)` is applied to a `uint8` pixel of value 73. What is the result?",
+          "text": "An 8-bit pixel of value 73 is multiplied by 0.5, rounding as done by hand. What is the result?",
           "options": [
             "37",
             "36",
@@ -666,7 +666,7 @@
             "146"
           ],
           "answer": 0,
-          "why": "73 × 0.5 = 36.5, and the `uint8` result must be rounded to an integer. MATLAB, like the hand method, rounds a half upward, giving 37. NumPy's `np.round` would give 36, because it rounds a half to the nearest even integer.",
+          "why": "73 × 0.5 = 36.5, and an 8-bit result must be a whole number. Rounding by hand sends a half upward, giving 37. NumPy's `np.round` would give 36, because it rounds a half to the nearest even integer.",
           "ref": "Slide 12 · Multiplication and division"
         },
         {
@@ -686,31 +686,30 @@
         {
           "kind": "mcq",
           "group": "Lecture 2",
-          "text": "Which MATLAB call computes y = x/2 + 128 on the `uint8` image `b`?",
+          "text": "To compute y = x/2 + 128 on an 8-bit image with clipping, in which order must the two steps be done?",
           "options": [
-            "`immultiply(imadd(b,128),0.5)`",
-            "`imadd(immultiply(b,0.5),128)`",
-            "`imadd(imdivide(b,0.5),128)`",
-            "`imsubtract(immultiply(b,2),128)`"
+            "Add 128, then halve",
+            "Halve, then add 128",
+            "Divide by 0.5, then add 128",
+            "Double, then subtract 128"
           ],
           "answer": 1,
-          "why": "Halve first with `immultiply(b,0.5)` (or `imdivide(b,2)`), then add 128 with `imadd`. Adding first would clip at 255 before halving, and `imdivide(b,0.5)` doubles the image.",
+          "why": "Halve first (x/2 is at most 127.5), then add 128, so the results run from 128 to 255 and nothing is lost. Adding 128 first would clip at 255 before halving, and dividing by 0.5 doubles the image.",
           "ref": "Slide 12 · Multiplication and division"
         },
         {
           "kind": "mcq",
           "group": "Lecture 2",
-          "text": "The slides show `b1 = b + 128` on a `uint8` image failing with an error. What does it do in current MATLAB versions?",
+          "text": "Why must the result of adding a constant to an 8-bit image be clipped?",
           "options": [
-            "It works and clips at 255, just like `imadd`",
-            "It wraps around modulo 256, so 200 becomes 72",
-            "It still fails: + is not defined for class uint8",
-            "It silently converts the result to class double"
+            "8 bits can only hold the values 0 to 255",
+            "Clipping makes the addition faster",
+            "Without it the image turns into its negative",
+            "Clipping keeps the histogram flat"
           ],
           "answer": 0,
-          "why": "The error on the slide comes from old MATLAB versions, as the lecture page notes. Current versions saturate integer arithmetic, so `b + 128` clips at 255 like `imadd`; wrapping modulo 256 is what NumPy does.",
-          "ref": "Slide 11 · Adding and subtracting a constant",
-          "check": true
+          "why": "An 8-bit pixel holds 0 to 255, so the slides clip: any sum above 255 becomes 255, and any difference below 0 becomes 0. Wrapping around modulo 256 instead (200 + 128 = 72) is what NumPy's `uint8` does when nothing clips.",
+          "ref": "Slide 11 · Adding and subtracting a constant"
         },
         {
           "kind": "mcq",
@@ -743,7 +742,7 @@
         {
           "kind": "mcq",
           "group": "Lecture 2",
-          "text": "For a `double` image with values in [0, 1], what does `imcomplement` compute?",
+          "text": "For an image whose values are scaled to [0, 1], what is its complement?",
           "options": [
             "`255 - x`",
             "`-x`",
@@ -751,7 +750,7 @@
             "`x - 1`"
           ],
           "answer": 2,
-          "why": "`imcomplement` works for every image type: 255 − x for uint8, 1 − x for double images in [0, 1], and it swaps 0 and 1 in a binary image.",
+          "why": "The complement subtracts each value from the largest one: 255 − x for an 8-bit image, 1 − x for an image on a [0, 1] scale, and it swaps 0 and 1 in a binary image.",
           "ref": "Slide 13 · Complements"
         },
         {
@@ -855,7 +854,7 @@
         {
           "kind": "mcq",
           "group": "Lecture 2",
-          "text": "For a `double` image, `imadjust(x,[0.2 0.6],[0.1 0.9])` maps x = 0.1 and x = 0.5 to ......",
+          "text": "On a [0, 1] scale, the range [0.2, 0.6] is stretched onto [0.1, 0.9], with values below 0.2 set to 0.1 and values above 0.6 set to 0.9. What do x = 0.1 and x = 0.5 become?",
           "options": [
             "−0.1 and 0.7",
             "0.1 and 0.7",
@@ -864,21 +863,21 @@
           ],
           "answer": 1,
           "why": "Values up to a = 0.2 become c = 0.1. For 0.5: (0.5 − 0.2)/(0.6 − 0.2) × (0.9 − 0.1) + 0.1 = 0.75 × 0.8 + 0.1 = 0.7.",
-          "ref": "Slide 19 · Use of imadjust"
+          "ref": "Slide 19 · Range stretching"
         },
         {
           "kind": "mcq",
           "group": "Lecture 2",
-          "text": "The grey values of the `uint8` image `pout.tif` lie roughly between 75 and 160. Which call stretches that range to the full range?",
+          "text": "The grey values of `pout.tif` lie roughly between 75 and 160. Which mapping stretches that range to the full range?",
           "options": [
-            "`imadjust(p,[75 160]/255,[0 1])`",
-            "`imadjust(p,[75 160],[0 255])`",
-            "`imadjust(p,[0 1],[75 160]/255)`",
-            "`imadjust(p,[],[],75/160)`"
+            "75 → 0 and 160 → 255, linear in between",
+            "0 → 75 and 255 → 160, linear in between",
+            "75 → 160, with every other value unchanged",
+            "Every value multiplied by 160/75"
           ],
           "answer": 0,
-          "why": "`imadjust` takes its ranges on a [0, 1] scale, so 75–160 is written `[75 160]/255` and mapped to `[0 1]`. Swapping the two ranges would squeeze the image into 75–160 instead.",
-          "ref": "Slide 19 · Use of imadjust"
+          "why": "Stretching maps the occupied range onto the full range: 75 goes to 0, 160 goes to 255, and the values between move linearly (anything outside is clipped). The reverse mapping would squeeze the image into 75–160 instead.",
+          "ref": "Slide 19 · Range stretching"
         },
         {
           "kind": "mcq",
@@ -897,7 +896,7 @@
         {
           "kind": "mcq",
           "group": "Lecture 2",
-          "text": "In `imadjust(im,[a b],[c d],gamma)`, what does a gamma greater than 1 do?",
+          "text": "When the range stretch uses a gamma exponent, y = ((x − a)/(b − a))^γ · (d − c) + c, what does a gamma greater than 1 do?",
           "options": [
             "Bends the curve upward, so the image becomes brighter",
             "Keeps the straight line between (a, c) and (b, d)",
@@ -911,15 +910,15 @@
         {
           "kind": "mcq",
           "group": "Lecture 2",
-          "text": "In `imadjust(t,[],[],0.5)`, what do the two empty brackets `[]` mean?",
+          "text": "Gamma correction with γ = 0.5 is applied over the full range to the slides' dark tire image. What does it do?",
           "options": [
-            "The input range is found automatically by `stretchlim`",
-            "Both the input and the output range are [0, 1]",
-            "The output is limited to the range [0, 0.5]",
-            "The image is left unchanged and gamma is ignored"
+            "Darkens it further, mostly in the bright areas",
+            "Brightens it, lifting the dark areas the most",
+            "Leaves it unchanged, because γ only affects colour",
+            "Turns it into its own negative"
           ],
           "answer": 1,
-          "why": "An empty `[a,b]` or `[c,d]` means [0, 1], so `imadjust(t,[],[],0.5)` applies a gamma of 0.5 over the full range, which brightens the dark tire.",
+          "why": "With γ < 1 the curve y = x^γ (on a [0, 1] scale) bows above the straight line, so dark values are lifted the most and the dark tire becomes brighter, with more visible detail in the shadows.",
           "ref": "Slide 20 · Gamma correction"
         },
         {
@@ -999,7 +998,7 @@
           "text": "Why is the histogram after equalization usually only approximately flat?",
           "options": [
             "All pixels of a grey level move together, so a bar can never split",
-            "MATLAB clips the equalized values at 255, piling pixels into the top bar",
+            "The equalized values are clipped at 255, piling pixels into the top bar",
             "The cumulative distribution never quite reaches 1 at the last grey level",
             "The darkest grey levels are mapped without any rounding at all"
           ],
@@ -1024,16 +1023,16 @@
         {
           "kind": "mcq",
           "group": "Lecture 2",
-          "text": "By default, MATLAB's `histeq(p)` aims for a flat histogram with how many grey levels?",
+          "text": "Histogram equalization of an image with L grey levels maps each level r to ......",
           "options": [
-            "256",
-            "64",
-            "16",
-            "2"
+            "round((L − 1) × r / L)",
+            "round((L − 1) × the fraction of pixels with value ≤ r)",
+            "round(L × the fraction of pixels with value exactly r)",
+            "r + (L − 1)/2"
           ],
           "answer": 1,
-          "why": "By default `histeq` targets 64 grey levels: it chooses the mapping whose cumulative histogram comes closest to that of a flat 64-level histogram, so the output has at most 64 distinct values. That is why the bars in the slide's equalized histogram are spaced out.",
-          "ref": "Slide 25 · Final result of histogram equalization"
+          "why": "Equalization uses the cumulative distribution: s = round((L − 1) × Σ n_j / n over j ≤ r), so a level moves up by as much as the share of pixels at or below it. The first option ignores the histogram, and the third uses one bar instead of the running total.",
+          "ref": "Slide 23 · Histogram equalization"
         }
       ]
     },
@@ -1116,16 +1115,16 @@
         {
           "kind": "mcq",
           "group": "Lecture 3",
-          "text": "With no extra options, what does MATLAB's `imfilter(f, h)` do?",
+          "text": "A 3×3 mask is applied by correlation with zero padding, and the output keeps the image's size. Which description is right?",
           "options": [
-            "Correlates, zero-pads and keeps the size",
-            "Convolves, zero-pads and keeps the size",
-            "Correlates and keeps only where the mask fits",
-            "Convolves and replicates the border pixels"
+            "The mask is used as it is and missing neighbours count as 0",
+            "The mask is rotated by 180° and missing neighbours count as 0",
+            "Only the pixels where the whole mask fits are kept",
+            "The border pixels are repeated outward to fill the gaps"
           ],
           "answer": 0,
-          "why": "By default `imfilter` uses correlation with zero padding and returns an image the same size as `f`; add the `'conv'` option to convolve. `conv2` is the function that convolves.",
-          "ref": "Slide 10 · imfilter in MATLAB"
+          "why": "Correlation lays the mask on the image without rotating it, and zero padding treats the neighbours outside the image as 0, so the output has the input's size. Rotating by 180° is convolution, keeping only where the mask fits shrinks the output, and repeating the border is replicate padding.",
+          "ref": "Book p. 65 · Padding"
         },
         {
           "kind": "mcq",
@@ -1200,7 +1199,7 @@
         {
           "kind": "mcq",
           "group": "Lecture 3",
-          "text": "A filtered image `g` has values from −50 to 200, and `imshow(g, [])` scales that range to [0, 255] for display. At what grey level is a pixel of value 50 shown?",
+          "text": "A filtered image `g` has values from −50 to 200, and that range is scaled to [0, 255] for display. At what grey level is a pixel of value 50 shown?",
           "options": [
             "50",
             "51",
@@ -1214,7 +1213,7 @@
         {
           "kind": "mcq",
           "group": "Lecture 3",
-          "text": "What mask does `h = fspecial('average', 11)` create?",
+          "text": "What does an 11×11 averaging (mean) mask contain?",
           "options": [
             "An 11×11 mask with every coefficient 1/11",
             "An 11×11 mask of ones that adds up to 121",
@@ -1222,8 +1221,8 @@
             "A 1×11 row mask with every coefficient 1/11"
           ],
           "answer": 2,
-          "why": "An n×n averaging mask has n² equal coefficients of 1/n², here 1/121, so they add up to 1. The slides then apply it with `imfilter(in_image, h)`.",
-          "ref": "Slide 10 · fspecial average mask"
+          "why": "An n×n averaging mask has n² equal coefficients of 1/n², here 1/121, so they add up to 1 and a flat region keeps its grey level.",
+          "ref": "Slide 10 · Average smoothing filter"
         },
         {
           "kind": "mcq",
@@ -1537,7 +1536,7 @@
         {
           "kind": "mcq",
           "group": "Lecture 3",
-          "text": "The slides run `medfilt2(in_image, [21, 21])` on a skin image with hairs. What does the result show?",
+          "text": "The slides apply a 21×21 median filter to a skin image with hairs. What does the result show?",
           "options": [
             "Everything is blurred evenly, outline included",
             "The hairs are gone but the skin outline is kept",
@@ -1545,8 +1544,8 @@
             "Only the edges remain, on a dark background"
           ],
           "answer": 1,
-          "why": "`medfilt2` replaces each pixel by the median of its 21×21 neighbourhood. Thin hairs are a minority in each window and vanish, while the median keeps edges because its output is always a real value from the window.",
-          "ref": "Slide 36 · medfilt2 demo"
+          "why": "A median filter replaces each pixel by the median of its 21×21 neighbourhood. Thin hairs are a minority in each window and vanish, while the median keeps edges because its output is always a real value from the window.",
+          "ref": "Slide 36 · Median filter"
         }
       ]
     },

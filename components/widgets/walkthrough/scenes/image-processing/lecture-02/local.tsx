@@ -5,7 +5,7 @@ import { Arrow, Bars, Curve, Fade, In, Pixels, Text, plotAt, type L, type LineTo
 /*
  * Drawing pieces shared by the Lecture 2 scenes (point processing): plot axes with tick
  * labels, an input → output mark on a transfer curve, and a before/after histogram pair
- * whose bars are joined by the mapping.
+ * with its bars joined by the mapping.
  */
 
 const FILL: Record<LineTone, string> = {

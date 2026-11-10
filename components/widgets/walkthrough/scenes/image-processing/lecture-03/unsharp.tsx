@@ -53,7 +53,7 @@ function AddBack({ control }: { control: string }) {
   const zeroY = plotAt(ADD, 0, 0)[1];
   const lo = Math.min(...DIFF9);
   const hi = Math.max(...DIFF9);
-  // imshow(g, []) for the difference: its minimum shows black and its maximum white.
+  // The difference is scaled for display: its minimum shows black and its maximum white.
   const shown = added ? boosted : DIFF9.map((v) => ((v - lo) / (hi - lo)) * 110);
   const image = Array.from({ length: 6 }, () => shown);
   const [dx, dy] = plotAt(ADD, 3, 0);

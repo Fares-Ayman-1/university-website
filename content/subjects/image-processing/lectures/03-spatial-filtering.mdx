@@ -14,8 +14,6 @@ bookRefs:
   - book: ip-book
     chapter: "Ch 3 · Neighborhood Processing: Spatial Filtering"
     pages: "59–79"
-  - book: mcandrew
-    chapter: Neighbourhood Processing
   - book: gonzalez
     chapter: Ch 3 · Intensity Transformations and Spatial Filtering
 ---
@@ -118,9 +116,9 @@ g(x, y) = \int\!\!\int f(x-s,\, y-t)\, w(s, t)\, ds\, dt
 g[x, y] = \sum_{s} \sum_{t} f[x-s,\, y-t]\, w[s, t]
 $$
 
-For **symmetric** masks (averaging, Gaussian, Laplacian) the two are identical. Convolution is **commutative**, **associative** and **distributive**; associativity means that filtering with $w_1$ and then $w_2$ equals filtering once with $w_1 * w_2$. In MATLAB, `imfilter` correlates by default (add `'conv'` to convolve) and `conv2` convolves.
+For **symmetric** masks (averaging, Gaussian, Laplacian) the two are identical. Convolution is **commutative**, **associative** and **distributive**; associativity means that filtering with $w_1$ and then $w_2$ equals filtering once with $w_1 * w_2$.
 
-<Ar>في الأقنعة **المتماثلة (symmetric)** (المتوسط، وغاوس، ولابلاسيان) تتطابق العمليتان. والالتفاف **إبدالي (commutative)** و**تجميعي (associative)** و**توزيعي (distributive)**؛ وتعني الخاصية التجميعية أن الترشيح بالقناع $w_1$ ثم $w_2$ يساوي الترشيح مرة واحدة بالقناع $w_1 * w_2$. وفي MATLAB تُجري الدالة `imfilter` ارتباطًا افتراضيًا (أضف `'conv'` لإجراء التفاف)، أما `conv2` فتُجري التفافًا.</Ar>
+<Ar>في الأقنعة **المتماثلة (symmetric)** (المتوسط، وغاوس، ولابلاسيان) تتطابق العمليتان. والالتفاف **إبدالي (commutative)** و**تجميعي (associative)** و**توزيعي (distributive)**؛ وتعني الخاصية التجميعية أن الترشيح بالقناع $w_1$ ثم $w_2$ يساوي الترشيح مرة واحدة بالقناع $w_1 * w_2$.</Ar>
 
 ### The impulse (delta) function
 
@@ -166,9 +164,9 @@ If the mask must stay inside the image, an $M \times N$ image and an $m \times n
 
 <Ar>القيم الخارجة عن المدى</Ar>
 
-Negative coefficients can push results below 0 or above 255. Either **clip** them, or **scale** the whole result from its range $[g_L, g_H]$ to $[0, 255]$ (MATLAB's `imshow(g, [])` does this for display):
+Negative coefficients can push results below 0 or above 255. Either **clip** them, or **scale** the whole result from its range $[g_L, g_H]$ to $[0, 255]$:
 
-<Ar>المعاملات السالبة قد تدفع النتائج إلى ما دون 0 أو ما فوق 255. فإما أن **نقصّها (clipping)**، وإما أن **نعيد تحجيم (scaling)** النتيجة كلها من مداها $[g_L, g_H]$ إلى $[0, 255]$ (والأمر `imshow(g, [])` في MATLAB يفعل ذلك عند العرض):</Ar>
+<Ar>المعاملات السالبة قد تدفع النتائج إلى ما دون 0 أو ما فوق 255. فإما أن **نقصّها (clipping)**، وإما أن **نعيد تحجيم (scaling)** النتيجة كلها من مداها $[g_L, g_H]$ إلى $[0, 255]$:</Ar>
 
 $$
 y_{\text{clip}} = \begin{cases} 0 & x < 0 \\ x & 0 \le x \le 255 \\ 255 & x > 255 \end{cases}
@@ -194,32 +192,11 @@ $$
 
 <Ar>**مثال.** عبر حافة (edge) رأسية بين مستويي الرمادي 20 و 80، يصبح كل صف 20، 20، 20، 80، 80 هو 20، 40، 60 في البكسلات الداخلية: تتحول القفزة إلى منحدر، فتُ**ضبَّب** الحافة. وكلما كبر القناع زاد التنعيم (smoothing).</Ar>
 
-```matlab title="average_filter.m"
-clear
-in_image = imread('msalah 2.png');
-h = fspecial('average', 11);        % 11x11 mask, every coefficient 1/121
-out_image = imfilter(in_image, h);  % correlation, zero padding, same size
-imshow(out_image)
-```
-
 <SlideFigure page={11} caption="The effect of the averaging filter size: the original and 11×11, 15×15 and 21×21 masks; the larger the mask, the stronger the blur." captionAr="أثر حجم مرشح المتوسط: الصورة الأصلية والأقنعة 11×11 و15×15 و21×21؛ فكلما كبر القناع زاد التضبيب." />
 
-Averaging also reduces noise, but it handles **salt-and-pepper** noise badly: each impulse is spread over the window and leaves a grey blotch, and the higher the noise density, the worse it gets. The slides' demo:
+Averaging also reduces noise, but it handles **salt-and-pepper** noise badly: each impulse is spread over the window and leaves a grey blotch, and the higher the noise density, the worse it gets. The course book's Figure 3.6 shows this: the same 5×5 averaging filter applied to images with increasing noise levels.
 
-<Ar>يقلل التوسيط الضوضاء (noise) أيضًا، لكنه يتعامل تعاملًا سيئًا مع ضوضاء **الملح والفلفل (salt-and-pepper)**: فكل نبضة تنتشر على النافذة وتترك بقعة رمادية، وكلما زادت كثافة الضوضاء ساءت النتيجة. وهذا عرض الشرائح:</Ar>
-
-```matlab title="noise_level.m"
-clear
-in_image = imread('msalah 2.png');
-in_image = rgb2gray(in_image);
-in_image2 = imresize(in_image, 0.4);
-imshow(in_image2), figure
-noised_image = imnoise(in_image2, 'salt & pepper', 0.2)
-imshow(noised_image), figure
-h = fspecial('average', 5);
-out_image = imfilter(noised_image, h);
-imshow(out_image)
-```
+<Ar>يقلل التوسيط الضوضاء (noise) أيضًا، لكنه يتعامل تعاملًا سيئًا مع ضوضاء **الملح والفلفل (salt-and-pepper)**: فكل نبضة تنتشر على النافذة وتترك بقعة رمادية، وكلما زادت كثافة الضوضاء ساءت النتيجة. ويوضّح ذلك الشكل 3.6 في كتاب المقرر: مرشح المتوسط نفسه بحجم 5×5 مطبّقًا على صور مستويات الضوضاء فيها متزايدة.</Ar>
 
 ## Separable filters
 
@@ -441,22 +418,9 @@ The single outlier drags the mean up to 14.67, while the median ignores it. Trim
   <Ar>بكسلات الملح والفلفل قيم متطرفة (0 أو 255)، لذا تقع بعد الترتيب في <strong>طرفي</strong> القائمة ولا تُختار أبدًا ما لم يكن أكثر من نصف النافذة ضوضاء. ويحافظ الوسيط أيضًا <strong>على الحواف</strong>، لأن مخرجه دائمًا قيمة حقيقية من النافذة، لا مزيجًا من جانبي الحافة.</Ar>
 </Callout>
 
-The slides' demo uses a very large 21×21 median, which removes the hairs from a skin image but keeps the skin region's outline:
+The slides' demo uses a very large 21×21 median, which removes the hairs from a skin image but keeps the skin region's outline.
 
-<Ar>يستخدم عرض الشرائح مرشح وسيط كبيرًا جدًا أبعاده 21×21، فيزيل الشعر من صورة جلد مع الحفاظ على حدود منطقة الجلد:</Ar>
-
-```matlab title="median_filter.m"
-clear
-in_image = imread('h_skin.jpg');
-in_image = rgb2gray(in_image);
-in_image = imresize(in_image, 0.6);
-imshow(in_image), figure
-out_image = medfilt2(in_image, [21, 21]);
-imshow(out_image)
-% rank-order filters: ordfilt2(I, 9, ones(3)) = max, ordfilt2(I, 1, ones(3)) = min
-```
-
-<SlideFigure page={36} caption="The median filter: sorting 1 4 5 7 8 10 12 15 70 replaces the outlier 70 by 8; a 21×21 median removes the hairs from a skin image." captionAr="مرشح الوسيط: ترتيب 1 4 5 7 8 10 12 15 70 يستبدل القيمة الشاذة 70 بالقيمة 8؛ ووسيط 21×21 يزيل الشعر من صورة جلد." />
+<Ar>يستخدم عرض الشرائح مرشح وسيط كبيرًا جدًا أبعاده 21×21، فيزيل الشعر من صورة جلد مع الحفاظ على حدود منطقة الجلد.</Ar>
 
 ```python title="nonlinear_filters.py"
 import numpy as np

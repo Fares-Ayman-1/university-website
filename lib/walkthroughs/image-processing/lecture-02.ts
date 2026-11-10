@@ -98,7 +98,7 @@ export const pointOps = defineWalkthrough({
   id: "ip2-point-ops",
   title: bi("Point operations: y = f(x)", "العمليات النقطية: y = f(x)"),
   analogy: bi(
-    "A currency converter: every 100 pounds becomes the same amount of dollars, no matter whose wallet it came from.",
+    "A currency converter: every 100 pounds becomes the same amount of dollars, no matter which wallet it came from.",
     "محوّل العملات: كل 100 جنيه تصبح المبلغ نفسه من الدولارات، أيًّا كانت المحفظة التي جاءت منها.",
   ),
   panels: [
@@ -254,20 +254,20 @@ export const arithmetic = defineWalkthrough({
     },
     {
       id: "overflow",
-      pill: bi("MATLAB vs NumPy", "MATLAB مقابل NumPy"),
+      pill: bi("Clip or wrap around?", "قصّ أم التفاف؟"),
       heading: bi("What happens to 140 + 128 in uint8?", "ماذا يحدث لـ 140 + 128 في uint8؟"),
       control: {
         label: bi("Arithmetic", "الحساب"),
         options: [
-          { id: "saturate", label: bi("MATLAB: clip", "MATLAB: قصّ") },
-          { id: "wrap", label: bi("NumPy: wrap", "NumPy: التفاف") },
+          { id: "saturate", label: bi("Clip to 255 (the slides' rule)", "قصّ إلى 255 (قاعدة الشرائح)") },
+          { id: "wrap", label: bi("Wrap around (NumPy uint8)", "التفاف (uint8 في NumPy)") },
         ],
         initial: "saturate",
       },
       points: [bi("An 8-bit (**uint8**) pixel cannot hold 268, so something has to give.", "لا يتسع بكسل بعمق 8 بِتّات (**uint8**) للقيمة 268، فلا بد أن يحدث شيء ما.")],
       pointsFor: {
         saturate: [
-          bi("MATLAB's imadd(b, 128), and b + 128 in current versions, **saturate**: 268 is clipped to 255, as the slides require.", "الدالة imadd(b, 128) في MATLAB، وكذلك b + 128 في الإصدارات الحالية، **تتشبّع (saturate)**: فتُقصّ 268 إلى 255، كما تشترط الشرائح."),
+          bi("With **clipping**, 268 becomes 255, the largest value an 8-bit pixel can hold, as the slides require.", "مع **القصّ (clipping)** تصبح 268 مساوية 255، وهي أكبر قيمة يتسع لها بكسل بعمق 8 بِتّات، كما تشترط الشرائح."),
         ],
         wrap: [
           bi(
@@ -307,10 +307,10 @@ export const complements = defineWalkthrough({
     },
     {
       id: "types",
-      pill: bi("imcomplement", "imcomplement"),
-      heading: bi("One function for every image type", "دالة واحدة لكل أنواع الصور"),
+      pill: bi("Every image type", "كل أنواع الصور"),
+      heading: bi("The complement of every image type", "متمِّم كل أنواع الصور"),
       points: [
-        bi("MATLAB's **imcomplement** computes 255 − x for uint8, 1 − x for double images in [0, 1], and swaps 0 and 1 in a binary image.", "تحسب الدالة **imcomplement** في MATLAB القيمة 255 − x للنوع uint8، و1 − x لصور double ذات المدى [0, 1]، وتبدّل بين 0 و1 في الصورة الثنائية (binary)."),
+        bi("The complement is always the largest value minus x: **255 − x** for an 8-bit image, **1 − x** for an image on a [0, 1] scale, and a swap of 0 and 1 in a **binary** image.", "المتمِّم دائمًا هو أكبر قيمة ناقص x: **255 − x** للصورة ذات 8 بِتّات، و**1 − x** للصورة على المقياس [0, 1]، وتبديل 0 و1 في الصورة **الثنائية (binary)**."),
       ],
     },
     {
@@ -464,12 +464,12 @@ export const stretching = defineWalkthrough({
       ],
     },
     {
-      id: "imadjust",
-      pill: bi("imadjust", "imadjust"),
-      heading: bi("imadjust(im, [a, b], [c, d])", "الدالة imadjust(im, [a, b], [c, d])"),
+      id: "range",
+      pill: bi("Stretching a chosen range", "مط مدى مختار"),
+      heading: bi("Stretch [a, b] onto [c, d], flat at both ends", "مُطّ [a, b] إلى [c, d]، مع طرفين ثابتين"),
       points: [
-        bi("MATLAB's **imadjust** does this stretch on a [0, 1] scale: values up to a become c, values from b up become d, and a–b maps linearly onto c–d.", "تُجري الدالة **imadjust** في MATLAB هذا المط على مقياس [0, 1]: فالقيم حتى a تصبح c، والقيم من b فما فوق تصبح d، ويُحوَّل المدى a–b خطيًا إلى المدى c–d."),
-        bi("An empty [] means [0, 1]. For pout.tif: imadjust(p, [75 160]/255, [0 1]).", "والقوسان الفارغان [] يعنيان [0, 1]. وفي الصورة pout.tif: imadjust(p, [75 160]/255, [0 1])."),
+        bi("The same stretch on a chosen range, with all values on a [0, 1] scale: values up to a become c, values from b up become d, and a–b maps linearly onto c–d.", "المط نفسه على مدى مختار، مع اعتبار كل القيم على مقياس [0, 1]: فالقيم حتى a تصبح c، والقيم من b فما فوق تصبح d، ويُحوَّل المدى a–b خطيًا إلى المدى c–d."),
+        bi("On this scale [0, 1] is the full range, so pout.tif is stretched from [a, b] = [75, 160]/255 onto [c, d] = [0, 1].", "وعلى هذا المقياس يمثّل [0, 1] المدى الكامل، لذلك تُمطّ الصورة pout.tif من [a, b] = [75, 160]/255 إلى [c, d] = [0, 1]."),
       ],
     },
   ],
@@ -529,10 +529,10 @@ export const gamma = defineWalkthrough({
     },
     {
       id: "tire",
-      pill: bi("imadjust with gamma", "imadjust مع غاما"),
-      heading: bi("imadjust(t, [], [], 0.5) on the dark tire", "imadjust(t, [], [], 0.5) على الإطار الداكن"),
+      pill: bi("Brightening the tire", "زيادة سطوع الإطار"),
+      heading: bi("γ = 0.5 on the dark tire", "γ = 0.5 على الإطار الداكن"),
       points: [
-        bi("imadjust takes gamma as a fourth argument: y = ((x − a)/(b − a))^γ · (d − c) + c.", "تأخذ الدالة imadjust غاما وسيطًا (argument) رابعًا: y = ((x − a)/(b − a))^γ · (d − c) + c."),
+        bi("On a chosen range [a, b] → [c, d], gamma bends the straight stretch into y = ((x − a)/(b − a))^γ · (d − c) + c. The tire uses the full range.", "على مدى مختار [a, b] → [c, d] تحني غاما المط المستقيم إلى y = ((x − a)/(b − a))^γ · (d − c) + c. وتستخدم صورة الإطار المدى الكامل."),
         bi(
           `With γ = 0.5, the near-black values ${TIRE_DARK.join(", ")} become ${TIRE_DARK.map((v) => gamma8(v, 0.5)).join(", ")}: the gaps grow, and detail in the dark rubber appears.`,
           `مع γ = 0.5 تصبح القيم شبه السوداء ${TIRE_DARK.join("، ")} هي ${TIRE_DARK.map((v) => gamma8(v, 0.5)).join("، ")}: فتتسع الفجوات، وتظهر التفاصيل في المطاط الداكن.`,
@@ -620,10 +620,10 @@ export const piecewiseWt = defineWalkthrough({
     {
       id: "lut",
       pill: bi("In code", "في الشيفرة"),
-      heading: bi("interp1 builds the lookup table", "الدالة interp1 تبني جدول البحث"),
+      heading: bi("Interpolation builds the lookup table", "الاستيفاء (interpolation) يبني جدول البحث"),
       points: [
-        bi("With breakpoints a = [0 64 192 255] and b = [0 20 235 255], interp1(a, b, 0:255) gives y for all 256 levels at once.", "بنقاط الانكسار a = [0 64 192 255] و b = [0 20 235 255] تعطي interp1(a, b, 0:255) قيمة y للمستويات الـ 256 كلها دفعة واحدة."),
-        bi("Each pixel is then looked up: lut(double(im) + 1) in MATLAB, whose indices start at 1, or np.interp in Python.", "ثم يُبحث عن كل بكسل: lut(double(im) + 1) في MATLAB، التي تبدأ فهارسها من 1، أو np.interp في Python."),
+        bi("With breakpoints a = [0, 64, 192, 255] and b = [0, 20, 235, 255], np.interp(range(256), a, b) gives y for all 256 levels at once; rounded, that is the lookup table.", "بنقاط الانكسار a = [0, 64, 192, 255] و b = [0, 20, 235, 255] تعطي np.interp(range(256), a, b) قيمة y للمستويات الـ 256 كلها دفعة واحدة؛ وبعد التقريب يكون هذا هو جدول البحث."),
+        bi("Each pixel is then looked up with lut[img], one table read per pixel. Calling np.interp on the image itself, as piecewise.py does, gives the same result.", "ثم يُبحث عن كل بكسل بـ lut[img]، بقراءة واحدة من الجدول لكل بكسل. واستدعاء np.interp على الصورة نفسها، كما في piecewise.py، يعطي النتيجة نفسها."),
       ],
     },
   ],

@@ -1,7 +1,7 @@
 "use client";
 
 import type { stretching } from "@/lib/walkthroughs/image-processing/lecture-02";
-import { STRETCH_BAND, STRETCH_HIST, STRETCH_MAP, STRETCH_POINTS, imadjust, linearStretch, round, slopes, sum } from "@/lib/widgets/ip-lecture-02";
+import { STRETCH_BAND, STRETCH_HIST, STRETCH_MAP, STRETCH_POINTS, linearStretch, round, slopes, stretchRange, sum } from "@/lib/widgets/ip-lecture-02";
 import type { PanelIdOf } from "@/lib/widgets/walkthrough";
 import { bi } from "../../../../types";
 import { Bars, Box, Chip, Curve, Pixels, Svg, Table, Text, type PlotBox } from "../../../primitives";
@@ -78,23 +78,24 @@ const B = 0.7;
 const C = 0.15;
 const D = 0.9;
 
-function Imadjust() {
+/** Stretching a chosen range [a, b] onto [c, d], flat at both ends, on a [0, 1] scale. */
+function ChosenRange() {
   const box: PlotBox = { x: 64, y: 44, w: 190, h: 180 };
   return (
     <Svg>
       <Axes box={box} xs={[[A, "a"], [B, "b"], [1, "1"]]} ys={[[C, "c"], [D, "d"], [1, "1"]]} xName="x" yName="y" d={0} />
       <Curve box={box} points={[[0, C], [A, C], [B, D], [1, D]]} d={300} />
       {[0.15, 0.5, 0.85].map((x, k) => (
-        <MapMark key={x} box={box} x={x} y={imadjust(x, A, B, C, D)} tone={k === 1 ? "gold" : "navy"} d={1100 + k * 300} />
+        <MapMark key={x} box={box} x={x} y={stretchRange(x, A, B, C, D)} tone={k === 1 ? "gold" : "navy"} d={1100 + k * 300} />
       ))}
       <Dot at={[box.x + A * box.w, box.y + box.h - C * box.h]} tone="slate" d={900} />
       <Dot at={[box.x + B * box.w, box.y + box.h - D * box.h]} tone="slate" d={900} />
-      <Text x={300} y={46} text="imadjust(im, [a b], [c d])" size={12} mono anchor="start" tone="heading" d={400} />
+      <Text x={300} y={46} text="[a, b]  →  [c, d]" size={12} mono anchor="start" tone="heading" d={400} />
       <Text x={312} y={86} text="x ≤ a      →  c" size={12} mono anchor="start" d={1100} />
       <Text x={312} y={114} text="a … b      →  c … d" size={12} mono anchor="start" tone="gold" d={1400} />
       <Text x={312} y={142} text="x ≥ b      →  d" size={12} mono anchor="start" d={1700} />
-      <Text x={312} y={176} text="[]  =  [0 1]" size={12} mono anchor="start" tone="muted" d={2000} />
-      <Chip x={422} y={232} text="imadjust(p, [75 160]/255, [0 1])" size={11} tone="gold" center d={2300} />
+      <Text x={312} y={176} text={bi("all values on a [0, 1] scale", "كل القيم على مقياس [0, 1]")} size={12} anchor="start" tone="muted" d={2000} />
+      <Chip x={422} y={232} text="pout.tif:  [75, 160]/255  →  [0, 1]" size={11} tone="gold" center d={2300} />
     </Svg>
   );
 }
@@ -104,6 +105,6 @@ export const Scene = sceneSet<PanelIdOf<typeof stretching>>({
   mapping: Mapping,
   result: ResultScene,
   general: General,
-  imadjust: Imadjust,
+  range: ChosenRange,
 });
 

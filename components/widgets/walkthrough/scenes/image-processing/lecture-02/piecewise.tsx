@@ -81,9 +81,9 @@ function Lut() {
   const CELL = 50;
   return (
     <Svg>
-      <Text x={24} y={34} text="a = [0 64 192 255];  b = [0 20 235 255];" size={11.5} mono anchor="start" tone="heading" d={0} />
-      <Text x={24} y={60} text="lut = interp1(a, b, 0:255);" size={11.5} mono anchor="start" tone="gold" d={300} />
-      <Text x={24} y={86} text="out = uint8(lut(double(im) + 1));" size={11.5} mono anchor="start" tone="gold" d={600} />
+      <Text x={24} y={34} text="a, b = [0, 64, 192, 255], [0, 20, 235, 255]" size={11.5} mono anchor="start" tone="heading" d={0} />
+      <Text x={24} y={60} text="lut = np.round(np.interp(range(256), a, b))" size={11.5} mono anchor="start" tone="gold" d={300} />
+      <Text x={24} y={86} text="out = lut[img]" size={11.5} mono anchor="start" tone="gold" d={600} />
       <Text x={440} y={60} text={bi("256 entries, computed once", "256 مدخلًا تُحسب مرة واحدة")} size={11.5} tone="muted" d={800} />
       <Text x={X0 - 8} y={140 + CELL / 2} text="x" size={12.5} mono anchor="end" tone="heading" d={900} />
       <Pixels x={X0} y={140} values={[NINE]} cell={CELL} size={11.5} d={900} outline={(_, c) => (NINE[c] >= 64 && NINE[c] <= 192 ? "gold" : undefined)} />

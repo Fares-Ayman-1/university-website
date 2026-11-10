@@ -23,22 +23,22 @@ function Negative() {
 }
 
 const TYPES = [
-  { kind: "uint8", before: [[20, 60], [200, 250]], max: 255, formula: "255 − x" },
-  { kind: "double", before: [[0.1, 0.4], [0.8, 1]], max: 1, formula: "1 − x" },
-  { kind: "logical", before: [[0, 1], [1, 0]], max: 1, formula: "0 ↔ 1" },
+  { kind: "8-bit", label: bi("8-bit", "8 بِتّات"), before: [[20, 60], [200, 250]], max: 255, formula: "255 − x" },
+  { kind: "unit", label: bi("[0, 1] scale", "المقياس [0, 1]"), before: [[0.1, 0.4], [0.8, 1]], max: 1, formula: "1 − x" },
+  { kind: "binary", label: bi("binary", "ثنائية"), before: [[0, 1], [1, 0]], max: 1, formula: "0 ↔ 1" },
 ];
 
 function Types() {
   return (
     <Svg>
-      <Text x={280} y={26} text="imcomplement(b)" size={13} mono tone="gold" d={0} />
+      <Text x={280} y={26} text="y = max − x" size={13} mono tone="gold" d={0} />
       {TYPES.map((t, i) => {
         const cx = 95 + i * 185;
         const after = t.before.map((row) => row.map((v) => complement(v, t.max)));
         const d = 200 + i * 450;
         return (
           <g key={t.kind}>
-            <Text x={cx} y={68} text={t.kind} size={12.5} mono tone="heading" d={d} />
+            <Text x={cx} y={60} text={t.label} size={12.5} tone="heading" d={d} />
             <Pixels x={cx - 76} y={88} values={t.before} cell={30} max={t.max} d={d} />
             <Arrow pts={[[cx - 12, 118], [cx + 12, 118]]} tone="gold" d={d + 200} dur={250} />
             <Pixels x={cx + 16} y={88} values={after} cell={30} max={t.max} d={d + 300} />

@@ -75,7 +75,7 @@ export const edgeInterior = () => EDGE_ROW.slice(1, -1);
 export const edgeLaplacian = () => middleRow(filterImage(EDGE_IMAGE, kernel(H1), "correlation", "replicate").output);
 
 export const clip = (x: number, lo = 0, hi = 255) => Math.min(Math.max(x, lo), hi);
-/** Map [min, max] of the values onto [0, 255] (imshow(g, [])), rounded to whole grey levels. */
+/** Map [min, max] of the values onto [0, 255] (scaling for display), rounded to whole grey levels. */
 export const scaleTo255 = (xs: readonly number[]) => {
   const lo = Math.min(...xs);
   const hi = Math.max(...xs);
@@ -103,7 +103,7 @@ export const edgeUnsharp = (A: number) => {
 export const SALT_IMAGE: Matrix = Array.from({ length: 7 }, (_, r) => Array.from({ length: 7 }, (_, c) => ((r === 2 && c === 2) || (r === 4 && c === 5) ? 255 : 30)));
 export const saltMean = () => filterImage(SALT_IMAGE, MEAN3, "correlation", "replicate").output;
 
-/** A flat 6×6 image of 90s under the 3×3 mean, zero-padded (imfilter's default) or replicated. */
+/** A flat 6×6 image of 90s under the 3×3 mean, zero-padded or replicated. */
 export const FLAT_IMAGE: Matrix = Array.from({ length: 6 }, () => Array(6).fill(90));
 export const flatMean = (padding: "zero" | "replicate") => filterImage(FLAT_IMAGE, MEAN3, "correlation", padding);
 
@@ -111,7 +111,7 @@ export const flatMean = (padding: "zero" | "replicate") => filterImage(FLAT_IMAG
 
 export const sorted = (xs: readonly number[]) => [...xs].sort((a, b) => a - b);
 export const mean = (xs: readonly number[]) => xs.reduce((s, v) => s + v, 0) / xs.length;
-/** The value at 1-based `rank` in the sorted list (ordfilt2): 1 = min, n = max. */
+/** The value at 1-based `rank` in the sorted list (a rank-order filter): 1 = min, n = max. */
 export const rankOrder = (xs: readonly number[], rank: number) => sorted(xs)[rank - 1];
 export const median = (xs: readonly number[]) => {
   const s = sorted(xs);

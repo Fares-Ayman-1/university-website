@@ -88,7 +88,7 @@ function Tire() {
     <Svg>
       <Text x={102} y={32} text={bi("before", "قبل")} size={12} tone="heading" d={0} />
       <Pixels x={24} y={56} values={TIRE} cell={26} size={10} d={0} stagger={60} />
-      <Text x={280} y={110} text="imadjust(t, [], [], 0.5)" size={11.5} mono tone="gold" d={500} />
+      <Text x={280} y={110} text="y = 255 · (x/255)^0.5" size={11.5} mono tone="gold" d={500} />
       <Arrow pts={[[190, 128], [370, 128]]} tone="gold" d={600} />
       <GammaLabel x={458} y={32} value={0.5} size={12.5} tone="heading" d={900} />
       <Pixels x={380} y={56} values={after} cell={26} size={10} d={900} stagger={60} />

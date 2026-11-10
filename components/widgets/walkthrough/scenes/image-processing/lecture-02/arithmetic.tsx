@@ -76,7 +76,7 @@ function Lost({ control }: { control: string }) {
   );
 }
 
-/** x + 128 in uint8: MATLAB saturates (clips), NumPy wraps around modulo 256. */
+/** x + 128 in uint8: clipped to 255 (the slides' rule), or wrapped around modulo 256 (NumPy). */
 function Overflow({ control }: { control: string }) {
   const wraps = control === "wrap";
   const f = OPS.plus;
@@ -84,7 +84,7 @@ function Overflow({ control }: { control: string }) {
   const knee = 255 - 128;
   return (
     <Svg>
-      <Transfer input={X} output={out} title={wraps ? "NumPy: x + 128" : "imadd(x, 128)"} outLabel="uint8" ring={(r, c) => (overflows(f, X[r][c]) ? "danger" : undefined)}>
+      <Transfer input={X} output={out} title={wraps ? "NumPy: x + 128" : "x + 128, clipped"} outLabel="uint8" ring={(r, c) => (overflows(f, X[r][c]) ? "danger" : undefined)}>
         {wraps ? (
           <>
             <Curve box={T_BOX} points={[[0, f(0)], [knee, f(knee)]]} d={500} dur={400} />

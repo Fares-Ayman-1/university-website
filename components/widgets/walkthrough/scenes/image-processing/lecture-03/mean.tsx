@@ -74,7 +74,7 @@ function ZeroBorder({ control }: { control: string }) {
       <Text x={112} y={24} text={bi("Padded input", "المدخلات بعد الحشو")} tone="heading" size={12} d={0} />
       <Pixels x={24} y={56} values={values} cell={22} max={100} d={0} stagger={40} outline={(r, c) => (res.padded[r][c].pad ? "faint" : undefined)} />
       <Frame x={46} y={78} w={132} h={132} tone="navy" dashed width={2} d={500} />
-      <Arrow pts={[[208, 144], [302, 144]]} tone="muted" d={800} label={zero ? "imfilter(f, h)" : "'replicate'"} labelAt={[255, 124]} />
+      <Arrow pts={[[208, 144], [302, 144]]} tone="muted" d={800} label={zero ? bi("zero padding", "حشو بالأصفار") : bi("replicate border", "تكرار الحدود")} labelAt={[255, 124]} />
       <Text x={400} y={24} text={bi("Output (same size)", "المخرجات (بالحجم نفسه)")} tone="heading" size={12} d={1000} />
       <Pixels x={316} y={56} values={res.output} cell={28} max={100} d={1100} stagger={60} outline={(r, c) => (res.output[r][c] < flat ? "danger" : undefined)} />
       <Chip

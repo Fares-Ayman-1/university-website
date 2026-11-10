@@ -60,7 +60,7 @@ function Rank({ control }: { control: string }) {
       <SortedRow tone={(i) => (i === rank - 1 ? "gold" : undefined)} />
       <Arrow pts={[[x, 184], [x, 140]]} tone="gold" d={600} dur={400} />
       <Chip x={x} y={204} text={bi(`${name.en} = ${value}`, `${name.ar} = ${value}`)} tone="gold" center d={900} />
-      <Text x={280} y={258} text={`ordfilt2(I, ${rank}, ones(3))`} size={12} mono tone="slate" d={1200} />
+      <Text x={280} y={258} text={bi(`rank ${rank} of ${S.sorted.length}`, `الرتبة ${rank} من ${S.sorted.length}`)} size={12} tone="slate" d={1200} />
     </Svg>
   );
 }

@@ -101,14 +101,14 @@ export const spatial = defineWalkthrough({
       pointsFor: {
         correlation: [
           bi(
-            "**Correlation** lays w on the image as it is, so the impulse comes out as w **rotated by 180°**. MATLAB's imfilter does this by default.",
-            "**الارتباط (correlation)** يضع القناع w على الصورة كما هو، فتخرج النبضة على هيئة w **مدوَّرًا بزاوية 180°**. وهذا ما تفعله الدالة imfilter في MATLAB افتراضيًا.",
+            "**Correlation** lays w on the image as it is, so the impulse comes out as w **rotated by 180°**.",
+            "**الارتباط (correlation)** يضع القناع w على الصورة كما هو، فتخرج النبضة على هيئة w **مدوَّرًا بزاوية 180°**.",
           ),
         ],
         convolution: [
           bi(
-            "**Convolution** rotates w by 180° first, so the impulse comes out as w itself: w is the filter's **impulse response**. conv2 convolves. For symmetric masks the two are identical.",
-            "**الالتفاف (convolution)** يدوّر w بزاوية 180° أولًا، فتخرج النبضة على هيئة w نفسه: فالقناع w هو **الاستجابة النبضية (impulse response)** للمرشح. والدالة conv2 تُجري التفافًا. وفي الأقنعة المتماثلة تتطابق العمليتان.",
+            "**Convolution** rotates w by 180° first, so the impulse comes out as w itself: w is the filter's **impulse response**. For symmetric masks the two are identical.",
+            "**الالتفاف (convolution)** يدوّر w بزاوية 180° أولًا، فتخرج النبضة على هيئة w نفسه: فالقناع w هو **الاستجابة النبضية (impulse response)** للمرشح. وفي الأقنعة المتماثلة تتطابق العمليتان.",
           ),
         ],
       },
@@ -194,8 +194,8 @@ export const spatial = defineWalkthrough({
         clip: [bi(`**Clipping** sets ${n(Math.min(...sharpRaw))} to 0 and leaves every in-range value alone: ${en(sharpClipped)}.`, `**القصّ (clipping)** يحوّل القيمة ${n(Math.min(...sharpRaw))} إلى 0 ويترك كل قيمة داخل المدى كما هي: ${ar(sharpClipped)}.`)],
         scale: [
           bi(
-            `**Scaling** maps the whole range [${n(Math.min(...sharpRaw))}, ${Math.max(...sharpRaw)}] onto [0, 255], so every value moves: ${en(sharpScaled)}. imshow(g, []) does this for display.`,
-            `**إعادة التحجيم (scaling)** تنقل المدى كله [${n(Math.min(...sharpRaw))}, ${Math.max(...sharpRaw)}] إلى [0, 255]، فتتغير كل القيم: ${ar(sharpScaled)}. والأمر imshow(g, []) يفعل ذلك عند العرض.`,
+            `**Scaling** maps the whole range [${n(Math.min(...sharpRaw))}, ${Math.max(...sharpRaw)}] onto [0, 255], so every value moves: ${en(sharpScaled)}.`,
+            `**إعادة التحجيم (scaling)** تنقل المدى كله [${n(Math.min(...sharpRaw))}, ${Math.max(...sharpRaw)}] إلى [0, 255]، فتتغير كل القيم: ${ar(sharpScaled)}.`,
           ),
         ],
       },
@@ -243,7 +243,7 @@ export const meanFilter = defineWalkthrough({
       pointsFor: {
         k3: [bi("3×3: every coefficient is 1/9.", "3×3: كل معامل يساوي 1/9.")],
         k5: [bi("5×5: every coefficient is 1/25.", "5×5: كل معامل يساوي 1/25.")],
-        k7: [bi("7×7: every coefficient is 1/49. The slides go up to 21×21 with fspecial('average', 21).", "7×7: كل معامل يساوي 1/49. وتصل الشرائح إلى 21×21 باستخدام fspecial('average', 21).")],
+        k7: [bi("7×7: every coefficient is 1/49. The slides go up to 21×21.", "7×7: كل معامل يساوي 1/49. وتصل الشرائح إلى 21×21.")],
       },
     },
     {
@@ -260,17 +260,17 @@ export const meanFilter = defineWalkthrough({
     },
     {
       id: "zero-border",
-      pill: bi("imfilter's border", "حدود imfilter"),
+      pill: bi("Padding the border", "حشو الحدود"),
       heading: bi("Zero padding darkens the frame", "الحشو بالأصفار يُعتِم الإطار"),
       control: {
         label: bi("Padding", "الحشو"),
         options: [
-          { id: "zero", label: bi("Zeros (default)", "أصفار (الافتراضي)") },
+          { id: "zero", label: bi("Zeros", "أصفار") },
           { id: "replicate", label: bi("Replicate", "التكرار") },
         ],
         initial: "zero",
       },
-      points: [bi("imfilter(f, h) correlates, keeps the image size and pads with **zeros** unless told otherwise.", "الأمر imfilter(f, h) يُجري ارتباطًا (correlation)، ويحافظ على حجم الصورة، ويحشو **بالأصفار** ما لم يُطلب غير ذلك.")],
+      points: [bi("To keep the output the same size as the image, pad the image first. The simplest choice, **zero padding**, adds a border of 0s.", "للحفاظ على حجم المخرجات مساويًا لحجم الصورة، احشُ الصورة أولًا. وأبسط خيار هو **الحشو بالأصفار (zero padding)**، وفيه يُضاف إطار من الأصفار.")],
       pointsFor: {
         zero: [
           bi(
@@ -278,7 +278,7 @@ export const meanFilter = defineWalkthrough({
             `في صورة مستوية كل قيمها ${frame.replicate[0][0]}، يدخل في متوسط بكسل الإطار 3 أصفار (**${frame.zero[0][2]}**) وفي متوسط الركن 5 أصفار (**${frame.zero[0][0]}**): إطار داكن.`,
           ),
         ],
-        replicate: [bi(`imfilter(f, h, 'replicate') repeats the border pixels instead, so the flat image stays flat at **${frame.replicate[0][0]}**.`, `أما imfilter(f, h, 'replicate') فيكرر بكسلات الحدود بدلًا من ذلك، فتبقى الصورة المستوية مستوية عند **${frame.replicate[0][0]}**.`)],
+        replicate: [bi(`**Replicate** padding copies the nearest border pixel outwards instead, so the flat image stays flat at **${frame.replicate[0][0]}**.`, `أما **الحشو بالتكرار (replicate)** فينسخ أقرب بكسل على الحد إلى الخارج بدلًا من ذلك، فتبقى الصورة المستوية مستوية عند **${frame.replicate[0][0]}**.`)],
       },
     },
   ],
@@ -614,10 +614,10 @@ export const nonlinear = defineWalkthrough({
         ],
         initial: "median",
       },
-      points: [bi("A **rank-order** filter returns the value at a chosen position of the sorted window; in MATLAB, ordfilt2(I, r, ones(3)).", "**مرشح الرتبة (rank-order filter)** يعيد القيمة الموجودة في موضع محدد من النافذة المرتبة؛ وفي MATLAB يُكتب ordfilt2(I, r, ones(3)).")],
+      points: [bi("A **rank-order** filter returns the value at a chosen position (its **rank**) in the sorted window.", "**مرشح الرتبة (rank-order filter)** يعيد القيمة الموجودة في موضع محدد (**رتبتها (rank)**) من النافذة المرتبة.")],
       pointsFor: {
         min: [bi(`Rank 1, the **minimum** filter: **${s36.min}**. It darkens the image and removes salt (bright) pixels.`, `الرتبة 1، مرشح **الأدنى (min)**: **${s36.min}**. يُعتِم الصورة ويزيل بكسلات الملح (الساطعة).`)],
-        median: [bi(`Rank 5 of 9, the **median**: **${s36.median}**. medfilt2 does exactly this.`, `الرتبة 5 من 9، **الوسيط (median)**: **${s36.median}**. وهذا تمامًا ما تفعله الدالة medfilt2.`)],
+        median: [bi(`Rank 5 of 9, the **median**: **${s36.median}**. It is the most popular rank-order filter.`, `الرتبة 5 من 9، **الوسيط (median)**: **${s36.median}**. وهو أشهر مرشحات الرتبة.`)],
         max: [bi(`Rank 9, the **maximum** filter: **${s36.max}**. It brightens the image and removes pepper (dark) pixels.`, `الرتبة 9، مرشح **الأقصى (max)**: **${s36.max}**. يزيد سطوع الصورة ويزيل بكسلات الفلفل (الداكنة).`)],
       },
     },

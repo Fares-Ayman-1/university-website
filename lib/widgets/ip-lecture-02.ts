@@ -7,7 +7,7 @@
 export type Img = readonly (readonly number[])[];
 export type Pt = readonly [number, number];
 
-/** Rounding as done by hand and by MATLAB's round: halves go up (2.5 → 3). */
+/** Rounding as done by hand: halves go up (2.5 → 3). */
 export const round = (v: number) => Math.floor(v + 0.5);
 export const clip = (v: number, lo = 0, hi = 255) => Math.min(hi, Math.max(lo, v));
 /** uint8 overflow as NumPy does it: modulo 256. */
@@ -38,7 +38,7 @@ export const OPS = {
 } as const;
 export type OpName = keyof typeof OPS;
 
-/** y = f(x) on an 8-bit image: rounded, then clipped (MATLAB, imadd…) or wrapped (NumPy uint8). */
+/** y = f(x) on an 8-bit image: rounded, then clipped to 0–255 (the slides' rule) or wrapped (NumPy uint8). */
 export function pointOp(img: Img, f: (v: number) => number, overflow: "clip" | "wrap" = "clip") {
   return mapImg(img, (v) => {
     const y = round(f(v));
@@ -123,13 +123,13 @@ export const STRETCH_MAP = STRETCH_HIST.map((_, i) => round(piecewise(STRETCH_PO
 export const STRETCH_OUT = remapHist(STRETCH_HIST, STRETCH_MAP, STRETCH_LEVELS);
 export const STRETCH_BAND = [5, 6, 7, 8, 9];
 
-/** imadjust(x, [a b], [c d], gamma), all on a [0, 1] scale. */
-export function imadjust(x: number, a = 0, b = 1, c = 0, d = 1, gamma = 1) {
+/** Stretch [a, b] onto [c, d] with flat ends (x ≤ a → c, x ≥ b → d) and an optional gamma, all on a [0, 1] scale. */
+export function stretchRange(x: number, a = 0, b = 1, c = 0, d = 1, gamma = 1) {
   const t = clip((x - a) / (b - a), 0, 1);
   return t ** gamma * (d - c) + c;
 }
 
-/** The piecewise.m example: breakpoints (a_i, b_i) on 8-bit values. */
+/** The piecewise.py example: breakpoints (a_i, b_i) on 8-bit values. */
 export const PW_STRETCH: readonly Pt[] = [
   [0, 0],
   [64, 20],
