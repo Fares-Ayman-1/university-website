@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
-import type { QaBank, QaDrillData, QaMcq, QaQuestion, QaSort } from "@/lib/qa-schema";
+import type { QaBank, QaDrillData, QaMcq, QaOpen, QaQuestion, QaSort, QaTable } from "@/lib/qa-schema";
 import styles from "./QaDrill.module.css";
 
 /*
@@ -9,12 +9,17 @@ import styles from "./QaDrill.module.css";
  * theme. Behaviour matches the original: answers lock on the first pick, explanations show at
  * once, one-at-a-time or list view, retry wrong, reset with a second click, keyboard letters
  * and arrows, and progress saved in this browser (localStorage) only.
+ * Open cards (worked problems, written questions) reveal a model answer and are self-marked.
  */
 
 const LETTERS = "abcde";
+/** More tabs than this become a sideways strip on phones. */
+const MANY_BANKS = 8;
 
 type SortAnswer = (number | null)[];
-type Answer = number | SortAnswer;
+/** Open cards: model answer shown, then marked by the student. */
+type OpenAnswer = "shown" | "got" | "missed";
+type Answer = number | SortAnswer | OpenAnswer;
 type Status = "new" | "part" | "ok" | "bad";
 type View = "focus" | "list";
 type Filter = "all" | "new" | "ok" | "bad";
@@ -51,6 +56,7 @@ function validAnswer(q: QaQuestion, v: unknown): v is Answer {
       v.every((x) => x === null || (Number.isInteger(x) && x >= 0 && x < q.categories.length))
     );
   }
+  if (q.kind === "open") return v === "shown" || v === "got" || v === "missed";
   return typeof v === "number" && Number.isInteger(v) && v >= 0 && v < q.options.length;
 }
 
@@ -65,6 +71,7 @@ function statusOf(q: QaQuestion, v: Answer | undefined): Status {
     if (n < q.items.length) return "part";
     return q.items.every((item, j) => (v as SortAnswer)[j] === item.category) ? "ok" : "bad";
   }
+  if (q.kind === "open") return v === "got" ? "ok" : v === "missed" ? "bad" : v === "shown" ? "part" : "new";
   return v === undefined ? "new" : v === q.answer ? "ok" : "bad";
 }
 
@@ -98,6 +105,45 @@ function Rich({ text, blanks = false }: { text: string; blanks?: boolean }) {
   });
 }
 
+/** A small grid (an image's grey levels, a mask, a histogram); wide ones scroll inside their own box. */
+function GivenTable({ table }: { table: QaTable }) {
+  return (
+    <figure className={styles.given}>
+      {table.caption ? (
+        <figcaption>
+          <Rich text={table.caption} />
+        </figcaption>
+      ) : null}
+      <div className={styles.tableScroll} role="region" aria-label={table.caption ?? "Table"} tabIndex={0}>
+        <table>
+          {table.head ? (
+            <thead>
+              <tr>
+                {table.head.map((cell, k) => (
+                  <th key={k} scope="col">
+                    <Rich text={cell} />
+                  </th>
+                ))}
+              </tr>
+            </thead>
+          ) : null}
+          <tbody>
+            {table.rows.map((row, j) => (
+              <tr key={j}>
+                {row.map((cell, k) => (
+                  <td key={k}>
+                    <Rich text={cell} />
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </figure>
+  );
+}
+
 function Mark({ kind }: { kind: "ok" | "bad" }) {
   return (
     <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
@@ -129,6 +175,7 @@ export function QaDrill({ drill, storageKey }: Props) {
   const uid = useId();
   const quizId = `${uid}-quiz`;
   const rootRef = useRef<HTMLDivElement>(null);
+  const banksRef = useRef<HTMLElement>(null);
   const mapRef = useRef<HTMLDetailsElement>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const afterRender = useRef<(() => void) | null>(null);
@@ -197,6 +244,15 @@ export function QaDrill({ drill, storageKey }: Props) {
 
   useEffect(() => () => clearTimeout(timer.current), []);
 
+  // When the tabs are a sideways strip (phones, many papers), keep the selected one in view.
+  useEffect(() => {
+    const strip = banksRef.current;
+    const tab = strip?.querySelector<HTMLElement>('[aria-selected="true"]');
+    if (!strip || !tab || strip.scrollWidth <= strip.clientWidth) return;
+    const left = tab.getBoundingClientRect().left - strip.getBoundingClientRect().left;
+    if (left < 0 || left + tab.offsetWidth > strip.clientWidth) strip.scrollLeft += left - 8;
+  }, [s.bank, ready]);
+
   // ---------- Actions ----------
   function setAnswer(i: number, value: Answer | undefined) {
     setS((prev) => {
@@ -231,6 +287,25 @@ export function QaDrill({ drill, storageKey }: Props) {
     afterRender.current = () => {
       q$(`[data-q="${i}"] [data-it="${n}"] [data-c="${k}"]`)?.focus({ preventScroll: true });
       if (finished) bringIntoView(view === "focus" ? q$("[data-pager]") : q$(`[data-q="${i}"] [data-fb]`));
+    };
+  }
+
+  function reveal(i: number) {
+    if (bank.questions[i].kind !== "open" || answers[i] !== undefined) return;
+    setAnswer(i, "shown");
+    afterRender.current = () => {
+      q$(`[data-q="${i}"] [data-got]`)?.focus({ preventScroll: true });
+      bringIntoView(q$(`[data-q="${i}"] [data-model]`));
+    };
+  }
+
+  function selfMark(i: number, got: boolean) {
+    if (bank.questions[i].kind !== "open" || answers[i] !== "shown") return;
+    setAnswer(i, got ? "got" : "missed");
+    const view = s.view;
+    afterRender.current = () => {
+      q$(`[data-q="${i}"] [data-fb] button`)?.focus({ preventScroll: true });
+      bringIntoView(view === "focus" ? q$("[data-pager]") : q$(`[data-q="${i}"] [data-fb]`));
     };
   }
 
@@ -443,6 +518,65 @@ export function QaDrill({ drill, storageKey }: Props) {
     );
   }
 
+  function renderOpen(q: QaOpen, i: number, v: Answer | undefined) {
+    if (v === undefined) {
+      return (
+        <div className={styles.openStart}>
+          <p className={styles.openHint}>
+            {q.style === "problem"
+              ? "Work it out on paper first, then compare with the model answer."
+              : "Write your answer on paper first, then compare with the model answer."}
+          </p>
+          <button type="button" className={styles.btn} data-primary data-reveal onClick={() => reveal(i)}>
+            Show model answer
+          </button>
+        </div>
+      );
+    }
+    return (
+      <div className={styles.model} data-model>
+        <p className={styles.modelTitle}>Model answer</p>
+        <ol className={styles.steps}>
+          {q.steps.map((step, j) => (
+            <li key={j}>
+              <Rich text={step.text} />
+              {step.table ? <GivenTable table={step.table} /> : null}
+            </li>
+          ))}
+        </ol>
+        {q.answer ? (
+          <p className={styles.final}>
+            <strong>
+              <Rich text={q.answer} />
+            </strong>
+          </p>
+        ) : null}
+        {q.why ? (
+          <p className={styles.modelNote}>
+            <Rich text={q.why} />
+          </p>
+        ) : null}
+        {q.ref || q.check ? (
+          <div className={styles.refs}>
+            {q.ref ? <span className={styles.ref}>{q.ref}</span> : null}
+            {q.check ? <span className={`${styles.ref} ${styles.warn}`}>Double-check this answer</span> : null}
+          </div>
+        ) : null}
+        {v === "shown" ? (
+          <div className={styles.selfMark} role="group" aria-label="Mark your answer">
+            <span>Did your answer match?</span>
+            <button type="button" className={styles.btn} data-got onClick={() => selfMark(i, true)}>
+              I got it right
+            </button>
+            <button type="button" className={styles.btn} data-missed onClick={() => selfMark(i, false)}>
+              I missed it
+            </button>
+          </div>
+        ) : null}
+      </div>
+    );
+  }
+
   function renderCard(i: number, focus: boolean) {
     const q = bank.questions[i];
     const v = answers[i];
@@ -450,12 +584,18 @@ export function QaDrill({ drill, storageKey }: Props) {
     const done = st === "ok" || st === "bad";
     const pill =
       st === "ok"
-        ? "Correct"
+        ? q.kind === "open"
+          ? "Got it"
+          : "Correct"
         : st === "bad"
-          ? "Wrong"
+          ? q.kind === "open"
+            ? "Missed"
+            : "Wrong"
           : st === "part" && q.kind === "sort"
             ? `${sortedCount(v)} of ${q.items.length} sorted`
-            : "Not answered";
+            : st === "part"
+              ? "Answer shown"
+              : "Not answered";
     return (
       <article
         key={`${bank.id}-${i}`}
@@ -469,6 +609,7 @@ export function QaDrill({ drill, storageKey }: Props) {
           <span className={styles.eyebrow}>
             {q.group} · Question {i + 1} of {bank.questions.length}
             {q.kind === "sort" ? " · Classification" : ""}
+            {q.kind === "open" ? (q.style === "problem" ? " · Worked problem" : " · Written") : ""}
           </span>
           <span className={styles.pill} data-status={done ? st : undefined}>
             {pill}
@@ -477,12 +618,23 @@ export function QaDrill({ drill, storageKey }: Props) {
         <h3 className={styles.q}>
           <Rich text={q.text} blanks />
         </h3>
+        {q.kind !== "sort" && q.given
+          ? q.given.map((table, j) => <GivenTable key={j} table={table} />)
+          : null}
         {q.kind === "mcq" && q.image ? (
           // eslint-disable-next-line @next/next/no-img-element -- small static figures, no optimisation needed
           <img className={styles.qimg} src={q.image} alt={q.alt ?? "Figure for the question"} loading="lazy" />
         ) : null}
-        {q.kind === "sort" ? renderSort(q, i, v) : renderMcq(q, i, v)}
-        {done ? (
+        {q.kind === "sort" ? renderSort(q, i, v) : q.kind === "open" ? renderOpen(q, i, v) : renderMcq(q, i, v)}
+        {done && q.kind === "open" ? (
+          <div className={styles.fb} data-status={st} data-fb role="status">
+            <p className={styles.fbTitle}>{st === "ok" ? "You marked this right" : "You marked this as missed"}</p>
+            <button type="button" className={styles.linkbtn} onClick={() => clearQuestion(i)}>
+              Try this question again
+            </button>
+          </div>
+        ) : null}
+        {done && q.kind !== "open" ? (
           <div className={styles.fb} data-status={st} data-fb role="status">
             <p className={styles.fbTitle}>{st === "ok" ? "Correct" : "Not quite"}</p>
             {st === "bad" && q.kind === "sort" ? (
@@ -525,6 +677,7 @@ export function QaDrill({ drill, storageKey }: Props) {
   const listed = s.view === "list" ? bank.questions.map((_, i) => i).filter(matches) : [];
   const curStatus = statusAt(cur);
   const hasSort = banks.some((b) => b.questions.some((q) => q.kind === "sort"));
+  const hasOpen = banks.some((b) => b.questions.some((q) => q.kind === "open"));
   const done = stats.ok + stats.bad;
   const accuracy = done ? `${Math.round((stats.ok / done) * 100)}%` : "–";
   const scoreMsg = !done
@@ -551,7 +704,13 @@ export function QaDrill({ drill, storageKey }: Props) {
         </p>
       </header>
 
-      <nav className={styles.banks} role="tablist" aria-label={drill.banksLabel}>
+      <nav
+        className={styles.banks}
+        ref={banksRef}
+        role="tablist"
+        aria-label={drill.banksLabel}
+        data-many={banks.length > MANY_BANKS || undefined}
+      >
         {banks.map((b) => {
           const st = bankStats(b, s.answers[b.id] ?? {});
           const sel = b.id === bank.id;
@@ -722,7 +881,23 @@ export function QaDrill({ drill, storageKey }: Props) {
                 const st = statusAt(i);
                 const isCur = s.view === "focus" && cur === i;
                 const label =
-                  st === "ok" ? "correct" : st === "bad" ? "wrong" : st === "part" ? "partly sorted" : "not answered";
+                  st === "ok"
+                    ? "correct"
+                    : st === "bad"
+                      ? "wrong"
+                      : st === "part"
+                        ? q.kind === "open"
+                          ? "answer shown"
+                          : "partly sorted"
+                        : "not answered";
+                const kindLabel =
+                  q.kind === "sort"
+                    ? " (classification)"
+                    : q.kind === "open"
+                      ? q.style === "problem"
+                        ? " (worked problem)"
+                        : " (written)"
+                      : "";
                 return (
                   <button
                     key={i}
@@ -730,8 +905,9 @@ export function QaDrill({ drill, storageKey }: Props) {
                     className={styles.cell}
                     data-status={st}
                     data-cls={q.kind === "sort" || undefined}
+                    data-open={q.kind === "open" || undefined}
                     data-cur={isCur || undefined}
-                    aria-label={`Question ${i + 1}${q.kind === "sort" ? " (classification)" : ""}, ${label}`}
+                    aria-label={`Question ${i + 1}${kindLabel}, ${label}`}
                     aria-current={isCur || undefined}
                     onClick={() => goTo(i)}
                   >
@@ -757,6 +933,12 @@ export function QaDrill({ drill, storageKey }: Props) {
                 <li>
                   <i data-l="cls" />
                   Classification
+                </li>
+              ) : null}
+              {hasOpen ? (
+                <li>
+                  <i data-l="open" />
+                  Worked / written (self-marked)
                 </li>
               ) : null}
             </ul>

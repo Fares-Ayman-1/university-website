@@ -994,3 +994,205 @@
   font-size: 0.8125rem;
   color: var(--muted);
 }
+
+/* ---------- Tables: the data a question gives, and model-answer steps ---------- */
+
+.given {
+  margin: -4px 0 16px;
+}
+
+.given figcaption {
+  margin-bottom: 6px;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.tableScroll {
+  max-width: 100%;
+  overflow-x: auto;
+  border-radius: 8px;
+}
+
+.tableScroll:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.given table {
+  border-collapse: collapse;
+  background: var(--surface);
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.given th,
+.given td {
+  min-width: 2.6em;
+  padding: 5px 9px;
+  border: 1px solid var(--border-strong);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.given th {
+  background: var(--surface-2);
+  color: var(--heading);
+  font-weight: 700;
+}
+
+/* ---------- Open cards: worked problems and written questions ---------- */
+
+.openStart {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+}
+
+.openHint {
+  flex: 1 1 260px;
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+
+.model {
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface-2);
+  line-height: 1.6;
+  animation: rise var(--dur-standard) var(--ease-out-expo) both;
+}
+
+.modelTitle {
+  margin-bottom: 8px;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.steps {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 1.4em;
+}
+
+.steps li::marker {
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.steps .given {
+  margin: 8px 0 2px;
+}
+
+.final {
+  margin-top: 12px;
+  color: var(--heading);
+}
+
+.modelNote {
+  margin-top: 10px;
+  color: var(--muted);
+}
+
+.model .refs {
+  margin-top: 10px;
+}
+
+.selfMark {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.selfMark span {
+  margin-right: auto;
+  font-weight: 600;
+  color: var(--heading);
+}
+
+.btn[data-got] {
+  border-color: var(--success);
+  color: var(--success-text);
+}
+
+.btn[data-got]:hover:not(:disabled) {
+  background: var(--success-soft);
+}
+
+.btn[data-missed] {
+  border-color: var(--danger);
+  color: var(--danger-text);
+}
+
+.btn[data-missed]:hover:not(:disabled) {
+  background: var(--danger-soft);
+}
+
+.cell[data-open]::after {
+  content: "";
+  display: block;
+  width: 6px;
+  height: 6px;
+  margin: -10px 3px 0 auto;
+  border: 1.5px solid currentColor;
+  border-radius: 2px;
+  opacity: 0.8;
+}
+
+.legend i[data-l="open"] {
+  width: 8px;
+  height: 8px;
+  border: 1.5px solid var(--muted);
+  border-radius: 2px;
+  background: none;
+  vertical-align: 0;
+}
+
+/* ---------- Many tabs: compact cards, and one sideways strip on phones ---------- */
+
+.banks[data-many] {
+  grid-template-columns: repeat(auto-fill, minmax(192px, 1fr));
+  gap: 8px;
+}
+
+.banks[data-many] .bank {
+  padding: 10px 13px;
+}
+
+.banks[data-many] .bmeta {
+  display: none;
+}
+
+.banks[data-many] .bscope {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+@media (max-width: 640px) {
+  .banks[data-many] {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(210px, 76%);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 8px;
+  }
+
+  .banks[data-many] .bank {
+    scroll-snap-align: start;
+  }
+}

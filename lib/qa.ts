@@ -27,7 +27,9 @@ export const getDrills = cache((subject: string): QaDrill[] => {
           const bad =
             q.kind === "mcq"
               ? q.answer >= q.options.length
-              : q.items.some((item) => item.category >= q.categories.length);
+              : q.kind === "sort"
+                ? q.items.some((item) => item.category >= q.categories.length)
+                : false;
           if (bad) throw new Error(`Bad answer key in ${subject}/qa/${file}: ${bank.id} question ${i + 1}`);
         }),
       );

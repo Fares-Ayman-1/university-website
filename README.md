@@ -122,6 +122,8 @@ npm run import:qa -- "<drill>.html" <subject-slug> <drill-slug> --order 1
 
 The import copies the questions, answer keys and explanations exactly; the site supplies the theme. Embedded images are saved to `public/qa/<subject>/<drill-slug>/`. Re-running it with the same slug replaces that drill. Progress in a drill is saved in the browser only.
 
+Drills can also be written straight into the JSON schema (`lib/qa-schema.ts`). Besides `mcq` and `sort` questions, there is an **open** card (`kind: "open"`, `style: "problem" | "written"`) for worked problems and written questions: the student answers on paper, reveals the model answer (`steps`, each with an optional table, then the final `answer`), and marks it "I got it right" or "I missed it". Any MCQ or open card can show small tables under the question with `given: [{caption?, head?, rows}]`, e.g. the image a calculation works on. Drills with more than 8 tabs get compact tab cards, and a sideways-scrolling strip on phones.
+
 Code blocks support titles and line highlights: ` ```python title="bfs.py" {3,5} `.
 
 Leave a blank line before and after block components (`<Solution>`, `<Steps>`, …) so MDX doesn't wrap them in a paragraph. Write currency as `\$40`, because a bare `$` starts math.
