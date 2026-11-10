@@ -36,7 +36,7 @@ export const crop = (g: Grid, r0: number, c0: number, rows: number, cols: number
 
 /** The zoomed patch of the face (1-based rows 3–6, columns 3–6) and the pixel picked out in it. */
 export const FACE_PATCH = { r0: 2, c0: 2, rows: 4, cols: 4 } as const;
-export const PICKED = { r: 3, c: 2 } as const; // 0-based in FACE: MATLAB f(4,3), NumPy f[3, 2]
+export const PICKED = { r: 3, c: 2 } as const; // 0-based in FACE: f(4, 3) in 1-based matrix notation, NumPy f[3, 2]
 export const pickedValue = FACE[PICKED.r][PICKED.c];
 
 /** A deterministic "random blur": the same pixels every time the page renders. */
@@ -206,9 +206,8 @@ export const EMU_MAP: readonly (readonly [number, number, number])[] = [
   [0.2627, 0.2588, 0.2549],
   [0.2197, 0.2432, 0.2588],
 ];
-/** The boxed pixel on the slide, and the map row it picks: a uint8 index starts at 0, so row = index + 1. */
+/** The boxed pixel in the emu figure; the colour map's rows are numbered from 0 (as in the course book), so it picks row 6. */
 export const BOXED_INDEX = 6;
-export const mapRow = (index: number) => index + 1;
 export const mapColor = (index: number) => {
   const [r, g, b] = EMU_MAP[index];
   return `rgb(${Math.round(r * 255)}, ${Math.round(g * 255)}, ${Math.round(b * 255)})`;
@@ -230,25 +229,24 @@ export const STORAGE = {
 /** Raster file size grows with the pixel count: a 100 × 100 True-Color image enlarged 2× and 4×. */
 export const RASTER_SCALES = [1, 2, 4].map((s) => ({ scale: s, side: 100 * s, bytes: sizeBytes(100 * s * 100 * s, 24) }));
 
-/** peppers.png in image_types.m: 384 × 512 RGB. MATLAB stores uint8 and logical in 1 byte, double in 8. */
+/** peppers.png in image_types.py: 384 × 512 RGB. NumPy stores uint8 and bool in 1 byte per value. */
 export const PEPPERS = { rows: 384, cols: 512 } as const;
 const peppersPixels = PEPPERS.rows * PEPPERS.cols;
 export const PEPPERS_BYTES = {
   rgb: peppersPixels * 3 * 1,
   gray: peppersPixels * 1,
   binary: peppersPixels * 1,
-  double: peppersPixels * 3 * 8,
 } as const;
 
 /* ---------- Conversions ---------- */
 
-export const RGB2GRAY_WEIGHTS = [0.2989, 0.587, 0.114] as const;
+export const GRAY_WEIGHTS = [0.2989, 0.587, 0.114] as const;
 export type GrayMethod = "average" | "red" | "weighted";
 
 /** One pixel's grey value by each of the page's methods, rounded like a uint8 result. */
 export function grayOf(r: number, g: number, b: number, method: GrayMethod): number {
   if (method === "red") return r;
-  if (method === "weighted") return Math.round(RGB2GRAY_WEIGHTS[0] * r + RGB2GRAY_WEIGHTS[1] * g + RGB2GRAY_WEIGHTS[2] * b);
+  if (method === "weighted") return Math.round(GRAY_WEIGHTS[0] * r + GRAY_WEIGHTS[1] * g + GRAY_WEIGHTS[2] * b);
   return Math.round((r + g + b) / 3);
 }
 
@@ -330,7 +328,7 @@ const COIN_ROWS = [
 const COIN_MASK = COIN_ROWS.map((row) => [...row].map((ch) => (ch === "X" ? 1 : 0)));
 export const COINS: Grid = COIN_MASK.map((row, r) => row.map((m, c) => (m ? 70 + ((r * 5 + c * 3) % 11) * 2 : 196 + ((r * 7 + c * 13) % 9) * 3)));
 export const COIN_T = 128;
-/** Segment: threshold, then invert so the dark coins are 1 (MATLAB ~imbinarize). */
+/** Segment: threshold, then invert so the dark coins are 1. */
 export const COINS_BW = map2(COINS, (v) => (v < COIN_T ? 1 : 0));
 
 /** Erosion with a 3 × 3 cross: a pixel stays 1 only if it and its 4 neighbours are all 1. */

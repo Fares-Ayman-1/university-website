@@ -1,7 +1,7 @@
 "use client";
 
 import type { types } from "@/lib/walkthroughs/image-processing/lecture-01";
-import { BINARY_EDGES, BOXED_INDEX, EMU_INDICES, EMU_MAP, FACE, FLOWER, TRUE_COLORS, crop, levels, mapColor, mapRow, requantize } from "@/lib/widgets/ip-lecture-01";
+import { BINARY_EDGES, BOXED_INDEX, EMU_INDICES, EMU_MAP, FACE, FLOWER, TRUE_COLORS, crop, levels, mapColor, requantize } from "@/lib/widgets/ip-lecture-01";
 import type { PanelIdOf } from "@/lib/widgets/walkthrough";
 import { bi } from "../../../../types";
 import { Arrow, Chip, Pixels, Svg, Table, Text } from "../../../primitives";
@@ -81,7 +81,7 @@ function Indexed() {
   return (
     <Svg>
       <NumGrid x={gx} y={gy} values={EMU_INDICES} cell={cell} tone={(r, c) => (r === boxed.r && c === boxed.c ? "gold" : undefined)} d={0} stagger={150} />
-      <Text x={gx + 3 * cell} y={gy + 2 * cell + 16} text={bi("indices (uint8)", "الفهارس (uint8)")} tone="heading" size={12} d={200} />
+      <Text x={gx + 3 * cell} y={gy + 2 * cell + 16} text={bi("indices", "الفهارس")} tone="heading" size={12} d={200} />
       <Table
         x={tx}
         y={ty}
@@ -89,7 +89,7 @@ function Indexed() {
         cw={[44, 62, 62, 62]}
         rh={rh}
         size={11}
-        rows={EMU_MAP.map((rgb, i) => [String(i + 1), ...rgb.map(fmt4)])}
+        rows={EMU_MAP.map((rgb, i) => [String(i), ...rgb.map(fmt4)])}
         cell={(r) => (r === BOXED_INDEX ? "gold" : undefined)}
         d={300}
         stagger={70}
@@ -110,7 +110,7 @@ function Indexed() {
         d={1200}
         dur={600}
       />
-      <Chip x={256} y={150} text={bi(`${BOXED_INDEX} → row ${mapRow(BOXED_INDEX)}`, `${BOXED_INDEX} ← الصف ${mapRow(BOXED_INDEX)}`)} tone="gold" center d={1600} />
+      <Chip x={256} y={150} text={bi(`${BOXED_INDEX} → row ${BOXED_INDEX}`, `${BOXED_INDEX} ← الصف ${BOXED_INDEX}`)} tone="gold" center d={1600} />
       <Pixels x={gx} y={170} values={EMU_INDICES} cell={cell} colors={EMU_INDICES.map((row) => row.map(mapColor))} show="none" d={1800} />
       <Text x={gx + 3 * cell} y={254} text={bi("the pixels shown", "البكسلات المعروضة")} tone="heading" size={12} d={1900} />
     </Svg>

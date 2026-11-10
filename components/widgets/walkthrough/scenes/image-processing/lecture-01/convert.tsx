@@ -1,32 +1,14 @@
 "use client";
 
 import type { convert } from "@/lib/walkthroughs/image-processing/lecture-01";
-import { FLOWER, PEPPERS_BYTES, RGB2GRAY_WEIGHTS, binaryRows, flowerSum, threshold, toGray, type GrayMethod } from "@/lib/widgets/ip-lecture-01";
+import { FLOWER, PEPPERS_BYTES, GRAY_WEIGHTS, binaryRows, flowerSum, threshold, toGray, type GrayMethod } from "@/lib/widgets/ip-lecture-01";
 import type { PanelIdOf } from "@/lib/widgets/walkthrough";
 import { bi } from "../../../../types";
-import { Arrow, Bars, Box, Chip, Pixels, Svg, Text, fmt } from "../../../primitives";
+import { Arrow, Bars, Chip, Pixels, Svg, Text, fmt } from "../../../primitives";
 import { sceneSet } from "../../../scene-set";
 import { Veil } from "./local";
 
 const n = (v: number) => v.toLocaleString("en-US");
-
-function Functions() {
-  return (
-    <Svg>
-      <Box x={220} y={30} w={120} h={44} label="RGB" tone="gold" d={0} />
-      <Box x={24} y={146} w={136} h={44} label={bi("Grayscale", "رمادية")} tone="slate" d={150} />
-      <Box x={400} y={146} w={136} h={44} label={bi("Indexed", "مفهرسة")} tone="navy" d={300} />
-      <Box x={24} y={232} w={136} h={44} label={bi("Binary", "ثنائية")} tone="outline" d={450} />
-      <Arrow pts={[[236, 80], [128, 140]]} tone="gold" d={600} label="rgb2gray" labelAt={[198, 128]} labelTone="gold" />
-      <Arrow pts={[[116, 140], [222, 80]]} tone="slate" d={700} label="gray2rgb" labelAt={[136, 92]} labelTone="slate" />
-      <Arrow pts={[[324, 80], [432, 140]]} tone="gold" d={800} label="rgb2ind" labelAt={[362, 128]} labelTone="gold" />
-      <Arrow pts={[[444, 140], [338, 80]]} tone="slate" d={900} label="ind2rgb" labelAt={[424, 92]} labelTone="slate" />
-      <Arrow pts={[[164, 160], [396, 160]]} tone="gold" d={1000} label="gray2ind" labelAt={[280, 148]} labelTone="gold" />
-      <Arrow pts={[[396, 176], [164, 176]]} tone="slate" d={1100} label="ind2gray" labelAt={[280, 190]} labelTone="slate" />
-      <Arrow pts={[[92, 194], [92, 228]]} tone="gold" d={1200} label="g >= 128" labelAt={[134, 211]} labelTone="gold" />
-    </Svg>
-  );
-}
 
 const CHANNELS = [
   { key: "R" as const, tone: "danger" as const, x: 16 },
@@ -36,7 +18,7 @@ const CHANNELS = [
 const METHOD_NAME: Record<GrayMethod, { en: string; ar: string }> = {
   average: bi("Solution 1: average", "الحل الأول: المتوسط"),
   red: bi("Solution 2: keep R", "الحل الثاني: الإبقاء على R"),
-  weighted: bi("rgb2gray: weighted sum", "rgb2gray: مجموع موزون"),
+  weighted: bi("Weighted sum", "مجموع موزون"),
 };
 
 function RgbToGray({ control }: { control: string }) {
@@ -44,7 +26,7 @@ function RgbToGray({ control }: { control: string }) {
   const gray = toGray(method);
   const cell = 28;
   const [r, g, b] = [FLOWER.R[0][0], FLOWER.G[0][0], FLOWER.B[0][0]];
-  const [wr, wg, wb] = RGB2GRAY_WEIGHTS;
+  const [wr, wg, wb] = GRAY_WEIGHTS;
   const exact = method === "weighted" ? wr * r + wg * g + wb * b : flowerSum(0, 0) / 3;
   const formula =
     method === "red"
@@ -97,47 +79,32 @@ function Threshold({ control }: { control: string }) {
   );
 }
 
-function Sizes({ control }: { control: string }) {
-  const python = control === "python";
-  const bars = python
-    ? [
-        { v: PEPPERS_BYTES.rgb, label: "rgb uint8" },
-        { v: PEPPERS_BYTES.gray, label: "gray_avg uint8" },
-        { v: PEPPERS_BYTES.binary, label: "binary bool" },
-      ]
-    : [
-        { v: PEPPERS_BYTES.rgb, label: "x uint8" },
-        { v: PEPPERS_BYTES.gray, label: "g uint8" },
-        { v: PEPPERS_BYTES.binary, label: "bw logical" },
-        { v: PEPPERS_BYTES.double, label: "y double" },
-      ];
+const SIZE_BARS = [
+  { v: PEPPERS_BYTES.rgb, label: "rgb uint8" },
+  { v: PEPPERS_BYTES.gray, label: "gray_avg uint8" },
+  { v: PEPPERS_BYTES.binary, label: "binary bool" },
+];
+
+function Sizes() {
   const x = 56;
   const w = 448;
   const top = 56;
   const h = 150;
-  const max = python ? PEPPERS_BYTES.rgb : PEPPERS_BYTES.double;
-  const slot = w / bars.length;
+  const max = PEPPERS_BYTES.rgb;
+  const slot = w / SIZE_BARS.length;
   return (
     <Svg>
-      <Text x={280} y={22} text={python ? "rgb.nbytes, gray_avg.nbytes" : "whos x g bw y"} tone="heading" size={12.5} mono d={0} />
-      <Bars x={x} y={top} w={w} h={h} values={bars.map((b) => b.v)} max={max} labels={bars.map((b) => b.label)} barTone={(i) => (bars[i].label.includes("double") ? "danger" : "slate")} d={200} stagger={200} gap={0.4} />
-      {bars.map((b, i) => (
+      <Text x={280} y={22} text="rgb.nbytes, gray_avg.nbytes, binary.nbytes" tone="heading" size={12.5} mono d={0} />
+      <Bars x={x} y={top} w={w} h={h} values={SIZE_BARS.map((b) => b.v)} max={max} labels={SIZE_BARS.map((b) => b.label)} tone="slate" d={200} stagger={200} gap={0.4} />
+      {SIZE_BARS.map((b, i) => (
         <Text key={i} x={x + slot * (i + 0.5)} y={top + h - (b.v / max) * h - 12} text={n(b.v)} size={11} tone="heading" mono d={400 + i * 200} />
       ))}
-      <Chip
-        x={280}
-        y={252}
-        text={python ? bi("same bytes as MATLAB's uint8", "البايتات نفسها كما في uint8 في MATLAB") : bi("double: 8 bytes per value = 8×", "double: ثمانية بايتات لكل قيمة = 8 أضعاف")}
-        tone={python ? "outline" : "danger"}
-        center
-        d={1200}
-      />
+      <Chip x={280} y={252} text={bi("1 byte per value: RGB has 3 values per pixel", "بايت واحد لكل قيمة: لصورة RGB ثلاث قيم لكل بكسل")} tone="outline" center d={1200} />
     </Svg>
   );
 }
 
 export const Scene = sceneSet<PanelIdOf<typeof convert>>({
-  functions: Functions,
   "rgb-to-gray": RgbToGray,
   threshold: Threshold,
   sizes: Sizes,

@@ -2,9 +2,9 @@
 number: 1
 title: Introduction to Digital Images
 titleAr: "مقدمة في الصور الرقمية"
-summary: What an image is, what image processing does and how it differs from computer vision, and where both are used. How images are acquired (sampling and the Nyquist criterion, quantization, CCD and CMOS cameras, flatbed scanners) and stored (pixels, neighbourhoods, raster vs vector graphics). The aspects of image processing (enhancement, restoration, segmentation) and the steps of a processing task, the four image types (binary, grayscale, RGB, indexed) with resolution, color depth and file size, and converting between types in MATLAB.
-summaryAr: "ما الصورة، وماذا تفعل معالجة الصور (Image Processing)، وكيف تختلف عن الرؤية الحاسوبية (Computer Vision)، وأين يُستخدم كلٌّ منهما. كيف تُلتقط الصور (المعاينة sampling ومعيار نايكويست، والتكميم quantization، وكاميرات CCD و CMOS، والماسحات الضوئية المسطّحة) وكيف تُخزَّن (البكسلات، والجوار، والصور النقطية مقابل الرسوم المتجهية). جوانب معالجة الصور (التحسين، والاستعادة، والتقطيع) وخطوات مهمة المعالجة، وأنواع الصور الأربعة (الثنائية، والرمادية، و RGB، والمفهرسة) مع الدقة وعمق اللون وحجم الملف، والتحويل بين الأنواع في MATLAB."
-topics: [Images and pictures, Image processing vs computer vision, Applications, "Sampling, aliasing and the Nyquist criterion", "CCD, CMOS and flatbed scanners", Images as functions and pixels, Raster vs vector graphics, "Enhancement, restoration and segmentation", An image processing task, "Binary, grayscale, RGB and indexed images", "Resolution, color depth and file size", Image conversions in MATLAB]
+summary: What an image is, what image processing does and how it differs from computer vision, and where both are used. How images are acquired (sampling and the Nyquist criterion, quantization, CCD and CMOS cameras, flatbed scanners) and stored (pixels, neighbourhoods, raster vs vector graphics). The aspects of image processing (enhancement, restoration, segmentation) and the steps of a processing task, the four image types (binary, grayscale, RGB, indexed) with resolution, color depth and file size, and converting between types.
+summaryAr: "ما الصورة، وماذا تفعل معالجة الصور (Image Processing)، وكيف تختلف عن الرؤية الحاسوبية (Computer Vision)، وأين يُستخدم كلٌّ منهما. كيف تُلتقط الصور (المعاينة sampling ومعيار نايكويست، والتكميم quantization، وكاميرات CCD و CMOS، والماسحات الضوئية المسطّحة) وكيف تُخزَّن (البكسلات، والجوار، والصور النقطية مقابل الرسوم المتجهية). جوانب معالجة الصور (التحسين، والاستعادة، والتقطيع) وخطوات مهمة المعالجة، وأنواع الصور الأربعة (الثنائية، والرمادية، و RGB، والمفهرسة) مع الدقة وعمق اللون وحجم الملف، والتحويل بين الأنواع."
+topics: [Images and pictures, Image processing vs computer vision, Applications, "Sampling, aliasing and the Nyquist criterion", "CCD, CMOS and flatbed scanners", Images as functions and pixels, Raster vs vector graphics, "Enhancement, restoration and segmentation", An image processing task, "Binary, grayscale, RGB and indexed images", "Resolution, color depth and file size", Converting between image types]
 duration: 60 min study
 sources:
   - file: lectures/ch1/Image processing Lecture 1.pdf
@@ -14,8 +14,6 @@ bookRefs:
   - book: ip-book
     chapter: Ch 1 · Introduction to Image Processing
     pages: "7–35"
-  - book: mcandrew
-    chapter: Introduction · Images and MATLAB
 ---
 
 <Objectives>
@@ -225,9 +223,9 @@ $$
 
 <SlideFigure page={43} caption="Image representation: a small grayscale face, its blocks of grey, and the matrix of numbers (0 = black, 255 = white) that the computer actually stores." captionAr="تمثيل الصورة: وجه رمادي صغير، ومربعاته الرمادية، ومصفوفة الأرقام (0 = أسود، 255 = أبيض) التي يخزّنها الحاسوب فعليًا." />
 
-In MATLAB the pixel in row $r$ and column $c$ is `f(r,c)`, with indices starting at 1. In Python with NumPy it is `f[r, c]`, with indices starting at 0.
+In the matrix above, rows and columns are numbered from 1, so the pixel in row $r$ and column $c$ is $f(r, c)$. In Python with NumPy it is `f[r, c]`, with indices starting at 0.
 
-<Ar>في MATLAB يكون البكسل الواقع في الصف $r$ والعمود $c$ هو `f(r,c)`، وتبدأ الفهارس من 1. أما في Python مع NumPy فهو `f[r, c]`، وتبدأ الفهارس من 0.</Ar>
+<Ar>في المصفوفة أعلاه تُرقَّم الصفوف والأعمدة بدءًا من 1، فيكون البكسل الواقع في الصف $r$ والعمود $c$ هو $f(r, c)$. أما في Python مع NumPy فهو `f[r, c]`، وتبدأ الفهارس من 0.</Ar>
 
 ### Pixels and neighbourhoods
 
@@ -362,14 +360,6 @@ The course book adds the final stages: **recognition and interpretation**, which
 
 <SlideFigure page={53} caption="Counting coins: the original image is segmented by thresholding, eroded with a structuring element to separate touching coins, and the regions are counted (N = 22)." captionAr="عدّ العملات: تُقطَّع الصورة الأصلية بالعتبة، ثم تُطبَّق عليها عملية التآكل بعنصر بنائي (structuring element) لفصل العملات المتلامسة، ثم تُعدّ المناطق (N = 22)." />
 
-```matlab title="count_coins.m"
-g  = imread('dark_coins.png');        % grayscale: dark coins on a light background
-bw = ~imbinarize(g);                  % 1. segment: threshold, then invert so coins are 1
-bw = imerode(bw, strel('disk', 7));   % 2. erode (the disk size depends on how much coins touch)
-[labels, n] = bwlabel(bw);            % 3. label the connected regions and count them
-fprintf('N = %d\n', n)
-```
-
 A real system follows the same pattern. An **automatic fingerprint identification system** (AFIS) preprocesses the fingerprint image, enhances its ridges, extracts **minutiae** features (the points where ridges end or split), and matches them against a database to authenticate the person.
 
 <Ar>ويتبع النظام الحقيقي النمط نفسه. فـ**نظام التعرّف الآلي على بصمات الأصابع** (AFIS) يُجري معالجة مسبقة لصورة البصمة، ويحسّن خطوطها البارزة، ويستخلص سمات **النقاط الدقيقة (minutiae)** (النقاط التي تنتهي عندها الخطوط أو تتفرع)، ثم يطابقها مع قاعدة بيانات للتحقق من هوية الشخص.</Ar>
@@ -378,7 +368,7 @@ A real system follows the same pattern. An **automatic fingerprint identificatio
 
 <Ar>أنواع الصور الرقمية</Ar>
 
-<Walkthrough id="ip1-types" expect="binary, grayscale, rgb, indexed; levels8=256; colors=16777216; index=6; row=7" />
+<Walkthrough id="ip1-types" expect="binary, grayscale, rgb, indexed; levels8=256; colors=16777216; index=6" />
 
 Raster images come in four basic types, which differ in what a pixel value means and how many bits it needs.
 
@@ -426,9 +416,9 @@ Each pixel has **three values**, the amounts of **red**, **green** and **blue**,
 
 <Ar>الصور المفهرسة</Ar>
 
-An **indexed image** stores, for each pixel, an **index** into a **color map** (palette): a table with one row per color, each row holding a red, green and blue value (between 0 and 1 in MATLAB). The pixel values are row numbers, not colors, so the matrix of indices means nothing without its map. In MATLAB, for a `uint8` indexed image, index 0 refers to the first row of the map; the boxed pixel value 6 in the emu image therefore picks row 7, the dark grey (0.2627, 0.2588, 0.2549). With up to 256 colors a pixel needs only 8 bits, plus the small map: a third of true color.
+An **indexed image** stores, for each pixel, an **index** into a **color map** (palette): a table with one row per color, each row holding a red, green and blue value between 0 and 1. The pixel values are row numbers, not colors, so the matrix of indices means nothing without its map. The map's rows are numbered from 0, so the boxed pixel value 6 in the emu image picks row 6, the dark grey (0.2627, 0.2588, 0.2549). With up to 256 colors a pixel needs only 8 bits, plus the small map: a third of true color.
 
-<Ar>تخزّن **الصورة المفهرسة (indexed image)** لكل بكسل **فهرسًا** يشير إلى **خريطة ألوان (color map)** (لوحة ألوان palette): وهي جدول فيه صف لكل لون، ويحمل كل صف قيمة للأحمر وأخرى للأخضر وثالثة للأزرق (بين 0 و1 في MATLAB). فقيم البكسلات أرقام صفوف لا ألوان، ولذلك لا معنى لمصفوفة الفهارس دون خريطتها. وفي MATLAB، في الصورة المفهرسة من النوع `uint8` يشير الفهرس 0 إلى الصف الأول من الخريطة؛ ولذلك فإن قيمة البكسل 6 المحاطة بإطار في صورة طائر الإيمو تختار الصف 7، وهو الرمادي الداكن (0.2627، 0.2588، 0.2549). ومع 256 لونًا على الأكثر لا يحتاج البكسل إلا إلى 8 بِتّات، إضافةً إلى الخريطة الصغيرة: أي ثلث ما تحتاجه الألوان الحقيقية.</Ar>
+<Ar>تخزّن **الصورة المفهرسة (indexed image)** لكل بكسل **فهرسًا** يشير إلى **خريطة ألوان (color map)** (لوحة ألوان palette): وهي جدول فيه صف لكل لون، ويحمل كل صف قيمة للأحمر وأخرى للأخضر وثالثة للأزرق بين 0 و1. فقيم البكسلات أرقام صفوف لا ألوان، ولذلك لا معنى لمصفوفة الفهارس دون خريطتها. وتُرقَّم صفوف الخريطة بدءًا من 0، ولذلك فإن قيمة البكسل 6 المحاطة بإطار في صورة طائر الإيمو تختار الصف 6، وهو الرمادي الداكن (0.2627، 0.2588، 0.2549). ومع 256 لونًا على الأكثر لا يحتاج البكسل إلا إلى 8 بِتّات، إضافةً إلى الخريطة الصغيرة: أي ثلث ما تحتاجه الألوان الحقيقية.</Ar>
 
 <SlideFigure page={60} caption="An indexed color image: each pixel holds an index, and the index selects a row (red, green, blue) of the color map." captionAr="صورة ملونة مفهرسة: يحمل كل بكسل فهرسًا، ويختار الفهرس صفًّا (أحمر، أخضر، أزرق) من خريطة الألوان." />
 
@@ -497,45 +487,7 @@ For example, a high-quality digital camera uses almost three million pixels for 
 
 <Ar>التحويل بين أنواع الصور</Ar>
 
-<Walkthrough id="ip1-convert" expect="functions, rgb-to-gray, threshold, sizes; sum=179; gray=60; binary=000/111/101; rgb=589824; double=4718592" />
-
-### In MATLAB
-
-<Ar>في MATLAB</Ar>
-
-| Function <Ar>الدالة</Ar> | Use <Ar>الاستخدام</Ar> | Format <Ar>الصيغة</Ar> |
-|---|---|---|
-| `ind2gray` | Indexed to grayscale <Ar>من مفهرسة إلى رمادية</Ar> | `y=ind2gray(x,map);` |
-| `gray2ind` | Grayscale to indexed <Ar>من رمادية إلى مفهرسة</Ar> | `[y,map]=gray2ind(x);` |
-| `rgb2gray` | RGB to grayscale <Ar>من RGB إلى رمادية</Ar> | `y=rgb2gray(x);` |
-| `gray2rgb` | Grayscale to RGB <Ar>من رمادية إلى RGB</Ar> | `y=gray2rgb(x);` |
-| `rgb2ind` | RGB to indexed <Ar>من RGB إلى مفهرسة</Ar> | `[y,map]=rgb2ind(x,n);` |
-| `ind2rgb` | Indexed to RGB <Ar>من مفهرسة إلى RGB</Ar> | `y=ind2rgb(x,map);` |
-
-If your MATLAB version has no `gray2rgb`, stack the grey matrix three times with `cat(3,x,x,x)`. `rgb2ind` needs the number of colors `n` (or a map) to choose.
-
-<Ar>إذا لم يكن في إصدار MATLAB لديك الدالة `gray2rgb`، فكدِّس المصفوفة الرمادية ثلاث مرات باستخدام `cat(3,x,x,x)`. وتحتاج الدالة `rgb2ind` إلى عدد الألوان `n` (أو إلى خريطة ألوان) لكي تختار منها.</Ar>
-
-The lab tasks are to read an image from a file, extract its information, convert it to other types, and **note the effect of each conversion on the image size and data type**:
-
-<Ar>مهام السكشن هي قراءة صورة من ملف، واستخراج معلوماتها، وتحويلها إلى أنواع أخرى، مع **ملاحظة أثر كل تحويل على حجم الصورة ونوع بياناتها**:</Ar>
-
-```matlab title="image_types.m"
-x = imread('peppers.png');      % RGB image: 384x512x3 uint8
-info = imfinfo('peppers.png')   % file information: Width, Height, BitDepth, ColorType, ...
-whos x                          % 589,824 bytes, class uint8
-
-g  = rgb2gray(x);               % RGB -> grayscale: 384x512 uint8 (196,608 bytes)
-bw = g >= 128;                  % grayscale -> binary with threshold 128: class logical
-[ix, map] = rgb2ind(x, 256);    % RGB -> indexed: uint8 index matrix + 256x3 color map
-y  = ind2rgb(ix, map);          % indexed -> RGB: class double, values in [0,1]
-whos g bw ix map y              % y takes 4,718,592 bytes: 8 bytes per value
-imshow(bw), figure, imshow(ix, map)
-```
-
-Notice that the `double` RGB image is **eight times larger** than the `uint8` original, even though it shows the same picture.
-
-<Ar>لاحظ أن صورة RGB من النوع `double` **أكبر بثماني مرات** من الصورة الأصلية من النوع `uint8`، مع أنها تعرض الصورة نفسها.</Ar>
+<Walkthrough id="ip1-convert" expect="rgb-to-gray, threshold, sizes; sum=179; gray=60; binary=000/111/101; rgb=589824" />
 
 ### Grayscale to binary
 
@@ -565,9 +517,9 @@ $$
 \text{Gray}(i,j) = \frac{R(i,j) + G(i,j) + B(i,j)}{3}
 $$
 
-**Solution 2** simply keeps one of the channels, R, G or B, as the grey image. MATLAB's `rgb2gray` uses a third option, a **weighted** sum that follows the eye's greater sensitivity to green: $0.2989R + 0.5870G + 0.1140B$.
+**Solution 2** simply keeps one of the channels, R, G or B, as the grey image. A third option is a **weighted** sum that follows the eye's greater sensitivity to green: $0.2989R + 0.5870G + 0.1140B$.
 
-<Ar>أما **الحل الثاني** فيحتفظ ببساطة بإحدى القنوات R أو G أو B صورةً رمادية. وتستخدم الدالة `rgb2gray` في MATLAB خيارًا ثالثًا، هو مجموع **موزون** يراعي حساسية العين الأكبر للأخضر: $0.2989R + 0.5870G + 0.1140B$.</Ar>
+<Ar>أما **الحل الثاني** فيحتفظ ببساطة بإحدى القنوات R أو G أو B صورةً رمادية. وهناك خيار ثالث، هو مجموع **موزون** يراعي حساسية العين الأكبر للأخضر: $0.2989R + 0.5870G + 0.1140B$.</Ar>
 
 <Callout type="example" title="By hand: RGB to grayscale to binary" titleAr="حساب يدوي: من RGB إلى رمادية إلى ثنائية">
   Take the top-left 3 × 3 patch of the flower image (slide 59). Its channels are R = [49 55 56; 58 60 60; 58 58 54], G = [64 76 82; 93 93 91; 88 82 88] and B = [66 80 77; 81 93 96; 83 83 91]. Averaging (Solution 1) the first pixel gives (49 + 64 + 66) / 3 = 179 / 3 = 59.67, which rounds to 60. Doing this for every pixel, then thresholding at T = 75, gives the two tables below.
@@ -585,9 +537,9 @@ $$
 
 <Ar>في Python</Ar>
 
-The same conversions with NumPy and Pillow:
+These conversions with NumPy and Pillow:
 
-<Ar>التحويلات نفسها باستخدام NumPy و Pillow:</Ar>
+<Ar>هذه التحويلات باستخدام NumPy و Pillow:</Ar>
 
 ```python title="image_types.py"
 import numpy as np
@@ -598,7 +550,7 @@ print(rgb.shape, rgb.dtype, rgb.nbytes)
 
 gray_avg = np.round(rgb.mean(axis=2)).astype(np.uint8)     # Solution 1: average of R, G, B
 gray_red = rgb[:, :, 0]                                    # Solution 2: keep one channel
-weights = np.array([0.2989, 0.5870, 0.1140])               # rgb2gray's weighted sum
+weights = np.array([0.2989, 0.5870, 0.1140])               # the weighted sum: green counts most
 gray_w = np.round(rgb @ weights).astype(np.uint8)
 
 binary = gray_avg >= 128                                   # bool array: True (1) where gray >= T

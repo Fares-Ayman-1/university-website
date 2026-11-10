@@ -1,6 +1,6 @@
 import { bi } from "@/components/widgets/types";
 import { defineWalkthrough } from "@/lib/widgets/walkthrough";
-import { BOXED_INDEX, PEPPERS_BYTES, STORAGE, TRUE_COLORS, binaryRows, centreValue, flowerSum, levels, mapRow, nyquistSpacing, threshold, toGray } from "@/lib/widgets/ip-lecture-01";
+import { BOXED_INDEX, PEPPERS_BYTES, STORAGE, TRUE_COLORS, binaryRows, centreValue, flowerSum, levels, nyquistSpacing, threshold, toGray } from "@/lib/widgets/ip-lecture-01";
 
 /*
  * Image Processing · Lecture 1 (content/subjects/image-processing/lectures/01-introduction-digital-images.mdx).
@@ -425,10 +425,10 @@ export const pixels = defineWalkthrough({
       control: {
         label: bi("Index like", "الفهرسة كما في"),
         options: [
-          { id: "matlab", label: bi("MATLAB f(r,c)", "MATLAB f(r,c)") },
+          { id: "matrix", label: bi("Matrix f(r, c)", "المصفوفة f(r, c)") },
           { id: "numpy", label: bi("NumPy f[r, c]", "NumPy f[r, c]") },
         ],
-        initial: "matlab",
+        initial: "matrix",
       },
       points: [
         bi(
@@ -437,7 +437,7 @@ export const pixels = defineWalkthrough({
         ),
       ],
       pointsFor: {
-        matlab: [bi("In MATLAB indices start at **1**: the ringed pixel is f(4,3) = 5.", "في MATLAB تبدأ الفهارس من **1**: فالبكسل المُحاط بإطار هو f(4,3) = 5.")],
+        matrix: [bi("In the matrix f(r, c), rows and columns are numbered from **1**: the ringed pixel is f(4, 3) = 5.", "في المصفوفة f(r, c) تُرقَّم الصفوف والأعمدة بدءًا من **1**: فالبكسل المُحاط بإطار هو f(4, 3) = 5.")],
         numpy: [bi("In NumPy indices start at **0**: the same pixel is f[3, 2] = 5.", "في NumPy تبدأ الفهارس من **0**: فالبكسل نفسه هو f[3, 2] = 5.")],
       },
     },
@@ -696,7 +696,7 @@ export const types = defineWalkthrough({
     "Four ways to tell a painter a colour: yes or no, how bright, how much red, green and blue, or a number on a shared colour chart.",
     "أربع طرق لتخبر رسّامًا باللون: نعم أو لا، أو درجة السطوع، أو مقدار الأحمر والأخضر والأزرق، أو رقم في دليل ألوان مشترك.",
   ),
-  facts: { levels8: levels(8), colors: TRUE_COLORS, index: BOXED_INDEX, row: mapRow(BOXED_INDEX) },
+  facts: { levels8: levels(8), colors: TRUE_COLORS, index: BOXED_INDEX },
   panels: [
     {
       id: "binary",
@@ -754,8 +754,8 @@ export const types = defineWalkthrough({
           "تخزّن الصورة **المفهرسة (indexed)** **فهرسًا** لكل بكسل إضافةً إلى **خريطة ألوان (color map)**: صف لكل لون، فيه الأحمر والأخضر والأزرق بين 0 و1.",
         ),
         bi(
-          "For a uint8 image index 0 is the first row, so the boxed value **6** picks **row 7**, the dark grey (0.2627, 0.2588, 0.2549). At 8 bits a pixel, that is a third of true color.",
-          "في الصورة من النوع uint8 يشير الفهرس 0 إلى الصف الأول، ولذلك تختار القيمة **6** المحاطة بإطار **الصف 7**، وهو الرمادي الداكن (0.2627, 0.2588, 0.2549). وبثمانية بِتّات لكل بكسل يكون الحجم ثلث الألوان الحقيقية.",
+          "The map's rows are numbered from 0, so the boxed value **6** picks **row 6**, the dark grey (0.2627, 0.2588, 0.2549). At 8 bits a pixel, that is a third of true color.",
+          "تُرقَّم صفوف الخريطة بدءًا من 0، ولذلك تختار القيمة **6** المحاطة بإطار **الصف 6**، وهو الرمادي الداكن (0.2627, 0.2588, 0.2549). وبثمانية بِتّات لكل بكسل يكون الحجم ثلث الألوان الحقيقية.",
         ),
       ],
     },
@@ -841,17 +841,8 @@ export const convert = defineWalkthrough({
     "Photocopying a colour poster: a colour copy keeps everything, a black-and-white copy loses the colours, and you can't get them back from the copy.",
     "تصوير ملصق ملوّن: النسخة الملونة تحتفظ بكل شيء، والنسخة بالأبيض والأسود تفقد الألوان، ولا يمكنك استعادتها من النسخة.",
   ),
-  facts: { sum: flowerSum(0, 0), gray: avg[0][0], binary: binaryRows(threshold(avg, 75)), rgb: PEPPERS_BYTES.rgb, double: PEPPERS_BYTES.double },
+  facts: { sum: flowerSum(0, 0), gray: avg[0][0], binary: binaryRows(threshold(avg, 75)), rgb: PEPPERS_BYTES.rgb },
   panels: [
-    {
-      id: "functions",
-      pill: bi("MATLAB functions", "دوال MATLAB"),
-      heading: bi("Six functions link the three main types", "ست دوال تربط الأنواع الثلاثة الرئيسية"),
-      points: [
-        bi("MATLAB converts between grayscale, RGB and indexed images with rgb2gray, gray2rgb, rgb2ind, ind2rgb, gray2ind and ind2gray.", "يحوّل MATLAB بين الصور الرمادية و RGB والمفهرسة بالدوال rgb2gray و gray2rgb و rgb2ind و ind2rgb و gray2ind و ind2gray."),
-        bi("A **threshold** turns grayscale into binary, as in bw = g >= 128. rgb2ind also needs the number of colours n.", "وتحوّل **العتبة (threshold)** الصورة الرمادية إلى ثنائية، كما في bw = g >= 128. وتحتاج rgb2ind أيضًا إلى عدد الألوان n."),
-      ],
-    },
     {
       id: "rgb-to-gray",
       pill: bi("RGB → grey", "من RGB إلى رمادي"),
@@ -861,7 +852,7 @@ export const convert = defineWalkthrough({
         options: [
           { id: "average", label: bi("Average", "المتوسط") },
           { id: "red", label: bi("One channel (R)", "قناة واحدة (R)") },
-          { id: "weighted", label: bi("Weighted (rgb2gray)", "موزون (rgb2gray)") },
+          { id: "weighted", label: bi("Weighted sum", "مجموع موزون") },
         ],
         initial: "average",
       },
@@ -869,7 +860,7 @@ export const convert = defineWalkthrough({
       pointsFor: {
         average: [bi("**Solution 1** averages: (49 + 64 + 66) / 3 = 179 / 3 = 59.67, which rounds to **60**.", "**الحل الأول** يحسب المتوسط: (49 + 64 + 66) / 3 = 179 / 3 = 59.67، وتقريبه **60**.")],
         red: [bi("**Solution 2** keeps one channel, here red: the first pixel is simply 49.", "**الحل الثاني** يحتفظ بقناة واحدة، وهي هنا الأحمر: فالبكسل الأول هو 49 ببساطة.")],
-        weighted: [bi("rgb2gray weights green most, following the eye: 0.2989R + 0.5870G + 0.1140B = 59.74, also **60**.", "تعطي rgb2gray الأخضر الوزن الأكبر تبعًا لحساسية العين: 0.2989R + 0.5870G + 0.1140B = 59.74، وتقريبه **60** أيضًا.")],
+        weighted: [bi("A **weighted** sum gives green the most weight, following the eye: 0.2989R + 0.5870G + 0.1140B = 59.74, also **60**.", "يعطي المجموع **الموزون** الأخضرَ الوزن الأكبر تبعًا لحساسية العين: 0.2989R + 0.5870G + 0.1140B = 59.74، وتقريبه **60** أيضًا.")],
       },
     },
     {
@@ -887,31 +878,17 @@ export const convert = defineWalkthrough({
       points: [bi("**Binary(i, j)** is 1 where Gray(i, j) ≥ T, and 0 otherwise.", "تكون **Binary(i, j)** مساوية 1 حيث Gray(i, j) ≥ T، و0 فيما عدا ذلك.")],
       pointsFor: {
         t75: [bi("With T = 75 the averaged patch becomes 000 / 111 / 101: five pixels reach the threshold.", "مع T = 75 تصبح الرقعة المتوسطة 000 / 111 / 101: خمسة بكسلات تبلغ العتبة.")],
-        t128: [bi("With T = 128, as in g >= 128, every pixel of this dark patch becomes 0: the choice of T decides what survives.", "مع T = 128، كما في g >= 128، يصبح كل بكسل في هذه الرقعة الداكنة 0: فاختيار T يحدد ما يبقى.")],
+        t128: [bi("With T = 128 every pixel of this dark patch becomes 0: the choice of T decides what survives.", "مع T = 128 يصبح كل بكسل في هذه الرقعة الداكنة 0: فاختيار T يحدد ما يبقى.")],
       },
     },
     {
       id: "sizes",
       pill: bi("Size and data type", "الحجم ونوع البيانات"),
       heading: bi("The same picture in different data types", "الصورة نفسها بأنواع بيانات مختلفة"),
-      control: {
-        label: bi("Measured with", "مَقيسة بـ"),
-        options: [
-          { id: "matlab", label: bi("MATLAB whos", "MATLAB whos") },
-          { id: "python", label: bi("NumPy nbytes", "NumPy nbytes") },
-        ],
-        initial: "matlab",
-      },
-      points: [bi("peppers.png is 384 × 512 pixels; each conversion changes the size and the **data type**.", "أبعاد الصورة peppers.png هي 384 × 512 بكسلًا، وكل تحويل يغيّر الحجم و**نوع البيانات (data type)**.")],
-      pointsFor: {
-        matlab: [
-          bi(
-            "uint8 RGB takes 589,824 bytes, grayscale 196,608 and logical binary 196,608 (1 byte each). ind2rgb returns **double**, 8 bytes per value: 4,718,592 bytes, eight times the original.",
-            "تشغل صورة RGB من النوع uint8 مساحة 589,824 بايت، والرمادية 196,608، والثنائية من النوع logical مساحة 196,608 (بايت لكل قيمة). أما ind2rgb فتعيد النوع **double**، بثمانية بايتات لكل قيمة: 4,718,592 بايت، أي ثمانية أضعاف الأصل.",
-          ),
-        ],
-        python: [bi("NumPy reports the same sizes: rgb.nbytes is 589,824 for a uint8 (H, W, 3) array, gray_avg.nbytes is 196,608, and the binary array has dtype bool.", "يعطي NumPy الأحجام نفسها: rgb.nbytes يساوي 589,824 لمصفوفة uint8 أبعادها (H, W, 3)، و gray_avg.nbytes يساوي 196,608، ونوع المصفوفة الثنائية bool.")],
-      },
+      points: [
+        bi("peppers.png is 384 × 512 pixels; each conversion changes the size and the **data type**.", "أبعاد الصورة peppers.png هي 384 × 512 بكسلًا، وكل تحويل يغيّر الحجم و**نوع البيانات (data type)**."),
+        bi("NumPy reports the sizes: rgb.nbytes is 589,824 for a uint8 (H, W, 3) array, gray_avg.nbytes is 196,608, and the binary array has dtype bool, also 1 byte per pixel.", "يعطي NumPy الأحجام: rgb.nbytes يساوي 589,824 لمصفوفة uint8 أبعادها (H, W, 3)، و gray_avg.nbytes يساوي 196,608، ونوع المصفوفة الثنائية bool، ببايت واحد لكل بكسل أيضًا."),
+      ],
     },
   ],
 });

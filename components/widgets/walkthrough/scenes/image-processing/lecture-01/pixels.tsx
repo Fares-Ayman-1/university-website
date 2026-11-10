@@ -39,7 +39,7 @@ function Matrix({ control }: { control: string }) {
         <Text key={`r${i}`} x={zx - 8} y={zy + i * z + z / 2} text={String(r0 + i + base)} anchor="end" size={11} tone={i === pr ? "gold" : "muted"} mono d={1000} />
       ))}
       <Text x={500} y={128} text={numpy ? bi("indices from 0", "الفهارس من 0") : bi("indices from 1", "الفهارس من 1")} tone="heading" size={12} d={1200} />
-      <Chip x={500} y={176} text={numpy ? `f[${r}, ${c}] = ${pickedValue}` : `f(${r},${c}) = ${pickedValue}`} tone="gold" center d={1400} />
+      <Chip x={500} y={176} text={numpy ? `f[${r}, ${c}] = ${pickedValue}` : `f(${r}, ${c}) = ${pickedValue}`} tone="gold" center d={1400} />
     </Svg>
   );
 }

@@ -216,7 +216,7 @@
         {
           "kind": "mcq",
           "group": "Lecture 1",
-          "text": "A grayscale image is held as matrix f. The pixel that MATLAB reads as `f(4,3)` is which element in Python with NumPy?",
+          "text": "A grayscale image is the matrix f, with rows and columns numbered from 1 as in the lecture's f(r, c). The pixel f(4, 3) is which element in Python with NumPy?",
           "options": [
             "`f[4, 3]`",
             "`f[3, 2]`",
@@ -224,7 +224,7 @@
             "`f[2, 3]`"
           ],
           "answer": 1,
-          "why": "MATLAB indices start at 1 (x and y run from 1 to 256 for a 256 × 256 image) while NumPy indices start at 0, so row 4, column 3 in MATLAB is `f[3, 2]` in NumPy.",
+          "why": "The matrix f(r, c) numbers rows and columns from 1 (x and y run from 1 to 256 for a 256 × 256 image), while NumPy indices start at 0, so f(4, 3) is `f[3, 2]`.",
           "ref": "Slide 42 · Images and digital images"
         },
         {
@@ -356,7 +356,7 @@
         {
           "kind": "mcq",
           "group": "Lecture 1",
-          "text": "A `uint8` indexed image has the colour map `[0 0 0; 1 0 0; 0 1 0; 0 0 1]`. A pixel holds the value 2. Which colour is displayed?",
+          "text": "An indexed image has the colour map `[0 0 0; 1 0 0; 0 1 0; 0 0 1]`, with its rows numbered from 0 as in the course book's figure. A pixel holds the value 2. Which colour is displayed?",
           "options": [
             "Red",
             "Green",
@@ -364,8 +364,8 @@
             "Near-black grey"
           ],
           "answer": 1,
-          "why": "The pixel value is an index into the map, not a colour. In a `uint8` indexed image index 0 picks row 1, so 2 picks row 3, `[0 1 0]`, which is green. Reading row 2 would give red.",
-          "ref": "Slide 60 · Indexed image"
+          "why": "The pixel value is an index into the map, not a colour. Counting rows from 0, row 2 is `[0 1 0]`, which is green. Counting from 1 instead would give red.",
+          "ref": "Book p. 18 · Indexed color"
         },
         {
           "kind": "mcq",
@@ -454,16 +454,16 @@
         {
           "kind": "mcq",
           "group": "Lecture 1",
-          "text": "Which MATLAB call converts an indexed image `x` with colour map `map` into a grayscale image?",
+          "text": "Averaging each pixel with the pixels around it, or finding edges, uses more than the pixel's own value. What kind of operation is this?",
           "options": [
-            "`[y,map]=gray2ind(x);`",
-            "`y=ind2gray(x,map);`",
-            "`y=ind2rgb(x,map);`",
-            "`y=rgb2gray(x);`"
+            "A point operation",
+            "A neighbourhood operation",
+            "A transform operation",
+            "A colour-map lookup"
           ],
           "answer": 1,
-          "why": "`ind2gray` goes from indexed to grayscale and needs the map, because the indices mean nothing without it. `gray2ind` is the reverse, `ind2rgb` gives RGB, and `rgb2gray` expects an RGB image.",
-          "ref": "Slide 61 · Converting images in MATLAB"
+          "why": "It uses the pixel's neighbourhood (for example the 3 × 5 block centred on it), so it is a neighbourhood operation; the course book's image filtering (mean, Gaussian, median, Laplacian, Sobel) modifies pixels according to their neighbours. A point operation uses only the pixel's own value.",
+          "ref": "Slide 45 · Pixels with a neighbourhood"
         },
         {
           "kind": "mcq",
@@ -476,7 +476,7 @@
             "405"
           ],
           "answer": 2,
-          "why": "Solution 1 averages the channels: (120 + 200 + 85) / 3 = 405 / 3 = 135. 163 is what the weighted sum of `rgb2gray` gives, and 120 is Solution 2 with the red channel.",
+          "why": "Solution 1 averages the channels: (120 + 200 + 85) / 3 = 405 / 3 = 135. 163 is what the weighted sum 0.2989R + 0.5870G + 0.1140B gives, and 120 is Solution 2 with the red channel.",
           "ref": "Slide 69 · RGB to grayscale"
         },
         {
@@ -496,30 +496,30 @@
         {
           "kind": "mcq",
           "group": "Lecture 1",
-          "text": "In MATLAB, `g` is a `uint8` grayscale image. What class is the result of `bw = g >= 128`?",
+          "text": "Thresholding a grayscale image at T turns every pixel into 0 or 1. Which image type results, and how many bits does a pixel then need?",
           "options": [
-            "`logical`",
-            "`uint8`",
-            "`double`",
-            "`uint16`"
+            "Binary, 1 bit per pixel",
+            "Grayscale, 8 bits per pixel",
+            "Indexed, 8 bits plus a map",
+            "RGB, 24 bits per pixel"
           ],
           "answer": 0,
-          "why": "A comparison returns a logical array: 1 where the grey value is at least 128 and 0 elsewhere. That is a binary image made with threshold T = 128.",
+          "why": "Each pixel becomes 1 where Gray ≥ T and 0 elsewhere, so the result is a binary image, which needs only 1 bit per pixel. The course book lists thresholding among the segmentation techniques.",
           "ref": "Slide 68 · Grayscale to binary"
         },
         {
           "kind": "mcq",
           "group": "Lecture 1",
-          "text": "An indexed image of 240 × 320 pixels is converted with `y = ind2rgb(x,map)`. The result is a `double` RGB array. How many bytes does `y` take?",
+          "text": "A 240 × 320 grayscale image (8 bits per pixel) is converted to RGB by copying its grey value into all three channels. How many bytes does the 24-bit RGB version take?",
           "options": [
-            "230,400",
+            "76,800",
             "614,400",
-            "14,745,600",
-            "1,843,200"
+            "1,843,200",
+            "230,400"
           ],
           "answer": 3,
-          "why": "`ind2rgb` returns a 240 × 320 × 3 array of class `double`, values 0 to 1, at 8 bytes per value: 240 × 320 × 3 × 8 = 1,843,200 bytes, eight times the 230,400 bytes of the same picture as `uint8`.",
-          "ref": "Slide 67 · Lab tasks"
+          "why": "True-Color stores three 8-bit values (24 bits) per pixel: 240 × 320 × 3 = 230,400 bytes, three times the 76,800 bytes of the grey original, although it shows the same grey picture. 1,843,200 is that size in bits, with the ÷8 forgotten.",
+          "ref": "Slide 63 · True-Color"
         }
       ]
     },
