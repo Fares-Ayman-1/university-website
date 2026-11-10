@@ -1,8 +1,8 @@
 {
   "title": "AI Lecture Drill",
-  "kicker": "Artificial Intelligence · Lectures 1–4",
+  "kicker": "Artificial Intelligence · Lectures 1–5",
   "heading": "Lecture Drill",
-  "lede": "Practice questions written from your lecture PDFs and the course book, one tab per lecture. Lecture 4 has no slides, so its questions come from the book's Chapter 4. Pick an answer to see at once whether it is right. Each answer has a short explanation and the slide or book page it comes from.",
+  "lede": "Practice questions written from your lecture PDFs and the course book, one tab per lecture. Lectures 4 and 5 have no slides, so their questions come from the book: Chapter 3's informed-search pages (pp. 79–83) and Chapter 4. Pick an answer to see at once whether it is right. Each answer has a short explanation and the slide or book page it comes from.",
   "foot": "These are practice questions written from your lecture slides and the AI301 course book (marked \"Book\"). They are not past exam papers. Progress is saved in this browser only.",
   "banksLabel": "Lectures",
   "unit": "lectures",
@@ -1518,14 +1518,470 @@
       ]
     },
     {
-      "id": "lecture-4",
+      "id": "informed-search",
       "tag": "Lecture 4",
+      "name": "Informed Search",
+      "scope": "32 questions",
+      "questions": [
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "What does an informed search strategy use that an uninformed strategy does not?",
+          "options": [
+            "Domain-specific hints about where the goals are",
+            "A bigger frontier",
+            "A fixed depth limit",
+            "Random tie-breaking between nodes"
+          ],
+          "answer": 0,
+          "why": "Informed (heuristic) search uses domain-specific hints about the location of goals, so it can find solutions more efficiently than an uninformed strategy, which only knows the problem definition.",
+          "ref": "Book p. 79 · Informed (heuristic) search"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "In the book, h(n) is defined as ......",
+          "options": [
+            "the exact cost of the path from the initial state to n",
+            "the estimated cost of the cheapest path from the state at node n to a goal state",
+            "the number of nodes expanded before reaching n",
+            "the cost of the cheapest path found so far"
+          ],
+          "answer": 1,
+          "why": "The heuristic function h(n) estimates the cost of the cheapest path from n's state to a goal. The cost already paid from the start to n is g(n), not h(n).",
+          "ref": "Book p. 79 · Heuristic function"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "In route-finding problems, which heuristic does the book use to estimate the distance from the current city to the goal?",
+          "options": [
+            "The road distance found by breadth-first search",
+            "The number of cities left on the route",
+            "The straight-line distance between the two points",
+            "The time already spent travelling"
+          ],
+          "answer": 2,
+          "why": "For route finding the book estimates the remaining distance by the straight-line distance between the current state and the goal, written h_SLD.",
+          "ref": "Book p. 79 · Heuristic function"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "Why does the book say the h_SLD values need world knowledge?",
+          "options": [
+            "They are found by running UCS from every city",
+            "They change every time a road is used",
+            "They are only known after the goal has been reached",
+            "They are not part of the problem description, and you must know they correlate with actual road distances"
+          ],
+          "answer": 3,
+          "why": "Straight-line distances are not given by the problem formulation itself; using them needs knowledge of the world, namely that straight-line distance is related to the actual road distance.",
+          "ref": "Book p. 79 · Greedy best-first search"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "Greedy best-first search expands the node with ......",
+          "options": [
+            "the lowest g(n)",
+            "the lowest g(n) + h(n)",
+            "the lowest h(n)",
+            "the highest h(n)"
+          ],
+          "answer": 2,
+          "why": "Greedy best-first search expands the node that appears closest to the goal, the one with the lowest heuristic value h(n). It ignores the cost already paid.",
+          "ref": "Book p. 79 · Greedy best-first search"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "What is the evaluation function f(n) of greedy best-first search?",
+          "options": [
+            "f(n) = h(n)",
+            "f(n) = g(n)",
+            "f(n) = g(n) + h(n)",
+            "f(n) = g(n) − h(n)"
+          ],
+          "answer": 0,
+          "why": "Greedy best-first search evaluates nodes by the heuristic alone: f(n) = h(n). Adding g(n) gives A* instead.",
+          "ref": "Book p. 79 · Greedy best-first search"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "With Bucharest as the goal, what is h_SLD(Arad)?",
+          "options": [
+            "253",
+            "418",
+            "450",
+            "366"
+          ],
+          "answer": 3,
+          "why": "The book gives h_SLD(Arad) = 366, the straight-line distance from Arad to Bucharest. 253 is Sibiu's value, and 418 and 450 are path costs, not heuristic values.",
+          "ref": "Book p. 79 · Example (Romania)"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "In Figure 3.17, after greedy best-first search expands Arad, the frontier holds Sibiu (253), Timisoara (329) and Zerind (374). Which node does it expand next?",
+          "options": [
+            "Timisoara",
+            "Sibiu",
+            "Zerind",
+            "Arad again"
+          ],
+          "answer": 1,
+          "why": "Greedy best-first search picks the lowest h value on the frontier, and Sibiu's 253 is lower than Timisoara's 329 and Zerind's 374.",
+          "ref": "Book p. 81 · Figure 3.17"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "After greedy best-first search expands Sibiu, the new nodes are Arad (366), Fagaras (176), Oradea (380) and Rimnicu Vilcea (193). Which node is expanded next?",
+          "options": [
+            "Fagaras",
+            "Rimnicu Vilcea",
+            "Oradea",
+            "Arad"
+          ],
+          "answer": 0,
+          "why": "Fagaras has the lowest h value, 176, so greedy best-first search expands it next, even though the route through Rimnicu Vilcea turns out cheaper.",
+          "ref": "Book p. 81 · Figure 3.17"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "Greedy best-first search reaches Bucharest along Arad → Sibiu → Fagaras → Bucharest, costing 140 + 99 + 211 = 450 km. The optimal route costs 418 km. How much longer is the greedy route?",
+          "options": [
+            "0 km",
+            "32 km",
+            "18 km",
+            "48 km"
+          ],
+          "answer": 1,
+          "why": "450 − 418 = 32 km. The greedy route is found quickly but is not the cheapest, which is why greedy best-first search is not optimal.",
+          "ref": "Book p. 81 · Figure 3.17 (road lengths from the Lecture 2 map)"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "How does the book's chapter summary describe greedy best-first search?",
+          "options": [
+            "Complete and optimal",
+            "Optimal only for unit step costs",
+            "Not optimal, but efficient",
+            "Optimal, but it needs exponential memory"
+          ],
+          "answer": 2,
+          "why": "The summary says greedy best-first search expands nodes with minimal h(n) and is not optimal but efficient. A* is the one described as complete and optimal with an admissible heuristic.",
+          "ref": "Book p. 83 · Summary"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "What is the evaluation function of A* search?",
+          "options": [
+            "f(n) = h(n)",
+            "f(n) = g(n)",
+            "f(n) = g(n) × h(n)",
+            "f(n) = g(n) + h(n)"
+          ],
+          "answer": 3,
+          "why": "A* adds the cost already paid, g(n), to the estimated cost still to go, h(n). Using h(n) alone gives greedy best-first search, and using g(n) alone gives uniform-cost search.",
+          "ref": "Book p. 80 · A* search"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "In A*, what does g(n) stand for?",
+          "options": [
+            "The estimated cost from n to the nearest goal",
+            "The depth of n in the search tree",
+            "The path cost from the initial state to node n",
+            "The number of times n has been expanded"
+          ],
+          "answer": 2,
+          "why": "g(n) is the cost of the path from the initial state to n. The estimate of the remaining cost to the nearest goal is h(n).",
+          "ref": "Book p. 80 · A* search"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "What does f(n) = g(n) + h(n) estimate in A*?",
+          "options": [
+            "The cost of the best path from the start through n to a goal",
+            "The cost from n to the goal only",
+            "The cost from the start to n only",
+            "The number of steps left to the goal"
+          ],
+          "answer": 0,
+          "why": "g(n) covers the start-to-n part and h(n) estimates the n-to-goal part, so f(n) estimates the cost of the best path through n to a goal.",
+          "ref": "Book p. 80 · A* search"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "A* starts from Arad. Sibiu is 140 km away and h_SLD(Sibiu) = 253. What is f(Sibiu)?",
+          "options": [
+            "253",
+            "366",
+            "413",
+            "393"
+          ],
+          "answer": 3,
+          "why": "f = g + h = 140 + 253 = 393. That is lower than Timisoara's 118 + 329 = 447 and Zerind's 75 + 374 = 449, so A* expands Sibiu next.",
+          "ref": "Book pp. 80–81 · A* example (road lengths from the Lecture 2 map)"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "After A* expands Sibiu, the frontier holds Rimnicu Vilcea (220 + 193), Fagaras (239 + 176), Timisoara (447), Zerind (449), Arad (646) and Oradea (671). Which node does A* expand next?",
+          "options": [
+            "Fagaras, with f = 415",
+            "Rimnicu Vilcea, with f = 413",
+            "Timisoara, with f = 447",
+            "Fagaras, because its h is lower"
+          ],
+          "answer": 1,
+          "why": "A* expands the lowest f, not the lowest h. Rimnicu Vilcea's f = 413 beats Fagaras's 415, even though Fagaras has the smaller h value; that difference is what separates A* from greedy search.",
+          "ref": "Book pp. 80–81 · A* example (road lengths from the Lecture 2 map)"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "Pitesti is reached with g = 317 and h_SLD(Pitesti) = 100. What f value does the book give it?",
+          "options": [
+            "417",
+            "317",
+            "100",
+            "418"
+          ],
+          "answer": 0,
+          "why": "f = 317 + 100 = 417, the value the book quotes when it explains why Pitesti is expanded before Bucharest.",
+          "ref": "Book p. 81 · A* example"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "Bucharest first appears on A*'s frontier at step (e) with f = 450. Which node does A* expand next?",
+          "options": [
+            "Bucharest, with f = 450",
+            "Pitesti, with f = 417",
+            "Timisoara, with f = 447",
+            "Zerind, with f = 449"
+          ],
+          "answer": 1,
+          "why": "A* stops only when it removes a goal from the frontier. Pitesti's 417 is lower than Bucharest's 450, so Pitesti is expanded first, and it then reveals a cheaper path to Bucharest.",
+          "ref": "Book p. 81 · A* example"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "At step (f) Bucharest reappears on the frontier with f = 418. Which route does this solution follow?",
+          "options": [
+            "Arad → Sibiu → Fagaras → Bucharest",
+            "Arad → Timisoara → Lugoj → Mehadia → Bucharest",
+            "Arad → Sibiu → Rimnicu Vilcea → Pitesti → Bucharest",
+            "Arad → Zerind → Oradea → Sibiu → Bucharest"
+          ],
+          "answer": 2,
+          "why": "Expanding Pitesti adds Bucharest with g = 317 + 101 = 418. That is the optimal route through Rimnicu Vilcea and Pitesti, and it beats the 450 km route through Fagaras.",
+          "ref": "Book p. 81 · A* example"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "In what order does A* expand nodes on the Arad → Bucharest problem?",
+          "options": [
+            "Arad, Sibiu, Fagaras, Bucharest",
+            "Arad, Sibiu, Fagaras, Rimnicu Vilcea, Pitesti, Bucharest",
+            "Arad, Timisoara, Zerind, Sibiu, Pitesti, Bucharest",
+            "Arad, Sibiu, Rimnicu Vilcea, Fagaras, Pitesti, Bucharest"
+          ],
+          "answer": 3,
+          "why": "Following the lowest f each time gives Arad (366), Sibiu (393), Rimnicu Vilcea (413), Fagaras (415), Pitesti (417) and finally Bucharest (418). Arad, Sibiu, Fagaras, Bucharest is the greedy order.",
+          "ref": "Book pp. 80–81 · A* example (Figure 3.18 in AIMA)"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "Which properties does the book give for A*?",
+          "options": [
+            "Complete and optimal for any heuristic",
+            "Optimal, but not complete",
+            "Complete, and cost-optimal if the heuristic is admissible",
+            "Efficient, but neither complete nor optimal"
+          ],
+          "answer": 2,
+          "why": "The book lists A* as complete and as optimal (cost-optimal) when the heuristic is admissible. With a heuristic that overestimates, the optimality guarantee is lost.",
+          "ref": "Book p. 81 · Properties of A*"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "When is a heuristic admissible?",
+          "options": [
+            "When it never overestimates the true cost to reach a goal",
+            "When it never underestimates the true cost to reach a goal",
+            "When it always equals the true cost to reach a goal",
+            "When it is zero at every node"
+          ],
+          "answer": 0,
+          "why": "An admissible heuristic never overestimates the true remaining cost. It may underestimate, and h = 0 is admissible but not required.",
+          "ref": "Book p. 82 · Admissibility"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "The book calls admissible heuristics ......",
+          "options": [
+            "pessimistic",
+            "greedy",
+            "exact",
+            "optimistic"
+          ],
+          "answer": 3,
+          "why": "Because an admissible heuristic never overestimates, it always thinks the goal is at least as close as it really is, so it is optimistic.",
+          "ref": "Book p. 82 · Admissibility"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "Why is the straight-line distance h_SLD an admissible heuristic for route finding?",
+          "options": [
+            "It is computed by running A* in advance",
+            "A straight line is the shortest possible distance between two points, so it can never exceed the road distance",
+            "It is exactly equal to the road distance for every city",
+            "It is zero at every city except the start"
+          ],
+          "answer": 1,
+          "why": "No road between two cities can be shorter than the straight line between them, so h_SLD never overestimates the true remaining road distance.",
+          "ref": "Book p. 82 · Admissibility (AIMA §3.5.2)"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "The book's proof assumes A* returns a path of cost C greater than the optimal cost C*, and takes a node n on the optimal path that has not been expanded. What does admissibility tell us about n?",
+          "options": [
+            "f(n) ≤ C*",
+            "f(n) ≥ C",
+            "f(n) = C",
+            "h(n) = 0"
+          ],
+          "answer": 0,
+          "why": "Since h never overestimates, f(n) = g(n) + h(n) is at most the cost of the optimal path through n, which is C*.",
+          "ref": "Book p. 82 · Proof (by contradiction)"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "Why does f(n) ≤ C* < C give a contradiction in the proof?",
+          "options": [
+            "C* must equal zero for an admissible heuristic",
+            "A* expands the lowest f first, so it would have expanded n before returning the goal with cost C",
+            "n can never be generated by A*",
+            "The frontier would contain two copies of the goal"
+          ],
+          "answer": 1,
+          "why": "A* expands nodes in order of lowest f. Since f(n) ≤ C* < C, n would be expanded before any goal node with f = C, so A* cannot return the more expensive path.",
+          "ref": "Book p. 82 · Proof (by contradiction)"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "What does the book say about consistency?",
+          "options": [
+            "It is a weaker property than admissibility",
+            "It means exactly the same as admissibility",
+            "It is a stronger property than admissibility",
+            "It only applies to greedy best-first search"
+          ],
+          "answer": 2,
+          "why": "The book introduces consistency as a stronger property than admissibility: every consistent heuristic is also admissible.",
+          "ref": "Book p. 82 · Consistency"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "Which condition defines a consistent heuristic? (n' is a successor of n reached by action a.)",
+          "options": [
+            "h(n) ≥ c(n, a, n') + h(n')",
+            "h(n) = 0 for every node n",
+            "h(n) ≤ g(n)",
+            "h(n) ≤ c(n, a, n') + h(n')"
+          ],
+          "answer": 3,
+          "why": "Consistency is a triangle inequality: the estimate at n is never more than the step cost to n' plus the estimate at n'. The book prints this inequality under Consistency on p. 82; AIMA adds that with it, graph-search A* never needs to reopen a node.",
+          "ref": "Book p. 82 · Consistency"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "What happens if A* uses 2 × h_SLD instead of h_SLD on the Arad → Bucharest problem?",
+          "options": [
+            "It still always returns the 418 km route",
+            "It expands exactly the same nodes as before",
+            "It can return the 450 km route via Fagaras, because the heuristic overestimates",
+            "It never reaches Bucharest"
+          ],
+          "answer": 2,
+          "why": "Doubling h_SLD can overestimate, so it is not admissible. With it, Fagaras (239 + 352 = 591) beats Rimnicu Vilcea (220 + 386 = 606), and Bucharest is removed at 450 before the cheaper route is found.",
+          "ref": "Book p. 81 · Properties of A* (worked on the Romania map)"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "If h(n) = 0 for every node, A* behaves like ......",
+          "options": [
+            "uniform-cost search",
+            "greedy best-first search",
+            "breadth-first search",
+            "depth-first search"
+          ],
+          "answer": 0,
+          "why": "With h = 0, f(n) = g(n), so A* expands the node with the lowest path cost, which is exactly uniform-cost search.",
+          "ref": "Book p. 83 · Summary (from its uniform-cost and A* lines)"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "If A* ignored g(n) and ordered its frontier by h(n) alone, which strategy would it become?",
+          "options": [
+            "Uniform-cost search",
+            "Iterative deepening search",
+            "Breadth-first search",
+            "Greedy best-first search"
+          ],
+          "answer": 3,
+          "why": "Ordering by h(n) alone is greedy best-first search, whose evaluation function is f(n) = h(n).",
+          "ref": "Book pp. 79–80 · Greedy best-first and A*"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "For the 8-puzzle, h1 counts misplaced tiles and h2 sums the Manhattan distances of the tiles. Which statement is true?",
+          "options": [
+            "h1 dominates h2, so h1 is always the better choice",
+            "h2 dominates h1, so A* with h2 expands no more nodes than with h1 (apart from ties at f = C*)",
+            "h2 is not admissible because it can overestimate",
+            "Both heuristics always give the same value"
+          ],
+          "answer": 1,
+          "why": "Each misplaced tile is at least one move from its goal square, so h2 ≥ h1 for every state, and both are admissible. AIMA shows A* with the dominating h2 never expands more nodes than with h1, except possibly some nodes with f(n) = C*.",
+          "ref": "AIMA §3.6 · beyond the book"
+        }
+      ]
+    },
+    {
+      "id": "lecture-4",
+      "tag": "Lecture 5",
       "name": "Adversarial Search",
       "scope": "36 questions",
       "questions": [
         {
           "kind": "mcq",
-          "group": "Lecture 4",
+          "group": "Lecture 5",
           "text": "In competitive environments, two or more agents have conflicting goals. The book says this gives rise to ...... problems.",
           "options": [
             "uninformed search",
@@ -1539,7 +1995,7 @@
         },
         {
           "kind": "mcq",
-          "group": "Lecture 4",
+          "group": "Lecture 5",
           "text": "Why does the book say physical games such as croquet or ice hockey are less attractive for AI research than chess or Go?",
           "options": [
             "They offer too few possible actions to be interesting",
@@ -1553,7 +2009,7 @@
         },
         {
           "kind": "mcq",
-          "group": "Lecture 4",
+          "group": "Lecture 5",
           "text": "A model predicts that prices will rise from total demand, without needing each individual agent's action. Which view of multi-agent environments is this?",
           "options": [
             "The aggregate stance",
@@ -1567,7 +2023,7 @@
         },
         {
           "kind": "mcq",
-          "group": "Lecture 4",
+          "group": "Lecture 5",
           "text": "The adversary-as-environment stance treats opponents as part of a nondeterministic environment, like random events such as rain. What does the book say this view fails to capture?",
           "options": [
             "The very large number of agents involved",
@@ -1581,7 +2037,7 @@
         },
         {
           "kind": "mcq",
-          "group": "Lecture 4",
+          "group": "Lecture 5",
           "text": "A Go program cannot search to the end of the game, so it judges a position by averaging the results of many fast plays from it. What is this method called?",
           "options": [
             "Monte Carlo-style simulation",
@@ -1595,7 +2051,7 @@
         },
         {
           "kind": "mcq",
-          "group": "Lecture 4",
+          "group": "Lecture 5",
           "text": "A game is zero-sum when ......",
           "options": [
             "both players can see the complete state at all times",
@@ -1609,7 +2065,7 @@
         },
         {
           "kind": "mcq",
-          "group": "Lecture 4",
+          "group": "Lecture 5",
           "text": "The games in Section 4.3 have several properties. Which of the following is NOT one of them?",
           "options": [
             "Deterministic",
@@ -1623,7 +2079,7 @@
         },
         {
           "kind": "mcq",
-          "group": "Lecture 4",
+          "group": "Lecture 5",
           "text": "Which pairing of a formal game element with its meaning is correct?",
           "options": [
             "ACTIONS(s): the successor state that a move leads to",
@@ -1637,7 +2093,7 @@
         },
         {
           "kind": "mcq",
-          "group": "Lecture 4",
+          "group": "Lecture 5",
           "text": "Which statement about the partial tic-tac-toe game tree in Figure 6.1 is correct?",
           "options": [
             "MAX moves first by placing an X, then the players alternate",
@@ -1651,7 +2107,7 @@
         },
         {
           "kind": "mcq",
-          "group": "Lecture 4",
+          "group": "Lecture 5",
           "text": "The caption of Figure 6.2 calls it a two-ply game tree. Which description matches the tree drawn in the figure?",
           "options": [
             "MAX and MIN each move twice before the leaves",
@@ -1665,7 +2121,7 @@
         },
         {
           "kind": "mcq",
-          "group": "Lecture 4",
+          "group": "Lecture 5",
           "text": "The minimax value MINIMAX(s) is the utility for ......, assuming both sides play optimally from state s.",
           "options": [
             "MAX",
@@ -1679,7 +2135,7 @@
         },
         {
           "kind": "mcq",
-          "group": "Lecture 4",
+          "group": "Lecture 5",
           "text": "MAX root R has MIN children X, Y and Z. X's leaves are 7, 2, 9; Y's leaves are 5, 6, 8; Z's leaves are 10, 1, 4. Which move should MAX make, and what is the minimax value of R?",
           "options": [
             "Move to Z; value 10",
@@ -1693,7 +2149,7 @@
         },
         {
           "kind": "mcq",
-          "group": "Lecture 4",
+          "group": "Lecture 5",
           "text": "MAX root A has MIN children B and C. B has MAX children D and E; C has MAX children F and G. The leaves are D: 4, 9; E: 6, 3; F: 2, 8; G: 7, 1. What is the minimax value of A?",
           "options": [
             "6",
@@ -1707,7 +2163,7 @@
         },
         {
           "kind": "mcq",
-          "group": "Lecture 4",
+          "group": "Lecture 5",
           "text": "MAX follows strict minimax against an opponent who does not always play optimally. What does the book say about this?",
           "options": [
             "Minimax values become wrong and must be recomputed often",
@@ -1721,7 +2177,7 @@
         },
         {
           "kind": "mcq",
-          "group": "Lecture 4",
+          "group": "Lecture 5",
           "text": "Minimax is a depth-first recursive procedure. Using the book's costs, about how much time and space does it need when b = 3 and m = 4?",
           "options": [
             "81 time and 12 space",
@@ -1735,7 +2191,7 @@
         },
         {
           "kind": "mcq",
-          "group": "Lecture 4",
+          "group": "Lecture 5",
           "text": "For chess, the book takes b ≈ 35 and m ≈ 80. What does it conclude about exhaustive minimax?",
           "options": [
             "It is feasible, because its space need is only O(bm)",
@@ -1749,7 +2205,7 @@
         },
         {
           "kind": "mcq",
-          "group": "Lecture 4",
+          "group": "Lecture 5",
           "text": "Which statement about alpha–beta pruning is correct?",
           "options": [
             "It finds a close approximation by skipping moves that seem poor",
@@ -1763,7 +2219,7 @@
         },
         {
           "kind": "mcq",
-          "group": "Lecture 4",
+          "group": "Lecture 5",
           "text": "Alpha–beta keeps two bounds along the current path. What do α and β mean?",
           "options": [
             "α: lowest value so far for MIN; β: highest so far for MAX",
@@ -1777,7 +2233,7 @@
         },
         {
           "kind": "mcq",
-          "group": "Lecture 4",
+          "group": "Lecture 5",
           "text": "In alpha–beta search, MAX-VALUE is called on a node with α = 2 and β = 5, and its children are searched left to right. The first child returns 7. What happens next?",
           "options": [
             "Returns 7 at once, skipping its remaining children",
@@ -1791,7 +2247,7 @@
         },
         {
           "kind": "mcq",
-          "group": "Lecture 4",
+          "group": "Lecture 5",
           "text": "In the book's alpha–beta example (Figure 6.5), searched left to right, B's leaves 3, 12, 8 give B = 3. The first leaf under C is 2. Why are C's other two leaves never examined?",
           "options": [
             "C is worth at least 2, so it cannot beat B's 3",
@@ -1805,7 +2261,7 @@
         },
         {
           "kind": "mcq",
-          "group": "Lecture 4",
+          "group": "Lecture 5",
           "text": "In Figure 6.5, searched left to right, B = 3 and C is worth at most 2. The first leaf under D is 14. What range of values does the root have at this moment?",
           "options": [
             "[3, 14]",
@@ -1819,7 +2275,7 @@
         },
         {
           "kind": "mcq",
-          "group": "Lecture 4",
+          "group": "Lecture 5",
           "text": "MAX root A has MIN children B, C and D, searched left to right. B's leaves are 5, 8, 6; C's leaves are 7, 4, 9; D's leaves are 3, 10, 2. Which leaves does alpha–beta never examine?",
           "options": [
             "10 and 2 only",
@@ -1833,7 +2289,7 @@
         },
         {
           "kind": "mcq",
-          "group": "Lecture 4",
+          "group": "Lecture 5",
           "text": "MAX root A has MIN children B and C, searched left to right. B's leaves are 4 and 6; C's leaves are 9, 3 and 5. After MIN-VALUE at C has processed its first leaf, 9, and before it looks at the next one, what are α and β inside C?",
           "options": [
             "α = 4, β = +∞",
@@ -1847,7 +2303,7 @@
         },
         {
           "kind": "mcq",
-          "group": "Lecture 4",
+          "group": "Lecture 5",
           "text": "MAX root A has MIN children B, C and D. B's leaves are 1, 6, 4; C's leaves are 8, 7, 9; D's leaves are 3, 2, 5. Searching B, C, D left to right, alpha–beta examines 7 of the 9 leaves. If the children are searched in the order C, B, D instead (leaves still left to right), how many leaves are examined?",
           "options": [
             "3",
@@ -1861,7 +2317,7 @@
         },
         {
           "kind": "mcq",
-          "group": "Lecture 4",
+          "group": "Lecture 5",
           "text": "A game tree has b = 4 and m = 6, so minimax examines about 4^6 = 4,096 nodes. Using the book's figures, about how many does alpha–beta examine with perfect move ordering, and with random ordering?",
           "options": [
             "64 and 512",
@@ -1875,7 +2331,7 @@
         },
         {
           "kind": "mcq",
-          "group": "Lecture 4",
+          "group": "Lecture 5",
           "text": "Alpha–beta works best with good move ordering. The book suggests trying captures, threats and forward moves first, and refining the order with ...... and iterative deepening.",
           "options": [
             "beam search",
@@ -1889,7 +2345,7 @@
         },
         {
           "kind": "mcq",
-          "group": "Lecture 4",
+          "group": "Lecture 5",
           "text": "A chess program reaches the same position through two different move orders. Which technique lets it reuse the earlier result instead of searching that position again?",
           "options": [
             "Quiescence search",
@@ -1903,7 +2359,7 @@
         },
         {
           "kind": "mcq",
-          "group": "Lecture 4",
+          "group": "Lecture 5",
           "text": "When time is limited, heuristic alpha–beta cuts off the search and replaces UTILITY with a fast evaluation function EVAL(s, p). What should EVAL return?",
           "options": [
             "UTILITY at terminals; a value between loss and win elsewhere",
@@ -1917,7 +2373,7 @@
         },
         {
           "kind": "mcq",
-          "group": "Lecture 4",
+          "group": "Lecture 5",
           "text": "A chess program uses EVAL(s) = Σ w_i f_i(s) with three features: material (w1 = 3), mobility (w2 = 0.5) and king safety (w3 = 2). In state s, f1 = 2, f2 = 4 and f3 = −1. What is EVAL(s)?",
           "options": [
             "5.5",
@@ -1931,7 +2387,7 @@
         },
         {
           "kind": "mcq",
-          "group": "Lecture 4",
+          "group": "Lecture 5",
           "text": "Which of the following is NOT one of the book's guidelines for designing evaluation functions?",
           "options": [
             "It must be fast to compute",
@@ -1945,7 +2401,7 @@
         },
         {
           "kind": "mcq",
-          "group": "Lecture 4",
+          "group": "Lecture 5",
           "text": "A depth-limited chess search stops in the middle of a capture exchange, so the evaluation misreads the position. Which technique extends the search in such tactical positions to avoid horizon effects?",
           "options": [
             "Late-move reduction",
@@ -1959,7 +2415,7 @@
         },
         {
           "kind": "mcq",
-          "group": "Lecture 4",
+          "group": "Lecture 5",
           "text": "In the book's H-MINIMAX(s, d) formula, the first case returns EVAL(s, MAX). Which condition does the formula give for that case?",
           "options": [
             "IS-TERMINAL(s) is true",
@@ -1973,7 +2429,7 @@
         },
         {
           "kind": "mcq",
-          "group": "Lecture 4",
+          "group": "Lecture 5",
           "text": "A heuristic alpha–beta program uses iterative deepening. It has finished its depth-5 search when time runs out partway through depth 6. Which move does it play?",
           "options": [
             "The best move found so far at depth 6",
@@ -1987,7 +2443,7 @@
         },
         {
           "kind": "mcq",
-          "group": "Lecture 4",
+          "group": "Lecture 5",
           "text": "Which of the following is NOT a forward-pruning technique?",
           "options": [
             "Beam search",
@@ -2001,7 +2457,7 @@
         },
         {
           "kind": "mcq",
-          "group": "Lecture 4",
+          "group": "Lecture 5",
           "text": "Late-move reduction searches late-ordered moves to a reduced depth, and ......",
           "options": [
             "never searches them again, even if they look good",
@@ -2015,7 +2471,7 @@
         },
         {
           "kind": "mcq",
-          "group": "Lecture 4",
+          "group": "Lecture 5",
           "text": "In the book's chess example, pure minimax at about 1M nodes per second reaches about ...... per minute, while alpha–beta with transposition tables, ordering, quiescence and iterative deepening reaches about ...... on a modern CPU.",
           "options": [
             "14 ply; 30+ ply",
