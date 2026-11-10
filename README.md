@@ -110,6 +110,8 @@ Create `content/subjects/<slug>/subject.json` (copy an existing one), and set `m
 
 TypeScript enforces two things: every walkthrough has scenes, and every panel has exactly one drawing. In the MDX, `expect` lists the panel ids in order and can name numbers the scenes compute (`; drop=500`). The build fails when either disagrees with the page.
 
+**Cheat sheets** live in `content/subjects/<subject>/cheatsheet/NN-<slug>.mdx`, one file per lecture, with frontmatter `lecture`, `title` and `titleAr`. They appear on the subject's **Cheat sheet** tab (`/subjects/<subject>/cheatsheet/`), which shows only when a subject has some. Each rule is a formula, then a `Callout type="tip"` titled "Fast way", a `type="example"` titled "10-second example", and, where it applies, a `type="warning"` titled "Exam trap". Use `###` headings that are unique across the subject's parts, because all the parts render on one page. The calculators `<SearchCostCalc>`, `<AStarTable>` and `<PuzzleHeuristics>` (maths in `lib/widgets/cheat-ai.ts`) take an `expect` prop like the other widgets. `npm run check:arabic` checks cheat sheets too.
+
 Every subject also gets a **Review** tab (flashcards from each page's `<Definition>`s, and an exam mode drawing on every `<Quiz>`), and the header has a **Ctrl+K search** over all pages, headings and definitions, in English and Arabic.
 
 The **Q&A** tab holds question drills (multiple choice and classification, with instant answers and explanations). Each drill is one JSON file in `content/subjects/<subject>/qa/`, imported from a standalone drill HTML file:

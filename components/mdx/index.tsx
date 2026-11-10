@@ -16,6 +16,9 @@ import { SearchStepper } from "@/components/widgets/SearchStepper";
 import { RelationalAlgebra } from "@/components/widgets/RelationalAlgebra";
 import { EncoderSim } from "@/components/widgets/EncoderSim";
 import { Walkthrough } from "@/components/widgets/Walkthrough";
+import { SearchCostCalc } from "@/components/widgets/SearchCostCalc";
+import { AStarTable } from "@/components/widgets/AStarTable";
+import { PuzzleHeuristics } from "@/components/widgets/PuzzleHeuristics";
 
 type Context = { subject: string; collection: Collection; slug: string };
 
@@ -48,6 +51,9 @@ export function createMdxComponents(context: Context): MDXComponents {
     RelationalAlgebra,
     EncoderSim,
     Walkthrough,
+    SearchCostCalc,
+    AStarTable,
+    PuzzleHeuristics,
     SlideFigure: (props: Omit<React.ComponentProps<typeof SlideFigure>, "context">) => (
       <SlideFigure {...props} context={context} />
     ),

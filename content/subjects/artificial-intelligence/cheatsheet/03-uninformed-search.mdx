@@ -1,0 +1,584 @@
+---
+lecture: 3
+title: Uninformed Search Strategies
+titleAr: "استراتيجيات البحث غير المُوجَّه"
+---
+
+### Search strategy criteria and the symbols b, d, m
+
+<Ar>معايير تقييم الاستراتيجيات والرموز b و d و m</Ar>
+
+| Criterion <Ar>المعيار</Ar> | Question it answers <Ar>السؤال الذي يجيب عنه</Ar> | Write it as <Ar>طريقة كتابته</Ar> |
+|---|---|---|
+| **Completeness** <Ar>**الاكتمال (completeness)**</Ar> | Does it always find a solution if one exists? <Ar>هل تجد الاستراتيجية حلًّا دائمًا إن وُجد؟</Ar> | Yes / No + condition <Ar>نعم / لا مع الشرط</Ar> |
+| **Optimality** <Ar>**الأمثلية (optimality)**</Ar> | Does it always find a least-cost solution? <Ar>هل تجد دائمًا الحل الأقل تكلفة؟</Ar> | Yes / No + condition <Ar>نعم / لا مع الشرط</Ar> |
+| **Time complexity** <Ar>**التعقيد الزمني (time complexity)**</Ar> | How many nodes are generated or expanded? <Ar>كم عدد العقد التي تُولَّد أو تُوسَّع؟</Ar> | $O(b^{\,\dots})$ |
+| **Space complexity** <Ar>**التعقيد المكاني (space complexity)**</Ar> | What is the maximum number of nodes in memory? <Ar>ما الحد الأقصى لعدد العقد في الذاكرة؟</Ar> | $O(b^{\,\dots})$ or $O(b \cdot \dots)$ <Ar>$O(b^{\,\dots})$ أو $O(b \cdot \dots)$</Ar> |
+
+$b$ = maximum **branching factor**, $d$ = depth of the **least-cost solution**, $m$ = **maximum depth** of the state space (may be $\infty$), $l$ = **depth limit** (DLS), $C^*$ = cost of the **optimal solution**, $\epsilon$ = **smallest step cost**. Level $k$ of the tree holds up to $b^k$ nodes.
+
+<Ar>$b$ = أقصى **معامل تفرّع (branching factor)**، و $d$ = عمق **الحل الأقل تكلفة**، و $m$ = **أقصى عمق** لفضاء الحالات (state space) (وقد يكون $\infty$)، و $l$ = **حد العمق (depth limit)** في DLS، و $C^*$ = تكلفة **الحل الأمثل (optimal solution)**، و $\epsilon$ = **أصغر تكلفة خطوة**. ويضم المستوى $k$ من الشجرة ما يصل إلى $b^k$ عقدة.</Ar>
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. Two yes/no questions about the answer (complete, optimal), two node counts about its cost (time, space).
+   <Ar>سؤالان إجابتهما نعم أو لا عن الحل نفسه (الاكتمال والأمثلية)، وعددان للعقد عن تكلفة الوصول إليه (الزمن والمساحة).</Ar>
+2. Every exponent is "how deep the search goes": $d$ for level-by-level searches, $m$ for DFS, $l$ for DLS.
+   <Ar>كل أُسّ هو «إلى أي عمق يصل البحث»: $d$ للبحث مستوى بعد مستوى، و $m$ لـ DFS، و $l$ لـ DLS.</Ar>
+3. Each extra level multiplies the work by $b$, so every strategy takes exponential time in the worst case.
+   <Ar>كل مستوى إضافي يضرب العمل في $b$، لذا تستغرق كل الاستراتيجيات زمنًا أُسّيًّا في أسوأ الحالات.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+Tree `A(B(D(H(K,L),I),E),C(F,G))` with goal G: $b = 2$ (no node has more than 2 children), $d = 2$ (G is two levels below A), $m = 4$ (the deepest branch is A, B, D, H, K).
+
+<Ar>في الشجرة `A(B(D(H(K,L),I),E),C(F,G))` والهدف G: $b = 2$ (لا توجد عقدة لها أكثر من ابنين)، و $d = 2$ (تقع G على بُعد مستويين تحت A)، و $m = 4$ (أعمق فرع هو A, B, D, H, K).</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+$d$ is the depth of the solution, $m$ the deepest path in the whole space. BFS and IDS are measured with $d$, DFS with $m$, DLS with $l$ and UCS with $C^*/\epsilon$. Time counts nodes, not seconds.
+
+<Ar>$d$ هو عمق الحل، أما $m$ فهو أعمق مسار في فضاء الحالات كله. ويُقاس BFS و IDS بـ $d$، و DFS بـ $m$، و DLS بـ $l$، و UCS بـ $C^*/\epsilon$. والزمن يُعَدّ بالعقد لا بالثواني.</Ar>
+
+</Callout>
+
+### Uninformed search comparison table
+
+<Ar>جدول مقارنة استراتيجيات البحث غير المُوجَّه</Ar>
+
+| Criterion <Ar>المعيار</Ar> | BFS <Ar>بالعرض أولًا</Ar> | UCS <Ar>بالتكلفة الموحدة</Ar> | DFS <Ar>بالعمق أولًا</Ar> | DLS <Ar>محدود العمق</Ar> | IDS <Ar>بالتعميق التكراري</Ar> | Bidirectional <Ar>ثنائي الاتجاه</Ar> |
+|---|---|---|---|---|---|---|
+| Fringe <Ar>الحافة</Ar> | FIFO queue <Ar>طابور FIFO</Ar> | priority queue by $g(n)$ <Ar>طابور أولوية حسب $g(n)$</Ar> | LIFO stack <Ar>مكدس LIFO</Ar> | LIFO stack, limit $l$ <Ar>مكدس LIFO مع الحد $l$</Ar> | DLS with $l = 0, 1, 2, \dots$ <Ar>DLS بالحدود $l = 0, 1, 2, \dots$</Ar> | two frontiers <Ar>حافتان</Ar> |
+| Complete? <Ar>مكتمل؟</Ar> | Yes¹ <Ar>نعم¹</Ar> | Yes² <Ar>نعم²</Ar> | No <Ar>لا</Ar> | Yes, if $l \ge d$ <Ar>نعم، إذا كان $l \ge d$</Ar> | Yes <Ar>نعم</Ar> | Yes¹ ⁴ <Ar>نعم¹ ⁴</Ar> |
+| Optimal? <Ar>أمثل؟</Ar> | Yes³ <Ar>نعم³</Ar> | Yes <Ar>نعم</Ar> | No <Ar>لا</Ar> | No <Ar>لا</Ar> | Yes³ <Ar>نعم³</Ar> | Yes³ ⁴ <Ar>نعم³ ⁴</Ar> |
+| Time <Ar>الزمن</Ar> | $b^{d+1}$ ⁵ | $b^{\lceil C^*/\epsilon \rceil}$ ⁶ | $b^m$ | $b^l$ | $b^d$ | $b^{d/2}$ |
+| Space <Ar>المساحة</Ar> | $b^{d+1}$ ⁵ | $b^{\lceil C^*/\epsilon \rceil}$ ⁶ | $bm$ | $bl$ | $bd$ | $b^{d/2}$ |
+
+- ¹ if $b$ is finite.
+  <Ar>¹ إذا كان $b$ منتهيًا.</Ar>
+- ² if every step cost is $\ge \epsilon > 0$.
+  <Ar>² إذا كانت تكلفة كل خطوة $\ge \epsilon > 0$.</Ar>
+- ³ if all step costs are equal (for example, 1 per step).
+  <Ar>³ إذا تساوت تكاليف جميع الخطوات (مثلًا 1 لكل خطوة).</Ar>
+- ⁴ if both directions are breadth-first or uniform-cost. Bidirectional search is in the course book, not in the slides.
+  <Ar>⁴ إذا كان البحث في الاتجاهين بالعرض أولًا أو بالتكلفة الموحدة. والبحث ثنائي الاتجاه (bidirectional) موجود في كتاب المقرر لا في الشرائح.</Ar>
+- ⁵ the slides test the goal on expansion; testing on generation, as the book does, gives $b^d$.
+  <Ar>⁵ تختبر الشرائح الهدف عند التوسيع (expansion)؛ أما الاختبار عند التوليد (generation)، كما يفعل الكتاب، فيعطي $b^d$.</Ar>
+- ⁶ the book writes $b^{1 + \lfloor C^*/\epsilon \rfloor}$.
+  <Ar>⁶ يكتبها الكتاب $b^{1 + \lfloor C^*/\epsilon \rfloor}$.</Ar>
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. **Time** = $b^{\text{how deep it goes}}$: BFS $d$ (+1 when testing on expansion), UCS $C^*/\epsilon$, DFS $m$, DLS $l$, IDS $d$, bidirectional $d/2$.
+   <Ar>**الزمن** = $b^{\text{how deep it goes}}$، أي $b$ مرفوعة إلى العمق الذي يبلغه البحث: BFS يبلغ $d$ (و +1 عند الاختبار عند التوسيع)، و UCS يبلغ $C^*/\epsilon$، و DFS يبلغ $m$، و DLS يبلغ $l$، و IDS يبلغ $d$، والبحث ثنائي الاتجاه يبلغ $d/2$.</Ar>
+2. **Space**: the breadth family (BFS, UCS, bidirectional) keeps everything, so space = time; the depth family (DFS, DLS, IDS) keeps one path, so space = $b \times$ that depth: $bm$, $bl$, $bd$.
+   <Ar>**المساحة**: عائلة البحث بالعرض (BFS و UCS وثنائي الاتجاه) تحتفظ بكل شيء، لذا المساحة = الزمن؛ أما عائلة البحث بالعمق (DFS و DLS و IDS) فتحتفظ بمسار واحد، لذا المساحة = $b \times$ ذلك العمق: $bm$ و $bl$ و $bd$.</Ar>
+3. **Complete, optimal**: searches that finish a level (or a cost band) before the next say Yes, optimal with equal step costs (UCS with any costs); DFS dives, so No and No; DLS is complete only if $l \ge d$ and never optimal.
+   <Ar>**الاكتمال والأمثلية**: البحث الذي يُنهي مستوى (أو نطاق تكلفة) قبل التالي يُجاب عنه بنعم، وهو أمثل عند تساوي تكاليف الخطوات (و UCS مع أي تكاليف)؛ أما DFS فيغوص، لذا لا ولا؛ و DLS مكتمل فقط إذا كان $l \ge d$ وليس أمثل أبدًا.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+The lecture's exercise: $b = 10$, solutions at depth $d = 12$, very little memory. Pick IDS: it keeps about $bd = 10 \times 12 = 120$ nodes, while BFS would need about $10^{12}$ nodes in memory testing on generation ($b^d$), or $10^{13}$ with the slides' $b^{d+1}$.
+
+<Ar>تمرين المحاضرة: $b = 10$، والحلول عند العمق $d = 12$، والذاكرة قليلة جدًا. اختر IDS: فهو يحتفظ بنحو $bd = 10 \times 12 = 120$ عقدة، بينما يحتاج BFS إلى نحو $10^{12}$ عقدة في الذاكرة عند اختبار الهدف عند التوليد ($b^d$)، أو $10^{13}$ وفق صيغة الشرائح $b^{d+1}$.</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+DFS space is $bm$, a product (linear), not $b^m$. IDS has time $b^d$ but space $bd$. Only the three depth-first searches (DFS, DLS, IDS) have linear space.
+
+<Ar>مساحة DFS هي $bm$، أي حاصل ضرب (خطية)، وليست $b^m$. وزمن IDS هو $b^d$ لكن مساحته $bd$. ولا تملك مساحة خطية إلا عمليات البحث الثلاث بالعمق أولًا (DFS و DLS و IDS).</Ar>
+
+</Callout>
+
+### BFS node count: goal test on generation vs expansion
+
+<Ar>عدد عقد BFS: اختبار الهدف عند التوليد مقابل التوسيع</Ar>
+
+$$
+\begin{aligned}
+N_{\text{gen}} &= b + b^2 + \dots + b^d = O(b^d) \\
+N_{\text{exp}} &= N_{\text{gen}} + b(b^d - 1) = b \cdot N_{\text{gen}} = O(b^{d+1}) \\
+1 + b + b^2 + \dots + b^d &= \frac{b^{d+1} - 1}{b - 1} \approx b^d \cdot \frac{b}{b - 1}
+\end{aligned}
+$$
+
+$N_{\text{gen}}$ counts the nodes generated when the goal is tested on **generation**; $N_{\text{exp}}$ when it is tested on **expansion**, so every depth-$d$ node except the goal is expanded first. Worst case: the goal is the far-right node of depth $d$, and the root is not counted (add 1 for it). The slides write the expansion count with the root: $1 + b + b^2 + \dots + b^d + b(b^d - 1)$.
+
+<Ar>يَعُدّ $N_{\text{gen}}$ العقد المولَّدة عندما يُختبر الهدف عند **التوليد (generation)**، ويَعُدّها $N_{\text{exp}}$ عندما يُختبر عند **التوسيع (expansion)**، فتُوسَّع أولًا كل عقدة عند العمق $d$ ما عدا الهدف. وأسوأ الحالات أن يكون الهدف أقصى عقدة على اليمين عند العمق $d$، ولا يُحتسب الجذر (أضف 1 لاحتسابه). وتكتب الشرائح عدد حالة التوسيع مع الجذر: $1 + b + b^2 + \dots + b^d + b(b^d - 1)$.</Ar>
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. For $b = 10$, write $d$ ones and a 0: $d = 5$ gives 111,110 (on generation). With the root it is $d + 1$ ones: 111,111.
+   <Ar>عندما $b = 10$ اكتب $d$ من الآحاد ثم 0: فـ $d = 5$ تعطي 111,110 (عند التوليد). ومع الجذر تصبح $d + 1$ من الآحاد: 111,111.</Ar>
+2. On expansion, multiply by $b$, because $b(b^d - 1) = b^{d+1} - b$: for $b = 10$ add one more 0, so 1,111,100. This works only with the root left out, the lecture's convention at $b = 10$; with the root the count is $1 + 111{,}110 + 999{,}990 = 1{,}111{,}101$, not $10 \times 111{,}111$.
+   <Ar>عند التوسيع اضرب في $b$، لأن $b(b^d - 1) = b^{d+1} - b$: فعندما $b = 10$ أضف صفرًا آخر، فيصبح العدد 1,111,100. ولا يصح هذا إلا دون احتساب الجذر، وهو اصطلاح المحاضرة عندما $b = 10$؛ أما مع الجذر فالعدد $1 + 111{,}110 + 999{,}990 = 1{,}111{,}101$، لا $10 \times 111{,}111$.</Ar>
+3. Any other $b$: use the geometric series $\frac{b^{d+1} - 1}{b - 1}$, or estimate with $b^d \cdot \frac{b}{b - 1}$.
+   <Ar>لأي قيمة أخرى لـ $b$: استخدم المتسلسلة الهندسية (geometric series) $\frac{b^{d+1} - 1}{b - 1}$، أو قدّر الناتج بـ $b^d \cdot \frac{b}{b - 1}$.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+$b = 10$, $d = 5$: on generation $10 + 100 + 1{,}000 + 10{,}000 + 100{,}000 = 111{,}110$. On expansion add $10 \times (100{,}000 - 1) = 999{,}990$: the total is 1,111,100, which is $10 \times 111{,}110$.
+
+<Ar>عندما $b = 10$ و $d = 5$: عند التوليد $10 + 100 + 1{,}000 + 10{,}000 + 100{,}000 = 111{,}110$. وعند التوسيع أضف $10 \times (100{,}000 - 1) = 999{,}990$: فيصبح المجموع 1,111,100، وهو $10 \times 111{,}110$.</Ar>
+
+$b = 2$, $d = 3$ with the root: $1 + 2 + 4 + 8 = 15 = 2^4 - 1$.
+
+<Ar>عندما $b = 2$ و $d = 3$ مع احتساب الجذر: $1 + 2 + 4 + 8 = 15 = 2^4 - 1$.</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+The slides' BFS time $O(b^{d+1})$ assumes the goal is tested on **expansion**; the course book tests on **generation** (the early goal test) and gets $O(b^d)$. Say which one you use, and whether the root is counted: the $b = 10$ numbers leave it out, the $b = 2$ exercise counts it.
+
+<Ar>يفترض زمن BFS في الشرائح $O(b^{d+1})$ أن الهدف يُختبر عند **التوسيع (expansion)**؛ أما كتاب المقرر فيختبره عند **التوليد (generation)** (اختبار الهدف المبكر) فيحصل على $O(b^d)$. اذكر أيهما تستخدم، وهل يُحتسب الجذر: أرقام $b = 10$ لا تحتسبه، بينما يحتسبه تمرين $b = 2$.</Ar>
+
+</Callout>
+
+### BFS memory: 8,640 GB a day
+
+<Ar>ذاكرة BFS: ما مقداره 8,640 GB في اليوم</Ar>
+
+$$
+\text{memory} = \text{rate} \times \text{time} = 100\ \tfrac{\text{MB}}{\text{s}} \times 86{,}400\ \text{s} = 8{,}640{,}000\ \text{MB} = 8{,}640\ \text{GB}
+$$
+
+BFS keeps every node in memory, so its space, $O(b^{d+1})$, is as large as its time. The slide counts 1 GB = 1,000 MB.
+
+<Ar>يحتفظ BFS بكل عقدة في الذاكرة، لذا تكون مساحته $O(b^{d+1})$ بحجم زمنه نفسه. وتَعُدّ الشريحة 1 GB = 1,000 MB.</Ar>
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. One day = $24 \times 3{,}600 = 86{,}400$ s; one hour = 3,600 s.
+   <Ar>اليوم الواحد = $24 \times 3{,}600 = 86{,}400$ ثانية، والساعة الواحدة = 3,600 ثانية.</Ar>
+2. MB = rate × seconds: $100 \times 86{,}400 = 8{,}640{,}000$.
+   <Ar>عدد MB = المعدل × عدد الثواني: $100 \times 86{,}400 = 8{,}640{,}000$.</Ar>
+3. Drop three zeros for GB: 8,640 GB a day, 360 GB an hour.
+   <Ar>احذف ثلاثة أصفار للتحويل إلى GB: فتكون 8,640 GB في اليوم و 360 GB في الساعة.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+Slide: 100 MB of new nodes per second for 24 hours fills 8,640 GB.
+
+<Ar>الشريحة: 100 MB من العقد الجديدة في الثانية لمدة 24 ساعة تملأ 8,640 GB.</Ar>
+
+Book table ($b = 10$, $10^6$ nodes per second, 1 KB per node): $d = 10$ takes about 3 hours but needs 10 TB of memory ($10^{10} \times 1$ KB); $d = 14$ would take 3.5 years even with unlimited memory. The book counts about $1.11 \times b^d$ nodes ($b + b^2 + \dots + b^d$), so its times are slightly higher than exactly $10^d$ nodes give: $10^{10} / 10^6 = 10^4$ s is under 3 hours.
+
+<Ar>جدول الكتاب ($b = 10$، و $10^6$ عقدة في الثانية، و 1 KB لكل عقدة): العمق $d = 10$ يستغرق نحو 3 ساعات لكنه يحتاج إلى 10 TB من الذاكرة ($10^{10} \times 1$ KB)؛ أما $d = 14$ فيستغرق 3.5 سنوات حتى مع ذاكرة غير محدودة. ويَعُدّ الكتاب نحو $1.11 \times b^d$ عقدة ($b + b^2 + \dots + b^d$)، لذا تزيد أزمنته قليلًا على ما يعطيه $10^d$ عقدة بالضبط: فالناتج $10^{10} / 10^6 = 10^4$ ثانية أقل من 3 ساعات.</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+Use 1,000, not 1,024: $8{,}640{,}000 / 1{,}024 = 8{,}437.5$ GB is not the slide's answer. And the lesson of the number: BFS runs out of memory long before it runs out of time.
+
+<Ar>استخدم 1,000 لا 1,024: فالناتج $8{,}640{,}000 / 1{,}024 = 8{,}437.5$ GB ليس إجابة الشريحة. ودرس هذا الرقم: تنفد ذاكرة BFS قبل أن ينفد وقته بكثير.</Ar>
+
+</Callout>
+
+### UCS cost bound with C* and ε
+
+<Ar>حد تكلفة UCS بدلالة C* و ε</Ar>
+
+$$
+O\big(b^{\lceil C^*/\epsilon \rceil}\big)\ \ \text{(slides)} \qquad\qquad O\big(b^{1 + \lfloor C^*/\epsilon \rfloor}\big)\ \ \text{(book)}
+$$
+
+Time and space are the same, because UCS expands every node with $g \le C^*$. $C^*$ is the cost of the optimal solution and $\epsilon$ the smallest step cost ($> 0$); $\lceil x \rceil$ rounds up and $\lfloor x \rfloor$ rounds down. $C^*/\epsilon$ counts how many of the cheapest steps fit under $C^*$: it is the effective depth of the search.
+
+<Ar>الزمن والمساحة متساويان، لأن UCS يوسّع كل عقدة تحقق $g \le C^*$. و $C^*$ هي تكلفة الحل الأمثل، و $\epsilon$ أصغر تكلفة خطوة ($> 0$)؛ و $\lceil x \rceil$ تقرّب إلى الأعلى، و $\lfloor x \rfloor$ تقرّب إلى الأسفل. ويَعُدّ $C^*/\epsilon$ كم خطوة من أرخص الخطوات تتسع تحت $C^*$: فهو العمق الفعلي للبحث.</Ar>
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. Divide $C^*$ by $\epsilon$: that is the effective depth.
+   <Ar>اقسم $C^*$ على $\epsilon$: فالناتج هو العمق الفعلي.</Ar>
+2. Slides: round up, and that is the exponent. Book: round down, then add 1. The two differ only when $C^*/\epsilon$ is a whole number.
+   <Ar>في الشرائح: قرّب إلى الأعلى، فيكون الناتج هو الأُس. وفي الكتاب: قرّب إلى الأسفل ثم أضف 1. ولا يختلف الناتجان إلا عندما يكون $C^*/\epsilon$ عددًا صحيحًا.</Ar>
+3. With equal step costs $C^*/\epsilon = d$: the slides give $b^d$, the book $b^{d+1}$, the same as BFS testing on expansion.
+   <Ar>عند تساوي تكاليف الخطوات يكون $C^*/\epsilon = d$: فتعطي الشرائح $b^d$، ويعطي الكتاب $b^{d+1}$، وهو مثل BFS الذي يختبر الهدف عند التوسيع.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+$C^* = 6$, $\epsilon = 2$: $\lceil 6/2 \rceil = 3$, so $O(b^3)$; the book gives $1 + \lfloor 6/2 \rfloor = 4$, so $O(b^4)$. Halve $\epsilon$ to 1 and the exponent doubles to 6. With $\epsilon = 0$ there is no bound: UCS may loop.
+
+<Ar>عندما $C^* = 6$ و $\epsilon = 2$: $\lceil 6/2 \rceil = 3$، أي $O(b^3)$؛ ويعطي الكتاب $1 + \lfloor 6/2 \rfloor = 4$، أي $O(b^4)$. وإذا نصّفنا $\epsilon$ إلى 1 تضاعف الأُس إلى 6. أما مع $\epsilon = 0$ فلا يوجد حد: وقد يدور UCS بلا نهاية.</Ar>
+
+$C^* = 7$, $\epsilon = 2$: $\lceil 3.5 \rceil = 4$ and $1 + \lfloor 3.5 \rfloor = 4$ agree.
+
+<Ar>عندما $C^* = 7$ و $\epsilon = 2$: يتفق الناتجان $\lceil 3.5 \rceil = 4$ و $1 + \lfloor 3.5 \rfloor = 4$.</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+UCS is complete only if every step cost is $\ge \epsilon > 0$: with zero-cost steps it can loop forever. It is optimal only if step costs are not negative and the goal is tested when a node is **removed** from the fringe.
+
+<Ar>لا يكون UCS مكتملًا إلا إذا كانت تكلفة كل خطوة $\ge \epsilon > 0$: فمع خطوات تكلفتها صفر قد يدور إلى الأبد. ولا يكون أمثل إلا إذا لم تكن تكاليف الخطوات سالبة، واختُبر الهدف عند **إزالة** العقدة من الحافة (fringe).</Ar>
+
+</Callout>
+
+### UCS by cumulative cost: 278 km, not 310 km
+
+<Ar>UCS بالتكلفة التراكمية: 278 km لا 310 km</Ar>
+
+The fringe is a priority queue ordered by the **cumulative path cost** $g(n)$, lowest first: remove the cheapest node, add its children with $g = g(\text{parent}) + \text{step cost}$, and test for the goal only when a node is **removed**. This example uses the lecture's fragment of the map, 5 one-way roads from Sibiu, in km: Sibiu–Rimnicu 80, Sibiu–Fagaras 99, Rimnicu–Pitesti 97, Pitesti–Bucharest 101, Fagaras–Bucharest 211.
+
+<Ar>الحافة (fringe) طابور أولوية (priority queue) مرتَّب حسب **تكلفة المسار التراكمية (cumulative path cost)** $g(n)$، الأقل أولًا: أزِل العقدة الأرخص، وأضف أبناءها بقيمة $g = g(\text{parent}) + \text{step cost}$، ولا تختبر الهدف إلا عند **إزالة** العقدة. ويستخدم هذا المثال جزء الخريطة الذي تعرضه المحاضرة، وهو 5 طرق باتجاه واحد بدءًا من Sibiu، بالكيلومتر: Sibiu–Rimnicu 80، و Sibiu–Fagaras 99، و Rimnicu–Pitesti 97، و Pitesti–Bucharest 101، و Fagaras–Bucharest 211.</Ar>
+
+| Step <Ar>الخطوة</Ar> | Removed (g) <Ar>العقدة المُزالة (g)</Ar> | Fringe after, cheapest first <Ar>الحافة بعدها، الأرخص أولًا</Ar> |
+|---|---|---|
+| 1 | `Sibiu 0` | `Rimnicu 80, Fagaras 99` |
+| 2 | `Rimnicu 80` | `Fagaras 99, Pitesti 177` |
+| 3 | `Fagaras 99` | `Pitesti 177, Bucharest 310` |
+| 4 | `Pitesti 177` | `Bucharest 278, Bucharest 310` |
+| 5 | `Bucharest 278`, goal <Ar>`Bucharest 278`، الهدف</Ar> | `Bucharest 310`, never removed <Ar>`Bucharest 310`، ولا تُزال أبدًا</Ar> |
+
+On the full Romania map the fringe after Sibiu also holds Arad (140) and Oradea (151); the removal order is longer (16 removals with tree search), but the answer is still 278 km.
+
+<Ar>وعلى خريطة رومانيا الكاملة تضم الحافة بعد Sibiu أيضًا Arad (140) و Oradea (151)؛ ويطول ترتيب الإزالة، إذ يبلغ 16 إزالة في البحث الشجري (tree search)، لكن الإجابة تظل 278 km.</Ar>
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. Keep the fringe as "city g" pairs sorted by $g$; each new child costs one addition.
+   <Ar>احتفظ بالحافة أزواجًا من «المدينة و g» مرتبةً حسب $g$؛ ولا يكلّف كل ابن جديد إلا عملية جمع واحدة.</Ar>
+2. Remove the first pair and slot its children's pairs into sorted position.
+   <Ar>أزِل الزوج الأول، وضع أزواج أبنائه في مواضعها حسب الترتيب.</Ar>
+3. Stop only when the goal is removed: a goal still waiting in the fringe (Bucharest 310) is not an answer.
+   <Ar>لا تتوقف إلا عند إزالة الهدف: فالهدف الذي لا يزال ينتظر في الحافة (Bucharest 310) ليس إجابة.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+Bucharest is generated first through Fagaras, $99 + 211 = 310$ (step 3), but $80 + 97 + 101 = 278$ through Rimnicu and Pitesti overtakes it (step 4) and is removed first (step 5). Expansion order: Sibiu, Rimnicu, Fagaras, Pitesti, Bucharest.
+
+<Ar>تُولَّد Bucharest أولًا عبر Fagaras بتكلفة $99 + 211 = 310$ (الخطوة 3)، لكن المسار عبر Rimnicu و Pitesti بتكلفة $80 + 97 + 101 = 278$ يتجاوزها (الخطوة 4) ويُزال أولًا (الخطوة 5). ترتيب التوسيع: Sibiu، Rimnicu، Fagaras، Pitesti، Bucharest.</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+Testing on generation would return Sibiu → Fagaras → Bucharest, 310 km, which is not optimal. BFS returns the same 310 km route, because it has the fewest steps (2). With every step costing 1, UCS behaves exactly like BFS.
+
+<Ar>الاختبار عند التوليد (generation) يعيد Sibiu → Fagaras → Bucharest بطول 310 km، وهو ليس الأمثل. ويعيد BFS طريق 310 km نفسه، لأنه الأقل خطوات (خطوتان). وعندما تكون تكلفة كل خطوة 1 يتصرف UCS تمامًا مثل BFS.</Ar>
+
+</Callout>
+
+### DFS time and linear space
+
+<Ar>زمن DFS ومساحته الخطية</Ar>
+
+$$
+\text{time} = O(b^m) \qquad\qquad \text{space} = O(bm)
+$$
+
+$m$ = maximum depth of the state space (may be $\infty$), $b$ = branching factor. The fringe is a **LIFO stack** (successors go at the front), so DFS keeps only the current path and the unexpanded siblings along it; fully explored subtrees are dropped from memory.
+
+<Ar>$m$ = أقصى عمق لفضاء الحالات (وقد يكون $\infty$)، و $b$ = معامل التفرّع (branching factor). والحافة **مكدس (stack) من نوع LIFO** (تُضاف الحالات التالية إلى مقدمته)، لذا لا يحتفظ DFS إلا بالمسار الحالي والعقد الشقيقة غير الموسَّعة على امتداده؛ وتُحذف من الذاكرة الأشجار الفرعية التي استُكشفت كاملةً.</Ar>
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. Time: BFS's formula with $m$ in place of $d$; in the worst case DFS visits the whole tree down to depth $m$.
+   <Ar>الزمن: صيغة BFS مع $m$ مكان $d$؛ ففي أسوأ الحالات يزور DFS الشجرة كلها حتى العمق $m$.</Ar>
+2. Space: one path of $m$ levels, each holding at most $b$ nodes, so $b \times m$: linear.
+   <Ar>المساحة: مسار واحد من $m$ مستوى، يحمل كلٌّ منها $b$ عقدة على الأكثر، أي $b \times m$: مساحة خطية.</Ar>
+3. Speed depends on where the goals are: terrible if $m \gg d$, much faster than BFS if solutions are dense.
+   <Ar>تعتمد السرعة على موقع الأهداف: سيئ جدًا إذا كان $m \gg d$، وأسرع بكثير من BFS إذا كانت الحلول كثيفة.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+Tree `A(B(D(H,I),E(J,K)),C(F(L,M),G(N,O)))`, goal M: DFS expands 12 nodes and at the end holds only 5 (the path A → C → F → M and the unexpanded sibling G); BFS has generated and kept all 15.
+
+<Ar>في الشجرة `A(B(D(H,I),E(J,K)),C(F(L,M),G(N,O)))` والهدف M: يوسّع DFS اثنتي عشرة عقدة، ولا يحتفظ في النهاية إلا بخمس (المسار A → C → F → M والعقدة الشقيقة غير الموسَّعة G)؛ بينما يكون BFS قد ولّد العقد الـ 15 كلها واحتفظ بها.</Ar>
+
+Same tree, goal C (depth 1): DFS needs 9 nodes, BFS 3. Goal H (the first leaf): DFS needs 4, BFS 8.
+
+<Ar>في الشجرة نفسها والهدف C (العمق 1): يحتاج DFS إلى 9 عقد، و BFS إلى 3. والهدف H (أول ورقة): يحتاج DFS إلى 4، و BFS إلى 8.</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+DFS is **not complete**: it fails in infinite-depth spaces and in spaces with loops; avoiding repeated states along the current path makes it complete in finite spaces. It is **not optimal**: with goals K (depth 3) and C (depth 1) it returns A → B → E → K (3 steps), while BFS returns A → C (1 step).
+
+<Ar>البحث DFS **ليس مكتملًا (complete)**: فهو يفشل في الفضاءات لا نهائية العمق وفي الفضاءات التي تحتوي على حلقات؛ وتجنّب الحالات المتكررة على المسار الحالي يجعله مكتملًا في الفضاءات المنتهية. وهو **ليس أمثل (optimal)**: فمع هدفين عند K (العمق 3) و C (العمق 1) يعيد A → B → E → K (ثلاث خطوات)، بينما يعيد BFS المسار A → C (خطوة واحدة).</Ar>
+
+</Callout>
+
+### DLS depth limit: cutoff vs failure
+
+<Ar>حد العمق في DLS: القطع مقابل الإخفاق</Ar>
+
+$$
+\text{time} = O(b^l) \qquad\qquad \text{space} = O(bl) \qquad\qquad \text{complete if } l \ge d
+$$
+
+$l$ = depth limit: nodes at depth $l$ are treated as having no successors. DLS is never optimal, and it returns one of three results:
+
+<Ar>$l$ = حد العمق (depth limit): تُعامَل العقد عند العمق $l$ كأنها بلا حالات تالية. ولا يكون DLS أمثل أبدًا، ويُرجع واحدة من ثلاث نتائج:</Ar>
+
+| Result <Ar>النتيجة</Ar> | Meaning <Ar>المعنى</Ar> |
+|---|---|
+| solution <Ar>حل</Ar> | the goal was found within the limit <Ar>عُثر على الهدف ضمن الحد</Ar> |
+| **cutoff** <Ar>**القطع (cutoff)**</Ar> | the limit was reached; a deeper solution may exist <Ar>بُلغ الحد، وقد يوجد حل أعمق</Ar> |
+| **failure** <Ar>**الإخفاق (failure)**</Ar> | there is no solution at all <Ar>لا يوجد حل على الإطلاق</Ar> |
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. Draw a line at depth $l$: nodes on the line get no children.
+   <Ar>ارسم خطًّا عند العمق $l$: فلا يكون للعقد الواقعة عليه أبناء.</Ar>
+2. Run DFS (preorder, left first) on the part above the line.
+   <Ar>شغّل DFS (بالترتيب القبلي (pre-order)، الأيسر أولًا) على الجزء الواقع فوق الخط.</Ar>
+3. Goal found: solution. Otherwise, any node reached on the line: cutoff. Every branch ended above it: failure.
+   <Ar>إن عُثر على الهدف فالنتيجة حل. وإلا فإن بلغ البحث أي عقدة على الخط فالنتيجة قطع (cutoff). وإن انتهى كل فرع فوقه فالنتيجة إخفاق (failure).</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+Tree `A(B(D(H,I),E(J,K)),C(F(L,M),G(N,O)))`, goal M: $l = 1$ visits A, B, C and returns cutoff; $l = 2$ visits A, B, D, E, C, F, G and returns cutoff; $l = 3$ reaches M after 12 nodes and returns the path A → C → F → M.
+
+<Ar>في الشجرة `A(B(D(H,I),E(J,K)),C(F(L,M),G(N,O)))` والهدف M: عندما $l = 1$ يزور A, B, C ويُرجع القطع (cutoff)؛ وعندما $l = 2$ يزور A, B, D, E, C, F, G ويُرجع القطع؛ وعندما $l = 3$ يبلغ M بعد 12 عقدة ويُرجع المسار A → C → F → M.</Ar>
+
+Tree `A(B(D,E),C(F,G))` with no goal: $l = 1$ gives cutoff, $l = 3$ gives failure. Romania has 20 cities, so any solution has at most 19 steps and $l = 19$ is safe (the book: the map's diameter, 9, is a better limit).
+
+<Ar>في الشجرة `A(B(D,E),C(F,G))` دون هدف: يعطي $l = 1$ القطع، ويعطي $l = 3$ الإخفاق (failure). وفي رومانيا 20 مدينة، لذا لا يزيد طول أي حل على 19 خطوة ويكون $l = 19$ آمنًا (وفي الكتاب: قطر (diameter) الخريطة، وهو 9، حدٌّ أفضل).</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+Cutoff is not failure. In the slides' RECURSIVE-DLS a node exactly at depth $l$ returns cutoff even if it is a leaf, so the goal-less tree `A(B(D,E),C(F,G))` still gives cutoff at $l = 2$ and failure only from $l = 3$. If $l < d$, DLS cannot reach the goal, which is why the book's table writes DLS as not complete.
+
+<Ar>القطع (cutoff) ليس إخفاقًا (failure). ففي `RECURSIVE-DLS` في الشرائح تُرجع العقدة الواقعة عند العمق $l$ تمامًا قطعًا حتى لو كانت ورقة، لذا تعطي الشجرة `A(B(D,E),C(F,G))` التي لا هدف فيها قطعًا عند $l = 2$، ولا تعطي الإخفاق إلا بدءًا من $l = 3$. وإذا كان $l < d$ فلا يستطيع DLS بلوغ الهدف، ولهذا يصف جدول الكتاب DLS بأنه غير مكتمل.</Ar>
+
+</Callout>
+
+### IDS node count
+
+<Ar>عدد عقد IDS</Ar>
+
+$$
+N(\text{IDS}) = (d+1)\,b^0 + d\,b^1 + (d-1)\,b^2 + \dots + 1 \cdot b^d = O(b^d) \qquad\qquad \text{space} = O(bd)
+$$
+
+Level $k$ is generated $d + 1 - k$ times: the bottom level once, the root $d + 1$ times. Without the root, as in the lecture's and the book's $b = 10$ count, drop the $(d+1)\,b^0$ term.
+
+<Ar>يُولَّد المستوى $k$ عدد $d + 1 - k$ من المرات: المستوى السفلي مرة واحدة، والجذر $d + 1$ مرة. ودون احتساب الجذر، كما في عدّ المحاضرة والكتاب عندما $b = 10$، احذف الحد $(d+1)\,b^0$.</Ar>
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. Write the level sizes $b^1, b^2, \dots, b^d$ (and $b^0 = 1$ if the root counts).
+   <Ar>اكتب أحجام المستويات $b^1, b^2, \dots, b^d$ (و $b^0 = 1$ إذا كان الجذر يُحتسب).</Ar>
+2. Multiply them, top down, by $d, d - 1, \dots, 1$ (the root by $d + 1$), and add.
+   <Ar>اضربها من الأعلى إلى الأسفل في $d, d - 1, \dots, 1$ (والجذر في $d + 1$)، ثم اجمع.</Ar>
+3. For $b = 10$ the digits just count up (up to $d = 9$, or $d = 8$ with the root): $d = 5$ gives 123,450 without the root and 123,456 with it.
+   <Ar>عندما $b = 10$ تتصاعد الأرقام ببساطة (حتى $d = 9$، أو $d = 8$ مع الجذر): فـ $d = 5$ تعطي 123,450 دون الجذر، و 123,456 معه.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+$b = 10$, $d = 5$: $5 \cdot 10 + 4 \cdot 100 + 3 \cdot 1{,}000 + 2 \cdot 10{,}000 + 1 \cdot 100{,}000 = 50 + 400 + 3{,}000 + 20{,}000 + 100{,}000 = 123{,}450$.
+
+<Ar>عندما $b = 10$ و $d = 5$: $5 \cdot 10 + 4 \cdot 100 + 3 \cdot 1{,}000 + 2 \cdot 10{,}000 + 1 \cdot 100{,}000 = 50 + 400 + 3{,}000 + 20{,}000 + 100{,}000 = 123{,}450$.</Ar>
+
+Practice, $b = 2$, $d = 3$, root counted: $4 \cdot 1 + 3 \cdot 2 + 2 \cdot 4 + 1 \cdot 8 = 26$.
+
+<Ar>التمرين، $b = 2$ و $d = 3$ مع احتساب الجذر: $4 \cdot 1 + 3 \cdot 2 + 2 \cdot 4 + 1 \cdot 8 = 26$.</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+Check whether the root is counted: 123,450 leaves it out, 26 counts it (4 times). The multiplier of $b^1$ is $d$, not $d + 1$, and the bottom level $b^d$ is counted once.
+
+<Ar>تحقّق هل يُحتسب الجذر: فالعدد 123,450 لا يحتسبه، بينما يحتسبه العدد 26 (أربع مرات). ومعامل $b^1$ هو $d$ لا $d + 1$، والمستوى السفلي $b^d$ يُحتسب مرة واحدة.</Ar>
+
+</Callout>
+
+<SearchCostCalc b={10} d={5} expect="b=10 d=5 => ids=123450; bfs-gen=111110" />
+
+### IDS overhead ratio
+
+<Ar>نسبة التكلفة الإضافية لـ IDS</Ar>
+
+$$
+\frac{N(\text{IDS})}{N(\text{BFS, generation})} \approx \frac{b}{b - 1} \qquad\qquad \text{extra work} \approx \frac{1}{b - 1}
+$$
+
+This holds for large $d$. The overhead is small because about $(b-1)/b$ of a tree's nodes sit on its bottom level, which IDS generates only once.
+
+<Ar>يصح هذا عندما يكون $d$ كبيرًا. والتكلفة الإضافية (overhead) صغيرة لأن نحو $(b-1)/b$ من عقد الشجرة تقع في مستواها السفلي، الذي لا يولّده IDS إلا مرة واحدة.</Ar>
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. Extra work ≈ $1/(b - 1)$: $b = 10$ gives 11%, $b = 3$ gives 50%, $b = 2$ up to 100%.
+   <Ar>العمل الإضافي ≈ $1/(b - 1)$: فـ $b = 10$ تعطي 11%، و $b = 3$ تعطي 50%، و $b = 2$ تصل إلى 100%.</Ar>
+2. Estimates: $N(\text{BFS, gen}) \approx b^d \cdot \frac{b}{b-1}$ and $N(\text{IDS}) \approx b^d \left(\frac{b}{b-1}\right)^2$; for $b = 10$, $d = 5$ about 111,111 and 123,457.
+   <Ar>للتقدير: $N(\text{BFS, gen}) \approx b^d \cdot \frac{b}{b-1}$ و $N(\text{IDS}) \approx b^d \left(\frac{b}{b-1}\right)^2$؛ وعندما $b = 10$ و $d = 5$ نحصل على نحو 111,111 و 123,457.</Ar>
+3. Against BFS testing on expansion, divide the other way: $1{,}111{,}100 / 123{,}450 \approx 9$.
+   <Ar>أما مقابل BFS الذي يختبر الهدف عند التوسيع، فاقسم بالعكس: $1{,}111{,}100 / 123{,}450 \approx 9$.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+$123{,}450 / 111{,}110 \approx 1.11$: IDS does about 11% more work than BFS testing on generation, while BFS testing on expansion does 9 times the work of IDS. The bottom level holds 100,000 of the tree's 111,111 nodes (90%).
+
+<Ar>$123{,}450 / 111{,}110 \approx 1.11$: يؤدي IDS عملًا أكثر بنحو 11% من BFS الذي يختبر الهدف عند التوليد، بينما يؤدي BFS الذي يختبر عند التوسيع 9 أضعاف عمل IDS. ويضم المستوى السفلي 100,000 من عقد الشجرة البالغة 111,111 عقدة (90%).</Ar>
+
+For $b = 2$, $d = 3$: 26 against 15, a ratio of about 1.7.
+
+<Ar>وعندما $b = 2$ و $d = 3$: العدد 26 مقابل 15، أي نسبة تقارب 1.7.</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+IDS beats BFS only when BFS tests the goal on expansion (123,450 against 1,111,100). Against BFS testing on generation it is slightly slower (123,450 against 111,110); its real win is memory, $O(bd)$ instead of $O(b^d)$.
+
+<Ar>لا يتفوق IDS على BFS إلا عندما يختبر BFS الهدف عند التوسيع (123,450 مقابل 1,111,100). أما مقابل BFS الذي يختبر عند التوليد فهو أبطأ قليلًا (123,450 مقابل 111,110)؛ ومكسبه الحقيقي هو الذاكرة: $O(bd)$ بدلًا من $O(b^d)$.</Ar>
+
+</Callout>
+
+### Bidirectional search node count
+
+<Ar>عدد عقد البحث ثنائي الاتجاه</Ar>
+
+$$
+b^{d/2} + b^{d/2} = 2\,b^{d/2} \ll b^d \qquad\qquad \text{time} = \text{space} = O(b^{d/2})
+$$
+
+Two searches run at once, forward from the start and backward from the goal, each about $d/2$ deep, and stop when their frontiers meet. This is in the course book, not in the slides.
+
+<Ar>يجري بحثان في آنٍ واحد، أحدهما إلى الأمام من البداية والآخر إلى الخلف من الهدف، ويبلغ كلٌّ منهما عمقًا قدره نحو $d/2$، ويتوقفان عندما تلتقي حافتاهما (frontiers). وهذا موجود في كتاب المقرر لا في الشرائح.</Ar>
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. Halve the depth: each side goes $d/2$ deep (for odd $d$, one side $\lceil d/2 \rceil$ and the other $\lfloor d/2 \rfloor$).
+   <Ar>نصّف العمق: يبلغ كل جانب العمق $d/2$ (وعندما يكون $d$ فرديًا يبلغ أحد الجانبين $\lceil d/2 \rceil$ والآخر $\lfloor d/2 \rfloor$).</Ar>
+2. Add the two sides: $2\,b^{d/2}$.
+   <Ar>اجمع الجانبين: $2\,b^{d/2}$.</Ar>
+3. Compare with $b^d$: halving the exponent takes roughly the square root of the work.
+   <Ar>قارن بـ $b^d$: تنصيف الأُس يأخذ تقريبًا الجذر التربيعي للعمل.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+Book: $b = d = 10$ gives $2 \cdot 10^5 = 200{,}000$ against $10^{10}$, which is 50,000 times less. The lecture's $b = 10$, $d = 5$, counting every level as BFS does: $(10 + 100 + 1{,}000) + (10 + 100) = 1{,}220$ against BFS's 111,110.
+
+<Ar>الكتاب: عندما $b = d = 10$ نحصل على $2 \cdot 10^5 = 200{,}000$ مقابل $10^{10}$، أي أقل بـ 50,000 مرة. وبأرقام المحاضرة $b = 10$ و $d = 5$، مع عدّ كل المستويات كما يفعل BFS: $(10 + 100 + 1{,}000) + (10 + 100) = 1{,}220$ مقابل 111,110 لـ BFS.</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+$2\,b^{d/2}$ is not $b^d / 2$: for $b = d = 10$ it is 200,000, not 5,000,000,000. It needs two frontiers and two tables of reached states, the ability to search **backwards**, and an explicit goal state. It is complete and optimal only when both directions are breadth-first or uniform-cost.
+
+<Ar>القيمة $2\,b^{d/2}$ ليست $b^d / 2$: فعندما $b = d = 10$ تساوي 200,000 لا 5,000,000,000. ويحتاج هذا البحث إلى حافتين وجدولين للحالات التي بُلغت، وإلى القدرة على البحث **إلى الخلف**، وإلى حالة هدف صريحة. ولا يكون مكتملًا وأمثل إلا إذا كان البحث في الاتجاهين بالعرض أولًا أو بالتكلفة الموحدة.</Ar>
+
+</Callout>
+
+### Fast visit orders for BFS, DFS, UCS, DLS and IDS
+
+<Ar>ترتيب الزيارة السريع لـ BFS و DFS و UCS و DLS و IDS</Ar>
+
+| Search <Ar>البحث</Ar> | Recipe <Ar>الطريقة</Ar> | Lecture example and exact order <Ar>مثال المحاضرة والترتيب الدقيق</Ar> |
+|---|---|---|
+| BFS <Ar>بالعرض أولًا</Ar> | Level order: read the tree row by row, left to right <Ar>ترتيب المستويات (level order): اقرأ الشجرة صفًّا صفًّا من اليسار إلى اليمين</Ar> | `A(B(D,E),C(F,G))`: A, B, C, D, E, F, G |
+| DFS <Ar>بالعمق أولًا</Ar> | Preorder: a node, then its whole left subtree, then the right one <Ar>الترتيب القبلي (pre-order): العقدة، ثم شجرتها الفرعية اليسرى كاملةً، ثم اليمنى</Ar> | `A(B(D(H,I),E(J,K)),C(F(L,M),G(N,O)))`, goal M: A, B, D, H, I, E, J, K, C, F, L, M (12 nodes) <Ar>الهدف M: A, B, D, H, I, E, J, K, C, F, L, M (12 عقدة)</Ar> |
+| UCS <Ar>بالتكلفة الموحدة</Ar> | Remove the smallest cumulative $g$ each time <Ar>أزِل في كل مرة العقدة صاحبة أصغر $g$ تراكمية</Ar> | Sibiu to Bucharest on the lecture's 5-road fragment: Sibiu, Rimnicu, Fagaras, Pitesti, Bucharest ($g = 278$) <Ar>من Sibiu إلى Bucharest على جزء الخريطة ذي الطرق الخمسة في المحاضرة: Sibiu، Rimnicu، Fagaras، Pitesti، Bucharest ($g = 278$)</Ar> |
+| DLS <Ar>محدود العمق</Ar> | Preorder, but never below depth $l$ <Ar>الترتيب القبلي، لكن دون النزول تحت العمق $l$ أبدًا</Ar> | DFS tree, $l = 2$: A, B, D, E, C, F, G (cutoff) <Ar>شجرة DFS، $l = 2$: A, B, D, E, C, F, G (قطع)</Ar> |
+| IDS <Ar>بالتعميق التكراري</Ar> | DLS for $l = 0, 1, 2, \dots$, restarting at the root each time <Ar>DLS بالحدود $l = 0, 1, 2, \dots$، مع البدء من الجذر في كل مرة</Ar> | $l = 0$: A · $l = 1$: A, B, C · $l = 2$: A, B, D, E, C, F, G · $l = 3$: A, B, D, H, I, E, J, K, C, F, L, M; $1 + 3 + 7 + 12 = 23$ nodes <Ar>$l = 0$: A · $l = 1$: A, B, C · $l = 2$: A, B, D, E, C, F, G · $l = 3$: A, B, D, H, I, E, J, K, C, F, L, M؛ أي $1 + 3 + 7 + 12 = 23$ عقدة على امتداد التكرارات الأربعة</Ar> |
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. BFS: copy the tree row by row; stop at the goal.
+   <Ar>BFS: انسخ الشجرة صفًّا صفًّا، وتوقّف عند الهدف.</Ar>
+2. DFS: trace around the tree from the root, down the left edge first, and write each node the first time you pass it; stop at the goal.
+   <Ar>DFS: تتبّع محيط الشجرة بدءًا من الجذر، نزولًا على الحافة اليسرى أولًا، واكتب كل عقدة في أول مرة تمر بها، وتوقّف عند الهدف.</Ar>
+3. DLS and IDS: the same DFS walk with the rows below $l$ covered; for IDS repeat it for $l = 0, 1, 2, \dots$ and add the counts.
+   <Ar>DLS و IDS: جولة DFS نفسها مع تغطية الصفوف الواقعة تحت $l$؛ وفي IDS كرّرها للحدود $l = 0, 1, 2, \dots$ واجمع الأعداد.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+Practice tree `A(B(D,E),C(F,G))`, goal F: BFS expands A, B, C, D, E, F and DFS expands A, B, D, E, C, F, 6 nodes each.
+
+<Ar>شجرة التمرين `A(B(D,E),C(F,G))` والهدف F: يوسّع BFS العقد A, B, C, D, E, F، ويوسّع DFS العقد A, B, D, E, C, F، أي 6 عقد لكلٍّ منهما.</Ar>
+
+Python listing (graph search, goal G): `bfs` pops A, B, C, D, E, F, G and `dfs` pops A, B, D, E, C, F, G; both return `['A', 'C', 'G']`, and `ucs` returns cost 2.
+
+<Ar>شيفرة Python (بحث في الرسم البياني (graph search)، والهدف G): تُخرج `bfs` العقد A, B, C, D, E, F, G، وتُخرج `dfs` العقد A, B, D, E, C, F, G؛ وكلتاهما تعيد `['A', 'C', 'G']`، وتعيد `ucs` التكلفة 2.</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+With the goal tested on expansion, the goal is the last node of the order and counts as expanded. Children are always taken left to right. IDS restarts from the root at every limit and stops at the goal: at $l = 3$ it never reaches G, N or O.
+
+<Ar>عند اختبار الهدف عند التوسيع يكون الهدف آخر عقدة في الترتيب ويُحتسب ضمن العقد الموسَّعة. ويُؤخذ الأبناء دائمًا من اليسار إلى اليمين. ويبدأ IDS من الجذر من جديد عند كل حد ويتوقف عند الهدف: فعندما $l = 3$ لا يبلغ G ولا N ولا O أبدًا.</Ar>
+
+</Callout>
+
+### Repeated states: tree search vs graph search
+
+<Ar>الحالات المتكررة: البحث الشجري مقابل البحث في الرسم البياني</Ar>
+
+$$
+\text{tree search: } 1 + 2 + 4 + \dots + 2^d = 2^{d+1} - 1 \text{ nodes} \qquad\qquad \text{graph search: } d + 1 \text{ states}
+$$
+
+This is for a chain of $d + 1$ states with two actions from each state to the next. Tree search treats every path as a new node; graph search keeps a **closed set** of states already expanded and skips any removed node whose state is in it.
+
+<Ar>هذا لسلسلة من $d + 1$ حالة، مع فعلين من كل حالة إلى التالية. يعامل البحث الشجري (tree search) كل مسار على أنه عقدة جديدة؛ أما البحث في الرسم البياني (graph search) فيحتفظ بـ**مجموعة مغلقة (closed set)** من الحالات التي سبق توسيعها، ويتخطى أي عقدة مُزالة توجد حالتها فيها.</Ar>
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. Tree search count = number of distinct paths from the root.
+   <Ar>عدد عقد البحث الشجري = عدد المسارات المختلفة من الجذر.</Ar>
+2. Graph search count = number of distinct states.
+   <Ar>عدد ما يوسّعه البحث في الرسم البياني = عدد الحالات المختلفة.</Ar>
+3. In a trace, strike out any node whose state has already been expanded.
+   <Ar>في التتبّع، اشطب أي عقدة سبق توسيع حالتها.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+Chain A → B → C → D: tree search builds $1 + 2 + 4 + 8 = 15$ nodes for 4 states; graph search (BFS) expands A, B, C, D once each and skips the 2 repeated copies.
+
+<Ar>السلسلة A → B → C → D: يبني البحث الشجري $1 + 2 + 4 + 8 = 15$ عقدة لأربع حالات فقط؛ بينما يوسّع البحث في الرسم البياني (بـ BFS) الحالات A, B, C, D مرة واحدة لكل منها، ويتخطى النسختين المتكررتين.</Ar>
+
+Romania tree after expanding Arad, Sibiu, Timisoara and Zerind ($1 + 3 + 4 + 2 + 2 = 12$ nodes): tree search keeps all 12 as separate nodes, 3 of them extra copies of Arad; graph search skips Arad 3 times and Oradea once, so 8 states. Expanding only Arad and Sibiu gives $1 + 3 + 4 = 8$ nodes, with 1 repeated Arad.
+
+<Ar>شجرة رومانيا بعد توسيع Arad و Sibiu و Timisoara و Zerind ($1 + 3 + 4 + 2 + 2 = 12$ عقدة): يحتفظ البحث الشجري بالعقد الـ 12 كلها عقدًا منفصلة، منها 3 نسخ إضافية من Arad؛ بينما يتخطى البحث في الرسم البياني Arad ثلاث مرات و Oradea مرة واحدة، فيوسّع 8 حالات. أما توسيع Arad و Sibiu وحدهما فيعطي $1 + 3 + 4 = 8$ عقد، منها نسخة واحدة مكررة من Arad.</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+The closed set holds states that were **expanded**, not the fringe, and the slides' GRAPH-SEARCH checks it when a node is removed. A state is not a node: Arad sits in 4 nodes of the Romania tree. Failing to detect repeated states can turn a linear problem into an exponential one.
+
+<Ar>تضم المجموعة المغلقة (closed set) الحالات التي **وُسِّعت**، لا الحافة، ويفحصها `GRAPH-SEARCH` في الشرائح عند إزالة العقدة. والحالة ليست عقدة: فالحالة Arad تظهر في 4 عقد من شجرة رومانيا. والإخفاق في اكتشاف الحالات المتكررة قد يحوّل مسألة خطية إلى مسألة أُسّية.</Ar>
+
+</Callout>

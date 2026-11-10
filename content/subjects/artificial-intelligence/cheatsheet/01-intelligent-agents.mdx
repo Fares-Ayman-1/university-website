@@ -1,0 +1,604 @@
+---
+lecture: 1
+title: Introduction to AI and Intelligent Agents
+titleAr: "مقدمة في الذكاء الاصطناعي والوكلاء الأذكياء"
+---
+
+### Four AI definitions: the 2×2 grid
+
+<Ar>التعريفات الأربعة للذكاء الاصطناعي: شبكة 2×2</Ar>
+
+| | Humanly (measured against people) <Ar>بشكل بشري (يُقاس بالبشر)</Ar> | Rationally (measured against the ideal) <Ar>بعقلانية (يُقاس بالمعيار المثالي)</Ar> |
+|---|---|---|
+| **Thinking** <Ar>**التفكير**</Ar> | Thinking humanly: cognitive modelling <Ar>التفكير بشكل بشري: النمذجة المعرفية (cognitive modelling)</Ar> | Thinking rationally: laws of thought (logic) <Ar>التفكير بعقلانية: قوانين التفكير (laws of thought)، أي المنطق</Ar> |
+| **Acting** <Ar>**التصرف**</Ar> | Acting humanly: Turing test <Ar>التصرف بشكل بشري: اختبار تورنغ (Turing test)</Ar> | Acting rationally: rational agent, **this course** <Ar>التصرف بعقلانية: الوكيل العقلاني (rational agent)، وهو **منهج هذا المقرر**</Ar> |
+
+The row says **what is judged** (internal thinking or outward behaviour); the column says **the yardstick** (human performance or ideal rationality).
+
+<Ar>يحدد الصف **ما الذي يُحكم عليه** (التفكير الداخلي أم السلوك الظاهر)، ويحدد العمود **معيار القياس** (الأداء البشري أم العقلانية (rationality) المثالية).</Ar>
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. Row: is the quote about the mind, reasoning or thought processes (**Thinking**), or about behaviour (**Acting**)?
+   <Ar>الصف: هل يتحدث النص عن العقل أو الاستدلال أو عمليات التفكير (**التفكير**)، أم عن السلوك (**التصرف**)؟</Ar>
+2. Column: does it compare with **people** ("like a human", psychology, fooling an interrogator) or with **correctness** (logic, "the right thing", "the best expected outcome")?
+   <Ar>العمود: هل يقارن بـ**البشر** («مثل الإنسان»، علم النفس، خداع المُحاوِر (interrogator))، أم بـ**الصواب** (المنطق، «الشيء الصحيح»، «أفضل نتيجة متوقَّعة»)؟</Ar>
+3. Memory hook: Turing = acting humanly; psychology and the brain = thinking humanly; Aristotle and logic = thinking rationally; "do the right thing" = acting rationally.
+   <Ar>للحفظ: تورنغ = التصرف بشكل بشري؛ وعلم النفس والدماغ = التفكير بشكل بشري؛ وأرسطو والمنطق = التفكير بعقلانية؛ و«افعل الشيء الصحيح» = التصرف بعقلانية.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+"A machine that answers so naturally that the interrogator cannot tell it from a person": behaviour (Acting) measured against people (Humanly), so **acting humanly**, the Turing test.
+
+<Ar>«آلة تجيب بشكل طبيعي إلى حدّ أن المُحاوِر (interrogator) لا يستطيع تمييزها من الإنسان»: سلوك (التصرف) يُقاس بالبشر (بشكل بشري)، إذن هو **التصرف بشكل بشري**، أي اختبار تورنغ (Turing test).</Ar>
+
+"Systems that derive valid conclusions from premises": thought (Thinking) measured against correct logic (Rationally), so **thinking rationally**, the laws of thought.
+
+<Ar>«أنظمة تشتق استنتاجات سليمة من المقدّمات»: تفكير يُقاس بالمنطق الصحيح (بعقلانية)، إذن هو **التفكير بعقلانية**، أي قوانين التفكير (laws of thought).</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+The course adopts **acting rationally**, not thinking rationally. Correct inference is only one way to act well: a reflex, such as pulling a hand off a hot stove, can be the rational action with no reasoning at all.
+
+<Ar>يعتمد المقرر **التصرف بعقلانية** لا التفكير بعقلانية. فالاستدلال الصحيح (inference) ليس إلا طريقة واحدة للتصرف الجيد: فقد يكون رد الفعل الانعكاسي (reflex)، مثل سحب اليد عن موقد ساخن، هو الفعل العقلاني دون أي استدلال.</Ar>
+
+</Callout>
+
+### Agent function versus agent program
+
+<Ar>دالة الوكيل مقابل برنامج الوكيل</Ar>
+
+$$
+f : \mathcal{P}^* \rightarrow \mathcal{A}
+\qquad\qquad
+\text{agent} = \text{architecture} + \text{program}
+$$
+
+$f$ is the agent function, $\mathcal{P}^*$ is the set of all percept sequences of any length (the whole history), $\mathcal{A}$ is the set of actions, and the architecture is the hardware the program runs on.
+
+<Ar>$f$ هي دالة الوكيل (agent function)، و$\mathcal{P}^*$ مجموعة كل تسلسلات الإدراكات (percept sequences) بأي طول (أي التاريخ كاملًا)، و$\mathcal{A}$ مجموعة الأفعال، والبنية (architecture) هي العتاد الذي يعمل عليه البرنامج.</Ar>
+
+| | Agent function <Ar>دالة الوكيل</Ar> | Agent program <Ar>برنامج الوكيل</Ar> |
+|---|---|---|
+| What it is <Ar>ماهيته</Ar> | An abstract mathematical description <Ar>وصف رياضي مجرد</Ar> | Concrete code running on the architecture <Ar>شيفرة فعلية تعمل على البنية (architecture)</Ar> |
+| Input <Ar>المُدخل</Ar> | The whole percept sequence <Ar>تسلسل الإدراكات كاملًا</Ar> | The current percept; it must remember the rest itself (book) <Ar>الإدراك الحالي، وعليه أن يتذكر الباقي بنفسه (الكتاب)</Ar> |
+| Written as <Ar>يُكتب على شكل</Ar> | A table with one row per percept sequence <Ar>جدول فيه صف واحد لكل تسلسل إدراكات</Ar> | A short program such as `reflex_vacuum_agent` <Ar>برنامج قصير مثل `reflex_vacuum_agent`</Ar> |
+| Role <Ar>الدور</Ar> | Says **what** the agent does <Ar>يحدد **ماذا** يفعل الوكيل</Ar> | Says **how**: it implements $f$ <Ar>يحدد **كيف**: فهو ينفّذ $f$</Ar> |
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. Function = **what** (maths, a table); program = **how** (code on hardware).
+   <Ar>الدالة = **ماذا** (رياضيات، جدول)؛ والبرنامج = **كيف** (شيفرة على عتاد).</Ar>
+2. The star in $\mathcal{P}^*$ means "sequences of every length": the input is the history, never a single percept.
+   <Ar>النجمة في $\mathcal{P}^*$ تعني «تسلسلات بكل الأطوال»: فالمُدخل هو التاريخ، لا إدراك واحد أبدًا.</Ar>
+3. Agent = architecture + program, the hardware plus the code, never "function + program".
+   <Ar>الوكيل = البنية + البرنامج، أي العتاد زائد الشيفرة، وليس «الدالة + البرنامج».</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+Table row: $f([A, \text{Clean}], [A, \text{Dirty}]) = \text{Suck}$. The program gets the same answer from the last percept alone: `reflex_vacuum_agent(("A", "Dirty"))` returns `Suck`.
+
+<Ar>صف من الجدول: $f([A, \text{Clean}], [A, \text{Dirty}]) = \text{Suck}$. ويصل البرنامج إلى الإجابة نفسها من آخر إدراك وحده: `reflex_vacuum_agent(("A", "Dirty"))` يُرجع `Suck`.</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+An agent function maps **percept sequences to actions**: not actions to percepts, and not just the latest percept to an action.
+
+<Ar>تربط دالة الوكيل (agent function) **تسلسلات الإدراكات بالأفعال**: لا الأفعال بالإدراكات، ولا آخر إدراك فقط بفعل.</Ar>
+
+</Callout>
+
+### Lookup-table size for the vacuum agent function
+
+<Ar>حجم جدول البحث لدالة وكيل المكنسة</Ar>
+
+$$
+N(T) = \sum_{t=1}^{T} \lvert \mathcal{P} \rvert^{t} = \frac{\lvert \mathcal{P} \rvert^{T+1} - \lvert \mathcal{P} \rvert}{\lvert \mathcal{P} \rvert - 1}
+\qquad
+\lvert \mathcal{P} \rvert = 4 \;\Rightarrow\; N(T) = \frac{4\,(4^{T} - 1)}{3}
+$$
+
+$N(T)$ is the number of table rows (percept sequences of length 1 to $T$), $\lvert \mathcal{P} \rvert$ is the number of distinct percepts (vacuum world: 2 locations × 2 statuses = 4), and $t$ is the length of a sequence.
+
+<Ar>$N(T)$ عدد صفوف الجدول (تسلسلات الإدراكات التي طولها من 1 إلى $T$)، و$\lvert \mathcal{P} \rvert$ عدد الإدراكات (percepts) المختلفة (في عالم المكنسة: موقعان × حالتان = 4)، و$t$ طول التسلسل.</Ar>
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. Count the percepts: multiply what one percept contains, $2 \times 2 = 4$.
+   <Ar>عُدّ الإدراكات: اضرب مكونات الإدراك الواحد، $2 \times 2 = 4$.</Ar>
+2. For $\lvert \mathcal{P} \rvert = 4$: work out $4^{T} - 1$, divide by 3 (always exact), then multiply by 4.
+   <Ar>عندما $\lvert \mathcal{P} \rvert = 4$: احسب $4^{T} - 1$، واقسمه على 3 (القسمة دائمًا بلا باقٍ)، ثم اضرب الناتج في 4.</Ar>
+3. Sanity check: each extra step multiplies the table by about 4, and the last term $4^{T}$ alone is about three quarters of the total.
+   <Ar>للتحقق: كل خطوة إضافية تضرب حجم الجدول في 4 تقريبًا، والحد الأخير $4^{T}$ وحده يساوي نحو ثلاثة أرباع المجموع.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+$T = 3$: $4 + 16 + 64 = 84$ rows, or $4 \times 63 / 3 = 84$.
+
+<Ar>عندما $T = 3$: $4 + 16 + 64 = 84$ صفًا، أو $4 \times 63 / 3 = 84$.</Ar>
+
+$T = 10$: $4^{10} = 1{,}048{,}576$, so $4 \times 1{,}048{,}575 / 3 = 4 \times 349{,}525 = 1{,}398{,}100$ rows. The reflex program needs only the 4 current percepts, which is why the table is never stored.
+
+<Ar>عندما $T = 10$: $4^{10} = 1{,}048{,}576$، إذن $4 \times 1{,}048{,}575 / 3 = 4 \times 349{,}525 = 1{,}398{,}100$ صفًا. أما البرنامج الانعكاسي فلا يحتاج إلا إلى الإدراكات الحالية الأربعة، ولهذا لا يُخزَّن الجدول أبدًا.</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+Check whether the question counts sequences **of length exactly $T$** ($4^{T}$: the book's figure when it says the reflex program cuts the count from $4^{T}$ to 4) or **up to length $T$** ($N(T)$, e.g. 84 for $T = 3$). The empty sequence ($t = 0$) is not counted.
+
+<Ar>تحقّق هل يعدّ السؤال التسلسلات **التي طولها $T$ بالضبط** ($4^{T}$: وهو رقم الكتاب حين يقول إن البرنامج الانعكاسي يقلّص العدد من $4^{T}$ إلى 4)، أم التسلسلات **حتى الطول $T$** ($N(T)$، مثل 84 عندما $T = 3$). ولا يُعدّ التسلسل الفارغ ($t = 0$).</Ar>
+
+</Callout>
+
+### Reflex vacuum agent: condition–action rules
+
+<Ar>وكيل المكنسة الانعكاسي: قواعد الشرط–الفعل</Ar>
+
+| Rule <Ar>القاعدة</Ar> | If <Ar>إذا كان</Ar> | Then <Ar>فإن الفعل</Ar> |
+|---|---|---|
+| 1 | status = `Dirty` <Ar>الحالة = `Dirty`</Ar> | `Suck` |
+| 2 | location = `A` <Ar>الموقع = `A`</Ar> | `Right` |
+| 3 | location = `B` <Ar>الموقع = `B`</Ar> | `Left` |
+
+The percept is `[location, status]`. The rules are tested from top to bottom and the first one whose condition holds fires; only the current percept is read.
+
+<Ar>الإدراك (percept) هو `[location, status]`. وتُختبر القواعد من الأعلى إلى الأسفل، فتُنفَّذ أول قاعدة يتحقق شرطها، ولا يُقرأ إلا الإدراك الحالي.</Ar>
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. Dirty? Then `Suck`, whichever square it is.
+   <Ar>هل المربع متسخ؟ إذن `Suck`، أيًّا كان المربع.</Ar>
+2. Clean? Then go to the other square: `Right` from A, `Left` from B.
+   <Ar>هل هو نظيف؟ إذن انتقل إلى المربع الآخر: `Right` من A، و`Left` من B.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+`[A, Dirty]` gives `Suck` (rule 1), `[A, Clean]` gives `Right` (rule 2), `[B, Clean]` gives `Left` (rule 3). Starting in A with both squares dirty, 6 steps give `Suck`, `Right`, `Suck`, `Left`, `Right`, `Left`: both squares are clean after step 3, yet the robot keeps shuttling.
+
+<Ar>الإدراك `[A, Dirty]` يعطي `Suck` (القاعدة 1)، و`[A, Clean]` يعطي `Right` (القاعدة 2)، و`[B, Clean]` يعطي `Left` (القاعدة 3). وبدءًا من A والمربعان متسخان، تعطي 6 خطوات: `Suck`، `Right`، `Suck`، `Left`، `Right`، `Left`: يصبح المربعان نظيفين بعد الخطوة 3، ومع ذلك يستمر الروبوت في التنقل ذهابًا وإيابًا.</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+Test **Dirty first**: `[B, Dirty]` gives `Suck`, not `Left`. The history is ignored: the sequence `[A, Clean], [A, Dirty]` gives `Suck` because of its last percept alone.
+
+<Ar>اختبر **الاتساخ أولًا**: `[B, Dirty]` يعطي `Suck` لا `Left`. والتاريخ مُهمَل: التسلسل `[A, Clean], [A, Dirty]` يعطي `Suck` بسبب آخر إدراك فيه وحده.</Ar>
+
+</Callout>
+
+### Vacuum agent with state: the threshold-3 rule
+
+<Ar>وكيل المكنسة ذو الحالة: قاعدة العتبة 3</Ar>
+
+| When <Ar>متى</Ar> | Rule <Ar>القاعدة</Ar> |
+|---|---|
+| At the start <Ar>في البداية</Ar> | $\text{last}_A = \text{last}_B = \infty$ |
+| Every call, first <Ar>في كل استدعاء، أولًا</Ar> | Add 1 to both counters <Ar>أضف 1 إلى العدّادين كليهما</Ar> |
+| Square is `Dirty` <Ar>المربع `Dirty`</Ar> | Set this square's counter to 0, then `Suck` <Ar>اجعل عدّاد هذا المربع 0، ثم نفّذ `Suck`</Ar> |
+| Square is `Clean` <Ar>المربع `Clean`</Ar> | If the other square's counter is $> 3$, move there (`Right` from A, `Left` from B); otherwise `NoOp` <Ar>إذا كان عدّاد المربع الآخر $> 3$ فانتقل إليه (`Right` من A، و`Left` من B)، وإلا فالفعل `NoOp`</Ar> |
+
+$\text{last}_A$ and $\text{last}_B$ count the time steps since A and B were last cleaned; 3 is the `threshold`, compared with a strict $>$.
+
+<Ar>يعدّ $\text{last}_A$ و$\text{last}_B$ الخطوات الزمنية منذ آخر تنظيف للمربعين A و B، و3 هي العتبة (`threshold`)، وتُقارن بعلامة $>$ الصارمة.</Ar>
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. Add 1 to both counters **before** anything else, even on a dirty square.
+   <Ar>أضف 1 إلى العدّادين **قبل** أي شيء آخر، حتى لو كان المربع متسخًا.</Ar>
+2. Dirty: reset this square's counter to 0 and `Suck`.
+   <Ar>إذا كان متسخًا: أعِد عدّاد هذا المربع إلى 0 ونفّذ `Suck`.</Ar>
+3. Clean: look at the **other** counter only: 4 or more (or ∞) means move, 3 or less means `NoOp`.
+   <Ar>إذا كان نظيفًا: انظر إلى عدّاد المربع **الآخر** فقط: 4 أو أكثر (أو ∞) يعني الانتقال، و3 أو أقل يعني `NoOp`.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+Memory $\{A: 0, B: 1\}$ and percept `[A, Clean]`: after adding 1 it is $\{A: 1, B: 2\}$, and $2 > 3$ is false, so `NoOp`. Memory $\{A: 0, B: 4\}$: after adding 1, $B = 5 > 3$, so `Right`.
+
+<Ar>الذاكرة $\{A: 0, B: 1\}$ والإدراك `[A, Clean]`: بعد إضافة 1 تصبح $\{A: 1, B: 2\}$، والعبارة $2 > 3$ خاطئة، إذن `NoOp`. أما الذاكرة $\{A: 0, B: 4\}$ فبعد إضافة 1 يصبح $B = 5 > 3$، إذن `Right`.</Ar>
+
+Starting in A with both squares dirty, 6 steps give `Suck`, `Right`, `Suck`, `NoOp`, `Left`, `NoOp`. Steps 4 and 6 are `NoOp` because the other counter is exactly 3; at step 5 it is 4, so the robot moves.
+
+<Ar>وبدءًا من A والمربعان متسخان، تعطي 6 خطوات: `Suck`، `Right`، `Suck`، `NoOp`، `Left`، `NoOp`. والخطوتان 4 و6 هما `NoOp` لأن عدّاد المربع الآخر يساوي 3 بالضبط، أما في الخطوة 5 فيساوي 4، فيتحرك الروبوت.</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+Exactly 3 is **not** more than 3, so the agent waits. Forgetting to add 1 before the test shifts every answer by one step. This agent keeps internal state but has no goal: it is a model-based reflex agent.
+
+<Ar>القيمة 3 بالضبط **ليست** أكبر من 3، لذا ينتظر الوكيل. ونسيان إضافة 1 قبل المقارنة يُزيح كل إجابة خطوةً واحدة. وهذا الوكيل يحتفظ بحالة داخلية (internal state) لكن ليس له هدف: فهو وكيل انعكاس قائم على النموذج (model-based reflex).</Ar>
+
+</Callout>
+
+### Vacuum-world performance score: the three measures
+
+<Ar>نتيجة الأداء في عالم المكنسة: المقاييس الثلاثة</Ar>
+
+$$
+S_1 = \#\{t : \text{Suck on a dirty square}\}
+\qquad
+S_2 = \sum_{t=1}^{T} c_t \;-\; \#\{\text{moves}\}
+\qquad
+S_3 = -\,\#\{t : d_t > k\}
+$$
+
+$T = 6$ steps, starting in A with both squares dirty; $c_t$ and $d_t$ are the numbers of clean and dirty squares **after** step $t$; a move is `Left` or `Right` (`Suck` and `NoOp` cost nothing); $k = 0$.
+
+<Ar>$T = 6$ خطوات، بدءًا من A والمربعان متسخان؛ و$c_t$ و$d_t$ عدد المربعات النظيفة والمتسخة **بعد** الخطوة $t$؛ والحركة هي `Left` أو `Right` (أما `Suck` و`NoOp` فلا تكلفة لهما)؛ و$k = 0$.</Ar>
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. Write the action string and, under it, $c_t$ after each step. Agents that clean at the same speed share the same $\sum c_t$ (here 10).
+   <Ar>اكتب سلسلة الأفعال، واكتب تحتها $c_t$ بعد كل خطوة. والوكلاء الذين ينظّفون بالسرعة نفسها يشتركون في $\sum c_t$ نفسه (هنا 10).</Ar>
+2. $S_2$ = that sum minus the number of `Left` and `Right` actions.
+   <Ar>$S_2$ = هذا المجموع مطروحًا منه عدد أفعال `Left` و`Right`.</Ar>
+3. $S_1$ = the number of `Suck` actions on dirt; $S_3$ = minus the number of steps that end with any dirt.
+   <Ar>$S_1$ = عدد أفعال `Suck` على مربع متسخ؛ و$S_3$ = سالب عدد الخطوات التي تنتهي وفيها أي اتساخ.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+| Step $t$ <Ar>الخطوة $t$</Ar> | 1 | 2 | 3 | 4 | 5 | 6 | Total <Ar>المجموع</Ar> |
+|---|---|---|---|---|---|---|---|
+| Reflex agent <Ar>الوكيل الانعكاسي</Ar> | `Suck` | `Right` | `Suck` | `Left` | `Right` | `Left` | 4 moves <Ar>4 حركات</Ar> |
+| Agent with state <Ar>الوكيل ذو الحالة</Ar> | `Suck` | `Right` | `Suck` | `NoOp` | `Left` | `NoOp` | 2 moves <Ar>حركتان</Ar> |
+| $c_t$, both agents <Ar>$c_t$ للوكيلين</Ar> | 1 | 1 | 2 | 2 | 2 | 2 | 10 |
+| $d_t$, both agents <Ar>$d_t$ للوكيلين</Ar> | 1 | 1 | 0 | 0 | 0 | 0 | 2 dirty steps <Ar>خطوتان فيهما اتساخ</Ar> |
+
+| Measure <Ar>المقياس</Ar> | Reflex <Ar>الانعكاسي</Ar> | With state <Ar>ذو الحالة</Ar> |
+|---|---|---|
+| $S_1$: one point per square cleaned within $T$ <Ar>$S_1$: نقطة لكل مربع يُنظَّف خلال $T$</Ar> | 2 | 2 |
+| $S_2$: one point per clean square per step, minus one per move <Ar>$S_2$: نقطة لكل مربع نظيف في كل خطوة، مع خصم نقطة لكل حركة</Ar> | $10 - 4 = 6$ | $10 - 2 = 8$ |
+| $S_3$: −1 per step with more than $k = 0$ dirty squares <Ar>$S_3$: خصم نقطة عن كل خطوة فيها أكثر من $k = 0$ مربعات متسخة</Ar> | −2 | −2 |
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+$S_1$ (2 and 2) and $S_3$ (−2 and −2) cannot tell the two agents apart; only $S_2$ rewards the `NoOp` that saves moves (6 against 8). Count $c_t$ **after** the action, so step 1 already scores 1.
+
+<Ar>المقياسان $S_1$ (2 و2) و$S_3$ (−2 و−2) لا يميّزان بين الوكيلين؛ والمقياس $S_2$ وحده يكافئ `NoOp` الذي يوفّر الحركات (6 مقابل 8). واحسب $c_t$ **بعد** الفعل، لذا تحصل الخطوة 1 على نقطة واحدة من البداية.</Ar>
+
+Measure what you want in the environment, not how you think the agent should behave: paying per `Suck` rewards a robot that dumps the dirt and sucks it up again.
+
+<Ar>قِس ما تريده في البيئة، لا الطريقة التي تظن أن على الوكيل أن يتصرف بها: فالدفع مقابل كل `Suck` يكافئ روبوتًا يفرغ الأوساخ ثم يشفطها من جديد.</Ar>
+
+</Callout>
+
+### Rational action: the four things it depends on
+
+<Ar>الفعل العقلاني: الأمور الأربعة التي يتوقف عليها</Ar>
+
+$$
+a^{*} = \arg\max_{a \in \mathcal{A}} \; \mathbb{E}\left[\,\text{performance measure} \mid \text{percept sequence to date},\ \text{built-in knowledge}\,\right]
+$$
+
+$a^{*}$ is the rational action, $\mathcal{A}$ the available actions, and $\mathbb{E}$ the **expected** value: an average over what might happen, not the actual outcome. So what is rational at any time depends on four things (book, section 2.2.1):
+
+<Ar>$a^{*}$ هو الفعل العقلاني، و$\mathcal{A}$ الأفعال المتاحة، و$\mathbb{E}$ القيمة **المتوقَّعة**: أي متوسط على ما قد يحدث، لا النتيجة الفعلية. لذلك يتوقف ما هو عقلاني في أي لحظة على أربعة أمور (الكتاب، القسم 2.2.1):</Ar>
+
+1. The performance measure that defines success.
+   <Ar>مقياس الأداء (performance measure) الذي يعرّف النجاح.</Ar>
+2. The agent's prior knowledge of the environment.
+   <Ar>معرفة الوكيل المسبقة بالبيئة.</Ar>
+3. The actions the agent can perform.
+   <Ar>الأفعال التي يستطيع الوكيل تنفيذها.</Ar>
+4. The agent's percept sequence to date.
+   <Ar>تسلسل إدراكات الوكيل (percept sequence) حتى الآن.</Ar>
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. Fix the performance measure first.
+   <Ar>ثبّت مقياس الأداء (performance measure) أولًا.</Ar>
+2. Keep only what the agent could know: its percepts so far plus its built-in knowledge.
+   <Ar>احتفظ فقط بما كان الوكيل يستطيع معرفته: إدراكاته حتى الآن ومعرفته المدمجة.</Ar>
+3. Did it pick the action with the best **expected** score from that? Yes means rational, whatever happened next.
+   <Ar>هل اختار من ذلك الفعلَ صاحب أفضل نتيجة **متوقَّعة**؟ إذا كان الجواب نعم فهو عقلاني، أيًّا كان ما حدث بعد ذلك.</Ar>
+
+Memory hook for the four things: what is **scored**, **known**, **possible** and **seen**.
+
+<Ar>للحفظ، الأمور الأربعة هي: ما **يُقاس**، وما هو **معروف**، وما هو **ممكن**، وما **أُدرِك**.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+The robot in A perceives `[A, Clean]`; whether B is dirty is not in its percept sequence. Going `Right` to look has the best expected score. B turns out clean and the move is wasted, yet the choice was rational. Only an omniscient agent would stay put: it maximises actual performance, which is impossible in reality.
+
+<Ar>يُدرك الروبوت في A الإدراك `[A, Clean]`، وحالة B ليست ضمن تسلسل إدراكاته. فالذهاب `Right` للتحقق هو صاحب أفضل نتيجة متوقَّعة. ثم يتضح أن B نظيف وأن الحركة ضاعت، ومع ذلك كان الاختيار عقلانيًا. ولن يبقى في مكانه إلا وكيل كلي العلم (omniscient): فهو يعظّم الأداء الفعلي، وهذا مستحيل في الواقع.</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+Rational ≠ omniscient (percepts may not reveal everything), rational ≠ clairvoyant (outcomes may not be as expected), so rational ≠ successful: "a rational agent that loses a game was necessarily irrational" is **False**. Avoidable ignorance is no excuse, though: rationality requires information gathering, learning and autonomy.
+
+<Ar>العقلاني ≠ كلي العلم (omniscient) (فقد لا تكشف الإدراكات كل شيء)، والعقلاني ≠ العالِم بالغيب (clairvoyant) (فقد لا تأتي النتائج كما هو متوقَّع)، لذلك العقلاني ≠ الناجح: والعبارة «الوكيل العقلاني الذي يخسر مباراة كان بالضرورة غير عقلاني» **خاطئة**. لكن الجهل الذي كان يمكن تجنّبه ليس عذرًا: فالعقلانية تتطلب جمع المعلومات (information gathering) والتعلّم والاستقلالية (autonomy).</Ar>
+
+</Callout>
+
+### PEAS fill-in recipe
+
+<Ar>طريقة ملء وصف PEAS</Ar>
+
+| Letter <Ar>الحرف</Ar> | Question <Ar>السؤال</Ar> | Automated taxi <Ar>سيارة الأجرة الآلية</Ar> | Internet shopping agent <Ar>وكيل التسوق عبر الإنترنت</Ar> |
+|---|---|---|---|
+| **P**erformance <Ar>**مقياس الأداء**</Ar> | How is success scored? <Ar>كيف يُقيَّم النجاح؟</Ar> | Safety, reaching the destination, profit, legality, passenger comfort <Ar>السلامة، والوصول إلى الوجهة، والربح، والالتزام بالقانون، وراحة الركاب</Ar> | Price, quality, appropriateness, efficiency <Ar>السعر، والجودة، والملاءمة، والكفاءة</Ar> |
+| **E**nvironment <Ar>**البيئة**</Ar> | Where does it operate? <Ar>أين يعمل؟</Ar> | Streets and highways, traffic, pedestrians, weather <Ar>الشوارع والطرق السريعة، وحركة المرور، والمشاة، والطقس</Ar> | Current and future websites, vendors, shippers <Ar>المواقع الإلكترونية الحالية والمستقبلية، والبائعون، وشركات الشحن</Ar> |
+| **A**ctuators <Ar>**المشغِّلات**</Ar> | How does it act? <Ar>كيف يتصرف؟</Ar> | Steering, accelerator, brake, horn, speaker/display <Ar>المقود، ودواسة الوقود، والمكابح، والبوق، والسماعة/الشاشة</Ar> | Display to user, follow URL, fill in forms <Ar>العرض للمستخدم، وفتح عنوان URL، وتعبئة النماذج</Ar> |
+| **S**ensors <Ar>**المستشعرات**</Ar> | How does it perceive? <Ar>كيف يُدرك؟</Ar> | Cameras, accelerometers, gauges, engine sensors, GPS, keyboard <Ar>الكاميرات، ومقاييس التسارع، والعدّادات، ومستشعرات المحرك، ونظام GPS، ولوحة المفاتيح</Ar> | HTML pages (text, graphics, scripts) <Ar>صفحات HTML (النصوص، والرسوميات، والسكربتات)</Ar> |
+
+P, E, A and S together specify the task environment, and they are written before the agent is designed.
+
+<Ar>تحدد P و E و A و S معًا بيئة المهمة (task environment)، وتُكتب قبل تصميم الوكيل.</Ar>
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. P = adjectives and scores (safe, fast, cheap, legal); E = the things around the agent that it does not control.
+   <Ar>P = الصفات والدرجات (آمن، سريع، رخيص، قانوني)؛ و E = الأشياء المحيطة بالوكيل التي لا يتحكم فيها.</Ar>
+2. Direction test: information flowing **in** to the agent is S; changes flowing **out** to the world are A.
+   <Ar>اختبار الاتجاه: المعلومات التي **تدخل** إلى الوكيل هي S، والتغييرات التي **تخرج** منه إلى العالم هي A.</Ar>
+3. Fill P first: the measure decides what "rational" means for every later choice.
+   <Ar>املأ P أولًا: فالمقياس هو ما يحدد معنى «عقلاني» في كل اختيار لاحق.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+Taxi steering wheel: it changes the world, so **Actuators**. Taxi keyboard: the destination the passenger types flows in, so **Sensors**. Shopping "fill in forms" is an actuator; "HTML pages" are the sensor input.
+
+<Ar>مقود سيارة الأجرة: يغيّر العالم، إذن هو من **المشغِّلات (Actuators)**. ولوحة مفاتيح سيارة الأجرة: الوجهة التي يكتبها الراكب تدخل إلى الوكيل، إذن هي من **المستشعرات (Sensors)**. وفي التسوق تُعدّ «تعبئة النماذج» مشغِّلًا، أما «صفحات HTML» فهي المُدخل الحسّي.</Ar>
+
+Robot lawn mower: P = fraction of lawn cut, evenness, time, battery, no damage; E = the garden; A = wheels, blade motor, docking connector; S = bump sensors, GPS or boundary wire, wheel encoders, rain sensor, battery level.
+
+<Ar>روبوت جزّ العشب: P = نسبة العشب المجزوز، وانتظام القص، والوقت، والبطارية، وعدم إلحاق الضرر؛ و E = الحديقة؛ و A = العجلات، ومحرك الشفرة، وموصل الالتحام بمحطة الشحن؛ و S = مستشعرات الاصطدام، ونظام GPS أو سلك الحدود، ومُرمِّزات العجلات (encoders)، ومستشعر المطر، ومستوى البطارية.</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+The keyboard and GPS are sensors, while the speaker/display is an actuator because it outputs to the passenger. Safety and profit belong to P, not E.
+
+<Ar>لوحة المفاتيح ونظام GPS من المستشعرات (sensors)، أما السماعة/الشاشة فمن المشغِّلات (actuators) لأنها تُخرج المعلومات إلى الراكب. والسلامة والربح ينتميان إلى P لا إلى E.</Ar>
+
+</Callout>
+
+### Environment types: the six yes/no questions
+
+<Ar>أنواع البيئات: الأسئلة الستة بنعم أو لا</Ar>
+
+| Property <Ar>الخاصية</Ar> | Ask <Ar>اسأل</Ar> | Yes means <Ar>«نعم» تعني</Ar> | No means <Ar>«لا» تعني</Ar> | Clue words <Ar>كلمات دالّة</Ar> |
+|---|---|---|---|---|
+| Observable <Ar>قابلية الملاحظة</Ar> | Do the sensors give the complete relevant state? <Ar>هل تعطي المستشعرات الحالة الكاملة ذات الصلة؟</Ar> | Fully observable <Ar>قابلة للملاحظة كليًا</Ar> | Partially observable <Ar>قابلة للملاحظة جزئيًا</Ar> | Face-down cards, a sensor that sees only the current square <Ar>أوراق مقلوبة، أو مستشعر لا يرى إلا المربع الحالي</Ar> |
+| Deterministic <Ar>الحتمية</Ar> | Is the next state fixed by the current state and action? <Ar>هل تتحدد الحالة التالية بالحالة الحالية والفعل؟</Ar> | Deterministic <Ar>حتمية</Ar> | Stochastic <Ar>عشوائية</Ar> | Dice, randomly appearing dirt, traffic <Ar>النرد، أو أوساخ تظهر عشوائيًا، أو حركة المرور</Ar> |
+| Episodic <Ar>العَرَضية</Ar> | Is each decision independent of earlier ones? <Ar>هل كل قرار مستقل عن القرارات السابقة؟</Ar> | Episodic <Ar>عَرَضية</Ar> | Sequential <Ar>تتابعية</Ar> | Labelling parts on a conveyor is episodic; games and driving are sequential <Ar>تصنيف القطع على السير الناقل عَرَضي، أما الألعاب والقيادة فتتابعية</Ar> |
+| Static <Ar>السكون</Ar> | Does the world wait while the agent deliberates? <Ar>هل ينتظر العالم بينما يتروّى الوكيل؟</Ar> | Static (semi-dynamic if only the score changes) <Ar>ساكنة (وشبه ديناميكية (semi-dynamic) إذا تغيّرت النتيجة فقط)</Ar> | Dynamic <Ar>ديناميكية</Ar> | A running clock means semi-dynamic; moving cars mean dynamic <Ar>ساعة توقيت تعمل تعني شبه ديناميكية، وسيارات تتحرك تعني ديناميكية</Ar> |
+| Discrete <Ar>الانفصال</Ar> | Are states, time, percepts and actions countable? <Ar>هل الحالات والزمن والإدراكات والأفعال قابلة للعدّ؟</Ar> | Discrete <Ar>منفصلة</Ar> | Continuous <Ar>متصلة</Ar> | Speed, steering angle, position <Ar>السرعة، وزاوية التوجيه، والموقع</Ar> |
+| Single-agent <Ar>الوكيل الواحد</Ar> | Is the agent acting alone? <Ar>هل يعمل الوكيل منفردًا؟</Ar> | Single agent <Ar>وكيل واحد</Ar> | Multi-agent <Ar>متعددة الوكلاء</Ar> | An opponent, other drivers, auction bidders <Ar>خصم، أو سائقون آخرون، أو مزايدون في مزاد</Ar> |
+
+"Yes" is always the easy case and "No" the hard case; the environment type largely determines the agent design.
+
+<Ar>«نعم» هي الحالة السهلة دائمًا و«لا» هي الحالة الصعبة، ونوع البيئة يحدد تصميم الوكيل إلى حد كبير.</Ar>
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. Ask the six in the slide order Observable, Deterministic, Episodic, Static, Discrete, Single-agent: "**O**ld **D**ogs **E**at **S**oft **D**ry **S**nacks".
+   <Ar>اطرح الأسئلة الستة بترتيب الشرائح: قابلية الملاحظة، والحتمية، والعَرَضية، والسكون، والانفصال، والوكيل الواحد، وللحفظ استخدم الجملة الإنجليزية «Old Dogs Eat Soft Dry Snacks».</Ar>
+2. Scan the task for clue words: dice, a clock, an opponent, smooth quantities.
+   <Ar>ابحث في المهمة عن الكلمات الدالّة: النرد، أو ساعة توقيت، أو خصم، أو كميات تتغير بشكل متصل.</Ar>
+3. Hardness = the number of "No" answers; the real world (the taxi) is "No" on all 6.
+   <Ar>درجة الصعوبة = عدد إجابات «لا»؛ والعالم الحقيقي (سيارة الأجرة) إجابته «لا» في الأبعاد الستة كلها.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+Chess with a clock: fully observable, deterministic, sequential, semi-dynamic (the board waits, the clock runs), discrete, multi-agent.
+
+<Ar>الشطرنج بساعة توقيت: قابل للملاحظة كليًا، وحتمي، وتتابعي، وشبه ديناميكي (الرقعة تنتظر، لكن الساعة تعمل)، ومنفصل، ومتعدد الوكلاء (multi-agent).</Ar>
+
+Medical diagnosis: partially observable, stochastic, sequential, dynamic, continuous, single-agent.
+
+<Ar>التشخيص الطبي: قابل للملاحظة جزئيًا، وعشوائي (stochastic)، وتتابعي، وديناميكي، ومتصل، وذو وكيل واحد.</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+Semi-dynamic means the world does not change but the **score** does. A chess opponent does not make the game stochastic: its moves are strategic uncertainty, while dice are randomness. The book says "nondeterministic", keeps "stochastic" for explicit probabilities, and adds a seventh question: known or unknown.
+
+<Ar>شبه ديناميكية (semi-dynamic) تعني أن العالم لا يتغير لكن **النتيجة** تتغير. والخصم في الشطرنج لا يجعل اللعبة عشوائية (stochastic): فحركاته عدم يقين استراتيجي، أما النرد فعشوائية. ويستخدم الكتاب كلمة «غير حتمية (nondeterministic)»، ويحتفظ بكلمة «عشوائية» للاحتمالات الصريحة، ويضيف سؤالًا سابعًا: هل البيئة معروفة (known) أم غير معروفة (unknown)؟</Ar>
+
+</Callout>
+
+### The lecture's four-task environment table
+
+<Ar>جدول البيئات للمهام الأربع في المحاضرة</Ar>
+
+| | Solitaire <Ar>السوليتير</Ar> | Backgammon <Ar>الطاولة</Ar> | Internet shopping <Ar>التسوق عبر الإنترنت</Ar> | Taxi <Ar>سيارة الأجرة</Ar> |
+|---|---|---|---|---|
+| Observable <Ar>قابلة للملاحظة</Ar> | **Yes only if every card is face up** (Klondike: No) <Ar>**نعم فقط إذا كانت كل الأوراق مكشوفة** (في Klondike: لا)</Ar> | Yes <Ar>نعم</Ar> | No <Ar>لا</Ar> | No <Ar>لا</Ar> |
+| Deterministic <Ar>حتمية</Ar> | Yes <Ar>نعم</Ar> | No (dice) <Ar>لا (النرد)</Ar> | Partly <Ar>جزئيًا</Ar> | No <Ar>لا</Ar> |
+| Episodic <Ar>عَرَضية</Ar> | No <Ar>لا</Ar> | No <Ar>لا</Ar> | No <Ar>لا</Ar> | No <Ar>لا</Ar> |
+| Static <Ar>ساكنة</Ar> | Yes <Ar>نعم</Ar> | **Yes** (slides: Semi) <Ar>**نعم** (في الشرائح: شبه ديناميكية)</Ar> | Semi <Ar>شبه ديناميكية</Ar> | No <Ar>لا</Ar> |
+| Discrete <Ar>منفصلة</Ar> | Yes <Ar>نعم</Ar> | Yes <Ar>نعم</Ar> | Yes <Ar>نعم</Ar> | No <Ar>لا</Ar> |
+| Single-agent <Ar>وكيل واحد</Ar> | Yes <Ar>نعم</Ar> | No <Ar>لا</Ar> | Yes (except auctions) <Ar>نعم (باستثناء المزادات)</Ar> | No <Ar>لا</Ar> |
+| Hard cases ("No" answers) <Ar>الحالات الصعبة (إجابات «لا»)</Ar> | 1 (Klondike: 2) <Ar>1 (في Klondike: 2)</Ar> | 3 | 2 | 6 |
+
+Bold cells follow the lecture page's "Check the source" correction; Semi and Partly sit between the easy and the hard case.
+
+<Ar>الخانات المكتوبة بخط عريض تتبع تصحيح «راجِع المصدر» في صفحة المحاضرة، و«شبه ديناميكية» و«جزئيًا» تقعان بين الحالة السهلة والحالة الصعبة.</Ar>
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. Taxi column: No on all 6. Episodic row: No for all 4, because every task here is sequential.
+   <Ar>عمود سيارة الأجرة: «لا» في الأبعاد الستة كلها. وصف العَرَضية: «لا» للمهام الأربع كلها، لأن كل المهام هنا تتابعية.</Ar>
+2. Observable row: Yes, Yes, No, No. Discrete row: Yes, Yes, Yes, No (only the taxi is continuous).
+   <Ar>صف قابلية الملاحظة: نعم، نعم، لا، لا. وصف الانفصال: نعم، نعم، نعم، لا (سيارة الأجرة وحدها متصلة).</Ar>
+3. The odd answers all belong to Internet shopping: Partly deterministic, Semi static, single-agent except auctions.
+   <Ar>الإجابات غير المعتادة كلها للتسوق عبر الإنترنت: حتمي جزئيًا، وشبه ديناميكي، وذو وكيل واحد باستثناء المزادات.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+Backgammon's hard cases: deterministic No (dice), episodic No, single-agent No (the opponent), so 3. Internet shopping: observable No and episodic No, so 2. Taxi: 6.
+
+<Ar>الحالات الصعبة في لعبة الطاولة: الحتمية «لا» (النرد)، والعَرَضية «لا»، والوكيل الواحد «لا» (الخصم)، إذن 3. والتسوق عبر الإنترنت: قابلية الملاحظة «لا» والعَرَضية «لا»، إذن 2. وسيارة الأجرة: 6.</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+The slides print backgammon as Semi, but by the definition it is **static**: the board waits while a player thinks, and Russell & Norvig list it as static. Only a game against a clock, such as chess with a clock, is semi-dynamic. Solitaire is fully observable only when every card is face up; in Klondike the face-down cards make it partially observable.
+
+<Ar>تكتب الشرائح لعبة الطاولة (backgammon) على أنها شبه ديناميكية، لكنها بحسب التعريف **ساكنة (static)**: فالرقعة تنتظر بينما يفكر اللاعب، ويصنّفها كتاب Russell و Norvig ساكنة. ولا تكون اللعبة شبه ديناميكية إلا إذا لُعبت بساعة توقيت، مثل الشطرنج بساعة توقيت. أما السوليتير (solitaire) فلا يكون قابلًا للملاحظة كليًا إلا إذا كانت كل الأوراق مكشوفة؛ ففي Klondike تجعل الأوراق المقلوبة البيئةَ قابلةً للملاحظة جزئيًا.</Ar>
+
+</Callout>
+
+### Telling the five agent types apart
+
+<Ar>التمييز بين أنواع الوكلاء الخمسة</Ar>
+
+| Type <Ar>النوع</Ar> | Decides with <Ar>يقرر باستخدام</Ar> | Vacuum example <Ar>مثال المكنسة</Ar> |
+|---|---|---|
+| Simple reflex <Ar>الانعكاس البسيط</Ar> | Condition–action rules on the current percept only <Ar>قواعد الشرط–الفعل (condition–action rules) على الإدراك الحالي فقط</Ar> | `[A, Clean]` always gives `Right` <Ar>`[A, Clean]` يعطي `Right` دائمًا</Ar> |
+| Model-based reflex (with state) <Ar>الانعكاس القائم على النموذج (ذو الحالة)</Ar> | Rules plus an internal state: how the world evolves and what my actions do <Ar>القواعد مع حالة داخلية (internal state): كيف يتطوّر العالم وما الذي تفعله أفعالي</Ar> | B cleaned 2 steps ago, not more than 3, so `NoOp` <Ar>نُظِّف B قبل خطوتين، وهذا لا يزيد على 3، إذن `NoOp`</Ar> |
+| Goal-based <Ar>القائم على الهدف</Ar> | A goal plus a prediction: "what will happen if I do action A?" <Ar>هدف (goal) مع تنبؤ: «ماذا سيحدث لو نفّذت الفعل A؟»</Ar> | Rejects `NoOp` (B stays dirty), starts `Right`, `Suck` <Ar>يرفض `NoOp` (يبقى B متسخًا)، ويبدأ الخطة `Right` ثم `Suck`</Ar> |
+| Utility-based <Ar>القائم على المنفعة</Ar> | A utility function: "how happy will I be in such a state?" <Ar>دالة منفعة (utility function): «ما مدى سعادتي في حالة كهذه؟»</Ar> | `Right`, `Suck` scores 10 and beats `Right`, `Left`, `Right`, `Suck` at 6 <Ar>الخطة `Right` ثم `Suck` تحصل على 10، فتتفوق على `Right` ثم `Left` ثم `Right` ثم `Suck` التي تحصل على 6</Ar> |
+| Learning <Ar>المتعلِّم</Ar> | Critic, learning element, performance element, problem generator <Ar>الناقد (critic)، وعنصر التعلّم، وعنصر الأداء، ومولِّد المسائل</Ar> | Any of the above, improved by feedback <Ar>أي نوع مما سبق، يتحسن بالتغذية الراجعة (feedback)</Ar> |
+
+The first four are in order of increasing generality; any of them can be turned into a learning agent.
+
+<Ar>الأنواع الأربعة الأولى مرتبة تصاعديًا حسب العمومية، ويمكن تحويل أي منها إلى وكيل متعلِّم (learning agent).</Ar>
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. Does it improve itself from feedback? Then it is a **learning** agent (and its performance element is one of the types below).
+   <Ar>هل يحسّن نفسه من التغذية الراجعة (feedback)؟ إذن هو وكيل **متعلِّم** (وعنصر الأداء فيه أحد الأنواع التالية).</Ar>
+2. Does it predict outcomes? Scored with a number or trading off goals: **utility-based**; checked against a yes/no goal: **goal-based**.
+   <Ar>هل يتنبأ بالنتائج؟ إذا قيّمها برقم أو وازن بين أهداف فهو **قائم على المنفعة**، وإذا قارنها بهدف يتحقق أو لا يتحقق فهو **قائم على الهدف**.</Ar>
+3. No prediction, only rules: remembers what it cannot see now, **model-based reflex**; current percept only, **simple reflex**.
+   <Ar>لا تنبؤ بل قواعد فقط: إذا تذكّر ما لا يراه الآن فهو **انعكاس قائم على النموذج**، وإذا اعتمد على الإدراك الحالي فقط فهو **انعكاس بسيط**.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+Start: robot in A, A clean, B dirty; score 6 steps with $S_2$. `Right`, `Suck` gives $c_t = 1, 2, 2, 2, 2, 2$, sum 11, minus 1 move = **10**. `Right`, `Left`, `Right`, `Suck` gives $1, 1, 1, 2, 2, 2$, sum 9, minus 3 moves = **6**. Both reach the goal, so a goal-based agent cannot choose; the utility-based agent takes 10.
+
+<Ar>البداية: الروبوت في A، و A نظيف، و B متسخ؛ ونقيّم 6 خطوات بالمقياس $S_2$. الخطة `Right` ثم `Suck` تعطي $c_t = 1, 2, 2, 2, 2, 2$، والمجموع 11، ناقص حركة واحدة = **10**. والخطة `Right` ثم `Left` ثم `Right` ثم `Suck` تعطي $1, 1, 1, 2, 2, 2$، والمجموع 9، ناقص 3 حركات = **6**. كلتاهما تصل إلى الهدف، فلا يستطيع الوكيل القائم على الهدف الاختيار، أما الوكيل القائم على المنفعة فيختار 10.</Ar>
+
+Waiting (`NoOp` for all 6 steps) also scores $6 \times 1 = 6$, but it fails the goal because B stays dirty.
+
+<Ar>والانتظار (`NoOp` في الخطوات الست كلها) يحصل أيضًا على $6 \times 1 = 6$، لكنه لا يحقق الهدف لأن B يبقى متسخًا.</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+A model-based reflex agent keeps a model of the world but has **no explicit goal**: it still acts through condition–action rules. Goals are yes/no; utility is a number. A simple reflex agent is correct only in a fully observable world: with a broken location sensor it perceives only `Clean`, always returns the same move and gets stuck against a wall.
+
+<Ar>يحتفظ وكيل الانعكاس القائم على النموذج (model-based reflex) بنموذج للعالم لكن **ليس له هدف صريح**: فهو لا يزال يتصرف وفق قواعد الشرط–الفعل. والأهداف إما تتحقق أو لا، أما المنفعة فرقم. ولا يكون وكيل الانعكاس البسيط صحيحًا إلا في عالم قابل للملاحظة كليًا (fully observable): فإذا تعطّل مستشعر الموقع فلن يُدرك إلا `Clean`، وسيُرجع الحركة نفسها دائمًا ويعلق أمام الجدار.</Ar>
+
+</Callout>
+
+### Learning-agent components: who does what
+
+<Ar>مكونات الوكيل المتعلِّم: من يفعل ماذا</Ar>
+
+| Component <Ar>المكوّن</Ar> | Job <Ar>وظيفته</Ar> | Hook <Ar>للحفظ</Ar> |
+|---|---|---|
+| Performance element <Ar>عنصر الأداء</Ar> | Selects external actions; it is the whole agent of the previous types <Ar>يختار الأفعال الخارجية، وهو الوكيل كاملًا في الأنواع السابقة</Ar> | Doer <Ar>المنفِّذ</Ar> |
+| Critic <Ar>الناقد</Ar> | Compares behaviour with a fixed performance standard and gives feedback <Ar>يقارن السلوك بمعيار أداء (performance standard) ثابت ويقدّم التغذية الراجعة</Ar> | Judge <Ar>الحَكَم</Ar> |
+| Learning element <Ar>عنصر التعلّم</Ar> | Uses the critic's feedback to improve the performance element <Ar>يستخدم التغذية الراجعة من الناقد لتحسين عنصر الأداء</Ar> | Coach <Ar>المدرِّب</Ar> |
+| Problem generator <Ar>مولِّد المسائل</Ar> | Suggests exploratory actions that lead to new, informative experiences <Ar>يقترح أفعالًا استكشافية تؤدي إلى تجارب جديدة غنية بالمعلومات</Ar> | Explorer <Ar>المستكشِف</Ar> |
+
+The four parts form one loop: act, judge against the standard, improve, explore.
+
+<Ar>تشكّل المكونات الأربعة حلقة واحدة: التصرف، ثم الحكم وفق المعيار، ثم التحسين، ثم الاستكشاف.</Ar>
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. "Selects actions" is the performance element; "compares with a standard" is the critic.
+   <Ar>«يختار الأفعال» هو عنصر الأداء، و«يقارن بمعيار» هو الناقد (critic).</Ar>
+2. "Improves" or "changes knowledge" is the learning element.
+   <Ar>«يحسّن» أو «يغيّر المعرفة» هو عنصر التعلّم.</Ar>
+3. "Exploratory", "new experiences" or "experiments" is the problem generator.
+   <Ar>«استكشافي» أو «تجارب جديدة» أو «تجارب علمية» هو مولِّد المسائل.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+"Which component proposes exploratory actions?" The problem generator. A chess program perceives that it checkmated its opponent; the percept does not say this is good, the critic's fixed performance standard does.
+
+<Ar>«أي مكوّن يقترح الأفعال الاستكشافية؟» إنه مولِّد المسائل. وبرنامج شطرنج يُدرك أنه هزم خصمه بكش ملك؛ فالإدراك لا يقول إن هذا جيد، بل معيار الأداء الثابت لدى الناقد (critic) هو الذي يقول ذلك.</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+The critic does not explore, and the problem generator does not judge. The performance standard is fixed and conceptually outside the agent: the agent must not change it to fit its own behaviour.
+
+<Ar>الناقد (critic) لا يستكشف، ومولِّد المسائل لا يحكم. ومعيار الأداء (performance standard) ثابت ويقع مفاهيميًا خارج الوكيل: فلا يجوز للوكيل أن يعدّله ليناسب سلوكه.</Ar>
+
+</Callout>
+
+### Book chapter 1 extra: Tic-Tac-Toe MOVETABLE and POSSWIN
+
+<Ar>إضافة من الفصل 1 في الكتاب: الجدول MOVETABLE والدالة POSSWIN في لعبة Tic-Tac-Toe</Ar>
+
+$$
+\lvert \text{MOVETABLE} \rvert = 3^{9} = 19{,}683
+\qquad
+\text{POSSWIN: } 3 \times 3 \times 2 = 18 \ (\text{X can win}), \quad 5 \times 5 \times 2 = 50 \ (\text{O can win})
+$$
+
+The first approach stores each of the 9 squares as a ternary digit (0 blank, 1 X, 2 O), so the board read as a ternary number indexes MOVETABLE. The second approach codes blank = 2, X = 3, O = 5 and multiplies the three squares of a line; `MAKE2` returns 5 (the centre) if it is blank, otherwise a blank non-corner square (2, 4, 6 or 8). This is in the book only, not on the slides.
+
+<Ar>يخزّن الأسلوب الأول كل مربع من المربعات التسعة رقمًا ثلاثيًا (0 للفارغ، و1 للعلامة X، و2 للعلامة O)، فتصبح الرقعة المقروءة عددًا ثلاثيًا فهرسًا في الجدول `MOVETABLE`. ويرمّز الأسلوب الثاني الفارغ = 2، و X = 3، و O = 5، ويضرب المربعات الثلاثة في كل خط؛ وتُرجع `MAKE2` القيمة 5 (المركز) إذا كان فارغًا، وإلا فمربعًا فارغًا ليس في زاوية (2 أو 4 أو 6 أو 8). وهذا في الكتاب فقط، لا في الشرائح.</Ar>
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. $3^{9} = 27^{3}$: $27^{2} = 729$, and $729 \times 27 = 19{,}683$.
+   <Ar>احسب $3^{9}$ على أنها $27^{3}$: أولًا $27^{2} = 729$، ثم $729 \times 27 = 19{,}683$.</Ar>
+2. Index range: from 0 (the empty board) to $3^{9} - 1 = 19{,}682$.
+   <Ar>مدى الفهرس: من 0 (الرقعة الفارغة) إلى $3^{9} - 1 = 19{,}682$.</Ar>
+3. The primes make every product unique: only 18 (two X plus a blank) and 50 (two O plus a blank) signal a win in one move.
+   <Ar>الأعداد الأولية تجعل كل حاصل ضرب فريدًا: فلا يدل على فوز في حركة واحدة إلا 18 (علامتا X مع مربع فارغ) و50 (علامتا O مع مربع فارغ).</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+Line X, X, blank: $3 \times 3 \times 2 = 18$, so X wins by playing the blank square. Line X, O, blank: $3 \times 5 \times 2 = 30$, no immediate win. Line O, O, blank: 50, so O can win there.
+
+<Ar>الخط X و X وفارغ: $3 \times 3 \times 2 = 18$، إذن تفوز X باللعب في المربع الفارغ. والخط X و O وفارغ: $3 \times 5 \times 2 = 30$، فلا فوز فوري. والخط O و O وفارغ: 50، إذن تستطيع O الفوز هناك.</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+The two approaches use different codes: 0/1/2 (ternary digits) for MOVETABLE and 2/3/5 (primes) for POSSWIN, so never mix them. A full line X, X, X gives $3^{3} = 27$, a finished win, not 18.
+
+<Ar>يستخدم الأسلوبان ترميزين مختلفين: 0 و1 و2 (أرقام ثلاثية) في `MOVETABLE`، و2 و3 و5 (أعداد أولية) في `POSSWIN`، فلا تخلط بينهما أبدًا. والخط الممتلئ X و X و X يعطي $3^{3} = 27$، وهو فوز منتهٍ، لا 18.</Ar>
+
+</Callout>

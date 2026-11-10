@@ -106,7 +106,7 @@ function plainHeading(text: string): string {
  * Extracts h2/h3 headings with the same ids rehype-slug will generate. rehype-slug numbers
  * repeated titles across every heading level, so the slugger sees h1–h6, not just h2/h3.
  */
-function extractHeadings(body: string): Heading[] {
+export function extractHeadings(body: string): Heading[] {
   const slugger = new GithubSlugger();
   const headings: Heading[] = [];
   let inFence = false;

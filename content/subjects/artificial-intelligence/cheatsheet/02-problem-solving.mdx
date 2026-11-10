@@ -1,0 +1,495 @@
+---
+lecture: 2
+title: Problem Solving and Search
+titleAr: "حل المسائل والبحث"
+---
+
+### Problem formulation checklist
+
+<Ar>قائمة التحقق لصياغة المسألة</Ar>
+
+$$
+S(x) = \{\, (a,\ \text{RESULT}(x, a)) : a \in \text{ACTIONS}(x) \,\}
+$$
+
+$S(x)$ is the slides' successor function: the set of (action, next state) pairs reachable from state $x$. `ACTIONS(x)` lists the actions available in $x$, and the transition model `RESULT(x, a)` gives the state each one leads to. The slides count four items (initial state, $S(x)$, goal test, path cost); splitting $S(x)$ in two, as the book does, gives five.
+
+<Ar>$S(x)$ هي دالة الحالات التالية (successor function) في الشرائح: مجموعة أزواج (فعل، حالة تالية) التي يمكن الوصول إليها من الحالة $x$. وتسرد `ACTIONS(x)` الأفعال (actions) المتاحة في $x$، ويعطي نموذج الانتقال (transition model) `RESULT(x, a)` الحالة التي يقود إليها كل فعل منها. وتَعُدّ الشرائح أربعة عناصر (الحالة الابتدائية، و $S(x)$، واختبار الهدف، وتكلفة المسار)، أما تقسيم $S(x)$ إلى جزأين كما يفعل الكتاب فيعطي خمسة.</Ar>
+
+| Component <Ar>المكوّن</Ar> | Romania <Ar>رومانيا</Ar> | Vacuum world <Ar>عالم المكنسة</Ar> | 8-puzzle <Ar>لغز الثمانية</Ar> |
+|---|---|---|---|
+| **Initial state** <Ar>**الحالة الابتدائية**</Ar> | `In(Arad)` | A state number 1–8, e.g. 5 <Ar>رقم حالة من 1 إلى 8، مثل 5</Ar> | The given start board <Ar>لوحة البداية المعطاة</Ar> |
+| **Actions** `ACTIONS(s)` <Ar>**الأفعال** `ACTIONS(s)`</Ar> | Drive to a neighbouring city <Ar>القيادة إلى مدينة مجاورة</Ar> | `Left`, `Right`, `Suck`, `NoOp` | Move the blank left, right, up or down <Ar>تحريك الخانة الفارغة يسارًا أو يمينًا أو أعلى أو أسفل</Ar> |
+| **Transition model** `RESULT(s, a)` <Ar>**نموذج الانتقال** `RESULT(s, a)`</Ar> | `RESULT(Arad, To_Zerind) = Zerind` | `RESULT(5, Right) = 6` | The blank swaps places with the tile it moves onto <Ar>تتبادل الخانة الفارغة موضعها مع القطعة التي تتحرك إليها</Ar> |
+| **Goal test** <Ar>**اختبار الهدف**</Ar> | Explicit: $x =$ `In(Bucharest)` <Ar>صريح: $x =$ `In(Bucharest)`</Ar> | Implicit: `NoDirt(x)`, states 7 and 8 <Ar>ضمني: `NoDirt(x)`، أي الحالتان 7 و 8</Ar> | Board = the given goal state <Ar>اللوحة = الحالة الهدف المعطاة</Ar> |
+| **Path cost** <Ar>**تكلفة المسار**</Ar> | Sum of km driven <Ar>مجموع الكيلومترات المقطوعة</Ar> | 1 per action (0 for `NoOp`) <Ar>1 لكل فعل (و 0 للفعل `NoOp`)</Ar> | 1 per move <Ar>1 لكل حركة</Ar> |
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. **States**: keep only the facts that change: the city; the robot's square and each square's dirt; the position of every tile.
+   <Ar>**الحالات (states)**: احتفظ فقط بالحقائق التي تتغير: المدينة؛ أو مربع الروبوت واتساخ كل مربع؛ أو موضع كل قطعة.</Ar>
+2. **Actions, then RESULT**: list what the agent can do in a state, then write the state each action gives.
+   <Ar>**الأفعال ثم `RESULT`**: اسرد ما يستطيع الوكيل (agent) فعله في الحالة، ثم اكتب الحالة التي يعطيها كل فعل.</Ar>
+3. **Goal test, then cost**: name one goal state (explicit) or a property (implicit), then the cost of one step: km, 1 per action, or time.
+   <Ar>**اختبار الهدف ثم التكلفة**: سمِّ حالة هدف واحدة (صريح) أو خاصية (ضمني)، ثم تكلفة الخطوة الواحدة (step cost): كيلومترات، أو 1 لكل فعل، أو زمن.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+Water jugs (the lecture's practice problem, 4 L and 3 L): states are pairs $(x, y)$ with $x \in \{0..4\}$ and $y \in \{0..3\}$, so $5 \times 4 = 20$ pairs; initial state $(0, 0)$; actions fill, empty or pour; goal test $x = 2$; path cost 1 per action.
+
+<Ar>إبريقا الماء (تمرين المحاضرة، 4 لترات و 3 لترات): الحالات (states) أزواج $(x, y)$ حيث $x \in \{0..4\}$ و $y \in \{0..3\}$، أي $5 \times 4 = 20$ زوجًا؛ والحالة الابتدائية $(0, 0)$؛ والأفعال ملء أو تفريغ أو صبّ؛ واختبار الهدف (goal test) $x = 2$؛ وتكلفة المسار (path cost) 1 لكل فعل.</Ar>
+
+The lecture's solution passes through 7 states, (0,0) → (0,3) → (3,0) → (3,3) → (4,2) → (0,2) → (2,0), so it has 6 actions and a path cost of 6.
+
+<Ar>يمر حل المحاضرة بـ 7 حالات، `(0,0) → (0,3) → (3,0) → (3,3) → (4,2) → (0,2) → (2,0)`، لذا فيه 6 أفعال، وتكلفة مساره 6.</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+A heuristic is **not** one of the components: it belongs to informed search, not to the problem definition. Asked "how many items?", the slides' answer is four.
+
+<Ar>الدالة الاستدلالية (heuristic) **ليست** من مكونات المسألة: فهي تنتمي إلى البحث المُوجَّه (informed search)، لا إلى تعريف المسألة. وجواب الشرائح عن «كم عنصرًا؟» هو أربعة.</Ar>
+
+The goal test can be a property, so there can be several goal states: both 7 and 8 pass `NoDirt(x)`. Every step cost must be $c(x, a, y) \ge 0$.
+
+<Ar>قد يكون اختبار الهدف خاصية، فتتعدد الحالات الهدف: إذ تجتاز الحالتان 7 و 8 كلتاهما `NoDirt(x)`. ويجب أن تكون تكلفة كل خطوة (step cost) $c(x, a, y) \ge 0$.</Ar>
+
+</Callout>
+
+### Romania path cost: 418 vs 450
+
+<Ar>تكلفة المسار في رومانيا: 418 مقابل 450</Ar>
+
+$$
+g(\text{path}) = \sum_{i} c(x_i, a_i, x_{i+1}), \qquad c(x, a, y) \ge 0
+$$
+
+$g$ is the path cost, $c(x_i, a_i, x_{i+1})$ is the step cost of driving from city $x_i$ to city $x_{i+1}$ (the road length in km), and a path through $k$ cities has $k - 1$ actions.
+
+<Ar>$g$ هي تكلفة المسار (path cost)، و $c(x_i, a_i, x_{i+1})$ هي تكلفة الخطوة (step cost) للقيادة من المدينة $x_i$ إلى المدينة $x_{i+1}$ (طول الطريق بالكيلومتر)، والمسار الذي يمر بـ $k$ من المدن فيه $k - 1$ من الأفعال.</Ar>
+
+| Route <Ar>الطريق</Ar> | Running sum (km) <Ar>المجموع التراكمي (كم)</Ar> | Drives <Ar>رحلات القيادة</Ar> | $g$ (km) <Ar>$g$ (كم)</Ar> |
+|---|---|---|---|
+| `Arad → Sibiu → Fagaras → Bucharest` | 0, 140, 239, 450 | 3 | 450 |
+| `Arad → Sibiu → Rimnicu Vilcea → Pitesti → Bucharest` | 0, 140, 220, 317, 418 | 4 | **418**, optimal <Ar>**418**، الأمثل</Ar> |
+| `Arad → Zerind → Oradea` | 0, 75, 146 | 2 | 146, not a solution <Ar>146، ليس حلًا</Ar> |
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. **Cancel the shared start**: both routes begin Arad → Sibiu (140 km), so compare them from Sibiu only.
+   <Ar>**احذف البداية المشتركة**: يبدأ الطريقان كلاهما بـ `Arad → Sibiu` (140 كم)، لذا قارن بينهما بدءًا من Sibiu فقط.</Ar>
+2. **Round to hundreds**: $99 = 100 - 1$, $97 = 100 - 3$, $101 = 100 + 1$.
+   <Ar>**قرِّب إلى المئات**: $99 = 100 - 1$، و $97 = 100 - 3$، و $101 = 100 + 1$.</Ar>
+3. **Compare the tails**: $99 + 211 = 310$ against $80 + 97 + 101 = 80 + 198 = 278$, a gap of 32 km.
+   <Ar>**قارن بين الذيلين**: $99 + 211 = 310$ مقابل $80 + 97 + 101 = 80 + 198 = 278$، أي فرق قدره 32 كم.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+Via Rimnicu Vilcea: $140 + 80 = 220$, then $+ 97 = 317$, then $+ 101 = 418$. Via Fagaras: $140 + 99 = 239$, then $+ 211 = 450$. The gap is $450 - 418 = 32$ km.
+
+<Ar>عبر Rimnicu Vilcea: $140 + 80 = 220$، ثم $+ 97 = 317$، ثم $+ 101 = 418$. وعبر Fagaras: $140 + 99 = 239$، ثم $+ 211 = 450$. والفرق $450 - 418 = 32$ كم.</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+Optimal means the lowest path cost, not the fewest actions: 3 drives cost 450 km, while 4 drives cost only 418 km.
+
+<Ar>الأمثل (optimal) يعني أقل تكلفة مسار، لا أقل عدد من الأفعال: فـ 3 رحلات قيادة تكلّف 450 كم، بينما تكلّف 4 رحلات 418 كم فقط.</Ar>
+
+A cheap path that stops outside the goal is not a solution at all: Arad → Zerind → Oradea costs only 146 km but never reaches Bucharest.
+
+<Ar>والمسار الرخيص الذي يتوقف خارج الهدف ليس حلًا (solution) أصلًا: فالمسار `Arad → Zerind → Oradea` لا يكلّف إلا 146 كم، لكنه لا يصل إلى بوخارست (Bucharest) أبدًا.</Ar>
+
+</Callout>
+
+### Problem-type decision rule
+
+<Ar>قاعدة تحديد نوع المسألة</Ar>
+
+| Ask, in order <Ar>اسأل بالترتيب</Ar> | Then it is <Ar>فهي إذن</Ar> | Solution <Ar>الحل</Ar> | Vacuum world <Ar>عالم المكنسة</Ar> |
+|---|---|---|---|
+| 1. Is the state space unknown? <Ar>1. هل فضاء الحالات مجهول؟</Ar> | **Exploration** (online) <Ar>**استكشاف** (آني، online)</Ar> | Act to discover which states and actions exist <Ar>التصرف لاكتشاف الحالات والأفعال الموجودة</Ar> | Experiment to build its own map <Ar>التجريب لبناء خريطته الخاصة</Ar> |
+| 2. Is it non-observable (sensorless)? <Ar>2. هل هي غير قابلة للملاحظة (عديمة المستشعرات)؟</Ar> | **Conformant** <Ar>**متوافقة**</Ar> | One sequence that works from every possible state <Ar>تسلسل واحد ينجح من كل حالة ممكنة</Ar> | `[Right, Suck, Left, Suck]` |
+| 3. Nondeterministic and/or partially observable? <Ar>3. هل هي غير حتمية و/أو قابلة للملاحظة جزئيًا؟</Ar> | **Contingency** <Ar>**طوارئ**</Ar> | A contingent plan (policy) with branches; search and execution interleave <Ar>خطة طوارئ (سياسة) ذات تفرعات؛ ويتداخل البحث والتنفيذ</Ar> | `[Right, if dirt then Suck]` |
+| 4. Otherwise: deterministic and fully observable <Ar>4. وإلا: حتمية وقابلة للملاحظة كليًا</Ar> | **Single-state** <Ar>**الحالة الواحدة**</Ar> | A fixed sequence <Ar>تسلسل ثابت</Ar> | `[Right, Suck]` from #5 <Ar>`[Right, Suck]` بدءًا من الحالة 5</Ar> |
+
+Observable: the percepts tell the agent which state it is in. Deterministic: each action has one known result.
+
+<Ar>قابلة للملاحظة (observable): تُخبر الإدراكاتُ (percepts) الوكيلَ بالحالة التي هو فيها. حتمية (deterministic): لكل فعل نتيجة واحدة معروفة.</Ar>
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. Ask what the agent does **not** know.
+   <Ar>اسأل: ما الذي **لا** يعرفه الوكيل (agent)؟</Ar>
+2. Nothing → single-state; its own state → conformant; an action's outcome or part of the world → contingency; the states and actions themselves → exploration.
+   <Ar>إن لم يجهل شيئًا فهي مسألة الحالة الواحدة (single-state)؛ وإن جهل حالته فهي متوافقة (conformant)؛ وإن جهل نتيجة فعل أو جزءًا من العالم فهي مسألة طوارئ (contingency)؛ وإن جهل الحالات والأفعال نفسها فهي مسألة استكشاف (exploration).</Ar>
+3. The answer is a sequence for the first two, a branching plan for contingency, and acting to learn for exploration.
+   <Ar>والحل تسلسل في النوعين الأولين، وخطة متفرعة في مسألة الطوارئ، والتصرف للتعلّم في مسألة الاستكشاف.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+A robot vacuum with no sensors that knows exactly what its actions do is **conformant**: `[Right, Suck, Left, Suck]`. Add Murphy's law (`Suck` can dirty a clean carpet) and local sensing only, and it becomes **contingency**: `[Right, if dirt then Suck]`.
+
+<Ar>المكنسة الروبوتية التي ليس لها أي مستشعرات لكنها تعرف بالضبط ما تفعله أفعالها مسألة **متوافقة (conformant)**: `[Right, Suck, Left, Suck]`. وإذا أضفت قانون مورفي (Murphy's law)، أي أن `Suck` قد يؤدي إلى اتساخ سجادة نظيفة، مع استشعار محلي فقط، أصبحت مسألة **طوارئ (contingency)**: `[Right, if dirt then Suck]`.</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+Conformant is not contingency: a conformant solution is still a sequence, with no branches. And open-loop execution (ignoring percepts while running `seq`) is safe when the environment is deterministic and the plan does not depend on percepts, i.e. in single-state problems and for conformant (sensorless) plans; it is unsafe when outcomes depend on what the agent will perceive (contingency).
+
+<Ar>المسألة المتوافقة (conformant) ليست مسألة طوارئ (contingency): فحلها يظل تسلسلًا بلا تفرعات. كما أن التنفيذ بالحلقة المفتوحة (open-loop)، أي تجاهل الإدراكات أثناء تنفيذ `seq`، يكون آمنًا عندما تكون البيئة حتمية (deterministic) ولا تعتمد الخطة على الإدراكات، أي في مسائل الحالة الواحدة وفي خطط المسائل المتوافقة عديمة المستشعرات (sensorless)؛ ولا يكون آمنًا عندما تعتمد النتائج على ما سيدركه الوكيل (agent)، أي في مسائل الطوارئ.</Ar>
+
+</Callout>
+
+### Vacuum-world state count
+
+<Ar>عدد حالات عالم المكنسة</Ar>
+
+$$
+\#\text{states} = n \cdot 2^n, \qquad n = 2:\ 2 \cdot 2^2 = 8
+$$
+
+$n$ is the number of squares: the robot can be in any of the $n$ squares, and each square is independently dirty or clean, which gives $2^n$ dirt patterns (dirt amounts are ignored). The goal test `NoDirt(x)` passes $n$ of the states: every square clean, robot anywhere.
+
+<Ar>$n$ عدد المربعات: يمكن أن يكون الروبوت في أي من المربعات الـ $n$، وكل مربع متسخ أو نظيف بشكل مستقل، مما يعطي $2^n$ من أنماط الاتساخ (مع تجاهل كمية الأوساخ). ويجتاز اختبارُ الهدف (goal test) `NoDirt(x)` عددًا $n$ من الحالات: كل المربعات نظيفة، والروبوت في أي مكان.</Ar>
+
+| Squares $n$ <Ar>عدد المربعات $n$</Ar> | 1 | 2 | 3 | 4 | 5 |
+|---|---|---|---|---|---|
+| States $n \cdot 2^n$ <Ar>الحالات $n \cdot 2^n$</Ar> | 2 | 8 | 24 | 64 | 160 |
+| Goal states <Ar>الحالات الهدف</Ar> | 1 | 2 | 3 | 4 | 5 |
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. Write $2^n$ by doubling: 2, 4, 8, 16, 32.
+   <Ar>اكتب $2^n$ بالمضاعفة: 2، 4، 8، 16، 32.</Ar>
+2. Multiply by $n$, the number of places the robot can be.
+   <Ar>اضرب الناتج في $n$، وهو عدد المواضع التي يمكن أن يكون فيها الروبوت.</Ar>
+3. Goal states: everything clean, one per robot position, so $n$.
+   <Ar>الحالات الهدف: كل شيء نظيف، وحالة واحدة لكل موضع للروبوت، أي $n$.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+Two squares: 2 robot positions × 2 dirt statuses for A × 2 for B = 8 states, and 2 of them (7 and 8) are goals. Three squares: $3 \cdot 2^3 = 3 \cdot 8 = 24$.
+
+<Ar>مربعان: موضعان للروبوت × حالتان للاتساخ في A × حالتان في B = 8 حالات، منها حالتان هدف (7 و 8). وثلاثة مربعات: $3 \cdot 2^3 = 3 \cdot 8 = 24$.</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+Forgetting the robot gives $2^n$: 4 instead of 8. And $2^3 = 8$ only looks right because $n = 2$: for $n = 3$, $2^{n+1} = 16$, but the true count is 24.
+
+<Ar>نسيان الروبوت يعطي $2^n$: أي 4 بدلًا من 8. كما أن $2^3 = 8$ تبدو صحيحة فقط لأن $n = 2$: فعندما $n = 3$ تعطي $2^{n+1} = 16$، بينما العدد الصحيح 24.</Ar>
+
+</Callout>
+
+### Vacuum-world state numbers and moves
+
+<Ar>أرقام حالات عالم المكنسة وانتقالاتها</Ar>
+
+| States <Ar>الحالات</Ar> | Dirty squares <Ar>المربعات المتسخة</Ar> |
+|---|---|
+| 1, 2 | A and B <Ar>A و B كلاهما</Ar> |
+| 3, 4 | A only <Ar>A فقط</Ar> |
+| 5, 6 | B only <Ar>B فقط</Ar> |
+| 7, 8 | None: the goal <Ar>لا شيء: الهدف</Ar> |
+
+| Action <Ar>الفعل</Ar> | Rule <Ar>القاعدة</Ar> | Arrows <Ar>الأسهم</Ar> |
+|---|---|---|
+| `Right` | Odd $n \to n + 1$; even states stay <Ar>الفردية $n \to n + 1$؛ والزوجية تبقى كما هي</Ar> | $1 \to 2$, $3 \to 4$, $5 \to 6$, $7 \to 8$ |
+| `Left` | Even $n \to n - 1$; odd states stay <Ar>الزوجية $n \to n - 1$؛ والفردية تبقى كما هي</Ar> | $2 \to 1$, $4 \to 3$, $6 \to 5$, $8 \to 7$ |
+| `Suck` | Robot in a dirty A: $n + 4$; robot in a dirty B: $n + 2$; otherwise no change <Ar>الروبوت في A متسخ: $n + 4$؛ والروبوت في B متسخ: $n + 2$؛ وإلا فلا تغيير</Ar> | $1 \to 5$, $3 \to 7$, $2 \to 4$, $6 \to 8$ |
+| `NoOp` | No change, cost 0 <Ar>لا تغيير، والتكلفة 0</Ar> | None <Ar>لا شيء</Ar> |
+
+This is slide 10's numbering: $n$ is the state number, odd states have the robot in A and even states have it in B.
+
+<Ar>هذا هو ترقيم الشريحة 10: $n$ رقم الحالة، وفي الحالات الفردية يكون الروبوت في A، وفي الزوجية يكون في B.</Ar>
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. Odd or even gives the robot's square: odd = A, even = B.
+   <Ar>الفردية أو الزوجية تحدد مربع الروبوت: الفردي = A، والزوجي = B.</Ar>
+2. The pair (1–2, 3–4, 5–6, 7–8) gives the dirt: both, A only, B only, none.
+   <Ar>الزوج (1–2، 3–4، 5–6، 7–8) يحدد الاتساخ: كلاهما، A فقط، B فقط، لا شيء.</Ar>
+3. `Suck` adds 4 in A and 2 in B, and only when the robot's own square is dirty.
+   <Ar>يضيف `Suck` العدد 4 في A والعدد 2 في B، وذلك فقط عندما يكون مربع الروبوت نفسه متسخًا.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+Single-state, start in #5 (robot in A, A clean, B dirty): `Right` gives 6, then `Suck` gives $6 + 2 = 8$, a clean world. The solution `[Right, Suck]` has 2 actions, so its path cost is 2.
+
+<Ar>مسألة الحالة الواحدة (single-state)، والبداية من الحالة 5 (الروبوت في A، و A نظيف و B متسخ): يعطي `Right` الحالة 6، ثم يعطي `Suck` الحالة $6 + 2 = 8$، أي عالمًا نظيفًا. والحل `[Right, Suck]` فيه فعلان، لذا فتكلفة مساره (path cost) 2.</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+`Suck` on a clean square (states 4, 5, 7 and 8) changes nothing, so the state-space graph draws no arrow for it. And state 5 has the robot in A, not in B.
+
+<Ar>لا يغيّر `Suck` شيئًا على مربع نظيف (الحالات 4 و 5 و 7 و 8)، لذا لا يرسم له رسم فضاء الحالات (state space) أي سهم. كما أن الروبوت في الحالة 5 يكون في A لا في B.</Ar>
+
+</Callout>
+
+### Sensorless belief-state sizes
+
+<Ar>أحجام حالات الاعتقاد في المسألة عديمة المستشعرات</Ar>
+
+$$
+b' = \{\, \text{RESULT}(s, a) : s \in b \,\}, \qquad |b'| \le |b|
+$$
+
+$b$ is the belief state (the set of states the agent might be in), $a$ is the action and $b'$ is the belief state after it. Known actions can merge states but never split them, so the set never grows; here every action that settles one unknown fact (the robot's square, dirt in A, dirt in B) halves it.
+
+<Ar>$b$ هي حالة الاعتقاد (belief state)، أي مجموعة الحالات التي قد يكون فيها الوكيل، و $a$ هو الفعل، و $b'$ هي حالة الاعتقاد بعده. والأفعال المعروفة النتائج قد تدمج الحالات لكنها لا تقسمها أبدًا، لذا لا تكبر المجموعة أبدًا؛ وهنا يقسمها إلى النصف كلُّ فعل يحسم حقيقة واحدة مجهولة (مربع الروبوت، أو الاتساخ في A، أو الاتساخ في B).</Ar>
+
+| Step <Ar>الخطوة</Ar> | Action <Ar>الفعل</Ar> | Belief state <Ar>حالة الاعتقاد</Ar> | Size <Ar>الحجم</Ar> | Settles <Ar>ما يحسمه</Ar> |
+|---|---|---|---|---|
+| 0 | Start <Ar>البداية</Ar> | $\{1, \dots, 8\}$ | 8 | Nothing <Ar>لا شيء</Ar> |
+| 1 | `Right` | $\{2, 4, 6, 8\}$ | 4 | Robot in B <Ar>الروبوت في B</Ar> |
+| 2 | `Suck` | $\{4, 8\}$ | 2 | B is clean <Ar>B نظيف</Ar> |
+| 3 | `Left` | $\{3, 7\}$ | 2 | Nothing new <Ar>لا جديد</Ar> |
+| 4 | `Suck` | $\{7\}$ | 1 | A is clean: goal <Ar>A نظيف: الهدف</Ar> |
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. Push every state in the set through the action, using the odd/even and $+4$, $+2$ rules.
+   <Ar>مرِّر كل حالة في المجموعة عبر الفعل، مستخدمًا قاعدة الفردي والزوجي وقاعدة $+4$ و $+2$.</Ar>
+2. Delete the duplicates.
+   <Ar>احذف الحالات المكررة.</Ar>
+3. Check the size: $8 = 2^3$ because 3 facts are unknown, and each fact the action settles halves the set.
+   <Ar>تحقق من الحجم: $8 = 2^3$ لأن 3 حقائق مجهولة، وكل حقيقة يحسمها الفعل تقسم المجموعة إلى النصف.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+`Right` on $\{1, \dots, 8\}$: odd states go up by one and even states stay, giving $\{2, 4, 6, 8\}$. `Suck` there: $2 \to 4$, $4 \to 4$, $6 \to 8$, $8 \to 8$, giving $\{4, 8\}$. The sizes run 8, 4, 2, 2, 1.
+
+<Ar>`Right` على $\{1, \dots, 8\}$: تزيد الحالات الفردية بواحد وتبقى الزوجية، فنحصل على $\{2, 4, 6, 8\}$. ثم `Suck` عليها: $2 \to 4$، و $4 \to 4$، و $6 \to 8$، و $8 \to 8$، فنحصل على $\{4, 8\}$. وتتوالى الأحجام: 8، 4، 2، 2، 1.</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+The size does not drop at every step: `Left` keeps 2, because the robot's square was already known. And the conformant solution `[Right, Suck, Left, Suck]` (4 actions) is a plain sequence with no branches.
+
+<Ar>لا ينخفض الحجم في كل خطوة: إذ يُبقي `Left` الحجم 2، لأن مربع الروبوت كان معروفًا من قبل. كما أن حل المسألة المتوافقة (conformant) `[Right, Suck, Left, Suck]` (4 أفعال) تسلسل عادي بلا تفرعات.</Ar>
+
+</Callout>
+
+### 8-puzzle state count
+
+<Ar>عدد حالات لغز الثمانية</Ar>
+
+$$
+\frac{9!}{2} = \frac{362{,}880}{2} = 181{,}440
+$$
+
+9 is the number of cells (8 tiles + the blank), so $9!$ counts every arrangement. A slide never changes the board's parity, so the arrangements split into two halves that can never reach each other: from any start, only $9!/2$ are reachable.
+
+<Ar>9 هو عدد الخانات (8 قطع + الخانة الفارغة)، لذا يعدّ $9!$ كل الترتيبات الممكنة. ولا يغيّر الانزلاق أبدًا زوجية (parity) اللوحة، لذا تنقسم الترتيبات إلى نصفين لا يصل أحدهما إلى الآخر أبدًا: فلا يمكن الوصول من أي بداية إلا إلى $9!/2$ منها.</Ar>
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. Climb the ladder: $5! = 120$, $6! = 720$, $7! = 5{,}040$, $8! = 40{,}320$, $9! = 362{,}880$.
+   <Ar>اصعد السلّم: $5! = 120$، و $6! = 720$، و $7! = 5{,}040$، و $8! = 40{,}320$، و $9! = 362{,}880$.</Ar>
+2. Or drop the 2 before multiplying: $9!/2 = 3 \cdot 4 \cdot 5 \cdot 6 \cdot 7 \cdot 8 \cdot 9$.
+   <Ar>أو احذف العدد 2 قبل الضرب: $9!/2 = 3 \cdot 4 \cdot 5 \cdot 6 \cdot 7 \cdot 8 \cdot 9$.</Ar>
+3. Multiply left to right: 60, 360, 2,520, 20,160, 181,440.
+   <Ar>اضرب من اليسار إلى اليمين: $60$، $360$، $2{,}520$، $20{,}160$، $181{,}440$.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+$8! = 40{,}320$; times 9 is $362{,}880$; halved, **181,440** reachable states.
+
+<Ar>$8! = 40{,}320$؛ وبضربه في 9 يصبح $362{,}880$؛ وبقسمته على 2 نحصل على **181,440** حالة يمكن الوصول إليها.</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+$9! = 362{,}880$ counts all arrangements, but only 181,440 can be reached: forgetting the ÷2 doubles the answer. And it is $9!$, not $8!$: the blank is the ninth piece.
+
+<Ar>يعدّ $9! = 362{,}880$ كل الترتيبات، لكن لا يمكن الوصول إلا إلى 181,440 منها: فنسيان القسمة على 2 يضاعف الإجابة. كما أنه $9!$ لا $8!$: فالخانة الفارغة (blank) هي القطعة التاسعة.</Ar>
+
+</Callout>
+
+### 8-puzzle parity test
+
+<Ar>اختبار الزوجية في لغز الثمانية</Ar>
+
+$$
+\text{goal reachable} \iff I(\text{start}) \equiv I(\text{goal}) \pmod 2
+$$
+
+$I$ is the number of inversions: pairs of tiles in the wrong order when the board is read row by row, skipping the blank. On a 3 × 3 board a slide changes $I$ by 0 or ±2, so its parity never changes. This test is the walkthrough's parity check; it is not on the slides.
+
+<Ar>$I$ عدد الانقلابات (inversions): أي أزواج القطع الواقعة في ترتيب خاطئ عند قراءة اللوحة صفًا صفًا مع تخطي الخانة الفارغة. وعلى لوحة 3 × 3 يغيّر الانزلاق قيمة $I$ بمقدار 0 أو ±2، لذا لا تتغير زوجيتها (parity) أبدًا. وهذا الاختبار هو فحص الزوجية في الشرح التفاعلي (walkthrough)، وليس موجودًا في الشرائح.</Ar>
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. Read the tiles row by row, skipping the blank.
+   <Ar>اقرأ القطع صفًا صفًا مع تخطي الخانة الفارغة.</Ar>
+2. For each tile, count the smaller tiles after it, and add the counts.
+   <Ar>لكل قطعة، عُدّ القطع الأصغر منها الواقعة بعدها، ثم اجمع الأعداد.</Ar>
+3. Same parity as the goal (even and even, or odd and odd) means the goal is reachable.
+   <Ar>إذا تساوت الزوجية مع زوجية الهدف (زوجي وزوجي، أو فردي وفردي) فيمكن الوصول إلى الهدف.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+The slides' start `7 2 4 / 5 _ 6 / 8 3 1` reads 7 2 4 5 6 8 3 1, so $I = 6 + 1 + 2 + 2 + 2 + 2 + 1 + 0 = 16$, even. The goal `1 2 3 / 4 5 6 / 7 8 _` has $I = 0$, also even, so the goal can be reached.
+
+<Ar>تُقرأ حالة البداية في الشرائح `7 2 4 / 5 _ 6 / 8 3 1` على أنها `7 2 4 5 6 8 3 1`، لذا $I = 6 + 1 + 2 + 2 + 2 + 2 + 1 + 0 = 16$، وهو عدد زوجي. والهدف `1 2 3 / 4 5 6 / 7 8 _` فيه $I = 0$، وهو زوجي أيضًا، لذا يمكن الوصول إلى الهدف.</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+Count tiles only: the blank is never part of a pair. On the 4 × 4 board a vertical slide flips the parity, so there the blank's row has to be counted too.
+
+<Ar>عُدّ القطع فقط: فالخانة الفارغة لا تدخل في أي زوج. وعلى لوحة 4 × 4 يقلب الانزلاق الرأسي الزوجية، لذا يجب هناك أن يُحسب صف الخانة الفارغة أيضًا.</Ar>
+
+</Callout>
+
+### 15-puzzle state count
+
+<Ar>عدد حالات لغز الخمسة عشر</Ar>
+
+$$
+\frac{16!}{2} = \frac{20{,}922{,}789{,}888{,}000}{2} = 10{,}461{,}394{,}944{,}000 \approx 1.05 \times 10^{13}
+$$
+
+A $k \times k$ board has $k^2$ cells, so it has $(k^2)!$ arrangements and $(k^2)!/2$ reachable states. $k = 4$ is the 15-puzzle: just over 10 trillion states.
+
+<Ar>للوحة $k \times k$ عدد $k^2$ من الخانات، لذا لها $(k^2)!$ ترتيبًا و $(k^2)!/2$ حالة يمكن الوصول إليها. وعندما $k = 4$ نحصل على لغز الخمسة عشر (15-puzzle): أكثر من 10 تريليونات حالة بقليل.</Ar>
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. Square the side: $4^2 = 16$ cells.
+   <Ar>ربِّع طول الضلع: $4^2 = 16$ خانة.</Ar>
+2. Build $16! \approx 2.09 \times 10^{13}$ from $10! = 3{,}628{,}800$ times $11 \cdot 12 \cdot 13 \cdot 14 \cdot 15 \cdot 16 = 5{,}765{,}760$.
+   <Ar>ابنِ $16! \approx 2.09 \times 10^{13}$ من حاصل ضرب $10! = 3{,}628{,}800$ في $11 \cdot 12 \cdot 13 \cdot 14 \cdot 15 \cdot 16 = 5{,}765{,}760$.</Ar>
+3. Halve it: about $1.05 \times 10^{13}$, "over 10 trillion".
+   <Ar>اقسمه على 2: نحو $1.05 \times 10^{13}$، أي «أكثر من 10 تريليونات».</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+One size up from the 8-puzzle multiplies the space by $16!/9! = 10 \cdot 11 \cdots 16 = 57{,}657{,}600$: from 181,440 states to about $10^{13}$.
+
+<Ar>زيادة حجم لغز الثمانية درجة واحدة تضرب فضاء الحالات (state space) في $16!/9! = 10 \cdot 11 \cdots 16 = 57{,}657{,}600$: من 181,440 حالة إلى نحو $10^{13}$.</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+$16!$ without the ÷2 is the number of arrangements, not of reachable states. And finding the optimal solution for the $n$-puzzle family is NP-hard, so a bigger board is far more than "more of the same".
+
+<Ar>العدد $16!$ دون القسمة على 2 هو عدد الترتيبات، لا عدد الحالات التي يمكن الوصول إليها. كما أن إيجاد الحل الأمثل (optimal solution) لعائلة الألغاز `n-puzzle` مسألة NP-hard، لذا فاللوحة الأكبر أكثر بكثير من «مزيد من الشيء نفسه».</Ar>
+
+</Callout>
+
+### Action counts: Arad and the 8-puzzle blank
+
+<Ar>عدد الأفعال: أراد والخانة الفارغة في لغز الثمانية</Ar>
+
+$$
+\text{tile actions} = 8 \times 4 = 32, \qquad \text{blank actions} \le 4
+$$
+
+Counting moves per tile gives 8 tiles × 4 directions = 32 actions, most of them illegal; counting moves of the single blank gives at most 4. On the Romania map, the actions in a city are the roads leaving it.
+
+<Ar>عدّ الحركات لكل قطعة يعطي 8 قطع × 4 اتجاهات = 32 فعلًا، معظمها غير مسموح به؛ أما عدّ حركات الخانة الفارغة الوحيدة فيعطي 4 على الأكثر. وعلى خريطة رومانيا تكون الأفعال (actions) في مدينةٍ ما هي الطرق الخارجة منها.</Ar>
+
+| Where <Ar>الموضع</Ar> | Actions <Ar>الأفعال</Ar> |
+|---|---|
+| Blank in the centre <Ar>الخانة الفارغة في المركز</Ar> | 4 |
+| Blank on a side, not a corner <Ar>الخانة الفارغة على ضلع، لا في زاوية</Ar> | 3 |
+| Blank in a corner <Ar>الخانة الفارغة في زاوية</Ar> | 2 |
+| Arad: to Zerind 75, Sibiu 140, Timisoara 118 <Ar>أراد (Arad): إلى Zerind 75، و Sibiu 140، و Timisoara 118</Ar> | 3 |
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. Find the blank.
+   <Ar>حدِّد موضع الخانة الفارغة.</Ar>
+2. Count its open sides: centre 4, side 3, corner 2.
+   <Ar>عُدّ جوانبها المفتوحة: المركز 4، والضلع 3، والزاوية 2.</Ar>
+3. For the tile formulation write 8 × 4 = 32, then keep only the legal ones.
+   <Ar>في صياغة القطع اكتب 8 × 4 = 32، ثم أبقِ المسموح به منها فقط.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+In the slides' start `7 2 4 / 5 _ 6 / 8 3 1` the blank is in the centre, so there are 4 actions: blank left slides 5 right, up slides 2 down, right slides 6 left, down slides 3 up. Only 4 of the 32 tile actions are legal.
+
+<Ar>في حالة البداية في الشرائح `7 2 4 / 5 _ 6 / 8 3 1` تقع الخانة الفارغة في المركز، لذا توجد 4 أفعال: تحريك الخانة الفارغة يسارًا يُزلق القطعة 5 يمينًا، وإلى أعلى يُزلق 2 إلى أسفل، ويمينًا يُزلق 6 يسارًا، وإلى أسفل يُزلق 3 إلى أعلى. ولا يُسمح إلا بـ 4 من أفعال القطع الـ 32.</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+"Up" names the blank's move, so the tile goes **down**. And no road from Arad reaches Bucharest, and none of Arad's neighbours (Zerind, Sibiu, Timisoara) borders Bucharest either, so every solution needs at least 3 drives.
+
+<Ar>كلمة «أعلى» تصف حركة الخانة الفارغة، لذا تتحرك القطعة **إلى أسفل**. كما أنه لا يصل أي طريق من أراد إلى بوخارست (Bucharest)، ولا يجاور أيٌّ من جيران أراد (Zerind و Sibiu و Timisoara) بوخارست أيضًا، لذا يحتاج كل حل إلى 3 رحلات قيادة على الأقل.</Ar>
+
+</Callout>
+
+### State-space abstraction rules
+
+<Ar>قواعد تجريد فضاء الحالات</Ar>
+
+| Abstract … <Ar>العنصر المجرد</Ar> | Stands for <Ar>يمثّل</Ar> | Romania <Ar>رومانيا</Ar> |
+|---|---|---|
+| **State** <Ar>**الحالة المجردة**</Ar> | A set of real states <Ar>مجموعة من الحالات الحقيقية</Ar> | `In(Arad)`: any weather, radio station or spot in town <Ar>`In(Arad)`: أي طقس أو محطة راديو أو مكان في المدينة</Ar> |
+| **Action** <Ar>**الفعل المجرد**</Ar> | A complex combination of real actions <Ar>تركيبة معقدة من الأفعال الحقيقية</Ar> | `Arad → Zerind`: every route, detour and rest stop, as one 75 km edge <Ar>`Arad → Zerind`: كل الطرق والتحويلات ومحطات الاستراحة، في حافة واحدة طولها 75 كم</Ar> |
+| **Solution** <Ar>**الحل المجرد**</Ar> | A set of real paths that are solutions in the real world <Ar>مجموعة من المسارات الحقيقية التي تُعدّ حلولًا في العالم الحقيقي</Ar> | The 4-drive route of 418 km <Ar>الطريق ذو الرحلات الأربع وطوله 418 كم</Ar> |
+
+A good abstraction is **valid** (realizability: every real state "in Arad" can get to some real state "in Zerind") and **useful** (each abstract action is easier than the original problem).
+
+<Ar>التجريد (abstraction) الجيد **صالح (valid)**، أي قابل للتحقيق (realizability): كل حالة حقيقية «في أراد» تستطيع الوصول إلى حالة حقيقية ما «في زيرند»؛ و**مفيد (useful)**: كل فعل مجرد أسهل من المسألة الأصلية.</Ar>
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. Drop every detail the goal test and the path cost do not use: weather, radio, the exact spot.
+   <Ar>أسقِط كل تفصيل لا يستخدمه اختبار الهدف (goal test) ولا تكلفة المسار (path cost): الطقس، والراديو، والمكان الدقيق.</Ar>
+2. Valid? From every real state in the source, some real state in the target must be reachable.
+   <Ar>هل هو صالح؟ يجب أن يمكن الوصول من كل حالة حقيقية في المصدر إلى حالة حقيقية ما في الوجهة.</Ar>
+3. Useful? Each action must be easier than the whole problem: city to city, yes.
+   <Ar>هل هو مفيد؟ يجب أن يكون كل فعل أسهل من المسألة كلها: والانتقال من مدينة إلى مدينة كذلك.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+Three levels for Arad to Bucharest: steering moves (thousands of tiny steps, too fine), city to city (4 drives, 418 km, just right), or one action Arad → Bucharest (as hard as the problem itself, too coarse).
+
+<Ar>ثلاثة مستويات للانتقال من أراد إلى بوخارست: حركات التوجيه (آلاف الخطوات الصغيرة، تفاصيل أكثر من اللازم)، أو من مدينة إلى مدينة (4 رحلات قيادة، 418 كم، القدر المناسب)، أو فعل واحد `Arad → Bucharest` (صعب صعوبةَ المسألة نفسها، تفاصيل أقل من اللازم).</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+Valid is not enough: the single action Arad → Bucharest is valid but no easier than the problem, so it is not useful. And a continuous space, like robotic assembly with real-valued joint angles, must be discretised first, for example one step every 15°.
+
+<Ar>الصلاحية وحدها لا تكفي: فالفعل الوحيد `Arad → Bucharest` صالح لكنه ليس أسهل من المسألة، لذا فهو غير مفيد. كما أن الفضاء المتصل (continuous)، مثل التجميع الروبوتي بزوايا مفاصل ذات قيم حقيقية، يجب تقطيعه إلى قيم منفصلة (discretised) أولًا، مثلًا خطوة كل 15°.</Ar>
+
+</Callout>

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { m } from "framer-motion";
-import { BookOpen, FlaskConical, GraduationCap, LayoutGrid, MessageCircleQuestionMark } from "lucide-react";
+import { BookOpen, Calculator, FlaskConical, GraduationCap, LayoutGrid, MessageCircleQuestionMark } from "lucide-react";
 import { MotionRoot } from "@/components/motion/MotionRoot";
 import { DUR, EASE } from "@/lib/motion";
 import styles from "./SubjectTabs.module.css";
@@ -13,12 +13,15 @@ export function SubjectTabs({
   lectureCount,
   sectionCount,
   qaCount,
+  cheatCount = 0,
 }: {
   subject: string;
   lectureCount: number;
   sectionCount: number;
   /** Q&A drills in this subject */
   qaCount: number;
+  /** Cheat-sheet parts (one per lecture); the tab only shows when there are some */
+  cheatCount?: number;
 }) {
   const pathname = usePathname();
   const base = `/subjects/${subject}/`;
@@ -28,6 +31,9 @@ export function SubjectTabs({
     { href: `${base}sections/`, label: "Sections", icon: FlaskConical, kind: "sections", count: sectionCount, prefix: false },
     // Stays active on its sub-pages (flashcards, exam).
     { href: `${base}review/`, label: "Review", icon: GraduationCap, kind: undefined, count: undefined, prefix: true },
+    ...(cheatCount > 0
+      ? [{ href: `${base}cheatsheet/`, label: "Cheat sheet", icon: Calculator, kind: undefined, count: undefined, prefix: false }]
+      : []),
     // Stays active on each drill's page.
     { href: `${base}qa/`, label: "Q&A", icon: MessageCircleQuestionMark, kind: undefined, count: qaCount, prefix: true },
   ];

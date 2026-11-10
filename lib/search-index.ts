@@ -2,6 +2,7 @@ import "server-only";
 import { COLLECTION_META, getCollection, getSubjects, itemHref } from "@/lib/content";
 import { getStudyData } from "@/lib/study-index";
 import { getDrills } from "@/lib/qa";
+import { getCheatsheet } from "@/lib/cheatsheet";
 import type { SearchDoc } from "@/lib/search";
 
 /** Every searchable thing on the site, built at build time into /search-index.json. */
@@ -43,6 +44,15 @@ export function buildSearchIndex(): SearchDoc[] {
             href: `${href}#${heading.id}`,
           });
         }
+      }
+    }
+
+    for (const part of getCheatsheet(subject.slug)) {
+      const href = `${subjectHref}cheatsheet/`;
+      const context = `${subject.title} · Cheat sheet · Lecture ${part.lecture}`;
+      docs.push({ kind: "heading", title: `Cheat sheet: ${part.title}`, titleAr: part.titleAr, context, href: `${href}#${part.id}` });
+      for (const heading of part.headings) {
+        docs.push({ kind: "heading", title: heading.text, titleAr: heading.textAr, context, href: `${href}#${heading.id}` });
       }
     }
 

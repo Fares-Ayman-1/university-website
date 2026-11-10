@@ -17,3 +17,6 @@ export const RelationalAlgebraPlayer = dynamic(() =>
 );
 export const EncoderSimPlayer = dynamic(() => import("./EncoderSimPlayer").then((m) => m.EncoderSimPlayer));
 export const WalkthroughPlayer = dynamic(() => import("./WalkthroughPlayer").then((m) => m.WalkthroughPlayer));
+export const SearchCostCalcPlayer = dynamic(() => import("./SearchCostCalcPlayer").then((m) => m.SearchCostCalcPlayer));
+export const AStarTablePlayer = dynamic(() => import("./AStarTablePlayer").then((m) => m.AStarTablePlayer));
+export const PuzzleHeuristicsPlayer = dynamic(() => import("./PuzzleHeuristicsPlayer").then((m) => m.PuzzleHeuristicsPlayer));

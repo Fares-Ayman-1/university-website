@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getLectures, getSections, getSubject } from "@/lib/content";
 import { getDrills } from "@/lib/qa";
+import { getCheatsheet } from "@/lib/cheatsheet";
 import { SubjectTabs } from "@/components/SubjectTabs";
 import { ArText } from "@/components/mdx/Arabic";
 import styles from "./hub.module.css";
@@ -52,6 +53,7 @@ export default async function SubjectHubLayout({
         lectureCount={getLectures(subject.slug).length}
         sectionCount={getSections(subject.slug).length}
         qaCount={getDrills(subject.slug).length}
+        cheatCount={getCheatsheet(subject.slug).length}
       />
       <div className={`container ${styles.body}`}>{children}</div>
     </>

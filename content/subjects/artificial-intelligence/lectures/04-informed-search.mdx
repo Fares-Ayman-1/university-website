@@ -36,9 +36,9 @@ bookRefs:
 
 <Walkthrough id="ai4-informed" expect="blind-informed, knowledge, best-first; ucs-cities=13; greedy-cities=4" />
 
-The strategies of Lecture 3 are **uninformed**: they use only the information in the problem definition. From Arad, uniform-cost search expands Zerind (75 km) and Timisoara (118 km) before Sibiu (140 km) only because their roads are shorter, although both lie away from Bucharest. It removes 13 different cities from the fringe before it removes Bucharest.
+The strategies of Lecture 3 are **uninformed**: they use only the information in the problem definition. From Arad, uniform-cost search expands Zerind (75 km) and Timisoara (118 km) before Sibiu (140 km) only because their roads are shorter, although both lie away from Bucharest. It removes 12 other cities from the fringe before Bucharest, the 13th city it removes.
 
-<Ar>استراتيجيات المحاضرة 3 **غير مُوجَّهة (uninformed)**: فهي لا تستخدم إلا المعلومات الموجودة في تعريف المسألة. فبدءًا من Arad يوسّع البحث بالتكلفة الموحدة (uniform-cost search) المدينتين Zerind (75 km) و Timisoara (118 km) قبل Sibiu (140 km) لمجرد أن طريقيهما أقصر، مع أن كلتيهما تقع بعيدًا عن Bucharest. ويُزيل من الحافة 13 مدينة مختلفة قبل أن يُزيل Bucharest.</Ar>
+<Ar>استراتيجيات المحاضرة 3 **غير مُوجَّهة (uninformed)**: فهي لا تستخدم إلا المعلومات الموجودة في تعريف المسألة. فبدءًا من Arad يوسّع البحث بالتكلفة الموحدة (uniform-cost search) المدينتين Zerind (75 km) و Timisoara (118 km) قبل Sibiu (140 km) لمجرد أن طريقيهما أقصر، مع أن كلتيهما تقع بعيدًا عن Bucharest. ويُزيل من الحافة 12 مدينة أخرى قبل Bucharest، التي تكون المدينة الثالثة عشرة التي يُزيلها.</Ar>
 
 An **informed** (heuristic) search strategy uses **domain-specific hints** about the location of the goals. With them it can find solutions far more efficiently than an uninformed strategy: greedy best-first search, below, reaches Bucharest after removing only 4 cities.
 

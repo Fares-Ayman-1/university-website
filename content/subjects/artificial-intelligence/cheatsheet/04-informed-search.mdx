@@ -1,0 +1,496 @@
+---
+lecture: 4
+title: Informed Search
+titleAr: "البحث المُوجَّه"
+---
+
+### Heuristic h(n) and straight-line distances
+
+<Ar>الدالة الاستدلالية h(n) والمسافات بخط مستقيم</Ar>
+
+$$
+h(n) = \text{estimated cost of the cheapest path from } n \text{ to a goal}, \qquad h(n) \ge 0, \qquad h(\text{goal}) = 0
+$$
+
+$h(n)$ depends only on the state at $n$, not on the path that reached it; $h_{\text{SLD}}(n)$ is the straight-line distance from city $n$ to Bucharest, in km.
+
+<Ar>تعتمد $h(n)$ على الحالة (state) عند $n$ فقط، لا على المسار الذي وصل إليها؛ و $h_{\text{SLD}}(n)$ هي المسافة بخط مستقيم (straight-line distance) من المدينة $n$ إلى Bucharest، بالكيلومتر.</Ar>
+
+{/* data-table */}
+
+| City <Ar>المدينة</Ar> | $h_{\text{SLD}}$ | City <Ar>المدينة</Ar> | $h_{\text{SLD}}$ |
+|---|---|---|---|
+| Arad | **366** | Mehadia | 241 |
+| Bucharest | **0** | Neamt | 234 |
+| Craiova | **160** | Oradea | **380** |
+| Dobreta | 242 | Pitesti | **100** |
+| Eforie | 161 | Rimnicu Vilcea | **193** |
+| Fagaras | **176** | Sibiu | **253** |
+| Giurgiu | 77 | Timisoara | **329** |
+| Hirsova | 151 | Urziceni | 80 |
+| Iasi | 226 | Vaslui | 199 |
+| Lugoj | 244 | Zerind | **374** |
+
+Values in **bold** are the 10 cities that the A* run from Arad touches: learn those first.
+
+<Ar>القيم المكتوبة **بخط عريض** هي المدن العشر التي يمر بها تشغيل <bdi>A\*</bdi> من Arad: احفظها أولًا.</Ar>
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. $h$ is a lookup in the table, never a sum; the goal always has $h = 0$.
+   <Ar>تُقرأ $h$ من الجدول مباشرة ولا تُحسب بالجمع أبدًا؛ وقيمتها عند الهدف دائمًا $h = 0$.</Ar>
+2. Learn the optimal route as one chain: Arad 366, Sibiu 253, Rimnicu Vilcea 193, Pitesti 100, Bucharest 0.
+   <Ar>احفظ الطريق الأمثل سلسلةً واحدة: Arad 366، و Sibiu 253، و Rimnicu Vilcea 193، و Pitesti 100، و Bucharest 0.</Ar>
+3. Sanity check: a straight line is never longer than the road, so $h_{\text{SLD}}(n)$ is never above the road distance.
+   <Ar>للتحقق السريع: الخط المستقيم لا يكون أطول من الطريق أبدًا، لذا لا تتجاوز $h_{\text{SLD}}(n)$ مسافة الطريق أبدًا.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+Arad: $h_{\text{SLD}} = 366$ km in a straight line, while the best road is $140 + 80 + 97 + 101 = 418$ km, and $366 \le 418$.
+
+<Ar>Arad: $h_{\text{SLD}} = 366$ km بخط مستقيم، بينما أفضل طريق $140 + 80 + 97 + 101 = 418$ km، و $366 \le 418$.</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+$h$ belongs to the city, not to the path. Sibiu appears in the A* run with $g = 140$, $300$ and $338$, and its $h$ is 253 every time ($f$ = 393, 553 and 591).
+
+<Ar>تنتمي $h$ إلى المدينة لا إلى المسار. فتظهر Sibiu في تشغيل <bdi>A\*</bdi> مع $g = 140$ و $300$ و $338$، وقيمة $h$ لها 253 في كل مرة ($f$ = 393 و 553 و 591).</Ar>
+
+</Callout>
+
+### Greedy best-first: always the smallest h
+
+<Ar>البحث الجشع الأفضل أولًا: أصغر h دائمًا</Ar>
+
+$$
+f(n) = h(n)
+$$
+
+$f(n)$ is the priority on the fringe and $h(n)$ the table value; the path cost $g(n)$ is ignored completely.
+
+<Ar>$f(n)$ هي الأولوية على الحافة (fringe)، و $h(n)$ القيمة المأخوذة من الجدول؛ أما تكلفة المسار $g(n)$ فتُتجاهل تمامًا.</Ar>
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. Put every child of the removed node on the fringe with its $h$.
+   <Ar>ضع كل أبناء العقدة المُزالة على الحافة مع قيمة $h$ لكلٍّ منها.</Ar>
+2. Remove the smallest $h$ on the whole fringe; stop when it is the goal.
+   <Ar>أزِل صاحبة أصغر $h$ على الحافة كلها؛ وتوقّف عندما تكون هي الهدف.</Ar>
+3. Only at the end, add the road lengths along the path: that is the cost.
+   <Ar>في النهاية فقط اجمع أطوال الطرق على المسار: فهذه هي التكلفة.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+Arad (366), then Sibiu (253, the smallest of 253, 329 and 374), then Fagaras ($176 < 193$), then Bucharest (0): 4 nodes removed. The cost is $140 + 99 + 211 = 450$ km against the optimal 418 km: 32 km too long.
+
+<Ar>Arad (366)، ثم Sibiu (253، الأصغر بين 253 و 329 و 374)، ثم Fagaras ($176 < 193$)، ثم Bucharest (0): أي 4 عقد مُزالة. والتكلفة $140 + 99 + 211 = 450$ km مقابل 418 km للطريق الأمثل: أي أطول بـ 32 km.</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+Greedy picks Fagaras because $176 < 193$, then pays the 211 km road from Fagaras to Bucharest. The cost of a greedy route is the sum of its roads, never of its $h$ values. Its tree version can also loop forever (Iasi ↔ Neamt), so greedy is neither optimal nor complete.
+
+<Ar>يختار البحث الجشع Fagaras لأن $176 < 193$، ثم يدفع طريق 211 km من Fagaras إلى Bucharest. فتكلفة طريق البحث الجشع هي مجموع أطوال طرقه، لا مجموع قيم $h$ أبدًا. وقد تدور صيغته الشجرية أيضًا في حلقة إلى الأبد (`Iasi ↔ Neamt`)، لذا فالبحث الجشع ليس أمثل ولا مكتملًا.</Ar>
+
+</Callout>
+
+### A* step table (n, g, h, f)
+
+<Ar>جدول خطوات `A*` (n، g، h، f)</Ar>
+
+$$
+f(n) = g(n) + h(n)
+$$
+
+$g(n)$: road km from the start to $n$; $h(n)$: the table value; $f(n)$: the estimated cost of the best solution through $n$. The fringe is ordered by $f$, lowest first.
+
+<Ar>$g(n)$: كيلومترات الطريق من البداية إلى $n$؛ و $h(n)$: القيمة المأخوذة من الجدول؛ و $f(n)$: التكلفة المقدَّرة لأفضل حل يمر بـ $n$. وتُرتَّب الحافة حسب $f$، الأقل أولًا.</Ar>
+
+The full Romania run, Arad to Bucharest (tree search, children generated in alphabetical order):
+
+<Ar>تشغيل رومانيا كاملًا، من Arad إلى Bucharest (بحث شجري، مع توليد الأبناء بالترتيب الأبجدي):</Ar>
+
+{/* data-table */}
+
+| Step <Ar>الخطوة</Ar> | Removed $n$ <Ar>العقدة المُزالة $n$</Ar> | $g$ | $h$ | $f$ | Children added, with $f$ <Ar>الأبناء المُضافة مع $f$</Ar> |
+|---|---|---|---|---|---|
+| 1 | Arad | 0 | 366 | 366 | Sibiu 393, Timisoara 447, Zerind 449 |
+| 2 | Sibiu | 140 | 253 | 393 | Arad 646, Fagaras 415, Oradea 671, Rimnicu Vilcea 413 |
+| 3 | Rimnicu Vilcea | 220 | 193 | 413 | Craiova 526, Pitesti 417, Sibiu 553 |
+| 4 | Fagaras | 239 | 176 | 415 | **Bucharest 450**, Sibiu 591 |
+| 5 | Pitesti | 317 | 100 | 417 | **Bucharest 418**, Craiova 615, Rimnicu Vilcea 607 |
+| 6 | Bucharest ✓ | 418 | 0 | 418 | |
+
+Removal order: Arad, Sibiu, Rimnicu Vilcea, Fagaras, Pitesti, then Bucharest (6 nodes). The route Arad → Sibiu → Rimnicu Vilcea → Pitesti → Bucharest costs $140 + 80 + 97 + 101 = 418$ km.
+
+<Ar>ترتيب الإزالة: Arad، ثم Sibiu، ثم Rimnicu Vilcea، ثم Fagaras، ثم Pitesti، ثم Bucharest (6 عقد). ويكلّف الطريق `Arad → Sibiu → Rimnicu Vilcea → Pitesti → Bucharest` مقدار $140 + 80 + 97 + 101 = 418$ km.</Ar>
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. Four columns: $n$, $g$, $h$, $f$. For each child, $g$ = the parent's $g$ + the road km, $h$ comes from the table, and $f = g + h$.
+   <Ar>أربعة أعمدة: $n$ و $g$ و $h$ و $f$. لكل ابن: $g$ = قيمة $g$ للأب + كيلومترات الطريق، و $h$ من الجدول، و $f = g + h$.</Ar>
+2. Remove the smallest $f$ on the whole fringe, old nodes included; ties go first in, first out.
+   <Ar>أزِل صاحبة أصغر $f$ على الحافة كلها، بما فيها العقد القديمة؛ وتُحسم حالات التساوي بأسبقية الدخول (first in, first out).</Ar>
+3. Self-check: with $h_{\text{SLD}}$ the removed $f$ values never go down (366, 393, 413, 415, 417, 418). Stop when the node you remove is the goal.
+   <Ar>للتحقق: مع $h_{\text{SLD}}$ لا تنخفض قيم $f$ للعقد المُزالة أبدًا (366، 393، 413، 415، 417، 418). وتوقّف عندما تكون العقدة التي تُزيلها هي الهدف.</Ar>
+
+</Callout>
+
+<AStarTable start="Arad" mode="astar" expect="Arad => astar=418; greedy=450" />
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+The fringe after step 4 decides it. Pitesti: $g = 220 + 97 = 317$, $h = 100$, $f = 417$. Bucharest via Fagaras: $g = 239 + 211 = 450$, $h = 0$, $f = 450$. Since $417 < 450$, Pitesti goes first, and its child Bucharest gets $g = 317 + 101 = 418$, $f = 418$.
+
+<Ar>الحافة بعد الخطوة 4 هي الحاسمة. Pitesti: $g = 220 + 97 = 317$، و $h = 100$، و $f = 417$. و Bucharest عبر Fagaras: $g = 239 + 211 = 450$، و $h = 0$، و $f = 450$. وبما أن $417 < 450$ تُوسَّع Pitesti أولًا، فيحصل ابنها Bucharest على $g = 317 + 101 = 418$ و $f = 418$.</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+Fagaras (415) is expanded before Pitesti (417) although it is off the optimal route: A* always takes the smallest $f$, wherever it is on the fringe. Leave out the Fagaras row and you lose the Bucharest 450 entry that the stopping rule is about.
+
+<Ar>تُوسَّع Fagaras (415) قبل Pitesti (417) مع أنها خارج الطريق الأمثل: فالبحث <bdi>A\*</bdi> يأخذ دائمًا أصغر $f$ أينما كانت على الحافة. وإذا أسقطت صف Fagaras فقدتَ مُدخل Bucharest 450 الذي تدور حوله قاعدة التوقف.</Ar>
+
+</Callout>
+
+### A* stopping rule: goal test on removal
+
+<Ar>قاعدة توقف `A*`: اختبار الهدف عند الإزالة</Ar>
+
+$$
+\text{return the goal when it is removed: } f(\text{goal}) = g(\text{goal}) \le f(m) \text{ for every } m \text{ on the fringe}
+$$
+
+Since $h(\text{goal}) = 0$, a goal's $f$ is its real path cost $g$; generating a goal only puts a candidate on the fringe.
+
+<Ar>بما أن $h(\text{goal}) = 0$، فإن $f$ للهدف هي تكلفة مساره الحقيقية $g$؛ وتوليد الهدف لا يفعل إلا أن يضع مرشّحًا على الحافة.</Ar>
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. When a goal appears on the fringe, write down its $f$ and keep going.
+   <Ar>عندما يظهر هدف على الحافة، سجّل قيمة $f$ له وتابع.</Ar>
+2. If any other fringe node has a smaller $f$, expand that node first.
+   <Ar>إذا كانت لأي عقدة أخرى على الحافة $f$ أصغر، فوسّع تلك العقدة أولًا.</Ar>
+3. Return the goal only when it has the smallest $f$ and is removed.
+   <Ar>لا تُرجع الهدف إلا عندما تكون له أصغر $f$ ويُزال.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+After step 4, Bucharest 450 is on the fringe, but Pitesti has $417 < 450$. Expanding Pitesti adds Bucharest 418, which is then removed: **418 km**. Stopping when the goal was generated would have returned 450 km.
+
+<Ar>بعد الخطوة 4 تكون Bucharest 450 على الحافة، لكن Pitesti لها $417 < 450$. ويضيف توسيع Pitesti المُدخل Bucharest 418، الذي يُزال بعد ذلك: **418 km**. ولو توقف البحث عند توليد الهدف لأعاد 450 km.</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+The same goal can be on the fringe twice (Bucharest 450 and Bucharest 418). The answer is the copy that is removed, 418; the 450 copy is never removed.
+
+<Ar>قد يكون الهدف نفسه على الحافة مرتين (Bucharest 450 و Bucharest 418). والإجابة هي النسخة التي تُزال، أي 418؛ أما نسخة 450 فلا تُزال أبدًا.</Ar>
+
+</Callout>
+
+### Admissibility check: h never overestimates
+
+<Ar>فحص القبول (admissibility): h لا تبالغ أبدًا</Ar>
+
+$$
+h(n) \le h^*(n) \quad \text{for every node } n
+$$
+
+$h^*(n)$ is the true cost of the cheapest path from $n$ to a goal. An admissible $h$ is optimistic, and A* with it returns an optimal solution.
+
+<Ar>$h^*(n)$ هي التكلفة الحقيقية لأرخص مسار من $n$ إلى هدف. والاستدلال المقبول (admissible) متفائل (optimistic)، ويُرجع <bdi>A\*</bdi> معه حلًّا أمثل.</Ar>
+
+{/* data-table */}
+
+| City <Ar>المدينة</Ar> | $h_{\text{SLD}}(n)$ | $h^*(n)$ by road <Ar>$h^*(n)$ عبر الطرق</Ar> | $h \le h^*$? |
+|---|---|---|---|
+| Arad | 366 | 418 | ✓ |
+| Sibiu | 253 | 278 | ✓ |
+| Rimnicu Vilcea | 193 | 198 | ✓ |
+| Fagaras | 176 | 211 | ✓ |
+| Pitesti | 100 | 101 | ✓ |
+| Bucharest | 0 | 0 | ✓ |
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. Build $h^*$ backwards from the goal: Pitesti 101, Rimnicu Vilcea $97 + 101 = 198$, Sibiu $80 + 198 = 278$.
+   <Ar>احسب $h^*$ رجوعًا من الهدف: Pitesti 101، و Rimnicu Vilcea $97 + 101 = 198$، و Sibiu $80 + 198 = 278$.</Ar>
+2. Compare row by row: a single $h > h^*$ makes the whole heuristic inadmissible.
+   <Ar>قارن صفًا صفًا: تكفي قيمة واحدة $h > h^*$ لتجعل الاستدلال كله غير مقبول.</Ar>
+3. For $h_{\text{SLD}}$, skip the work: no road is shorter than the straight line, so it always passes.
+   <Ar>ومع $h_{\text{SLD}}$ لا حاجة إلى الحساب: فلا يوجد طريق أقصر من الخط المستقيم، لذا ينجح دائمًا.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+Sibiu: $253 \le 278$ ✓. The tightest row is Pitesti, $100 \le 101$: almost any increase there breaks admissibility.
+
+<Ar>Sibiu: $253 \le 278$ ✓. وأضيق الصفوف هو Pitesti، $100 \le 101$: فأي زيادة تقريبًا هناك تُفسد القبول.</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+Raise $h(\text{Pitesti})$ from 100 to 200, doubling it: $200 > 101$, so the heuristic is no longer admissible. After Fagaras, Pitesti has $f = 317 + 200 = 517 > 450$, Bucharest via Fagaras is removed first, and A* returns **450 km**, removing Arad, Sibiu, Rimnicu Vilcea, Fagaras, Timisoara, Zerind and Bucharest. Doubling every $h_{\text{SLD}}$ value also makes A* return 450 km.
+
+<Ar>ارفع $h(\text{Pitesti})$ من 100 إلى 200، أي ضاعفها: $200 > 101$، فلا يعود الاستدلال مقبولًا. وبعد Fagaras تصبح لـ Pitesti القيمة $f = 317 + 200 = 517 > 450$، فتُزال Bucharest عبر Fagaras أولًا، ويُرجع <bdi>A\*</bdi> طريق **450 km**، مُزيلًا Arad و Sibiu و Rimnicu Vilcea و Fagaras و Timisoara و Zerind و Bucharest. ومضاعفة كل قيم $h_{\text{SLD}}$ تجعل <bdi>A\*</bdi> يُرجع 450 km أيضًا.</Ar>
+
+</Callout>
+
+### Consistency check on every edge
+
+<Ar>فحص الاتساق (consistency) على كل حافة (edge)</Ar>
+
+$$
+h(n) \le c(n, a, n') + h(n')
+$$
+
+$c(n, a, n')$ is the cost of the step from $n$ to its successor $n'$ by action $a$, and $h = 0$ at goals. It is a triangle inequality: one step can lower $h$ by at most its own cost. Every consistent $h$ is admissible.
+
+<Ar>$c(n, a, n')$ هي تكلفة الخطوة من $n$ إلى العقدة التالية $n'$ بالفعل $a$، مع $h = 0$ عند الأهداف. وهي متباينة مثلثية (triangle inequality): فلا تستطيع خطوة واحدة أن تخفض $h$ بأكثر من تكلفتها. وكل استدلال متّسق (consistent) مقبول.</Ar>
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. For each edge $n \to n'$, compute the drop $h(n) - h(n')$.
+   <Ar>لكل حافة $n \to n'$ احسب الانخفاض $h(n) - h(n')$.</Ar>
+2. The heuristic is consistent if no drop is bigger than its edge cost; on a two-way road, check both directions.
+   <Ar>يكون الاستدلال متّسقًا إذا لم يتجاوز أي انخفاض تكلفة حافته؛ وعلى الطريق ثنائي الاتجاه افحص الاتجاهين.</Ar>
+3. Quick symptom: with a consistent $h$, $f$ never decreases along a path.
+   <Ar>علامة سريعة: مع استدلال متّسق لا تتناقص $f$ أبدًا على امتداد المسار.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+Sibiu → Rimnicu Vilcea (80 km): $h(\text{Sibiu}) = 253 \le 80 + 193 = 273$ ✓, a drop of 60 on an 80 km road. Along the optimal route, $f$ goes 366, 393, 413, 417, 418: never down.
+
+<Ar>`Sibiu → Rimnicu Vilcea` (80 km): $h(\text{Sibiu}) = 253 \le 80 + 193 = 273$ ✓، أي انخفاض قدره 60 على طريق طوله 80 km. وعلى الطريق الأمثل تتدرّج $f$: 366، 393، 413، 417، 418، دون أن تنخفض أبدًا.</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+Admissible does not imply consistent. In the lecture's small graph (one-way roads S→A 1, S→B 1, A→C 1, B→C 2, C→G 3), $h(A) = 4$ is exactly the true cost from A, yet $4 > c(A, C) + h(C) = 1 + 1 = 2$. Graph-search A* closes C through B with $g = 3$, skips the cheaper path through A, and returns **6** instead of 5. Tree search needs only admissibility; graph search with a closed set needs consistency.
+
+<Ar>القبول لا يستلزم الاتساق. ففي الرسم البياني الصغير في المحاضرة (طرق أحادية الاتجاه `S→A` 1، و `S→B` 1، و `A→C` 1، و `B→C` 2، و `C→G` 3)، تساوي $h(A) = 4$ التكلفة الحقيقية من A تمامًا، ومع ذلك $4 > c(A, C) + h(C) = 1 + 1 = 2$. فيغلق <bdi>A\*</bdi> في البحث في الرسم البياني (graph search) الحالة C عبر B مع $g = 3$، ويتخطى المسار الأرخص عبر A، ويُرجع **6** بدلًا من 5. فالبحث الشجري لا يحتاج إلا إلى القبول، أما البحث في الرسم البياني مع مجموعة مغلقة (closed set) فيحتاج إلى الاتساق.</Ar>
+
+</Callout>
+
+### A* optimality proof in 3 lines
+
+<Ar>برهان أمثلية `A*` في 3 أسطر</Ar>
+
+$$
+f(n) = g^*(n) + h(n) \le g^*(n) + h^*(n) = C^* < C
+$$
+
+$C^*$: the optimal cost (418 on Romania); $C$: the cost of a worse goal that A* is supposed to return; $n$: the first unexpanded node on an optimal path, which is on the fringe with $g(n) = g^*(n)$.
+
+<Ar>$C^*$: التكلفة المثلى (418 في رومانيا)؛ و $C$: تكلفة هدف أسوأ يُفترض أن يُرجعه <bdi>A\*</bdi>؛ و $n$: أول عقدة غير موسَّعة على مسار أمثل، وهي موجودة على الحافة مع $g(n) = g^*(n)$.</Ar>
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. Assume A* removes a goal of cost $C > C^*$; at that moment every fringe node has $f \ge C$.
+   <Ar>افترض أن <bdi>A\*</bdi> يُزيل هدفًا تكلفته $C > C^*$؛ ففي تلك اللحظة تحقق كل عقدة على الحافة $f \ge C$.</Ar>
+2. The first unexpanded node $n$ of an optimal path is on the fringe, and admissibility gives $f(n) \le C^*$.
+   <Ar>أول عقدة غير موسَّعة $n$ على مسار أمثل موجودة على الحافة، ويعطي القبول (admissibility) $f(n) \le C^*$.</Ar>
+3. So $f(n) \le C^* < C$: $n$ comes out before that goal, a contradiction.
+   <Ar>إذن $f(n) \le C^* < C$: فتخرج $n$ قبل ذلك الهدف، وهذا تناقض.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+Suppose A* were about to return the 450 km route. Pitesti lies on the optimal route and is on the fringe with $f = 317 + 100 = 417 \le 418 < 450$, so it is removed first, which is what happens after step 4.
+
+<Ar>لنفترض أن <bdi>A\*</bdi> كان على وشك أن يُرجع طريق 450 km. تقع Pitesti على الطريق الأمثل، وهي على الحافة مع $f = 317 + 100 = 417 \le 418 < 450$، لذا تُزال أولًا، وهذا ما يحدث بعد الخطوة 4.</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+The book's proof jumps from $f(n) \le C^*$ straight to "contradiction". Write the missing link $C^* < C$, and say why $n$ is on the fringe with $g(n) = g^*(n)$, or the argument does not close.
+
+<Ar>ينتقل برهان الكتاب من $f(n) \le C^*$ إلى «contradiction» مباشرة. فاكتب الحلقة المفقودة $C^* < C$، واذكر لماذا تكون $n$ على الحافة مع $g(n) = g^*(n)$، وإلا فلن تكتمل الحجة.</Ar>
+
+</Callout>
+
+### Which nodes A* expands: f below C*
+
+<Ar>العقد التي يوسّعها `A*`</Ar>
+
+$$
+f(n) < C^* \Rightarrow n \text{ is expanded}, \qquad f(n) > C^* \Rightarrow n \text{ is never expanded}
+$$
+
+Nodes with $f(n) = C^*$ may or may not be expanded; the goal itself is removed at $f = C^*$.
+
+<Ar>العقد التي تحقق $f(n) = C^*$ قد تُوسَّع وقد لا تُوسَّع؛ ويُزال الهدف نفسه عند $f = C^*$.</Ar>
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. Write down the $f$ of every node that A* generated.
+   <Ar>اكتب قيمة $f$ لكل عقدة ولّدها <bdi>A\*</bdi>.</Ar>
+2. Every node below $C^*$ is expanded; nodes with $f = C^*$ (ties) may be expanded too.
+   <Ar>كل عقدة تقع تحت $C^*$ تُوسَّع؛ وقد تُوسَّع أيضًا العقد التي تحقق $f = C^*$، أي حالات التعادل (ties).</Ar>
+3. The nodes above $C^*$ are still waiting on the fringe at the end.
+   <Ar>والعقد التي تقع فوق $C^*$ تبقى منتظرة على الحافة في النهاية.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+$C^* = 418$: Arad 366, Sibiu 393, Rimnicu Vilcea 413, Fagaras 415 and Pitesti 417 are the 5 expansions; the 10 nodes left on the fringe (Timisoara 447, Zerind 449, Bucharest 450, …, Oradea 671) all have $f > 418$.
+
+<Ar>$C^* = 418$: العقد Arad 366، و Sibiu 393، و Rimnicu Vilcea 413، و Fagaras 415، و Pitesti 417 هي التوسيعات الخمسة؛ أما العقد العشر الباقية على الحافة (Timisoara 447، و Zerind 449، و Bucharest 450، …، و Oradea 671) فكلها تحقق $f > 418$.</Ar>
+
+</Callout>
+
+### 8-puzzle h1 and h2 by hand
+
+<Ar>حساب h1 و h2 للغز الثماني يدويًا</Ar>
+
+$$
+h_1 = \text{number of misplaced tiles}, \qquad h_2 = \sum_{\text{tiles}} \big(|\Delta \text{row}| + |\Delta \text{col}|\big)
+$$
+
+The blank is not a tile and never counts. $h_1$ is the exact cost if a tile could jump to any square, $h_2$ if it could slide onto any neighbouring square: both are exact costs of relaxed problems, so both are admissible.
+
+<Ar>الفراغ ليس بلاطة ولا يُحتسب أبدًا. و $h_1$ هي التكلفة الدقيقة لو استطاعت البلاطة أن تقفز إلى أي مربع، و $h_2$ لو استطاعت أن تنزلق إلى أي مربع مجاور: فكلتاهما تكلفة حل دقيقة لمسألة مُرخاة (relaxed problem)، لذا فكلتاهما مقبولة.</Ar>
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. With the goal `1 2 3 / 4 5 6 / 7 8 _`, tile $t$ belongs in row $\lceil t/3 \rceil$; the columns hold `1 4 7`, `2 5 8` and `3 6`.
+   <Ar>مع الهدف `1 2 3 / 4 5 6 / 7 8 _` تنتمي البلاطة $t$ إلى الصف $\lceil t/3 \rceil$؛ وتضم الأعمدة `1 4 7`، و `2 5 8`، و `3 6`.</Ar>
+2. $h_1$: read the board once and tick every tile that is not on its square, skipping the blank.
+   <Ar>$h_1$: اقرأ اللوحة مرة واحدة وعلّم كل بلاطة ليست في مربعها، متخطيًا الفراغ.</Ar>
+3. $h_2$: for each tile, rows apart + columns apart (0 if it is in place), written in reading order, then add them up.
+   <Ar>$h_2$: لكل بلاطة، عدد الصفوف بينها وبين مربعها + عدد الأعمدة (0 إذا كانت في موضعها)، تُكتب بترتيب القراءة ثم تُجمع.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+Lecture 2's start state `7 2 4 / 5 _ 6 / 8 3 1`, with rows and columns numbered 1 to 3:
+
+<Ar>حالة البداية في المحاضرة 2 `7 2 4 / 5 _ 6 / 8 3 1`، مع ترقيم الصفوف والأعمدة من 1 إلى 3:</Ar>
+
+| Tile <Ar>البلاطة</Ar> | Now (row, col) <Ar>الآن (الصف، العمود)</Ar> | Goal (row, col) <Ar>الهدف (الصف، العمود)</Ar> | Misplaced? <Ar>في غير موضعها؟</Ar> | Manhattan <Ar>مسافة مانهاتن</Ar> |
+|---|---|---|---|---|
+| 7 | (1, 1) | (3, 1) | ✓ | 2 |
+| 2 | (1, 2) | (1, 2) | | 0 |
+| 4 | (1, 3) | (2, 1) | ✓ | 1 + 2 = 3 |
+| 5 | (2, 1) | (2, 2) | ✓ | 1 |
+| 6 | (2, 3) | (2, 3) | | 0 |
+| 8 | (3, 1) | (3, 2) | ✓ | 1 |
+| 3 | (3, 2) | (1, 3) | ✓ | 2 + 1 = 3 |
+| 1 | (3, 3) | (1, 1) | ✓ | 2 + 2 = 4 |
+| Total <Ar>المجموع</Ar> | | | $h_1 = 6$ | $h_2 = 14$ |
+
+$h_2 = 2 + 0 + 3 + 1 + 0 + 1 + 3 + 4 = 14$, and the shortest solution takes 20 moves, so $6 \le 14 \le 20$. Check yourself: `4 1 2 / _ 8 7 / 6 3 5` gives $h_1 = 8$ and $h_2 = 15$, with a 17-move solution.
+
+<Ar>$h_2 = 2 + 0 + 3 + 1 + 0 + 1 + 3 + 4 = 14$، ويستغرق أقصر حل 20 نقلة، لذا $6 \le 14 \le 20$. تحقّق بنفسك: `4 1 2 / _ 8 7 / 6 3 5` تعطي $h_1 = 8$ و $h_2 = 15$، وأقصر حل لها 17 نقلة.</Ar>
+
+</Callout>
+
+<PuzzleHeuristics expect="h1=6; h2=14" />
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+Don't count the blank: here it is off its goal square too, but $h_1 = 6$, not 7. Manhattan distance is rows plus columns, never diagonal steps: tile 1 is 4 away, not 2.
+
+<Ar>لا تحتسب الفراغ: فهو هنا أيضًا ليس في مربعه في الهدف، لكن $h_1 = 6$ لا 7. ومسافة مانهاتن (Manhattan distance) هي الصفوف زائد الأعمدة، وليست خطوات قُطرية أبدًا: فالبلاطة 1 تبعد 4 لا 2.</Ar>
+
+</Callout>
+
+### Dominance: prefer the larger admissible h
+
+<Ar>الهيمنة (dominance): فضّل الاستدلال المقبول الأكبر</Ar>
+
+$$
+h_2(n) \ge h_1(n) \text{ for every } n, \text{ both admissible} \;\Rightarrow\; h_2 \text{ dominates } h_1
+$$
+
+A* with the dominating heuristic never expands more nodes, apart from ties; the chain is $h_1(n) \le h_2(n) \le h^*(n)$.
+
+<Ar>لا يوسّع <bdi>A\*</bdi> مع الاستدلال المهيمن عقدًا أكثر، باستثناء حالات التساوي؛ والسلسلة هي $h_1(n) \le h_2(n) \le h^*(n)$.</Ar>
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. Check that both are admissible, each at most $h^*$.
+   <Ar>تحقّق من أن كليهما مقبول، أي لا يتجاوز أيٌّ منهما $h^*$.</Ar>
+2. Check $h_2 \ge h_1$ on every state: a misplaced tile is at least 1 square away, so it adds at least 1 to $h_2$.
+   <Ar>تحقّق من أن $h_2 \ge h_1$ في كل حالة: فالبلاطة التي في غير موضعها تبعد مربعًا واحدًا على الأقل، لذا تضيف 1 على الأقل إلى $h_2$.</Ar>
+3. Pick the larger one, as long as it is as cheap to compute.
+   <Ar>اختر الأكبر، ما دام حسابه رخيصًا بالقدر نفسه.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+Lecture 2's start state: $6 \le 14 \le 20$. A* graph search expands 3,666 states with $h_1$ and only 282 with $h_2$.
+
+<Ar>حالة البداية في المحاضرة 2: $6 \le 14 \le 20$. ويوسّع <bdi>A\*</bdi> في البحث في الرسم البياني 3,666 حالة مع $h_1$، و 282 حالة فقط مع $h_2$.</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+"Larger is better" holds only among admissible heuristics: $h(\text{Pitesti}) = 200$ is larger than $h_{\text{SLD}}$ and costs A* the optimal route. And $h_2 \ge h_1$ on one state is not dominance: it must hold on every state.
+
+<Ar>قاعدة «الأكبر أفضل» لا تصح إلا بين الاستدلالات المقبولة: فـ $h(\text{Pitesti}) = 200$ أكبر من $h_{\text{SLD}}$ وتُفقد <bdi>A\*</bdi> الطريق الأمثل. كما أن $h_2 \ge h_1$ في حالة واحدة ليست هيمنة: إذ يجب أن تتحقق في كل حالة.</Ar>
+
+</Callout>
+
+### UCS, greedy and A* compared
+
+<Ar>مقارنة التكلفة الموحدة والجشع و `A*`</Ar>
+
+| Criterion <Ar>المعيار</Ar> | Uniform-cost <Ar>بالتكلفة الموحدة</Ar> | Greedy best-first <Ar>الجشع الأفضل أولًا</Ar> | A* <Ar>البحث <bdi>A\*</bdi></Ar> |
+|---|---|---|---|
+| $f(n)$ | $g(n)$ | $h(n)$ | $g(n) + h(n)$ |
+| Complete? <Ar>مكتمل؟</Ar> | Yes, if step costs $\ge \epsilon > 0$ <Ar>نعم، إذا كانت تكاليف الخطوات $\ge \epsilon > 0$</Ar> | No in tree search (it can loop); yes as graph search in a finite space <Ar>لا في البحث الشجري (قد يدور في حلقة)؛ ونعم بوصفه بحثًا في الرسم البياني في فضاء منتهٍ</Ar> | Yes, if step costs $\ge \epsilon > 0$ and $b$ is finite <Ar>نعم، إذا كانت تكاليف الخطوات $\ge \epsilon > 0$ وكان $b$ منتهيًا</Ar> |
+| Optimal? <Ar>أمثل؟</Ar> | Yes <Ar>نعم</Ar> | No <Ar>لا</Ar> | Yes, if $h$ is admissible (consistent for graph search) <Ar>نعم، إذا كانت $h$ مقبولة (ومتّسقة في البحث في الرسم البياني)</Ar> |
+| Time and space <Ar>الزمن والمساحة</Ar> | $O(b^{\lceil C^*/\epsilon \rceil})$ | $O(b^m)$ in the worst case <Ar>$O(b^m)$ في أسوأ الحالات</Ar> | Exponential: every node with $f(n) < C^*$, all kept in memory <Ar>أُسّي: كل عقدة تحقق $f(n) < C^*$، وكلها محفوظة في الذاكرة</Ar> |
+| Romania: nodes removed <Ar>رومانيا: العقد المُزالة</Ar> | 53 | 4 | 6 |
+| Romania: route cost, km <Ar>رومانيا: تكلفة الطريق، km</Ar> | 418 | 450 | 418 |
+
+<Callout type="tip" title="Fast way" titleAr="الطريقة السريعة">
+
+1. Read off $f$: $g$ alone is uniform-cost search, $h$ alone is greedy, $g + h$ is A*.
+   <Ar>اقرأ $f$: $g$ وحدها تعني البحث بالتكلفة الموحدة، و $h$ وحدها تعني البحث الجشع، و $g + h$ تعني <bdi>A\*</bdi>.</Ar>
+2. $h = 0$ everywhere turns A* into uniform-cost search ($f = g$); dropping $g$ turns it into greedy ($f = h$).
+   <Ar>إذا كانت $h = 0$ في كل مكان صار <bdi>A\*</bdi> بحثًا بالتكلفة الموحدة ($f = g$)؛ وإذا أُسقطت $g$ صار بحثًا جشعًا ($f = h$).</Ar>
+3. Optimality needs $g$ in $f$: uniform-cost search, or A* with an admissible $h$; greedy never guarantees it.
+   <Ar>الأمثلية تحتاج إلى $g$ داخل $f$: أي البحث بالتكلفة الموحدة، أو <bdi>A\*</bdi> مع $h$ مقبولة؛ أما البحث الجشع فلا يضمنها أبدًا.</Ar>
+
+</Callout>
+
+<Callout type="example" title="10-second example" titleAr="مثال في 10 ثوانٍ">
+
+Arad to Bucharest (tree search, repeated states counted): uniform-cost search removes 53 nodes, 13 different cities with Bucharest the 13th, and returns 418 km; greedy removes 4 and returns 450 km; A* removes 6 and returns 418 km.
+
+<Ar>من Arad إلى Bucharest (بحث شجري، مع احتساب الحالات المتكررة): يُزيل البحث بالتكلفة الموحدة 53 عقدة، أي 13 مدينة مختلفة آخرها Bucharest، ويُرجع 418 km؛ ويُزيل البحث الجشع 4 عقد ويُرجع 450 km؛ ويُزيل <bdi>A\*</bdi> ست عقد ويُرجع 418 km.</Ar>
+
+</Callout>
+
+<Callout type="warning" title="Exam trap" titleAr="فخ الامتحان">
+
+$h = 0$ is admissible but gives no guidance: A* becomes uniform-cost search, not greedy. And the book's summary calls A* "Complete" with no conditions: write "if every step cost is $\ge \epsilon > 0$ and $b$ is finite".
+
+<Ar>القيمة $h = 0$ مقبولة لكنها لا تقدّم أي توجيه: فيصبح <bdi>A\*</bdi> بحثًا بالتكلفة الموحدة لا بحثًا جشعًا. ويصف ملخص الكتاب <bdi>A\*</bdi> بأنه «Complete» دون شروط: فاكتب «إذا كانت تكلفة كل خطوة $\ge \epsilon > 0$ وكان $b$ منتهيًا».</Ar>
+
+</Callout>

@@ -31,7 +31,7 @@ const ENGLISH_WORD = /[A-Za-z]{2,}/;
 // Interactive widgets (components/widgets). Their UI text lives in code, typed so both
 // languages are required; in the MDX they carry only data plus title/caption props. Adding
 // or editing a widget is not an English text change, so the integrity check skips them.
-const WIDGETS = new Set(["ConvolutionStepper", "StateMachine", "SearchStepper", "RelationalAlgebra", "EncoderSim", "Walkthrough"]);
+const WIDGETS = new Set(["ConvolutionStepper", "StateMachine", "SearchStepper", "RelationalAlgebra", "EncoderSim", "Walkthrough", "SearchCostCalc", "AStarTable", "PuzzleHeuristics"]);
 const PROP_TWINS = {
   Callout: [["title", "titleAr"]],
   Definition: [["term", "termAr"]],
@@ -69,6 +69,9 @@ if (files.length === 0) {
       if (!fs.existsSync(cdir)) continue;
       for (const f of fs.readdirSync(cdir).sort()) if (f.endsWith(".mdx")) files.push(path.join(cdir, f));
     }
+    // Cheat-sheet parts (the Cheat sheet tab): one MDX file per lecture.
+    const cheat = path.join(dir, "cheatsheet");
+    if (fs.existsSync(cheat)) for (const f of fs.readdirSync(cheat).sort()) if (f.endsWith(".mdx")) files.push(path.join(cheat, f));
   }
 }
 
@@ -389,8 +392,9 @@ for (const file of files) {
       const text = read(file);
       const { data, content } = matter(text);
       lineOffset = text.slice(0, text.length - content.length).split("\n").length - 1;
+      // Cheat-sheet parts have a title but no summary.
       for (const key of ["titleAr", "summaryAr"])
-        if (!data[key] || !ARABIC.test(String(data[key]))) problems.push(`frontmatter ${key} is missing or has no Arabic text`);
+        if ((key === "titleAr" || data.summary !== undefined) && (!data[key] || !ARABIC.test(String(data[key])))) problems.push(`frontmatter ${key} is missing or has no Arabic text`);
       const tree = parser.parse(content);
       checkCoverage(tree, problems);
       checkIntegrity(file, text, problems);
