@@ -1,0 +1,2070 @@
+{
+  "title": "IP Lecture Drill",
+  "kicker": "Image Processing · Lectures 1–4",
+  "heading": "Lecture Drill",
+  "lede": "Practice questions written from your lecture PDFs and the course book, one tab per lecture. Lecture 4 has no slides, so its questions come from the book's Chapter 4 (pp. 80–99). Pick an answer to see at once whether it is right. Each answer has a short explanation and the slide or book page it comes from.",
+  "foot": "These are practice questions written from your lecture slides and the Image Processing course book (marked \"Book\"). They are not past exam papers. Progress is saved in this browser only.",
+  "banksLabel": "Lectures",
+  "unit": "lectures",
+  "order": 1,
+  "source": "IP Lec 1-3 slides and Digital Image Processing 27.pdf (Ch 1-4)",
+  "banks": [
+    {
+      "id": "lecture-1",
+      "tag": "Lecture 1",
+      "name": "Introduction to Digital Images",
+      "scope": "36 questions",
+      "questions": [
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "According to the slides, a picture that is not immediately recognizable is still ......",
+          "options": [
+            "pure noise that should be removed first",
+            "not just a random blur: it has structure",
+            "useless until it has been segmented",
+            "a vector image rather than a raster image"
+          ],
+          "answer": 1,
+          "why": "An image is a single picture that represents something. Even if it is not immediately recognizable it will not be just a random blur, and that structure is what we improve or analyse.",
+          "ref": "Slide 3 · Images and pictures"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "How do the slides relate image processing to computer vision?",
+          "options": [
+            "Computer vision is a subset of image processing",
+            "Image processing is a subset of computer vision",
+            "The two fields share no algorithms at all",
+            "Image processing is a subset of machine learning"
+          ],
+          "answer": 1,
+          "why": "Slide 4 draws image processing inside computer vision: a computer vision system uses image processing algorithms as building blocks to emulate vision at human scale.",
+          "ref": "Slide 4 · Classical image processing"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "Which pair correctly gives the usual output of each field?",
+          "options": [
+            "IP: knowledge of the scene; CV: an image in a different form",
+            "IP: a colour map of the scene; CV: an enhanced image",
+            "IP: an image in a different form; CV: knowledge of the scene",
+            "IP: a list of object labels; CV: a compressed JPEG image file"
+          ],
+          "answer": 2,
+          "why": "Image processing takes an image and returns an image, usually a better one. Computer vision takes an image and returns knowledge of the scene, such as 'smiling kid'.",
+          "ref": "Slide 23 · Image processing and computer vision"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "In 'How does a computer see?', the sensors feed an inference system. Which three blocks make up that inference system?",
+          "options": [
+            "Pre-processing, feature extraction, ML model",
+            "Sampling, quantization and compression",
+            "Image enhancement, restoration and segmentation",
+            "Image acquisition, storage and display"
+          ],
+          "answer": 0,
+          "why": "The computer replaces the eye with sensors and the brain with an inference system: pre-processing, feature extraction and a machine learning model, which outputs labels such as mountain, sun and cloud.",
+          "ref": "Slide 52 · How does a computer see"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "Automatic Number Plate Recognition (ANPR) is given in the slides as a way to ......",
+          "options": [
+            "detect tumours and measure organ sizes",
+            "reject unlabelled bottles on a conveyor",
+            "control automatic gates and track vehicles",
+            "detect road lanes and signs for self-driving cars"
+          ],
+          "answer": 2,
+          "why": "Slide 9 lists ANPR among the CCTV and traffic uses of computer vision: controlling automatic gates, vehicle tracking, analysing crowds and counting people.",
+          "ref": "Slide 9 · Computer vision in life"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "Image processing changes the nature of an image to either improve its pictorial information for human interpretation or ......",
+          "options": [
+            "compress it so that it needs far fewer bits to be stored on disk",
+            "render it more suitable for autonomous machine perception",
+            "convert it from a raster image into a vector image",
+            "raise its resolution until the eye sees no pixels"
+          ],
+          "answer": 1,
+          "why": "These are the two goals in the definition on slide 17 (also in the course book, p. 7): a better picture for people, or an image better suited to a machine.",
+          "ref": "Slide 17 · What is image processing"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "Which of these operations is done mainly to suit a machine rather than a human viewer?",
+          "options": [
+            "Sharpening the edges so the image looks crisper",
+            "Removing noise from a speckled photograph",
+            "Removing motion blur from a photo of a car",
+            "Blurring the image to remove its fine detail"
+          ],
+          "answer": 3,
+          "why": "Removing detail by blurring, like obtaining the edges, gives an image a person would not prefer, but its large-scale content is easier for a program to analyse. The other three improve the picture for a person.",
+          "ref": "Slide 18–22 · What is image processing"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "When a scene is digitized, rounding each measured brightness to one of a finite number of levels (for example 0 to 255) is called ......",
+          "options": [
+            "quantization",
+            "sampling",
+            "interpolation",
+            "aliasing"
+          ],
+          "answer": 0,
+          "why": "Sampling chooses where brightness is measured (the pixel grid); quantization rounds each measured value to one of a finite set of levels. Together they turn the continuous scene into a matrix of numbers.",
+          "ref": "Slide 38 · Sampling and quantization"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "An image of fine stripes is undersampled. What appears in the sampled image?",
+          "options": [
+            "Banding: smooth gradients break into visible flat steps",
+            "Noise: random errors added to the pixel values",
+            "Aliasing: false, coarser patterns not in the scene",
+            "Motion blur: edges smeared in a single direction"
+          ],
+          "answer": 2,
+          "why": "Too few samples cannot represent the fine stripes, so they show up as false, coarser patterns (aliasing), as in the undersampled swirl on slide 25. Banding comes from too few grey levels, not too few samples.",
+          "ref": "Slide 25 · Aliasing"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "By the Nyquist criterion as the slides state it, what is the largest sample spacing that can capture y = sin(2x) + 0.5 sin(5x)?",
+          "options": [
+            "About 1.26, that is 2π/5",
+            "About 1.57, that is π/2",
+            "About 3.14, that is π",
+            "About 0.63, that is π/5"
+          ],
+          "answer": 3,
+          "why": "The fastest part is sin(5x), with one cycle every 2π/5 ≈ 1.26. At least two samples per cycle means a spacing of at most π/5 ≈ 0.63. Working from sin(2x) ignores the highest frequency. This follows the slide's 'at least twice'; the lecture page's Check the source note warns that exactly twice can fail (samples every π/5 from x = 0 all land on zeros of sin(5x)), so the strict rule needs a spacing below π/5.",
+          "ref": "Slide 24 · Nyquist criterion",
+          "check": true
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "The slides' function y = sin(x) + (1/3) sin(3x) is sampled every π/3 starting at x = 0, exactly two samples per cycle of sin(3x). What do the samples show?",
+          "options": [
+            "Only sin(x): each sample falls on a zero of sin(3x)",
+            "The whole curve, ripples included, as Nyquist allows",
+            "Only sin(3x): each sample falls on a zero of sin(x)",
+            "Nothing: every sampled value of y is exactly zero"
+          ],
+          "answer": 0,
+          "why": "sin(3 · kπ/3) = sin(kπ) = 0, so the samples equal those of sin(x) and the ripple is lost. The slide says 'at least twice'; following the lecture page's Check the source note (Gonzalez and Woods), the rate must exceed twice the highest frequency.",
+          "ref": "Slide 24 · Nyquist criterion",
+          "check": true
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "Which description fits a CCD camera rather than a CMOS camera?",
+          "options": [
+            "Cheaper and needs less power to run than a CCD",
+            "High resolution and robust against noise",
+            "More susceptible to noise in the image",
+            "Captures the scene one row at a time"
+          ],
+          "answer": 1,
+          "why": "Slide 28: a CCD produces images with high resolution and is robust against noise. Slide 29: CMOS is cheaper and needs less power but is more susceptible to noise. Row-by-row capture is the flatbed scanner.",
+          "ref": "Slide 28–29 · CCD and CMOS cameras"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "How does a flatbed scanner capture an image?",
+          "options": [
+            "A large 2-D photosite array captures it all at once",
+            "It stores formulas for the shapes it finds in the page",
+            "One single sensor cell measures the page column by column",
+            "A single row of photosites moves across it, row by row"
+          ],
+          "answer": 3,
+          "why": "The scanner works on the same principle as the CCD camera, but instead of capturing the whole image at once on a large array, a single row of photosites moves across the image and fills the output row by row.",
+          "ref": "Slide 30 · Flatbed scanner"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "An image f(x, y) is called a digital image when ......",
+          "options": [
+            "x and y are discrete but f can take any real value",
+            "it is stored as mathematical formulas for its shapes",
+            "it was captured with visible light by a digital camera",
+            "x, y and f values are all finite, discrete quantities"
+          ],
+          "answer": 3,
+          "why": "Slide 38: when x, y and the intensity values of f are all finite, discrete quantities, the image is digital. Its elements are called pixels (also pels, picture elements or image elements).",
+          "ref": "Slide 38 · Images as functions"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "A grayscale image is held as matrix f. The pixel that MATLAB reads as `f(4,3)` is which element in Python with NumPy?",
+          "options": [
+            "`f[4, 3]`",
+            "`f[3, 2]`",
+            "`f[5, 4]`",
+            "`f[2, 3]`"
+          ],
+          "answer": 1,
+          "why": "MATLAB indices start at 1 (x and y run from 1 to 256 for a 256 × 256 image) while NumPy indices start at 0, so row 4, column 3 in MATLAB is `f[3, 2]` in NumPy.",
+          "ref": "Slide 42 · Images and digital images"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "A vector drawing of a red line from a to b is enlarged to four times its size. What happens to the file size?",
+          "options": [
+            "It grows four times, just like the length of the line",
+            "It grows sixteen times, like the drawing's area",
+            "It stays the same; the same instructions draw it",
+            "It grows, because more pixels must now be stored"
+          ],
+          "answer": 2,
+          "why": "A vector image stores instructions (dot at a, dot at b, join them, colour the line red), not pixels. Enlarging it only changes the coordinates, so the file size does not change and the line stays smooth.",
+          "ref": "Slide 47 · Vector graphics"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "For raster graphics, a photograph must be sampled. What do the slides call this sampling, and what are the samples called?",
+          "options": [
+            "Quantization; the samples are grey levels",
+            "Rendering; the samples are vectors",
+            "Scanning; the samples are pixels",
+            "Indexing; the samples are colour maps"
+          ],
+          "answer": 2,
+          "why": "A photograph is analog data whose intensity varies in space instead of time, so it must be sampled. For images this sampling is normally called scanning, and the samples are pixels (picture elements).",
+          "ref": "Slide 39 · Raster graphics"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "What makes a task image restoration rather than image enhancement?",
+          "options": [
+            "It makes the result more suitable for a particular use",
+            "It subdivides the image into its constituent parts",
+            "It reduces the number of bits needed to store the image",
+            "It reverses damage done to the image by a known cause"
+          ],
+          "answer": 3,
+          "why": "Slide 49 defines restoration as reversing the damage done by a known cause, such as blur from linear motion, optical distortions or periodic interference. Enhancement (slide 48) only makes the result more suitable for an application.",
+          "ref": "Slide 48–49 · Aspects of image processing"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "In an aerial photograph, labelling every pixel as car, tree, building or road is an example of ......",
+          "options": [
+            "image restoration",
+            "contrast enhancement",
+            "image segmentation",
+            "image acquisition"
+          ],
+          "answer": 2,
+          "why": "Segmentation subdivides an image into its constituent parts. Identifying cars, trees, buildings or roads in an aerial photograph, with a class for every pixel, is semantic segmentation.",
+          "ref": "Slide 50 · Image segmentation"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "In the slides, which order of steps does an image processing task follow?",
+          "options": [
+            "Acquire, preprocess, segment, represent and describe",
+            "Preprocess, acquire, segment, represent and describe",
+            "Acquire, segment, preprocess, represent and describe",
+            "Acquire, segment, represent and describe, then preprocess"
+          ],
+          "answer": 0,
+          "why": "Slide 51 lists acquiring the image, preprocessing, segmentation, then representation and description. The course book's diagram (p. 23) puts feature extraction, recognition and interpretation after segmentation instead.",
+          "ref": "Slide 51 · An image processing task"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "In the coin-counting example, why is the thresholded image eroded before the coins are counted?",
+          "options": [
+            "To turn the grayscale image into a binary image",
+            "To brighten the dark coins against the background",
+            "To make each coin larger so that no small coin is missed",
+            "To separate touching coins so each one is counted once"
+          ],
+          "answer": 3,
+          "why": "Thresholding makes the coins white on black, but touching coins merge into one blob. Erosion shrinks every white region until they come apart, and then the regions are counted (N = 22).",
+          "ref": "Slide 53 · Counting coins"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "Which images does the course book name as suitable for binary representation?",
+          "options": [
+            "Text, fingerprints and architectural plans",
+            "Colour photographs of outdoor scenes",
+            "Smoothly shaded medical X-ray and CT images",
+            "Cartoons and icons with 256 colours"
+          ],
+          "answer": 0,
+          "why": "A binary pixel is only black or white, so one bit per pixel is enough. That suits text (printed or handwritten), fingerprints and architectural plans; shaded or coloured images need more bits.",
+          "ref": "Book p. 15 · Binary image"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "How many grey levels can a 5-bit grayscale image show?",
+          "options": [
+            "31",
+            "25",
+            "32",
+            "10"
+          ],
+          "answer": 2,
+          "why": "The number of levels is L = 2^k, so 2^5 = 32 levels, from 0 to 31. 31 is the brightest value, not the number of levels.",
+          "ref": "Book p. 16 · Bit depth"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "A 512 × 512 binary image is stored with 1 bit per pixel. How many kilobytes does it need (1 KB = 1024 bytes)?",
+          "options": [
+            "256 KB",
+            "4 KB",
+            "768 KB",
+            "32 KB"
+          ],
+          "answer": 3,
+          "why": "512 × 512 × 1 = 262,144 bits; ÷ 8 = 32,768 bytes; ÷ 1024 = 32 KB. Using 8 bits per pixel (or forgetting ÷ 8) gives 256 KB.",
+          "ref": "Slide 65 · File size"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "A `uint8` indexed image has the colour map `[0 0 0; 1 0 0; 0 1 0; 0 0 1]`. A pixel holds the value 2. Which colour is displayed?",
+          "options": [
+            "Red",
+            "Green",
+            "Blue",
+            "Near-black grey"
+          ],
+          "answer": 1,
+          "why": "The pixel value is an index into the map, not a colour. In a `uint8` indexed image index 0 picks row 1, so 2 picks row 3, `[0 1 0]`, which is green. Reading row 2 would give red.",
+          "ref": "Slide 60 · Indexed image"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "According to the slides, what happens when the scanning resolution is sufficiently high?",
+          "options": [
+            "The eye cannot see the discontinuity between pixels",
+            "Each pixel then needs fewer bits of colour depth",
+            "Fine patterns in the scene start to turn into aliasing",
+            "The file size stops depending on the pixel count"
+          ],
+          "answer": 0,
+          "why": "Resolution is the scanning rate, how many pixels are recorded per square or linear inch. If it is high enough, the human eye cannot recognize the discontinuity in the reproduced image.",
+          "ref": "Slide 62 · Resolution"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "What does the colour depth of an image mean?",
+          "options": [
+            "The number of pixels recorded per square or linear inch",
+            "The number of bits used to represent a pixel",
+            "The number of rows in its colour map",
+            "The number of colour channels it has"
+          ],
+          "answer": 1,
+          "why": "Slide 62: the number of bits used to represent a pixel is its colour depth, and it depends on how the pixel's colour is encoded (1 bit for binary, 8 for grayscale, 24 for True-Color).",
+          "ref": "Slide 62 · Color depth"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "How much storage does a 256 × 256 grayscale image with 8 bits per pixel need (1 KB = 1024 bytes)?",
+          "options": [
+            "64 KB",
+            "512 KB",
+            "65.5 KB",
+            "192 KB"
+          ],
+          "answer": 0,
+          "why": "256 × 256 × 8 / 8 = 65,536 bytes, and 65,536 / 1024 = 64 KB. Forgetting to divide by 8 gives 512 KB.",
+          "ref": "Slide 65 · File size"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "A 1024 × 768 True-Color image is stored without compression. What is its size (1 KB = 1024 bytes)?",
+          "options": [
+            "768 KB",
+            "18,432 KB",
+            "2359 KB",
+            "2304 KB"
+          ],
+          "answer": 3,
+          "why": "True-Color uses 24 bits (3 bytes) per pixel: 1024 × 768 × 3 = 2,359,296 bytes, and 2,359,296 / 1024 = 2304 KB. With 8 bits per pixel you get 768 KB; forgetting ÷ 8 gives 18,432 KB.",
+          "ref": "Slide 63 · True-Color"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "An 800 × 600 image is stored as an indexed image with 8-bit indices and a 256-entry colour map at 3 bytes per entry. How many bytes does it need in total?",
+          "options": [
+            "480,000",
+            "480,768",
+            "1,440,768",
+            "3,846,144"
+          ],
+          "answer": 1,
+          "why": "The indices take 800 × 600 × 8 / 8 = 480,000 bytes and the map 256 × 3 = 768 bytes, so 480,768 bytes: about a third of the 1,440,000 bytes the same image needs in True-Color.",
+          "ref": "Slide 64–65 · Indexed color"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "How do the JPEG and GIF standards encode colour?",
+          "options": [
+            "JPEG: True-Color, compressed; GIF: indexed colour",
+            "JPEG: indexed colour; GIF: True-Color, compressed",
+            "JPEG and GIF both store plain, uncompressed 24-bit True-Color",
+            "JPEG: vector shapes; GIF: one bit for each pixel"
+          ],
+          "answer": 0,
+          "why": "Slide 66: JPEG uses the True-Color scheme but compresses the image to reduce the number of bits; GIF uses the indexed colour scheme, so a GIF holds at most 256 colours.",
+          "ref": "Slide 66 · Standards for image encoding"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "Which MATLAB call converts an indexed image `x` with colour map `map` into a grayscale image?",
+          "options": [
+            "`[y,map]=gray2ind(x);`",
+            "`y=ind2gray(x,map);`",
+            "`y=ind2rgb(x,map);`",
+            "`y=rgb2gray(x);`"
+          ],
+          "answer": 1,
+          "why": "`ind2gray` goes from indexed to grayscale and needs the map, because the indices mean nothing without it. `gray2ind` is the reverse, `ind2rgb` gives RGB, and `rgb2gray` expects an RGB image.",
+          "ref": "Slide 61 · Converting images in MATLAB"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "Using Solution 1 (the average of the channels), what is the grey value of a pixel with R = 120, G = 200, B = 85?",
+          "options": [
+            "163",
+            "120",
+            "135",
+            "405"
+          ],
+          "answer": 2,
+          "why": "Solution 1 averages the channels: (120 + 200 + 85) / 3 = 405 / 3 = 135. 163 is what the weighted sum of `rgb2gray` gives, and 120 is Solution 2 with the red channel.",
+          "ref": "Slide 69 · RGB to grayscale"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "The grayscale patch `[74 75 120; 30 200 76]` is converted to binary with threshold T = 75. What is the result?",
+          "options": [
+            "`[0 0 1; 0 1 1]`",
+            "`[1 0 0; 1 0 0]`",
+            "`[0 1 1; 0 1 1]`",
+            "`[1 1 0; 1 0 0]`"
+          ],
+          "answer": 2,
+          "why": "A pixel becomes 1 when Gray(i,j) ≥ T and 0 when it is below T. The value 75 is not below 75, so it becomes 1; only 74 and 30 become 0.",
+          "ref": "Slide 68 · Grayscale to binary"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "In MATLAB, `g` is a `uint8` grayscale image. What class is the result of `bw = g >= 128`?",
+          "options": [
+            "`logical`",
+            "`uint8`",
+            "`double`",
+            "`uint16`"
+          ],
+          "answer": 0,
+          "why": "A comparison returns a logical array: 1 where the grey value is at least 128 and 0 elsewhere. That is a binary image made with threshold T = 128.",
+          "ref": "Slide 68 · Grayscale to binary"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "An indexed image of 240 × 320 pixels is converted with `y = ind2rgb(x,map)`. The result is a `double` RGB array. How many bytes does `y` take?",
+          "options": [
+            "230,400",
+            "614,400",
+            "14,745,600",
+            "1,843,200"
+          ],
+          "answer": 3,
+          "why": "`ind2rgb` returns a 240 × 320 × 3 array of class `double`, values 0 to 1, at 8 bytes per value: 240 × 320 × 3 × 8 = 1,843,200 bytes, eight times the 230,400 bytes of the same picture as `uint8`.",
+          "ref": "Slide 67 · Lab tasks"
+        }
+      ]
+    },
+    {
+      "id": "lecture-2",
+      "tag": "Lecture 2",
+      "name": "Point Processing",
+      "scope": "36 questions",
+      "questions": [
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "Image processing operations are divided into point, neighbourhood and transform classes according to ......",
+          "options": [
+            "the number of different grey levels that the image contains",
+            "the size of the image in rows and columns",
+            "the information needed to compute the new pixel value",
+            "the colour model used to store the image file"
+          ],
+          "answer": 2,
+          "why": "The slides divide operations by the information required to perform the transformation: the pixel alone, a small neighbourhood around it, or the whole image.",
+          "ref": "Slide 3 · Image processing operation types"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "Which pairing of operation class and the information it needs is correct?",
+          "options": [
+            "Neighbourhood: the grey levels in a small mask around the pixel",
+            "Point: the grey levels in a small mask around the pixel",
+            "Transform: only the pixel's own grey value, nothing else",
+            "Neighbourhood: the whole image, processed together as one single block"
+          ],
+          "answer": 0,
+          "why": "A point process uses only the pixel's own value, a neighbourhood process uses a small mask around the pixel, and a transform processes the entire image as one large block.",
+          "ref": "Slide 4–6 · Point, neighbourhood and transform"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "In transform processing the image is transformed and then processed in the new form. What step gives back the processed original image?",
+          "options": [
+            "Applying the same transform a second time",
+            "Clipping the result to the range 0 to 255",
+            "Equalizing the histogram of the result",
+            "Applying the inverse transform"
+          ],
+          "answer": 3,
+          "why": "A transform represents the pixel values in another but equivalent form. After processing in that form, the inverse transform brings the result back to an ordinary image.",
+          "ref": "Slide 6 · Transforms"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "Which of these is NOT a point operation?",
+          "options": [
+            "Gamma correction",
+            "Edge detection",
+            "Histogram matching",
+            "Colour correction"
+          ],
+          "answer": 1,
+          "why": "The slides list brightness and contrast adjustment, gamma correction, histogram equalization, histogram matching and colour correction as point operations. Edge detection has to compare a pixel with its neighbours, so it needs neighbourhood processing.",
+          "ref": "Slide 8 · Point processing of images"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "Why can a point operation on an 8-bit image be carried out so quickly?",
+          "options": [
+            "It only needs to process the pixels that lie along the image border",
+            "Its result for all 256 grey values can be stored in a lookup table",
+            "It first converts the whole image into the Fourier domain",
+            "It skips every pixel whose value is already 0 or 255"
+          ],
+          "answer": 1,
+          "why": "The output depends only on the input value, so f can be computed once for the 256 possible values and stored in a lookup table; each pixel then costs one table lookup.",
+          "ref": "Book p. 37 · Point operations and lookup tables"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "Histogram equalization builds its mapping from the histogram of the whole image. Why is it still a point operation?",
+          "options": [
+            "Every pixel of the image is changed by the same constant amount",
+            "Each pixel is replaced by the average of its 3 × 3 neighbourhood",
+            "The image is processed in the frequency domain and then transformed back",
+            "Each new value depends only on the pixel's own old value"
+          ],
+          "answer": 3,
+          "why": "A point operation is y = f(x): the new value is a function of the pixel's value alone. Equalization only uses the histogram to choose f; after that every pixel of grey level i becomes j, whatever its neighbours are.",
+          "ref": "Slide 4 · Point operations"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "An 8-bit pixel of value 90 has 128 subtracted from it, with rounding and clipping. What is the result?",
+          "options": [
+            "0",
+            "−38",
+            "38",
+            "218"
+          ],
+          "answer": 0,
+          "why": "90 − 128 = −38, which is below 0, so it is clipped to 0. (218 is what uint8 wrap-around modulo 256 would give, as in NumPy.)",
+          "ref": "Slide 9 · Arithmetic operations"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "The pixels `[100 130 180 250]` of an 8-bit image have 128 added to them, with clipping. What do they become?",
+          "options": [
+            "`[228 258 308 378]`",
+            "`[228 2 52 122]`",
+            "`[228 255 255 255]`",
+            "`[0 2 52 122]`"
+          ],
+          "answer": 2,
+          "why": "100 + 128 = 228, while 258, 308 and 378 are above 255 and are all clipped to 255. Clipping destroys information: those three different pixels can no longer be told apart.",
+          "ref": "Slide 10 · Adding and subtracting a constant"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "How does multiplying an image by a constant C > 1 differ from adding a constant to it?",
+          "options": [
+            "It brightens every pixel by exactly the same amount as adding C",
+            "It darkens the image and squeezes the grey levels closer together",
+            "It turns the image into its negative, swapping dark and light",
+            "It brightens and spreads the grey levels apart, raising contrast"
+          ],
+          "answer": 3,
+          "why": "y = Cx with C > 1 brightens, and because the gaps between grey levels are multiplied by C the contrast rises too. Adding a constant only shifts every grey level by the same amount: in g = a·f + b, the slope a controls contrast and the intercept b controls brightness.",
+          "ref": "Book p. 39 · Contrast adjustment"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "In MATLAB, `immultiply(b, 0.5)` is applied to a `uint8` pixel of value 73. What is the result?",
+          "options": [
+            "37",
+            "36",
+            "36.5",
+            "146"
+          ],
+          "answer": 0,
+          "why": "73 × 0.5 = 36.5, and the `uint8` result must be rounded to an integer. MATLAB, like the hand method, rounds a half upward, giving 37. NumPy's `np.round` would give 36, because it rounds a half to the nearest even integer.",
+          "ref": "Slide 12 · Multiplication and division"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "The function y = x/2 + 128 maps the full grey range 0–255 onto which range, and what is its drawback?",
+          "options": [
+            "128–255, brightening but clipping every one of the bright pixels",
+            "0–127, darkening the image while keeping its contrast",
+            "128–255, brightening without clipping but lowering contrast",
+            "64–191, raising the contrast of the mid-tones of the image"
+          ],
+          "answer": 2,
+          "why": "Halving squeezes 0–255 into 0–127.5, and adding 128 lifts that to 128–255.5, so the result fills 128–255 with no real clipping (only 255 itself rounds to 256 and is cut back by one level). But the grey levels are packed half as far apart, so contrast drops.",
+          "ref": "Slide 12 · Multiplication and division"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "Which MATLAB call computes y = x/2 + 128 on the `uint8` image `b`?",
+          "options": [
+            "`immultiply(imadd(b,128),0.5)`",
+            "`imadd(immultiply(b,0.5),128)`",
+            "`imadd(imdivide(b,0.5),128)`",
+            "`imsubtract(immultiply(b,2),128)`"
+          ],
+          "answer": 1,
+          "why": "Halve first with `immultiply(b,0.5)` (or `imdivide(b,2)`), then add 128 with `imadd`. Adding first would clip at 255 before halving, and `imdivide(b,0.5)` doubles the image.",
+          "ref": "Slide 12 · Multiplication and division"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "The slides show `b1 = b + 128` on a `uint8` image failing with an error. What does it do in current MATLAB versions?",
+          "options": [
+            "It works and clips at 255, just like `imadd`",
+            "It wraps around modulo 256, so 200 becomes 72",
+            "It still fails: + is not defined for class uint8",
+            "It silently converts the result to class double"
+          ],
+          "answer": 0,
+          "why": "The error on the slide comes from old MATLAB versions, as the lecture page notes. Current versions saturate integer arithmetic, so `b + 128` clips at 255 like `imadd`; wrapping modulo 256 is what NumPy does.",
+          "ref": "Slide 11 · Adding and subtracting a constant",
+          "check": true
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "What is the complement of the grey value 37 in an 8-bit image?",
+          "options": [
+            "219",
+            "37",
+            "−218",
+            "218"
+          ],
+          "answer": 3,
+          "why": "y = 255 − x = 255 − 37 = 218. (219 comes from wrongly using 256 instead of 255 = L − 1, and −218 from subtracting the wrong way round.)",
+          "ref": "Slide 13 · Complements"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "Solarization here complements only the pixels of grey value 128 or less. What does it give for the pixels `[40 128 129 200]`?",
+          "options": [
+            "`[215 127 126 55]`",
+            "`[40 127 126 55]`",
+            "`[215 127 129 200]`",
+            "`[215 128 129 200]`"
+          ],
+          "answer": 2,
+          "why": "40 becomes 255 − 40 = 215 and 128 becomes 127; 129 and 200 are above 128 and stay as they are. Complementing every pixel would also turn 129 into 126 and 200 into 55.",
+          "ref": "Slide 13 · Solarization"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "For a `double` image with values in [0, 1], what does `imcomplement` compute?",
+          "options": [
+            "`255 - x`",
+            "`-x`",
+            "`1 - x`",
+            "`x - 1`"
+          ],
+          "answer": 2,
+          "why": "`imcomplement` works for every image type: 255 − x for uint8, 1 − x for double images in [0, 1], and it swaps 0 and 1 in a binary image.",
+          "ref": "Slide 13 · Complements"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "How is the histogram of an image with L grey levels represented?",
+          "options": [
+            "A two-dimensional array the same size as the image, holding each grey level",
+            "A one-dimensional array of L elements; element k counts the pixels of level k",
+            "A one-dimensional array of L elements; element k counts the pixels up to level k",
+            "A one-dimensional array listing the positions of the L brightest pixels"
+          ],
+          "answer": 1,
+          "why": "The histogram gives the frequency of each brightness value: element k holds n_k, the number of pixels with grey level k. Counting the pixels up to level k gives the cumulative histogram instead.",
+          "ref": "Slide 15 · What is a histogram?"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "The slides' histogram algorithm starts by setting every element of the array `hf` to zero. What is the next step?",
+          "options": [
+            "For every pixel (x, y) of f, increment `hf[f(x,y)]` by 1",
+            "For every pixel (x, y) of f, set `hf[x,y]` equal to f(x, y)",
+            "For every grey level k, add the value k to `hf[k]`",
+            "For every pixel (x, y) of f, add f(x, y) to `hf[0]`"
+          ],
+          "answer": 0,
+          "why": "Each pixel adds one to the bin of its own grey level, so after one pass over the image `hf[k]` holds the number of pixels with grey level k.",
+          "ref": "Slide 15 · What is a histogram?"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "What is the histogram, for levels 0 to 7, of the 8-level image `[3 3 4 2; 3 4 4 5; 2 3 4 3; 4 2 3 5]`?",
+          "options": [
+            "`[0 0 3 5 6 2 0 0]`",
+            "`[0 0 3 9 14 16 16 16]`",
+            "`[0 3 6 5 2 0 0 0]`",
+            "`[0 0 3 6 5 2 0 0]`"
+          ],
+          "answer": 3,
+          "why": "Counting the 16 pixels gives three 2s, six 3s, five 4s and two 5s. The list 0 0 3 9 14 16 16 16 is the cumulative histogram, not the histogram.",
+          "ref": "Slide 15 · What is a histogram?"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "Which pairing of histogram shape and image appearance is correct?",
+          "options": [
+            "Bars crowded at the high end of the scale: a dark image",
+            "Bars crowded at the low end of the scale: a dark image",
+            "A narrow cluster in the middle of the scale: a high-contrast image",
+            "Bars spread evenly over the whole scale: a low-contrast image"
+          ],
+          "answer": 1,
+          "why": "A dark image has its bins at the low (dark) end and a light image at the high end. A narrow cluster in the middle means low contrast, and bars spread over the whole range mean high contrast.",
+          "ref": "Book p. 41–42 · Histogram shape"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "The slides stretch grey levels 5–9 to 2–14 with j = (14 − 2)/(9 − 5) × (i − 5) + 2. What does grey level 8 become?",
+          "options": [
+            "11",
+            "9",
+            "8",
+            "14"
+          ],
+          "answer": 0,
+          "why": "The slope is 12/4 = 3, so j = 3 × (8 − 5) + 2 = 11. The full table is 5→2, 6→5, 7→8, 8→11 and 9→14.",
+          "ref": "Slide 17–18 · Histogram stretching"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "After the slides' stretch of levels 5–9 onto 2–14, what happens to the heights of the five crowded histogram bars?",
+          "options": [
+            "They become equal, giving a flat (uniform) histogram",
+            "Each bar splits into three bars one level apart",
+            "They keep their heights; the bars only move apart",
+            "Each bar's height is divided by the slope of 3"
+          ],
+          "answer": 2,
+          "why": "Stretching maps each grey level to one new grey level, so it moves bars without splitting or merging them: they keep their heights and are now three levels apart instead of one.",
+          "ref": "Slide 18 · Histogram stretching"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "An image's grey values occupy [60, 180]. Stretched linearly to [0, 255], what does a pixel of value 100 become?",
+          "options": [
+            "100",
+            "142",
+            "40",
+            "85"
+          ],
+          "answer": 3,
+          "why": "s = (r − rmin)/(rmax − rmin) × (smax − smin) + smin = (100 − 60)/(180 − 60) × 255 = (40/120) × 255 = 85.",
+          "ref": "Book p. 47 · Linear contrast stretching"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "For a `double` image, `imadjust(x,[0.2 0.6],[0.1 0.9])` maps x = 0.1 and x = 0.5 to ......",
+          "options": [
+            "−0.1 and 0.7",
+            "0.1 and 0.7",
+            "0.1 and 0.6",
+            "0 and 0.75"
+          ],
+          "answer": 1,
+          "why": "Values up to a = 0.2 become c = 0.1. For 0.5: (0.5 − 0.2)/(0.6 − 0.2) × (0.9 − 0.1) + 0.1 = 0.75 × 0.8 + 0.1 = 0.7.",
+          "ref": "Slide 19 · Use of imadjust"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "The grey values of the `uint8` image `pout.tif` lie roughly between 75 and 160. Which call stretches that range to the full range?",
+          "options": [
+            "`imadjust(p,[75 160]/255,[0 1])`",
+            "`imadjust(p,[75 160],[0 255])`",
+            "`imadjust(p,[0 1],[75 160]/255)`",
+            "`imadjust(p,[],[],75/160)`"
+          ],
+          "answer": 0,
+          "why": "`imadjust` takes its ranges on a [0, 1] scale, so 75–160 is written `[75 160]/255` and mapped to `[0 1]`. Swapping the two ranges would squeeze the image into 75–160 instead.",
+          "ref": "Slide 19 · Use of imadjust"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "With gamma correction over the full range, y = 255 × (x/255)^γ. What does a pixel of value 100 become when γ = 0.5?",
+          "options": [
+            "50",
+            "39",
+            "10",
+            "160"
+          ],
+          "answer": 3,
+          "why": "255 × (100/255)^0.5 = 255 × 0.626 ≈ 159.7, which rounds to 160. The value rises, as expected for γ < 1; γ = 2 would give 39 instead.",
+          "ref": "Slide 20 · Gamma correction"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "In `imadjust(im,[a b],[c d],gamma)`, what does a gamma greater than 1 do?",
+          "options": [
+            "Bends the curve upward, so the image becomes brighter",
+            "Keeps the straight line between (a, c) and (b, d)",
+            "Bends the curve downward, so the image becomes darker",
+            "Reverses the curve, so the image turns into its own negative"
+          ],
+          "answer": 2,
+          "why": "With γ > 1 the power curve sags below the straight line, so mid-tones drop and the image darkens while detail in the bright areas is spread out. γ < 1 brightens and γ = 1 is the linear stretch.",
+          "ref": "Slide 20 · Gamma correction"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "In `imadjust(t,[],[],0.5)`, what do the two empty brackets `[]` mean?",
+          "options": [
+            "The input range is found automatically by `stretchlim`",
+            "Both the input and the output range are [0, 1]",
+            "The output is limited to the range [0, 0.5]",
+            "The image is left unchanged and gamma is ignored"
+          ],
+          "answer": 1,
+          "why": "An empty `[a,b]` or `[c,d]` means [0, 1], so `imadjust(t,[],[],0.5)` applies a gamma of 0.5 over the full range, which brightens the dark tire.",
+          "ref": "Slide 20 · Gamma correction"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "A piecewise linear function passes through (0, 0), (64, 20), (192, 235) and (255, 255). What does a pixel of value 96 become?",
+          "options": [
+            "74",
+            "54",
+            "30",
+            "96"
+          ],
+          "answer": 0,
+          "why": "96 lies on the piece from (64, 20) to (192, 235): y = (235 − 20)/(192 − 64) × (96 − 64) + 20 = (215/128) × 32 + 20 = 53.75 + 20 = 73.75, which rounds to 74.",
+          "ref": "Slide 22 · Piecewise linear stretching"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "The slides' stretching function passes through (0, 0), (5, 2), (9, 14) and (15, 15). Which statement about its pieces is correct?",
+          "options": [
+            "The first piece has slope 3 and spreads levels 0–5 apart",
+            "The middle piece has slope 1/3 and squeezes levels 5–9 together",
+            "The middle piece has slope 3 and spreads levels 5–9 apart",
+            "The last piece has slope 1 and leaves levels 9–15 unchanged"
+          ],
+          "answer": 2,
+          "why": "The slopes are 2/5 = 0.4, 12/4 = 3 and 1/6. A slope above 1 stretches grey levels apart (the middle, where the pixels are) and a slope below 1 compresses them (the nearly empty ends).",
+          "ref": "Slide 17 · Histogram stretching"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "What does histogram equalization try to produce, and how much user input does it need?",
+          "options": [
+            "A uniform histogram, but the user must choose a and b",
+            "A narrower histogram, with the user choosing gamma",
+            "The same histogram shape, moved to the bright end",
+            "A uniform histogram, with no user input at all"
+          ],
+          "answer": 3,
+          "why": "Every stretching method needs user input (a, b, γ or breakpoints). Equalization is entirely automatic and aims for a histogram in which every grey level occurs with the same frequency.",
+          "ref": "Slide 23 · Histogram equalization"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "In the slides' equalization example (L = 16, n = 360), the cumulative count at grey level 9 is 85. What are its scaled value and new grey level?",
+          "options": [
+            "3.65, so the new level is 4",
+            "3.54, so the new level is 3",
+            "0.24, so the new level is 0",
+            "3.54, so the new level is 4"
+          ],
+          "answer": 3,
+          "why": "(L − 1)/n × 85 = (15/360) × 85 = 85/24 = 3.54, which rounds to 4. The slide prints 3.65, a misprint the lecture page corrects; the new level 4 is not affected.",
+          "ref": "Slide 24 · Histogram equalization example",
+          "check": true
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "A 3-bit image (L = 8) of 64 pixels has n_k = 0, 0, 10, 24, 18, 8, 4, 0 for levels 0 to 7. After equalization, what do levels 2, 3, 4, 5 and 6 become?",
+          "options": [
+            "`[1 3 5 6 7]`",
+            "`[1 4 6 7 7]`",
+            "`[1 4 7 8 8]`",
+            "`[1 3 2 1 0]`"
+          ],
+          "answer": 1,
+          "why": "The cumulative sums 10, 34, 52, 60, 64 times (L − 1)/n = 7/64 give 1.09, 3.72, 5.69, 6.56 and 7, which round to 1, 4, 6, 7 and 7. Levels 5 and 6 merge at 7.",
+          "ref": "Book p. 51–52 · Histogram equalization steps"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "Why is the histogram after equalization usually only approximately flat?",
+          "options": [
+            "All pixels of a grey level move together, so a bar can never split",
+            "MATLAB clips the equalized values at 255, piling pixels into the top bar",
+            "The cumulative distribution never quite reaches 1 at the last grey level",
+            "The darkest grey levels are mapped without any rounding at all"
+          ],
+          "answer": 0,
+          "why": "Equalization maps grey level to grey level, so bars can be spread apart or merged but never split. A tall bar stays tall, so the histogram can only approach a uniform one.",
+          "ref": "Slide 23 · Histogram equalization"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "Which statement correctly compares histogram equalization with contrast stretching?",
+          "options": [
+            "Equalization is linear and always keeps the shape of the original histogram",
+            "Stretching is non-linear and follows the cumulative histogram",
+            "Equalization is non-linear and has a higher risk of over-enhancing noise",
+            "Stretching carries the higher risk of an unnatural, noisy result"
+          ],
+          "answer": 2,
+          "why": "Stretching is a linear min–max mapping that keeps the histogram's shape, with low risk. Equalization follows the cumulative histogram non-linearly and can over-enhance noise and look unnatural.",
+          "ref": "Book p. 56 · Stretching versus equalization"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "By default, MATLAB's `histeq(p)` aims for a flat histogram with how many grey levels?",
+          "options": [
+            "256",
+            "64",
+            "16",
+            "2"
+          ],
+          "answer": 1,
+          "why": "By default `histeq` targets 64 grey levels: it chooses the mapping whose cumulative histogram comes closest to that of a flat 64-level histogram, so the output has at most 64 distinct values. That is why the bars in the slide's equalized histogram are spaced out.",
+          "ref": "Slide 25 · Final result of histogram equalization"
+        }
+      ]
+    },
+    {
+      "id": "lecture-3",
+      "tag": "Lecture 3",
+      "name": "Neighbourhood Processing: Spatial Filtering",
+      "scope": "36 questions",
+      "questions": [
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "The values stored in a spatial filter mask are called ......",
+          "options": [
+            "pixels",
+            "coefficients",
+            "grey levels",
+            "intensity values"
+          ],
+          "answer": 1,
+          "why": "Slide 2: the entries of a filter sub-image are coefficients, not pixels. Each coefficient multiplies the image pixel that lies under it.",
+          "ref": "Slide 2 · Spatial filter and coefficients"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "Using correlation (the mask laid directly on the pixels), filter the centre of the neighbourhood `[1 2 3; 4 5 6; 7 8 9]` with the slide-4 mask `[1 3 1; 2 4 -2; -3 1 4]`. What is the output?",
+          "options": [
+            "45",
+            "115",
+            "61",
+            "49"
+          ],
+          "answer": 3,
+          "why": "Multiply each pixel by the coefficient on top of it and add: 1×1 + 3×2 + 1×3 + 2×4 + 4×5 − 2×6 − 3×7 + 1×8 + 4×9 = 49. Rotating the mask by 180° first (convolution) would give 61.",
+          "ref": "Slide 4 · Filtering one pixel"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "Compute the true convolution output at the centre of `[4 1 0; 2 3 5; 6 0 7]` with the mask `[1 2 0; 0 1 0; 0 0 3]`.",
+          "options": [
+            "22",
+            "2.44",
+            "30",
+            "23"
+          ],
+          "answer": 0,
+          "why": "Convolution rotates the mask by 180° to `[3 0 0; 0 1 0; 0 2 1]`, then multiplies and adds: 3×4 + 1×3 + 2×0 + 1×7 = 22. Laying the unrotated mask on the pixels (correlation) gives 30.",
+          "ref": "Slide 15 · Convolution formula"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "True convolution uses f(x − s, y − t) where correlation uses f(x + s, y + t). In practice, this means the mask is ...... before it is laid on the image.",
+          "options": [
+            "rotated by 180°",
+            "negated (signs flipped)",
+            "transposed",
+            "rotated by 90°"
+          ],
+          "answer": 0,
+          "why": "Replacing s and t by −s and −t reverses the mask both top to bottom and left to right, which is a 180° rotation. The products are then summed exactly as in correlation.",
+          "ref": "Slide 15 · Convolution vs correlation"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "For which masks do correlation and convolution give exactly the same output?",
+          "options": [
+            "Any mask whose coefficients add up to exactly 1",
+            "Symmetric masks, like the mean or Laplacian",
+            "Only masks with no negative coefficients",
+            "Any odd-sized mask, such as a 3×3 or 5×5 one"
+          ],
+          "answer": 1,
+          "why": "A symmetric mask looks the same after a 180° rotation, so the two operations coincide. A single off-centre 1 also sums to 1, yet it shifts the image in opposite directions under correlation and convolution.",
+          "ref": "Slide 15 · Symmetric masks"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "With no extra options, what does MATLAB's `imfilter(f, h)` do?",
+          "options": [
+            "Correlates, zero-pads and keeps the size",
+            "Convolves, zero-pads and keeps the size",
+            "Correlates and keeps only where the mask fits",
+            "Convolves and replicates the border pixels"
+          ],
+          "answer": 0,
+          "why": "By default `imfilter` uses correlation with zero padding and returns an image the same size as `f`; add the `'conv'` option to convolve. `conv2` is the function that convolves.",
+          "ref": "Slide 10 · imfilter in MATLAB"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "What does filtering an image with `[0 0 0; 0 1 0; 0 0 0]` give?",
+          "options": [
+            "The same image, unchanged",
+            "The image shifted by one pixel",
+            "A slightly blurred copy",
+            "A black image with one bright pixel"
+          ],
+          "answer": 0,
+          "why": "A single 1 at the centre is the discrete impulse (delta). By the sifting property it copies each pixel's own value, so it is the identity filter.",
+          "ref": "Slide 14 · Delta function as the mask"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "Slide 9 convolves an image with `[0 0 0; 1 0 0; 0 0 0]`. What is the result?",
+          "options": [
+            "The image shifted right by one pixel",
+            "The image blurred along each row",
+            "The image unchanged, as one 1 is kept",
+            "The image shifted left by one pixel"
+          ],
+          "answer": 3,
+          "why": "Convolution rotates the mask, which moves the 1 to the right of centre, so each output pixel copies its right-hand neighbour. The picture therefore moves one pixel to the left.",
+          "ref": "Slide 9 · Shifting with an impulse"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "A 200×300 image is filtered with a 7×7 mask that must stay inside the image (no padding). What is the output size?",
+          "options": [
+            "197×297",
+            "200×300",
+            "194×294",
+            "193×293"
+          ],
+          "answer": 2,
+          "why": "Without padding the output is (M − m + 1) × (N − n + 1) = (200 − 7 + 1) × (300 − 7 + 1) = 194×294. Padding by (7 − 1)/2 = 3 pixels on every side would keep 200×300.",
+          "ref": "Slide 7 · Output image size"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "A 6×6 image in which every pixel is 90 is filtered with the 3×3 mean filter using zero padding. What is the output at a corner pixel?",
+          "options": [
+            "90",
+            "60",
+            "40",
+            "10"
+          ],
+          "answer": 2,
+          "why": "At a corner only 4 of the 9 window pixels lie inside the image, so the output is 4 × 90 / 9 = 40 (an edge pixel gives 6 × 90 / 9 = 60). These dark borders are the artefacts of zero padding; replicate padding would keep 90.",
+          "ref": "Slide 16 · Padding with zeros"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "Which border method fills the missing neighbours with pixels from the opposite side of the image, and suits periodic data?",
+          "options": [
+            "Replicate",
+            "Zero padding",
+            "Symmetric (mirror)",
+            "Wrap around"
+          ],
+          "answer": 3,
+          "why": "Wrap around treats the image as if it repeats, taking values from the opposite edge; the book recommends it for periodic or seamless data. Replicate copies the nearest border pixel and mirror reflects the image.",
+          "ref": "Book p. 64 · Wrap-around padding"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "A filtered image `g` has values from −50 to 200, and `imshow(g, [])` scales that range to [0, 255] for display. At what grey level is a pixel of value 50 shown?",
+          "options": [
+            "50",
+            "51",
+            "102",
+            "63.75"
+          ],
+          "answer": 2,
+          "why": "Scaling uses y = 255 × (x − gL) / (gH − gL) = 255 × (50 + 50) / (200 + 50) = 102. Clipping would have left 50 as it is.",
+          "ref": "Slide 17 · Scaling transformation"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "What mask does `h = fspecial('average', 11)` create?",
+          "options": [
+            "An 11×11 mask with every coefficient 1/11",
+            "An 11×11 mask of ones that adds up to 121",
+            "An 11×11 mask with every coefficient 1/121",
+            "A 1×11 row mask with every coefficient 1/11"
+          ],
+          "answer": 2,
+          "why": "An n×n averaging mask has n² equal coefficients of 1/n², here 1/121, so they add up to 1. The slides then apply it with `imfilter(in_image, h)`.",
+          "ref": "Slide 10 · fspecial average mask"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "The slides blur the same photo with averaging masks of size 11, 15 and 21. What happens as the mask gets bigger?",
+          "options": [
+            "Nothing changes, since the coefficients sum to 1",
+            "The image gets brighter, as more pixels are added",
+            "The blur gets weaker, as each coefficient is smaller",
+            "The blur gets stronger and more detail is lost"
+          ],
+          "answer": 3,
+          "why": "Slide 11: a larger window averages over more pixels, so the smoothing increases. The coefficients still add up to 1, so flat areas keep their brightness.",
+          "ref": "Slide 11 · Effect of average filter size"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "A single salt pixel (255) sits on a flat background of 30. After a 3×3 mean filter, what value do the 9 pixels of its neighbourhood take?",
+          "options": [
+            "55",
+            "255",
+            "28.3",
+            "30"
+          ],
+          "answer": 0,
+          "why": "Each of those windows holds the one 255 and eight 30s: (8 × 30 + 255) / 9 = 55. The impulse is spread into a grey 3×3 blotch, which is why averaging handles salt-and-pepper noise badly; a median would return 30.",
+          "ref": "Slide 12 · Effect of noise level"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "A separable 9×9 mask is applied as a column pass and then a row pass. How many additions does each output pixel need?",
+          "options": [
+            "16",
+            "18",
+            "81",
+            "80"
+          ],
+          "answer": 0,
+          "why": "After separation an N×N mask needs 2N multiplications and 2N − 2 additions: 2 × 9 − 2 = 16. Applied directly it needs 81 multiplications and 80 additions.",
+          "ref": "Slide 18 · Separable filters"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "A separable mask is the column `[1; 2; 1]` times the row `[1 0 -1]`. Which 3×3 mask is it?",
+          "options": [
+            "`[1 2 1; 0 0 0; -1 -2 -1]`",
+            "`[1 0 1; 2 0 2; 1 0 1]`",
+            "`[1 0 -1; 2 0 -2; 1 0 -1]`",
+            "`[1 0 -1; 1 0 -1; 1 0 -1]`"
+          ],
+          "answer": 2,
+          "why": "The outer product multiplies the row by each entry of the column in turn: 1 × [1 0 −1], 2 × [1 0 −1], 1 × [1 0 −1]. Swapping the two vectors would give the transposed mask instead.",
+          "ref": "Slide 18 · Separable masks as outer products"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "A separable mask h equals a column vector c times a row vector r. Which property of convolution lets you filter with c and then with r instead of once with h?",
+          "options": [
+            "Associativity",
+            "Distributivity",
+            "Isotropy",
+            "Commutativity"
+          ],
+          "answer": 0,
+          "why": "Associativity gives f * (c * r) = (f * c) * r, so two simple 1-D passes equal one pass with the full mask. This is what makes separable filters cheaper.",
+          "ref": "Book p. 61–62 · Properties of convolution"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "In this lecture, the frequency of an image region measures ......",
+          "options": [
+            "how often each grey level appears in the image",
+            "how much the grey values change with distance",
+            "how many pixels the image holds per unit length",
+            "how bright the region is on average"
+          ],
+          "answer": 1,
+          "why": "Slide 19: frequency is a measure of the amount by which grey values change with distance. Large changes over small distances (edges, detail, noise) are high frequency; smooth areas are low frequency.",
+          "ref": "Slide 19 · Frequency terminology"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "Which of these masks is a low-pass (smoothing) filter?",
+          "options": [
+            "`[-1 -1 -1; -1 8 -1; -1 -1 -1]`",
+            "`[0 -1 0; -1 4 -1; 0 -1 0]`",
+            "`[-1 0 1; -1 0 1; -1 0 1]`",
+            "`[1 2 1; 2 4 2; 1 2 1]/16`"
+          ],
+          "answer": 3,
+          "why": "Its coefficients are all positive and add up to 16/16 = 1, so flat regions stay unchanged while changes are smoothed. The other three add up to 0, so they are high-pass masks that respond only to change.",
+          "ref": "Slide 20–21 · Low-pass and high-pass masks"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "In the Gaussian filter, what does a larger standard deviation σ do?",
+          "options": [
+            "It sharpens edges instead of smoothing them",
+            "It gives the centre pixel even more weight",
+            "It turns the Gaussian into a non-linear filter",
+            "It blurs more and removes fine detail"
+          ],
+          "answer": 3,
+          "why": "σ sets the width of the bell curve: a small σ gives slight smoothing, a large σ a strong blur that removes fine details. A wider bell spreads the weight away from the centre.",
+          "ref": "Book p. 71 · Effect of sigma"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "The Laplacian is a ...... operator.",
+          "options": [
+            "rank-order (sorting)",
+            "second-order derivative",
+            "smoothing (local averaging)",
+            "first-order derivative"
+          ],
+          "answer": 1,
+          "why": "Slide 22: ∇²f = ∂²f/∂x² + ∂²f/∂y², a sum of second derivatives, each approximated by differences of neighbours to give h1. Sobel masks, by contrast, are first-order derivatives.",
+          "ref": "Slide 22 · Laplacian operator"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "Apply the Laplacian mask h1 = `[0 1 0; 1 -4 1; 0 1 0]` at the centre of `[3 9 3; 7 12 5; 3 11 3]`. What is the response?",
+          "options": [
+            "20",
+            "−52",
+            "−16",
+            "16"
+          ],
+          "answer": 2,
+          "why": "Only the four direct neighbours count: 9 + 7 + 5 + 11 − 4 × 12 = 32 − 48 = −16. The mask h2 = −h1 would give +16, and the 8-neighbour mask h3 gives −52.",
+          "ref": "Slide 22 · Laplacian mask h1"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "Sharpen the centre of `[40 50 40; 30 60 70; 40 20 40]` with the single mask `[0 -1 0; -1 5 -1; 0 -1 0]`. What is the new value?",
+          "options": [
+            "−10",
+            "−70",
+            "60",
+            "130"
+          ],
+          "answer": 3,
+          "why": "5 × 60 − (50 + 30 + 70 + 20) = 300 − 170 = 130. This equals f − ∇²f with h1, where ∇²f = 170 − 4 × 60 = −70.",
+          "ref": "Slide 26 · Laplacian edge enhancement"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "Why add the diagonal neighbours, as in h3 = `[1 1 1; 1 -8 1; 1 1 1]`, to the Laplacian?",
+          "options": [
+            "It becomes isotropic in 45° steps, not 90°",
+            "It can then be split into two 1-D masks",
+            "It becomes much less sensitive to image noise",
+            "Its coefficients then add up to 1, so it smooths"
+          ],
+          "answer": 0,
+          "why": "h1 treats x and y alike (isotropic for 90° rotations); including the diagonals gives isotropic results for increments of 45° (slide 23). Its coefficients still add up to 0, so it is still high-pass.",
+          "ref": "Slide 23 · Diagonal Laplacian masks"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "The directional mask `[-1 0 1; -1 0 1; -1 0 1]` responds mainly to ...... edges.",
+          "options": [
+            "all directions equally",
+            "vertical",
+            "horizontal",
+            "diagonal"
+          ],
+          "answer": 1,
+          "why": "It subtracts the left column from the right one, so a vertical edge such as `[0 9 9; 0 9 9; 0 9 9]` gives 27, while a horizontal edge gives 0. The mask `[-1 -1 -1; 0 0 0; 1 1 1]` finds horizontal edges and `[-1 -1 0; -1 0 1; 0 1 1]` diagonal ones.",
+          "ref": "Slide 27 · Directional masks"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "Unsharp masking (edge crispening) is based on ......",
+          "options": [
+            "replacing each pixel by its window's median",
+            "adding a blurred copy of the image to the image",
+            "multiplying the image by a boost coefficient",
+            "subtracting a blurred copy from the image"
+          ],
+          "answer": 3,
+          "why": "Slide 30: unsharp masking subtracts a blurred version of an image from the image itself. What remains is the detail that the blur removed.",
+          "ref": "Slide 30 · Unsharp masking"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "Slide 30 labels `f - blur(f)` as the sharpened image. What is `f - blur(f)` on its own?",
+          "options": [
+            "The original image shifted by one pixel",
+            "A high-pass image in which flat regions become 0",
+            "A low-pass image that is smoother than the original",
+            "A sharpened image that is ready to display as is"
+          ],
+          "answer": 1,
+          "why": "Every flat region gives `f - blur(f)` = 0, so alone it looks like an edge map; the sharpening comes from adding it back to f. The slides call it the sharpened image; this follows the lecture page's Check-the-source note.",
+          "ref": "Slide 30 · Unsharp masking formula",
+          "check": true
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "Each row of an image is 20 20 20 110 110. A 3×3 mean filter is applied. What is `f - blur(f)` at the three interior pixels?",
+          "options": [
+            "20, 50, 80",
+            "0, 30, −30",
+            "0, −20, 20",
+            "0, −30, 30"
+          ],
+          "answer": 3,
+          "why": "The mean blurs the interior pixels to (20+20+20)/3 = 20, (20+20+110)/3 = 50 and (20+110+110)/3 = 80, so f − blur is 20 − 20 = 0, 20 − 50 = −30 and 110 − 80 = 30. Adding this to f gives the dip and overshoot of slide 31.",
+          "ref": "Slide 31 · Why unsharp masking works"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "High-boost filtering uses `fhb = A*f - blur(f)`. At a pixel with f = 100 and blur(f) = 70, what is the output for A = 1.5?",
+          "options": [
+            "80",
+            "30",
+            "130",
+            "45"
+          ],
+          "answer": 0,
+          "why": "1.5 × 100 − 70 = 150 − 70 = 80, the same as (A − 1) f + fs = 0.5 × 100 + 30. With A = 1 only the difference, 30, would remain.",
+          "ref": "Slide 33 · High-boost filtering"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "In the slides' high-boost demo with h = `[0 -1 0; -1 A+4 -1; 0 -1 0]`, how does A = 1.7 compare with A = 1?",
+          "options": [
+            "Darker, because less of f is kept",
+            "Only the edges remain on grey",
+            "Still sharp, but much brighter",
+            "Blurrier, because A > 1 smooths"
+          ],
+          "answer": 2,
+          "why": "fhb = (A − 1) f + fs, so A > 1 adds extra original on top of the sharpening and raises the overall brightness (slide 34). A = 0 gives the Laplacian alone and A = 1 ordinary Laplacian sharpening.",
+          "ref": "Slide 34 · High-boost demo"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "What does a rank-order filter do at each mask position?",
+          "options": [
+            "Averages the values, giving the centre pixel the largest weight",
+            "Sorts the window and returns the value at a chosen rank",
+            "Subtracts a blurred copy of the window from its centre value",
+            "Multiplies the values by coefficients and adds the products"
+          ],
+          "answer": 1,
+          "why": "Slide 35: the elements under the mask are ordered and a particular value is returned. Max, min and median are all rank-order filters, which makes them non-linear.",
+          "ref": "Slide 35 · Rank-order filters"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "A 3×3 window holds `[21 18 200; 19 0 22; 20 23 17]`. What does the median filter put at its centre?",
+          "options": [
+            "0",
+            "20",
+            "37.8",
+            "19"
+          ],
+          "answer": 1,
+          "why": "Sorted: 0, 17, 18, 19, 20, 21, 22, 23, 200; the middle (5th) value is 20. The mean, 340/9 ≈ 37.8, is dragged up by the outlier 200.",
+          "ref": "Slide 36 · Median filter"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "Apply an alpha-trimmed mean that trims two values from each end to the 3×3 window `[16 0 11; 255 12 5; 9 20 17]`. What is the result?",
+          "options": [
+            "7.2",
+            "12",
+            "13",
+            "38.3"
+          ],
+          "answer": 2,
+          "why": "Sorted: 0, 5, 9, 11, 12, 16, 17, 20, 255. Drop 0, 5, 20 and 255, then average the rest: (9 + 11 + 12 + 16 + 17) / 5 = 65 / 5 = 13. The median is 12, the plain mean 38.3, and dividing by 9 instead of 5 gives 7.2.",
+          "ref": "Slide 37 · Alpha-trimmed mean"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "Why does the median filter remove salt-and-pepper noise so well?",
+          "options": [
+            "It averages each impulse with its neighbours until it fades",
+            "It finds the noisy pixels and sets each of them to zero",
+            "Noisy values are extreme, so sorting puts them at the ends",
+            "Its negative coefficients cancel the bright and dark impulses"
+          ],
+          "answer": 2,
+          "why": "Salt (255) and pepper (0) pixels land at the ends of the sorted list, so the middle value comes from real pixels unless more than half the window is noise. Averaging instead mixes the impulses into the result.",
+          "ref": "Book p. 78 · Median filter"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "The slides run `medfilt2(in_image, [21, 21])` on a skin image with hairs. What does the result show?",
+          "options": [
+            "Everything is blurred evenly, outline included",
+            "The hairs are gone but the skin outline is kept",
+            "The hairs are sharpened and the skin is unchanged",
+            "Only the edges remain, on a dark background"
+          ],
+          "answer": 1,
+          "why": "`medfilt2` replaces each pixel by the median of its 21×21 neighbourhood. Thin hairs are a minority in each window and vanish, while the median keeps edges because its output is always a real value from the window.",
+          "ref": "Slide 36 · medfilt2 demo"
+        }
+      ]
+    },
+    {
+      "id": "lecture-4",
+      "tag": "Lecture 4",
+      "name": "Frequency Domain Filtering",
+      "scope": "36 questions",
+      "questions": [
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "Frequency in an image roughly describes the rate of change of the pixel values. Which image content therefore belongs to the high frequencies?",
+          "options": [
+            "Edges, fine detail and noise",
+            "Smooth areas and gradual lighting",
+            "The mean brightness of the image",
+            "Large regions of constant grey"
+          ],
+          "answer": 0,
+          "why": "Edges, fine detail and noise change quickly from pixel to pixel, so they are high frequencies. Smooth areas, lighting and the mean change slowly or not at all, so they are low frequencies.",
+          "ref": "Book p. 83 · High and low frequencies"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "According to Fourier theory, as the book puts it, any complicated signal can be decomposed into ......",
+          "options": [
+            "a product of complex exponentials that all share one frequency",
+            "a sum of step functions with different heights and positions",
+            "a single sinusoid whose amplitude slowly changes with time",
+            "a sum of sinusoids with different frequencies and amplitudes"
+          ],
+          "answer": 3,
+          "why": "Fourier's idea is that a complex signal is a sum of simple sines and cosines with different frequencies and amplitudes. The Fourier transform is what breaks the signal into these frequency components.",
+          "ref": "Book p. 81 · Fourier theory"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "Using the book's 1-D DFT `F[k] = Σ f[n] e^(-j2πkn/N)`, what is F[0] for `f = [2 5 1 4]`?",
+          "options": [
+            "3",
+            "-6",
+            "12",
+            "2"
+          ],
+          "answer": 2,
+          "why": "For k = 0 every exponential is `e^0 = 1`, so F[0] = 2 + 5 + 1 + 4 = 12: the sum of the samples, N times their mean of 3. The book's forward formula has no 1/N, so 3 is wrong; -6 is F[2].",
+          "ref": "Book p. 82 · 1-D DFT"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "With N = 4, the book's DFT kernel `e^(-j2πn/4)` for k = 1 takes the values `1, -j, -1, j` for n = 0 to 3. What is F[1] for `f = [1 2 3 4]`?",
+          "options": [
+            "-2 - 2j",
+            "-2 + 2j",
+            "2 - 2j",
+            "-2"
+          ],
+          "answer": 1,
+          "why": "F[1] = 1·1 + 2·(-j) + 3·(-1) + 4·j = 1 - 2j - 3 + 4j = -2 + 2j. Using +j in the exponent, the inverse's sign, would give -2 - 2j instead; -2 is F[2].",
+          "ref": "Book p. 82 · 1-D DFT"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "For a signal of N = 4 samples, which DFT index k stands for the highest frequency the samples can hold?",
+          "options": [
+            "k = 0, the sum term",
+            "k = 1, one cycle",
+            "k = 2 = N/2",
+            "k = 3 = N - 1"
+          ],
+          "answer": 2,
+          "why": "k = N/2 = 2 is a pattern that flips at every sample: `[3 1 3 1]` has DFT `[8 0 4 0]`, all its non-DC weight at k = 2. k = 3 is only the mirror image of k = 1, the slow cycle.",
+          "ref": "Book p. 82 · 1-D DFT"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "`F = [10, -2+2j, -2, -2-2j]` is the book-style DFT of a 4-sample signal. Using the inverse `f[n] = (1/N) Σ F[k] e^(j2πkn/N)`, what is f[0]?",
+          "options": [
+            "4",
+            "1",
+            "10",
+            "2.5"
+          ],
+          "answer": 1,
+          "why": "For n = 0 every exponential is 1, so f[0] = (10 - 2 + 2j - 2 - 2 - 2j)/4 = 4/4 = 1. Forgetting the 1/N gives 4; the signal was `[1 2 3 4]`.",
+          "ref": "Book p. 82 · Inverse DFT"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "With the 1/MN in the forward 2-D transform, as in the book's property `F(0,0) = (1/MN) ΣΣ f(x,y)`, what is F(0,0) of the image `[10 20; 30 40]`?",
+          "options": [
+            "100",
+            "25",
+            "10",
+            "40"
+          ],
+          "answer": 1,
+          "why": "F(0,0) = (10 + 20 + 30 + 40)/(2·2) = 100/4 = 25, the mean intensity. 100 is the plain sum, which MATLAB's `fft2` returns because it keeps the 1/MN in `ifft2` instead.",
+          "ref": "Book p. 84 · DC term F(0,0)"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "One coefficient of a 2-D DFT is `F(u,v) = 3 - 4j`. What is the spectrum value |F(u,v)| there?",
+          "options": [
+            "25",
+            "7",
+            "5",
+            "-1"
+          ],
+          "answer": 2,
+          "why": "`|F| = [R² + I²]^(1/2) = √(9 + 16) = 5`. 25 forgets the square root, 7 adds |R| and |I|, and -1 adds R and I.",
+          "ref": "Book p. 83 · Fourier spectrum"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "The magnitude |F(u,v)| tells how strong each frequency is in the image. What does the phase angle φ(u,v) determine?",
+          "options": [
+            "The mean brightness of the whole image",
+            "The cutoff frequency that a filter should use",
+            "How many frequencies the image contains",
+            "The positions of the structures in the image"
+          ],
+          "answer": 3,
+          "why": "The book: the magnitude indicates how strong a frequency is, and the phase `φ = tan^(-1)(I/R)` determines the positioning of structures. The mean brightness is the DC term F(0,0).",
+          "ref": "Book p. 85 · Spectrum and phase"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "For a real image, the DFT coefficient at (u, v) = (1, 2) is `3 + 4j`. Using `F(u,v) = F*(-u,-v)`, what is F(-1,-2)?",
+          "options": [
+            "-3 - 4j",
+            "3 - 4j",
+            "-3 + 4j",
+            "3 + 4j"
+          ],
+          "answer": 1,
+          "why": "Conjugate symmetry: F(-1,-2) is the complex conjugate of F(1,2), so only the imaginary part changes sign, giving 3 - 4j. Both points have the same magnitude, 5.",
+          "ref": "Book p. 84 · Conjugate symmetry"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "A 256 × 512 image (M = 256 rows, N = 512 columns) is multiplied by `(-1)^(x+y)` before the transform. Where does the DC term end up?",
+          "options": [
+            "At (0, 0), the top-left corner",
+            "At (256, 128)",
+            "At (128, 256)",
+            "At (255, 511), the last corner"
+          ],
+          "answer": 2,
+          "why": "Multiplying by `(-1)^(x+y)` shifts the centre of the transform to (M/2, N/2) = (128, 256). (256, 128) swaps M and N.",
+          "ref": "Book p. 84 · Centring the spectrum"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "The book prints the factor 1/MN in its formula for F(u,v) on p. 83 and again in its 2-D inverse DFT for f(x,y) on p. 84. What does the lecture's correction say?",
+          "options": [
+            "Keep both, so each direction divides by MN",
+            "Exactly once; the lecture keeps it in the forward one",
+            "Drop both: a 2-D DFT pair needs no scale factor",
+            "Keep it only in the inverse, so that F(0,0) is the mean"
+          ],
+          "answer": 1,
+          "why": "Used in both directions it would divide by MN twice, so it must appear exactly once (the p. 83 formula for F(u,v) is the forward transform, although the book labels it the IDFT). The lecture keeps it in the forward transform, which makes the book's `F(0,0) = (1/MN) ΣΣ f(x,y)` the mean; with it in the inverse, as in `fft2`/`ifft2`, F(0,0) is the sum. This follows the lecture's Check the source note.",
+          "ref": "Book p. 83–84 · 2-D DFT pair",
+          "check": true
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "In a centred spectrum, where do the edges, noise and fine details of the image show up?",
+          "options": [
+            "In a single bright point at the centre",
+            "Only along the main diagonal of the array",
+            "Mixed evenly over the whole spectrum",
+            "Toward the outer edges of the spectrum"
+          ],
+          "answer": 3,
+          "why": "In a centred spectrum the low frequencies (smooth areas) are at the centre and the high frequencies (edges, noise, fine details) lie toward its edges. The bright centre is the DC term and the other low frequencies.",
+          "ref": "Book p. 84–85 · Reading the spectrum"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "The book's headline advantage: convolution `f(x,y) * h(x,y)` in the spatial domain becomes ...... in the frequency domain.",
+          "options": [
+            "another convolution, of F(u,v) with H(u,v)",
+            "element-by-element multiplication, F · H",
+            "the sum F(u,v) + H(u,v) at each frequency",
+            "the division F(u,v) / H(u,v) at each point"
+          ],
+          "answer": 1,
+          "why": "The convolution theorem: `f * h ⟺ F · H`. Sliding a mask and summing products in space is the same as multiplying the two transforms frequency by frequency.",
+          "ref": "Book p. 85 · Convolution theorem"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "The lecture counts about `3·log2(MN) + 1` operations per pixel for frequency filtering (three FFTs and one product). How many is that for a 512 × 512 image?",
+          "options": [
+            "55",
+            "28",
+            "19",
+            "37"
+          ],
+          "answer": 0,
+          "why": "MN = 512·512 = 2^18, so log2(MN) = 18 and 3·18 + 1 = 55 operations per pixel, whatever the mask size. 28 wrongly uses log2(512) = 9.",
+          "ref": "Book p. 80 · Speed for large filters"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "An m × m mask costs m² operations per pixel in space; the frequency route costs `3·log2(MN) + 1`. On a 128 × 128 image, what is the smallest odd mask for which the frequency route is cheaper?",
+          "options": [
+            "5 × 5",
+            "9 × 9",
+            "3 × 3",
+            "7 × 7"
+          ],
+          "answer": 3,
+          "why": "log2(128·128) = 14, so the frequency route costs 3·14 + 1 = 43 per pixel. A 5 × 5 mask costs 25, still cheaper in space, while 7 × 7 costs 49 > 43. 9 × 9 is the answer for a 512 × 512 image.",
+          "ref": "Book p. 80 · Speed for large filters"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "Why is periodic noise much easier to remove in the frequency domain than in the spatial domain?",
+          "options": [
+            "It becomes a few isolated bright spikes that can be zeroed",
+            "It is all collected in the DC term, which is easy to subtract",
+            "It disappears by itself once fftshift has centred the spectrum",
+            "It only affects the phase, so the magnitude stays clean"
+          ],
+          "answer": 0,
+          "why": "In the image the noise is spread over every pixel, but in the spectrum it is just a few isolated spikes, and setting them to zero removes it. The lecture gives it as an example of the tasks the book calls impossible to perform any other way.",
+          "ref": "Book p. 80 · Why the frequency domain"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "At one frequency the image transform is `F(u,v) = 40 - 20j` and the filter value is `H(u,v) = 0.25`. What is G(u,v) in the model `G = HF`?",
+          "options": [
+            "40.25 - 20j",
+            "160 - 80j",
+            "10 - 20j",
+            "10 - 5j"
+          ],
+          "answer": 3,
+          "why": "`G = H·F = 0.25·(40 - 20j) = 10 - 5j`. The real filter value scales both the real and the imaginary part of that frequency.",
+          "ref": "Book p. 86 · Filtering model G = HF"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "According to the book, what does attenuating the low frequencies of an image do in the spatial domain?",
+          "options": [
+            "It enhances the edges",
+            "It makes the image smoother",
+            "It brightens the whole image",
+            "It shifts the image to the centre"
+          ],
+          "answer": 0,
+          "why": "Attenuating high frequencies gives a smoother image; attenuating low frequencies enhances the edges. Removing the low frequencies also removes the mean, so the result gets darker, not brighter.",
+          "ref": "Book p. 85 · Frequency domain filtering"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "A circular low-pass mask around (M/2, N/2) is multiplied with a spectrum that was never shifted, so its DC term is still at (0, 0). What does the mask keep?",
+          "options": [
+            "The low frequencies, as intended",
+            "Only the DC term at the corner",
+            "Every frequency, unchanged",
+            "The highest frequencies instead"
+          ],
+          "answer": 3,
+          "why": "Without the shift the low frequencies sit in the four corners and the centre holds the highest ones, so a centred disc keeps exactly the wrong frequencies. That is why the transform is shifted to put the DC coefficient in the centre before filtering.",
+          "ref": "Book p. 86 · Shift before filtering"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "What causes the ringing artefacts that the ideal low-pass filter produces?",
+          "options": [
+            "Its transfer function drops abruptly from 1 to 0 at D0",
+            "It keeps the DC term, which adds ripples around every edge",
+            "It is applied to a centred rather than an uncentred spectrum",
+            "Its cutoff D0 is chosen too large, letting too much noise pass"
+          ],
+          "answer": 0,
+          "why": "Ringing comes from a transfer function that changes abruptly. The inverse transform of a sharp-edged disc has rings of alternating sign, and convolution echoes them around every edge; the smoother Butterworth and Gaussian filters ring less.",
+          "ref": "Book p. 90 · Ringing"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "An 8 × 8 centred spectrum has its centre at (4, 4) and cutoff D0 = 2. What is the Butterworth low-pass value of order n = 2 at (u, v) = (5, 5)?",
+          "options": [
+            "0.8",
+            "0.67",
+            "0.78",
+            "0.2"
+          ],
+          "answer": 0,
+          "why": "D = √(1² + 1²) ≈ 1.41, so `(D/D0)^(2n) = (1.41/2)^4 = 0.25` and H = 1/(1 + 0.25) = 0.8. Using the power n instead of 2n gives 0.67, 0.78 is the Gaussian value, and 0.2 is the high-pass 1 - 0.8.",
+          "ref": "Book p. 90 · Butterworth low-pass"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "Same 8 × 8 spectrum, centre (4, 4), D0 = 2. What does the Gaussian low-pass filter `H = e^(-D²/2D0²)` give at (u, v) = (6, 6)?",
+          "options": [
+            "0.14",
+            "0.63",
+            "0.37",
+            "2.72"
+          ],
+          "answer": 2,
+          "why": "D² = 2² + 2² = 8, so H = e^(-8/(2·4)) = e^(-1) ≈ 0.37. Dropping the 2 in 2·D0² gives e^(-2) ≈ 0.14, a wrong sign gives e^(+1) ≈ 2.72, and 0.63 is the high-pass value.",
+          "ref": "Book p. 92 · Gaussian low-pass"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "Same 8 × 8 spectrum, centre (4, 4), D0 = 2. What does the Gaussian high-pass filter `H = 1 - e^(-D²/2D0²)` give at (u, v) = (0, 4)?",
+          "options": [
+            "0.14",
+            "0.98",
+            "0.86",
+            "0.06"
+          ],
+          "answer": 2,
+          "why": "D = 4, so the low-pass part is e^(-16/8) = e^(-2) ≈ 0.14 and H = 1 - 0.14 ≈ 0.86. Dropping the 2 in 2·D0² gives 1 - e^(-4) ≈ 0.98, and 0.06 is the Butterworth low-pass value there.",
+          "ref": "Book p. 94 · Gaussian high-pass"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "A Butterworth low-pass filter of order n = 5 is evaluated exactly at its cutoff, D = D0. What is H there?",
+          "options": [
+            "1/6",
+            "0.61",
+            "1",
+            "0.5"
+          ],
+          "answer": 3,
+          "why": "At D = D0 the bracket `(D/D0)^(2n)` is 1 for every order, so H = 1/(1 + 1) = 0.5. 0.61 is the Gaussian value at D0, and 1/6 wrongly uses 1/(1 + n).",
+          "ref": "Book p. 90 · Butterworth low-pass"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "The book's Figure 4.11 marks the height of the Gaussian low-pass curves at D = D0 as 0.667. What does the formula `e^(-D²/2D0²)` really give there?",
+          "options": [
+            "0.667, as printed",
+            "0.5",
+            "0.368",
+            "About 0.607"
+          ],
+          "answer": 3,
+          "why": "At D = D0 the exponent is -1/2, so H = e^(-0.5) ≈ 0.607 (the lecture rounds it to 0.61); the figure's 0.667 is a book error, flagged in the lecture's Check the source note. 0.5 is the Butterworth value and 0.368 = e^(-1).",
+          "ref": "Book p. 93 · Gaussian low-pass",
+          "check": true
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "What happens to a Butterworth low-pass filter as its order n is increased?",
+          "options": [
+            "It turns into a Gaussian filter and stops ringing entirely",
+            "It falls more steeply and rings more, like the ideal",
+            "It passes more than 0.5 at the cutoff D0",
+            "Its cutoff D0 moves outward in proportion to n"
+          ],
+          "answer": 1,
+          "why": "The order sets how steeply H falls around D0, where it always passes 0.5. As n grows the filter approaches the ideal one, ringing included; n = 1 is gentle with no visible ringing.",
+          "ref": "Book p. 91 · Butterworth order"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "The book stresses one property of the Gaussian filter: the inverse Fourier transform of a Gaussian is ......",
+          "options": [
+            "a ring-shaped lobe of alternating sign",
+            "a cylinder whose radius is D0",
+            "also a Gaussian, a single bump",
+            "a constant equal to the DC term"
+          ],
+          "answer": 2,
+          "why": "The inverse of a Gaussian is also a Gaussian, one positive bump. By the convolution theorem, multiplying by H means convolving with that bump, so the Gaussian low-pass filter causes no ringing; rings belong to the ideal filter.",
+          "ref": "Book p. 92 · Gaussian low-pass"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "Which formula is the Butterworth high-pass filter of order n?",
+          "options": [
+            "`H = 1/(1 + (D/D0)^(2n))`",
+            "`H = 1/(1 + (D0/D)^(2n))`",
+            "`H = 1/(1 + (D0/D)^n)`",
+            "`H = 1 - 1/(1 + (D0/D)^(2n))`"
+          ],
+          "answer": 1,
+          "why": "The BHPF puts D0/D in the bracket, and it equals 1 minus the BLPF: with r = D/D0, `1 - 1/(1 + r^(2n)) = 1/(1 + r^(-2n))`. D/D0 in the bracket is the low-pass filter, and so is 1 minus the high-pass.",
+          "ref": "Book p. 91 · Butterworth high-pass"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "According to the book's comparison table of the three filter families, which pairing is correct?",
+          "options": [
+            "Gaussian: has an order parameter n",
+            "Ideal: sharp cutoff and high ringing",
+            "Butterworth: no ringing at any order",
+            "Ideal: very smooth transition"
+          ],
+          "answer": 1,
+          "why": "The table gives the ideal filter a sharp cutoff and high ringing, Butterworth a smooth adjustable transition, low ringing and the only order parameter n, and the Gaussian a very smooth transition with very low ringing.",
+          "ref": "Book p. 95 · Comparing the filters"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "Why does the output of an ideal high-pass filter look dark everywhere except at the edges?",
+          "options": [
+            "Its H = 0 at the centre removes the DC term, the mean level",
+            "H = 1 at the centre doubles the contrast of the flat areas",
+            "The inverse transform always returns negative pixel values",
+            "The cutoff D0 removes the highest frequencies, not the lowest"
+          ],
+          "answer": 0,
+          "why": "The IHPF sets H = 0 for D ≤ D0, and that disc includes the DC term, the average brightness. Only edges and fine detail survive, on a dark background.",
+          "ref": "Book p. 90 · Ideal high-pass"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "In the frequency domain Gaussian low-pass `H = e^(-D²/2D0²)`, what happens to the blur when D0 is made larger?",
+          "options": [
+            "More blur, as the book's σ = 0.5, 1, 2 figure shows",
+            "No change, since the Gaussian has no cutoff at all",
+            "More ringing appears, as with the ideal filter",
+            "Less blur, because more frequencies are kept"
+          ],
+          "answer": 3,
+          "why": "A larger D0 widens H, so more frequencies pass and the image is blurred less. The book's second Figure 4.12 blurs more as σ grows only because there σ is the width of the spatial mask; the lecture's Check the source note explains this.",
+          "ref": "Book p. 94 · Gaussian width",
+          "check": true
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "Why is a spectrum usually displayed as `log(1 + abs(F))` instead of `abs(F)`?",
+          "options": [
+            "The DC value dwarfs the rest, which would look black",
+            "`abs(F)` is still complex, so `imshow` cannot display it",
+            "The log moves the DC term into the centre of the display",
+            "The log removes the phase so that only the magnitude is left"
+          ],
+          "answer": 0,
+          "why": "As the lecture's definition of the spectrum notes, the DC term is by far the largest value, so on a linear scale everything else would look black; the log compresses the range, and the 1 keeps zeros at 0. `abs` already returns a real array, and centring is `fftshift`'s job.",
+          "ref": "Book p. 87 · Spectrum display"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "Which MATLAB line computes the centred spectrum F of a grayscale image f, as steps 2 and 3 of the book's general steps require?",
+          "options": [
+            "`F = ifft2(fftshift(f))`",
+            "`F = fftshift(ifft2(f))`",
+            "`F = fftshift(fft2(f))`",
+            "`F = fft2(ifftshift(f))`"
+          ],
+          "answer": 2,
+          "why": "`fft2` computes F(u,v), then `fftshift` swaps its quadrants diagonally so the DC term moves to the centre. `ifft2` is the inverse transform, and shifting the image itself does not centre its spectrum.",
+          "ref": "Book p. 96 · General steps"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "The spectrum was centred with `fftshift` and filtered with `G = H .* F`. Which MATLAB line gives the correct filtered image g?",
+          "options": [
+            "`g = real(ifft2(G))`",
+            "`g = real(fft2(ifftshift(G)))`",
+            "`g = real(ifft2(ifftshift(G)))`",
+            "`g = real(ifft2(ifftshift(F)))`"
+          ],
+          "answer": 2,
+          "why": "The shift must be undone with `ifftshift` before `ifft2`, and `real` drops the round-off imaginary part. Skipping `ifftshift` returns g·(-1)^(x+y) for even M and N, a checkerboard of signs; the book's step lists leave this out, so this follows the lecture's Check the source note.",
+          "ref": "Book p. 96 · General steps",
+          "check": true
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "In the lecture's Python version, with D the distance array and D0 the cutoff, which line builds the Gaussian low-pass filter?",
+          "options": [
+            "`H = np.exp(-D**2 / (2 * D0**2))`",
+            "`H = np.exp(D**2 / (2 * D0**2))`",
+            "`H = np.exp(-D**2 / D0**2)`",
+            "`H = 1 - np.exp(-D**2 / (2 * D0**2))`"
+          ],
+          "answer": 0,
+          "why": "`H = e^(-D²/2D0²)` is `np.exp(-D**2 / (2 * D0**2))`. Without the minus sign H grows with D, without the 2 the filter no longer passes 0.61 at D0, and 1 minus it is the Gaussian high-pass.",
+          "ref": "Book p. 92 · Gaussian low-pass"
+        }
+      ]
+    }
+  ]
+}
