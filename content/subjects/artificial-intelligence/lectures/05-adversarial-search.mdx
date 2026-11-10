@@ -1,5 +1,5 @@
 ---
-number: 4
+number: 5
 title: "Adversarial Search"
 titleAr: "البحث التنافسي"
 summary: "The course book's Chapter 4: competitive environments and the three game-theory stances towards other agents, two-player zero-sum games of perfect information and their formal definition, the minimax value and the minimax algorithm, alpha–beta pruning with its α and β bounds and the effect of move ordering, then heuristic alpha–beta with cutoffs and evaluation functions, forward pruning, and how deep real chess programs search."
@@ -34,7 +34,7 @@ bookRefs:
 
 <Ar>مقدمة</Ar>
 
-<Walkthrough id="ai4-intro" expect="conflict, structured, which" />
+<Walkthrough id="ai5-intro" expect="conflict, structured, which" />
 
 The search problems so far had a single agent. This lecture turns to **competitive environments**, where two or more agents have **conflicting goals**. Planning ahead in such an environment is an **adversarial search** problem: the agent chooses its moves while an opponent chooses moves against it.
 
@@ -58,7 +58,7 @@ The algorithms in this lecture assume that both players see the whole state and 
 
 <Ar>منظورات نظرية الألعاب</Ar>
 
-<Walkthrough id="ai4-stances" expect="stances, intention, estimate; avgL=4; avgR=3.5; minL=0; minR=3" />
+<Walkthrough id="ai5-stances" expect="stances, intention, estimate; avgL=4; avgR=3.5; minL=0; minR=3" />
 
 Game theory offers three stances towards an environment that contains other agents. They differ in how much of the other agents' reasoning they model.
 
@@ -114,7 +114,7 @@ For any nontrivial game the tree is far too big to search to the end in the time
 
 <Ar>الألعاب الثنائية صفرية المجموع ذات المعلومات الكاملة</Ar>
 
-<Walkthrough id="ai4-games" expect="properties, payoff, formal, tree, value; ttt=362880" />
+<Walkthrough id="ai5-games" expect="properties, payoff, formal, tree, value; ttt=362880" />
 
 The games studied first are **deterministic**, **turn-taking**, **two-player** and **zero-sum**, with **perfect information**: nothing depends on chance, the players move alternately, both see the entire state, and what is good for one player is equally bad for the other.
 
@@ -204,7 +204,7 @@ At a terminal state the value is the utility. MAX prefers to move to a state of 
 
 <Ar>خوارزمية minimax</Ar>
 
-<Walkthrough id="ai4-minimax" expect="leaves, min-level, max-level, depth-first, suboptimal; root=3; B=3; C=2; D=2; move=a1; nodes=13; chessExp=123" />
+<Walkthrough id="ai5-minimax" expect="leaves, min-level, max-level, depth-first, suboptimal; root=3; B=3; C=2; D=2; move=a1; nodes=13; chessExp=123" />
 
 The minimax algorithm computes the minimax decision with a **depth-first recursion**. It walks down the tree until it reaches a terminal state, applies `UTILITY`, and backs the values up as the recursion unwinds: `MAX-VALUE` keeps the largest value among its children and `MIN-VALUE` the smallest. Written in Python, with the game tree as nested dictionaries:
 
@@ -294,7 +294,7 @@ So $\text{MINIMAX}(A) = \max(\min(3, 12, 8), \min(2, 4, 6), \min(14, 5, 2)) = \m
 
 <Ar>التقليم ألفا-بيتا</Ar>
 
-<Walkthrough id="ai4-alpha-beta" expect="bounds, trace, compare, ordering, growth; root=3; read=7; pruned=c2, c3; readWorst=9; readBook=7; readBest=5" />
+<Walkthrough id="ai5-alpha-beta" expect="bounds, trace, compare, ordering, growth; root=3; read=7; pruned=c2, c3; readWorst=9; readBook=7; readBest=5" />
 
 Minimax examines a number of states that is exponential in the depth of the tree. The exponent cannot be removed, but it can often be cut roughly in half. **Alpha–beta pruning** computes the **same minimax decision** while pruning away branches that **cannot possibly influence** the result. It keeps two bounds along the current path of the depth-first search:
 
@@ -448,7 +448,7 @@ The same tree, reordered, shows how much the order matters:
 
 <Ar>ألفا-بيتا الاستدلالي: القطع والتقييم</Ar>
 
-<Walkthrough id="ai4-heuristic" expect="cutoff, eval, quiescence, deepening, forward, chess; eval=1.6; static=3; quiet=-6; plyMinimax=5; plyAlphaBeta=10" />
+<Walkthrough id="ai5-heuristic" expect="cutoff, eval, quiescence, deepening, forward, chess; eval=1.6; static=3; quiet=-6; plyMinimax=5; plyAlphaBeta=10" />
 
 When time is limited, **cut off** the search at a depth $d$ (or with another test, `IS-CUTOFF`) and replace `UTILITY` with a fast **evaluation function** `EVAL(s, p)`, which estimates the expected utility of state $s$ for player $p$:
 

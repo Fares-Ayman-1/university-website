@@ -90,6 +90,19 @@ function slugFromFile(file: string): string {
 }
 
 /**
+ * A heading's text as it renders: links, code spans and paired emphasis (`*x*`, `**x**`,
+ * `_x_`) lose their markup, but a lone `*` or `_` is text and stays ("A* search").
+ */
+function plainHeading(text: string): string {
+  return text
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
+    .replace(/`([^`]*)`/g, "$1")
+    .replace(/(\*\*|__)(?=\S)(.+?)(?<=\S)\1/g, "$2")
+    .replace(/(\*|_)(?=\S)(.+?)(?<=\S)\1/g, "$2")
+    .trim();
+}
+
+/**
  * Extracts h2/h3 headings with the same ids rehype-slug will generate. rehype-slug numbers
  * repeated titles across every heading level, so the slugger sees h1–h6, not just h2/h3.
  */
@@ -109,15 +122,12 @@ function extractHeadings(body: string): Heading[] {
     if (inFence) continue;
     if (awaitingAr && line.trim()) {
       const ar = /^<Ar>(.+)<\/Ar>\s*$/.exec(line.trim());
-      if (ar) awaitingAr.textAr = ar[1].replace(/[`*_]/g, "").trim();
+      if (ar) awaitingAr.textAr = plainHeading(ar[1]);
       awaitingAr = null;
     }
     const match = /^(#{1,6})\s+(.+?)\s*#*\s*$/.exec(line);
     if (!match) continue;
-    const text = match[2]
-      .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
-      .replace(/[`*_]/g, "")
-      .trim();
+    const text = plainHeading(match[2]);
     const id = slugger.slug(text);
     const depth = match[1].length;
     if (depth === 2 || depth === 3) {

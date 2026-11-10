@@ -16,6 +16,7 @@ import { loaders as ai01 } from "./scenes/artificial-intelligence/lecture-01";
 import { loaders as ai02 } from "./scenes/artificial-intelligence/lecture-02";
 import { loaders as ai03 } from "./scenes/artificial-intelligence/lecture-03";
 import { loaders as ai04 } from "./scenes/artificial-intelligence/lecture-04";
+import { loaders as ai05 } from "./scenes/artificial-intelligence/lecture-05";
 
 /*
  * One chunk per walkthrough: a page downloads only the drawings it shows. Each lecture's
@@ -37,6 +38,7 @@ const SCENES: Record<WalkthroughId, React.ComponentType<SceneProps>> = {
   ...ai02,
   ...ai03,
   ...ai04,
+  ...ai05,
 };
 
 export function WalkthroughScene({ id, panel, control }: SceneProps & { id: string }) {

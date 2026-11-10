@@ -1,7 +1,7 @@
 "use client";
 
-import type { stances } from "@/lib/walkthroughs/artificial-intelligence/lecture-04";
-import { EVAL_VALUE, FEATURES, INTENTION, INTENTION_VALUES, intentionChoice, PLAYOUT_WINS, PLAYOUTS, show } from "@/lib/widgets/ai-lecture-04";
+import type { stances } from "@/lib/walkthroughs/artificial-intelligence/lecture-05";
+import { EVAL_VALUE, FEATURES, INTENTION, INTENTION_VALUES, intentionChoice, PLAYOUT_WINS, PLAYOUTS, show } from "@/lib/widgets/ai-lecture-05";
 import type { PanelIdOf } from "@/lib/widgets/walkthrough";
 import { bi } from "../../../../types";
 import { Arrow, Box, Chip, Curve, Fade, fmt, In, Mark, Svg, Text, type Pt } from "../../../primitives";

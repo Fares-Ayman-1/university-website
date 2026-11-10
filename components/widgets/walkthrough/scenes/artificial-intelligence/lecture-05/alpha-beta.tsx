@@ -1,7 +1,7 @@
 "use client";
 
-import type { alphaBeta as alphaBetaDef } from "@/lib/walkthroughs/artificial-intelligence/lecture-04";
-import { alphaBeta, GROWTH, GROWTH_B, isLeaf, leafIds, minimaxValues, orderTree, ROOT_MOVES, show, WORKED, type AlphaBetaRun, type Inner, type Ordering, type Stage } from "@/lib/widgets/ai-lecture-04";
+import type { alphaBeta as alphaBetaDef } from "@/lib/walkthroughs/artificial-intelligence/lecture-05";
+import { alphaBeta, GROWTH, GROWTH_B, isLeaf, leafIds, minimaxValues, orderTree, ROOT_MOVES, show, WORKED, type AlphaBetaRun, type Inner, type Ordering, type Stage } from "@/lib/widgets/ai-lecture-05";
 import type { PanelIdOf } from "@/lib/widgets/walkthrough";
 import { bi } from "../../../../types";
 import { Arrow, Bars, Box, Chip, Fade, Mark, Svg, Text } from "../../../primitives";

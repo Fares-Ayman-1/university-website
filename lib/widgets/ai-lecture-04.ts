@@ -1,316 +1,388 @@
+import { DIRS, OPTIMAL, PUZZLE_GOAL, PUZZLE_START, ROMANIA_EDGES, VIA_FAGARAS, VIA_RIMNICU, cityName, moveBlank, neighbours, pathCost, type Board } from "./ai-lecture-02";
+
 /*
- * Artificial Intelligence · Lecture 4 (adversarial search, the course book's Chapter 4): the
- * game-tree numbers its walkthroughs draw. Pure and client-safe, so the scenes, the page's
- * `expect` facts and the worked example in the text all come from the same code.
- *
- * The worked example is the book's two-ply tree (its Figure "6.2", AIMA's Figure 5.2): MAX
- * moves a1, a2 or a3 to the MIN nodes B, C and D, and MIN replies with b1…d3.
+ * Artificial Intelligence · Lecture 4 (content/subjects/artificial-intelligence/lectures/04-informed-search.mdx):
+ * the searches and numbers its walkthrough scenes draw. Best-first search on the Romania map
+ * (uniform-cost, greedy best-first and A*, tree-like as in the book's figures, goal test on
+ * removal), the straight-line-distance heuristic and the true road distances it estimates,
+ * an overestimating heuristic, a small graph where an admissible but inconsistent heuristic
+ * misleads graph search, and the 8-puzzle's h1 and h2. Pure and client-safe, so the scenes,
+ * the page's `expect` facts and the worked examples in the text share one set of numbers.
  */
 
-export type Player = "max" | "min";
-export type Leaf = { id: string; utility: number };
-export type Inner = { id: string; turn: Player; children: readonly GameTree[] };
-/** A game-tree node: a terminal state with its utility for MAX, or a node where `turn` moves. */
-export type GameTree = Leaf | Inner;
+/* ---------- The Romania map (roads from Lecture 2) ---------- */
 
-export const isLeaf = (n: GameTree): n is Leaf => "utility" in n;
-const leaf = (id: string, utility: number): Leaf => ({ id, utility });
-const inner = (id: string, turn: Player, children: readonly GameTree[]): Inner => ({ id, turn, children });
+export const START = "Arad";
+export const GOAL = "Bucharest";
+/** The optimal route (418 km) and the one greedy best-first search returns (450 km), from Lecture 2. */
+export const OPTIMAL_ROUTE: readonly string[] = [...VIA_RIMNICU];
+export const GREEDY_ROUTE: readonly string[] = [...VIA_FAGARAS];
 
-/** The worked example. Leaf ids are the moves that reach them (b1 = MIN's first reply to a1). */
-export const WORKED: Inner = inner("A", "max", [
-  inner("B", "min", [leaf("b1", 3), leaf("b2", 12), leaf("b3", 8)]),
-  inner("C", "min", [leaf("c1", 2), leaf("c2", 4), leaf("c3", 6)]),
-  inner("D", "min", [leaf("d1", 14), leaf("d2", 5), leaf("d3", 2)]),
-]);
+const ROADS = ROMANIA_EDGES.split(" ").map((token) => {
+  const [pair, km] = token.split(":");
+  const [from, to] = pair.split("-");
+  return { from, to, km: Number(km) };
+});
 
-/** The move MAX plays to reach each MIN node of the worked example. */
-export const ROOT_MOVES: Readonly<Record<string, string>> = { B: "a1", C: "a2", D: "a3" };
+/** Every city id ("Rimnicu_Vilcea"), alphabetically. */
+export const CITIES: readonly string[] = [...new Set(ROADS.flatMap((r) => [r.from, r.to]))].sort();
 
-/** The Practice tree: three ply (MAX, MIN, MAX), two moves everywhere. */
-export const EXERCISE: Inner = inner("A", "max", [
-  inner("B", "min", [inner("D", "max", [leaf("d1", 3), leaf("d2", 5)]), inner("E", "max", [leaf("e1", 6), leaf("e2", 9)])]),
-  inner("C", "min", [inner("F", "max", [leaf("f1", 1), leaf("f2", 2)]), inner("G", "max", [leaf("g1", 0), leaf("g2", -1)])]),
-]);
+/** The roads, both ways counted once: from, to, km. */
+export const roads = () => ROADS.map((r) => ({ ...r }));
 
-/* ---------- Minimax ---------- */
+/** "Rimnicu_Vilcea" → "R": the 20 cities have 20 different initials. */
+export const initial = (city: string) => city[0];
 
-/** MINIMAX(s): the utility for MAX, assuming both players play optimally from s. */
-export function minimax(n: GameTree): number {
-  if (isLeaf(n)) return n.utility;
-  const values = n.children.map(minimax);
-  return n.turn === "max" ? Math.max(...values) : Math.min(...values);
+if (new Set(CITIES.map(initial)).size !== CITIES.length) throw new Error("ai-lecture-04: two Romania cities share an initial");
+
+/** A list of cities as the page prints it: "Arad,Sibiu,Rimnicu Vilcea". */
+export const names = (list: readonly string[] | null) => (list ? list.map(cityName).join(",") : "none");
+
+/* ---------- The straight-line-distance heuristic ---------- */
+
+/**
+ * h_SLD: straight-line distances to Bucharest in km (AIMA, Section 3.5.1). The course book
+ * prints only the eight in BOOK_H (its Figure 3.17) and implies Pitesti's.
+ */
+export const H_SLD: Readonly<Record<string, number>> = {
+  Arad: 366,
+  Bucharest: 0,
+  Craiova: 160,
+  Dobreta: 242,
+  Eforie: 161,
+  Fagaras: 176,
+  Giurgiu: 77,
+  Hirsova: 151,
+  Iasi: 226,
+  Lugoj: 244,
+  Mehadia: 241,
+  Neamt: 234,
+  Oradea: 380,
+  Pitesti: 100,
+  Rimnicu_Vilcea: 193,
+  Sibiu: 253,
+  Timisoara: 329,
+  Urziceni: 80,
+  Vaslui: 199,
+  Zerind: 374,
+};
+
+/** The h-values printed in the book (Figure 3.17, and h_SLD(Arad) = 366 in the text). */
+export const BOOK_H: readonly string[] = ["Arad", "Sibiu", "Timisoara", "Zerind", "Fagaras", "Oradea", "Rimnicu_Vilcea", "Bucharest"];
+/** Pitesti's value follows from the book's "Pitesti (f = 417)": 417 − g(Pitesti). */
+export const IMPLIED_H: readonly string[] = ["Pitesti"];
+
+if (CITIES.some((c) => H_SLD[c] === undefined) || Object.keys(H_SLD).length !== CITIES.length) throw new Error("ai-lecture-04: H_SLD must give one value per city");
+
+/** h*(n): the true cost of the cheapest road route from each city to `goal` (Dijkstra). */
+export function trueCosts(goal = GOAL): Record<string, number> {
+  const dist: Record<string, number> = { [goal]: 0 };
+  const done = new Set<string>();
+  while (done.size < CITIES.length) {
+    const open = CITIES.filter((c) => !done.has(c) && dist[c] !== undefined);
+    if (!open.length) break;
+    const u = open.reduce((a, b) => (dist[b] < dist[a] ? b : a));
+    done.add(u);
+    for (const { to, km } of neighbours(u)) if (dist[to] === undefined || dist[u] + km < dist[to]) dist[to] = dist[u] + km;
+  }
+  return dist;
 }
 
-/** The minimax value of every node, by id. */
-export function minimaxValues(tree: GameTree): Record<string, number> {
-  const out: Record<string, number> = {};
-  (function walk(n: GameTree) {
-    out[n.id] = minimax(n);
-    if (!isLeaf(n)) n.children.forEach(walk);
-  })(tree);
-  return out;
+export const H_STAR: Readonly<Record<string, number>> = trueCosts();
+
+/** Admissible: h(n) ≤ h*(n) for every city. */
+export const isAdmissible = (h: Readonly<Record<string, number>>) => CITIES.every((c) => h[c] <= H_STAR[c]);
+/** Consistent: h(n) ≤ c(n, n') + h(n') across every road, both ways, and h(goal) = 0. */
+export const isConsistent = (h: Readonly<Record<string, number>>) => h[GOAL] === 0 && ROADS.every((r) => h[r.from] <= r.km + h[r.to] && h[r.to] <= r.km + h[r.from]);
+
+/** The overestimating heuristic of the page: h_SLD with Pitesti's 100 raised to 200 (true cost 101). */
+export const OVER_CITY = "Pitesti";
+export const OVER_VALUE = 200;
+export const H_OVER: Readonly<Record<string, number>> = { ...H_SLD, [OVER_CITY]: OVER_VALUE };
+
+/* ---------- Best-first search (tree-like, goal test on removal) ---------- */
+
+export type Strategy = "ucs" | "greedy" | "astar";
+
+/** One node on the fringe: the path to it, g, h and the f the strategy orders by. */
+export type FringeNode = { city: string; path: readonly string[]; g: number; h: number; f: number; seq: number };
+
+export type BestFirstStep = {
+  /** The node removed from the front of the fringe */
+  removed: FringeNode;
+  goal: boolean;
+  /** Its children, in the order they were generated (neighbours alphabetically) */
+  added: FringeNode[];
+  /** The fringe after the step, lowest f first (ties: first in, first out) */
+  fringe: FringeNode[];
+};
+
+export type BestFirstRun = {
+  strategy: Strategy;
+  /** The fringe before the first removal: just the start node */
+  initial: FringeNode[];
+  steps: BestFirstStep[];
+  /** Every city removed, in order, ending with the goal */
+  order: string[];
+  path: string[] | null;
+  cost: number | null;
+  /** Nodes generated, the start node included */
+  generated: number;
+};
+
+/** f(n) for each strategy: g for uniform-cost, h for greedy best-first, g + h for A*. */
+export const evalF = (strategy: Strategy, g: number, h: number) => (strategy === "ucs" ? g : strategy === "greedy" ? h : g + h);
+
+const byF = (a: FringeNode, b: FringeNode) => a.f - b.f || a.seq - b.seq;
+
+/**
+ * The page's best-first TREE-SEARCH: the fringe is a priority queue ordered by f; remove the
+ * lowest-f node, return it if it holds the goal, else add all its children (repeated states
+ * included, as in the book's figures). Children are generated alphabetically.
+ */
+export function bestFirst(strategy: Strategy, h: Readonly<Record<string, number>> = H_SLD, start = START, goal = GOAL, maxSteps = 1000): BestFirstRun {
+  let seq = 0;
+  const make = (city: string, path: readonly string[], g: number): FringeNode => ({ city, path, g, h: h[city], f: evalF(strategy, g, h[city]), seq: seq++ });
+  let fringe: FringeNode[] = [make(start, [start], 0)];
+  const initial = [...fringe];
+  const steps: BestFirstStep[] = [];
+  let generated = 1;
+  while (fringe.length && steps.length < maxSteps) {
+    const [removed, ...rest] = fringe;
+    if (removed.city === goal) {
+      steps.push({ removed, goal: true, added: [], fringe: rest });
+      return { strategy, initial, steps, order: steps.map((s) => s.removed.city), path: [...removed.path], cost: removed.g, generated };
+    }
+    const added = neighbours(removed.city).map(({ to, km }) => make(to, [...removed.path, to], removed.g + km));
+    generated += added.length;
+    fringe = [...rest, ...added].sort(byF);
+    steps.push({ removed, goal: false, added, fringe });
+  }
+  return { strategy, initial, steps, order: steps.map((s) => s.removed.city), path: null, cost: null, generated };
 }
 
-/** The child the player to move picks: the first with the best backed-up value. */
-export function bestChild(n: Inner): GameTree {
-  const values = n.children.map(minimax);
-  const target = n.turn === "max" ? Math.max(...values) : Math.min(...values);
-  return n.children[values.indexOf(target)];
+/** The fringe before step i (i = 0: the start node only). */
+export const fringeBefore = (run: BestFirstRun, i: number) => (i === 0 ? run.initial : run.steps[i - 1].fringe);
+
+/** Cities in the order they are first removed (repeats dropped). */
+export const firstVisits = (run: BestFirstRun) => [...new Set(run.order)];
+
+export const UCS_RUN = bestFirst("ucs");
+export const GREEDY_RUN = bestFirst("greedy");
+export const ASTAR_RUN = bestFirst("astar");
+/** A* with the overestimating heuristic H_OVER. */
+export const OVER_RUN = bestFirst("astar", H_OVER);
+
+/** Every node A* generated, with what became of it: expanded, the goal, or still waiting. */
+export function generatedNodes(run: BestFirstRun): { node: FringeNode; fate: "expanded" | "goal" | "waiting" }[] {
+  const removed = new Set(run.steps.map((s) => s.removed.seq));
+  const goalSeq = run.steps.find((s) => s.goal)?.removed.seq;
+  const all = [...run.initial, ...run.steps.flatMap((s) => s.added)];
+  return all.map((node) => ({ node, fate: node.seq === goalSeq ? "goal" : removed.has(node.seq) ? "expanded" : "waiting" }));
 }
 
-/** Every node in the order a depth-first minimax visits it. */
-export function dfsOrder(tree: GameTree): string[] {
-  const out: string[] = [];
-  (function walk(n: GameTree) {
-    out.push(n.id);
-    if (!isLeaf(n)) n.children.forEach(walk);
-  })(tree);
-  return out;
-}
-
-export function leafIds(tree: GameTree): string[] {
-  return dfsOrder(tree).filter((id) => isLeaf(find(tree, id)));
-}
-
-export function find(tree: GameTree, id: string): GameTree {
-  const hit = findOrNull(tree, id);
-  if (!hit) throw new Error(`ai-lecture-04: no node "${id}"`);
-  return hit;
-}
-
-function findOrNull(tree: GameTree, id: string): GameTree | null {
-  if (tree.id === id) return tree;
-  if (isLeaf(tree)) return null;
-  for (const c of tree.children) {
-    const hit = findOrNull(c, id);
-    if (hit) return hit;
+/** The first step after which the goal is on the fringe, and the f it has there. */
+export function goalFirstSeen(run: BestFirstRun): { step: number; f: number } | null {
+  for (let i = 0; i < run.steps.length; i++) {
+    const hit = run.steps[i].added.find((n) => n.city === GOAL);
+    if (hit) return { step: i, f: hit.f };
   }
   return null;
 }
 
-/* ---------- Alpha–beta ---------- */
+/* The worked examples the page prints. */
+if (names(GREEDY_RUN.path) !== names(VIA_FAGARAS) || GREEDY_RUN.cost !== pathCost(VIA_FAGARAS)) throw new Error(`ai-lecture-04: greedy returns ${names(GREEDY_RUN.path)} (${GREEDY_RUN.cost})`);
+if (names(ASTAR_RUN.path) !== names(VIA_RIMNICU) || ASTAR_RUN.cost !== pathCost(VIA_RIMNICU)) throw new Error(`ai-lecture-04: A* returns ${names(ASTAR_RUN.path)} (${ASTAR_RUN.cost})`);
+if (UCS_RUN.cost !== OPTIMAL.cost || names(firstVisits(UCS_RUN)) !== names(OPTIMAL.order)) throw new Error("ai-lecture-04: tree-like UCS disagrees with Lecture 2's uniform-cost run");
+if (!isAdmissible(H_SLD) || !isConsistent(H_SLD)) throw new Error("ai-lecture-04: h_SLD should be admissible and consistent");
+if (isAdmissible(H_OVER)) throw new Error("ai-lecture-04: H_OVER should overestimate");
 
-/** What a node shows at one moment of the search. */
-export type NodeView = {
-  /** "open": on the current path; "done": returned its value; "cut": returned early (pruned the rest) */
-  state: "open" | "done" | "cut";
-  alpha: number;
-  beta: number;
-  /** The best value found so far (MAX: −∞ upwards, MIN: +∞ downwards); exact once done */
-  v: number;
-};
+/** Nodes A* removes with f below the optimal cost C*: it must expand all of them. */
+export const belowCStar = (run: BestFirstRun, cStar: number) => generatedNodes(run).filter((n) => n.node.f < cStar);
 
-/** The search after one leaf has been read and everything it caused has been backed up. */
-export type Stage = {
-  /** The leaf just read */
-  leaf: string;
-  nodes: Readonly<Record<string, NodeView>>;
-  /** Leaves read so far, in order */
-  read: readonly string[];
-  /** Leaves that will never be read, as far as is known at this point */
-  pruned: readonly string[];
-};
-
-export type AlphaBetaRun = {
-  value: number;
-  /** MAX's chosen child at the root */
-  best: string;
-  read: readonly string[];
-  pruned: readonly string[];
-  /** Nodes that returned early because v ≤ α (MIN) or v ≥ β (MAX) */
-  cutAt: readonly string[];
-  stages: readonly Stage[];
-};
+/* ---------- Greedy best-first looping (AIMA's Iasi → Fagaras) ---------- */
 
 /**
- * ALPHA-BETA-SEARCH exactly as the book's pseudocode (AIMA Figure 5.7): v and the move are
- * updated when a child improves v, then α (MAX) or β (MIN), then the cutoff test.
+ * Only the order of the estimates matters: by straight line, Neamt looks closest to Fagaras,
+ * then Iasi, then Vaslui (AIMA, Section 3.5.1). The ranks stand for that order, not for km.
  */
-export function alphaBeta(tree: Inner): AlphaBetaRun {
-  const views: Record<string, NodeView> = {};
-  const read: string[] = [];
-  const pruned: string[] = [];
-  const cutAt: string[] = [];
-  const stages: Stage[] = [];
-  let pending: string | null = null;
+export const LOOP_RANK: Readonly<Record<string, number>> = { Neamt: 1, Iasi: 2, Vaslui: 3 };
 
-  const flush = () => {
-    if (pending === null) return;
-    stages.push({ leaf: pending, nodes: structuredClone(views), read: [...read], pruned: [...pruned] });
-    pending = null;
-  };
-
-  function search(n: GameTree, alpha: number, beta: number): number {
-    if (isLeaf(n)) {
-      flush();
-      read.push(n.id);
-      pending = n.id;
-      return n.utility;
-    }
-    flush();
-    const isMax = n.turn === "max";
-    let v = isMax ? -Infinity : Infinity;
-    views[n.id] = { state: "open", alpha, beta, v };
-    for (let i = 0; i < n.children.length; i++) {
-      const v2 = search(n.children[i], alpha, beta);
-      if (isMax ? v2 > v : v2 < v) {
-        v = v2;
-        if (isMax) alpha = Math.max(alpha, v);
-        else beta = Math.min(beta, v);
-      }
-      views[n.id] = { state: "open", alpha, beta, v };
-      if (isMax ? v >= beta : v <= alpha) {
-        const rest = n.children.slice(i + 1);
-        if (rest.length) {
-          cutAt.push(n.id);
-          rest.forEach((c) => pruned.push(...leafIds(c)));
-          views[n.id] = { state: "cut", alpha, beta, v };
-        } else views[n.id] = { state: "done", alpha, beta, v };
-        return v;
-      }
-    }
-    views[n.id] = { state: "done", alpha, beta, v };
-    return v;
+/** The first `count` nodes greedy tree-like search removes from Iasi: it never leaves the Iasi–Neamt loop. */
+export function greedyLoop(count: number): string[] {
+  let seq = 0;
+  let fringe = [{ city: "Iasi", rank: LOOP_RANK.Iasi, seq: seq++ }];
+  const order: string[] = [];
+  while (order.length < count && fringe.length) {
+    const [top, ...rest] = fringe;
+    order.push(top.city);
+    const kids = neighbours(top.city).map(({ to }) => {
+      if (LOOP_RANK[to] === undefined) throw new Error(`greedyLoop: no rank for ${to}`);
+      return { city: to, rank: LOOP_RANK[to], seq: seq++ };
+    });
+    fringe = [...rest, ...kids].sort((a, b) => a.rank - b.rank || a.seq - b.seq);
   }
-
-  const value = search(tree, -Infinity, Infinity);
-  flush();
-  const best = tree.children.find((c) => minimax(c) === value && !pruned.includes(c.id))?.id ?? tree.children[0].id;
-  return { value, best, read, pruned, cutAt, stages };
+  return order;
 }
 
-/* ---------- Move ordering ---------- */
+/* ---------- Graph search needs a consistent heuristic ---------- */
 
-export type Ordering = "worst" | "book" | "best";
+/** A one-way toy graph: S → A → C → G is the cheapest route (5); S → B → C → G costs 6. */
+export const TOY_EDGES: readonly (readonly [string, string, number])[] = [
+  ["S", "A", 1],
+  ["S", "B", 1],
+  ["A", "C", 1],
+  ["B", "C", 2],
+  ["C", "G", 3],
+];
+export const TOY_NODES = ["S", "A", "B", "C", "G"] as const;
+/** Admissible but inconsistent: h(A) = 4 is the true cost from A, yet 4 > c(A, C) + h(C) = 2. */
+export const TOY_H_INCONSISTENT: Readonly<Record<string, number>> = { S: 2, A: 4, B: 1, C: 1, G: 0 };
+/** The same with h(A) = 2: consistent. */
+export const TOY_H_CONSISTENT: Readonly<Record<string, number>> = { S: 2, A: 2, B: 1, C: 1, G: 0 };
 
-/**
- * The same tree with every node's moves reordered. "best": each player's best move first
- * (MAX: highest minimax value, MIN: lowest), the order perfect pruning needs; "worst": the
- * reverse; "book": as given. The sort is stable, so ties keep the book's order.
- */
-export function orderTree(n: GameTree, order: Ordering): GameTree {
-  if (isLeaf(n) || order === "book") return n;
-  const best = order === "best";
-  const children = n.children
-    .map((c) => orderTree(c, order))
-    .map((c, i) => ({ c, i, v: minimax(c) }))
-    .sort((a, b) => {
-      const d = n.turn === "max" ? b.v - a.v : a.v - b.v;
-      return (best ? d : -d) || a.i - b.i;
-    })
-    .map((x) => x.c);
-  return { id: n.id, turn: n.turn, children };
+const toyOut = (n: string) => TOY_EDGES.filter((e) => e[0] === n).map(([, to, cost]) => ({ to, cost }));
+
+/** True cost from each toy node to G. */
+export const TOY_H_STAR: Readonly<Record<string, number>> = (() => {
+  const best: Record<string, number> = { G: 0 };
+  for (const n of ["C", "A", "B", "S"]) best[n] = Math.min(...toyOut(n).map((e) => e.cost + best[e.to]));
+  return best;
+})();
+
+export const toyAdmissible = (h: Readonly<Record<string, number>>) => TOY_NODES.every((n) => h[n] <= TOY_H_STAR[n]);
+export const toyConsistent = (h: Readonly<Record<string, number>>) => TOY_EDGES.every(([a, b, c]) => h[a] <= c + h[b]);
+
+export type ToyStep = { node: string; g: number; f: number; path: string[]; kind: "expand" | "skip" | "goal" };
+
+/** Lecture 3's GRAPH-SEARCH with A*'s f = g + h: a state already in the closed set is skipped when removed. */
+export function toyGraphAstar(h: Readonly<Record<string, number>>): { steps: ToyStep[]; path: string[]; cost: number } {
+  let seq = 0;
+  let fringe = [{ node: "S", g: 0, f: h.S, path: ["S"], seq: seq++ }];
+  const closed = new Set<string>();
+  const steps: ToyStep[] = [];
+  while (fringe.length) {
+    const [top, ...rest] = fringe;
+    fringe = rest;
+    if (top.node === "G") {
+      steps.push({ node: top.node, g: top.g, f: top.f, path: top.path, kind: "goal" });
+      return { steps, path: top.path, cost: top.g };
+    }
+    if (closed.has(top.node)) {
+      steps.push({ node: top.node, g: top.g, f: top.f, path: top.path, kind: "skip" });
+      continue;
+    }
+    closed.add(top.node);
+    steps.push({ node: top.node, g: top.g, f: top.f, path: top.path, kind: "expand" });
+    const kids = toyOut(top.node).map(({ to, cost }) => ({ node: to, g: top.g + cost, f: top.g + cost + h[to], path: [...top.path, to], seq: seq++ }));
+    fringe = [...fringe, ...kids].sort((a, b) => a.f - b.f || a.seq - b.seq);
+  }
+  throw new Error("toyGraphAstar: G unreachable");
 }
 
-/** Leaves read by alpha–beta under each ordering of the worked example: 9, 7, 5. */
-export const ORDERING_READ: Readonly<Record<Ordering, number>> = {
-  worst: alphaBeta(orderTree(WORKED, "worst") as Inner).read.length,
-  book: alphaBeta(WORKED).read.length,
-  best: alphaBeta(orderTree(WORKED, "best") as Inner).read.length,
-};
+export const TOY_INCONSISTENT_RUN = toyGraphAstar(TOY_H_INCONSISTENT);
+export const TOY_CONSISTENT_RUN = toyGraphAstar(TOY_H_CONSISTENT);
+
+if (!toyAdmissible(TOY_H_INCONSISTENT) || toyConsistent(TOY_H_INCONSISTENT) || !toyConsistent(TOY_H_CONSISTENT) || !toyAdmissible(TOY_H_CONSISTENT)) {
+  throw new Error("ai-lecture-04: the toy heuristics are not what the page says");
+}
+if (TOY_INCONSISTENT_RUN.cost <= TOY_H_STAR.S || TOY_CONSISTENT_RUN.cost !== TOY_H_STAR.S) throw new Error("ai-lecture-04: the toy graph does not show the consistency trap");
+
+/* ---------- The 8-puzzle's h1 and h2 (Lecture 2's start and goal) ---------- */
+
+export { PUZZLE_GOAL, PUZZLE_START };
+
+/** h1: tiles not on their goal square (the blank is not a tile). */
+export const misplaced = (board: Board, goal: Board = PUZZLE_GOAL) => board.filter((t, i) => t !== 0 && goal[i] !== t).length;
+
+/** Each tile's Manhattan distance to its goal square, by board position (0 for the blank). */
+export const tileDistances = (board: Board, goal: Board = PUZZLE_GOAL, size = 3) =>
+  board.map((t, i) => {
+    if (t === 0) return 0;
+    const j = goal.indexOf(t);
+    return Math.abs(Math.floor(i / size) - Math.floor(j / size)) + Math.abs((i % size) - (j % size));
+  });
+
+/** h2: the sum of the tiles' Manhattan distances. */
+export const manhattan = (board: Board, goal: Board = PUZZLE_GOAL) => tileDistances(board, goal).reduce((s, v) => s + v, 0);
+
+export type PuzzleH = "h1" | "h2";
+const PUZZLE_HS: Record<PuzzleH, (b: Board) => number> = { h1: (b) => misplaced(b), h2: (b) => manhattan(b) };
+
+/** A binary min-heap on (f, seq). */
+class Heap<T extends { f: number; seq: number }> {
+  private a: T[] = [];
+  get size() {
+    return this.a.length;
+  }
+  private less = (i: number, j: number) => this.a[i].f < this.a[j].f || (this.a[i].f === this.a[j].f && this.a[i].seq < this.a[j].seq);
+  push(x: T) {
+    const a = this.a;
+    a.push(x);
+    let i = a.length - 1;
+    while (i > 0) {
+      const p = (i - 1) >> 1;
+      if (!this.less(i, p)) break;
+      [a[i], a[p]] = [a[p], a[i]];
+      i = p;
+    }
+  }
+  pop(): T | undefined {
+    const a = this.a;
+    if (!a.length) return undefined;
+    const top = a[0];
+    const last = a.pop()!;
+    if (a.length) {
+      a[0] = last;
+      let i = 0;
+      for (;;) {
+        const l = 2 * i + 1;
+        const r = l + 1;
+        let m = i;
+        if (l < a.length && this.less(l, m)) m = l;
+        if (r < a.length && this.less(r, m)) m = r;
+        if (m === i) break;
+        [a[i], a[m]] = [a[m], a[i]];
+        i = m;
+      }
+    }
+    return top;
+  }
+}
+
+const puzzleCache: Partial<Record<PuzzleH, { cost: number; expanded: number }>> = {};
 
 /**
- * Leaves examined by alpha–beta with perfect ordering in a uniform tree of branching factor
- * b and depth m (Knuth and Moore, 1975): b^⌈m/2⌉ + b^⌊m/2⌋ − 1, which is O(b^(m/2)).
+ * A* graph search on the 8-puzzle from Lecture 2's start to its goal: the solution cost and the
+ * number of states expanded (the goal not counted). The blank moves up, down, left, right;
+ * ties on f go first in, first out. Computed on first use and cached.
  */
-export const bestCaseLeaves = (b: number, m: number) => b ** Math.ceil(m / 2) + b ** Math.floor(m / 2) - 1;
-
-/* ---------- Growth: b^m against b^(m/2) ---------- */
-
-export const GROWTH_B = 3;
-export const GROWTH = [2, 4, 6, 8].map((m) => ({ m, minimax: GROWTH_B ** m, alphaBeta: GROWTH_B ** (m / 2) }));
-
-/* ---------- Chess (book §4.5.3, AIMA §5.2–5.3) ---------- */
-
-export const CHESS = { b: 35, m: 80, nodesPerSecond: 1_000_000, seconds: 60 } as const;
-/** Nodes searched in one minute at a million nodes per second: 60 million. */
-export const CHESS_BUDGET = CHESS.nodesPerSecond * CHESS.seconds;
-/** The full chess tree, 35^80, as a power of ten: about 10^123. */
-export const CHESS_TREE_EXP = Math.floor(CHESS.m * Math.log10(CHESS.b));
-
-/**
- * The deepest search (in ply) the budget allows when a search to depth m costs b^(factor·m)
- * nodes: factor 1 for minimax, 3/4 for alpha–beta with random ordering, 1/2 with perfect ordering.
- */
-export const plyFor = (budget: number, b: number, factor: number) => Math.floor(Math.log(budget) / Math.log(b) / factor + 1e-9);
-
-export const CHESS_PLY = {
-  minimax: plyFor(CHESS_BUDGET, CHESS.b, 1),
-  random: plyFor(CHESS_BUDGET, CHESS.b, 3 / 4),
-  alphaBeta: plyFor(CHESS_BUDGET, CHESS.b, 1 / 2),
-  /** The book's figures for a full program and for Stockfish */
-  enhanced: 14,
-  stockfish: 30,
-} as const;
-
-/** 35^5 = 52,521,875: five ply of full minimax fits in the 60-million-node budget. */
-export const CHESS_5PLY = CHESS.b ** CHESS_PLY.minimax;
-/** √35 ≈ 5.92: alpha–beta's effective branching factor with perfect ordering. */
-export const CHESS_EBF = Math.round(Math.sqrt(CHESS.b) * 100) / 100;
-
-/* ---------- Small examples the scenes draw ---------- */
-
-/** Tic-tac-toe has fewer than 9! terminal nodes. */
-export const TTT_LEAVES = Array.from({ length: 9 }, (_, i) => i + 1).reduce((p, k) => p * k, 1);
-
-/** Rain or rival: MAX's two moves and the two outcomes each can lead to. */
-export const INTENTION = { L: [8, 0], R: [3, 4] } as const;
-const mean = (xs: readonly number[]) => xs.reduce((s, x) => s + x, 0) / xs.length;
-export const INTENTION_VALUES = {
-  random: { L: mean(INTENTION.L), R: mean(INTENTION.R) },
-  adversary: { L: Math.min(...INTENTION.L), R: Math.min(...INTENTION.R) },
-} as const;
-export const intentionChoice = (mode: "random" | "adversary") => (INTENTION_VALUES[mode].L >= INTENTION_VALUES[mode].R ? "L" : "R");
-
-/** Ten fast random playouts from one position: 1 = MAX won. */
-export const PLAYOUTS = [1, 0, 1, 1, 0, 1, 1, 0, 1, 0] as const;
-export const PLAYOUT_WINS = PLAYOUTS.reduce<number>((s, x) => s + x, 0);
-
-/** A weighted linear evaluation function, EVAL(s) = Σ wᵢ fᵢ(s). */
-export const FEATURES = [
-  { id: "material", value: 2, weight: 1 },
-  { id: "mobility", value: 6, weight: 0.1 },
-  { id: "king", value: -2, weight: 0.5 },
-] as const;
-const round2 = (x: number) => Math.round(x * 100) / 100;
-export const FEATURE_TERMS = FEATURES.map((f) => round2(f.value * f.weight));
-export const EVAL_VALUE = round2(FEATURE_TERMS.reduce((s, x) => s + x, 0));
-
-/** The horizon effect: at the cutoff MAX has just taken a knight (+3); next move MIN takes the queen (−9). */
-export const HORIZON = { atCutoff: 3, afterRecapture: 3 - 9 } as const;
-
-/** Forward pruning: MAX's five moves at the root, in the order a shallow search scores them. */
-export const FORWARD_MOVES = [
-  { id: "m1", shallow: 6 },
-  { id: "m2", shallow: 5 },
-  { id: "m3", shallow: 3 },
-  { id: "m4", shallow: 1 },
-  { id: "m5", shallow: -2 },
-] as const;
-export const BEAM_WIDTH = 2;
-
-/* ---------- The worked example, as the page states it ---------- */
-
-const WORKED_VALUES = minimaxValues(WORKED);
-const WORKED_RUN = alphaBeta(WORKED);
-
-export const WORKED_FACTS = {
-  root: WORKED_VALUES.A,
-  B: WORKED_VALUES.B,
-  C: WORKED_VALUES.C,
-  D: WORKED_VALUES.D,
-  move: ROOT_MOVES[bestChild(WORKED).id],
-  reply: bestChild(bestChild(WORKED) as Inner).id,
-  leaves: leafIds(WORKED).length,
-  nodes: dfsOrder(WORKED).length,
-  read: WORKED_RUN.read.length,
-  pruned: WORKED_RUN.pruned.join(", "),
-  readWorst: ORDERING_READ.worst,
-  readBook: ORDERING_READ.book,
-  readBest: ORDERING_READ.best,
-  bestCase: bestCaseLeaves(3, 2),
-} as const;
-
-/** The value a leaf or node shows in a scene: −∞ and +∞ as symbols. */
-export const show = (x: number) => (x === Infinity ? "+∞" : x === -Infinity ? "−∞" : x < 0 ? `−${-x}` : String(x));
+export function puzzleAstar(which: PuzzleH): { cost: number; expanded: number } {
+  const cached = puzzleCache[which];
+  if (cached) return cached;
+  const h = PUZZLE_HS[which];
+  const key = (b: Board) => b.join("");
+  const goalKey = key(PUZZLE_GOAL);
+  const heap = new Heap<{ f: number; seq: number; g: number; board: Board }>();
+  const best = new Map<string, number>([[key(PUZZLE_START), 0]]);
+  const closed = new Set<string>();
+  let seq = 0;
+  let expanded = 0;
+  heap.push({ f: h(PUZZLE_START), seq: seq++, g: 0, board: PUZZLE_START });
+  for (let top = heap.pop(); top; top = heap.pop()) {
+    const k = key(top.board);
+    if (closed.has(k)) continue;
+    if (k === goalKey) return (puzzleCache[which] = { cost: top.g, expanded });
+    closed.add(k);
+    expanded++;
+    for (const dir of DIRS) {
+      const next = moveBlank(top.board, dir);
+      if (!next) continue;
+      const nk = key(next);
+      if (closed.has(nk) || top.g + 1 >= (best.get(nk) ?? Infinity)) continue;
+      best.set(nk, top.g + 1);
+      heap.push({ f: top.g + 1 + h(next), seq: seq++, g: top.g + 1, board: next });
+    }
+  }
+  throw new Error("puzzleAstar: the goal is unreachable");
+}

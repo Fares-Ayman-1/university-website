@@ -1,0 +1,637 @@
+---
+number: 4
+title: "Informed Search"
+titleAr: "البحث المُوجَّه"
+summary: "The course book's informed (heuristic) search strategies: heuristic functions and the straight-line-distance heuristic, greedy best-first search, A* search with f(n) = g(n) + h(n), admissible heuristics and the proof that A* is optimal, and a comparison with uniform-cost search, all worked step by step on the Romania map. Ends with consistent heuristics and designing heuristics for the 8-puzzle."
+summaryAr: "استراتيجيات البحث المُوجَّه (الاستدلالي) في كتاب المقرر: الدوال الاستدلالية (heuristic functions) واستدلال المسافة بخط مستقيم، والبحث الجشع الأفضل أولًا (greedy best-first)، والبحث A* بالدالة f(n) = g(n) + h(n)، والاستدلالات المقبولة (admissible) وبرهان أمثلية A*، ومقارنتها بالبحث بالتكلفة الموحدة، مع تتبّع ذلك كله خطوة بخطوة على خريطة رومانيا. ويُختتم بالاستدلالات المتّسقة (consistent) وتصميم الاستدلالات للغز الثماني (8-puzzle)."
+topics: [Heuristic functions, Straight-line distance, Greedy best-first search, A* search, Admissible heuristics, Optimality of A*, Consistency, Dominance]
+duration: "55 min study"
+sources: []
+bookRefs:
+  - book: ai-book
+    chapter: Ch 3 · Solving Problems by Searching (Informed search)
+    pages: "79–83"
+  - book: aima
+    chapter: Ch 3.5–3.6 · Informed (heuristic) search strategies, Heuristic functions
+---
+
+<Objectives>
+
+- Explain what makes a search **informed** and how a **heuristic function** $h(n)$ carries knowledge about where the goal is.
+  <Ar>شرح ما الذي يجعل البحث **مُوجَّهًا (informed)**، وكيف تحمل **الدالة الاستدلالية (heuristic function)** $h(n)$ معرفةً بموقع الهدف.</Ar>
+- Trace **greedy best-first search** and **A\*** by hand on the Romania map with the straight-line-distance heuristic $h_{\text{SLD}}$, and implement both in Python.
+  <Ar>تتبّع **البحث الجشع الأفضل أولًا (greedy best-first)** و**البحث <bdi>A\*</bdi>** يدويًا على خريطة رومانيا باستخدام استدلال المسافة بخط مستقيم $h_{\text{SLD}}$، وتنفيذهما بلغة Python.</Ar>
+- Define an **admissible** heuristic and prove, by contradiction, that A* with an admissible heuristic returns an optimal solution.
+  <Ar>تعريف الاستدلال **المقبول (admissible)**، والبرهنة بالتناقض على أن <bdi>A\*</bdi> مع استدلال مقبول يُرجع حلًّا أمثل.</Ar>
+- Compare greedy best-first search, A* and uniform-cost search on completeness, optimality, time and space.
+  <Ar>المقارنة بين البحث الجشع الأفضل أولًا و <bdi>A\*</bdi> والبحث بالتكلفة الموحدة من حيث الاكتمال والأمثلية والزمن والمساحة.</Ar>
+- Recognise **consistent** heuristics, and compare heuristics for the 8-puzzle by **dominance**.
+  <Ar>تمييز الاستدلالات **المتّسقة (consistent)**، والمقارنة بين استدلالات اللغز الثماني (8-puzzle) بمفهوم **الهيمنة (dominance)**.</Ar>
+
+</Objectives>
+
+## What makes a search informed
+
+<Ar>ما الذي يجعل البحث مُوجَّهًا</Ar>
+
+<Walkthrough id="ai4-informed" expect="blind-informed, knowledge, best-first; ucs-cities=13; greedy-cities=4" />
+
+The strategies of Lecture 3 are **uninformed**: they use only the information in the problem definition. From Arad, uniform-cost search expands Zerind (75 km) and Timisoara (118 km) before Sibiu (140 km) only because their roads are shorter, although both lie away from Bucharest. It removes 13 different cities from the fringe before it removes Bucharest.
+
+<Ar>استراتيجيات المحاضرة 3 **غير مُوجَّهة (uninformed)**: فهي لا تستخدم إلا المعلومات الموجودة في تعريف المسألة. فبدءًا من Arad يوسّع البحث بالتكلفة الموحدة (uniform-cost search) المدينتين Zerind (75 km) و Timisoara (118 km) قبل Sibiu (140 km) لمجرد أن طريقيهما أقصر، مع أن كلتيهما تقع بعيدًا عن Bucharest. ويُزيل من الحافة 13 مدينة مختلفة قبل أن يُزيل Bucharest.</Ar>
+
+An **informed** (heuristic) search strategy uses **domain-specific hints** about the location of the goals. With them it can find solutions far more efficiently than an uninformed strategy: greedy best-first search, below, reaches Bucharest after removing only 4 cities.
+
+<Ar>أما استراتيجية البحث **المُوجَّه (informed)** (أو الاستدلالي (heuristic)) فتستخدم **تلميحات خاصة بالمجال (domain-specific hints)** عن موقع الأهداف. وبها تستطيع أن تجد الحلول بكفاءة أعلى بكثير من الاستراتيجية غير المُوجَّهة: فالبحث الجشع الأفضل أولًا، الآتي أدناه، يبلغ Bucharest بعد إزالة 4 مدن فقط.</Ar>
+
+<Definition term="Informed search" termAr="البحث المُوجَّه">
+  A search strategy that uses problem-specific knowledge beyond the problem definition, in the form of a heuristic function h(n), to decide which node to expand next. It is also called heuristic search.
+
+  <Ar>استراتيجية بحث تستخدم معرفةً خاصة بالمسألة تتجاوز تعريفها، في صورة دالة استدلالية (heuristic function) <bdi>h(n)</bdi>، لتقرر أي عقدة تُوسَّع تاليًا. وتُسمّى أيضًا البحث الاستدلالي (heuristic search).</Ar>
+</Definition>
+
+All the strategies in this lecture are forms of **best-first search**: the fringe is a priority queue ordered by an **evaluation function** $f(n)$, and the node with the lowest $f(n)$ is expanded first. Uniform-cost search is already best-first search, with $f(n) = g(n)$. The choice of $f$ is the whole difference between the strategies:
+
+<Ar>جميع استراتيجيات هذه المحاضرة صور من **البحث الأفضل أولًا (best-first search)**: فالحافة (fringe) طابور أولوية (priority queue) مرتَّب حسب **دالة تقييم (evaluation function)** $f(n)$، وتُوسَّع العقدة صاحبة أقل $f(n)$ أولًا. والبحث بالتكلفة الموحدة هو أصلًا بحث أفضل أولًا مع $f(n) = g(n)$. واختيار $f$ هو كل الفرق بين الاستراتيجيات:</Ar>
+
+| Strategy <Ar>الاستراتيجية</Ar> | $f(n)$ | Expands first <Ar>تُوسِّع أولًا</Ar> |
+|---|---|---|
+| Uniform-cost search <Ar>البحث بالتكلفة الموحدة</Ar> | $g(n)$ | the node with the cheapest path so far <Ar>العقدة صاحبة المسار الأرخص حتى الآن</Ar> |
+| Greedy best-first search <Ar>البحث الجشع الأفضل أولًا</Ar> | $h(n)$ | the node that looks closest to the goal <Ar>العقدة التي تبدو الأقرب إلى الهدف</Ar> |
+| A* search <Ar>البحث <bdi>A\*</bdi></Ar> | $g(n) + h(n)$ | the node on the cheapest-looking complete solution <Ar>العقدة الواقعة على الحل الكامل الذي يبدو الأرخص</Ar> |
+
+<Definition term="Evaluation function" termAr="دالة التقييم">
+  The function f(n) by which best-first search orders its fringe: the node with the lowest f(n) is expanded next. Uniform-cost search uses f = g, greedy best-first search f = h, and A* f = g + h.
+
+  <Ar>الدالة <bdi>f(n)</bdi> التي يرتّب بها البحث الأفضل أولًا (best-first search) حافته: فتُوسَّع تاليًا العقدة صاحبة أقل <bdi>f(n)</bdi>. ويستخدم البحث بالتكلفة الموحدة f = g، والبحث الجشع الأفضل أولًا f = h، والبحث <bdi>A\*</bdi> الدالة f = g + h.</Ar>
+</Definition>
+
+## Heuristic functions
+
+<Ar>الدوال الاستدلالية</Ar>
+
+<Walkthrough id="ai4-heuristic" expect="estimate, sld, table, knowledge; arad=366; road=418" />
+
+The hints come in the form of a **heuristic function**, written $h(n)$:
+
+<Ar>تأتي التلميحات في صورة **دالة استدلالية (heuristic function)**، يُرمز إليها بـ $h(n)$:</Ar>
+
+$$
+h(n) = \text{estimated cost of the cheapest path from the state at node } n \text{ to a goal state}
+$$
+
+- $h(n)$ depends only on the **state** at $n$. The path cost $g(n)$ depends on the path that reached $n$; $h(n)$ does not.
+  <Ar>تعتمد $h(n)$ على **الحالة (state)** عند $n$ فقط. فتكلفة المسار $g(n)$ تعتمد على المسار الذي وصل إلى $n$، أما $h(n)$ فلا.</Ar>
+- $h(n) \ge 0$, and $h(n) = 0$ when $n$ holds a goal state.
+  <Ar>$h(n) \ge 0$، و $h(n) = 0$ عندما تحمل $n$ حالة هدف.</Ar>
+- The heuristic is the only place where knowledge about the particular problem enters an otherwise general search algorithm.
+  <Ar>والدالة الاستدلالية هي الموضع الوحيد الذي تدخل منه المعرفة الخاصة بالمسألة إلى خوارزمية بحث عامة فيما عدا ذلك.</Ar>
+
+<Definition term="Heuristic function" termAr="الدالة الاستدلالية">
+  h(n): the estimated cost of the cheapest path from the state at node n to a goal state. It depends only on the state, is never negative, and is 0 at a goal.
+
+  <Ar><bdi>h(n)</bdi>: التكلفة المقدَّرة لأرخص مسار من الحالة عند العقدة n إلى حالة هدف. وهي تعتمد على الحالة فقط، ولا تكون سالبة أبدًا، وتساوي 0 عند الهدف.</Ar>
+</Definition>
+
+**Example.** In route-finding problems, we can estimate the distance from the current state to a goal by the **straight-line distance** between the two points. For the Romania problem with the goal Bucharest, $h_{\text{SLD}}(n)$ is the straight-line distance from city $n$ to Bucharest; for example, $h_{\text{SLD}}(\text{Arad}) = 366$.
+
+<Ar>**مثال.** في مسائل إيجاد الطرق (route-finding) يمكننا تقدير المسافة من الحالة الحالية إلى الهدف بـ**المسافة بخط مستقيم (straight-line distance)** بين النقطتين. ففي مسألة رومانيا التي هدفها Bucharest، تكون $h_{\text{SLD}}(n)$ هي المسافة بخط مستقيم من المدينة $n$ إلى Bucharest؛ فمثلًا $h_{\text{SLD}}(\text{Arad}) = 366$.</Ar>
+
+{/* data-table */}
+
+| City <Ar>المدينة</Ar> | $h_{\text{SLD}}$ | City <Ar>المدينة</Ar> | $h_{\text{SLD}}$ |
+|---|---|---|---|
+| Arad | **366** | Mehadia | 241 |
+| Bucharest | **0** | Neamt | 234 |
+| Craiova | 160 | Oradea | **380** |
+| Dobreta | 242 | Pitesti | *100* |
+| Eforie | 161 | Rimnicu Vilcea | **193** |
+| Fagaras | **176** | Sibiu | **253** |
+| Giurgiu | 77 | Timisoara | **329** |
+| Hirsova | 151 | Urziceni | 80 |
+| Iasi | 226 | Vaslui | 199 |
+| Lugoj | 244 | Zerind | **374** |
+
+Values in **bold** are the ones the course book prints: $h_{\text{SLD}}(\text{Arad}) = 366$ in its text and the others in its Figure 3.17. Pitesti's value, in *italics*, follows from the book's $f(\text{Pitesti}) = 417$ with $g = 317$. The book gives no other values, so the rest come from AIMA's table of straight-line distances to Bucharest (Section 3.5.1).
+
+<Ar>القيم المكتوبة **بخط عريض** هي التي يطبعها كتاب المقرر: $h_{\text{SLD}}(\text{Arad}) = 366$ في متنه، والبقية في شكله 3.17. أما قيمة Pitesti، المكتوبة *بخط مائل*، فتنتج من قيمة الكتاب $f(\text{Pitesti}) = 417$ مع $g = 317$. ولا يعطي الكتاب قيمًا أخرى، لذا فالبقية مأخوذة من جدول AIMA للمسافات بخط مستقيم إلى Bucharest (القسم 3.5.1).</Ar>
+
+$h_{\text{SLD}}$ cannot be computed from the problem definition itself: it needs the cities' coordinates on the map. These values require **world knowledge**, and they are useful because they are **correlated** with the actual road distances. Arad is 366 km from Bucharest in a straight line and 418 km by the best road.
+
+<Ar>لا يمكن حساب $h_{\text{SLD}}$ من تعريف المسألة نفسه: إذ يحتاج إلى إحداثيات المدن على الخريطة. فهذه القيم تتطلب **معرفة بالعالم (world knowledge)**، وهي مفيدة لأنها **مترابطة (correlated)** مع مسافات الطرق الفعلية. فـ Arad تبعد عن Bucharest مسافة 366 km بخط مستقيم، و 418 km عبر أفضل طريق.</Ar>
+
+## Greedy best-first search
+
+<Ar>البحث الجشع الأفضل أولًا</Ar>
+
+<Walkthrough id="ai4-greedy" expect="rule, run, cost, loop; greedy=450; order=Arad,Sibiu,Fagaras,Bucharest; optimal=418; extra=32" />
+
+**Greedy best-first search** is the form of best-first search that expands the node with the **lowest $h(n)$**: the node that appears to be **closest to the goal**. Its evaluation function is the heuristic alone:
+
+<Ar>**البحث الجشع الأفضل أولًا (greedy best-first search)** هو صورة البحث الأفضل أولًا التي توسّع العقدة صاحبة **أقل $h(n)$**: أي العقدة التي تبدو **الأقرب إلى الهدف**. ودالة تقييمه هي الدالة الاستدلالية وحدها:</Ar>
+
+$$
+f(n) = h(n)
+$$
+
+<Definition term="Greedy best-first search" termAr="البحث الجشع الأفضل أولًا">
+  Best-first search with f(n) = h(n): it always expands the fringe node whose state looks closest to the goal, ignoring the cost of the path so far. It is not optimal, and its tree-like version is not complete.
+
+  <Ar>بحث أفضل أولًا مع <bdi>f(n) = h(n)</bdi>: يوسّع دائمًا عقدة الحافة (fringe) التي تبدو حالتها الأقرب إلى الهدف، متجاهلًا تكلفة المسار حتى الآن. وهو ليس أمثل، وصيغته الشجرية (tree-like) ليست مكتملة.</Ar>
+</Definition>
+
+### Worked example: Arad to Bucharest
+
+<Ar>مثال محلول: من Arad إلى Bucharest</Ar>
+
+With $h_{\text{SLD}}$, children generated in alphabetical order, and the goal tested when a node is removed from the fringe (tree search, as in Lecture 3):
+
+<Ar>باستخدام $h_{\text{SLD}}$، مع توليد الأبناء بالترتيب الأبجدي، واختبار الهدف عند إزالة العقدة من الحافة (البحث الشجري، كما في المحاضرة 3):</Ar>
+
+{/* data-table */}
+
+| Step <Ar>الخطوة</Ar> | Removed, with $h$ <Ar>العقدة المُزالة مع $h$</Ar> | Fringe after expanding it, lowest $h$ first <Ar>الحافة بعد توسيعها، الأقل $h$ أولًا</Ar> |
+|---|---|---|
+| 1 | Arad (366) | Sibiu 253, Timisoara 329, Zerind 374 |
+| 2 | Sibiu (253) | Fagaras 176, Rimnicu Vilcea 193, Timisoara 329, Arad 366, Zerind 374, Oradea 380 |
+| 3 | Fagaras (176) | Bucharest 0, Rimnicu Vilcea 193, Sibiu 253, Timisoara 329, Arad 366, Zerind 374, Oradea 380 |
+| 4 | Bucharest (0) ✓ | |
+
+The search expands Arad, Sibiu and Fagaras, then removes Bucharest, which passes the goal test. Every node it expands lies on the solution path. Sibiu's expansion puts **Arad** back on the fringe, and Fagaras' expansion puts **Sibiu** back: tree search does not notice repeated states.
+
+<Ar>يوسّع البحث Arad ثم Sibiu ثم Fagaras، ثم يُزيل Bucharest، فتجتاز اختبار الهدف (goal test). وكل عقدة يوسّعها تقع على مسار الحل. ويعيد توسيعُ Sibiu المدينةَ **Arad** إلى الحافة، ويعيد توسيعُ Fagaras المدينةَ **Sibiu**: فالبحث الشجري لا ينتبه إلى الحالات المتكررة.</Ar>
+
+<WeightedGraph
+  height={420}
+  nodes="Oradea:17,4 Zerind:11,17 Arad:5,32 Timisoara:6,60 Lugoj:26,70 Mehadia:27,83 Dobreta:25,96 Craiova:48,98 Sibiu:33,44 Rimnicu_Vilcea:38,60 Fagaras:55,45 Pitesti:58,72 Bucharest:78,82 Giurgiu:72,98 Urziceni:88,74 Hirsova:99,74 Eforie:100,96 Vaslui:93,48 Iasi:85,30 Neamt:70,20"
+  edges="Arad-Zerind:75 Arad-Sibiu:140 Arad-Timisoara:118 Zerind-Oradea:71 Oradea-Sibiu:151 Timisoara-Lugoj:111 Lugoj-Mehadia:70 Mehadia-Dobreta:75 Dobreta-Craiova:120 Craiova-Rimnicu_Vilcea:146 Craiova-Pitesti:138 Sibiu-Fagaras:99 Sibiu-Rimnicu_Vilcea:80 Rimnicu_Vilcea-Pitesti:97 Fagaras-Bucharest:211 Pitesti-Bucharest:101 Bucharest-Giurgiu:90 Bucharest-Urziceni:85 Urziceni-Hirsova:98 Hirsova-Eforie:86 Urziceni-Vaslui:142 Vaslui-Iasi:92 Iasi-Neamt:87"
+  path="Arad,Sibiu,Fagaras,Bucharest"
+  start="Arad"
+  goal="Bucharest"
+  caption="Greedy best-first search's route: 140 + 99 + 211 = 450 km. The route through Rimnicu Vilcea and Pitesti is 418 km."
+/>
+
+The solution costs $140 + 99 + 211 = 450$ km, and it is **not optimal**: the route through Rimnicu Vilcea and Pitesti costs $140 + 80 + 97 + 101 = 418$ km, 32 km less. Greedy best-first search went to Fagaras because Fagaras is closer to Bucharest in a straight line ($176 < 193$). It never weighs the cost of a path, neither the part already driven nor the 211 km road that still separates Fagaras from Bucharest.
+
+<Ar>يكلّف هذا الحل $140 + 99 + 211 = 450$ km، وهو **ليس أمثل**: فالطريق عبر Rimnicu Vilcea و Pitesti يكلّف $140 + 80 + 97 + 101 = 418$ km، أي أقل بـ 32 km. وقد اتجه البحث الجشع الأفضل أولًا إلى Fagaras لأنها أقرب إلى Bucharest بخط مستقيم ($176 < 193$). فهو لا يزن تكلفة المسار أبدًا، لا الجزء الذي قُطع ولا طريق 211 km الذي ما زال يفصل Fagaras عن Bucharest.</Ar>
+
+<Callout type="note" title="Beyond the book" titleAr="ما بعد الكتاب">
+
+Greedy best-first search is not even complete in its tree form. AIMA's example (Section 3.5.1) goes from Iasi to Fagaras. Neamt looks closest to Fagaras, but it is a dead end; expanding it puts Iasi back on the fringe, Iasi looks closer than Vaslui, and the search alternates between Iasi and Neamt forever. Graph search with a closed set stops the loop and is complete in finite state spaces. The worst-case time and space are $O(b^m)$, although a good heuristic can reduce them a great deal.
+
+<Ar>البحث الجشع الأفضل أولًا ليس حتى مكتملًا (complete) في صيغته الشجرية. فمثال AIMA (القسم 3.5.1) يذهب من Iasi إلى Fagaras. تبدو Neamt الأقرب إلى Fagaras، لكنها طريق مسدود؛ وتوسيعها يعيد Iasi إلى الحافة، وتبدو Iasi أقرب من Vaslui، فيتنقّل البحث بين Iasi و Neamt إلى الأبد. أما البحث في الرسم البياني (graph search) مع مجموعة مغلقة فيوقف هذه الحلقة، ويكون مكتملًا في فضاءات الحالات المنتهية. والزمن والمساحة في أسوأ الحالات $O(b^m)$، وإن كان استدلال جيد يستطيع خفضهما كثيرًا.</Ar>
+
+</Callout>
+
+## A* search
+
+<Ar>البحث `A*`</Ar>
+
+<Walkthrough id="ai4-astar" expect="formula, run, wait, versus; astar=418; order=Arad,Sibiu,Rimnicu Vilcea,Fagaras,Pitesti,Bucharest; first=450; pitesti=417" />
+
+The most common informed search algorithm is **A\*** (pronounced "A-star"). It orders the fringe by the evaluation function
+
+<Ar>أشهر خوارزميات البحث المُوجَّه هي **<bdi>A\*</bdi>** (وتُنطق «A-star»). وهي ترتّب الحافة حسب دالة التقييم (evaluation function)</Ar>
+
+$$
+f(n) = g(n) + h(n)
+$$
+
+- $g(n)$: the path cost from the initial state to node $n$;
+  <Ar>$g(n)$: تكلفة المسار من الحالة الابتدائية إلى العقدة $n$؛</Ar>
+- $h(n)$: the estimated cost from $n$ to the nearest goal.
+  <Ar>$h(n)$: التكلفة المقدَّرة من $n$ إلى أقرب هدف.</Ar>
+
+So $f(n)$ is the **estimated cost of the best path that continues from $n$ to a goal**. A* combines the $g(n)$ of uniform-cost search, which counts what has already been spent, with the $h(n)$ of greedy best-first search, which looks ahead.
+
+<Ar>إذن $f(n)$ هي **التكلفة المقدَّرة لأفضل مسار يمر بـ $n$ ويكمل منها إلى هدف**. ويجمع <bdi>A\*</bdi> بين $g(n)$ في البحث بالتكلفة الموحدة، التي تحسب ما أُنفق فعلًا، و $h(n)$ في البحث الجشع الأفضل أولًا، التي تنظر إلى الأمام.</Ar>
+
+<Definition term="A* search" termAr="البحث A*">
+  Best-first search with f(n) = g(n) + h(n), the estimated cost of the cheapest solution through n. It is complete, and with an admissible heuristic it returns an optimal solution.
+
+  <Ar>بحث أفضل أولًا مع <bdi>f(n) = g(n) + h(n)</bdi>، أي التكلفة المقدَّرة لأرخص حل يمر بـ n. وهو مكتمل (complete)، ومع استدلال مقبول (admissible) يُرجع حلًّا أمثل.</Ar>
+</Definition>
+
+### Worked example: Arad to Bucharest
+
+<Ar>مثال محلول: من Arad إلى Bucharest</Ar>
+
+Same conventions as for greedy best-first search. Each row shows the node removed, with $g + h = f$, and the fringe after expanding it, lowest $f$ first:
+
+<Ar>بالاصطلاحات نفسها المتّبعة في البحث الجشع الأفضل أولًا. يعرض كل صف العقدة المُزالة مع $g + h = f$، والحافة بعد توسيعها، الأقل $f$ أولًا:</Ar>
+
+{/* data-table */}
+
+| Step <Ar>الخطوة</Ar> | Removed: $g + h = f$ <Ar>العقدة المُزالة: $g + h = f$</Ar> | Fringe after expanding it, lowest $f$ first <Ar>الحافة بعد توسيعها، الأقل $f$ أولًا</Ar> |
+|---|---|---|
+| 1 | Arad: 0 + 366 = 366 | Sibiu 393, Timisoara 447, Zerind 449 |
+| 2 | Sibiu: 140 + 253 = 393 | Rimnicu Vilcea 413, Fagaras 415, Timisoara 447, Zerind 449, Arad 646, Oradea 671 |
+| 3 | Rimnicu Vilcea: 220 + 193 = 413 | Fagaras 415, Pitesti 417, Timisoara 447, Zerind 449, Craiova 526, Sibiu 553, Arad 646, Oradea 671 |
+| 4 | Fagaras: 239 + 176 = 415 | Pitesti 417, Timisoara 447, Zerind 449, **Bucharest 450**, Craiova 526, Sibiu 553, Sibiu 591, Arad 646, Oradea 671 |
+| 5 | Pitesti: 317 + 100 = 417 | **Bucharest 418**, Timisoara 447, Zerind 449, Bucharest 450, Craiova 526, Sibiu 553, Sibiu 591, Rimnicu Vilcea 607, Craiova 615, Arad 646, Oradea 671 |
+| 6 | Bucharest: 418 + 0 = 418 ✓ | |
+
+Two moments decide the result:
+
+<Ar>تحسم لحظتان النتيجة:</Ar>
+
+- After Fagaras is expanded (step 4), **Bucharest** is on the fringe with $f = 450$, but **Pitesti** has $f = 417$ and is expanded first. Had A* stopped as soon as a goal appeared on the fringe, it would have returned the 450 km route.
+  <Ar>بعد توسيع Fagaras (الخطوة 4) تكون **Bucharest** على الحافة مع $f = 450$، لكن **Pitesti** لها $f = 417$ فتُوسَّع أولًا. ولو توقف <bdi>A\*</bdi> بمجرد ظهور هدف على الحافة لأعاد طريق 450 km.</Ar>
+- After Pitesti is expanded (step 5), Bucharest appears again with $f = 418$, now the lowest $f$ on the fringe. It is removed, passes the goal test and is returned as the optimal solution: Arad → Sibiu → Rimnicu Vilcea → Pitesti → Bucharest, **418 km**.
+  <Ar>وبعد توسيع Pitesti (الخطوة 5) تظهر Bucharest مجددًا مع $f = 418$، وهي الآن أقل $f$ على الحافة. فتُزال، وتجتاز اختبار الهدف، وتُعاد حلًّا أمثل: `Arad → Sibiu → Rimnicu Vilcea → Pitesti → Bucharest`، بطول **418 km**.</Ar>
+
+A* removes 6 nodes where greedy best-first search removed 4, and returns the cheapest route instead of a 450 km one.
+
+<Ar>يُزيل <bdi>A\*</bdi> ست عقد حيث أزال البحث الجشع الأفضل أولًا أربعًا، لكنه يُرجع الطريق الأرخص بدلًا من طريق طوله 450 km.</Ar>
+
+<Callout type="warning" title="Check the source" titleAr="راجِع المصدر">
+
+The book introduces "Example (Romania, Figure 3.18)" for A*, but the figure printed under it is Figure 3.17, the stages of **greedy** best-first search with $h$-values only. The A* stages that its next two bullets describe ("step (e)" and "step (f)") are therefore missing. The table above reconstructs them from AIMA's Figure 3.18, and the book's two bullets agree with it: Bucharest first appears with $f = 450$ after Fagaras, Pitesti ($f = 417$) goes first, and Bucharest is then selected with $f = 418$.
+
+<Ar>يقدّم الكتاب «Example (Romania, Figure 3.18)» للبحث <bdi>A\*</bdi>، لكن الشكل المطبوع تحته هو الشكل 3.17، أي مراحل البحث **الجشع** الأفضل أولًا مع قيم $h$ فقط. لذا فمراحل <bdi>A\*</bdi> التي تصفها النقطتان التاليتان فيه («step (e)» و «step (f)») مفقودة. والجدول أعلاه يعيد بناءها من الشكل 3.18 في AIMA، والنقطتان في الكتاب تتفقان معه: تظهر Bucharest أولًا مع $f = 450$ بعد Fagaras، وتُوسَّع Pitesti ($f = 417$) قبلها، ثم تُختار Bucharest مع $f = 418$.</Ar>
+
+</Callout>
+
+### Greedy best-first search and A* in Python
+
+<Ar>البحث الجشع الأفضل أولًا و `A*` بلغة Python</Ar>
+
+Both strategies are the same best-first search with a different $f$. The fringe is a heap from Python's `heapq`, so `heappop` always returns the entry with the lowest $f$; a counter breaks ties first in, first out.
+
+<Ar>الاستراتيجيتان هما البحث الأفضل أولًا نفسه مع $f$ مختلفة. فالحافة كومة (heap) من الوحدة `heapq` في Python، لذا تُرجع `heappop` دائمًا المُدخل صاحب أقل $f$؛ ويحسم عدّادٌ حالات التساوي بأسبقية الدخول (first in, first out).</Ar>
+
+```python title="informed_search.py"
+import heapq
+
+ROADS = [  # (city, city, km)
+    ("Arad", "Zerind", 75), ("Arad", "Sibiu", 140), ("Arad", "Timisoara", 118),
+    ("Zerind", "Oradea", 71), ("Oradea", "Sibiu", 151), ("Timisoara", "Lugoj", 111),
+    ("Lugoj", "Mehadia", 70), ("Mehadia", "Dobreta", 75), ("Dobreta", "Craiova", 120),
+    ("Craiova", "Rimnicu Vilcea", 146), ("Craiova", "Pitesti", 138),
+    ("Sibiu", "Fagaras", 99), ("Sibiu", "Rimnicu Vilcea", 80),
+    ("Rimnicu Vilcea", "Pitesti", 97), ("Fagaras", "Bucharest", 211),
+    ("Pitesti", "Bucharest", 101), ("Bucharest", "Giurgiu", 90),
+    ("Bucharest", "Urziceni", 85), ("Urziceni", "Hirsova", 98), ("Hirsova", "Eforie", 86),
+    ("Urziceni", "Vaslui", 142), ("Vaslui", "Iasi", 92), ("Iasi", "Neamt", 87),
+]
+GRAPH = {}
+for a, b, km in ROADS:                      # roads go both ways
+    GRAPH.setdefault(a, {})[b] = km
+    GRAPH.setdefault(b, {})[a] = km
+
+H_SLD = {  # straight-line distance to Bucharest, km
+    "Arad": 366, "Bucharest": 0, "Craiova": 160, "Dobreta": 242, "Eforie": 161,
+    "Fagaras": 176, "Giurgiu": 77, "Hirsova": 151, "Iasi": 226, "Lugoj": 244,
+    "Mehadia": 241, "Neamt": 234, "Oradea": 380, "Pitesti": 100,
+    "Rimnicu Vilcea": 193, "Sibiu": 253, "Timisoara": 329, "Urziceni": 80,
+    "Vaslui": 199, "Zerind": 374,
+}
+
+def best_first(start, goal, f):
+    """Tree-like best-first search: always remove the fringe node with the lowest f."""
+    tie = 0                                          # equal f: first in, first out
+    fringe = [(f(0, start), tie, 0, start, [start])]
+    removed = []
+    while fringe:
+        _, _, g, city, path = heapq.heappop(fringe)  # lowest f(n)
+        removed.append(city)
+        if city == goal:                             # goal test on removal
+            return path, g, removed
+        for nxt in sorted(GRAPH[city]):
+            tie += 1
+            g2 = g + GRAPH[city][nxt]
+            heapq.heappush(fringe, (f(g2, nxt), tie, g2, nxt, path + [nxt]))
+    return None
+
+def greedy(g, n):
+    return H_SLD[n]                                  # f(n) = h(n)
+
+def a_star(g, n):
+    return g + H_SLD[n]                              # f(n) = g(n) + h(n)
+
+for name, f in [("Greedy", greedy), ("A*", a_star)]:
+    path, cost, removed = best_first("Arad", "Bucharest", f)
+    print(name, "removes:", ", ".join(removed))
+    print("  path:", " -> ".join(path), "| cost:", cost)
+```
+
+```text title="Output"
+Greedy removes: Arad, Sibiu, Fagaras, Bucharest
+  path: Arad -> Sibiu -> Fagaras -> Bucharest | cost: 450
+A* removes: Arad, Sibiu, Rimnicu Vilcea, Fagaras, Pitesti, Bucharest
+  path: Arad -> Sibiu -> Rimnicu Vilcea -> Pitesti -> Bucharest | cost: 418
+```
+
+The output repeats the two worked examples. Passing `lambda g, n: g` as `f` turns the same function into uniform-cost search.
+
+<Ar>تكرّر المخرجات المثالين المحلولين. وتمرير `lambda g, n: g` بوصفها `f` يحوّل الدالة نفسها إلى البحث بالتكلفة الموحدة.</Ar>
+
+## Admissible heuristics and the optimality of A*
+
+<Ar>الاستدلالات المقبولة وأمثلية `A*`</Ar>
+
+<Walkthrough id="ai4-admissible" expect="optimistic, overestimate, proof, contour; cstar=418; over=450; pitesti-over=517; below=5" />
+
+The book lists two properties of A*: it is **complete**, and it is **optimal** (cost-optimal) if the heuristic is **admissible**.
+
+<Ar>يذكر الكتاب خاصيتين للبحث <bdi>A\*</bdi>: فهو **مكتمل (complete)**، و**أمثل (optimal)** من حيث التكلفة إذا كان الاستدلال **مقبولًا (admissible)**.</Ar>
+
+<Definition term="Admissible heuristic" termAr="الاستدلال المقبول">
+  A heuristic that never overestimates the true cost to reach a goal: h(n) ≤ h*(n) for every node n, where h*(n) is the cost of the cheapest path from n to a goal. Admissible heuristics are optimistic.
+
+  <Ar>استدلال لا يبالغ أبدًا في تقدير التكلفة الحقيقية للوصول إلى هدف: <bdi>h(n) ≤ h\*(n)</bdi> لكل عقدة n، حيث <bdi>h\*(n)</bdi> تكلفة أرخص مسار من n إلى هدف. والاستدلالات المقبولة متفائلة (optimistic).</Ar>
+</Definition>
+
+Admissible heuristics are **optimistic**: they think reaching the goal is cheaper than it is. $h_{\text{SLD}}$ is admissible because a straight line is the shortest way between two points, so no road can be shorter:
+
+<Ar>الاستدلالات المقبولة **متفائلة (optimistic)**: فهي تظن أن بلوغ الهدف أرخص مما هو عليه. والاستدلال $h_{\text{SLD}}$ مقبول لأن الخط المستقيم أقصر طريق بين نقطتين، فلا يمكن لأي طريق أن يكون أقصر منه:</Ar>
+
+{/* data-table */}
+
+| City <Ar>المدينة</Ar> | $h_{\text{SLD}}(n)$ | $h^*(n)$ by road <Ar>$h^*(n)$ عبر الطرق</Ar> |
+|---|---|---|
+| Arad | 366 | 418 |
+| Sibiu | 253 | 278 |
+| Rimnicu Vilcea | 193 | 198 |
+| Fagaras | 176 | 211 |
+| Pitesti | 100 | 101 |
+| Bucharest | 0 | 0 |
+
+### Why A* is optimal: a proof by contradiction
+
+<Ar>لماذا يكون `A*` أمثل: برهان بالتناقض</Ar>
+
+Let $C^*$ be the cost of the optimal solution, and suppose that A* returns a solution of cost $C > C^*$.
+
+<Ar>لتكن $C^*$ تكلفة الحل الأمثل، ولنفترض أن <bdi>A\*</bdi> يُرجع حلًّا تكلفته $C > C^*$.</Ar>
+
+1. When A* removed that goal node, it had the lowest $f$ on the fringe, and its $f$ is $C$ because $h = 0$ at a goal. So every node on the fringe had $f \ge C$.
+   <Ar>عندما أزال <bdi>A\*</bdi> عقدة الهدف تلك كانت صاحبة أقل $f$ على الحافة، وقيمة $f$ لها هي $C$ لأن $h = 0$ عند الهدف. إذن كانت كل عقدة على الحافة تحقق $f \ge C$.</Ar>
+2. Some node $n$ on an optimal path has not been expanded yet; otherwise A* would have reached the optimal goal. The first such node is on the fringe, and it was reached along the optimal path, so $g(n) = g^*(n)$, the cheapest cost from the start to $n$.
+   <Ar>توجد عقدة $n$ على مسار أمثل لم تُوسَّع بعد؛ وإلا لكان <bdi>A\*</bdi> قد بلغ الهدف الأمثل. وأول عقدة كهذه موجودة على الحافة، وقد وُصل إليها عبر المسار الأمثل، لذا $g(n) = g^*(n)$، أي أرخص تكلفة من البداية إلى $n$.</Ar>
+3. By admissibility, $h(n) \le h^*(n)$, so $f(n) = g^*(n) + h(n) \le g^*(n) + h^*(n) = C^*$.
+   <Ar>وبحكم القبول (admissibility)، $h(n) \le h^*(n)$، لذا $f(n) = g^*(n) + h(n) \le g^*(n) + h^*(n) = C^*$.</Ar>
+4. Then $f(n) \le C^* < C$. But A* expands nodes in order of lowest $f(n)$, so it would have removed $n$ before the goal of cost $C$: a **contradiction**. A* with an admissible heuristic returns only optimal paths.
+   <Ar>إذن $f(n) \le C^* < C$. لكن <bdi>A\*</bdi> يوسّع العقد بترتيب أقل $f(n)$، فكان سيُزيل $n$ قبل الهدف ذي التكلفة $C$: وهذا **تناقض**. فالبحث <bdi>A\*</bdi> مع استدلال مقبول لا يُرجع إلا مسارات مثلى.</Ar>
+
+The worked example shows the argument at work. If A* were about to return the 450 km route, Pitesti, which lies on the optimal route, would be on the fringe with $f = 317 + 100 = 417 \le 418 < 450$, so it would be removed first. That is exactly what happens after step 4.
+
+<Ar>يُظهر المثال المحلول هذه الحجة أثناء عملها. فلو كان <bdi>A\*</bdi> على وشك أن يُرجع طريق 450 km، لكانت Pitesti، الواقعة على الطريق الأمثل، على الحافة مع $f = 317 + 100 = 417 \le 418 < 450$، فتُزال أولًا. وهذا بالضبط ما يحدث بعد الخطوة 4.</Ar>
+
+<Callout type="warning" title="Check the source" titleAr="راجِع المصدر">
+
+The book's proof goes from "$f(n) \le C^*$" straight to "A* expands nodes in order of lowest $f(n)$. Contradiction", leaving out the step that makes it one: $f(n) \le C^* < C$, while the goal of cost $C$ was removed with $f = C$, so $n$ had to be removed first. It also uses two facts without stating them: $n$ is on the fringe (the first unexpanded node of the optimal path), and $g(n) = g^*(n)$ because $n$ was reached along that path. Steps 1–4 above add them, following AIMA (Section 3.5.2).
+
+<Ar>ينتقل برهان الكتاب من «$f(n) \le C^*$» مباشرة إلى «<bdi>A\*</bdi> expands nodes in order of lowest $f(n)$. Contradiction»، ويُسقط الخطوة التي تجعله تناقضًا: $f(n) \le C^* < C$، بينما أُزيل الهدف ذو التكلفة $C$ مع $f = C$، فكان لا بد أن تُزال $n$ قبله. كما يستخدم حقيقتين دون أن يذكرهما: أن $n$ موجودة على الحافة (أول عقدة غير موسَّعة على المسار الأمثل)، وأن $g(n) = g^*(n)$ لأن $n$ وُصل إليها عبر ذلك المسار. والخطوات 1–4 أعلاه تضيفهما، اتباعًا لـ AIMA (القسم 3.5.2).</Ar>
+
+</Callout>
+
+A useful consequence (AIMA, Section 3.5.2): A* expands every node with $f(n) < C^*$ and no node with $f(n) > C^*$. On Romania, the five nodes with $f < 418$ (Arad 366, Sibiu 393, Rimnicu Vilcea 413, Fagaras 415 and Pitesti 417) are all expanded, the goal is removed at $f = 418$, and the ten nodes left waiting on the fringe all have $f > 418$.
+
+<Ar>نتيجة مفيدة (AIMA، القسم 3.5.2): يوسّع <bdi>A\*</bdi> كل عقدة تحقق $f(n) < C^*$، ولا يوسّع أي عقدة تحقق $f(n) > C^*$. ففي مسألة رومانيا تُوسَّع العقد الخمس التي تحقق $f < 418$ كلها (Arad 366، و Sibiu 393، و Rimnicu Vilcea 413، و Fagaras 415، و Pitesti 417)، ويُزال الهدف عند $f = 418$، أما العقد العشر الباقية على الحافة فكلها تحقق $f > 418$.</Ar>
+
+### When the heuristic overestimates
+
+<Ar>عندما يبالغ الاستدلال في التقدير</Ar>
+
+Admissibility is not a technicality. Raise $h(\text{Pitesti})$ from 100 to 200, which overestimates its true 101 km, and keep every other value. A* runs as before until Fagaras is expanded, but Pitesti now has $f = 317 + 200 = 517 > 450$, so Bucharest via Fagaras is removed first.
+
+<Ar>ليس القبول (admissibility) مجرد تفصيل شكلي. ارفع $h(\text{Pitesti})$ من 100 إلى 200، وهي قيمة تبالغ في تقدير تكلفتها الحقيقية البالغة 101 km، وأبقِ كل القيم الأخرى كما هي. يعمل <bdi>A\*</bdi> كما سبق حتى توسيع Fagaras، لكن Pitesti صارت لها $f = 317 + 200 = 517 > 450$، فتُزال Bucharest عبر Fagaras أولًا.</Ar>
+
+A* then removes Arad, Sibiu, Rimnicu Vilcea, Fagaras, Timisoara, Zerind and Bucharest, and returns the **450 km** route. One overestimate on the optimal path was enough to hide it.
+
+<Ar>فيُزيل <bdi>A\*</bdi> عندئذ Arad و Sibiu و Rimnicu Vilcea و Fagaras و Timisoara و Zerind و Bucharest، ويُرجع طريق **450 km**. فقد كفت مبالغةٌ واحدة في التقدير على المسار الأمثل لإخفائه.</Ar>
+
+## Comparing the strategies
+
+<Ar>المقارنة بين الاستراتيجيات</Ar>
+
+<Walkthrough id="ai4-compare" expect="table, work, pick; ucs=53; greedy=4; astar=6" />
+
+The book's summary of Chapter 3 ends with the two informed strategies. Greedy best-first search expands nodes with minimal $h(n)$; it is not optimal, but often efficient. A* expands the node with minimal $f(n) = g(n) + h(n)$; it is complete, and optimal if $h(n)$ is admissible. Side by side with uniform-cost search from Lecture 3:
+
+<Ar>يُختتم ملخص الفصل 3 في الكتاب بالاستراتيجيتين المُوجَّهتين. فالبحث الجشع الأفضل أولًا يوسّع العقد صاحبة أقل $h(n)$؛ وهو ليس أمثل، لكنه كثيرًا ما يكون كفئًا. أما <bdi>A\*</bdi> فيوسّع العقدة صاحبة أقل $f(n) = g(n) + h(n)$؛ وهو مكتمل، وأمثل إذا كانت $h(n)$ مقبولة. وهذه مقارنتهما بالبحث بالتكلفة الموحدة من المحاضرة 3:</Ar>
+
+| Criterion <Ar>المعيار</Ar> | Uniform-cost <Ar>بالتكلفة الموحدة</Ar> | Greedy best-first <Ar>الجشع الأفضل أولًا</Ar> | A* <Ar>البحث <bdi>A\*</bdi></Ar> |
+|---|---|---|---|
+| $f(n)$ | $g(n)$ | $h(n)$ | $g(n) + h(n)$ |
+| Complete? <Ar>مكتمل؟</Ar> | Yes, if step costs $\ge \epsilon > 0$ <Ar>نعم، إذا كانت تكاليف الخطوات $\ge \epsilon > 0$</Ar> | No in tree search (it can loop); yes as graph search in a finite space <Ar>لا في البحث الشجري (قد يدور في حلقة)؛ ونعم بوصفه بحثًا في الرسم البياني في فضاء منتهٍ</Ar> | Yes, if step costs $\ge \epsilon > 0$ and $b$ is finite <Ar>نعم، إذا كانت تكاليف الخطوات $\ge \epsilon > 0$ وكان $b$ منتهيًا</Ar> |
+| Optimal? <Ar>أمثل؟</Ar> | Yes <Ar>نعم</Ar> | No <Ar>لا</Ar> | Yes, if $h$ is admissible (consistent for graph search) <Ar>نعم، إذا كانت $h$ مقبولة (ومتّسقة في البحث في الرسم البياني)</Ar> |
+| Time <Ar>الزمن</Ar> | $O(b^{\lceil C^*/\epsilon \rceil})$ | $O(b^m)$ in the worst case; much less with a good $h$ <Ar>$O(b^m)$ في أسوأ الحالات؛ وأقل بكثير مع $h$ جيدة</Ar> | Exponential in general: every node with $f(n) < C^*$ <Ar>أُسّي عمومًا: كل عقدة تحقق $f(n) < C^*$</Ar> |
+| Space <Ar>المساحة</Ar> | $O(b^{\lceil C^*/\epsilon \rceil})$ | $O(b^m)$: it keeps every node <Ar>$O(b^m)$: يحتفظ بكل العقد</Ar> | Every generated node: exponential <Ar>كل عقدة مولَّدة: أُسّية</Ar> |
+
+On the Romania problem (tree search, repeated states counted), uniform-cost search removes 53 nodes from the fringe before it returns the 418 km route; greedy best-first search removes 4 and returns 450 km; A* removes 6 and returns 418 km. A good heuristic buys most of greedy search's speed without giving up optimality. A* keeps every generated node in memory, so on large problems it usually runs out of space long before it runs out of time (AIMA, Section 3.5.2).
+
+<Ar>في مسألة رومانيا (بحث شجري، مع احتساب الحالات المتكررة) يُزيل البحث بالتكلفة الموحدة 53 عقدة من الحافة قبل أن يُرجع طريق 418 km؛ ويُزيل البحث الجشع الأفضل أولًا 4 عقد ويُرجع 450 km؛ ويُزيل <bdi>A\*</bdi> ست عقد ويُرجع 418 km. فالاستدلال الجيد يمنح معظم سرعة البحث الجشع دون التخلي عن الأمثلية. ويحتفظ <bdi>A\*</bdi> بكل عقدة مولَّدة في الذاكرة، لذا تنفد مساحته في المسائل الكبيرة عادةً قبل أن ينفد وقته بكثير (AIMA، القسم 3.5.2).</Ar>
+
+The book's summary also recalls the setting of the whole chapter: these algorithms are for environments that are episodic, single-agent, fully observable, deterministic, static, discrete and known. A problem is formulated by its initial state, actions, transition model, goal states and cost function; a solution is a path, a sequence of actions, from the initial state to a goal.
+
+<Ar>ويذكّر ملخص الكتاب أيضًا بإطار الفصل كله: فهذه الخوارزميات مخصّصة لبيئات عَرَضية (episodic)، ذات وكيل واحد، وقابلة للملاحظة كليًا، وحتمية، وساكنة، ومنفصلة، ومعلومة (known). وتُصاغ المسألة بحالتها الابتدائية، وأفعالها، ونموذج الانتقال، وحالات الهدف، ودالة التكلفة؛ والحل مسار، أي تسلسل من الأفعال، من الحالة الابتدائية إلى هدف.</Ar>
+
+<Callout type="warning" title="Check the source" titleAr="راجِع المصدر">
+
+The book's summary calls greedy best-first search "efficient" and lists A* as "Complete" without conditions. Greedy search is fast only with a good heuristic: its worst case is $O(b^m)$ time and space, and its tree version can loop forever. A* is complete only if every step cost is at least some $\epsilon > 0$ and the branching factor is finite; otherwise it can expand infinitely many nodes with $f$ below $C^*$ (AIMA, Sections 3.5.1–3.5.2).
+
+<Ar>يصف ملخص الكتاب البحث الجشع الأفضل أولًا بأنه «efficient»، ويذكر أن <bdi>A\*</bdi> «Complete» دون شروط. والبحث الجشع لا يكون سريعًا إلا مع استدلال جيد: فأسوأ حالاته $O(b^m)$ زمنًا ومساحةً، وقد تدور صيغته الشجرية في حلقة إلى الأبد. أما <bdi>A\*</bdi> فلا يكون مكتملًا إلا إذا كانت تكلفة كل خطوة لا تقل عن قيمة ما $\epsilon > 0$، وكان معامل التفرّع (branching factor) منتهيًا؛ وإلا فقد يوسّع عددًا لا نهائيًا من العقد التي تقل $f$ لها عن $C^*$ (AIMA، القسمان 3.5.1–3.5.2).</Ar>
+
+</Callout>
+
+## Beyond the book: consistency and designing heuristics
+
+<Ar>ما بعد الكتاب: الاتساق وتصميم الاستدلالات</Ar>
+
+<Walkthrough id="ai4-beyond" expect="consistent, graph-search, puzzle, dominance; sibiu=273; inconsistent=6; consistent=5; h1=6; h2=14; true=20; expanded-h1=3666; expanded-h2=282" />
+
+This section goes beyond the course book and follows AIMA (Sections 3.5.2 and 3.6). The book ends its A* section with **consistency**, "a stronger property than admissibility", but does not say when it matters.
+
+<Ar>يتجاوز هذا القسم كتاب المقرر، ويتبع AIMA (القسمان 3.5.2 و 3.6). فالكتاب يختم قسم <bdi>A\*</bdi> بـ**الاتساق (consistency)**، بوصفه «خاصية أقوى من القبول»، لكنه لا يذكر متى تكون له أهمية.</Ar>
+
+<Definition term="Consistent heuristic" termAr="الاستدلال المتّسق">
+  A heuristic with h(n) ≤ c(n, a, n′) + h(n′) for every node n and every successor n′ reached by an action a, and h = 0 at goals. One step can lower the estimate by at most that step's cost. Every consistent heuristic is admissible.
+
+  <Ar>استدلال يحقق <bdi>h(n) ≤ c(n, a, n′) + h(n′)</bdi> لكل عقدة n ولكل عقدة تالية <bdi>n′</bdi> يُوصَل إليها بالفعل a، مع h = 0 عند الأهداف. فلا تستطيع خطوة واحدة أن تخفض التقدير بأكثر من تكلفتها. وكل استدلال متّسق (consistent) هو استدلال مقبول (admissible).</Ar>
+</Definition>
+
+$$
+h(n) \le c(n, a, n') + h(n')
+$$
+
+This is a **triangle inequality**. $h_{\text{SLD}}$ is consistent: for example, $h(\text{Sibiu}) = 253 \le 80 + 193 = 273$. With a consistent heuristic, $f$ never decreases along a path; on the optimal route it goes 366, 393, 413, 417, 418.
+
+<Ar>هذه **متباينة مثلثية (triangle inequality)**. والاستدلال $h_{\text{SLD}}$ متّسق: فمثلًا $h(\text{Sibiu}) = 253 \le 80 + 193 = 273$. ومع استدلال متّسق لا تتناقص $f$ أبدًا على امتداد المسار؛ فعلى الطريق الأمثل تتدرّج 366، 393، 413، 417، 418.</Ar>
+
+Consistency matters for **graph search**. Lecture 3's GRAPH-SEARCH skips a state that is already in the closed set, even when the new path to it is cheaper. With an admissible but inconsistent heuristic, A* can close a state through a worse path first. In a small graph with the one-way roads S→A (1), S→B (1), A→C (1), B→C (2) and C→G (3), and $h(A) = 4$, A* closes C through B with $g = 3$, skips the cheaper path through A, and returns cost 6 instead of 5. With a consistent heuristic, the first time graph-search A* removes a state it has already found the cheapest path to it, so A* stays optimal.
+
+<Ar>يهمّ الاتساق في **البحث في الرسم البياني (graph search)**. فخوارزمية GRAPH-SEARCH في المحاضرة 3 تتخطى الحالة الموجودة في المجموعة المغلقة (closed set)، حتى عندما يكون المسار الجديد إليها أرخص. ومع استدلال مقبول لكنه غير متّسق، قد يغلق <bdi>A\*</bdi> حالةً عبر مسار أسوأ أولًا. ففي رسم بياني صغير طرقه أحادية الاتجاه `S→A` (1) و `S→B` (1) و `A→C` (1) و `B→C` (2) و `C→G` (3)، ومع $h(A) = 4$، يغلق <bdi>A\*</bdi> الحالة C عبر B مع $g = 3$، ويتخطى المسار الأرخص عبر A، ويُرجع التكلفة 6 بدلًا من 5. أما مع استدلال متّسق، فإن <bdi>A\*</bdi> في البحث في الرسم البياني يكون قد وجد أرخص مسار إلى الحالة في أول مرة يُزيلها فيها، فيبقى أمثل.</Ar>
+
+### Designing heuristics: the 8-puzzle
+
+<Ar>تصميم الاستدلالات: اللغز الثماني</Ar>
+
+Two classic admissible heuristics for the 8-puzzle of Lecture 2:
+
+<Ar>استدلالان مقبولان شهيران للغز الثماني (8-puzzle) من المحاضرة 2:</Ar>
+
+- $h_1$: the number of **misplaced tiles** (the blank does not count). Every misplaced tile must move at least once.
+  <Ar>$h_1$: عدد **البلاطات الموجودة في غير مواضعها (misplaced tiles)** (ولا يُحتسب الفراغ). فكل بلاطة في غير موضعها يجب أن تتحرك مرة واحدة على الأقل.</Ar>
+- $h_2$: the sum of the tiles' **Manhattan distances** from their goal squares, rows plus columns. Every move shifts one tile by one square.
+  <Ar>$h_2$: مجموع **مسافات مانهاتن (Manhattan distances)** للبلاطات عن مربعاتها في الهدف، أي عدد الصفوف زائد عدد الأعمدة. فكل نقلة تزيح بلاطة واحدة مربعًا واحدًا.</Ar>
+
+For Lecture 2's start state (7 2 4 / 5 _ 6 / 8 3 1, with the goal 1 2 3 / 4 5 6 / 7 8 _), $h_1 = 6$ and $h_2 = 2 + 0 + 3 + 1 + 0 + 1 + 3 + 4 = 14$, while the shortest solution takes 20 moves. Both are exact solution costs of **relaxed problems**: if a tile could jump to any square, $h_1$ moves would solve the puzzle; if it could slide onto any neighbouring square, occupied or not, $h_2$ moves would.
+
+<Ar>لحالة البداية في المحاضرة 2 (`7 2 4 / 5 _ 6 / 8 3 1`، مع الهدف `1 2 3 / 4 5 6 / 7 8 _`)، يكون $h_1 = 6$ و $h_2 = 2 + 0 + 3 + 1 + 0 + 1 + 3 + 4 = 14$، بينما يستغرق أقصر حل 20 نقلة. وكلا الاستدلالين تكلفة حل دقيقة لـ**مسألة مُرخاة (relaxed problem)**: فلو استطاعت البلاطة أن تقفز إلى أي مربع لحُلّ اللغز في $h_1$ نقلة، ولو استطاعت أن تنزلق إلى أي مربع مجاور، مشغولًا كان أو فارغًا، لحُلّ في $h_2$ نقلة.</Ar>
+
+Since $h_2(n) \ge h_1(n)$ for every state, $h_2$ **dominates** $h_1$, and A* with $h_2$ never expands more nodes than A* with $h_1$, apart from ties. On this start state, A* graph search expands 3,666 states with $h_1$ and only 282 with $h_2$. Among admissible heuristics, prefer the larger one, as long as it is cheap to compute.
+
+<Ar>ولأن $h_2(n) \ge h_1(n)$ لكل حالة، فإن $h_2$ **تهيمن (dominates)** على $h_1$، ولا يوسّع <bdi>A\*</bdi> مع $h_2$ عقدًا أكثر مما يوسّعه مع $h_1$، باستثناء حالات التساوي. ففي حالة البداية هذه يوسّع <bdi>A\*</bdi> في البحث في الرسم البياني 3,666 حالة مع $h_1$، و 282 حالة فقط مع $h_2$. فمن بين الاستدلالات المقبولة فضّل الأكبر، ما دام حسابه رخيصًا.</Ar>
+
+<Definition term="Dominance" termAr="الهيمنة">
+  An admissible heuristic h2 dominates another admissible heuristic h1 if h2(n) ≥ h1(n) for every node n. A* with the dominating heuristic never expands more nodes, apart from ties.
+
+  <Ar>يهيمن (dominates) الاستدلال المقبول h2 على استدلال مقبول آخر h1 إذا كان <bdi>h2(n) ≥ h1(n)</bdi> لكل عقدة n. ولا يوسّع <bdi>A\*</bdi> مع الاستدلال المهيمن عقدًا أكثر، باستثناء حالات التساوي.</Ar>
+</Definition>
+
+<Takeaways>
+
+- An **informed** search adds a heuristic $h(n)$, an estimate of the cost from $n$ to a goal, to the problem definition; best-first search then expands the node with the lowest $f(n)$.
+  <Ar>يضيف البحث **المُوجَّه** دالة استدلالية $h(n)$، أي تقديرًا للتكلفة من $n$ إلى هدف، إلى تعريف المسألة؛ ثم يوسّع البحث الأفضل أولًا العقدة صاحبة أقل $f(n)$.</Ar>
+- **Greedy best-first search** uses $f = h$: fast and goal-directed, but not optimal (450 km instead of 418 km on Romania), and not complete in its tree form.
+  <Ar>يستخدم **البحث الجشع الأفضل أولًا** $f = h$: فهو سريع ومتجه نحو الهدف، لكنه ليس أمثل (450 km بدلًا من 418 km في رومانيا)، وليس مكتملًا في صيغته الشجرية.</Ar>
+- **A\*** uses $f = g + h$, the estimated cost of the best solution through $n$, and tests for the goal when a node is removed: on Romania it waits for Pitesti (417) and finds the optimal 418 km route.
+  <Ar>يستخدم **<bdi>A\*</bdi>** الدالة $f = g + h$، أي التكلفة المقدَّرة لأفضل حل يمر بـ $n$، ويختبر الهدف عند إزالة العقدة: ففي رومانيا ينتظر Pitesti (417) ويجد الطريق الأمثل 418 km.</Ar>
+- A* is optimal when $h$ is **admissible**, never overestimating: an unexpanded node on the optimal path would have $f \le C^* < C$ and be removed first. One overestimate can make it return a worse path.
+  <Ar>يكون <bdi>A\*</bdi> أمثل عندما تكون $h$ **مقبولة** لا تبالغ أبدًا في التقدير: فالعقدة غير الموسَّعة على المسار الأمثل ستحقق $f \le C^* < C$ وتُزال أولًا. ومبالغة واحدة في التقدير قد تجعله يُرجع مسارًا أسوأ.</Ar>
+- Graph search with a closed set needs a **consistent** heuristic, and a larger admissible heuristic **dominates** a smaller one: $h_2$ expands 282 states where $h_1$ expands 3,666.
+  <Ar>يحتاج البحث في الرسم البياني مع مجموعة مغلقة إلى استدلال **متّسق**، والاستدلال المقبول الأكبر **يهيمن** على الأصغر: فـ $h_2$ توسّع 282 حالة حيث توسّع $h_1$ 3,666 حالة.</Ar>
+
+</Takeaways>
+
+## Practice
+
+<Ar>تدريب</Ar>
+
+<Exercise title="Where greedy search and A* part ways" titleAr="حيث يفترق البحث الجشع و A*" level="easy">
+
+After Arad and Sibiu have been expanded, the fringe holds Fagaras ($g = 239$), Rimnicu Vilcea ($g = 220$), Timisoara ($g = 118$), Zerind ($g = 75$), Arad ($g = 280$) and Oradea ($g = 291$). Using $h_{\text{SLD}}$, compute $f$ for each node under greedy best-first search and under A*, and say which node each strategy expands next.
+
+<Ar>بعد توسيع Arad و Sibiu تضم الحافة Fagaras ($g = 239$)، و Rimnicu Vilcea ($g = 220$)، و Timisoara ($g = 118$)، و Zerind ($g = 75$)، و Arad ($g = 280$)، و Oradea ($g = 291$). باستخدام $h_{\text{SLD}}$، احسب $f$ لكل عقدة في البحث الجشع الأفضل أولًا وفي <bdi>A\*</bdi>، واذكر أي عقدة توسّعها كل استراتيجية تاليًا.</Ar>
+
+<Solution>
+
+- **Greedy** ($f = h$): Fagaras 176, Rimnicu Vilcea 193, Timisoara 329, Arad 366, Zerind 374, Oradea 380. It expands **Fagaras**.
+  <Ar>**البحث الجشع** ($f = h$): Fagaras 176، و Rimnicu Vilcea 193، و Timisoara 329، و Arad 366، و Zerind 374، و Oradea 380. فيوسّع **Fagaras**.</Ar>
+- **A\*** ($f = g + h$): Rimnicu Vilcea $220 + 193 = 413$, Fagaras $239 + 176 = 415$, Timisoara 447, Zerind 449, Arad 646, Oradea 671. It expands **Rimnicu Vilcea**.
+  <Ar>**البحث <bdi>A\*</bdi>** ($f = g + h$): Rimnicu Vilcea $220 + 193 = 413$، و Fagaras $239 + 176 = 415$، و Timisoara 447، و Zerind 449، و Arad 646، و Oradea 671. فيوسّع **Rimnicu Vilcea**.</Ar>
+- This is where the two searches part: greedy goes on to the 450 km route through Fagaras, A* to the 418 km route through Rimnicu Vilcea and Pitesti.
+  <Ar>وهنا يفترق البحثان: فيمضي البحث الجشع إلى طريق 450 km عبر Fagaras، ويمضي <bdi>A\*</bdi> إلى طريق 418 km عبر Rimnicu Vilcea و Pitesti.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="An overestimate on a small graph" titleAr="مبالغة في التقدير على رسم بياني صغير" level="medium">
+
+A graph has the one-way edges S→A (cost 2), S→B (1), A→G (2) and B→G (5); S is the start and G the goal. Two heuristics differ only at A: $h_a$ = (S 4, A 2, B 4, G 0) and $h_b$ = (S 4, A 6, B 4, G 0). (a) Which of them is admissible? (b) Run A* (tree search, goal test on removal) with each: list the nodes in the order they are removed, and give the cost returned.
+
+<Ar>رسم بياني حوافه أحادية الاتجاه هي `S→A` (التكلفة 2)، و `S→B` (1)، و `A→G` (2)، و `B→G` (5)؛ و S هي البداية و G الهدف. ويختلف استدلالان عند A فقط: $h_a$ = `(S 4, A 2, B 4, G 0)` و $h_b$ = `(S 4, A 6, B 4, G 0)`. (أ) أيهما مقبول (admissible)؟ (ب) شغّل <bdi>A\*</bdi> (بحث شجري، واختبار الهدف عند الإزالة) مع كلٍّ منهما: اكتب العقد بترتيب إزالتها، واذكر التكلفة المُرجَعة.</Ar>
+
+<Solution>
+
+(a) The true costs to G are $h^*(S) = 4$ (via A), $h^*(A) = 2$, $h^*(B) = 5$ and $h^*(G) = 0$. $h_a$ never exceeds them, so it is **admissible**. $h_b(A) = 6 > 2$ overestimates, so $h_b$ is **not admissible**.
+
+<Ar>(أ) التكاليف الحقيقية إلى G هي $h^*(S) = 4$ (عبر A)، و $h^*(A) = 2$، و $h^*(B) = 5$، و $h^*(G) = 0$. والاستدلال $h_a$ لا يتجاوزها أبدًا، فهو **مقبول**. أما $h_b(A) = 6 > 2$ فمبالغة في التقدير، لذا فإن $h_b$ **غير مقبول**.</Ar>
+
+(b) With $h_a$: S ($f = 4$); then A ($2 + 2 = 4$) before B ($1 + 4 = 5$); A adds G with $f = 4 + 0 = 4$, which is removed next. Order S, A, G, cost **4**: optimal. With $h_b$: S; then B ($f = 5$) before A ($2 + 6 = 8$); B adds G with $f = 6$, which is removed before A. Order S, B, G, cost **6**: not optimal.
+
+<Ar>(ب) مع $h_a$: S ($f = 4$)؛ ثم A ($2 + 2 = 4$) قبل B ($1 + 4 = 5$)؛ وتضيف A العقدة G مع $f = 4 + 0 = 4$، فتُزال تاليًا. الترتيب S ثم A ثم G، والتكلفة **4**: أي حل أمثل. ومع $h_b$: S؛ ثم B ($f = 5$) قبل A ($2 + 6 = 8$)؛ وتضيف B العقدة G مع $f = 6$، فتُزال قبل A. الترتيب S ثم B ثم G، والتكلفة **6**: أي حل غير أمثل.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Exercise title="Compare h1 and h2" titleAr="قارن بين h1 و h2" level="medium">
+
+An 8-puzzle state is 4 1 2 / _ 8 7 / 6 3 5, and the goal is 1 2 3 / 4 5 6 / 7 8 _, as in Lecture 2. Compute $h_1$ (misplaced tiles) and $h_2$ (Manhattan distance). The shortest solution takes 17 moves: are both heuristics admissible here, and which one would you give A*?
+
+<Ar>حالة من اللغز الثماني هي `4 1 2 / _ 8 7 / 6 3 5`، والهدف `1 2 3 / 4 5 6 / 7 8 _`، كما في المحاضرة 2. احسب $h_1$ (البلاطات في غير مواضعها) و $h_2$ (مسافة مانهاتن). يستغرق أقصر حل 17 نقلة: فهل الاستدلالان كلاهما مقبولان هنا، وأيهما تعطيه لـ <bdi>A\*</bdi>؟</Ar>
+
+<Solution>
+
+- **$h_1 = 8$**: no tile is on its goal square.
+  <Ar>**$h_1 = 8$**: لا توجد أي بلاطة في مربعها في الهدف.</Ar>
+- **$h_2 = 15$**: tile 4 is 1 square away, 1 is 1, 2 is 1, 8 is 1, 7 is $1 + 2 = 3$, 6 is $1 + 2 = 3$, 3 is $2 + 1 = 3$ and 5 is $1 + 1 = 2$; $1 + 1 + 1 + 1 + 3 + 3 + 3 + 2 = 15$.
+  <Ar>**$h_2 = 15$**: البلاطة 4 تبعد مربعًا واحدًا، و 1 مربعًا، و 2 مربعًا، و 8 مربعًا، و 7 تبعد $1 + 2 = 3$، و 6 تبعد $1 + 2 = 3$، و 3 تبعد $2 + 1 = 3$، و 5 تبعد $1 + 1 = 2$؛ و $1 + 1 + 1 + 1 + 3 + 3 + 3 + 2 = 15$.</Ar>
+- Both are at most 17, as admissible heuristics must be. $h_2$ is larger here, and in every state, so it **dominates** $h_1$: give A* $h_2$. It is just as cheap to compute and makes A* expand fewer nodes.
+  <Ar>وكلاهما لا يتجاوز 17، كما يجب في الاستدلالات المقبولة. والاستدلال $h_2$ أكبر هنا وفي كل حالة، لذا فهو **يهيمن** على $h_1$: فأعطِ <bdi>A\*</bdi> الاستدلال $h_2$. فحسابه رخيص بالقدر نفسه، ويجعل <bdi>A\*</bdi> يوسّع عقدًا أقل.</Ar>
+
+</Solution>
+
+</Exercise>
+
+<Quiz
+  questions={[
+    {
+      q: "Greedy best-first search expands the fringe node with the lowest…",
+      qAr: "يوسّع البحث الجشع الأفضل أولًا عقدة الحافة صاحبة أقل…",
+      options: ["g(n)", "h(n)", "g(n) + h(n)", "depth"],
+      optionsAr: ["g(n)", "h(n)", "g(n) + h(n)", "عمق"],
+      answer: 1,
+      explain: "Greedy best-first search uses f(n) = h(n): it expands the node that looks closest to the goal and ignores the cost of the path so far.",
+      explainAr: "يستخدم البحث الجشع الأفضل أولًا f(n) = h(n): فيوسّع العقدة التي تبدو الأقرب إلى الهدف، ويتجاهل تكلفة المسار حتى الآن."
+    },
+    {
+      q: "In A*, what does f(n) = g(n) + h(n) estimate?",
+      qAr: "في البحث A*، ماذا تقدّر f(n) = g(n) + h(n)؟",
+      options: ["The cost of the path from the start to n", "The cost from n to the goal", "The cost of the cheapest solution that passes through n", "The number of nodes left to expand"],
+      optionsAr: ["تكلفة المسار من البداية إلى n", "التكلفة من n إلى الهدف", "تكلفة أرخص حل يمر بـ n", "عدد العقد الباقية للتوسيع"],
+      answer: 2,
+      explain: "g(n) is the cost already paid to reach n and h(n) the estimated cost still to go, so their sum estimates the whole solution through n.",
+      explainAr: "g(n) هي التكلفة التي دُفعت فعلًا للوصول إلى n، و h(n) التكلفة المقدَّرة الباقية، لذا يقدّر مجموعهما الحل كله المار بـ n."
+    },
+    {
+      q: "With h_SLD, greedy best-first search goes from Arad to Bucharest through Sibiu and Fagaras. What does the route cost, and is it optimal?",
+      qAr: "مع h_SLD يذهب البحث الجشع الأفضل أولًا من Arad إلى Bucharest عبر Sibiu و Fagaras. كم يكلّف هذا الطريق، وهل هو أمثل؟",
+      options: ["418 km, optimal", "450 km, not optimal", "450 km, optimal", "366 km, optimal"],
+      optionsAr: ["418 km، أمثل", "450 km، غير أمثل", "450 km، أمثل", "366 km، أمثل"],
+      answer: 1,
+      explain: "140 + 99 + 211 = 450 km. The route through Rimnicu Vilcea and Pitesti costs 418 km, so the greedy route is 32 km too long.",
+      explainAr: "140 + 99 + 211 = 450 km. أما الطريق عبر Rimnicu Vilcea و Pitesti فيكلّف 418 km، لذا يزيد طريق البحث الجشع بمقدار 32 km."
+    },
+    {
+      q: "After Fagaras is expanded, Bucharest is on A*'s fringe with f = 450. Why doesn't A* return it at once?",
+      qAr: "بعد توسيع Fagaras تكون Bucharest على حافة A* مع f = 450. لماذا لا يُرجعها A* فورًا؟",
+      options: ["A* tests for the goal only when a node is removed, and Pitesti (f = 417) comes out first", "Bucharest has not been generated yet", "A* never returns the first goal it generates", "h(Bucharest) is not 0"],
+      optionsAr: ["لأن A* لا يختبر الهدف إلا عند إزالة العقدة، و Pitesti (f = 417) تخرج أولًا", "لأن Bucharest لم تُولَّد بعد", "لأن A* لا يُرجع أبدًا أول هدف يولّده", "لأن h(Bucharest) لا تساوي 0"],
+      answer: 0,
+      explain: "A goal on the fringe is only a candidate. Pitesti has a lower f, so it is expanded first and puts Bucharest on the fringe again with f = 418.",
+      explainAr: "الهدف الموجود على الحافة مجرد مرشّح. و Pitesti لها f أقل، لذا تُوسَّع أولًا وتعيد Bucharest إلى الحافة مع f = 418."
+    },
+    {
+      q: "A heuristic is admissible when…",
+      qAr: "يكون الاستدلال مقبولًا عندما…",
+      options: ["It never overestimates the true cost to reach a goal", "It is always exactly the true cost", "It never underestimates the true cost", "It gives the same value to every node"],
+      optionsAr: ["لا يبالغ أبدًا في تقدير التكلفة الحقيقية للوصول إلى هدف", "يساوي التكلفة الحقيقية دائمًا", "لا يقلّل أبدًا من تقدير التكلفة الحقيقية", "يعطي القيمة نفسها لكل عقدة"],
+      answer: 0,
+      explain: "Admissible means h(n) ≤ h*(n) for every n: the estimate is optimistic. h_SLD is admissible because no road is shorter than the straight line.",
+      explainAr: "القبول يعني h(n) ≤ h*(n) لكل n: أي إن التقدير متفائل. والاستدلال h_SLD مقبول لأنه لا يوجد طريق أقصر من الخط المستقيم."
+    },
+    {
+      q: "If h(n) = 0 for every node, A* behaves like…",
+      qAr: "إذا كانت h(n) = 0 لكل عقدة، فإن A* يتصرف مثل…",
+      options: ["Greedy best-first search", "Depth-first search", "Uniform-cost search", "Breadth-first search"],
+      optionsAr: ["البحث الجشع الأفضل أولًا", "البحث بالعمق أولًا", "البحث بالتكلفة الموحدة", "البحث بالعرض أولًا"],
+      answer: 2,
+      explain: "Then f(n) = g(n), so A* expands nodes in order of path cost, exactly as uniform-cost search does. h = 0 is admissible, but it gives no guidance.",
+      explainAr: "عندئذ f(n) = g(n)، فيوسّع A* العقد بترتيب تكلفة المسار، تمامًا كما يفعل البحث بالتكلفة الموحدة. والقيمة h = 0 مقبولة، لكنها لا تقدّم أي توجيه."
+    },
+    {
+      q: "For the 8-puzzle, h2 (Manhattan distance) dominates h1 (misplaced tiles). What does this mean for A*?",
+      qAr: "في اللغز الثماني يهيمن h2 (مسافة مانهاتن) على h1 (البلاطات في غير مواضعها). ماذا يعني ذلك بالنسبة إلى A*؟",
+      options: ["h2 may overestimate, so A* may lose optimality", "A* with h2 never expands more nodes than with h1, apart from ties", "A* with h1 is faster because h1 is smaller", "Both expand exactly the same nodes"],
+      optionsAr: ["قد يبالغ h2 في التقدير، فيفقد A* أمثليته", "لا يوسّع A* مع h2 عقدًا أكثر مما يوسّعه مع h1، باستثناء حالات التساوي", "يكون A* مع h1 أسرع لأن h1 أصغر", "يوسّع الاثنان العقد نفسها تمامًا"],
+      answer: 1,
+      explain: "Both are admissible and h2(n) ≥ h1(n) everywhere, so h2 is the better-informed estimate. On Lecture 2's start state, A* expands 282 states with h2 and 3,666 with h1.",
+      explainAr: "كلاهما مقبول و h2(n) ≥ h1(n) في كل مكان، لذا فإن h2 هو التقدير الأغنى بالمعلومات. ففي حالة البداية في المحاضرة 2 يوسّع A* 282 حالة مع h2، و 3,666 حالة مع h1."
+    }
+  ]}
+/>

@@ -1,7 +1,7 @@
 "use client";
 
-import type { games } from "@/lib/walkthroughs/artificial-intelligence/lecture-04";
-import { TTT_LEAVES } from "@/lib/widgets/ai-lecture-04";
+import type { games } from "@/lib/walkthroughs/artificial-intelligence/lecture-05";
+import { TTT_LEAVES } from "@/lib/widgets/ai-lecture-05";
 import type { PanelIdOf } from "@/lib/widgets/walkthrough";
 import { bi } from "../../../../types";
 import { Arrow, Box, Svg, Text, Token } from "../../../primitives";

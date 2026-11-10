@@ -1,7 +1,7 @@
 "use client";
 
-import type { minimax as minimaxDef } from "@/lib/walkthroughs/artificial-intelligence/lecture-04";
-import { bestChild, CHESS, CHESS_TREE_EXP, dfsOrder, isLeaf, minimaxValues, ROOT_MOVES, WORKED, type Inner } from "@/lib/widgets/ai-lecture-04";
+import type { minimax as minimaxDef } from "@/lib/walkthroughs/artificial-intelligence/lecture-05";
+import { bestChild, CHESS, CHESS_TREE_EXP, dfsOrder, isLeaf, minimaxValues, ROOT_MOVES, WORKED, type Inner } from "@/lib/widgets/ai-lecture-05";
 import type { PanelIdOf } from "@/lib/widgets/walkthrough";
 import { bi } from "../../../../types";
 import { Arrow, Chip, Fade, In, Svg, Text, Token, type Pt } from "../../../primitives";

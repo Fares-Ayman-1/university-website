@@ -1,6 +1,6 @@
 "use client";
 
-import type { intro } from "@/lib/walkthroughs/artificial-intelligence/lecture-04";
+import type { intro } from "@/lib/walkthroughs/artificial-intelligence/lecture-05";
 import type { PanelIdOf } from "@/lib/widgets/walkthrough";
 import { bi } from "../../../../types";
 import { Arrow, Box, Chip, In, Mark, Person, Svg, Text, Token } from "../../../primitives";
