@@ -1226,15 +1226,15 @@
         {
           "kind": "mcq",
           "group": "Lecture 3",
-          "text": "Using `C = εA/d`, a metal target moves towards a capacitive sensor from 12 mm to 4 mm away. What happens to the capacitance between sensor and target?",
+          "text": "A metal target moves towards a capacitive proximity sensor, from 12 mm to 4 mm away. What happens to the capacitance between sensor and target?",
           "options": [
-            "It falls to one third of its value",
-            "It rises to 9 times its value",
-            "It stays the same, since only the dielectric matters",
-            "It rises to 3 times its value"
+            "It falls, because a smaller gap means a lower capacitance",
+            "It stays the same, because for a metal target only the dielectric matters",
+            "It stays the same until the target touches the sensor face",
+            "It rises, because a smaller gap means a higher capacitance"
           ],
           "answer": 3,
-          "why": "C is inversely proportional to the gap d, so `12 / 4 = 3` and C triples: the smaller the separation, the higher the capacitance. 9 times would need C to vary as 1/d², and one third comes from reading the formula upside down.",
+          "why": "For a metal target the sensor is one plate and the object is the other, and the capacitance of a pair of plates depends on their separation: the smaller the separation, the higher the capacitance. The dielectric is what matters for a non-metal target, where the plates are the sensor and earth.",
           "ref": "Slide 17 · Capacitive proximity switch"
         },
         {
