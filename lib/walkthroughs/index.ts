@@ -14,13 +14,17 @@ import * as ai02 from "./artificial-intelligence/lecture-02";
 import * as ai03 from "./artificial-intelligence/lecture-03";
 import * as ai04 from "./artificial-intelligence/lecture-04";
 import * as ai05 from "./artificial-intelligence/lecture-05";
+import * as rob01 from "./robotics/lecture-01";
+import * as rob02 from "./robotics/lecture-02";
+import * as rob03 from "./robotics/lecture-03";
+import * as rob04 from "./robotics/lecture-04";
 
 /*
  * Every walkthrough, by id. Each lecture module exports its walkthroughs as `all`; its scene
  * loaders go in components/widgets/walkthrough/scenes/<subject>/lecture-NN.tsx, spread into
  * components/widgets/walkthrough/scenes.tsx (TypeScript enforces that every id has scenes).
  */
-const ALL = [...db01.all, ...se01.all, ...se02.all, ...se03.all, ...se04.all, ...ip01.all, ...ip02.all, ...ip03.all, ...ip04.all, ...ip05.all, ...ai01.all, ...ai02.all, ...ai03.all, ...ai04.all, ...ai05.all] as const;
+const ALL = [...db01.all, ...se01.all, ...se02.all, ...se03.all, ...se04.all, ...ip01.all, ...ip02.all, ...ip03.all, ...ip04.all, ...ip05.all, ...ai01.all, ...ai02.all, ...ai03.all, ...ai04.all, ...ai05.all, ...rob01.all, ...rob02.all, ...rob03.all, ...rob04.all] as const;
 
 export type WalkthroughId = (typeof ALL)[number]["id"];
 

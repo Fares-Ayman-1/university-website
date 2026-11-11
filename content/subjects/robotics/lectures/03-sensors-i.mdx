@@ -35,6 +35,8 @@ bookRefs:
 
 <Ar>ما المستشعر؟</Ar>
 
+<Walkthrough id="rob3-what-is-sensor" expect="definition, inference, levels, divider; closed=5; fixed=10; bright=0.45; dark=4.55" />
+
 <Definition term="Sensor" termAr="المستشعر (Sensor)">
   An input device that provides a <strong>usable output</strong> in response to a <strong>specified physical input</strong>. A thermocouple, for example, turns a temperature difference into an electrical voltage.
 
@@ -89,6 +91,8 @@ If $R_2$ is the sensor (an LDR, say) and $R_1$ a fixed resistor, a change in $R_
 
 <Ar>المفاتيح الميكانيكية والمفاتيح الحدّية</Ar>
 
+<Walkthrough id="rob3-limit-switch" expect="on-off, contacts, actuation, end-of-travel, bounce; logic1=24" />
+
 A **mechanical switch** produces an **on/off** signal when a mechanical input opens or closes its contacts. For example, it can detect whether a workpiece is on a machining table: open = absent, closed = present. In industry, logic 1 is typically **24 V DC** and logic 0 is **0 V**.
 
 <Ar>يُنتج **المفتاح الميكانيكي (mechanical switch)** إشارة **تشغيل/إيقاف (on/off)** عندما يفتح دخلٌ ميكانيكي نقاط تلامسه أو يغلقها. فمثلًا، يمكنه اكتشاف ما إذا كانت قطعة العمل موجودة على طاولة التشغيل الآلي: مفتوح = غير موجودة، مغلق = موجودة. وفي الصناعة يكون المنطق 1 عادةً **24 V DC** والمنطق 0 هو **0 V**.</Ar>
@@ -113,19 +117,28 @@ Limit switches differ mainly in their **actuator head**: push plunger, roller pl
 
 <Ar>مفاتيح التقارب</Ar>
 
+<Walkthrough id="rob3-proximity" expect="types, inductive, capacitive, wiring, advantages; inductive=2–15; capacitive=4–60" />
+
 Proximity switches detect an object **without touching it**. There are three operating principles:
 
 <Ar>تكتشف مفاتيح التقارب (proximity switches) الجسم **دون أن تلمسه**. وهناك ثلاثة مبادئ للعمل:</Ar>
 
 | Type <Ar>النوع</Ar> | Principle <Ar>المبدأ</Ar> | Detects <Ar>يكتشف</Ar> | Typical range <Ar>المدى النموذجي</Ar> |
 |---|---|---|---|
-| **Inductive** <Ar>**حثّي (Inductive)**</Ar> | Change in magnetic **inductance** <Ar>تغيّر **المحاثّة (inductance)** المغناطيسية</Ar> | **Ferrous metal** only <Ar>**المعادن الحديدية** فقط</Ar> | ≈ 2–15 mm <Ar>≈ 2–15 مم</Ar> |
+| **Inductive** <Ar>**حثّي (Inductive)**</Ar> | Change in magnetic **inductance** <Ar>تغيّر **المحاثّة (inductance)** المغناطيسية</Ar> | Metal, best of all **ferrous** metal <Ar>المعادن، وأفضلها **المعادن الحديدية**</Ar> | ≈ 2–15 mm <Ar>≈ 2–15 مم</Ar> |
 | **Capacitive** <Ar>**سعوي (Capacitive)**</Ar> | Change in **capacitance** <Ar>تغيّر **السعة (capacitance)**</Ar> | Metal **and non-metal** (plastic, wood, liquids, grain) <Ar>المعادن **وغير المعادن** (البلاستيك، والخشب، والسوائل، والحبوب)</Ar> | ≈ 4–60 mm <Ar>≈ 4–60 مم</Ar> |
 | **Magnetic** <Ar>**مغناطيسي**</Ar> | Change in magnetic flux <Ar>تغيّر التدفق المغناطيسي (magnetic flux)</Ar> | Magnets <Ar>المغناطيسات</Ar> | Depends on the magnet <Ar>يعتمد على المغناطيس</Ar> |
 
-In general, proximity switches detect objects at about **0.5–20 mm**. The inductive and capacitive types are the most widely used in industry.
+Their sensing range is short, ending at a few tens of millimetres, and it depends on the type (see the table). The inductive and capacitive types are the most widely used in industry.
 
-<Ar>وبوجه عام، تكتشف مفاتيح التقارب الأجسام على مسافة **0.5–20 مم** تقريبًا. والنوعان الحثّي والسعوي هما الأكثر استخدامًا في الصناعة.</Ar>
+<Ar>ومدى استشعارها قصير، ينتهي عند بضع عشرات من المليمترات، ويعتمد على النوع (انظر الجدول). والنوعان الحثّي والسعوي هما الأكثر استخدامًا في الصناعة.</Ar>
+
+<Callout type="warning" title="Check the source" titleAr="راجِع المصدر">
+
+Slide 15, among the general points on proximity switches, gives a range of **0.5–20 mm**. It matches neither type: slide 18 gives **4–60 mm** for capacitive switches, and slide 21 gives **2–15 mm** for inductive ones. Slide 15's number follows the sentence "the voltage amplitude is *thus* a measure of the proximity of metallic objects", whose "thus" points to an explanation the slide leaves out: it describes the metal-sensing (eddy-current) type, not every proximity switch, and the book puts the same sentence in its inductive section (p. 101). The book (pp. 101–102) has no 0.5–20 mm figure; it gives **2–15 mm** for inductive and **4–60 mm** for capacitive switches. Use those two ranges.
+
+<Ar>تذكر الشريحة 15، ضمن النقاط العامة عن مفاتيح التقارب (proximity switches)، مدى قدره **0.5–20 مم**. وهو لا يطابق أيًّا من النوعين: إذ تذكر الشريحة 18 أن مدى المفاتيح السعوية **4–60 مم**، وتذكر الشريحة 21 أن مدى المفاتيح الحثّية **2–15 مم**. ويأتي رقم الشريحة 15 بعد جملة تقول إن سعة الجهد هي «بالتالي» مقياس لقرب الأجسام المعدنية، و«بالتالي» هنا تشير إلى شرح حذفته الشريحة: فهي تصف النوع الذي يستشعر المعادن (بالتيارات الدوّامية (eddy currents))، لا كل مفاتيح التقارب، ويضع الكتاب الجملة نفسها في قسم المفتاح الحثّي (ص 101). ولا يرد رقم 0.5–20 مم في الكتاب (ص 101–102)، بل يذكر **2–15 مم** للمفاتيح الحثّية و**4–60 مم** للمفاتيح السعوية. فاعتمد هذين المدَيين.</Ar>
+</Callout>
 
 ### Inductive proximity switch
 
@@ -134,6 +147,13 @@ In general, proximity switches detect objects at about **0.5–20 mm**. The indu
 A coil is wound around a ferrous core. When a ferrous object comes near one end of the core, the effective amount of metal in the magnetic circuit changes, and so the coil's **inductance** changes. A resonant (LC oscillator) circuit detects the change. A Schmitt trigger and an amplifier then switch a transistor output, giving an **on/off** device.
 
 <Ar>يُلَفّ ملفٌّ حول قلب حديدي. وعندما يقترب جسم حديدي من أحد طرفي القلب، تتغير الكمية الفعالة من المعدن في الدائرة المغناطيسية، ومن ثَمّ تتغير **محاثّة (inductance)** الملف. وتكتشف دائرةٌ رنينية (مذبذب LC) هذا التغيّر. ثم يقوم قادح شميت (Schmitt trigger) ومضخِّمٌ بتبديل خرج الترانزستور، فنحصل على جهاز **تشغيل/إيقاف (on/off)**.</Ar>
+
+<Callout type="warning" title="Check the source" titleAr="راجِع المصدر">
+
+Slide 21 explains the inductive switch only with a **ferrous** target, which changes the inductance of the coil's iron core. That makes it look as if only ferrous metal can be detected. The figure on slide 22, labelled "induced eddy currents oppose field", shows the fuller mechanism: the oscillator's field **induces eddy currents** in a metal target, and they damp the oscillation. Any conductive metal does this, so the book (p. 101) says aluminium, brass and copper are detected too, only at a **shorter distance**; the rated range is quoted for a mild-steel target.
+
+<Ar>تشرح الشريحة 21 المفتاح الحثّي (inductive) بهدف **حديدي** فقط، يغيّر محاثّة (inductance) الملف ذي القلب الحديدي، فيبدو كأن المعادن الحديدية وحدها هي التي تُكتشف. أما الشكل في الشريحة 22، وعليه عبارة «التيارات الدوّامية المستحثة تعاكس المجال»، فيُظهر الآلية الأكمل: إذ **يستحث** مجال المذبذب **تيارات دوّامية (eddy currents)** في الهدف المعدني، فتُخمِد التذبذب. وكل معدن موصِّل يفعل ذلك، لذا يذكر الكتاب (ص 101) أن الألومنيوم والنحاس الأصفر والنحاس تُكتشف أيضًا، ولكن على **مسافة أقصر**، وأن المدى المقرَّر يُذكر لهدف من الفولاذ الطري (mild steel).</Ar>
+</Callout>
 
 <SlideFigure page={22} caption="Inside an inductive proximity sensor: LC oscillator, Schmitt trigger and output amplifier." captionAr="داخل مستشعر التقارب الحثّي: مذبذب LC، وقادح شميت، ومضخِّم الخرج." />
 
@@ -177,6 +197,8 @@ Proximity switches come in **cylindrical**, **rectangular** and **slot** shapes.
 ## Photoelectric switches
 
 <Ar>المفاتيح الكهروضوئية</Ar>
+
+<Walkthrough id="rob3-photoelectric" expect="types, light-dark, range, opto; min=10; max=15" />
 
 **Photoelectric switches** (photocells) are solid-state sensors that detect objects at **long range**, from under 10 cm up to about **15 m**. An emitter sends a visible or infrared light beam to a receiver, and the object either **interrupts** or **reflects** the beam.
 
@@ -231,6 +253,8 @@ A small **LED emitter** and a **photodiode or phototransistor** detector sit sid
 
 <Ar>المستشعرات الضوئية (LDR)</Ar>
 
+<Walkthrough id="rob3-ldr" expect="resistance, reading, swap, shielding; supply=5; fixed=10; bright=0.45; dark=4.55" />
+
 A **light-dependent resistor** (photocell) is a variable resistor: **brighter light gives lower resistance; darker gives higher resistance**. Shielding, position and direction of the photocell matter a lot. Put in a voltage divider, it gives an analog voltage the controller can read.
 
 <Ar>**المقاومة المعتمدة على الضوء (light-dependent resistor)** (الخلية الضوئية) مقاومة متغيرة: **الضوء الأشد يعطي مقاومة أقل، والظلام يعطي مقاومة أعلى**. ولتدريع الخلية الضوئية وموضعها واتجاهها أهمية كبيرة. وعند وضعها في مقسِّم جهد (voltage divider)، تعطي جهدًا تناظريًا يستطيع المتحكِّم قراءته.</Ar>
@@ -238,6 +262,8 @@ A **light-dependent resistor** (photocell) is a variable resistor: **brighter li
 ## Potentiometers
 
 <Ar>مقاييس الجهد</Ar>
+
+<Walkthrough id="rob3-potentiometer" expect="track, angle, resolution, servo; max=270; adc=1023" />
 
 A **potentiometer** ("pot") is a resistor with a sliding wiper, like a stereo's volume knob. Fixed across a supply voltage, the wiper voltage is **proportional to the shaft angle** (rotary pot) or slider position (linear pot). This makes it a cheap absolute position sensor, and it is what sits inside a hobby **servo motor**.
 
@@ -274,16 +300,18 @@ void loop() {
 
 <Ar>تطبيق: العصا المرشدة GuideCane</Ar>
 
-The **GuideCane** is a robotic guide for blind and visually impaired people. A wheeled base at the end of a cane carries a ring of ultrasonic sensors. When it detects an obstacle it steers itself around it, and the user feels the change of direction through the handle and follows. It is a good example of sensing, deciding and acting combined in a single assistive device.
+<Walkthrough id="rob3-guidecane" expect="device, loop, fan, inference" />
 
-<Ar>**GuideCane** مرشد روبوتي للمكفوفين وضعاف البصر. تحمل قاعدةٌ ذات عجلات في طرف العصا حلقةً من المستشعرات فوق الصوتية (ultrasonic). وعندما تكتشف عائقًا توجّه نفسها للالتفاف حوله، فيشعر المستخدم بتغيّر الاتجاه عبر المقبض ويتبعه. وهو مثال جيد على اجتماع الاستشعار واتخاذ القرار والتصرّف في جهاز مساعد واحد.</Ar>
+The **GuideCane** is a robotic guide for blind and visually impaired people. A wheeled base at the end of a cane carries a fan of ultrasonic sensors facing ahead (slide 47). When it detects an obstacle it steers itself around it, and the user feels the change of direction through the handle and follows. It is a good example of sensing, deciding and acting combined in a single assistive device.
+
+<Ar>**GuideCane** مرشد روبوتي للمكفوفين وضعاف البصر. تحمل قاعدةٌ ذات عجلات في طرف العصا مجموعةً مروحية من المستشعرات فوق الصوتية (ultrasonic) موجهة إلى الأمام (الشريحة 47). وعندما تكتشف عائقًا توجّه نفسها للالتفاف حوله، فيشعر المستخدم بتغيّر الاتجاه عبر المقبض ويتبعه. وهو مثال جيد على اجتماع الاستشعار واتخاذ القرار والتصرّف في جهاز مساعد واحد.</Ar>
 
 <Takeaways>
 
 - A sensor turns a physical input into a usable (usually electrical) output; processing ranges from one bit to computer vision.
   <Ar>يحوّل المستشعر (sensor) الدخل الفيزيائي إلى خرج قابل للاستخدام (كهربائي عادةً)؛ وتتدرج المعالجة من بِت واحد إلى الرؤية الحاسوبية.</Ar>
-- **Limit switches** are cheap and contact-based; **proximity switches** are contactless and durable. **Inductive** ones detect ferrous metal only (2–15 mm); **capacitive** ones detect anything (4–60 mm).
-  <Ar>**المفاتيح الحدّية (limit switches)** رخيصة وتعتمد على التلامس، و**مفاتيح التقارب (proximity switches)** لا تحتاج إلى تلامس ومتينة. فالمفاتيح **الحثّية** لا تكتشف إلا المعادن الحديدية (2–15 مم)، والمفاتيح **السعوية** تكتشف أي شيء (4–60 مم).</Ar>
+- **Limit switches** are cheap and contact-based; **proximity switches** are contactless and durable. **Inductive** ones detect metal, best of all ferrous metal (2–15 mm); **capacitive** ones detect anything (4–60 mm).
+  <Ar>**المفاتيح الحدّية (limit switches)** رخيصة وتعتمد على التلامس، و**مفاتيح التقارب (proximity switches)** لا تحتاج إلى تلامس ومتينة. فالمفاتيح **الحثّية** تكتشف المعادن، وأفضلها المعادن الحديدية (2–15 مم)، والمفاتيح **السعوية** تكتشف أي شيء (4–60 مم).</Ar>
 - **Photoelectric** switches work at long range in three variants: **through-beam**, **retro-reflective** and **diffuse**. Each can run in **light-on** or **dark-on** mode.
   <Ar>تعمل المفاتيح **الكهروضوئية (photoelectric)** على مدى بعيد بثلاثة أنواع: **الشعاع المباشر** و**العاكس الارتدادي** و**الانعكاس المنتشر**. ويمكن تشغيل كلٍّ منها في وضع **التشغيل بالضوء (light-on)** أو **التشغيل بالظلام (dark-on)**.</Ar>
 - **LDRs** and **potentiometers** change resistance; read them through a **voltage divider**.

@@ -41,19 +41,23 @@ bookRefs:
 
 <Ar>الذراع الروبوتية الصناعية</Ar>
 
+<Walkthrough id="rob2-arm" expect="black-box, system, jobs, network" />
+
 An industrial robot (also called a **manipulator** or **robotic arm**) is the classic robot of the factory floor: it welds, paints, assembles, palletises and moves parts.
 
 <Ar>الروبوت الصناعي (ويُسمّى أيضًا **الذراع الآلية (manipulator)** أو **الذراع الروبوتية (robotic arm)**) هو الروبوت التقليدي في أرضية المصنع: فهو يلحم، ويطلي، ويجمّع، ويرصّ المنتجات على المنصات (palletises)، وينقل القطع.</Ar>
 
 <SlideFigure page={6} caption="A robotic system: sensors, power supply, controller, mechanical arm, end-of-arm tooling, input device and program storage." captionAr="نظام روبوتي: المستشعرات، ومصدر الطاقة، والمتحكِّم، والذراع الميكانيكية، وأدوات نهاية الذراع، وجهاز الإدخال، وتخزين البرامج." />
 
-Robots can also be **networked**: connected through a wired or wireless network (LAN or the Internet) using protocols such as TCP or UDP. This allows remote monitoring, fleet coordination and cloud-based programming.
+Robots can also be **networked**: connected through a wired or wireless network (LAN or the Internet) using protocols such as TCP or UDP. This allows remote supervision, coordination with other machines and central data collection (book pp. 43–44).
 
-<Ar>ويمكن أيضًا **ربط الروبوتات بشبكة (networked)**: أي توصيلها عبر شبكة سلكية أو لاسلكية (LAN أو الإنترنت) باستخدام بروتوكولات مثل TCP أو UDP. ويتيح ذلك المراقبة عن بُعد، وتنسيق أسطول الروبوتات، والبرمجة السحابية.</Ar>
+<Ar>ويمكن أيضًا **ربط الروبوتات بشبكة (networked)**: أي توصيلها عبر شبكة سلكية أو لاسلكية (LAN أو الإنترنت) باستخدام بروتوكولات مثل TCP أو UDP. ويتيح ذلك الإشراف عن بُعد، والتنسيق مع الآلات الأخرى، وجمع البيانات مركزيًا (الكتاب ص 43–44).</Ar>
 
 ## Specifying performance
 
 <Ar>تحديد مواصفات الأداء</Ar>
+
+<Walkthrough id="rob2-performance" expect="dartboard, errors, calibrate, resolution; res12=0.244; res16=0.015; res8=3.9; states12=4096; states16=65536; repeat=0.05; accuracy=1" />
 
 <Grid cols={3}>
   <Card title="Accuracy" titleAr="الدقة (Accuracy)" tag="absolute">
@@ -73,6 +77,13 @@ Robots can also be **networked**: connected through a wired or wireless network 
   </Card>
 </Grid>
 
+<Callout type="warning" title="Check the source" titleAr="راجِع المصدر">
+
+Slide 8 gives controller resolution as the only limit on **repeatability** and lists gear backlash under **accuracy** alone. The book's text agrees (pp. 44–45), adding only the repeatability of the mechanism itself, but its Table 2.1 (p. 47) also lists backlash, friction, servo behaviour, load variation and thermal drift as limits on repeatability. Both are right: backlash is lost motion when the drive reverses (p. 45), so it is the same error on every visit when the robot always approaches from the same side, but it becomes scatter when the direction of approach changes (Lab 2, p. 56). Resolution also sets a floor: a robot cannot repeat more finely than it can sense (p. 46). In numbers, repeatability is usually about ten times better than accuracy: a robot quoted at ±0.05 mm repeatability may be accurate only to ±1 mm (p. 45).
+
+<Ar>تذكر الشريحة 8 استبانة المتحكِّم (controller resolution) وحدها حدًّا **للتكرارية (repeatability)**، وتضع الخلوص في التروس (gear backlash) ضمن حدود **الدقة (accuracy)** فقط. ويتفق الكتاب مع ذلك في نصه (ص 44–45)، ولا يضيف إلا تكرارية الآلية نفسها، لكن جدوله 2.1 (ص 47) يذكر أيضًا الخلوص في التروس، والاحتكاك، وسلوك المؤازرة (servo)، وتغيّر الحمل، والانجراف الحراري (thermal drift) ضمن حدود التكرارية. والقولان صحيحان: فالخلوص حركة ضائعة عند انعكاس اتجاه الإدارة (ص 45)، لذا فهو خطأ ثابت في كل زيارة إذا اقترب الروبوت دائمًا من الجهة نفسها، لكنه يصبح تشتتًا إذا تغيّر اتجاه الاقتراب (المعمل 2، ص 56). كما أن الاستبانة حدٌّ أدنى: فلا يستطيع الروبوت أن يتكرر بأدق مما يستطيع استشعاره (ص 46). وبالأرقام، تكون التكرارية عادةً أفضل من الدقة بنحو عشر مرات: فالروبوت الذي تُذكر له تكرارية ±0.05 مم قد لا تتجاوز دقته ±1 مم (ص 45).</Ar>
+</Callout>
+
 $$
 \text{resolution} = \frac{\text{total distance travelled}}{2^{n}}
 $$
@@ -81,6 +92,13 @@ $$
   A prismatic axis travels 1,000 mm and uses a 12-bit encoder: resolution $= 1000 / 2^{12} = 1000 / 4096 \approx 0.244$ mm. A 16-bit encoder on the same axis gives $1000 / 65536 \approx 0.015$ mm.
 
   <Ar>يتحرك محور منزلق (prismatic) مسافة 1,000 مم ويستخدم مُرمِّزًا (encoder) من 12 بت: الاستبانة $= 1000 / 2^{12} = 1000 / 4096 \approx 0.244$ مم. أما مُرمِّز من 16 بت على المحور نفسه فيعطي $1000 / 65536 \approx 0.015$ مم.</Ar>
+</Callout>
+
+<Callout type="warning" title="Check the source" titleAr="راجِع المصدر">
+
+Slide 8 and the book's text (p. 46) give resolution = total distance ÷ $2^n$, with $n$ the number of encoder bits. The book's Table 2.1 (p. 47) writes the revolute case as $\Delta\theta = 2\pi/(Nn)$ without defining $N$ or $n$; it divides by $n$, not by $2^n$, so its $n$ cannot be the number of bits. Don't mix the two formulas. For a revolute joint, apply the slide's formula to its angular travel, then turn the angle into a distance at the tool with $s = r\theta$, $\theta$ in radians (Example 2.2, p. 47). With the same 12-bit encoder, a joint turning 300° senses $300^\circ / 4096 \approx 0.073^\circ$, which is about 0.64 mm at 0.5 m and 1.53 mm at 1.2 m. This is why prismatic axes typically have higher resolution.
+
+<Ar>تعطي الشريحة 8 ونص الكتاب (ص 46) الاستبانة (resolution) = المسافة الكلية ÷ $2^n$، حيث $n$ عدد بِتّات المُرمِّز (encoder). أما الجدول 2.1 في الكتاب (ص 47) فيكتب حالة المفصل الدوّار (revolute) على الصورة $\Delta\theta = 2\pi/(Nn)$ دون أن يعرّف $N$ أو $n$؛ وهي تقسم على $n$ لا على $2^n$، فلا يمكن أن يكون $n$ فيها عدد البتات. فلا تخلط بين الصيغتين. وفي المفصل الدوّار طبّق صيغة الشريحة على مداه الزاوي، ثم حوّل الزاوية إلى مسافة عند الأداة بالعلاقة $s = r\theta$ حيث $\theta$ بالراديان (المثال 2.2، ص 47). فمع المُرمِّز نفسه ذي 12 بت، يستشعر مفصل يدور 300° زاوية $300^\circ / 4096 \approx 0.073^\circ$، أي نحو 0.64 مم على بُعد 0.5 م، و1.53 مم على بُعد 1.2 م. ولهذا تكون للمحاور المنزلقة (prismatic) عادةً استبانة أعلى.</Ar>
 </Callout>
 
 <Callout type="tip" title="A dartboard analogy" titleAr="تشبيه لوحة السهام">
@@ -93,14 +111,16 @@ $$
 
 <Ar>مكوّنات الروبوت</Ar>
 
+<Walkthrough id="rob2-components" expect="anatomy, brain, power, hand" />
+
 | Part <Ar>الجزء</Ar> | Analogy <Ar>التشبيه</Ar> | What it does <Ar>وظيفته</Ar> |
 |---|---|---|
-| **Manipulator / arm** <Ar>**الذراع الآلية (Manipulator) / الذراع**</Ar> | The body <Ar>الجسم</Ar> | Base plus appendages (shoulder, arm, wrist) that position the tool <Ar>القاعدة مع الملحقات، أي الكتف والذراع والمعصم (wrist)، التي تضع الأداة في موضعها</Ar> |
+| **Manipulator / arm** <Ar>**الذراع الآلية (Manipulator) / الذراع**</Ar> | The body <Ar>الجسم</Ar> | Base plus appendages: the shoulder, the arm and the grippers <Ar>القاعدة مع الملحقات: الكتف والذراع والقوابض (grippers)</Ar> |
 | **Pedestal** <Ar>**القاعدة الحاملة (Pedestal)**</Ar> | The waist <Ar>الخصر</Ar> | Supports the manipulator and acts as a counterbalance <Ar>تحمل الذراع الآلية وتعمل ثقلًا موازنًا</Ar> |
 | **End effector** <Ar>**المؤثِّر النهائي (End effector)**</Ar> | The hand <Ar>اليد</Ar> | Attached to the last joint; holds the part, or holds the tool that works on the part <Ar>يُثبَّت على آخر مفصل؛ يمسك القطعة، أو يمسك الأداة التي تعمل على القطعة</Ar> |
 | **Actuators** <Ar>**المشغِّلات (Actuators)**</Ar> | The muscles <Ar>العضلات</Ar> | Servo motors, stepper motors, pneumatic or hydraulic cylinders that move the joints <Ar>محركات سيرفو، ومحركات خطوية (stepper)، وأسطوانات هوائية (pneumatic) أو هيدروليكية تحرّك المفاصل</Ar> |
 | **Sensors** <Ar>**المستشعرات (Sensors)**</Ar> | The senses <Ar>الحواس</Ar> | Collect information about the robot and its environment <Ar>تجمع المعلومات عن الروبوت وبيئته</Ar> |
-| **Controller** <Ar>**المتحكِّم (Controller)**</Ar> | The brain <Ar>الدماغ</Ar> | Receives data from the computer, issues instructions, controls the actuators and interfaces with peripherals and humans <Ar>يستقبل البيانات من الحاسوب، ويُصدر التعليمات، ويتحكم في المشغِّلات، ويتواصل مع الأجهزة الطرفية والبشر</Ar> |
+| **Controller** <Ar>**المتحكِّم (Controller)**</Ar> | The brain <Ar>الدماغ</Ar> | Receives data from the computer and controls the actuators; issues instructions to the robot, controls peripheral devices, and interfaces with the robot and with humans <Ar>يستقبل البيانات من الحاسوب ويتحكم في المشغِّلات؛ ويُصدر التعليمات إلى الروبوت، ويتحكم في الأجهزة الطرفية، ويتواصل مع الروبوت ومع البشر</Ar> |
 | **Processor and software** <Ar>**المعالج والبرمجيات (software)**</Ar> | The mind <Ar>العقل</Ar> | Calculates joint motions; programs for operation, planning and safety <Ar>يحسب حركات المفاصل؛ وبرامج للتشغيل والتخطيط والسلامة</Ar> |
 | **Power source** <Ar>**مصدر الطاقة**</Ar> | The food <Ar>الغذاء</Ar> | Electric, pneumatic or hydraulic energy <Ar>طاقة كهربائية أو هوائية (pneumatic) أو هيدروليكية</Ar> |
 
@@ -114,6 +134,8 @@ End effectors include spray-paint guns, welding torches, vacuum heads, hands and
 
 <Ar>درجات الحرية (DOF)</Ar>
 
+<Walkthrough id="rob2-dof" expect="rail, free-body, arm, wrist, independent; rail=1; railTurn=2; freeBody=6; six=6; scara=4; geared=1" />
+
 <Definition term="Degrees of freedom" termAr="درجات الحرية (DOF)">
   The number of <strong>independent position variables</strong> that must be specified to locate every part of a mechanism, that is, the number of independent motions it can make. For most manipulators this equals the <strong>number of joints</strong>.
 
@@ -126,6 +148,13 @@ End effectors include spray-paint guns, welding torches, vacuum heads, hands and
   <Ar>الانزلاق مع الدوران حول القضيب يعطي **درجتَي حرية (2 DOF)**.</Ar>
 - A free rigid body in space has **6 DOF**: three translations (along $x$, $y$, $z$) and three rotations (about $x$, $y$, $z$).
   <Ar>للجسم الصلب الحر في الفضاء **6 درجات حرية (6 DOF)**: ثلاث إزاحات (translations) على امتداد المحاور $x$ و $y$ و $z$، وثلاثة دورانات حول المحاور $x$ و $y$ و $z$.</Ar>
+
+<Callout type="warning" title="Check the source" titleAr="راجِع المصدر">
+
+Slide 19 says the DOF are usually the number of joints, and slide 32 states flatly that each joint–link pair is one DOF. That only holds when every joint is a one-axis joint (R or P) that can move on its own. The book stresses the word **independent** (pp. 60–61): two joints geared together give only 1 DOF (Example 3.1, case e), and a universal joint gives 2 (p. 66). Slide 22 calls the DOF “the movement range available” to a piece of equipment. The book accepts that only as a second reading (p. 62): the DOF is still a count of independent motions, and the phrase is a reminder that each DOF is a physical axis with a finite travel, speed, torque limit and resolution.
+
+<Ar>تقول الشريحة 19 إن درجات الحرية (DOF) تساوي عادةً عدد المفاصل، وتجزم الشريحة 32 بأن كل زوج من مفصل ووصلة يشكّل درجة حرية واحدة. ولا يصح ذلك إلا إذا كان كل مفصل أحادي المحور (R أو P) ويستطيع الحركة وحده. ويؤكد الكتاب كلمة **مستقلة** (ص 60–61): فمفصلان مربوطان بتروس لا يعطيان إلا درجة حرية واحدة (1 DOF) (المثال 3.1، الحالة e)، والمفصل العام (universal joint) يعطي درجتين (ص 66). وتصف الشريحة 22 درجات الحرية بأنها «مدى الحركة المتاح» لقطعة من المعدات. والكتاب لا يقبل ذلك إلا قراءةً ثانية (ص 62): فدرجات الحرية تبقى عددًا للحركات المستقلة، والعبارة تذكير بأن كل درجة حرية محورٌ فعلي له مدى حركة محدود، وسرعة قصوى، وحد للعزم (torque)، واستبانة (resolution).</Ar>
+</Callout>
 
 <SlideFigure page={21} caption="A free body in space has six degrees of freedom." captionAr="للجسم الحر في الفضاء ست درجات حرية." />
 
@@ -144,6 +173,8 @@ A robot therefore needs **at least 6 DOF** to place its tool at any position **a
 ## Links and joints
 
 <Ar>الوصلات والمفاصل</Ar>
+
+<Walkthrough id="rob2-joints" expect="types, chain, resolution, coupling; linear=0.244; angle=0.073; near=0.64; far=1.53" />
 
 To build a robot you need **links** (rigid bodies), **actuators** that connect and move them, **sensors** to perceive the world, and extras like end effectors and communication.
 
@@ -185,6 +216,8 @@ To build a robot you need **links** (rigid bodies), **actuators** that connect a
 
 <Ar>الأطر المرجعية</Ar>
 
+<Walkthrough id="rob2-frames" expect="frames, jog, uses, tcp; oneJoint=1" />
+
 <Grid cols={3}>
   <Card title="World frame" titleAr="إطار العالم (World frame)" tag="x, y, z">
     A universal coordinate frame. The joints move <strong>simultaneously</strong> to produce motion along the major $x$, $y$ and $z$ axes.
@@ -213,10 +246,12 @@ Jogging in the **tool frame** is what you use to approach a part "straight on", 
 
 <Ar>مساحة العمل والتهيئات</Ar>
 
-<Definition term="Workspace (work envelope)" termAr="مساحة العمل (workspace)">
-  The collection of points the robot can reach. It depends on the configuration, the link sizes and the wrist joints. It can be found empirically by moving each joint through its range and combining everything reachable.
+<Walkthrough id="rob2-configurations" expect="envelope, serial, rrp, parallel; cartesian=PPP; cylindrical=RPP; spherical=RRP; articulated=RRR; scara=RRP" />
 
-  <Ar>مجموعة النقاط التي يستطيع الروبوت الوصول إليها. وتعتمد على التهيئة (configuration)، وأطوال الوصلات، ومفاصل المعصم. ويمكن إيجادها تجريبيًا بتحريك كل مفصل عبر مداه وتجميع كل ما يمكن الوصول إليه.</Ar>
+<Definition term="Workspace (work envelope)" termAr="مساحة العمل (workspace)">
+  The collection of points the robot can reach. It depends on the configuration, the link sizes and the wrist joints. It can be found empirically by moving each joint through its range, combining all the space it reaches and subtracting the space it cannot reach.
+
+  <Ar>مجموعة النقاط التي يستطيع الروبوت الوصول إليها. وتعتمد على التهيئة (configuration)، وأطوال الوصلات، ومفاصل المعصم. ويمكن إيجادها تجريبيًا بتحريك كل مفصل عبر مداه، وتجميع كل الحيّز الذي يصل إليه، وطرح الحيّز الذي لا يستطيع الوصول إليه.</Ar>
 </Definition>
 
 Configurations are named by the types of their first three joints:
@@ -231,6 +266,13 @@ Configurations are named by the types of their first three joints:
 | **Articulated / anthropomorphic** <Ar>**مفصلي (articulated) / شبيه بالإنسان (anthropomorphic)**</Ar> | RRR (3R) <Ar>RRR (3 مفاصل دوّارة)</Ar> | All revolute, like a human arm: waist, shoulder, elbow <Ar>جميع مفاصله دوّارة، مثل ذراع الإنسان: الخصر، والكتف، والمرفق</Ar> | Roughly spherical, very large for the footprint <Ar>كروية تقريبًا، وكبيرة جدًا مقارنةً بالمساحة التي يشغلها الروبوت</Ar> |
 | **SCARA** <Ar>**روبوت SCARA**</Ar> | RRP (2R1P) <Ar>RRP (مفصلان دوّاران ومفصل منزلق واحد)</Ar> | Two **parallel** revolute joints move in a horizontal plane, plus a vertical prismatic joint <Ar>مفصلان دوّاران **متوازيان** يتحركان في مستوى أفقي، إضافة إلى مفصل منزلق رأسي</Ar> | Cylindrical; stiff vertically, compliant horizontally, ideal for assembly <Ar>أسطوانية؛ وهو صلب رأسيًا ومَرِن أفقيًا (compliant)، ومثالي لعمليات التجميع</Ar> |
 | **Parallel** <Ar>**متوازي**</Ar> | Several legs <Ar>عدة أرجل</Ar> | A platform connected to a fixed base by multiple legs <Ar>منصة متصلة بقاعدة ثابتة عبر عدة أرجل</Ar> | Small but very stiff and fast (flight simulators, delta pickers) <Ar>صغيرة، لكنه صلب جدًا وسريع (أجهزة محاكاة الطيران، وروبوتات الالتقاط من نوع delta)</Ar> |
+
+<Callout type="warning" title="Check the source" titleAr="راجِع المصدر">
+
+Slide 40 says the three linear joints of a Cartesian robot “orient the end effector”, and the book repeats the phrase (p. 80). Prismatic joints cannot change orientation: the three slides **position** the wrist, and the revolute joints that follow orient the tool, as the book itself says on the same page. Slide 44 heads the spherical robot “Spherical joint”, and its sentence stops halfway (“which has one”). It is a spherical **configuration** of two revolute joints and one prismatic joint (book p. 82), not a kind of joint. Its code, RRP, is also the SCARA's (slide 47): the letters give the joint types but not the directions of their axes. In the spherical robot the second R axis is horizontal and the P slides along the arm; in the SCARA both R axes are vertical and parallel, and the P moves vertically.
+
+<Ar>تقول الشريحة 40 إن المفاصل الخطية الثلاثة في الروبوت الكارتيزي «توجّه المؤثِّر النهائي (end effector)»، ويكرر الكتاب العبارة نفسها (ص 80). لكن المفاصل المنزلقة (prismatic) لا تستطيع تغيير الاتجاه: فالمنزلقات الثلاثة **تحدد موضع** المعصم (wrist)، والمفاصل الدوّارة التي تليها هي التي توجّه الأداة، كما يقول الكتاب نفسه في الصفحة ذاتها. وتعنون الشريحة 44 الروبوت الكروي بعبارة «مفصل كروي (Spherical joint)»، وتتوقف جملتها في منتصفها («which has one»). والمقصود **تهيئة (configuration)** كروية من مفصلين دوّارين ومفصل منزلق واحد (الكتاب ص 82)، وليست نوعًا من المفاصل. ورمزها RRP هو أيضًا رمز روبوت SCARA (الشريحة 47): فالحروف تذكر أنواع المفاصل لا اتجاهات محاورها. ففي الروبوت الكروي يكون محور المفصل R الثاني أفقيًا وينزلق المفصل P على امتداد الذراع، أما في SCARA فمحورا المفصلين R رأسيان ومتوازيان، ويتحرك المفصل P رأسيًا.</Ar>
+</Callout>
 
 <SlideFigure page={49} caption="The five classic serial configurations: Cartesian, cylindrical, spherical, articulated and SCARA." captionAr="التهيئات التسلسلية الخمس التقليدية: الكارتيزية والأسطوانية والكروية والمفصلية و SCARA." />
 

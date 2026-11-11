@@ -33,6 +33,8 @@ bookRefs:
 
 <Ar>المُرمِّزات</Ar>
 
+<Walkthrough id="rob4-encoders" expect="slotted-disc, quadrature, counting, absolute, gray; slot60=6; slot500=0.72; x4=0.18; res3=45; res4=22.5; res10=0.35; res12=0.088; tracks=11; glitch=1111" />
+
 <Definition term="Encoder" termAr="المُرمِّز (Encoder)">
   A device that gives a <strong>digital output</strong> (square pulses or a binary code) in response to <strong>angular or linear displacement</strong>.
 
@@ -74,8 +76,8 @@ With 60 slots, one slot equals $360^\circ/60 = 6^\circ$. Offset slots allow more
 
 - A **single channel** gives position (by counting) but **not direction**.
   <Ar>**القناة الواحدة** تعطي الموضع (بالعدّ) لكنها **لا تعطي الاتجاه**.</Ar>
-- **Two channels, A and B**, are offset by **90°** (quadrature). Whichever channel leads tells you the direction: A leads B for one direction, B leads A for the other.
-  <Ar>**قناتان، A و B**، مُزاحتان بمقدار **90°** (ترميز تربيعي، quadrature). والقناة المتقدمة هي التي تخبرك بالاتجاه: تتقدم A على B في أحد الاتجاهين، وتتقدم B على A في الاتجاه الآخر.</Ar>
+- **Two channels, A and B**, are **90° out of phase** (quadrature): their detectors sit a quarter of a slot pitch apart, so the 90° is a quarter of one pulse cycle, not 90° of shaft rotation. Whichever channel leads tells you the direction: A leads B for one direction, B leads A for the other.
+  <Ar>**قناتان، A و B**، بينهما **فرق طور 90°** (ترميز تربيعي، quadrature): يقع كاشفاهما على بُعد ربع خطوة فتحة أحدهما من الآخر، لذا فإن الـ 90° ربعُ دورة نبضة واحدة، وليست 90° من دوران العمود. والقناة المتقدمة هي التي تخبرك بالاتجاه: تتقدم A على B في أحد الاتجاهين، وتتقدم B على A في الاتجاه الآخر.</Ar>
 - A third **Z channel (index pulse)** gives one pulse per revolution, which is used for **homing** at start-up, since an incremental encoder has no fixed reference.
   <Ar>وتعطي قناة ثالثة هي **القناة Z (نبضة الفهرسة، index pulse)** نبضة واحدة في كل دورة، وتُستخدم **للعودة إلى الموضع المرجعي (homing)** عند بدء التشغيل، لأن المُرمِّز التزايدي ليس له مرجع ثابت.</Ar>
 
@@ -123,6 +125,13 @@ The disc carries several **concentric tracks** read by one detector each. Every 
 
 <Ar>يحمل القرص عدة **مسارات متحدة المركز (concentric tracks)**، يقرأ كلَّ مسار منها كاشفٌ خاص به. وكل موضع زاوي يُنتج **عددًا ثنائيًا فريدًا**، لذا يكون الموضع معروفًا فور تشغيل الطاقة.</Ar>
 
+<Callout type="warning" title="Check the source" titleAr="راجِع المصدر">
+
+Two slides about the **absolute** encoder contain sentences that describe the **incremental** one. Slide 15 ends by saying that the output of incremental encoders is a series of pulses proportional to the rotation, and slide 20 says the position is found "by counting the number of pulses". The book repeats the second sentence (p. 124), but its own account of the absolute encoder says otherwise: the output is a multi-bit code word that gives the position directly (p. 123), and Table 6.1 (p. 125) says the position is known at power-up from that code word. Counting pulses from a datum is how the incremental encoder works.
+
+<Ar>تحتوي شريحتان عن المُرمِّز **المطلق** على جمل تصف المُرمِّز **التزايدي**. فالشريحة 15 تنتهي بالقول إن خرج المُرمِّزات التزايدية سلسلة من النبضات تتناسب مع الدوران، والشريحة 20 تقول إن الموضع يُحدَّد «بعدّ النبضات». ويكرر الكتاب الجملة الثانية (ص 124)، لكن وصفه هو للمُرمِّز المطلق يقول غير ذلك: فالخرج كلمة شفرة متعددة البتات تعطي الموضع مباشرةً (ص 123)، والجدول 6.1 (ص 125) يذكر أن الموضع يُعرَف فور تشغيل الطاقة من كلمة الشفرة هذه. وعدّ النبضات انطلاقًا من نقطة مرجعية (datum) هو طريقة عمل المُرمِّز التزايدي.</Ar>
+</Callout>
+
 $$
 \text{positions} = 2^{n} \qquad \text{resolution} = \frac{360^\circ}{2^{n}} \qquad (n = \text{number of tracks})
 $$
@@ -169,6 +178,8 @@ Encoders can be **optical, magnetic or laser** based. They need a dedicated elec
 
 <Ar>مستشعرات السونار (فوق الصوتية)</Ar>
 
+<Walkthrough id="rob4-sonar" expect="ping, ring, failures, temperature; v=343; echo=11.7; range=2.0; sensors=24; cone=15; rate=20" />
+
 A sonar sends a short (about **1 ms**) burst at **50–250 kHz** and measures the **time of flight** until the echo returns. The sound travels to the obstacle **and back**:
 
 <Ar>يرسل السونار (sonar) دفقة قصيرة (نحو **1 ms**) بتردد **50–250 kHz**، ويقيس **زمن الطيران (time of flight)** حتى يعود الصدى. ينتقل الصوت إلى العائق **ثم يعود**:</Ar>
@@ -185,8 +196,8 @@ If no echo arrives within a time limit, there is no obstacle in range. Measureme
 
 <Callout type="warning" title="Sonar failure modes" titleAr="أنماط إخفاق السونار">
 
-- **Specular reflection**: on smooth surfaces hit at a steep angle, the echo bounces away and the wall is **not detected**, or it returns via another surface so the obstacle seems **further away** than it is.
-  <Ar>**الانعكاس المرآوي (Specular reflection)**: على الأسطح الملساء التي تصطدم بها الموجة بزاوية ميل كبيرة، يرتد الصدى بعيدًا و**لا يُكتشف** الجدار، أو يعود عبر سطح آخر فيبدو العائق **أبعد** مما هو عليه.</Ar>
+- **Specular reflection**: on smooth surfaces hit at an oblique angle, beyond a critical angle, the echo bounces away and the wall is **not detected**, or it returns via another surface so the obstacle seems **further away** than it is.
+  <Ar>**الانعكاس المرآوي (Specular reflection)**: على الأسطح الملساء التي تصطدم بها الموجة بزاوية مائلة تتجاوز زاوية حرجة (critical angle)، يرتد الصدى بعيدًا و**لا يُكتشف** الجدار، أو يعود عبر سطح آخر فيبدو العائق **أبعد** مما هو عليه.</Ar>
 - **Interference / crosstalk**: one sensor hears another sensor's echo and reports an obstacle **closer** than it really is. Firing sensors in sequence, or using **coded (pseudo-random) signals**, prevents this.
   <Ar>**التداخل / التشويش المتبادل (crosstalk)**: يلتقط مستشعرٌ صدى مستشعر آخر فيُبلغ عن عائق **أقرب** مما هو في الحقيقة. ويمنع ذلك إطلاقُ المستشعرات بالتتابع، أو استخدامُ **إشارات مُرمَّزة (شبه عشوائية)**.</Ar>
 - Accuracy depends on the transducer (**piezoelectric** or **electrostatic**), the electronics and the surface material.
@@ -199,6 +210,8 @@ If no echo arrives within a time limit, there is no obstacle in range. Measureme
 ## Laser rangefinders and LiDAR
 
 <Ar>مقاييس المدى الليزرية والليدار</Ar>
+
+<Walkthrough id="rob4-lidar" expect="tof, phase, scan, occlusion; ns10=67" />
 
 A **laser rangefinder** measures distance with a laser beam, most often by **time of flight**:
 
@@ -219,29 +232,36 @@ An object 10 m away returns the pulse after only $2 \times 10 / (3 \times 10^8) 
 - Adding another rotating degree of freedom gives a **3-D scanner (LiDAR)** that produces a **point cloud**. LiDARs are common on autonomous vehicles.
   <Ar>وإضافة درجة حرية دورانية أخرى تعطي **ماسحًا ثلاثي الأبعاد (LiDAR)** يُنتج **سحابة نقاط (point cloud)**. وأجهزة الليدار شائعة في المركبات ذاتية القيادة.</Ar>
 
+<Callout type="warning" title="Check the source" titleAr="راجِع المصدر">
+
+Slide 30 calls the rangefinder a one-dimensional sensor and, in the next breath, says it "can be used to generate a map of the environment". It then speaks of "another degree of freedom at the rotating assembly", although no rotating assembly was introduced. The missing step is in the book (p. 129): one beam gives one range, so the beam must be **swept**, usually by a rotating mirror, to give a 2-D scan, and a second axis of rotation gives the 3-D point cloud of a LiDAR.
+
+<Ar>تصف الشريحة 30 مقياس المدى بأنه مستشعر أحادي البعد، ثم تقول مباشرةً إنه «يمكن استخدامه لتوليد خريطة للبيئة». وبعد ذلك تتحدث عن «درجة حرية أخرى في المجموعة الدوّارة» مع أنها لم تقدّم أي مجموعة دوّارة. والخطوة الناقصة موجودة في الكتاب (ص 129): الشعاع الواحد يعطي مسافة واحدة، لذا يجب **تحريك** الشعاع، بمرآة دوّارة في العادة، للحصول على مسح ثنائي الأبعاد (2-D)، ثم يعطي محورُ دوران ثانٍ سحابةَ النقاط ثلاثية الأبعاد (3-D) لجهاز الليدار (LiDAR).</Ar>
+</Callout>
+
 <SlideFigure page={31} caption="A laser scanner building a map: (a) the environment, (b) scanning, (c) the resulting map." captionAr="ماسح ليزري يبني خريطة: (a) البيئة، (b) المسح، (c) الخريطة الناتجة." />
 
 ## Infrared distance sensors
 
 <Ar>مستشعرات المسافة بالأشعة تحت الحمراء</Ar>
 
+<Walkthrough id="rob4-infrared" expect="triangulation, nonlinear, pulsed, reflectivity; pulse=40" />
+
 Light is far too fast to time with a cheap circuit, so IR range sensors use **triangulation** instead. A pulsed IR LED (about 40 kHz) lights the object, and a **detector array** sees the reflected spot. The **angle** at which it returns, and therefore its position on the array, depends on the distance.
 
 <Ar>الضوء أسرع بكثير من أن تقيس زمنه دائرةٌ رخيصة، لذا تستخدم مستشعرات المدى بالأشعة تحت الحمراء (IR) **التثليث (triangulation)** بدلًا من ذلك. يضيء LED نابض بالأشعة تحت الحمراء (نحو 40 kHz) الجسمَ، وترى **مصفوفة كواشف (detector array)** البقعة المنعكسة. وتعتمد **الزاوية** التي تعود بها البقعة، ومن ثَمّ موضعها على المصفوفة، على المسافة.</Ar>
 
-$$
-d \approx \frac{f \cdot b}{x}
-$$
+The emitter and the detector array sit a known **baseline** apart. A near object returns the light at a steep angle onto one end of the array; a distant object returns it nearly parallel, onto the other end; geometry turns that angle into the range. The response is **non-linear**: the spot moves quickly at short range and slowly at long range, so resolution gets worse as distance grows. IR light is invisible, but you can see it with IR detector cards or an IR-sensitive (phone) camera.
 
-Here $b$ is the baseline between emitter and lens, $f$ the focal length and $x$ the spot's position on the array. Resolution gets worse as distance grows. IR light is invisible, but you can see it with IR detector cards or an IR-sensitive (phone) camera.
-
-<Ar>هنا $b$ هو خط الأساس (baseline) بين المُرسِل والعدسة، و $f$ البعد البؤري (focal length)، و $x$ موضع البقعة على المصفوفة. وتسوء الاستبانة كلما زادت المسافة. والأشعة تحت الحمراء غير مرئية، لكن يمكنك رؤيتها ببطاقات كشف الأشعة تحت الحمراء أو بكاميرا حساسة لها (كاميرا الهاتف).</Ar>
+<Ar>يفصل بين المُرسِل ومصفوفة الكواشف **خط أساس (baseline)** معلوم. فالجسم القريب يعيد الضوء بزاوية حادة إلى أحد طرفي المصفوفة، والجسم البعيد يعيده موازيًا تقريبًا إلى الطرف الآخر، ثم تحوّل الهندسة هذه الزاوية إلى مدى. والاستجابة **غير خطية (non-linear)**: تتحرك البقعة بسرعة في المدى القريب وببطء في المدى البعيد، لذا تسوء الاستبانة كلما زادت المسافة. والأشعة تحت الحمراء غير مرئية، لكن يمكنك رؤيتها ببطاقات كشف الأشعة تحت الحمراء أو بكاميرا حساسة لها (كاميرا الهاتف).</Ar>
 
 <SlideFigure page={33} caption="IR distance sensor: pulsed infrared LED and detector array." captionAr="مستشعر المسافة بالأشعة تحت الحمراء: LED نابض بالأشعة تحت الحمراء ومصفوفة كواشف." />
 
 ## Tachometers
 
 <Ar>مقاييس سرعة الدوران</Ar>
+
+<Walkthrough id="rob4-tachometer" expect="from-pulses, dc-tacho, ripple; noise=1000" />
 
 Joint velocity can be computed by **numerically differentiating** the encoder position, but differentiation amplifies **noise** and degrades control. Robots therefore often measure velocity directly with a **tachometer**.
 
@@ -262,6 +282,8 @@ Commutators add a slight **ripple** that cannot be fully filtered. **AC tachomet
 ## Tactile sensors
 
 <Ar>المستشعرات اللمسية</Ar>
+
+<Walkthrough id="rob4-tactile" expect="array, grip, skin, principles" />
 
 Robots can also sense by **touch**. In **fingers**, tactile arrays measure the **contact force distribution** on a grasped object for better manipulation. As **artificial skin**, they let a robot feel contact anywhere on its body, which is essential for **safe human–robot collaboration**.
 

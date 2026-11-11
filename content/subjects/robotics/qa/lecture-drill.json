@@ -1,0 +1,2063 @@
+{
+  "title": "Robotics Lecture Drill",
+  "kicker": "Robotics · Lectures 1–4",
+  "heading": "Lecture Drill",
+  "lede": "Practice questions written from your lecture slides and the course book, one tab per lecture. Lectures 1–4 follow the book's Chapters 1–6 (pp. 19–141). Pick an answer to see at once whether it is right. Each answer has a short explanation and the slide or book page it comes from.",
+  "foot": "These are practice questions written from your lecture slides and the Robotics course book (marked \"Book\"). They are not past exam papers. Progress is saved in this browser only.",
+  "banksLabel": "Lectures",
+  "unit": "lectures",
+  "order": 1,
+  "source": "Robotics Lec 1-4 slides and Robotics_Textbook_Level_3.pdf (Ch 1-6)",
+  "banks": [
+    {
+      "id": "lecture-1",
+      "tag": "Lecture 1",
+      "name": "Introduction to Robotics",
+      "scope": "36 questions",
+      "questions": [
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "In the general description on the slides, which three things must every robot have?",
+          "options": [
+            "A controller, a fixed pedestal and a gripper at the end of the arm",
+            "Sensors, processing that emulates some cognition, and actuators",
+            "A power supply, a gear transmission and an end-of-arm tool",
+            "A camera, a speech unit and at least one manipulator arm"
+          ],
+          "answer": 1,
+          "why": "A robot senses, thinks and acts, so it needs sensors (sense), processing that emulates some aspects of cognition (think) and actuators (act). The other lists name parts that many robots have, but none of them is the general requirement.",
+          "ref": "Slide 7 · What is a robot"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "In artificial intelligence, a system that senses, thinks and acts, as a robot does, is known as ......",
+          "options": [
+            "an expert system",
+            "a knowledge base",
+            "a teach pendant",
+            "an agent"
+          ],
+          "answer": 3,
+          "why": "The slide notes that AI calls such systems agents: percepts come in through sensors, a program decides, and actuators act on the world. A teach pendant is only the input device used to teach a robot.",
+          "ref": "Slide 7 · What is a robot"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "In the slide's diagram of the robot system as a black box, what are the input and the output?",
+          "options": [
+            "Input: human directions; output: many types of work done automatically",
+            "Input: electric power from the mains; output: mechanical motion of the arm joints",
+            "Input: sensor readings; output: a program saved to the network storage",
+            "Input: raw materials; output: finished parts packed and ready to ship"
+          ],
+          "answer": 0,
+          "why": "Seen from outside, the robot system takes human directions in and gives out many types of work done automatically. Power and sensor signals are internal details that the black box hides.",
+          "ref": "Slide 7 · Robot system as a black box"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "An alarm system detects an intruder and decides to raise an alert, but it moves nothing in the room. Which part of the sense–think–act test does it fail?",
+          "options": [
+            "Sense: it has no way of measuring the room",
+            "Act: it does not change the physical world",
+            "No part: it passes all three, so it is a robot",
+            "Think: it cannot decide anything from input"
+          ],
+          "answer": 1,
+          "why": "The book's test asks whether a machine senses, decides, and changes the physical world. The alarm detects and decides, yet nothing in the room is moved, so it is not a robot; a robot needs all three.",
+          "ref": "Book p. 23–24 · Sense–think–act test"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "Why does the course book draw sense, think and act as a closed loop rather than a one-way chain?",
+          "options": [
+            "Because the actuators must send their power back to the sensors",
+            "Because the controller repeats one fixed program on every cycle",
+            "Because each action changes what the sensors will measure next",
+            "Because the task command goes back to the operator after use"
+          ],
+          "answer": 2,
+          "why": "A robot does not run an open sequence and stop: it acts, checks what happened, and acts again, because what it does changes what its sensors will read next. Beginners tend to overlook this outer feedback loop in the black-box figure.",
+          "ref": "Book p. 24 · Sense–think–act loop"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "The word robot was built from the Slavonic root rabota. Following the course book, what does the root mean?",
+          "options": [
+            "A thinking machine of metal",
+            "Forced labour, or simply work",
+            "An artificial human being",
+            "A moving figure driven by clockwork"
+          ],
+          "answer": 1,
+          "why": "The book derives robot from the root rabota, meaning forced labour or work, which set the idea of a robot as a stand-in for human labour; the lecture page gives the same meaning. The slide glosses Rabota as 'worker'; the book's fuller meaning is used here, and both point to labour.",
+          "ref": "Book p. 20 · The word robot",
+          "check": true
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "Using the dates on the history slide, how many years passed between the word robot being introduced and the first industrial robots appearing?",
+          "options": [
+            "40 years",
+            "51 years",
+            "33 years",
+            "32 years"
+          ],
+          "answer": 0,
+          "why": "The word dates from 1922 and Unimation's first industrial robots from 1962: 1962 − 1922 = 40 years. 32 is the gap to Devol's programmable robot (1954), 33 to the matrices (1955) and 51 to the T3 (1973).",
+          "ref": "Slide 4 · Robotics history"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "How many years separate Denavit and Hartenberg's homogeneous transformation matrices from the first industrial robots?",
+          "options": [
+            "8 years",
+            "18 years",
+            "7 years",
+            "1 year"
+          ],
+          "answer": 2,
+          "why": "1962 − 1955 = 7 years, so manipulator geometry could already be described mathematically before the first industrial robots went on sale. 8 years is the gap from Devol's robot (1954), 18 years the gap to the T3 (1973), and 1 year the gap between Devol's robot and the matrices.",
+          "ref": "Slide 4 · Robotics history"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "George Devol's 1954 machine is listed as the first programmable robot. Why does the course book single out the word programmable?",
+          "options": [
+            "It was the first machine of any kind able to move parts with no human operator",
+            "It was the first robot whose joint geometry was described by transformation matrices",
+            "It was the first robot able to sense its surroundings and respond to the working environment",
+            "Its motions could be changed by editing stored instructions, not by rebuilding cams and stops"
+          ],
+          "answer": 3,
+          "why": "Automatic machinery was already common; what was new was a machine whose motion sequence is changed by editing its stored program, with no cams, linkages or stops to rebuild. The book makes programmability the dividing line between a robot and an automatic machine, and every formal definition requires it. The matrices came in 1955 and external sensing only with the second generation (1980s).",
+          "ref": "Book p. 20 · First programmable robot"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "What does Asimov's zeroth law protect that the first law does not?",
+          "options": [
+            "Humanity as a whole, not just one human being",
+            "The robot's own existence and its power supply",
+            "The orders given to it by its human owner",
+            "Other robots working beside it in the cell"
+          ],
+          "answer": 0,
+          "why": "Law 0 forbids injuring humanity or, through inaction, letting humanity come to harm; Law 1 says the same for a single human being. Obedience is Law 2 and self-preservation is Law 3.",
+          "ref": "Slide 5 · Asimov's laws"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "A human orders a robot to strike another person. Under Asimov's laws, what should the robot do?",
+          "options": [
+            "Obey, because Law 2 says it must follow every human order",
+            "Refuse, because Law 1 outranks the duty to obey in Law 2",
+            "Obey, because only the zeroth law forbids harming people",
+            "Refuse, because Law 3 puts its own safety above any order"
+          ],
+          "answer": 1,
+          "why": "Law 2 demands obedience only where the order does not conflict with a higher law. Striking a person breaks Law 1, which ranks above Law 2, so the robot refuses; Law 3 ranks below Law 2, so it could never override an order.",
+          "ref": "Slide 5 · Asimov's laws"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "Why does the course book say Asimov's laws cannot serve as a real robot safety design?",
+          "options": [
+            "They place the robot's own safety above the safety of humans",
+            "They let a human's order override every safety stop",
+            "They were written only for mobile robots, not for arms",
+            "A machine cannot measure terms such as harm to humanity"
+          ],
+          "answer": 3,
+          "why": "The laws are fiction, not an engineering specification: predicates like 'harm to humanity' are not measurable, so they cannot be implemented as written. Real safety relies on guarding, light curtains, force and speed limits, redundant emergency stops and risk assessment.",
+          "ref": "Book p. 22 · Asimov's laws"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "Which phrase appears in the JARA definition of a robot but not in the RIA definition?",
+          "options": [
+            "A re-programmable, multifunctional manipulator",
+            "Moving flexibly, like the moving parts of living organisms",
+            "Through variable programmed motion for a variety of tasks",
+            "Designed to move material, parts, tools or specialized devices"
+          ],
+          "answer": 1,
+          "why": "JARA's criterion is flexible motion analogous to the moving parts of living organisms, with or without intelligent functions, in response to human commands. The other three phrases are the core of the RIA definition.",
+          "ref": "Slide 6 · Definition of the robot"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "What is the significant difference between the Robotics Association of America definition and the RIA definition?",
+          "options": [
+            "It adds that the robot must have some intelligent functions",
+            "It drops the requirement that the robot must be re-programmable by its user",
+            "It defines an industrial robot, so it covers only industrial machines",
+            "It adds that the robot must move like living organisms do"
+          ],
+          "answer": 2,
+          "why": "The two texts are almost identical, but the Robotics Association of America one begins 'An industrial robot is…'. That word limits it to production equipment, leaving surgical, domestic and exploratory robots outside its scope.",
+          "ref": "Slide 6 · Definition of the robot"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "Taken literally, which word in the RIA definition excludes a wheeled mobile robot that has no arm?",
+          "options": [
+            "Manipulator",
+            "Multifunctional",
+            "Programmed motion",
+            "Re-programmable"
+          ],
+          "answer": 0,
+          "why": "A manipulator is a device that moves objects, so read literally the RIA definition leaves out a mobile robot with no arm. Re-programmable excludes machines fixed by their mechanism, and multifunctional excludes machines dedicated to one operation.",
+          "ref": "Book p. 22 · RIA definition"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "A powered prosthetic limb moves flexibly under its user's commands but is not a reprogrammable, multifunctional manipulator. How do the JARA and RIA definitions treat it?",
+          "options": [
+            "RIA counts it as a robot; under JARA it does not qualify",
+            "Neither counts it, since it has no intelligent functions",
+            "Both count it, since both ask only for human commands",
+            "JARA counts it as a robot; under RIA it may not qualify"
+          ],
+          "answer": 3,
+          "why": "JARA's test is flexible motion like that of a living organism, in response to human commands, whether or not the device is intelligent, so the limb qualifies; RIA needs a re-programmable, multifunctional manipulator. Such different counting rules are why national robot statistics are hard to compare.",
+          "ref": "Book p. 23 · JARA definition"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "Why is robotics called an interdisciplinary subject?",
+          "options": [
+            "It draws on mechanical, electrical and electronic engineering, computer science and biology",
+            "It is used across many different industries, such as car making, food packing and hospital surgery",
+            "Its robots can be reprogrammed to do a wide variety of different tasks with the same arm",
+            "It joins the sensing, the thinking and the acting of a robot together inside one machine"
+          ],
+          "answer": 0,
+          "why": "Interdisciplinary describes where the knowledge comes from: robotics benefits from mechanical, electrical and electronic engineering, computer science, biology and many other disciplines. Being used in many industries or doing many tasks are different ideas (applications and multifunctionality).",
+          "ref": "Slide 8 · Robotic system"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "In the components of a robotic system, which block is the way a human gives instructions or teaches positions to the robot?",
+          "options": [
+            "Program storage or the network",
+            "Computer controller",
+            "Input device or teach pendant",
+            "End-of-arm tooling"
+          ],
+          "answer": 2,
+          "why": "The input device or teach pendant is the human interface. Program storage keeps and loads programs, the controller coordinates all motion, and the end-of-arm tooling is the gripper or tool that does the work.",
+          "ref": "Slide 8 · Components of a robotic system"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "The power supply of a robot can be electric, hydraulic or pneumatic. Which pairing of drive and trait matches the course book?",
+          "options": [
+            "Pneumatic: low cost and quick, but hard to stop at an exact position",
+            "Hydraulic: chosen mainly for being clean, easy to control and efficient",
+            "Electric: used mainly when a compact drive must exert very large force",
+            "Pneumatic: the most accurate drive, which is why it dominates industry"
+          ],
+          "answer": 0,
+          "why": "In the book, electric drives are the most common because they are clean, easy to control and efficient; hydraulic drives give very large force from a compact actuator; pneumatic drives are low-cost and quick but difficult to position accurately. The slides only list the three power sources.",
+          "ref": "Book p. 28 · Power source"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "In the course book's figure of a robotic system, solid arrows carry commands and power and dashed arrows carry feedback. What is a robot whose dashed arrows are missing?",
+          "options": [
+            "A servo-controlled machine whose controller corrects each motion error",
+            "A second generation machine that responds to its working environment",
+            "An open-loop machine that commands motion but never measures the result",
+            "An intelligent robot that completes its task despite changes around it"
+          ],
+          "answer": 2,
+          "why": "Commands and power flow out toward the mechanism, and information comes back along the dashed arrows. Without that return path nothing is measured, so the machine is open-loop; correcting errors (servo control) and responding to the environment both need feedback.",
+          "ref": "Book p. 25 · Components of a robotic system"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "How are the six JIRA classes ordered from class 1 to class 6?",
+          "options": [
+            "By increasing payload, from light assembly arms up to the heaviest palletizers",
+            "By date of invention, from the 1922 story up to present-day machines",
+            "By number of axes, from a one-axis device up to a full six-axis arm",
+            "By increasing autonomy: decisions move from the operator into the machine"
+          ],
+          "answer": 3,
+          "why": "JIRA runs from the manual-handling device, where the human makes every decision, to the intelligent robot, which understands its environment. Along the way the decision-making moves steadily from the human into the machine.",
+          "ref": "Book p. 26 · JIRA classes"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "What makes a JIRA class 3 variable-sequence robot different from a class 2 fixed-sequence robot?",
+          "options": [
+            "It understands its environment and finishes the task even when the scene changes",
+            "It is taught by an operator who leads it by hand through the exact motion it must repeat",
+            "Its predetermined method is easy to modify, since the sequence is stored as settings",
+            "It is given its movement program numerically, as coordinates and instructions"
+          ],
+          "answer": 2,
+          "why": "A fixed-sequence robot repeats a sequence set by its construction (cams, stops), so changing it needs physical work; a variable-sequence robot follows a predetermined method that is easy to modify. Being led by hand is class 4, numeric programs are class 5 and understanding the environment is class 6.",
+          "ref": "Slide 11 · JIRA and RIA classes"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "A welding robot's path is written offline as coordinates, checked, and loaded into its controller; nobody leads the arm. Which JIRA class is it?",
+          "options": [
+            "Class 4, playback robot",
+            "Class 5, numerical control robot",
+            "Class 3, variable-sequence robot",
+            "Class 6, intelligent robot that adapts"
+          ],
+          "answer": 1,
+          "why": "When the operator supplies the movement program instead of teaching the task by hand, the robot is a numerical control robot (class 5). If a human had led the arm along the path, it would be a playback robot (class 4).",
+          "ref": "Slide 11 · JIRA and RIA classes"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "A playback robot was taught a weld by being led along the seam. The next workpiece is placed 2 cm away from the first one's position. What happens?",
+          "options": [
+            "It senses the new position and shifts its weld path",
+            "It replays the recorded path and misses the seam",
+            "It stops and re-teaches itself the new seam",
+            "It follows the seam, since its path is stored relative to the part"
+          ],
+          "answer": 1,
+          "why": "A playback robot stores the path it was led along and repeats it blindly; it knows nothing about the part, so with the workpiece shifted it welds empty air. Adapting to the moved part needs sensing, which is what the intelligent robot (class 6) adds: storing a path is not learning it.",
+          "ref": "Book p. 27–28 · Playback vs intelligent robot"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "The RIA classification names four categories, each matching a class on the JIRA scale. Which JIRA classes does it leave out?",
+          "options": [
+            "Classes 3 and 4: the variable-sequence robot and the playback robot",
+            "Classes 5 and 6: the numerical control robot and the intelligent robot",
+            "Classes 1 and 2: the manual-handling device and the fixed-sequence robot",
+            "Classes 1 and 6: the manual-handling device and the intelligent robot"
+          ],
+          "answer": 2,
+          "why": "RIA keeps the variable-sequence, playback, numerical control and intelligent robots (JIRA classes 3 to 6), so 6 − 4 = 2 classes drop out: classes 1 and 2. In American industrial usage a manual-handling device or a fixed-sequence machine counts as tooling or automation, not as a robot.",
+          "ref": "Slide 10–11 · JIRA and RIA classes"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "What distinguishes an AFR Type D robot from a Type C robot?",
+          "options": [
+            "Type D is servo-controlled, while Type C is not servo-controlled",
+            "Type D can also acquire information from its environment",
+            "Type D is teleoperated, with a human always kept in the loop",
+            "Type D follows continuous paths, while Type C only moves to points"
+          ],
+          "answer": 1,
+          "why": "The slide defines Type D as the same as Type C (programmable and servo-controlled) but able to acquire information. Both C and D are servo-controlled, and telerobotics with a human in the loop is Type A.",
+          "ref": "Slide 12 · AFR classification"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "In the course book's table matching the three schemes, how many JIRA classes fall under AFR Type C?",
+          "options": [
+            "1",
+            "4",
+            "2",
+            "3"
+          ],
+          "answer": 3,
+          "why": "Variable-sequence (class 3), playback (class 4) and numerical control (class 5) robots all map to Type C: 3 classes. Manual handling maps to Type A, fixed sequence to Type B and the intelligent robot to Type D.",
+          "ref": "Book p. 27 · Scheme correspondence"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "A surgeon drives a surgical manipulator from a console in real time; every motion follows the surgeon's hands and the machine stores no program. Which AFR type is it?",
+          "options": [
+            "Type B, an automatic handling device running predetermined cycles",
+            "Type A, a manual handling device or telerobot with a human in the loop",
+            "Type D, a robot that also acquires information from its environment",
+            "Type C, a programmable servo-controlled robot following trajectories"
+          ],
+          "answer": 1,
+          "why": "AFR Type A covers manual handling devices and telerobotics, where a human stays in the control loop, as here. Type B runs predetermined cycles on its own, Type C is programmable and servo-controlled, and Type D adds the ability to acquire information from the environment.",
+          "ref": "Slide 12 · AFR classification"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "What can a servo-controlled robot do that a non-servo robot cannot?",
+          "options": [
+            "Run each axis at full speed between two mechanical end stops",
+            "Repeat a sequence fixed by cams without any physical changes",
+            "Measure its position continuously and correct the error",
+            "Run on pneumatic power instead of an electric power supply"
+          ],
+          "answer": 2,
+          "why": "A non-servo robot sends motion commands without checking them, usually driving each axis until it reaches an end stop. A servo-controlled robot keeps measuring where it is and removes the error, so it can stop at any intermediate position and follow a controlled path.",
+          "ref": "Book p. 28 · Method of control"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "A bench-mounted transfer machine has three straight-line axes, each an air cylinder that runs until it hits a stop the operator sets by hand, and it repeats one motion. How is it classified?",
+          "options": [
+            "RPP, JIRA class 4 (playback), AFR Type C",
+            "PPP, JIRA class 3 (variable sequence), AFR Type C",
+            "RRR, JIRA class 2 (fixed sequence), AFR Type B",
+            "PPP, JIRA class 2 (fixed sequence), AFR Type B"
+          ],
+          "answer": 3,
+          "why": "Three linear axes are three prismatic joints, so PPP. The sequence is set by stops that must be moved by hand, not by easily changed data, so it is JIRA class 2 and AFR Type B (predetermined cycles), with non-servo control.",
+          "ref": "Book p. 29 · Example 1.1"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "First generation robots use only internal sensors. Which reading comes from an internal sensor?",
+          "options": [
+            "The angle of a joint or the current in a motor",
+            "Whether a part is present on the conveyor belt",
+            "The force the gripper applies to the held part",
+            "The distance to a person walking past the robot cell"
+          ],
+          "answer": 0,
+          "why": "Internal sensors measure the robot itself, such as joint positions and motor currents. Part presence, contact force and distance measure the world, so they are external sensors, which arrive with the second generation.",
+          "ref": "Book p. 28 · Robot generations"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "A welding robot uses a seam sensor to shift its path when the seam is slightly out of place, but it cannot learn new tasks. Which generation is it?",
+          "options": [
+            "First: memorizes repetitive movements using internal sensors",
+            "Third: uses AI to recognize, learn and adapt to new situations",
+            "Third: any use of sensor feedback counts as intelligence",
+            "Second: external sensors and feedback for limited decisions"
+          ],
+          "answer": 3,
+          "why": "External sensing with feedback lets a second generation robot make limited decisions and respond to its working environment, such as following a seam. Third generation robots go further and use AI to recognize, learn and adapt to new situations.",
+          "ref": "Slide 14 · Robot generations"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "Why does the course book call a NASA Mars rover a third generation machine 'by necessity'?",
+          "options": [
+            "Signal delays of minutes rule out real-time teleoperation, so it must decide on board",
+            "Every wheeled outdoor robot is placed in the third generation by the JIRA scheme",
+            "Its base is fixed to the lander, so its whole workspace has to be learned on site",
+            "Radio waves fade within a few metres on Mars, so it has to navigate by sound waves alone"
+          ],
+          "answer": 0,
+          "why": "Signals take minutes to travel between Earth and Mars, so the rover cannot be driven in real time and must decide locally, which demands a high degree of onboard autonomy. Radio fading within metres is the problem of underwater robots, not rovers.",
+          "ref": "Book p. 31 · Wheeled robots"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "Flight simulators, SCARA robots and moving platforms are grouped on the slide as which type of robot by function?",
+          "options": [
+            "Flying robots",
+            "Manipulators",
+            "Locomotors (mobile robots)",
+            "Motion generators"
+          ],
+          "answer": 3,
+          "why": "The slide lists flight simulators, SCARA (Selective-Compliance Assembly Robot Arm) and moving platforms as motion generators. Manipulators are robotic arms and hands, and locomotors are legged and wheeled robots.",
+          "ref": "Slide 15 · Types of robots by function"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "The course book says a robot's functional family predicts its main engineering problem. Which pairing does it give?",
+          "options": [
+            "Locomotors: a navigation problem, working out where the robot is",
+            "Manipulators: a navigation problem, working out where the robot is",
+            "Flying robots: a geometry problem, working out where the tool is",
+            "Swimming robots: a geometry problem, working out where the tool is"
+          ],
+          "answer": 0,
+          "why": "The book ties manipulators to geometry (locating the tool), locomotors to navigation (locating the robot itself), and swimming and flying robots to sensing and energy, since their surroundings make measuring hard and staying in place costs energy all the time. It is the same reason localization matters for mobile robots but never for fixed manipulators.",
+          "ref": "Book p. 32 · Functional families"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 1",
+          "text": "Which classification fits a home robot vacuum that maps the room and avoids furniture?",
+          "options": [
+            "Industrial, fixed, hydraulic, a manipulator arm",
+            "Non-industrial, fixed, pneumatic, a SCARA motion generator",
+            "Non-industrial, mobile, electric, a wheeled locomotor",
+            "Industrial, mobile, electric, a legged locomotor"
+          ],
+          "answer": 2,
+          "why": "A robot vacuum is a service (non-industrial) machine that moves itself on wheels and runs on a battery, so it is mobile, electric and a locomotor. Mapping the room and avoiding furniture use external sensors, so it is at least second generation.",
+          "ref": "Slide 13–15 · Robot classification"
+        }
+      ]
+    },
+    {
+      "id": "lecture-2",
+      "tag": "Lecture 2",
+      "name": "Robotics Fundamentals: The Industrial Robotic Arm",
+      "scope": "36 questions",
+      "questions": [
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "In the course's description, what is an industrial robotic arm (manipulator) made of?",
+          "options": [
+            "A fixed base, then rigid links joined in series by actuated joints, then a wrist carrying a tool",
+            "A fixed base, then flexible links that bend between the joints, then a wrist carrying a tool",
+            "A mobile base, then rigid links joined in series by passive joints, then a wrist carrying a tool",
+            "A fixed base, then rigid links joined in series, with both ends of the chain fixed to the base"
+          ],
+          "answer": 0,
+          "why": "The manipulator is a serial chain: a base fixed in place, rigid links connected one after another by driven (actuated) joints, and a wrist at the free end that holds the tool. Links are rigid bodies by definition, and slide 32 adds that only one end of the chain is fixed while the other is free to move.",
+          "ref": "Book p. 42 · The industrial robotic arm"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "A networked robot talks over a LAN or the Internet using protocols such as TCP or UDP. Why is UDP often chosen for real-time control messages?",
+          "options": [
+            "It guarantees that every packet arrives complete and in the right order",
+            "It never stops to resend, and late control data can be worse than none",
+            "It runs only over wired links, which are always faster than wireless ones",
+            "It is the only protocol allowed to carry the robot's emergency stop signal"
+          ],
+          "answer": 1,
+          "why": "TCP delivers everything complete and in order but stalls while it resends; UDP gives no guarantee but never waits. A command that turns up late disturbs the joint instead of correcting it, so real-time traffic often uses UDP while program downloads and logs use TCP. The emergency stop must never rely on the network at all.",
+          "ref": "Book p. 44 · Networked robots"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "A robot is programmed offline, with its target coordinates calculated from a CAD drawing instead of taught. Which specification decides how close the tool lands to those targets?",
+          "options": [
+            "Resolution, since it is the smallest step the controller is able to sense",
+            "Repeatability, since the robot visits the same targets on every cycle",
+            "Accuracy, since each target is a given point and was never taught",
+            "Payload, since a heavier load makes every calculated target harder to hit"
+          ],
+          "answer": 2,
+          "why": "Accuracy is how close the manipulator can come to a given point in its workspace. Repeatability only concerns returning to a previously taught point, so a very repeatable robot can still miss coordinates taken from a drawing.",
+          "ref": "Slide 8 · Accuracy"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "Machining errors and computational errors spoil a robot's accuracy, yet they hardly affect its repeatability. Why?",
+          "options": [
+            "The controller measures and removes them at the end of every cycle",
+            "They appear only when the arm carries more than its rated payload",
+            "They are identical on every return to a taught point, so they cancel",
+            "Repeatability is always tested in joint mode, where they cannot occur"
+          ],
+          "answer": 2,
+          "why": "A taught point is stored as joint values, and going back to it repeats exactly the same model, machining and computational errors, so they do not show. What remains is mainly controller resolution, which is why repeatability is usually far better than accuracy (often by about ten times).",
+          "ref": "Book p. 45 · Repeatability"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "An installed robot misses the target hole by about 1.5 mm, always to the left, while its placements vary by only ±0.04 mm. What is the right diagnosis?",
+          "options": [
+            "Poor repeatability but good accuracy; it needs encoders with more bits",
+            "Poor resolution; the controller cannot sense steps as large as 1.5 mm",
+            "Poor accuracy and poor repeatability; calibration cannot help it at all",
+            "Good repeatability but poor accuracy; the offset can be calibrated out"
+          ],
+          "answer": 3,
+          "why": "A tight cluster away from the target is the dartboard picture of high repeatability and low accuracy. A consistent offset is systematic, so calibrating the robot's model removes it; calibration cannot remove random scatter, but here the scatter is already small.",
+          "ref": "Book p. 46 · Accuracy versus repeatability"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "A prismatic axis has a 600 mm stroke and a 12-bit encoder. What is its resolution?",
+          "options": [
+            "0.293 mm",
+            "0.146 mm",
+            "50 mm",
+            "0.0732 mm"
+          ],
+          "answer": 1,
+          "why": "`Resolution = distance / 2^n = 600 / 2^12 = 600 / 4096 ≈ 0.146 mm`. Using 2^11 gives 0.293 mm, using 2^13 gives 0.0732 mm, and dividing by n = 12 instead of 2^n gives 50 mm.",
+          "ref": "Slide 8 · Resolution"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "A revolute joint has a 270° range of travel and a 13-bit encoder. What linear resolution does this give at a tool point 0.9 m from the joint axis?",
+          "options": [
+            "≈ 29.7 mm",
+            "≈ 0.26 mm",
+            "≈ 0.033 mm",
+            "≈ 0.52 mm"
+          ],
+          "answer": 3,
+          "why": "Angular resolution = 270° / 2^13 = 270 / 8192 ≈ 0.0330° ≈ 5.75 × 10⁻⁴ rad, so `s = rθ = 900 mm × 5.75 × 10⁻⁴ ≈ 0.52 mm`. Leaving the angle in degrees gives 29.7 mm, using 14 bits gives 0.26 mm, and 0.033 is the angle in degrees, not a length at the tool.",
+          "ref": "Book p. 47 · Resolution at the tool"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "A 500 mm prismatic axis must resolve 0.1 mm or finer. What is the smallest encoder that does this?",
+          "options": [
+            "12 bits (4096 states)",
+            "13 bits (8192 states)",
+            "14 bits (16 384 states)",
+            "10 bits (1024 states)"
+          ],
+          "answer": 1,
+          "why": "The axis needs at least 500 / 0.1 = 5000 states. 12 bits gives 500 / 4096 ≈ 0.122 mm, just too coarse, while 13 bits gives 500 / 8192 ≈ 0.061 mm. 14 bits would also work, but it is not the smallest.",
+          "ref": "Slide 8 · Resolution"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "The encoder on an axis is upgraded from 12 bits to 16 bits, with the same travel. How much finer does the resolution become?",
+          "options": [
+            "about 1.33 times finer",
+            "4 times finer",
+            "16 times finer",
+            "256 times finer"
+          ],
+          "answer": 2,
+          "why": "Resolution is distance / 2^n, so the ratio is 2^16 / 2^12 = 2^4 = 16. On a 1000 mm axis, 0.244 mm becomes about 0.015 mm. 4 comes from subtracting the bit counts, 1.33 from dividing them, and 256 would need 8 extra bits.",
+          "ref": "Slide 8 · Resolution"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "In a repeatability test, ten returns to a taught point give dial readings between 2.47 mm and 2.53 mm. Quoted the usual way, the repeatability is ......",
+          "options": [
+            "±0.03 mm",
+            "±2.50 mm",
+            "±0.06 mm",
+            "±0.006 mm"
+          ],
+          "answer": 0,
+          "why": "The spread is 2.53 − 2.47 = 0.06 mm, and repeatability is quoted as plus or minus half the spread: ±0.03 mm. ±0.06 mm uses the whole spread, ±2.50 mm is just the mean reading, and ±0.006 mm wrongly divides the spread by the ten readings.",
+          "ref": "Book p. 56 · Measuring repeatability"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "In the slides' body analogy, the pedestal is the robot's ......",
+          "options": [
+            "brain: it issues instructions and controls the peripheral devices",
+            "hand: it holds the part, or holds the tool that works on the part",
+            "food: it supplies the electric, pneumatic or hydraulic energy",
+            "waist: it supports the manipulator and acts as a counterbalance"
+          ],
+          "answer": 3,
+          "why": "Slide 13 gives the pedestal two jobs: supporting the manipulator and acting as a counterbalance, like a human waist. The brain is the controller, the hand is the end effector and the food is the power source.",
+          "ref": "Slide 13 · Pedestal"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "Which split of work between the processor and the controller matches the slides?",
+          "options": [
+            "Controller: computes the joint motions; processor: drives the actuators",
+            "Processor: runs the teach pendant; controller: stores the task programs",
+            "Processor: computes the joint motions; controller: drives the actuators",
+            "Processor: senses the environment; controller: supplies the joint power"
+          ],
+          "answer": 2,
+          "why": "Slide 10: the processor calculates the motion of the joints, and the controller receives its data from the computer and controls the motion of the actuators. The book frames it as a geometric job (where should each joint be?) versus a dynamic one (what drive current gets it there?).",
+          "ref": "Slide 10 · Processor and controller"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "The end effector is connected to ...... and its job is to ......",
+          "options": [
+            "the pedestal; counterbalance the arm while the part is being worked on",
+            "the last joint; hold the part, or hold the tool that works on the part",
+            "the controller; pass the drive signals from the processor to the joints",
+            "the first joint; turn the whole arm about the vertical axis of the base"
+          ],
+          "answer": 1,
+          "why": "Slide 10 puts the end effector (for example a hand or gripper) on the last joint, where it either holds the part while work is done on it or holds the tool doing the work. Spray guns, welding attachments, vacuum heads, hands and grippers are all end effectors.",
+          "ref": "Slide 10 · End effector"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "A robot rated for a 12 kg payload can be fitted with a 4.2 kg mechanical gripper or a 1.1 kg vacuum head. The product is a 9 kg smooth lid. Which choice stays within the rating?",
+          "options": [
+            "Only the vacuum head: 10.1 kg, against 13.2 kg with the gripper",
+            "Both, since the 9 kg lid on its own is well below the 12 kg rating",
+            "Only the mechanical gripper, since suction cannot safely hold 9 kg",
+            "Neither, since 9 + 4.2 + 1.1 = 14.3 kg is more than 12 kg"
+          ],
+          "answer": 0,
+          "why": "Rated payload always includes the end effector's own mass. Vacuum head: 9 + 1.1 = 10.1 kg ≤ 12 kg. Gripper: 9 + 4.2 = 13.2 kg > 12 kg. Ignoring the tool mass makes both look fine, and adding both tools is wrong because only one is fitted at a time.",
+          "ref": "Book p. 48 · Payload"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "A robot must lift hot, freshly moulded plastic crates with an open lattice structure, without marking them. Which end effector fits?",
+          "options": [
+            "A vacuum head, because suction cups are light, fast and cheap",
+            "A mechanical gripper with wide, heat-tolerant compliant pads",
+            "A magnetic gripper, because it touches only one face of the part",
+            "A needle gripper, because it is the standard tool for soft parts"
+          ],
+          "answer": 1,
+          "why": "A vacuum head needs a continuous sealing surface, which a lattice does not have, and suction would mark the hot surface. A magnetic gripper only works on ferrous parts, and needle grippers are for fabric. A mechanical gripper closing on the outer ribs, with wide compliant pads, does the job.",
+          "ref": "Book p. 50 · Choosing an end effector"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "The two joints of a planar two-link arm are geared together so that the second angle is always double the first. How many degrees of freedom does the arm have?",
+          "options": [
+            "One: only the first angle can be set freely",
+            "Three: two joints plus one for the gear train",
+            "Two: there is one for each joint of the arm",
+            "Zero: the gearing locks the arm in one position"
+          ],
+          "answer": 0,
+          "why": "DOF counts independent position variables, not joints or motors. Once the first angle is chosen the gearing fixes the second, so the arm has 1 DOF even though it has two joints.",
+          "ref": "Book p. 61 · Counting degrees of freedom"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "A robot must place its tool at any position and in any orientation. How many DOF does it need at least, and how are they usually shared out?",
+          "options": [
+            "6: the first three axes orient the tool, and the last three position the wrist",
+            "6: the first three axes position the wrist, the last three orient the tool",
+            "3: once the position is set, the orientation follows from the arm's shape",
+            "4: three translations plus a single rotation about the vertical axis"
+          ],
+          "answer": 1,
+          "why": "A free body in space has 6 DOF, three translations along x, y, z and three rotations about them, so full position and orientation needs at least 6 axes. Normally the arm's first three axes set the position and the wrist's last three set the orientation. 4 DOF is the SCARA case, where orientation is restricted.",
+          "ref": "Book p. 61 · Why six axes"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "A machine must set parts down on a flat circuit board, turned to any angle about the vertical axis. What is the minimum DOF, and which configuration matches it?",
+          "options": [
+            "6 DOF: an articulated arm with a full three-axis wrist on it",
+            "3 DOF: a Cartesian robot with no rotation at the wrist at all",
+            "5 DOF: a spherical (polar) robot with a two-axis wrist added",
+            "4 DOF: a SCARA with a tool rotation about the vertical"
+          ],
+          "answer": 3,
+          "why": "The task needs motion along x, y and z plus one turn about the vertical: 4 DOF, which is exactly a SCARA with its tool roll. Fitting 6 axes where 4 are enough costs speed, stiffness and money; 3 DOF cannot turn the part at all.",
+          "ref": "Book p. 62 · Fewer axes"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "A seven-axis arm is used for a task that needs six DOF. How many redundant DOF does it have, and what follows?",
+          "options": [
+            "One; infinitely many joint configurations give the same tool pose",
+            "Seven; every axis beyond the base duplicates another and can be removed",
+            "One; the tool pose now has exactly one joint solution, found more easily",
+            "None; an extra axis only enlarges the workspace and changes nothing else"
+          ],
+          "answer": 0,
+          "why": "7 − 6 = 1 redundant DOF. The joint values are no longer fixed by the tool pose, so there are infinitely many solutions; the software must pick one, and that freedom can be used to avoid obstacles or joint limits.",
+          "ref": "Book p. 62 · Redundancy"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "With a screwdriver in your hand: turning it to drive a screw in, raising and lowering its tip, and moving the tip from side to side are, in that order, ......",
+          "options": [
+            "yaw, pitch, roll",
+            "pitch, roll, yaw",
+            "roll, pitch, yaw",
+            "roll, yaw, pitch"
+          ],
+          "answer": 2,
+          "why": "Roll is rotation of the wrist about the arm axis (the twist), pitch is the up–down rotation and yaw is the left–right rotation. A six-axis arm normally gets all three from its last three joints.",
+          "ref": "Slide 23 · Roll, pitch and yaw"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "Which description of the two basic robot joints is correct?",
+          "options": [
+            "R: linear, usually a hydraulic cylinder; P: rotation about one axis, often a stepper",
+            "R: rotation about two axes at once; P: translation in any direction of a plane",
+            "R: rotation about one axis, usually electric; P: linear, often a fluid cylinder",
+            "R: rotation plus sliding on one axis; P: translation with a little rotation"
+          ],
+          "answer": 2,
+          "why": "A revolute joint (R) allows only relative rotation about a single axis and is usually driven electrically by a servo or stepper motor. A prismatic joint (P) allows only relative translation along a single axis, with no rotation, and is usually worked by a hydraulic or pneumatic cylinder.",
+          "ref": "Slide 26–28 · Revolute and prismatic joints"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "Why do prismatic axes typically give higher resolution at the tool than revolute axes?",
+          "options": [
+            "Prismatic axes are always fitted with encoders that have many more bits",
+            "A revolute joint's angle error shrinks as the arm reaches further out",
+            "Prismatic joints run on electric motors, which are finer than hydraulics",
+            "A revolute joint's angle error is scaled by the reach; a slide's is not"
+          ],
+          "answer": 3,
+          "why": "A slide reads its displacement directly, so one encoder count is the same distance anywhere on its stroke. A revolute joint reads an angle, and at the tool that angular step becomes an arc `s = rθ`, which grows as the arm reaches further out. Neither the type of drive nor the encoder's bit count is the reason.",
+          "ref": "Book p. 65 · Linear vs rotational motion"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "Rotating the shoulder of an articulated arm changes the tool's x, y and z all at once. What is this effect called?",
+          "options": [
+            "Selective compliance",
+            "Dynamic coupling",
+            "Backlash in the gears",
+            "Kinematic coupling"
+          ],
+          "answer": 3,
+          "why": "Kinematic coupling means one joint's motion changes more than one tool coordinate; on a Cartesian robot, moving x changes only x. Dynamic coupling is different: the inertia and reaction forces one joint feels depend on where the other joints are. Revolute axes bring both, so errors accumulate and control gets harder.",
+          "ref": "Book p. 65 · Kinematic and dynamic coupling"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "What does a universal joint do?",
+          "options": [
+            "Lets a rigid rod bend in any direction, with two normally passive rotations",
+            "Locks two shafts at a fixed angle, so it adds no freedom at all",
+            "Lets a rod slide along its own axis, giving one actuated translation",
+            "Gives three actuated rotations, so it acts as a complete roll–pitch–yaw wrist"
+          ],
+          "answer": 0,
+          "why": "Slide 31: a universal joint is a joint in a rigid rod that lets the rod bend in any direction. The book adds that it passes rotation between shafts that are not in line, and that its two rotational DOF are usually passive, as in the legs of a Stewart platform.",
+          "ref": "Slide 31 · Universal joint"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "In a six-joint serial manipulator, which links does joint 4 connect, and which link carries the end effector?",
+          "options": [
+            "Links 3 and 4; the end effector is on link 6",
+            "Links 3 and 4; the end effector is on joint 7",
+            "Links 4 and 5; the end effector is on link 6",
+            "Links 4 and 5; the end effector is on link 7"
+          ],
+          "answer": 0,
+          "why": "Joint i connects links i − 1 and i, with the base numbered link 0, so joint 4 joins links 3 and 4 and the sixth joint ends at link 6, which carries the end effector. There is no joint at the end effector, so there is no joint 7; counting the base, the arm has 7 links.",
+          "ref": "Book p. 66 · Numbering links and joints"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "When a robot is jogged in the world reference frame, ......",
+          "options": [
+            "the robot simply replays its taught points without using any coordinates",
+            "one selected joint moves at a time, so no kinematic model is needed at all",
+            "the tool moves along x′, y′, z′ axes that are attached to and travel with the hand",
+            "several joints move together so the tool travels along a fixed x, y or z axis"
+          ],
+          "answer": 3,
+          "why": "The world frame is a universal x–y–z frame, and the joints move simultaneously to produce motion along those major axes. One joint at a time is the joint frame, and axes x′, y′, z′ fixed to the hand belong to the tool frame.",
+          "ref": "Slide 34 · World reference frame"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "After a collision, a robot's position data may be wrong. In which frame should the engineer jog it free, and why?",
+          "options": [
+            "World frame: the joints move together along fixed x, y and z axes",
+            "World frame: its origin is fixed at the base, so it cannot be wrong",
+            "Tool frame: its x′, y′, z′ axes travel along with the robot's hand",
+            "Joint frame: moving one joint at a time needs no kinematic model"
+          ],
+          "answer": 3,
+          "why": "In the joint frame each joint is driven on its own, so the controller does not need the arm's model. That makes it the safe mode for collision recovery, homing and first jogging of an unfamiliar robot; world and tool jogging both depend on a model that may now be wrong.",
+          "ref": "Book p. 77 · Joint reference frame"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "A peg must be pushed 20 mm into a hole bored at an awkward angle, straight along the gripper's own axis. Which frame turns this into one simple command?",
+          "options": [
+            "World frame, whose x, y, z axes are fixed to the robot cell",
+            "Joint frame, in which only one joint moves at any one time",
+            "Tool frame, whose x′, y′, z′ axes are attached to the hand",
+            "World frame, because there all of the joints move at once"
+          ],
+          "answer": 2,
+          "why": "In the tool frame, motion is given relative to axes x′, y′, z′ attached to the hand, and all joints move together to follow them, so the insertion is just 'advance 20 mm along tool z'. In the world frame the same move is an awkward mix of x, y and z.",
+          "ref": "Book p. 78 · Tool reference frame"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "How can a robot's workspace be found empirically?",
+          "options": [
+            "Multiply the robot's maximum reach by the number of joints it is fitted with",
+            "Compute it from the link lengths and joint travel limits before the robot is built",
+            "Sweep every joint through its range, combine the space reached, subtract the rest",
+            "Teach one point and measure the spread of the repeated returns to it"
+          ],
+          "answer": 2,
+          "why": "Slide 39: the workspace is the collection of points the robot can reach, set by its configuration and the size of its links and wrist joints. Empirically, each joint is moved through its range, all reachable space is combined and the unreachable space subtracted. Working it out from link lengths and limits is the analytical route instead.",
+          "ref": "Slide 39 · Workspace"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "A gantry robot has strokes of 3.0 m in x, 2.0 m in y and 0.8 m in z. What shape and volume is its work envelope?",
+          "options": [
+            "A rectangular box, 5.8 m³",
+            "A rectangular box, 4.8 m³",
+            "A portion of a spherical shell, 4.8 m³",
+            "A hollow cylindrical shell, 4.8 m³"
+          ],
+          "answer": 1,
+          "why": "Three prismatic axes give a rectangular box whose volume is the product of the strokes: 3.0 × 2.0 × 0.8 = 4.8 m³. 5.8 comes from adding the strokes, and the cylindrical and spherical shells belong to RPP and RRP robots. A gantry is a super-sized Cartesian robot built to minimize deflection along each axis.",
+          "ref": "Book p. 80–81 · Cartesian and gantry workspace"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "Counting only the three joints that position the wrist, how many prismatic joints do a Cartesian, a cylindrical and a spherical robot have altogether?",
+          "options": [
+            "Five: PPP, RRP and RRP",
+            "Seven: PPP, RPP and RPP",
+            "Six: PPP, RPP and RRP",
+            "Four: PPP, RRP and RRR"
+          ],
+          "answer": 2,
+          "why": "Cartesian is PPP (3 prismatic), cylindrical RPP (2) and spherical RRP (1), so 3 + 2 + 1 = 6. Mixing up the cylindrical and spherical sequences gives 5 or 7, and RRR is the articulated arm, not the spherical one.",
+          "ref": "Slide 40–44 · Robot configurations"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "Blanks must be loaded horizontally into a press through a narrow 250 mm opening in its front guarding, travelling straight in and straight out. Which configuration suits this best?",
+          "options": [
+            "Cylindrical: its radial axis slides in and out along a single line",
+            "SCARA: its vertical prismatic joint pushes the blank in from above",
+            "Parallel: its legs share the load, so it reaches deep into the press",
+            "Articulated: it can fold its elbow inside the press to reach the die"
+          ],
+          "answer": 0,
+          "why": "The cylindrical robot's radial axis is a slide, so the arm enters and leaves the opening along one straight line without bending an elbow inside the press; this is why it reaches into tight areas without losing speed or repeatability. An articulated arm could manage but needs room to swing its elbow, a SCARA's only prismatic axis is vertical, and a parallel robot's workspace is small.",
+          "ref": "Book p. 86 · Choosing a configuration"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "A cylindrical robot can turn its base through 300°, has 800 mm of vertical travel, and its radial axis places the tool between 400 mm and 1200 mm from the column. What is the volume of its work envelope?",
+          "options": [
+            "≈ 3.22 m³",
+            "≈ 2.68 m³",
+            "≈ 3.02 m³",
+            "≈ 10.72 m³"
+          ],
+          "answer": 1,
+          "why": "The envelope is a hollow cylinder cut to 300° of a full turn: `V = (300/360) × π × (1.2² − 0.4²) × 0.8 ≈ 2.68 m³`. A full 360° gives 3.22 m³, ignoring the dead cylinder around the column gives 3.02 m³, and using the diameters 2.4 m and 0.8 m as radii gives 10.72 m³.",
+          "ref": "Book p. 81 · Cylindrical workspace"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "The SCARA and the spherical robot are both written RRP. What sets the SCARA apart?",
+          "options": [
+            "Its two R axes are perpendicular to each other, giving a spherical workspace",
+            "An elevation joint tilts its whole arm, and the P joint extends it lengthwise",
+            "Its first joint is the prismatic one, so its true sequence is PRR, not RRP",
+            "Its two R axes are parallel, for horizontal motion; the P joint is vertical"
+          ],
+          "answer": 3,
+          "why": "Slide 47: a SCARA has two parallel revolute joints that move it in a horizontal plane, plus a prismatic joint that moves vertically. A spherical robot rotates its base, elevates the arm with a second revolute joint and extends it with the prismatic joint, sweeping part of a spherical shell.",
+          "ref": "Slide 47 · SCARA"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "What does 'selective compliance' mean for a SCARA, and why does it help assembly?",
+          "options": [
+            "Stiff vertically for the insertion force, yielding sideways to absorb misalignment",
+            "Stiff sideways to hold the part in place, yielding vertically so the peg is never forced in",
+            "The controller lowers its gains during insertion, so the whole arm becomes equally soft",
+            "Its wrist tilts slightly in any direction, so a peg can be wiggled into an inclined hole"
+          ],
+          "answer": 0,
+          "why": "Both revolute axes are vertical, so the arm resists vertical loads firmly but gives a little in the horizontal plane. It can therefore push a peg down hard, while a slight sideways offset between peg and hole is taken up by the arm's give rather than causing a jam. A SCARA cannot tilt its tool at all.",
+          "ref": "Book p. 83 · Selective compliance"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 2",
+          "text": "Why is a parallel robot (a platform on several legs) used for flight simulators that carry a full cockpit?",
+          "options": [
+            "Its workspace is far larger than that of a serial robot of the same size",
+            "Its legs share the load axially, and its actuators sit on the fixed base",
+            "It is one serial chain, so each joint carries everything that lies beyond it",
+            "Its forward kinematics is simple, so the pose follows easily from leg lengths"
+          ],
+          "answer": 1,
+          "why": "Slide 48: a parallel robot joins a fixed base to a platform through several legs and is used for flight simulators and amusement rides. The legs carry the load in tension or compression and the actuators sit on the ground, giving high stiffness and payload with little moving mass. The price is a small workspace and harder forward kinematics.",
+          "ref": "Book p. 84 · Parallel robots"
+        }
+      ]
+    },
+    {
+      "id": "lecture-3",
+      "tag": "Lecture 3",
+      "name": "Sensors for Robotic Systems I: Switches, Proximity and Light",
+      "scope": "36 questions",
+      "questions": [
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "In the course's definition, a sensor is an input device that ......",
+          "options": [
+            "gives a usable output in response to a specified physical input",
+            "turns an electrical command from the controller into motion or force",
+            "stores and filters the robot's readings before they reach the controller",
+            "converts any physical quantity straight into a number with no conditioning"
+          ],
+          "answer": 0,
+          "why": "Slide 3 defines a sensor as an input device that provides a usable output when a specified physical input acts on it; a thermocouple turning a temperature difference into an electrical output is the example. Turning commands into motion is the job of an actuator.",
+          "ref": "Slide 3 · Definition of a sensor"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "A break-beam sensor across a chute reports 'blocked'. What does the general question of sensing ('given the sensory reading, what was the world like?') warn you about?",
+          "options": [
+            "The reading proves a part is in the chute, because a one-bit sensor output can never be ambiguous",
+            "Several different worlds, such as a part, a jam, a dead emitter or a dusty lens, give the same reading",
+            "Only a camera can show what is really in the chute, so simple sensors should not be trusted for presence",
+            "A break-beam reading means nothing until it has been put through filtering and frequency analysis"
+          ],
+          "answer": 1,
+          "why": "Sensing is inference: the robot has to reason back from the reading to the world, and the answer is never unique. A part, two jammed parts, a failed emitter or a dirty lens all read 'blocked', so practical robots cross-check sensors rather than trusting a single reading.",
+          "ref": "Book p. 95 · The general question"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "Slide 4 lists infrared sensors under two different quantities. Which two?",
+          "options": [
+            "Distance and temperature",
+            "Light level and distance",
+            "Temperature and inclination",
+            "Light level and temperature"
+          ],
+          "answer": 0,
+          "why": "Slide 4 gives 'Distance: ultrasound, radar, infra red' and 'Temperature: thermal, infra red'. Light level is sensed by photocells and cameras, and inclination by inclinometers and gyroscopes.",
+          "ref": "Slide 4 · Types of sensors"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "Four sensors are listed by level of processing. Which order runs from least to most processing before the output means anything?",
+          "options": [
+            "Switch, microphone, digital scale, camera",
+            "Digital scale, switch, camera, microphone",
+            "Switch, digital scale, camera, microphone",
+            "Switch, digital scale, microphone, camera"
+          ],
+          "answer": 3,
+          "why": "A switch gives one bit that needs no interpretation; a digital scale gives a number that needs only scaling and calibration; a microphone gives a waveform whose meaning lies in patterns over time, so it needs filtering; a camera gives large arrays of pixel values and needs the most processing of all.",
+          "ref": "Book p. 96 · Levels of processing"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "A thermocouple gives about 40 μV per °C of temperature difference. What does it output for a 50 °C difference, and what follows?",
+          "options": [
+            "About 2 V, which is large enough to drive a 5 V digital input with no extra circuit",
+            "About 0.8 μV, so a thermocouple cannot sense a difference as small as 50 °C",
+            "About 20 mV, which a 24 V PLC input will read directly as a logic 1 level",
+            "About 2 mV, far too small for a digital input, so it must be conditioned first"
+          ],
+          "answer": 3,
+          "why": "`40 μV/°C × 50 °C = 2000 μV = 2 mV`. A digital input cannot read so small a voltage, so amplification and other signal conditioning sit between the sensor and the controller. 2 V and 20 mV come from slipping the unit conversion; 0.8 μV comes from dividing instead of multiplying.",
+          "ref": "Book p. 95 · Signal conditioning"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "A mechanical switch on a machining table feeds a PLC input, as on slide 8. When no workpiece is on the table, what does the PLC see?",
+          "options": [
+            "Switch open, 24 V DC at the input, logic 1",
+            "Switch closed, 24 V DC at the input, logic 1",
+            "Switch open, 0 V at the input, logic 0",
+            "Switch closed, 0 V at the input, logic 0"
+          ],
+          "answer": 2,
+          "why": "Absence of the workpiece is shown by the switch being open and presence by it being closed. With the supply wired through the switch to the PLC input, open gives 0 V (logic 0) and closed gives 24 V DC (logic 1).",
+          "ref": "Slide 8 · Mechanical switches"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "The limit switch on slide 10 has fixed contacts marked NO and NC. A workpiece presses the plunger when it is present. Which contacts give 'closed = present', as on slide 8?",
+          "options": [
+            "The NC contacts, which close only while the plunger is pressed",
+            "The NC contacts, since the return spring holds them shut while a part is present",
+            "The NO and NC contacts wired in series, so that both must close together",
+            "The NO contacts, which close only while the plunger is pressed"
+          ],
+          "answer": 3,
+          "why": "NO means normally open: open at rest and closed while the plunger is pushed in, so the circuit closes only when a part is there. The NC (normally closed) pair does the reverse and would signal 'present' on an empty table. NO and NC in series never conduct, because one pair is always open.",
+          "ref": "Slide 10 · Limit switch contacts"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "Parts slide sideways across a limit switch on a conveyor, rather than pushing straight into it, and the trip point must be well defined. Which actuator head suits this best?",
+          "options": [
+            "Push plunger, the simplest head with the shortest travel",
+            "Spring flexible rod, which accepts contact from any direction",
+            "Roller lever plunger, so the part rolls over the head",
+            "Fork type, which latches until a part passes the other way"
+          ],
+          "answer": 2,
+          "why": "A roller lever accepts motion arriving at an angle and lets the part pass without scuffing, while still giving a definite trip point. A push plunger struck from the side is soon bent off; a flexible rod tolerates any direction but only detects presence to within several millimetres; a fork head is meant for reciprocating motion.",
+          "ref": "Book p. 100 · Actuator heads"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "Which two advantages of limit switches are given in the lecture?",
+          "options": [
+            "Long electrical life, and no movable elements of any kind inside the switch",
+            "Cheaper than proximity or photoelectric switches, and a wide range of sizes",
+            "No contact with the target, and a sensing range of up to about 15 metres",
+            "Operation on AC or DC, and durability against vibration and toxic surroundings"
+          ],
+          "answer": 1,
+          "why": "Slide 12 says limit switches cost less than proximity or photoelectric switches and come in many sizes. Long life, no moving parts, AC/DC operation and vibration tolerance are the advantages of proximity switches (slide 26), and a 15 m range belongs to photoelectric switches.",
+          "ref": "Slide 12 · Advantages of limit switches"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "Which statement about the three basic types of proximity switch is correct?",
+          "options": [
+            "Magnetic types sense variation of magnetic flow; inductive and capacitive types dominate industry",
+            "Magnetic types sense variation of capacitance; inductive and magnetic types dominate industry",
+            "Inductive types sense variation of capacitance; capacitive and magnetic types dominate industry",
+            "Capacitive types sense variation of inductance; magnetic and inductive types are the most widely used"
+          ],
+          "answer": 0,
+          "why": "Inductive switches work on the variation of magnetic inductance, capacitive ones on the variation of capacitance and magnetic ones on the variation of magnetic flow. Of the three, the inductive and capacitive switches are the most widely used in industrial applications.",
+          "ref": "Slide 14 · Proximity switches"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "When a metal target enters the field of an inductive proximity switch, what does the switch actually detect?",
+          "options": [
+            "The target becomes the dielectric of an RC oscillator and raises its capacitance",
+            "Light from the sensing face is reflected by the target back onto a photodiode",
+            "Eddy currents in the target damp the LC oscillator, and its amplitude falls",
+            "A magnet carried by the target closes a reed switch inside the sensor housing"
+          ],
+          "answer": 2,
+          "why": "Slide 22 shows the coil as part of an LC oscillator whose field induces eddy currents in the metal target, and these oppose the field; book p. 101 adds that they use up energy and damp the oscillation, and a Schmitt trigger and an amplifier turn the fall in amplitude into an on/off output. The RC oscillator and the dielectric belong to the capacitive switch (slide 19).",
+          "ref": "Slide 22 · Inductive proximity switch"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "According to the course book, what happens when the mild-steel target in front of an inductive proximity switch is replaced by an aluminium plate of the same size?",
+          "options": [
+            "It is no longer detected at any distance, because the switch responds only to ferrous metal",
+            "It is detected farther away, because aluminium conducts electricity better than steel does",
+            "It is still detected, but only nearer the face, since the rated distance assumes mild steel",
+            "It is detected at the same distance, because the rated distance holds for any metal target"
+          ],
+          "answer": 2,
+          "why": "Book p. 101 says the eddy-current mechanism works with any conductive metal and most strongly with ferrous metal: the rated sensing distance assumes a standard mild-steel target, so aluminium, brass or copper must come closer before the switch operates (the selection tip on p. 103 calls this a derated distance). Slide 21 and the lecture page describe the inductive switch only as a detector of ferrous metal, which would suggest 'not detected at all'; the book's fuller account is followed here, and aluminium's better conductivity does not lengthen the range.",
+          "ref": "Book p. 101 · Non-ferrous targets",
+          "check": true
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "A capacitive proximity switch detects a plastic block. In this case, what forms the capacitor?",
+          "options": [
+            "The sensor and the plastic are the plates, with air as the dielectric",
+            "The sensor and earth are the plates, and the plastic is the dielectric",
+            "The coil and the plastic, which changes the coil's inductance as it nears",
+            "The plastic and the earth are the plates, and the sensor is the dielectric"
+          ],
+          "answer": 1,
+          "why": "For a metal object, the object itself is the second plate. A non-metal cannot act as a plate, so the plates are the sensor and earth and the object is the dielectric between them; as it enters the field the capacitance changes and trips the electronic switch.",
+          "ref": "Slide 18 · Capacitive proximity switch"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "Using `C = εA/d`, a metal target moves towards a capacitive sensor from 12 mm to 4 mm away. What happens to the capacitance between sensor and target?",
+          "options": [
+            "It falls to one third of its value",
+            "It rises to 9 times its value",
+            "It stays the same, since only the dielectric matters",
+            "It rises to 3 times its value"
+          ],
+          "answer": 3,
+          "why": "C is inversely proportional to the gap d, so `12 / 4 = 3` and C triples: the smaller the separation, the higher the capacitance. 9 times would need C to vary as 1/d², and one third comes from reading the formula upside down.",
+          "ref": "Slide 17 · Capacitive proximity switch"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "In the lab, an inductive switch approached head-on by a steel target switches on at 7.6 mm. On withdrawal it switches off at 8.4 mm. What is its hysteresis?",
+          "options": [
+            "0.8 mm",
+            "8.0 mm",
+            "16.0 mm",
+            "0.4 mm"
+          ],
+          "answer": 0,
+          "why": "Hysteresis is the difference between the operating and releasing distances: `8.4 − 7.6 = 0.8 mm`. 8.0 mm is their average, 16.0 mm their sum and 0.4 mm half the difference. The book notes that the hysteresis band matters most when the target crosses the face rather than approaching head-on.",
+          "ref": "Book p. 115 · Hysteresis"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "A two-wire proximity switch on a 24 V DC supply leaks 1.5 mA when it is off. It drives a 10 kΩ controller input that reads ON above 11 V. What happens when the switch is off?",
+          "options": [
+            "The input sees 1.5 V and reads off, so the wiring is correct as it is",
+            "The input sees 15 V and is held on; a three-wire switch cures it",
+            "The input sees 6.7 V and reads off, comfortably below the 11 V threshold",
+            "The input sees 0.15 V and reads off, so the leakage can be ignored"
+          ],
+          "answer": 1,
+          "why": "Ohm's law: `V = IR = 1.5 mA × 10 kΩ = 15 V` across the input (the other 9 V of the supply sits across the switch), above the 11 V threshold, so the input never turns off. A two-wire switch must leak to keep its own electronics alive; a three-wire switch has its own supply, so nothing leaks through the load. 1.5 V and 0.15 V come from unit slips, 6.7 V from dividing 10 by 1.5.",
+          "ref": "Book p. 103–104 · Two-wire connection"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "Task A: detect steel bolts 5 mm from the sensor in an oily, vibrating machine. Task B: detect plastic caps 40 mm away. Which choice fits both tasks?",
+          "options": [
+            "A: capacitive proximity switch; B: inductive proximity switch",
+            "A: inductive proximity switch; B: capacitive proximity switch",
+            "A: inductive proximity switch; B: magnetic (reed) proximity switch",
+            "A: lever-actuated limit switch; B: inductive proximity switch"
+          ],
+          "answer": 1,
+          "why": "Steel at 5 mm is inside the inductive range of about 2–15 mm, and a sealed solid-state switch tolerates oil and vibration. Plastic is not metal, so only the capacitive switch sees it, and 40 mm is within its 4–60 mm range. An inductive switch cannot see plastic, and a magnetic one responds only to a magnet.",
+          "ref": "Slide 18–21 · Choosing a proximity switch"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "A pneumatic gripper must report whether its piston is extended, with no hole drilled in the aluminium cylinder barrel. Which sensor is the standard choice?",
+          "options": [
+            "A magnetic switch clipped outside the barrel, sensing a magnet on the piston",
+            "An inductive switch screwed in through the barrel wall to face the steel piston",
+            "A capacitive switch on the barrel, sensing the compressed air inside it",
+            "A through-beam photoelectric pair aimed straight across the closed barrel"
+          ],
+          "answer": 0,
+          "why": "A magnetic proximity switch (a reed switch or Hall-effect device) reacts to nothing but the piston's magnet, so the metal around it does not disturb it, and its field passes through a non-magnetic wall such as aluminium. The inductive option breaks the no-hole rule, compressed air is not a useful target, and light cannot cross an opaque barrel.",
+          "ref": "Book p. 103 · Magnetic proximity switch"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "The teeth of a steel gear pass an inductive proximity switch at 3000 per minute. How long is it between teeth, and can the switch keep up?",
+          "options": [
+            "50 ms; yes, although only because steel is the target it is rated for",
+            "20 ms; no, its contacts would bounce for longer than the gap between teeth",
+            "20 ms; yes, with no moving parts it can switch hundreds of times a second",
+            "0.33 ms; no, that rate is far beyond the response of any proximity switch"
+          ],
+          "answer": 2,
+          "why": "`3000 / 60 = 50` teeth per second, so the gap is `1 / 50 s = 20 ms`. A proximity switch has no contacts and no mass to move, so hundreds or even thousands of switchings per second are possible (slide 26: effective response to fast objects and high-frequency excitation). 50 ms confuses the rate with the period; 0.33 ms treats 3000 as a per-second rate.",
+          "ref": "Book p. 104 · Advantages of proximity switches"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "Why does the corner-cube reflector of a retro-reflective switch need no precise alignment, while a plain mirror does?",
+          "options": [
+            "It scatters the light in all directions, so some of it always reaches the receiver",
+            "It amplifies the beam, so even a weak and badly aimed return still trips it",
+            "It is a polarizing filter that passes back only the emitter's own light",
+            "Each prism returns light along the direction it came from, whatever the angle"
+          ],
+          "answer": 3,
+          "why": "Corner-cube prisms send the beam back almost parallel to the incoming beam (slide 33) at any angle of incidence, so the reflector can be fixed roughly; a plain mirror reflects at an equal and opposite angle and must be aimed. Scattering in all directions describes a diffuse target, and polarizing filters are the cure for shiny targets.",
+          "ref": "Book p. 106 · Retro-reflective switches"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "In a diffuse-reflective photoelectric switch with no object in front of it, what happens to the emitted beam?",
+          "options": [
+            "It returns from a reflector, and an object is detected when it breaks this returning beam",
+            "It travels to a separate receiver in a second housing facing the emitter",
+            "It is not returned; only an object's surface scatters some back to the receiver",
+            "It returns from the background, and an object is detected by its shadow"
+          ],
+          "answer": 2,
+          "why": "In the diffuse ('direct reflection') type the emitter and receiver share one housing and nothing sends the beam back. An object in the beam scatters light in many directions, and part of it reaches the receiver. A reflector belongs to the retro-reflective type, and a separate facing receiver to the through-beam type.",
+          "ref": "Slide 35 · Diffuse-reflective switches"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "Which photoelectric arrangement has the shortest typical sensing distance, and why?",
+          "options": [
+            "Diffuse, because only a small part of the light the target scatters gets back",
+            "Through-beam, because its beam has to cross the whole gap between two housings",
+            "Retro-reflective, because its beam must travel out to the reflector and back",
+            "Through-beam, because both of its units must be aligned perfectly to work at all"
+          ],
+          "answer": 0,
+          "why": "Through-beam has the longest range, because its light goes once, directly, from emitter to receiver. Retro-reflective is medium to long, since the prism reflector returns most of the beam. Diffuse is the shortest, because it relies on the small fraction of light the target's own surface scatters back, which also varies with colour and finish.",
+          "ref": "Book p. 106 · Photoelectric types compared"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "Photoelectric detection distances reach up to 1500 cm, while capacitive proximity switches reach about 60 mm. How many times farther does the photoelectric limit reach?",
+          "options": [
+            "25 times",
+            "250 times",
+            "1000 times",
+            "3750 times"
+          ],
+          "answer": 1,
+          "why": "`1500 cm = 15 000 mm`, and `15 000 / 60 = 250`. 25 comes from forgetting to turn centimetres into millimetres, 1000 from using the inductive limit of 15 mm, and 3750 from using the capacitive lower limit of 4 mm.",
+          "ref": "Slide 37 · Detection distance"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "A diffuse-reflective switch must energise a counter each time a box passes in front of it. Which mode does that directly, and why?",
+          "options": [
+            "Light-on, because the box reflects light back into the receiver",
+            "Dark-on, because the box blocks the beam to the receiver",
+            "Light-on, because the box breaks the beam to the reflector",
+            "Dark-on, because the receiver sees light only when there is no box there"
+          ],
+          "answer": 0,
+          "why": "Light-on means the output is energised when light reaches the receiver. In a diffuse switch light arrives only when an object reflects it back, so 'box present' is the light state (slide 38). For through-beam and retro-reflective switches the box blocks the beam, so there 'box present' calls for dark-on.",
+          "ref": "Slide 38 · Dark-on and light-on"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "A reflective opto-sensor can use a photodiode or a phototransistor as its detector. Which choice suits each job?",
+          "options": [
+            "Phototransistor for a line follower; photodiode with amplifier for a fast encoder",
+            "Photodiode with amplifier for a line follower; phototransistor for a fast encoder",
+            "Phototransistor for both jobs, since it is faster and more linear than a photodiode",
+            "Photodiode for both, since it gives a far larger output than a phototransistor"
+          ],
+          "answer": 0,
+          "why": "A phototransistor has built-in gain, so its output is large, but it is slower and less linear; that suits a line follower. A photodiode is quick and linear, yet its current is tiny, so a high-speed encoder pairs it with an amplifier.",
+          "ref": "Book p. 108 · Reflective opto-sensors"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "Ambient light is one of the listed limitations of optical sensors. Which defence against it does the book give?",
+          "options": [
+            "Switch from infrared to visible light so the beam stands out from the room",
+            "Turn the receiver's gain to maximum so that the ambient light is swamped",
+            "Replace a through-beam pair with a diffuse switch so less light is collected",
+            "Modulate the emitter at a set frequency and let the receiver respond only to it"
+          ],
+          "answer": 3,
+          "why": "Room lighting, sunlight or a welding arc puts extra light on the receiver. The book's defences are to modulate the emitter at a known frequency and let the receiver respond to that frequency alone, to prefer infrared to visible light, and to screen the receiver from stray light. Turning up the gain would amplify the ambient light as well.",
+          "ref": "Book p. 108 · Limitations of optical sensing"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "A black rubber seal must be detected as it passes about 0.5 m from the sensor in a dusty press shop. Which sensor fits best?",
+          "options": [
+            "A diffuse-reflective photoelectric switch",
+            "A through-beam photoelectric pair",
+            "An inductive proximity switch",
+            "A capacitive proximity switch"
+          ],
+          "answer": 1,
+          "why": "Through-beam is the most reliable arrangement: the seal only needs to block the light, not reflect it, so its black colour does not matter, and the strong received signal leaves margin for dust. A diffuse switch gets little light back from black rubber, and both proximity switches stop working tens of millimetres from the face, far short of 0.5 m.",
+          "ref": "Book p. 105 · Through-beam switches"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "An LDR is the lower resistor of a voltage divider, and the controller reads the voltage across the LDR. The room gets darker. What happens?",
+          "options": [
+            "The LDR's resistance falls, so the reading falls",
+            "The LDR's resistance rises, so the reading rises",
+            "The LDR's resistance rises, so the reading falls",
+            "The LDR's resistance falls, so the reading rises"
+          ],
+          "answer": 1,
+          "why": "Darker light means higher resistance (slide 43). With the LDR as the lower resistor, `Vout = Vin × R_LDR / (R1 + R_LDR)` grows as R_LDR grows, so the reading rises in the dark. Swapping the LDR and the fixed resistor makes the reading rise with light instead.",
+          "ref": "Slide 43 · Light sensors"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "An LDR is in series with a fixed 10 kΩ resistor across 5 V, and the voltage is read across the fixed resistor. The LDR is 2.5 kΩ in bright light and 90 kΩ in the dark. What is the swing between the two readings?",
+          "options": [
+            "4.0 V",
+            "0.5 V",
+            "4.5 V",
+            "3.5 V"
+          ],
+          "answer": 3,
+          "why": "Bright: `5 × 10 / (10 + 2.5) = 4.0 V`. Dark: `5 × 10 / (10 + 90) = 0.5 V`. Swing `= 4.0 − 0.5 = 3.5 V`. 4.5 V is the sum of the two readings, and 4.0 V and 0.5 V are the single readings.",
+          "ref": "Book p. 98 · Photocell in a voltage divider"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "In a divider of a fixed 10 kΩ resistor and an LDR across 5 V, the voltage across the fixed resistor reads 1.0 V. What is the LDR's resistance?",
+          "options": [
+            "40 kΩ",
+            "2.5 kΩ",
+            "50 kΩ",
+            "10 kΩ"
+          ],
+          "answer": 0,
+          "why": "The fixed resistor has 1.0 V across it, so the LDR has `5 − 1 = 4 V`. The same current flows through both, so `R_LDR = 10 kΩ × 4 / 1 = 40 kΩ`. 2.5 kΩ is the answer if the 1.0 V were across the LDR, and 50 kΩ is the total resistance of the circuit, not the LDR alone.",
+          "ref": "Book p. 98 · Photocell in a voltage divider"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "An LDR varies from 1 kΩ in light to 100 kΩ in the dark, in a 5 V divider read across the fixed resistor. Which fixed resistor gives the largest output swing?",
+          "options": [
+            "1 kΩ",
+            "10 kΩ",
+            "100 kΩ",
+            "1 MΩ"
+          ],
+          "answer": 1,
+          "why": "Swings: 1 kΩ gives `2.50 − 0.05 = 2.45 V`; 10 kΩ gives `4.55 − 0.45 = 4.09 V`; 100 kΩ gives `4.95 − 2.50 = 2.45 V`; 1 MΩ gives only about 0.45 V. A fixed resistor of about the same size as the sensor's resistance over the working range gives the most sensitive divider, and 10 kΩ sits in the geometric middle of 1 kΩ and 100 kΩ.",
+          "ref": "Book p. 98 · Choosing the fixed resistor"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "Why does a robot joint measured by a potentiometer need no homing run at switch-on?",
+          "options": [
+            "It counts pulses from a slotted disc, so it never loses track of a count",
+            "Its wiper never wears, so its reading cannot drift between power-ups",
+            "It can turn many times over, so its travel always covers the joint's whole range",
+            "Its output is absolute: the wiper voltage already gives the joint's position"
+          ],
+          "answer": 3,
+          "why": "A potentiometer is an absolute sensor: as soon as power is applied, the wiper voltage states the position, with no counting or homing. It is also the sensor that reports the output shaft position inside a servo motor. Two distractors invert its real weaknesses: the sliding wiper does wear, and its travel is usually under one turn.",
+          "ref": "Book p. 109 · Potentiometers"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "A 270° rotary potentiometer has 5 V across its track, and the wiper reads 2.0 V. What is the shaft angle?",
+          "options": [
+            "144°",
+            "162°",
+            "108°",
+            "54°"
+          ],
+          "answer": 2,
+          "why": "The wiper voltage is proportional to angle: `θ = 270° × 2.0 / 5 = 108°`. 144° assumes a 360° pot, 162° measures from the wrong end of the track (`270 − 108`), and 54° assumes a 10 V supply.",
+          "ref": "Book p. 109 · Potentiometers"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "A 270° pot is read through a 10-bit ADC that returns 0 to 1023. What is the smallest change in angle one count can show?",
+          "options": [
+            "About 1.06°",
+            "About 0.35°",
+            "About 0.26°",
+            "About 0.07°"
+          ],
+          "answer": 2,
+          "why": "`270° / 1023 ≈ 0.26°` per count, which is why the book says a pot's resolution is limited by the analog-to-digital conversion. 0.35° assumes 360° of travel, 1.06° an 8-bit ADC (255 steps) and 0.07° a 12-bit ADC (4095 steps).",
+          "ref": "Book p. 109 · Potentiometers"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "Which set of devices does the GuideCane's sensor head carry?",
+          "options": [
+            "A colour camera, a scanning laser rangefinder and a satellite GPS receiver",
+            "Inductive proximity switches, a gyroscope and a potentiometer on each guide wheel",
+            "Bump switches, a pair of LDRs for light seeking and a small microphone",
+            "Front, upward and sideways sonars, a fluxgate compass and incremental encoders"
+          ],
+          "answer": 3,
+          "why": "Slide 47 shows front-, upward- and sideways-facing sonar (the sideways ones for wall following), a fluxgate compass, incremental encoders for odometry, a steering servo and the computer. The device relies on simple range sensors, with no camera or scene understanding.",
+          "ref": "Slide 47 · GuideCane"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 3",
+          "text": "How does the GuideCane pass its decision on to the blind user?",
+          "options": [
+            "A small speaker in the handle speaks the direction of the next free path",
+            "The handle vibrates on its left or right side to signal which way the user should turn",
+            "A servo steers the guide wheels, and the user feels the cane turn and follows",
+            "It beeps faster as an obstacle gets nearer, like a car's parking sensor"
+          ],
+          "answer": 2,
+          "why": "Slide 47's steps: the sonar sees the obstacle, the servo steers the guide wheels around it, and the user feels the motion of the cane and follows, much as with a guide dog. The book points out that a steering motion needs no interpretation or learning, whereas a beep or a spoken direction would.",
+          "ref": "Slide 47 · GuideCane"
+        }
+      ]
+    },
+    {
+      "id": "lecture-4",
+      "tag": "Lecture 4",
+      "name": "Sensors for Robotic Systems II: Encoders, Range, Velocity and Touch",
+      "scope": "36 questions",
+      "questions": [
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "What distinguishes an incremental encoder from an absolute encoder?",
+          "options": [
+            "It gives the actual angular position directly, as a unique multi-bit code for every position",
+            "It gives an analogue voltage proportional to the angle instead of a digital pulse output",
+            "It measures only linear displacement, while absolute encoders measure only shaft rotation",
+            "It detects changes in displacement from a datum, rather than giving the actual position"
+          ],
+          "answer": 3,
+          "why": "An incremental encoder only registers how far it has moved from a reference (datum) position, whereas an absolute encoder reports the actual position itself. Both kinds come in rotary and linear forms, and both give a digital output, not an analogue voltage.",
+          "ref": "Slide 4 · Incremental and absolute encoders"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "In the basic optical incremental encoder, how is the pulsed output produced?",
+          "options": [
+            "A wiper slides along a resistive track on the disc, so the output voltage rises with the angle",
+            "A magnet on the shaft passes a Hall sensor once per turn, so one pulse is given per revolution",
+            "Concentric tracks on the disc are read by a bank of detectors that output a binary number",
+            "A slotted rotating disc alternately passes and blocks an LED beam aimed at a photodiode"
+          ],
+          "answer": 3,
+          "why": "Light from an LED passes through the slots of the rotating disc to a photodiode or phototransistor. As the disc turns, the beam is alternately transmitted and stopped, so the number of pulses is proportional to the angle turned. Concentric tracks read by a bank of detectors describe the absolute encoder.",
+          "ref": "Slide 8 · Incremental encoder construction"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "An incremental encoder disc has 400 slots and is counted in single mode (one count per slot). What is its angular resolution?",
+          "options": [
+            "0.45°",
+            "0.9°",
+            "0.225°",
+            "1.11°"
+          ],
+          "answer": 1,
+          "why": "Resolution = 360° / 400 = 0.9° per slot, just as the slide's 60-slot disc gives 360° / 60 = 6°. 0.45° and 0.225° would be double and quadruple counting, and 1.11° inverts the ratio (400 / 360).",
+          "ref": "Slide 8 · Resolution from the number of slots"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "Why is a single-channel incremental encoder not used where the direction of motion is needed?",
+          "options": [
+            "Its pulses are 90° out of phase with the slots, so the counter cannot tell which slot made them",
+            "It gives only one pulse per revolution, so it cannot count fractions of a revolution at all",
+            "Its output is an analogue voltage, which carries no sign that could reveal the direction",
+            "Its pulse train looks the same in both directions, so it gives a count but no direction"
+          ],
+          "answer": 3,
+          "why": "A single channel can give only the position: a lone pulse train looks the same whichever way the disc turns. A two-channel encoder gives two pulse trains 90° out of phase, and the phase relationship between them reveals the direction.",
+          "ref": "Slide 9 · Channels and direction"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "In the lecture's coding table, clockwise rotation steps the channels (A, B) through 00 → 01 → 11 → 10. A decoder reads the states 10 → 11 → 01 → 00. What is happening?",
+          "options": [
+            "The disc is turning clockwise, since each step changes one bit",
+            "The disc is passing the index position, where Z goes high",
+            "The disc is turning counter-clockwise",
+            "Two states were skipped, so the decoder has lost a count"
+          ],
+          "answer": 2,
+          "why": "The slide's counter-clockwise coding is 10, 11, 01, 00: the clockwise sequence run backwards. Every valid step changes one bit in either direction, so it is the order of the states (which channel leads) that gives the direction, and no state is skipped here.",
+          "ref": "Slide 12 · Coding for each direction"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "Double counting resolution is obtained by counting ......",
+          "options": [
+            "the index pulse together with the rising edges of channel A",
+            "the rising edges of one channel only",
+            "the rising and falling edges of both channels",
+            "both the rising and falling edges of one channel only"
+          ],
+          "answer": 3,
+          "why": "Single resolution counts the rising edges of one channel (one count per slot), double counts the rising and falling edges of one channel (two per slot), and quadruple counts both edges of both channels (four per slot), the most precise mode.",
+          "ref": "Slide 10 · Single, double and quadruple counting"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "A two-channel encoder with 250 slots is decoded in quadruple mode. What angle does one count represent?",
+          "options": [
+            "1.44°",
+            "0.36°",
+            "0.09°",
+            "0.72°"
+          ],
+          "answer": 1,
+          "why": "Quadruple mode gives 4 × 250 = 1000 counts per revolution, so 360° / 1000 = 0.36°. 1.44° is single counting (360 / 250), 0.72° is double counting, and 0.09° applies the ×4 twice (16 counts per slot).",
+          "ref": "Slide 10 · Quadruple resolution"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "A 1000-slot encoder is decoded in quadruple mode, and its counter has advanced by 1500 counts since homing. Through what angle has the shaft turned?",
+          "options": [
+            "540°",
+            "270°",
+            "33.75°",
+            "135°"
+          ],
+          "answer": 3,
+          "why": "Quadruple mode gives 4 × 1000 = 4000 counts per revolution, i.e. 0.09° per count, so 1500 × 0.09° = 135°. Treating each count as a whole slot gives 540°, and assuming double counting gives 270°.",
+          "ref": "Book p. 122 · Four counts per slot"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "Switching an encoder's decoder from single to quadruple counting has what effect?",
+          "options": [
+            "The resolution and the accuracy both become four times better, as if the slots were placed more precisely",
+            "The resolution becomes four times finer, but the accuracy of the slot positions is unchanged",
+            "The resolution is unchanged, but the direction of rotation can now be found from the extra edges",
+            "The disc must first be replaced by one carrying four times as many slots for it to work"
+          ],
+          "answer": 1,
+          "why": "Counting both edges of both channels gives four counts per slot, so the resolution is multiplied by four with no change to the encoder. It cannot correct errors in where the slots were manufactured, so the accuracy is not improved. Direction comes from having two channels, not from the counting mode.",
+          "ref": "Book p. 122 · Resolution versus accuracy"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "A 500-slot encoder decoded in quadruple mode sits on a motor shaft that drives a joint through a 100:1 gear reduction. What is the angular resolution at the joint?",
+          "options": [
+            "0.0018°",
+            "0.00045°",
+            "0.0072°",
+            "0.18°"
+          ],
+          "answer": 0,
+          "why": "At the disc the resolution is 360° / (4 × 500) = 0.18°. The motor turns 100 times per joint revolution, so the joint sees 0.18° / 100 = 0.0018°. 0.18° ignores the gearbox, 0.0072° forgets the ×4, and 0.00045° applies the ×4 a second time. The catch is that the encoder cannot see any backlash in the gears between it and the joint.",
+          "ref": "Book p. 120–121 · Encoder on the motor shaft"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "What is the zero-index (Z channel) output of an incremental encoder mainly used for?",
+          "options": [
+            "Finding the direction from its phase relative to the A channel",
+            "Homing at start-up, as it gives one pulse per revolution",
+            "Doubling the resolution by giving a third set of edges to count",
+            "Storing the count so that the position survives a loss of power"
+          ],
+          "answer": 1,
+          "why": "The Z channel gives one pulse per rotation (or pulses at precisely known positions on a linear encoder). Because an incremental encoder has no constant reference point, this pulse is used for the homing procedure at start-up. Direction comes from the A/B phase relationship.",
+          "ref": "Slide 11 · Zero index (Z channel)"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "A 500-slot encoder is counted in single mode, and 2500 pulses arrive in 0.5 s. What is the shaft speed?",
+          "options": [
+            "600 rpm",
+            "2400 rpm",
+            "300 rpm",
+            "10 rpm"
+          ],
+          "answer": 0,
+          "why": "2500 / 500 = 5 revolutions in 0.5 s, i.e. 10 rev/s = 600 rpm. 300 rpm forgets to divide by 0.5 s, 2400 rpm wrongly multiplies by four, although single mode gives one count per slot, and 10 is the speed in rev/s, not rpm.",
+          "ref": "Slide 5 · Position, speed and direction"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "In the lecture's table for a 3-track absolute encoder, the reading ON-OFF-OFF means a rotation between 180° and 225°. Which range does the reading ON-ON-OFF indicate?",
+          "options": [
+            "315°–360°",
+            "135°–180°",
+            "225°–270°",
+            "270°–315°"
+          ],
+          "answer": 3,
+          "why": "ON-OFF-OFF is binary 100 = sector 4, so contact 1 is the most significant bit. ON-ON-OFF is 110 = sector 6, and with 360° / 8 = 45° per sector it covers 270°–315°. Reading the bits in reverse (011 = 3) would give 135°–180°.",
+          "ref": "Slide 16–17 · 3-bit absolute encoder"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "An absolute encoder disc has 9 tracks. How many positions can it distinguish, and what is its resolution?",
+          "options": [
+            "256 positions, about 1.41°",
+            "1024 positions, about 0.35°",
+            "512 positions, about 0.70°",
+            "81 positions, about 4.44°"
+          ],
+          "answer": 2,
+          "why": "The number of bits equals the number of tracks, so there are 2⁹ = 512 positions and 360° / 512 ≈ 0.70°. 256 and 1024 are 2⁸ and 2¹⁰ (one bit too few or too many), and 81 squares the track count instead of raising 2 to it.",
+          "ref": "Slide 19 · Tracks and resolution"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "What is the smallest number of tracks an absolute encoder needs for a resolution of 0.1° or finer?",
+          "options": [
+            "12 tracks",
+            "11 tracks",
+            "10 tracks",
+            "9 tracks"
+          ],
+          "answer": 0,
+          "why": "It needs 2ⁿ ≥ 360 / 0.1 = 3600 positions. 2¹¹ = 2048 gives only 0.176°, while 2¹² = 4096 gives 0.088°, so 12 tracks are needed. 10 tracks (1024 positions) give 0.35°, the slide's example.",
+          "ref": "Slide 19 · Tracks needed for a resolution"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "An 11-track absolute encoder is compared with a 600-slot incremental encoder decoded in quadruple mode. Which has the finer resolution?",
+          "options": [
+            "The absolute one: about 0.18° against only 0.6°",
+            "The absolute one: about 0.088° against 0.15°",
+            "The incremental one: 0.15° against about 0.18°",
+            "The absolute one: about 0.18° against only 0.3°"
+          ],
+          "answer": 2,
+          "why": "Absolute: 2¹¹ = 2048 positions, 360° / 2048 ≈ 0.176°. Incremental: 4 × 600 = 2400 counts, 360° / 2400 = 0.15°, so the incremental encoder is slightly finer. Forgetting the ×4 gives 0.6°, double counting gives 0.3°, and using 2¹² gives 0.088°.",
+          "ref": "Book p. 124 · Absolute versus incremental resolution"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "Why do absolute encoder discs generally use Gray code rather than ordinary binary?",
+          "options": [
+            "Only one bit changes between adjacent positions, so a misread at a boundary costs one count at most",
+            "It doubles the number of positions that a given number of tracks can tell apart, giving finer resolution",
+            "Its code word simply increases by one at every step, so the controller needs no decoding",
+            "It needs fewer tracks than binary for the same number of positions, so the disc can be made smaller"
+          ],
+          "answer": 0,
+          "why": "Going from 0111 to 1000 in plain binary flips all four bits, and because the detectors never switch at exactly the same moment, a passing reading such as 1111 (about half a turn away) can appear. Gray code flips a single bit between neighbouring positions, so a misread is off by one count at most. It needs the same number of tracks as binary and gives the same number of positions.",
+          "ref": "Book p. 124 · Why Gray code is used"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "The slide's Gray-code sequence for 0 to 10 is 0000, 0001, 0011, 0010, 0110, 0111, 0101, 0100, 1100, 1101, 1111. What is the 4-bit Gray code for decimal 12?",
+          "options": [
+            "0110",
+            "1100",
+            "1010",
+            "1110"
+          ],
+          "answer": 2,
+          "why": "Gray = binary XOR (binary shifted right by one bit): 1100 XOR 0110 = 1010. Continuing the reflected sequence also gives 11 → 1110 and 12 → 1010. 1100 is plain binary, 0110 is only the shifted value, and 1110 is the code for 11.",
+          "ref": "Slide 18 · Gray code"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "A vertical robot axis holding a load must resume work right after a power failure without first moving to find its position. Which encoder suits it?",
+          "options": [
+            "An incremental encoder with a Z channel, since its index pulse restores the position at once",
+            "A single-channel incremental encoder, since it needs only one input and no direction data",
+            "An absolute encoder, whose code word gives the position as soon as power returns",
+            "A two-channel incremental encoder in quadruple mode, since it has the finest resolution"
+          ],
+          "answer": 2,
+          "why": "An absolute encoder keeps a record of its position through a power outage, so motion can resume without rehoming. An incremental encoder loses its count, and even with a Z channel it must move until the index pulse is found, which is risky for a loaded axis that stopped part-way through a cycle.",
+          "ref": "Slide 20 · Absolute encoder after power loss"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "How does a sonar sensor measure the distance to an obstacle?",
+          "options": [
+            "It emits a pulsed 40 kHz infrared beam and measures the angle of the reflected spot",
+            "It emits a short burst at 50–250 kHz and measures the time until the echo returns",
+            "It emits a burst of about 1 s at 20–200 Hz and measures how loud the returning echo is",
+            "It emits a laser pulse and compares the phase of the returning light with a reference"
+          ],
+          "answer": 1,
+          "why": "A short acoustic signal (about 1 ms, ultrasonic, 50–250 kHz) is emitted and the time until the echo returns is measured. This time of flight is proportional to twice the distance of the nearest obstacle in the cone. Measurements repeat about 20 times per second, giving the typical clicking sound.",
+          "ref": "Slide 24 · Sonar principle"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "A sonar echo returns 8.75 ms after the pulse is emitted. Taking the speed of sound as 343 m/s, how far away is the obstacle?",
+          "options": [
+            "3.00 m",
+            "0.75 m",
+            "15.01 m",
+            "1.50 m"
+          ],
+          "answer": 3,
+          "why": "The pulse goes out and back, so d = v·t / 2 = 343 × 0.00875 / 2 ≈ 1.50 m. 3.00 m forgets the factor of two, 0.75 m halves twice, and 15.01 m comes from writing 8.75 ms as 0.0875 s.",
+          "ref": "Book p. 126 · Sonar time of flight"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "A sonar repeats its measurement 25 times per second, and each echo must return before the next pulse. What is the maximum range it can measure unambiguously (sound at 343 m/s)?",
+          "options": [
+            "13.72 m",
+            "6.86 m",
+            "8.58 m",
+            "3.43 m"
+          ],
+          "answer": 1,
+          "why": "At 25 Hz there are 40 ms between pulses. Sound covers 343 × 0.04 = 13.72 m in that time, out and back, so the maximum range is 13.72 / 2 = 6.86 m. 13.72 m forgets the round trip, 8.58 m is the result for 20 measurements per second (50 ms), and 3.43 m halves the result again.",
+          "ref": "Book p. 126 · Repetition rate and range"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "On a robot with a ring of 24 sonars, what does interference between the sensors typically cause, and what prevents it?",
+          "options": [
+            "Obstacles appear further away than they really are; coded (pseudo-random) signals prevent it",
+            "Obstacles appear closer than they really are; coded (pseudo-random) signals prevent it",
+            "Obstacles appear further away than they really are; raising the frequency to 250 kHz prevents it",
+            "Obstacles are not detected at all; firing all 24 sensors at the same instant prevents it"
+          ],
+          "answer": 1,
+          "why": "Interference happens when one sensor picks up another sensor's signal and so assumes an obstacle closer than the real one. Coded sonar signals, for example pseudo-random codes, let each sensor accept only its own echo. An obstacle seeming further away is the angled-reflection problem, and firing all sensors at once causes crosstalk.",
+          "ref": "Slide 25 · Interference (crosstalk)"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "A sonar beam meets a smooth wall at an incident angle larger than the critical angle. What is the most likely result?",
+          "options": [
+            "The wall absorbs most of the ultrasound, so the echo returns weak but at the right range",
+            "The echo is scattered evenly in all directions, so the reading is reliable at any angle",
+            "The echo comes straight back, but the wall appears slightly closer than it really is",
+            "The echo is reflected away as if by a mirror, so the wall may not be detected at all"
+          ],
+          "answer": 3,
+          "why": "Smooth surfaces behave like mirrors: beyond a critical angle, which depends on the operating frequency and the reflective material, no detectable echo returns, so a plane or a corner goes unseen (Fig. a, b). In complex surroundings, such mirror reflections can also bounce via other surfaces and produce a false, virtual object (Fig. c).",
+          "ref": "Slide 27 · Smooth surfaces and the critical angle"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "Which method is named as the most accurate way to measure changes in distance (rather than absolute distance) with a laser?",
+          "options": [
+            "Interferometry",
+            "Light-wave phase shift",
+            "Triangulation with a detector array",
+            "Pulse time of flight"
+          ],
+          "answer": 0,
+          "why": "The most common laser rangefinder uses time of flight, and measuring the phase shift against a reference signal is another option; interferometry is the most accurate for changes in distance. It tracks fringes relative to wherever it started, so on its own it cannot give an absolute distance.",
+          "ref": "Slide 29 · Laser ranging methods"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "A laser rangefinder's pulse returns 80 ns after it was sent. Taking c = 3 × 10⁸ m/s, how far away is the target?",
+          "options": [
+            "12 m",
+            "24 m",
+            "6 m",
+            "1.2 m"
+          ],
+          "answer": 0,
+          "why": "d = c·t / 2 = 3 × 10⁸ × 80 × 10⁻⁹ / 2 = 12 m. 24 m forgets that the pulse travels out and back, and 6 m halves twice. In 1 ns light moves only about 30 cm, which is why laser ranging needs such precise timing.",
+          "ref": "Slide 29 · Laser time of flight"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "An autonomous vehicle needs a 3-D point cloud of its surroundings. Which description fits the sensor it would use?",
+          "options": [
+            "A single laser rangefinder, since it measures many objects at the same time",
+            "A ring of 24 sonars of about 15° each, all fired at the same time",
+            "A LiDAR: a laser scanner with an extra rotating degree of freedom",
+            "An infrared triangulation sensor fitted with a longer detector array"
+          ],
+          "answer": 2,
+          "why": "A laser rangefinder measures the distance to one object at a time, so it is a one-dimensional sensor. Using another degree of freedom at the rotating assembly lets a 3-D scanner collect 3-D point cloud data; such scanners are called LiDAR and are often used on autonomous vehicles.",
+          "ref": "Slide 30 · From rangefinder to LiDAR"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "Why do infrared distance sensors not work on the time-of-flight principle like sonar?",
+          "options": [
+            "A photon's flight time is far too short to measure with a simple, cheap circuit",
+            "Infrared light is absorbed by the air, so the reflected beam never reaches the sensor",
+            "The speed of light changes with air temperature far more than that of sound, so the timing would drift",
+            "An infrared LED cannot be pulsed, so there is no start time to measure from"
+          ],
+          "answer": 0,
+          "why": "Light is so fast that its time of flight would be much too short for a simple and cheap sensor arrangement. IR sensors instead use a pulsed infrared LED (about 40 kHz) with a detection array and find the distance from the angle of the reflected beam.",
+          "ref": "Slide 33 · Why IR does not use time of flight"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "An infrared distance sensor with a pulsed LED and a detector array works out the range from ......",
+          "options": [
+            "the angle of the reflected beam, i.e. where its spot lands on the array",
+            "the time between sending the 40 kHz pulse and receiving its reflected echo",
+            "the intensity of the reflected light, which falls off as the distance grows",
+            "the phase shift between the reflected light and a reference signal"
+          ],
+          "answer": 0,
+          "why": "The angle under which the reflected beam is received changes with the distance to the object, so the spot's position on the array measures the range (triangulation across the emitter–detector baseline). The range is worked out from where the spot lands, not from how bright the returned light is.",
+          "ref": "Slide 34 · Triangulation"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "The beam of an infrared distance sensor is invisible to the eye. How can you check that the emitter is actually working?",
+          "options": [
+            "Lower the pulse rate from 40 kHz until the beam can be seen flickering by eye",
+            "Reflect it off a plain mirror, which shifts the infrared light into the visible range",
+            "View it with an IR detector card or an IR-sensitive camera, such as a phone camera",
+            "Raise the LED current until the infrared beam glows as a visible red light"
+          ],
+          "answer": 2,
+          "why": "The wavelength is invisible, but it can be made visible with IR detector cards or by recording the beam with an IR-sensitive camera. Most phone cameras block infrared only partly, so a working emitter shows up on the screen as a glowing spot.",
+          "ref": "Slide 34 · Seeing infrared light"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "A 1000-slot encoder decoded in quadruple mode is sampled every 1 ms, and velocity is found by differencing successive positions. What velocity error does a single-count error cause?",
+          "options": [
+            "0.09°/s",
+            "90°/s",
+            "360°/s",
+            "9°/s"
+          ],
+          "answer": 1,
+          "why": "One count is 360° / 4000 = 0.09°, and dividing by Δt = 0.001 s gives 0.09 / 0.001 = 90°/s (15 rpm). 0.09°/s forgets to divide by Δt, and 360°/s forgets the ×4. This amplification of noise by numerical differentiation is why tachometers are used to measure velocity directly.",
+          "ref": "Book p. 131 · Noise from differentiation"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "What is the main drawback of the DC tachometers commonly used in robotics, compared with AC tachometers?",
+          "options": [
+            "Their output voltage is proportional to the joint angle, so it must still be differentiated",
+            "Their permanent-magnet field weakens as speed rises, so the output becomes non-linear",
+            "Their commutators add a slight ripple to the output voltage that cannot be fully filtered",
+            "They need a separate field supply, which makes them larger than AC tachometers"
+          ],
+          "answer": 2,
+          "why": "A DC tachometer is a DC generator whose field comes from permanent magnets; because the field is constant, the output voltage is proportional to angular velocity. Its commutators cause a slight ripple that cannot be entirely filtered out, which AC tachometers avoid, though the simpler DC type is the one generally used in robotics.",
+          "ref": "Slide 37 · DC and AC tachometers"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "A DC tachometer has a constant of 0.05 V per rad/s, and its output reads 6 V. What is the shaft speed?",
+          "options": [
+            "0.0796 rpm",
+            "120 rpm",
+            "7200 rpm",
+            "1146 rpm"
+          ],
+          "answer": 3,
+          "why": "The output is proportional to angular velocity, so ω = V / K = 6 / 0.05 = 120 rad/s, and 120 × 60 / (2π) ≈ 1146 rpm. 120 rpm leaves the answer in rad/s, 7200 rpm multiplies by 60 without dividing by 2π, and 0.0796 rpm comes from dividing K by V instead of V by K.",
+          "ref": "Slide 37 · Tachometer output"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "Tactile sensors fitted in a robot's fingers improve its manipulation. What information do they provide?",
+          "options": [
+            "The angular position of each finger joint, just as an encoder would give it",
+            "The distribution of contact force between the finger and the object",
+            "The temperature of the object, so that hot parts are never grasped",
+            "The speed at which each finger closes, as a tachometer would give"
+          ],
+          "answer": 1,
+          "why": "In robotic fingers, a tactile array gives the contact force distribution between the finger and the manipulated object. A distribution says more than a single force: whether the object is centred, slipping or held at an angle.",
+          "ref": "Slide 39 · Tactile sensors in fingers"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "Why is an array of tactile sensors sometimes used as an artificial skin over a robot's body?",
+          "options": [
+            "To measure the distance to obstacles several metres away, as a ring of sonars does",
+            "To measure the joint velocities directly, so that no tachometer has to be fitted",
+            "To sense contact with objects or people, making it safer to work beside humans",
+            "To pad the arm against impacts, acting only as a soft protective layer"
+          ],
+          "answer": 2,
+          "why": "To increase safety, for example when working with a human, tactile sensors can form an artificial skin that lets the robot sense contacts with objects in its environment and stop or yield. Tactile sensing is based on an array of touch sensors.",
+          "ref": "Slide 40 · Tactile skin"
+        },
+        {
+          "kind": "mcq",
+          "group": "Lecture 4",
+          "text": "Which pairing of tactile sensing principle and how it works is correct?",
+          "options": [
+            "Capacitive: the force changes the distance between the plates or their area",
+            "Magnetic: strain gauges connected in a Wheatstone bridge measure the surface strain",
+            "Optical: the change in magnetic flux density is measured as the compliant layer moves",
+            "Mechanical: the received light intensity varies with the displacement"
+          ],
+          "answer": 0,
+          "why": "In a capacitive element, the force changes the plate spacing or area and so the capacitance. Strain gauges in a Wheatstone bridge belong to deformation-based sensors (not magnetic ones), flux-density changes to magnetic sensors and light intensity to optical sensors; mechanical sensors are on/off micro-switches.",
+          "ref": "Slide 41–42 · Tactile sensing principles"
+        }
+      ]
+    }
+  ]
+}

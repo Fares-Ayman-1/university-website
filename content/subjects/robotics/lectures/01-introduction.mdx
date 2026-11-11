@@ -33,6 +33,8 @@ bookRefs:
 
 <Ar>ما الروبوت؟</Ar>
 
+<Walkthrough id="rob1-what-is-robot" expect="loop, test, agent, black-box" />
+
 <Definition term="Robot (general)" termAr="الروبوت (تعريف عام)">
   A machine that <strong>senses, thinks and acts</strong>. It must have sensors, processing that emulates some aspects of cognition, and actuators.
 
@@ -47,15 +49,25 @@ This is exactly the **agent** from the AI course: percepts come in through senso
 
 <Ar>لمحة تاريخية موجزة</Ar>
 
+<Walkthrough id="rob1-history" expect="word, programmable, industry, gaps, laws; word=1922; asimov=1950; devol=1954; dh=1955; unimation=1962; t3=1973; abb=1990; laws=3" />
+
 | Year <Ar>السنة</Ar> | Milestone <Ar>المحطة</Ar> |
 |---|---|
-| **1922** | Czech writer Karel Čapek's play *Rossum's Universal Robots* introduces the word **robot**, from *robota* (forced labour, work). <Ar>تقدّم مسرحية الكاتب التشيكي كارل تشابيك (Karel Čapek) *Rossum's Universal Robots* كلمة **روبوت (robot)**، المشتقة من *robota* (السُّخرة، العمل).</Ar> |
+| **1922** | Czech writer Karel Čapek's story *Rossum's Universal Robots* introduces the word **robot**, from the Czech and Slavonic root *rabota* (forced labour, work). <Ar>تقدّم قصة الكاتب التشيكي كارل تشابيك (Karel Čapek) *Rossum's Universal Robots* كلمة **روبوت (robot)**، المشتقة من الجذر التشيكي والسلافي *rabota* (السُّخرة، العمل).</Ar> |
 | **1950** | Isaac Asimov publishes *I, Robot* with his **Three Laws of Robotics**. <Ar>ينشر إسحاق أسيموف (Isaac Asimov) كتاب *I, Robot* متضمنًا **قوانين الروبوتات الثلاثة (Three Laws of Robotics)**.</Ar> |
 | **1954** | George Devol develops the **first programmable robot**. <Ar>يطوّر جورج ديفول (George Devol) **أول روبوت قابل للبرمجة**.</Ar> |
 | **1955** | Denavit and Hartenberg develop **homogeneous transformation matrices**, still used today for robot kinematics (Ch. 8–9). <Ar>يطوّر دينافيت وهارتنبرغ (Denavit and Hartenberg) **مصفوفات التحويل المتجانس (homogeneous transformation matrices)**، التي لا تزال تُستخدم حتى اليوم في علم حركة الروبوتات (kinematics) (الفصلان 8–9).</Ar> |
 | **1962** | **Unimation** is formed and the first industrial robots appear. <Ar>تأسيس شركة **Unimation** وظهور أولى الروبوتات الصناعية.</Ar> |
 | **1973** | Cincinnati Milacron introduces the **T3**, which becomes very popular in industry. <Ar>تطرح شركة Cincinnati Milacron الروبوت **T3** الذي يحظى بانتشار واسع في الصناعة.</Ar> |
-| **1990** | Cincinnati Milacron's robot business is acquired by **ABB**. <Ar>تستحوذ شركة **ABB** على قطاع الروبوتات في Cincinnati Milacron.</Ar> |
+| **1990** | Cincinnati Milacron is acquired by **ABB**. <Ar>تستحوذ شركة **ABB** على Cincinnati Milacron.</Ar> |
+
+<Callout type="warning" title="Check the source" titleAr="راجِع المصدر">
+
+Slide 4 says Čapek "introduced the word 'Rabota' (meaning worker)". The book (p. 20) says the word the story introduced is **robot**, derived from the Czech and Slavonic root *rabota*, which means forced labour or work. That a robot is a *worker* is the expectation the word created, not the meaning of the root.
+
+<Ar>تقول الشريحة 4 إن تشابيك «قدّم كلمة Rabota (بمعنى عامل)». أما الكتاب (ص 20) فيقول إن الكلمة التي قدّمتها القصة هي **robot**، المشتقة من الجذر التشيكي والسلافي *rabota* الذي يعني السُّخرة أو العمل. وكون الروبوت *عاملًا* هو التوقّع الذي رسّخته الكلمة، لا معنى الجذر.</Ar>
+
+</Callout>
 
 ### Asimov's laws of robotics
 
@@ -82,6 +94,8 @@ Asimov proposed three laws and later added a **zeroth law** that outranks them a
 
 <Ar>التعريفات الرسمية</Ar>
 
+<Walkthrough id="rob1-definitions" expect="compare, four-words, verdict, statistics" />
+
 <Grid cols={2}>
   <Card title="Robotics Industry Association (RIA)" titleAr="جمعية صناعة الروبوتات (RIA)" tag="USA">
     A <strong>re-programmable, multifunctional manipulator</strong> designed to move material, parts, tools or specialised devices through <strong>variable programmed motions</strong> for the performance of a variety of tasks.
@@ -99,9 +113,23 @@ The RIA definition is narrow and industrial: it is about manipulators that can b
 
 <Ar>تعريف RIA ضيّق وذو طابع صناعي: فهو يدور حول الأذرع الآلية (manipulators) القابلة لإعادة البرمجة. أما تعريف JARA فأوسع، ولذلك تُسمّى في اليابان أجهزةٌ كثيرة روبوتاتٍ مع أنها لا تُعدّ كذلك في الولايات المتحدة. وهذا أحد أسباب اختلاف إحصاءات الروبوتات بين الدول.</Ar>
 
+A third body, the **Robotics Association of America** (RAA), uses almost the same words as the RIA, but what it defines is *an industrial robot*. That one word limits it to production equipment, so surgical, domestic and exploratory robots fall outside it.
+
+<Ar>وتستخدم جهة ثالثة، هي **جمعية الروبوتات الأمريكية (Robotics Association of America)** (RAA)، الكلمات نفسها تقريبًا التي تستخدمها RIA، لكن ما تعرّفه هو «الروبوت **الصناعي**» (*an industrial robot*). وهذه الكلمة الواحدة تقصر التعريف على معدات الإنتاج، فتخرج منه الروبوتات الجراحية والمنزلية والاستكشافية.</Ar>
+
+<Callout type="warning" title="Check the source" titleAr="راجِع المصدر">
+
+The slides expand RIA in two ways: "Robotics Industry Association" on slide 6 (the definition) and "Robotics Institute of America" on slide 11 (the classes), and the book follows them (pp. 22 and 26). In this course both mean the same body, RIA: the RIA that defines a robot is the RIA that counts only JIRA classes 3–6 as robots.
+
+<Ar>تفكّ الشرائح اختصار RIA بطريقتين: «Robotics Industry Association» في الشريحة 6 (التعريف)، و«Robotics Institute of America» في الشريحة 11 (الفئات)، ويتبعها الكتاب في ذلك (ص 22 و26). والاسمان في هذا المقرر يشيران إلى الهيئة نفسها، RIA: فالجهة التي تعرّف الروبوت هي نفسها الجهة التي لا تعدّ روبوتاتٍ إلا فئات JIRA من 3 إلى 6.</Ar>
+
+</Callout>
+
 ## The robotic system
 
 <Ar>النظام الروبوتي</Ar>
+
+<Walkthrough id="rob1-system" expect="blocks, flow, feedback, disciplines" />
 
 **Robotics** is the art, knowledge base and know-how of designing, applying and using robots. It is **interdisciplinary**, drawing on mechanical engineering, electrical and electronic engineering, computer science, biology and more.
 
@@ -122,6 +150,8 @@ The RIA definition is narrow and industrial: it is about manipulators that can b
 ## Classifying robots
 
 <Ar>تصنيف الروبوتات</Ar>
+
+<Walkthrough id="rob1-classify" expect="jira, afr, generations, tree, function; jira=6; ria=3–6; afr=A–D" />
 
 ### By capability: JIRA classes
 
@@ -156,6 +186,14 @@ The Japanese Industrial Robot Association classifies robots into six classes of 
 | **B** | Automatic handling devices with predetermined cycles <Ar>أجهزة مناولة آلية ذات دورات محددة مسبقًا</Ar> |
 | **C** | Programmable, servo-controlled robots with continuous or point-to-point trajectories <Ar>روبوتات قابلة للبرمجة يُتحكَّم بها بالمؤازرة (servo-controlled)، ذات مسارات مستمرة أو من نقطة إلى نقطة (point-to-point)</Ar> |
 | **D** | Like type C, but able to **acquire information** about the environment <Ar>مثل النوع C، لكنها قادرة على **اكتساب معلومات** عن البيئة</Ar> |
+
+<Callout type="warning" title="Check the source" titleAr="راجِع المصدر">
+
+Slide 12 gives type C "continuous point-to-point trajectories". These are two different kinds of motion, and the book (p. 27) says "continuous **or** point-to-point". **Point-to-point** motion visits a series of taught positions without specifying the path between them; **continuous-path** motion controls the trajectory itself, which arc welding or cutting needs because the tool works while it moves.
+
+<Ar>تنسب الشريحة 12 إلى النوع C «مسارات مستمرة من نقطة إلى نقطة» (continuous point-to-point trajectories). وهذان نوعان مختلفان من الحركة، والكتاب (ص 27) يقول «مستمرة **أو** من نقطة إلى نقطة». فالحركة **من نقطة إلى نقطة (point-to-point)** تمرّ بسلسلة من المواضع المعلَّمة دون تحديد المسار بينها، أما حركة **المسار المستمر (continuous path)** فتتحكم في المسار نفسه، وهذا ما يتطلبه اللحام بالقوس أو القطع لأن الأداة تعمل أثناء حركتها.</Ar>
+
+</Callout>
 
 ### Other ways to classify
 
@@ -266,10 +304,10 @@ A human orders a robot to walk into a fire to rescue a child. Which laws are inv
       q: "The word 'robot' was introduced in…",
       qAr: "ظهرت كلمة «robot» لأول مرة في…",
       options: ["Asimov's I, Robot (1950)", "Čapek's Rossum's Universal Robots (1922)", "Unimation's first catalogue (1962)", "Devol's patent (1954)"],
-      optionsAr: ["كتاب أسيموف I, Robot (1950)", "مسرحية تشابيك Rossum's Universal Robots (1922)", "أول كتالوج لشركة Unimation (1962)", "براءة اختراع ديفول (1954)"],
+      optionsAr: ["كتاب أسيموف I, Robot (1950)", "قصة تشابيك Rossum's Universal Robots (1922)", "أول كتالوج لشركة Unimation (1962)", "براءة اختراع ديفول (1954)"],
       answer: 1,
-      explain: "Karel Čapek's 1922 play introduced the word, from 'robota', meaning forced labour or work.",
-      explainAr: "قدّمت مسرحية كارل تشابيك عام 1922 هذه الكلمة، المشتقة من «robota» بمعنى السُّخرة أو العمل."
+      explain: "Karel Čapek's 1922 story introduced the word, from the root 'rabota', meaning forced labour or work.",
+      explainAr: "قدّمت قصة كارل تشابيك عام 1922 هذه الكلمة، المشتقة من الجذر «rabota» بمعنى السُّخرة أو العمل."
     },
     {
       q: "Which of Asimov's laws has the highest priority?",
